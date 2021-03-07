@@ -21,19 +21,19 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'marketplaceProduct',
-      key: 'marketplaceProduct'
+      title: 'Marketplace',
+      dataIndex: 'marketplaceName',
+      key: 'marketplaceName'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Product',
+      dataIndex: 'productName',
+      key: 'productName'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Url',
+      dataIndex: 'url',
+      key: 'url'
     },
     {
       title: 'Operation',

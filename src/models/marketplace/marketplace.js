@@ -2,6 +2,8 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/marketplace/marketplace'
+import { uploadProductImage } from 'services/utils/imageUploader'
+import FormData from 'form-data'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -37,6 +39,14 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
+        if (pathname === '/integration/marketplace-product') {
+          dispatch({
+            type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
+        }
       })
     }
   },
@@ -70,6 +80,37 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.marketplaceImage
+        && payload.data.marketplaceImage.fileList
+        && payload.data.marketplaceImage.fileList.length > 0
+        && payload.data.marketplaceImage.fileList.length <= 1) {
+        for (let key in payload.data.marketplaceImage.fileList) {
+          const item = payload.data.marketplaceImage.fileList[key]
+          const formData = new FormData()
+          formData.append('file', item.originFileObj)
+          const responseUpload = yield call(uploadProductImage, formData)
+          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+            uploadedImage.push(responseUpload.data.filename)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.marketplaceImage
+        && payload.data.marketplaceImage.fileList
+        && payload.data.marketplaceImage.fileList.length > 0
+        && payload.data.marketplaceImage.fileList.length > 1) {
+        throw new Error('Cannot upload more than 1 image')
+      }
+      // End - Upload Image
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.marketplaceImage = uploadedImage[0]
+      } else {
+        payload.data.marketplaceImage = 'no_image.png'
+      }
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
@@ -86,6 +127,14 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
       } else {
         yield put({
           type: 'updateState',
@@ -98,7 +147,45 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.marketplaceImage
+        && payload.data.marketplaceImage.fileList
+        && payload.data.marketplaceImage.fileList.length > 0
+        && payload.data.marketplaceImage.fileList.length <= 5) {
+        for (let key in payload.data.marketplaceImage.fileList) {
+          const item = payload.data.marketplaceImage.fileList[key]
+          if (item && item.originFileObj) {
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadProductImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+          } else if (item && item.name) {
+            uploadedImage.push(item.name)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.marketplaceImage
+        && payload.data.marketplaceImage.fileList
+        && payload.data.marketplaceImage.fileList.length > 0
+        && payload.data.marketplaceImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
       const id = yield select(({ marketplace }) => marketplace.currentItem.id)
+      const currentItem = yield select(({ marketplace }) => marketplace.currentItem)
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.marketplaceImage = uploadedImage[0]
+      } else if (currentItem && currentItem.marketplaceImage && currentItem.marketplaceImage.raw) {
+        payload.data.marketplaceImage = currentItem.marketplaceImage.raw
+      } else {
+        payload.data.marketplaceImage = 'no_image.png'
+      }
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -122,6 +209,14 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
       } else {
         yield put({
           type: 'updateState',

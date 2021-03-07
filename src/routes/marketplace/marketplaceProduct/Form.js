@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Spin, Select, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -29,6 +30,11 @@ const FormCounter = ({
   onSubmit,
   onCancel,
   modalType,
+  loading,
+  showLov,
+  listMarketplace,
+  listProduct,
+  optionSelect = (listProduct || []).length > 0 ? listProduct.map(c => <Option value={c.id} key={c.id} title={`${c.productName} (${c.productCode})`}>{`${c.productName} (${c.productCode})`}</Option>) : [],
   button,
   form: {
     getFieldDecorator,
@@ -37,6 +43,8 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listMarketplaceOpt = (listMarketplace || []).length > 0 ? listMarketplace.map(c => <Option value={c.id} key={c.id} title={`${c.marketplaceName}`}>{`${c.marketplaceName}`}</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -68,6 +76,7 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.productId = data && data.productId && data.productId.key ? data.productId.key : undefined
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -85,26 +94,51 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('marketplaceProduct', {
-              initialValue: item.marketplaceProduct,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
+          <FormItem label="Marketplace" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('marketplaceId', {
+              initialValue: item.marketplaceId,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              filterOption={filterOption}
+            >{listMarketplaceOpt}
+            </Select>)}
           </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Product" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('productId', {
+              initialValue: item.productId ? {
+                key: item.productId,
+                label: `${item.productName} (${item.productCode})`
+              } : undefined
+            })(<Select
+              style={{ width: '250px' }}
+              placeholder="Select Product"
+
+              showSearch
+              allowClear
+              optionFilterProp="children"
+
+              notFoundContent={loading.effects['productstock/query'] ? <Spin size="small" /> : null}
+              onSearch={value => showLov('productstock', { q: value })}
+              labelInValue
+              filterOption={filterOption}
+            >
+              {optionSelect}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Url" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('url', {
+              initialValue: item.url,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={255} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -1,7 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Select, Modal } from 'antd'
+import {
+  Form,
+  Input,
+  Icon,
+  Upload,
+  message,
+  Button,
+  Row,
+  Col,
+  Select,
+  Modal
+} from 'antd'
+import { IMAGEURL, rest } from 'utils/config.company'
 
+const { apiCompanyURL } = rest
 const FormItem = Form.Item
 const { Option } = Select
 
@@ -110,15 +123,68 @@ const FormCounter = ({
             >{listGroupOpt}
             </Select>)}
           </FormItem>
-          <FormItem label="Marketplace Image" hasFeedback {...formItemLayout}>
+          <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('marketplaceImage', {
-              initialValue: item.marketplaceImage,
-              rules: [
+              initialValue: item.marketplaceImage
+                && item.marketplaceImage != null
+                && item.marketplaceImage !== '"no_image.png"'
+                && item.marketplaceImage !== 'no_image.png' ?
                 {
-                  required: true
+                  fileList: JSON.parse(item.marketplaceImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
                 }
-              ]
-            })(<Input maxLength={255} />)}
+                : item.marketplaceImage
+            })(
+              <Upload
+                // {...props}
+                multiple
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                listType="picture"
+                defaultFileList={
+                  item.marketplaceImage
+                    && item.marketplaceImage != null
+                    && item.marketplaceImage !== '"no_image.png"'
+                    && item.marketplaceImage !== 'no_image.png' ?
+                    JSON.parse(item.marketplaceImage).map((detail, index) => {
+                      return ({
+                        uid: index + 1,
+                        name: detail,
+                        status: 'done',
+                        url: `${IMAGEURL}/${detail}`,
+                        thumbUrl: `${IMAGEURL}/${detail}`
+                      })
+                    })
+                    : []
+                }
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -1564,6 +1564,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/marketplace/marketplaceProduct'))
+              registerModel(app, require('./models/marketplace/marketplace'))
+              registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/marketplace/marketplaceProduct'))
             }, 'integration-marketplace-product')
           }

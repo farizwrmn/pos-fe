@@ -9,8 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ marketplaceProduct, loading, dispatch, location, app }) => {
+const Counter = ({ productstock, marketplace, marketplaceProduct, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = marketplaceProduct
+  const { list: listProduct } = productstock
+  const { list: listMarketplace } = marketplace
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -87,8 +89,12 @@ const Counter = ({ marketplaceProduct, loading, dispatch, location, app }) => {
     })
   }
 
+  let timeout
   const formProps = {
     modalType,
+    listMarketplace,
+    listProduct,
+    loading,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
@@ -114,6 +120,30 @@ const Counter = ({ marketplaceProduct, loading, dispatch, location, app }) => {
           currentItem: {}
         }
       })
+    },
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
     }
   }
 
@@ -142,6 +172,8 @@ const Counter = ({ marketplaceProduct, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
+  productstock: PropTypes.object,
+  marketplace: PropTypes.object,
   marketplaceProduct: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -149,4 +181,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ marketplaceProduct, loading, app }) => ({ marketplaceProduct, loading, app }))(Counter)
+export default connect(({ productstock, marketplace, marketplaceProduct, loading, app }) => ({ productstock, marketplace, marketplaceProduct, loading, app }))(Counter)

@@ -21,19 +21,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'marketplace',
-      key: 'marketplace'
-    },
-    {
       title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      dataIndex: 'marketplaceName',
+      key: 'marketplaceName'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Group',
+      dataIndex: 'marketplaceGroup.markGroupName',
+      key: 'marketplaceGroup.markGroupName'
     },
     {
       title: 'Operation',
@@ -41,7 +36,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]
