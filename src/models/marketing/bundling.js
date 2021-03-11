@@ -281,7 +281,8 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ bundling }) => bundling.currentItem.id)
-      const newCounter = { ...payload, id }
+      const listReward = yield select(({ bundling }) => bundling.listReward)
+      const newCounter = { ...payload, listReward, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
@@ -325,6 +326,7 @@ export default modelExtend(pageModel, {
       for (let n = 0; n < (dataRules.data || []).length; n += 1) {
         listRules.push({
           no: n + 1,
+          id: dataRules.data[n].id,
           type: dataRules.data[n].type,
           productId: dataRules.data[n].productId,
           productCode: dataRules.data[n].productCode,
@@ -336,11 +338,16 @@ export default modelExtend(pageModel, {
         dataReward.data[n].sellingPrice = dataReward.data[n].sellPrice
         listReward.push({
           no: n + 1,
+          id: dataReward.data[n].id,
           type: dataReward.data[n].type,
           productId: dataReward.data[n].productId,
           productCode: dataReward.data[n].productCode,
           productName: dataReward.data[n].productName,
           qty: dataReward.data[n].qty,
+          sellPrice: dataReward.data[n].sellPrice,
+          distPrice01: dataReward.data[n].distPrice01,
+          distPrice02: dataReward.data[n].distPrice02,
+          distPrice03: dataReward.data[n].distPrice03,
           disc1: dataReward.data[n].disc1,
           disc2: dataReward.data[n].disc2,
           disc3: dataReward.data[n].disc3,

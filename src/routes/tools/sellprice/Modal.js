@@ -33,6 +33,7 @@ const modal = ({
       data.prevSellPrice = currentItemList.prevSellPrice
       data.prevDistPrice01 = currentItemList.prevDistPrice01
       data.prevDistPrice02 = currentItemList.prevDistPrice02
+      data.prevDistPrice03 = currentItemList.prevDistPrice03
       onOkList(data)
     })
   }
@@ -64,36 +65,38 @@ const modal = ({
         </Button>
       ]}
     >
-      <Form layout="horizontal">
-        <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('sellPrice', {
-            initialValue: currentItemList.sellPrice,
-            rules: [{
-              required: true
-            }]
-          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
-        </FormItem>
-      </Form>
-      <Form layout="horizontal">
-        <FormItem label="Dist Price 01" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('distPrice01', {
-            initialValue: currentItemList.distPrice01,
-            rules: [{
-              required: true
-            }]
-          })(<InputNumber min={0} style={{ width: '100%' }} />)}
-        </FormItem>
-      </Form>
-      <Form layout="horizontal">
-        <FormItem label="Dist Price 02" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('distPrice02', {
-            initialValue: currentItemList.distPrice02,
-            rules: [{
-              required: true
-            }]
-          })(<InputNumber min={0} style={{ width: '100%' }} />)}
-        </FormItem>
-      </Form>
+      <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('sellPrice', {
+          initialValue: currentItemList.sellPrice,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label="Dist Price 01" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice01', {
+          initialValue: currentItemList.distPrice01,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label="Dist Price 02" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice02', {
+          initialValue: currentItemList.distPrice02,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label="Dist Price 03" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice03', {
+          initialValue: currentItemList.distPrice03,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
     </Modal>
   )
 }

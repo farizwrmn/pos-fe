@@ -27,6 +27,7 @@ const modal = ({
         ...getFieldsValue()
       }
       data.no = item.no
+      data.id = item.id
       data.type = item.type
       data.categoryCode = item.categoryCode
       data.productId = item.productId
