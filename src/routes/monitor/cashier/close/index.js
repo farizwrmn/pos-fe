@@ -166,7 +166,7 @@ const CloseCashRegister = ({
             })(<Input disabled />)}
           </FormItem>
           <FormItem label="Counter" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('counterName', {
+            {getFieldDecorator('q', {
               initialValue: cashierInfo.counterName || '',
               rules: [{ required: true }]
             })(<Input disabled />)}

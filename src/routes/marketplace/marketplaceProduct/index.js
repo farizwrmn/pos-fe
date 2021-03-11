@@ -9,13 +9,15 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ accountCode, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = accountCode
+const Counter = ({ productstock, marketplace, marketplaceProduct, loading, dispatch, location, app }) => {
+  const { list, pagination, modalType, currentItem, activeKey } = marketplaceProduct
+  const { list: listProduct } = productstock
+  const { list: listMarketplace } = marketplace
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'accountCode/query',
+        type: 'marketplaceProduct/query',
         payload: {
           ...value
         }
@@ -28,7 +30,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['accountCode/query'],
+    loading: loading.effects['marketplaceProduct/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -50,13 +52,13 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/editItem',
+        type: 'marketplaceProduct/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'accountCode/delete',
+        type: 'marketplaceProduct/delete',
         payload: id
       })
     }
@@ -64,7 +66,7 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'accountCode/changeTab',
+      type: 'marketplaceProduct/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -75,25 +77,29 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'accountCode/updateState', payload: { list: [] } })
+    dispatch({ type: 'marketplaceProduct/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'accountCode/updateState',
+      type: 'marketplaceProduct/updateState',
       payload: {
         activeKey: '1'
       }
     })
   }
 
+  let timeout
   const formProps = {
     modalType,
+    listMarketplace,
+    listProduct,
+    loading,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `accountCode/${modalType}`,
+        type: `marketplaceProduct/${modalType}`,
         payload: {
           data,
           reset
@@ -109,11 +115,35 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/updateState',
+        type: 'marketplaceProduct/updateState',
         payload: {
           currentItem: {}
         }
       })
+    },
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
     }
   }
 
@@ -142,11 +172,13 @@ const Counter = ({ accountCode, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
-  accountCode: PropTypes.object,
+  productstock: PropTypes.object,
+  marketplace: PropTypes.object,
+  marketplaceProduct: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, loading, app }) => ({ accountCode, loading, app }))(Counter)
+export default connect(({ productstock, marketplace, marketplaceProduct, loading, app }) => ({ productstock, marketplace, marketplaceProduct, loading, app }))(Counter)

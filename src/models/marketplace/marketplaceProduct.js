@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/accountCode'
+import { query, add, edit, remove } from 'services/marketplace/marketplaceProduct'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Marketplace Product has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'accountCode',
+  namespace: 'marketplaceProduct',
 
   state: {
     currentItem: {},
@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/integration/marketplace-product') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -98,7 +98,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const id = yield select(({ marketplaceProduct }) => marketplaceProduct.currentItem.id)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {

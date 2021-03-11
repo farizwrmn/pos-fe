@@ -253,6 +253,7 @@ const FormCounter = ({
       for (let n = 0; n < ary.length; n += 1) {
         const data = {
           no: n + 1,
+          id: ary[n].id,
           type: ary[n].type,
           productId: ary[n].productId,
           productCode: ary[n].productCode,
@@ -433,9 +434,10 @@ const FormCounter = ({
     dataSource: listReward,
     columns: columnsReward,
     onRowClick (item) {
-      if (modalType === 'add') {
-        showModalEdit(item, 1)
-      }
+      // if (modalType === 'add') {
+      console.log('item', item)
+      showModalEdit(item, 1)
+      // }
     }
   }
   let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []

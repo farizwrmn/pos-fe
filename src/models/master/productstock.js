@@ -72,13 +72,13 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, mode, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/report/fifo/history') {
-          dispatch({
-            type: 'query'
-          })
-        }
-        if (pathname === '/master/store-price') {
-          dispatch({ type: 'query' })
+        switch (pathname) {
+          case '/integration/marketplace-product':
+          case '/master/store-price':
+          case '/report/fifo/history':
+            dispatch({ type: 'query' })
+            break
+          default:
         }
         if (pathname === '/stock') {
           dispatch({ type: 'queryLastAdjust' })
