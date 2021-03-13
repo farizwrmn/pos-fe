@@ -5,6 +5,10 @@ import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
 import { allowPrint } from 'utils/validation'
 import {
+  TYPE_PEMBELIAN_GRABFOOD,
+  TYPE_PEMBELIAN_GRABMART
+} from 'utils/variable'
+import {
   queryPaymentSplit
 } from 'services/payment/payment'
 import * as cashierService from '../../services/cashier'
@@ -304,6 +308,28 @@ export default {
       yield put({ type: 'setCurTotal' })
     },
 
+    * changeDineIn ({ payload }, { put }) {
+      const { typePembelian } = payload
+      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      let typePrice = 'originalSellPrice'
+      if (typePembelian === TYPE_PEMBELIAN_GRABFOOD) {
+        typePrice = 'otherSellPrice'
+      }
+      if (typePembelian === TYPE_PEMBELIAN_GRABMART) {
+        typePrice = 'martSellPrice'
+      }
+      if (dataPos && dataPos.length) {
+        for (let key in dataPos) {
+          const item = dataPos[key]
+          dataPos[key].sellPrice = item[typePrice] == null ? item.price : item[typePrice]
+          dataPos[key].total = dataPos[key].sellPrice * item.qty
+        }
+      }
+      localStorage.setItem('consignment', JSON.stringify(dataPos))
+      yield put({ type: 'hideConsignmentModal' })
+      yield put({ type: 'setCurTotal' })
+    },
+
     * paymentDelete ({ payload }, { put }) {
       let dataPos = getCashierTrans()
       let arrayProd = dataPos.slice()
@@ -458,6 +484,7 @@ export default {
           price: ary[n].price,
           otherSellPrice: ary[n].otherSellPrice,
           martSellPrice: ary[n].martSellPrice,
+          originalSellPrice: ary[n].originalSellPrice,
           qty: ary[n].qty,
           total: ary[n].total
         })
@@ -1438,6 +1465,18 @@ export default {
         return
       }
       const setting = yield select(({ app }) => app.setting)
+
+      let typePrice = 'price'
+      const typePembelian = localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 1
+      // eslint-disable-next-line eqeqeq
+      if (typePembelian == TYPE_PEMBELIAN_GRABFOOD) {
+        typePrice = 'price_grabfood_gofood'
+      }
+      // eslint-disable-next-line eqeqeq
+      if (typePembelian == TYPE_PEMBELIAN_GRABMART) {
+        typePrice = 'price_grabmart'
+      }
+
       const data = {
         no: arrayProd.length + 1,
         code: item.product.product_code,
@@ -1445,15 +1484,16 @@ export default {
         productId: item.id,
         name: item.product.product_name,
         qty: 1,
-        sellPrice: item.price,
+        sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
         martSellPrice: item.price_grabmart,
-        price: item.price,
+        originalSellPrice: item.price,
+        price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
         disc1: 0,
         disc2: 0,
         disc3: 0,
-        total: item.price
+        total: item[typePrice] == null ? item.price : item[typePrice]
       }
 
       arrayProd.push({
@@ -1463,15 +1503,16 @@ export default {
         productId: item.id,
         name: item.product.product_name,
         qty: 1,
-        sellPrice: item.price,
+        sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
         martSellPrice: item.price_grabmart,
-        price: item.price,
+        originalSellPrice: item.price,
+        price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
         disc1: 0,
         disc2: 0,
         disc3: 0,
-        total: item.price
+        total: item[typePrice] == null ? item.price : item[typePrice]
       })
       yield put({
         type: 'pos/checkQuantityNewConsignment',

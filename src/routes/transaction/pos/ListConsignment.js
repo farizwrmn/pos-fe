@@ -79,9 +79,16 @@ const ListConsignment = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist Price 01',
+      title: 'G Food',
       dataIndex: 'price_grabfood_gofood',
       key: 'distPrice01',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'G Mart',
+      dataIndex: 'price_grabmart',
+      key: 'distPrice02',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },

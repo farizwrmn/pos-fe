@@ -107,6 +107,7 @@ const insertConsignment = (dataObject) => {
     stock: dataObject.stock,
     otherSellPrice: dataObject.otherSellPrice,
     martSellPrice: dataObject.martSellPrice,
+    originalSellPrice: dataObject.originalSellPrice,
     qty: dataObject.qty,
     typeCode: dataObject.typeCode,
     sellPrice: dataObject.sellPrice,
