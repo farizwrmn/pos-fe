@@ -1426,6 +1426,15 @@ const Pos = ({
   const handleChangeDineIn = (event, type) => {
     localStorage.setItem('dineInTax', event)
     localStorage.setItem('typePembelian', type)
+
+    dispatch({
+      type: 'pos/changeDineIn',
+      payload: {
+        dineInTax: event,
+        typePembelian: type
+      }
+    })
+
     dispatch({
       type: 'pos/updateState',
       payload: {
