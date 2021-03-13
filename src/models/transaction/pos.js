@@ -311,7 +311,7 @@ export default {
     * changeDineIn ({ payload }, { put }) {
       const { typePembelian } = payload
       let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
-      let typePrice = 'price'
+      let typePrice = 'originalSellPrice'
       if (typePembelian === TYPE_PEMBELIAN_GRABFOOD) {
         typePrice = 'otherSellPrice'
       }
@@ -484,6 +484,7 @@ export default {
           price: ary[n].price,
           otherSellPrice: ary[n].otherSellPrice,
           martSellPrice: ary[n].martSellPrice,
+          originalSellPrice: ary[n].originalSellPrice,
           qty: ary[n].qty,
           total: ary[n].total
         })
@@ -1466,7 +1467,7 @@ export default {
       const setting = yield select(({ app }) => app.setting)
 
       let typePrice = 'price'
-      const typePembelian = localStorage.getItem('typePembelian')
+      const typePembelian = localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 1
       // eslint-disable-next-line eqeqeq
       if (typePembelian == TYPE_PEMBELIAN_GRABFOOD) {
         typePrice = 'price_grabfood_gofood'
@@ -1486,7 +1487,8 @@ export default {
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
         martSellPrice: item.price_grabmart,
-        price: item.price,
+        originalSellPrice: item.price,
+        price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
         disc1: 0,
         disc2: 0,
@@ -1504,7 +1506,8 @@ export default {
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
         martSellPrice: item.price_grabmart,
-        price: item.price,
+        originalSellPrice: item.price,
+        price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
         disc1: 0,
         disc2: 0,
