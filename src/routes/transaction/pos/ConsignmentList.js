@@ -23,7 +23,10 @@ const PaymentList = ({
   },
   ...modalProps }) => {
   const handleTotalChange = () => {
-    const data = getFieldsValue()
+    const data = {
+      ...itemConsignment,
+      ...getFieldsValue()
+    }
     let H1 = ((parseFloat(data.price) * parseFloat(data.qty))) * (1 - (data.disc1 / 100))
     let H2 = H1 * (1 - (data.disc2 / 100))
     let H3 = H2 * (1 - (data.disc3 / 100))
@@ -44,10 +47,14 @@ const PaymentList = ({
         return
       }
       const data = {
+        ...itemConsignment,
         ...handleTotalChange()
       }
       data.typeCode = itemConsignment.typeCode
       data.productId = itemConsignment.productId
+      data.otherSellPrice = itemConsignment.otherSellPrice
+      data.martSellPrice = itemConsignment.martSellPrice
+      data.originalSellPrice = itemConsignment.originalSellPrice
       data.code = itemConsignment.code
       data.name = itemConsignment.name
       onChooseItem(data)
