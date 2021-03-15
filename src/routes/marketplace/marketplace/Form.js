@@ -140,7 +140,12 @@ const FormCounter = ({
                     })
                   })
                 }
-                : item.marketplaceImage
+                : item.marketplaceImage,
+              rules: [
+                {
+                  required: true
+                }
+              ]
             })(
               <Upload
                 // {...props}

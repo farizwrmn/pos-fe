@@ -780,12 +780,12 @@ const AdvancedForm = ({
                 <FormItem label="Track Qty" {...formItemLayout}>
                   {getFieldDecorator('trackQty', {
                     valuePropName: 'checked',
-                    initialValue: !!item.trackQty
+                    initialValue: item.trackQty == null ? true : !!item.trackQty
                   })(<Checkbox>Track</Checkbox>)}
                 </FormItem>
                 <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('alertQty', {
-                    initialValue: item.alertQty,
+                    initialValue: item.alertQty == null ? 1 : item.alertQty,
                     rules: [
                       {
                         required: getFieldValue('trackQty'),
