@@ -1073,7 +1073,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/journalentry'))
               cb(null, require('./routes/accounts/payableform/detail'))
-            }, 'accounts/payable-form-detail')
+            }, 'accounts-payable-form-detail')
           }
         }, {
           path: 'inventory/transfer/invoice',
