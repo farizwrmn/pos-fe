@@ -4,10 +4,8 @@ import { connect } from 'dva'
 // import { routerRedux } from 'dva/router'
 import { configMain, lstorage } from 'utils'
 import {
-  Form,
   Row,
   Col,
-  Button,
   Modal
 } from 'antd'
 import moment from 'moment'
@@ -15,7 +13,6 @@ import FormPayment from './Form'
 
 const { getCashierTrans } = lstorage
 const { prefix } = configMain
-const FormItem = Form.Item
 
 const Payment = ({
   paymentOpts,
@@ -48,6 +45,7 @@ const Payment = ({
     curTotalDiscount,
     curTotal,
     dineInTax,
+    typePembelian,
     curRounding,
     curShift,
     curCashierNo,
@@ -104,7 +102,7 @@ const Payment = ({
   const totalDiscount = usageLoyalty
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-  const confirmPayment = () => {
+  const confirmPayment = (taxInfo) => {
     Modal.confirm({
       title: 'Save Payment',
       content: 'are you sure ?',
@@ -178,6 +176,7 @@ const Payment = ({
               curCashierNo,
               cashierId: user.userid,
               userName: user.username,
+              taxInfo,
               setting,
               listAmount,
               companyInfo,
@@ -205,6 +204,12 @@ const Payment = ({
 
   const onGetMachine = (paymentOption) => {
     dispatch({
+      type: 'paymentEdc/updateState',
+      payload: {
+        listPayment: []
+      }
+    })
+    dispatch({
       type: 'paymentEdc/query',
       payload: {
         paymentOption
@@ -213,6 +218,12 @@ const Payment = ({
   }
 
   const onGetCost = (machineId) => {
+    dispatch({
+      type: 'paymentCost/updateState',
+      payload: {
+        listPayment: []
+      }
+    })
     dispatch({
       type: 'paymentCost/query',
       payload: {
@@ -238,6 +249,9 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    confirmPayment,
+    cancelPayment,
+    loading,
     listAmount,
     modalType,
     memberInformation,
@@ -245,6 +259,7 @@ const Payment = ({
     paymentModalVisible,
     curTotal,
     dineInTax,
+    typePembelian,
     curTotalDiscount,
     curRounding,
     totalPayment,
@@ -305,19 +320,6 @@ const Payment = ({
         <Row style={{ marginBottom: 16 }}>
           <Col span={24}>
             <FormPayment options={listOpts} {...formPaymentProps} />
-          </Col>
-        </Row>
-
-        <Row style={{ textAlign: 'right' }}>
-          <Col span={24}>
-            <Form layout="vertical">
-              <FormItem>
-                <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" >Back To Transaction Detail</Button>
-              </FormItem>
-              <FormItem>
-                <Button type="primary" size="large" onEnter={confirmPayment} onClick={confirmPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" > Confirm Payment </Button>
-              </FormItem>
-            </Form>
           </Col>
         </Row>
       </div>}

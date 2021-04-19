@@ -4,11 +4,21 @@ import { Table, Modal, Tag, Icon } from 'antd'
 import { routerRedux } from 'dva/router'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { IMAGEURL } from 'utils/config.company'
+import { lstorage } from 'utils'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) => {
+const List = ({ ...tableProps,
+  user,
+  dispatch,
+  loadingModel,
+  editItem,
+  deleteItem,
+  listCategory,
+  listBrand
+}) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -31,25 +41,49 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       title: 'Active',
       dataIndex: 'active',
       key: 'active',
+      width: '80px',
       render: (text) => {
         return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
       }
     },
     {
-      title: 'ID',
-      dataIndex: 'productCode',
-      key: 'productCode'
-    },
-    {
-      title: 'Name',
-      dataIndex: 'productName',
-      key: 'productName'
+      title: 'Image',
+      dataIndex: 'productImage',
+      key: 'productImage',
+      width: '100px',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          const item = JSON.parse(text)
+          if (item && item[0]) {
+            return <img height="70px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+          }
+        }
+        return null
+      }
     },
     {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',
-      className: styles.alignRight,
+      width: '50px',
+      className: styles.clickableRight,
+      onCellClick: (record) => {
+        dispatch({
+          type: 'updateState',
+          payload: {
+            countStoreList: []
+          }
+        })
+        dispatch({
+          type: 'productstock/showProductStoreQty',
+          payload: {
+            data: [record]
+          }
+        })
+      },
       render: (text) => {
         if (!loadingModel.effects['productstock/showProductQty']) {
           return text || 0
@@ -58,49 +92,114 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
       }
     },
     {
+      title: 'Product',
+      dataIndex: 'productName',
+      key: 'productName',
+      render: (text, record) => {
+        return (
+          <div>
+            <div><strong>{record.productCode}</strong></div>
+            <div>{record.productName}</div>
+          </div>
+        )
+      }
+    },
+
+    {
       title: 'Brand',
-      dataIndex: 'brandName',
-      key: 'brandName'
+      dataIndex: 'brandId',
+      key: 'brandId',
+      filters: listBrand ? listBrand.map(item => ({ text: item.brandName, value: item.id })) : [],
+      render: (text, record) => record.brandName
     },
     {
       title: 'Category',
-      dataIndex: 'categoryName',
-      key: 'categoryName'
-    },
-    {
-      title: 'Sell Price',
-      dataIndex: 'sellPrice',
-      key: 'sellPrice',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      dataIndex: 'categoryId',
+      key: 'categoryId',
+      filters: listCategory ? listCategory.map(item => ({ text: item.categoryName, value: item.id })) : [],
+      render: (text, record) => record.categoryName
     },
     {
       title: 'Cost Price',
       dataIndex: 'costPrice',
       key: 'costPrice',
       className: styles.alignRight,
+      width: '150px',
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 01',
+      title: 'Margin',
+      dataIndex: 'margin',
+      key: 'margin',
+      className: styles.alignRight,
+      width: '70px',
+      render: (text, record) => {
+        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
+      }
+    },
+    {
+      title: 'Sell Price',
+      dataIndex: 'sellPrice',
+      key: 'sellPrice',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].sellPrice
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
+      title: 'Dist Price 01',
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice01
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
-      title: 'Dist 02',
+      title: 'Dist Price 02',
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice02
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
-      title: 'Dist 03',
+      title: 'Dist Price 03',
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice03
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
     },
     {
       title: 'Track Qty',
@@ -174,7 +273,9 @@ const List = ({ ...tableProps, dispatch, loadingModel, editItem, deleteItem }) =
     <div>
       <Table {...tableProps}
         bordered
-        columns={columns}
+        columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
+          ? columns
+          : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'margin')}
         simple
         scroll={{ x: 2500 }}
         rowKey={record => record.id}

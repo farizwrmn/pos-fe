@@ -13,6 +13,8 @@ export default {
     loginLoading: false,
     listUserRole: [],
     listUserStore: [],
+    supervisorUser: {},
+    modalLoginData: {},
     requiredRole: false,
     modalFingerprintVisible: false,
     visibleItem: { verificationCode: false },
@@ -41,6 +43,78 @@ export default {
         yield put({ type: 'getCompanyFailure' })
       }
     },
+
+    * verify ({ payload }, { put, call }) {
+      const data = yield call(login, payload)
+      if (data.success
+        && data.profile) {
+        yield put({
+          type: 'successVerify',
+          payload: {
+            data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * successVerify ({ payload }, { put, select }) {
+      const modalLoginType = yield select(({ pos }) => pos.modalLoginType)
+      const modalLoginData = yield select(({ login }) => login.modalLoginData)
+      const setting = yield select(({ app }) => app.setting)
+      const { data } = payload
+      if (data.profile.role === 'OWN'
+        || data.profile.role === 'SPR'
+        || data.profile.role === 'ADM') {
+        yield put({
+          type: 'updateState',
+          payload: {
+            supervisorUser: data.profile
+          }
+        })
+
+        if (modalLoginType === 'payment') {
+          yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'service') {
+          yield put({ type: 'pos/serviceDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'consignment') {
+          yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
+        }
+        if (modalLoginType === 'cancelHistory') {
+          yield put({ type: 'pos/cancelInvoice', payload: modalLoginData })
+        }
+        if (modalLoginType === 'resetAllPosInput') {
+          yield put({
+            type: 'pos/removeTrans'
+          })
+        }
+        if (modalLoginType === 'editPayment') {
+          if (modalLoginData && modalLoginData.typeCode === 'P') {
+            yield put({
+              type: 'pos/checkQuantityEditProduct',
+              payload: {
+                data: modalLoginData,
+                setting
+              }
+            })
+          }
+          if (modalLoginData && modalLoginData.typeCode === 'S') {
+            yield put({ type: 'pos/serviceEdit', payload: modalLoginData })
+            yield put({ type: 'pos/hideServiceListModal' })
+          }
+        } else {
+          yield put({ type: 'updateState', payload: { modalLoginData: {} } })
+        }
+        yield put({ type: 'updateState', payload: { modalFingerprintVisible: false } })
+        yield put({ type: 'pos/updateState', payload: { modalLoginType: null, modalLoginVisible: false } })
+      } else {
+        throw new Error('Cashier cannot delete')
+      }
+    },
+
     * login ({ payload }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
       const data = yield call(login, payload)
@@ -126,7 +200,16 @@ export default {
       localStorage.setItem(`${prefix}iKen`, data.id_token)
       yield put({ type: 'getRole', payload: { userId: data.profile.userid } })
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })
-      lstorage.putStorageKey('udi', [data.profile.userid, data.profile.role, data.profile.store, data.profile.usercompany, data.profile.userlogintime, data.profile.sessionid])
+      const dataUdi = [
+        data.profile.userid,
+        data.profile.role,
+        data.profile.store,
+        data.profile.usercompany,
+        data.profile.userlogintime,
+        data.profile.sessionid,
+        data.profile.consignmentId ? data.profile.consignmentId.toString() : null
+      ]
+      lstorage.putStorageKey('udi', dataUdi)
       yield put({ type: 'app/query', payload: data.profile })
       if (from) {
         yield put(routerRedux.push(from))

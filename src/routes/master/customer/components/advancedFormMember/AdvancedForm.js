@@ -4,6 +4,9 @@ import InputMask from 'react-input-mask'
 import { Form, Input, Button, Select, DatePicker, Radio, Row, Col, Tooltip, Modal, Card } from 'antd'
 import { FooterToolbar } from 'components'
 import ModalSocial from './ModalSocial'
+import {
+  getValidationValue
+} from './utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -49,7 +52,9 @@ const FormCustomer = ({
   showCity,
   defaultMember,
   onCancel,
+  listDataTypes,
   form: {
+    getFieldValue,
     getFieldsValue,
     getFieldDecorator,
     resetFields,
@@ -230,7 +235,8 @@ const FormCustomer = ({
                 initialValue: item.phoneNumber,
                 rules: [
                   {
-                    required: true,
+                    required: getValidationValue(listDataTypes,
+                      { formName: 'customer', fieldName: 'phoneNumber', value: 'required', defaultValue: true }),
                     pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                     message: 'Input a Phone No.[xxxx xxxx xxxx]'
                   }
@@ -242,7 +248,8 @@ const FormCustomer = ({
                 initialValue: item.mobileNumber,
                 rules: [
                   {
-                    required: true,
+                    required: getValidationValue(listDataTypes,
+                      { formName: 'customer', fieldName: 'mobileNumber', value: 'required', defaultValue: true }),
                     pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                     message: 'mobile number is not valid'
                   }
@@ -275,7 +282,7 @@ const FormCustomer = ({
                 initialValue: item.idType,
                 rules: [
                   {
-                    required: true
+                    required: !!getFieldValue('idNo')
                   }
                 ]
               })(<Select
@@ -291,7 +298,7 @@ const FormCustomer = ({
                 initialValue: item.idNo,
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
                     message: 'a-Z & 0-9'
                   }
@@ -318,7 +325,8 @@ const FormCustomer = ({
                 initialValue: item.address01,
                 rules: [
                   {
-                    required: true,
+                    required: getValidationValue(listDataTypes,
+                      { formName: 'customer', fieldName: 'address01', value: 'required', defaultValue: true }),
                     pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
                     message: 'a-Z & 0-9'
                   }
@@ -343,7 +351,8 @@ const FormCustomer = ({
                 initialValue: item.cityId,
                 rules: [
                   {
-                    required: true
+                    required: getValidationValue(listDataTypes,
+                      { formName: 'customer', fieldName: 'cityId', value: 'required', defaultValue: true })
                   }
                 ]
               })(<Select
@@ -383,7 +392,13 @@ const FormCustomer = ({
             </FormItem>
             <FormItem label="Birth Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('birthDate', {
-                initialValue: item.birthDate ? moment(item.birthDate) : null
+                initialValue: item.birthDate ? moment(item.birthDate) : null,
+                rules: [
+                  {
+                    required: getValidationValue(listDataTypes,
+                      { formName: 'customer', fieldName: 'birthDate', value: 'required', defaultValue: false })
+                  }
+                ]
               })(<DatePicker disabledDate={disabledDate} />)}
             </FormItem>
           </Col>

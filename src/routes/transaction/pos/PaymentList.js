@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { posTotal } from 'utils'
 import { Button, Input, InputNumber, Form, Modal, Select } from 'antd'
+import { checkPermissionEditQtyPos } from 'utils/alertModal'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -12,10 +13,11 @@ const formItemLayout = {
   wrapperCol: { span: 12 }
 }
 
+const editQty = checkPermissionEditQtyPos()
+
 const PaymentList = ({
   onChooseItem,
   DeleteItem,
-  onChangeTotalItem,
   loading,
   item,
   listMechanic,
@@ -39,8 +41,6 @@ const PaymentList = ({
       data.employeeId = data.employee.key
       data.employeeName = data.employee.label.reduce((cnt, o) => cnt + o, '')
     }
-    const { employee, ...other } = data
-    onChangeTotalItem(other)
     return data
   }
   const listOptions = listMechanic.map(x => (<Option key={x.id} value={x.id}>{x.employeeName} ({x.employeeId})</Option>))
@@ -86,8 +86,8 @@ const PaymentList = ({
   return (
     <Modal
       footer={[
-        (<Button type="danger" onClick={handleDelete} disabled={!(item.bundleId !== undefined && item.bundleId !== null)}>Void</Button>),
-        (<Button type="danger" onClick={handleDelete} disabled={(item.bundleId !== undefined && item.bundleId !== null)}>Delete</Button>),
+        // (<Button type="danger" onClick={handleDelete} disabled={item.bundleId == null}>Void</Button>),
+        (<Button type="danger" onClick={handleDelete} disabled={item.bundleId != null}>Delete</Button>),
         (<Button type="primary" disabled={loading.effects['pos/checkQuantityEditProduct']} onClick={handleClick}>Submit</Button>)
       ]}
       {...modalProps}
@@ -159,8 +159,8 @@ const PaymentList = ({
             <InputNumber
               defaultValue={0}
               min={0}
-              disabled={!!item.bundleId}
               onBlur={value => handleTotalChange(value)}
+              disabled={editQty}
             />
           )}
         </FormItem>
@@ -175,7 +175,6 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
-              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -193,7 +192,6 @@ const PaymentList = ({
           })(
             <InputNumber
               defaultValue={0}
-              disabled
               min={0}
               max={100}
               onBlur={value => handleTotalChange(value)}
@@ -210,7 +208,6 @@ const PaymentList = ({
             }]
           })(
             <InputNumber
-              disabled
               defaultValue={0}
               min={0}
               max={100}
@@ -228,7 +225,6 @@ const PaymentList = ({
             }]
           })(
             <InputNumber
-              disabled
               defaultValue={0}
               min={0}
               max={item.price * item.qty}
@@ -238,7 +234,10 @@ const PaymentList = ({
         </FormItem>
         <FormItem {...formItemLayout} label="Total">
           {getFieldDecorator('total', {
-            initialValue: item.total,
+            initialValue: posTotal({
+              ...item,
+              ...getFieldsValue()
+            }),
             rules: [{
               required: true,
               message: 'Required'
@@ -258,7 +257,6 @@ PaymentList.propTypes = {
   item: PropTypes.object,
   DeleteItem: PropTypes.func,
   totalItem: PropTypes.string,
-  onChooseItem: PropTypes.func,
-  onChangeTotalItem: PropTypes.func
+  onChooseItem: PropTypes.func
 }
 export default Form.create()(PaymentList)

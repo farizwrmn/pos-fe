@@ -1,4 +1,6 @@
 import modelExtend from 'dva-model-extend'
+import moment from 'moment'
+import { lstorage } from 'utils'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { query, add, edit, remove } from '../../services/product/bookmarkGroup'
@@ -49,7 +51,10 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const { pathname, ...other } = payload
-      const data = yield call(query, other)
+      const data = yield call(query, {
+        ...other,
+        type: 'all'
+      })
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -67,18 +72,18 @@ export default modelExtend(pageModel, {
             type: 'productBookmark/query',
             payload: {
               groupId: data.data[0].id,
-              relationship: 1
+              relationship: 1,
+              day: moment().isoWeekday(),
+              storeId: lstorage.getCurrentUserStore()
             }
           })
         }
       }
     },
 
-    * delete ({ payload }, { call, put, select }) {
+    * delete ({ payload }, { call, put }) {
       const data = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(_ => _.productbrand)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data

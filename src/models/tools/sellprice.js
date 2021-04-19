@@ -205,6 +205,7 @@ export default {
           prevSellPrice: arrayProd[n].sellPrice,
           prevDistPrice01: arrayProd[n].distPrice01,
           prevDistPrice02: arrayProd[n].distPrice02,
+          prevDistPrice03: arrayProd[n].distPrice03,
           distPrice01: arrayProd[n].distPrice01,
           distPrice02: arrayProd[n].distPrice02,
           distPrice03: arrayProd[n].distPrice03,

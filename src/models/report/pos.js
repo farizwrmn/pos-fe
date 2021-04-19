@@ -39,7 +39,7 @@ export default {
     listPOSDetail: [],
     listPOSCompareSvsI: [],
     listStore: lstorage.getListUserStores(),
-    fromDate: moment().format('YYYY-MM-DD'),
+    fromDate: moment().startOf('month').format('YYYY-MM-DD'),
     toDate: moment().format('YYYY-MM-DD'),
     paramDate: [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
     diffDay: 0,
@@ -82,6 +82,27 @@ export default {
             listPOSCompareSvsI: []
           }
         })
+
+        if (location.pathname === '/report/pos/summary') {
+          const { query } = location
+          if (query.activeKey === '4' && query.from && query.to) {
+            dispatch({
+              type: 'posReport/queryPOSDetail',
+              payload: query
+            })
+          }
+          if (query.activeKey === '3' && query.from && query.to) {
+            dispatch({
+              type: 'posReport/queryDailyGetCategories',
+              payload: {
+                from: moment().startOf('month').format('YYYY-MM-DD'),
+                to: moment().format('YYYY-MM-DD'),
+                mode: 'pbc'
+              }
+            })
+          }
+        }
+
         if ((location.pathname === '/report/pos/service' && location.query.from) || (location.pathname === '/report/pos/unit' && location.query.from)) {
           dispatch({
             type: 'setListNull'
@@ -288,9 +309,24 @@ export default {
       let data = yield call(queryPOSDetail, payload)
       if (data.success) {
         yield put({
+          type: 'posReport/queryPOS',
+          payload: {
+            startPeriod: payload.from,
+            endPeriod: payload.to,
+            status: 'A'
+          }
+        })
+        yield put({
           type: 'querySuccessPOSDetail',
           payload: {
             listPOSDetail: data.data
+          }
+        })
+        yield put({
+          type: 'posReport/setDate',
+          payload: {
+            startPeriod: payload.from,
+            endPeriod: payload.to
           }
         })
       } else {
@@ -559,7 +595,7 @@ export default {
         diffDay: 0,
         selectedBrand: [],
         tableHeader: [],
-        fromDate: moment().format('YYYY-MM-DD'),
+        fromDate: moment().startOf('month').format('YYYY-MM-DD'),
         toDate: moment().format('YYYY-MM-DD'),
         pagination: {
           showSizeChanger: true,

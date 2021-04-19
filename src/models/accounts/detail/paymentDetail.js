@@ -18,6 +18,7 @@ export default {
     data: [],
     listDetail: [],
     listAmount: [],
+    listAmountInvoice: [],
     listPaymentOpts: [],
     modalVisible: false,
     modalCancelVisible: false
@@ -71,6 +72,7 @@ export default {
       const data = yield call(queryDetail, payload)
       let dataPos = []
       let dataPayment = []
+      let dataPaymentInvoice = []
       for (let n = 0; n < data.pos.length; n += 1) {
         dataPos.push({
           no: n + 1,
@@ -88,23 +90,53 @@ export default {
           disc3: data.pos[n].disc3 || 0
         })
       }
-      for (let n = 0; n < payment.data.length; n += 1) {
-        dataPayment.push({
-          no: n + 1,
-          id: payment.data[n].id,
-          cashierTransId: payment.data[n].cashierTransId,
-          active: payment.data[n].active,
-          storeId: payment.data[n].storeId,
-          transDate: payment.data[n].transDate,
-          transTime: payment.data[n].transTime,
-          typeCode: payment.data[n].typeCode,
-          cardNo: payment.data[n].cardNo,
-          cardName: payment.data[n].cardName,
-          description: payment.data[n].description,
-          paid: payment.data[n].paid || 0
-        })
+      if (payment && payment.data) {
+        for (let n = 0; n < payment.data.length; n += 1) {
+          dataPayment.push({
+            no: n + 1,
+            id: payment.data[n].id,
+            cashierTransId: payment.data[n].cashierTransId,
+            active: payment.data[n].active,
+            storeId: payment.data[n].storeId,
+            transDate: payment.data[n].transDate,
+            transTime: payment.data[n].transTime,
+            typeCode: payment.data[n].typeCode,
+            paymentMachine: payment.data[n].paymentMachine,
+            cost: payment.data[n].cost,
+            cardNo: payment.data[n].cardNo,
+            cardName: payment.data[n].cardName,
+            chargeNominal: payment.data[n].chargeNominal,
+            chargePercent: payment.data[n].chargePercent,
+            chargeTotal: payment.data[n].chargeTotal,
+            description: payment.data[n].description,
+            paid: payment.data[n].paid || 0
+          })
+        }
       }
-      if (invoiceInfo.data.length > 0) {
+      if (payment && payment.invoice) {
+        for (let n = 0; n < payment.invoice.length; n += 1) {
+          dataPaymentInvoice.push({
+            no: n + 1,
+            id: payment.invoice[n].id,
+            cashierTransId: payment.invoice[n].cashierTransId,
+            active: payment.invoice[n].active,
+            storeId: payment.invoice[n].storeId,
+            transDate: payment.invoice[n].transDate,
+            transTime: payment.invoice[n].transTime,
+            typeCode: payment.invoice[n].typeCode,
+            paymentMachine: payment.invoice[n].paymentMachine,
+            cost: payment.invoice[n].cost,
+            cardNo: payment.invoice[n].cardNo,
+            cardName: payment.invoice[n].cardName,
+            chargeNominal: payment.invoice[n].chargeNominal,
+            chargePercent: payment.invoice[n].chargePercent,
+            chargeTotal: payment.invoice[n].chargeTotal,
+            description: payment.invoice[n].description,
+            paid: payment.invoice[n].paid || 0
+          })
+        }
+      }
+      if (invoiceInfo.data && invoiceInfo.data.length > 0) {
         if (data.success) {
           yield put({
             type: 'querySuccess',
@@ -116,7 +148,8 @@ export default {
             type: 'updateState',
             payload: {
               listDetail: dataPos,
-              listAmount: dataPayment
+              listAmount: dataPayment,
+              listAmountInvoice: dataPaymentInvoice
             }
           })
         }
@@ -146,7 +179,7 @@ export default {
           }
         })
         success('Payment has been saved')
-        // setInterval(() => { location.reload() }, 1000)
+        // setTimeout(() => { location.reload() }, 1000)
       } else {
         throw data
       }
@@ -170,7 +203,7 @@ export default {
           }
         })
         success(`Payment ${payload.transNo} has been void`)
-        // setInterval(() => { location.reload() }, 1000)
+        // setTimeout(() => { location.reload() }, 1000)
       } else {
         throw data
       }

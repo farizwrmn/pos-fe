@@ -105,7 +105,7 @@ const formSupplier = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9_]{2,15}$/i,
+                  pattern: /^[a-z0-9-_]{2,15}$/i,
                   message: 'a-Z & 0-9'
                 }
               ]

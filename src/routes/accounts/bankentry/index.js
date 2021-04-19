@@ -2,20 +2,63 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Modal, Tabs } from 'antd'
+import { Button, message, Modal, Tabs, Icon } from 'antd'
+import { color, lstorage } from 'utils'
+import moment from 'moment'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, loading, dispatch, location, app }) => {
-  const { listCash, listItem, modalVisible, inputType, modalType, currentItem, currentItemList, activeKey } = bankentry
-  const { listOpts } = paymentOpts
-  const { listBank } = bank
+const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
+  const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = bankentry
+
+  let currentCashier = {
+    cashierId: null,
+    employeeName: null,
+    shiftId: null,
+    shiftName: null,
+    counterId: null,
+    counterName: null,
+    period: null,
+    status: null,
+    cashActive: null
+  }
+
+  let infoCashRegister = {}
+  infoCashRegister.title = 'Cashier Information'
+  infoCashRegister.titleColor = color.normal
+  infoCashRegister.descColor = color.error
+  infoCashRegister.dotVisible = false
+  infoCashRegister.cashActive = ((currentCashier.cashActive || '0') === '1')
+  let checkTimeDiff = lstorage.getLoginTimeDiff()
+  if (checkTimeDiff > 500) {
+    console.log('something fishy', checkTimeDiff)
+  } else {
+    const currentDate = moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')
+    if (!currentCashier.period) {
+      infoCashRegister.desc = '* Select the correct cash register'
+      infoCashRegister.dotVisible = true
+    } else if (currentCashier.period !== currentDate) {
+      if (currentCashier.period && currentDate) {
+        const diffDays = moment.duration(moment(currentCashier.period, 'YYYY-MM-DD').diff(currentDate)).asDays()
+        infoCashRegister.desc = `${diffDays} day${Math.abs(diffDays) > 1 ? 's' : ''}`
+        infoCashRegister.dotVisible = true
+      }
+    }
+    infoCashRegister.Caption = infoCashRegister.title + infoCashRegister.desc
+    infoCashRegister.CaptionObject =
+      (<span style={{ color: infoCashRegister.titleColor }}>
+        <Icon type={infoCashRegister.cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
+        <span style={{ display: 'block', color: infoCashRegister.descColor }}>
+          {infoCashRegister.desc}
+        </span>
+      </span>)
+  }
   const { listCustomer } = customer
   const { listSupplier } = supplier
-  const { listAccountCode } = accountCode
+  const { listAccountCode, listAccountCodeExpense } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -31,21 +74,30 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
   const listProps = {
     dataSource: listCash,
     user,
+    pagination,
     storeInfo,
     loading: loading.effects['bankentry/query'],
     location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          edit: item.id
         }
       }))
-      dispatch({
-        type: 'bankentry/editItem',
-        payload: { item }
-      })
     },
     deleteItem (id) {
       dispatch({
@@ -70,6 +122,7 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
             pathname,
             query: {
               ...query,
+              edit: null,
               activeKey: key
             }
           }))
@@ -92,7 +145,6 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
       dispatch({ type: 'bankentry/updateState', payload: { listCash: [], listItem: [] } })
     }
   }
-
   const clickBrowse = () => {
     dispatch({
       type: 'bankentry/updateState',
@@ -103,10 +155,12 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
   }
 
   const modalProps = {
-    title: 'Add Detail',
+    title: modalItemType === 'add' ? 'Add Detail' : 'Edit Detail',
     item: currentItemList,
     visible: modalVisible,
-    listAccountCode,
+    modalItemType,
+    modalType,
+    listAccountCode: listAccountCodeExpense,
     onCancel () {
       dispatch({
         type: 'bankentry/updateState',
@@ -116,15 +170,33 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
       })
     },
     addModalItem (data) {
+      const { listItem } = bankentry
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
         type: 'bankentry/updateState',
         payload: {
           modalVisible: false,
-          listItem
+          modalItemType: 'add',
+          listItem,
+          currentItemList: {}
         }
       })
+      message.success('success add item')
+    },
+    editModalItem (data) {
+      const { listItem } = bankentry
+      listItem[data.no - 1] = data
+      dispatch({
+        type: 'bankentry/updateState',
+        payload: {
+          modalVisible: false,
+          modalItemType: 'add',
+          listItem,
+          currentItemList: {}
+        }
+      })
+      message.success('success edit item')
     }
   }
   const listDetailProps = {
@@ -132,25 +204,28 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
   }
   let timeout
   const formProps = {
+    dispatch,
+    listAccountCode,
     modalType,
+    modalItemType,
     modalVisible,
     modalProps,
-    inputType,
     listDetailProps,
     listItem,
-    listOpts,
-    listBank,
     listCustomer,
     listSupplier,
+    storeInfo,
     item: currentItem,
+    loading: loading.effects['bankentry/add'] || loading.effects['bankentry/edit'] || loading.effects['bankentry/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, detail, oldValue) {
+    onSubmit (data, detail, oldValue, reset) {
       dispatch({
         type: `bankentry/${modalType}`,
         payload: {
           data,
           detail,
-          oldValue
+          oldValue,
+          reset
         }
       })
     },
@@ -165,7 +240,9 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
       dispatch({
         type: 'bankentry/updateState',
         payload: {
-          currentItem: {}
+          modalType: 'add',
+          currentItem: {},
+          listItem: []
         }
       })
     },
@@ -201,36 +278,29 @@ const Cash = ({ bankentry, accountCode, bank, paymentOpts, customer, supplier, l
         }
       })
     },
-    modalShow (value) { // string
+    modalShow () { // string
       dispatch({
         type: 'bankentry/updateState',
         payload: {
           modalVisible: true,
-          inputType: value
+          modalItemType: 'add'
         }
       })
     },
-    resetListItem (value) {
+    resetListItem () {
       dispatch({
         type: 'bankentry/updateState',
         payload: {
-          listItem: [],
-          inputType: value
+          listItem: []
         }
       })
     },
     modalShowList (record) {
       dispatch({
-        type: 'accountCode/query',
-        payload: {
-          pageSize: 5,
-          id: record.accountId.key
-        }
-      })
-      dispatch({
         type: 'bankentry/updateState',
         payload: {
           modalVisible: true,
+          modalItemType: 'edit',
           currentItemList: record
         }
       })
@@ -265,6 +335,7 @@ Cash.propTypes = {
   bankentry: PropTypes.object,
   paymentOpts: PropTypes.object,
   bank: PropTypes.object,
+  pos: PropTypes.object.isRequired,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
@@ -274,9 +345,8 @@ Cash.propTypes = {
 export default connect(({
   bankentry,
   accountCode,
-  paymentOpts,
-  bank,
   customer,
   supplier,
   loading,
-  app }) => ({ bankentry, accountCode, paymentOpts, bank, customer, supplier, loading, app }))(Cash)
+  pos,
+  app }) => ({ bankentry, accountCode, customer, supplier, loading, pos, app }))(Cash)

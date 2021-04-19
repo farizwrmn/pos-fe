@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Icon } from 'antd'
 import styles from '../../../../themes/index.less'
 
 const ListItem = ({ ...tableProps }) => {
@@ -27,6 +27,16 @@ const ListItem = ({ ...tableProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Accept Qty',
+      dataIndex: 'acceptQty',
+      key: 'acceptQty',
+      className: styles.alignCenter,
+      render: (text, data) =>
+        (data && data.accept
+          ? (<Icon type="check-circle" style={{ color: '#55a756' }} />)
+          : data.acceptQty)
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       key: 'description'
@@ -36,6 +46,9 @@ const ListItem = ({ ...tableProps }) => {
   return (
     <div>
       <Table {...tableProps}
+        pagination={{
+          showSizeChanger: true
+        }}
         bordered
         columns={columns}
         simple

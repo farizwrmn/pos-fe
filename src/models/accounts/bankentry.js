@@ -2,34 +2,67 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
+import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove } from '../../services/payment/bankentry'
+import { queryById, query, queryId, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
+import { queryById as queryPaymentById } from '../../services/payment/payment'
+import { queryById as queryPayableById } from '../../services/payment/payable'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Cash has been saved')
+  message.success('Deposit has been saved')
 }
 
 export default modelExtend(pageModel, {
   namespace: 'bankentry',
 
   state: {
+    data: {},
+    listDetail: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
+    modalItemType: 'add',
     inputType: null,
     activeKey: '0',
     listCash: [],
     modalVisible: false,
-    listItem: []
+    listItem: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
+    listBankRecon: [],
+    summaryBankRecon: [],
+    accountId: null,
+    from: null,
+    to: null
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, edit, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/bank-entry/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
+        if (pathname === '/bank-history') {
+          dispatch({
+            type: 'bankentry/queryBankRecon',
+            payload: other
+          })
+        }
         if (pathname === '/bank-entry') {
           dispatch({
             type: 'updateState',
@@ -38,7 +71,16 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query' })
+            dispatch({ type: 'query', payload: other })
+          }
+
+          if (edit && edit !== '' && edit !== '0') {
+            dispatch({
+              type: 'setEdit',
+              payload: {
+                edit
+              }
+            })
           } else {
             dispatch({ type: 'querySequence' })
           }
@@ -48,9 +90,115 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, bankEntryDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: bankEntryDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * linkSales ({ payload = {} }, { select, call, put }) {
+      const user = yield select(({ app }) => app.user)
+      const data = yield call(queryPaymentById, payload)
+      if (data.success) {
+        const loginTimeDiff = lstorage.getLoginTimeDiff()
+        const localId = lstorage.getStorageKey('udi')
+        const listUserStores = lstorage.getListUserStores()
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          [data.data.storeId],
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('cashierNo')
+        yield put({ type: 'app/query', payload: { userid: user.userid, role: data.data.storeId } })
+        yield put(routerRedux.push(`/accounts/payment/${encodeURIComponent(data.data.transNo)}`))
+      } else {
+        throw data
+      }
+    },
+
+    * linkPurchase ({ payload = {} }, { select, call, put }) {
+      const user = yield select(({ app }) => app.user)
+      const data = yield call(queryPayableById, payload)
+      if (data.success) {
+        const loginTimeDiff = lstorage.getLoginTimeDiff()
+        const localId = lstorage.getStorageKey('udi')
+        const listUserStores = lstorage.getListUserStores()
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          [data.data.storeId],
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === data.data.storeId)[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('cashierNo')
+        yield put({ type: 'app/query', payload: { userid: user.userid, role: data.data.storeId } })
+        yield put(routerRedux.push(`/accounts/payable/${encodeURIComponent(data.data.transNo)}`))
+      } else {
+        throw data
+      }
+    },
+
+    * linkCashEntry ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/cash-entry/${payload.id}`))
+    },
+
+    * linkBankEntry ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/bank-entry/${payload.id}`))
+    },
+
+    * linkJournalEntry ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/journal-entry/${payload.id}`))
+    },
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { edit, ...other } = payload
+      const data = yield call(query, other)
       if (data) {
         yield put({
           type: 'querySuccessCounter',
@@ -63,6 +211,56 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryBankRecon ({ payload = {} }, { call, put }) {
+      const response = yield call(queryBankRecon, {
+        ...payload,
+        type: 'all',
+        order: 'transDate'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload
+        })
+        yield put({
+          type: 'querySuccessBankRecon',
+          payload: {
+            listBankRecon: response.data,
+            summaryBankRecon: response.summary,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: response.total
+            }
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * updateBankRecon ({ payload = {} }, { call, put, select }) {
+      let {
+        accountId,
+        from,
+        to
+      } = yield select(({ bankentry }) => bankentry)
+      const response = yield call(updateBankRecon, payload)
+      if (response.success) {
+        yield put({
+          type: 'queryBankRecon',
+          payload: {
+            accountId,
+            from,
+            to
+          }
+        })
+        message.success('Bank reconciliation successfully updated')
+      } else {
+        throw response
       }
     },
 
@@ -86,6 +284,47 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * setEdit ({ payload }, { call, put }) {
+      const data = yield call(queryId, { id: payload.edit, relationship: 1 })
+      if (data.success) {
+        const { bankEntryDetail, ...currentItem } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem,
+            modalType: 'edit',
+            listItem: bankEntryDetail ?
+              bankEntryDetail.map((item, index) => ({
+                no: index + 1,
+                ...item,
+                accountId: item.accountId,
+                accountName: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+              }))
+              : []
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * transfer ({ payload }, { call, put }) {
+      const response = yield call(transfer, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            listItem: []
+          }
+        })
+        payload.resetFields()
+      } else {
+        throw response
+      }
+    },
+
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
@@ -107,11 +346,12 @@ export default modelExtend(pageModel, {
       if (currentRegister.success) {
         if (currentRegister.data) {
           const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-          payload.data.cashierTransId = cashierInformation.id
-          payload.data.transDate = cashierInformation.period
+          payload.data.cashierTransId = cashierInformation ? cashierInformation.id : undefined
+          payload.data.transDate = cashierInformation ? cashierInformation.period : payload.data.transDate ? payload.data.transDate : undefined
           const data = yield call(add, payload)
           if (data.success) {
             success()
+            payload.reset()
             yield put({
               type: 'updateState',
               payload: {
@@ -121,13 +361,11 @@ export default modelExtend(pageModel, {
               }
             })
             yield put({ type: 'querySequence' })
-          } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                currentItem: payload.oldValue
-              }
+            Modal.success({
+              title: 'Transaction success',
+              content: 'Transaction has been saved'
             })
+          } else {
             throw data
           }
         } else {
@@ -142,15 +380,17 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ cashentry }) => cashentry.currentItem.id)
+      const id = yield select(({ bankentry }) => bankentry.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
+        payload.reset()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
+            listItem: [],
             currentItem: {},
             activeKey: '1'
           }
@@ -164,12 +404,6 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     }
@@ -181,6 +415,19 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listCash,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessBankRecon (state, action) {
+      const { listBankRecon, summaryBankRecon, pagination } = action.payload
+      return {
+        ...state,
+        listBankRecon,
+        summaryBankRecon,
         pagination: {
           ...state.pagination,
           ...pagination

@@ -76,6 +76,74 @@ const FormCounter = ({
   }
 
   const listOptions = (listAccountCodeLov || []).length > 0 ? (listAccountCodeLov || []).map(c => <Option key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
+  const listAccountType = [
+    {
+      key: 'BANK',
+      value: 'Kas / Bank'
+    },
+    {
+      key: 'AREC',
+      value: 'Piutang Usaha'
+    },
+    {
+      key: 'INTR',
+      value: 'Persediaan'
+    },
+    {
+      key: 'OCAS',
+      value: 'Aset Lancar lainnya'
+    },
+    {
+      key: 'FASS',
+      value: 'Aset Tetap'
+    },
+    {
+      key: 'DEPR',
+      value: 'Akumulasi Depresiasi'
+    },
+    {
+      key: 'OASS',
+      value: 'Aset lainnya'
+    },
+    {
+      key: 'APAY',
+      value: 'Hutang lancar lain-lain'
+    },
+    {
+      key: 'OCLY',
+      value: 'Hutang lancar lain-lain'
+    },
+    {
+      key: 'LTLY',
+      value: 'Hutang jangka panjang'
+    },
+    {
+      key: 'EQTY',
+      value: 'Ekuitas'
+    },
+    {
+      key: 'REVE',
+      value: 'Pendapatan'
+    },
+    {
+      key: 'COGS',
+      value: 'Beban Pokok Penjualan'
+    },
+    {
+      key: 'EXPS',
+      value: 'Beban'
+    },
+    {
+      key: 'OEXP',
+      value: 'Beban lain-lain'
+    },
+    {
+      key: 'OINC',
+      value: 'Pendapatan lain-lain'
+    }
+  ]
+
+  const listOptionAccountType = listAccountType.map(c => <Option key={c.key}>{`${c.value} (${c.key})`}</Option>)
 
   const handleCancel = () => {
     onCancel()
@@ -98,7 +166,7 @@ const FormCounter = ({
                 onClick={() => handleClickTree(item.accountCode, item.id)}
                 value={item.accountCode}
               >
-                {item.accountName} ({item.accountCode})
+                {item.accountCode} - {item.accountName}
               </div>
             )}
           >
@@ -113,7 +181,8 @@ const FormCounter = ({
             <div
               onClick={() => handleClickTree(item.accountCode, item.id)}
               value={item.accountCode}
-            >{item.accountName} ({item.accountCode})
+            >
+              {item.accountCode} - {item.accountName}
             </div>
           )}
         >
@@ -131,7 +200,12 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.accountParentId = data.accountParentId.key
+      if (data.accountParentId) {
+        data.accountParentId = data.accountParentId.key
+      }
+      if (data.accountType) {
+        data.accountType = data.accountType.key
+      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -161,7 +235,7 @@ const FormCounter = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{1,9}$/i
+                  pattern: /^[a-z0-9.-/]{1,9}$/i
                 }
               ]
             })(<Input maxLength={50} autoFocus />)}
@@ -175,6 +249,27 @@ const FormCounter = ({
                 }
               ]
             })(<Input maxLength={40} />)}
+          </FormItem>
+          <FormItem label="Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('accountType', {
+              initialValue: item ? {
+                key: item.accountType,
+                name: item.accountType
+              } : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder="Account Type"
+              labelInValue
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >{listOptionAccountType}
+            </Select>)}
           </FormItem>
           <FormItem label="Parent" hasFeedback {...formItemLayout}>
             {getFieldDecorator('accountParentId', {

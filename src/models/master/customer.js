@@ -102,8 +102,12 @@ export default modelExtend(pageModel, {
             break
           }
           case '/master/customer':
-            if (!activeKey) dispatch({ type: 'refreshView' })
-            if (activeKey === '1') dispatch({ type: 'query', payload: other })
+            if (!activeKey) {
+              dispatch({ type: 'refreshView' })
+            }
+            if (activeKey === '1') {
+              dispatch({ type: 'query', payload: other })
+            }
             dispatch({
               type: 'updateState',
               payload: {
@@ -305,6 +309,27 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('memberUnit')
           const newItem = reArrangeMember(data.data)
           localStorage.setItem('member', JSON.stringify([newItem]))
+          yield put({
+            type: 'pos/queryGetMemberSuccess',
+            payload: { memberInformation: payload.data }
+          })
+          yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
+          yield put({ type: 'unit/lov', payload: { id: payload.data.memberCode } })
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              showListReminder: false
+            }
+          })
+          yield put({
+            type: 'customer/updateState',
+            payload: {
+              addUnit: {
+                modal: false,
+                info: { id: payload.id, name: payload.data.memberName }
+              }
+            }
+          })
         }
         Modal.info({
           title: `You are successfully added member with member code = ${payload.data.memberCode}`

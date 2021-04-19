@@ -25,13 +25,6 @@ const Browse = ({ ...browseProps }) => {
       render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
-      title: 'Begin',
-      dataIndex: 'beginValue',
-      key: 'beginValue',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{(text || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-    },
-    {
       title: 'Total',
       dataIndex: 'nettoTotal',
       key: 'nettoTotal',

@@ -9,6 +9,17 @@ import { RepeatReport } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
+const getLinkName = (transNo, transType) => {
+  switch (transType) {
+    case 'FJ':
+      return `${window.location.origin}/accounts/payment/${encodeURIComponent(transNo)}`
+    case 'FB':
+      return `${window.location.origin}/accounts/payable/${encodeURIComponent(transNo)}`
+    default:
+      return undefined
+  }
+}
+
 const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   let width = []
   let outJSON = listRekap
@@ -54,6 +65,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'KELUAR', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'HARGA JUAL', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'JUMLAH', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
@@ -74,13 +86,14 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           { text: counter, alignment: 'center', fontSize: 11 },
           { text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
           { text: moment(data.createdAt).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
-          { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
+          { text: (data.transNo || '').toString(), link: getLinkName(data.transNo, data.transType), decoration: getLinkName(data.transNo, data.transType) ? 'underline' : undefined, alignment: 'left', fontSize: 11 },
           { text: data.transType.toString(), alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.pQty) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.pPrice) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.pAmount) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.sQty) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.sPrice) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.sValue) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.sAmount) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(countQtyValue), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia((parseFloat(data.pAmount) || 0) - (parseFloat(data.sAmount) || 0)), alignment: 'right', fontSize: 11 }
@@ -101,12 +114,13 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
       { text: formatNumberIndonesia(inAmount), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(outQty), alignment: 'right', fontSize: 12 },
       {},
+      {},
       { text: formatNumberIndonesia(outAmount), alignment: 'right', fontSize: 12 },
       {},
       { text: formatNumberIndonesia((inAmount - outAmount)), alignment: 'right', fontSize: 12 }
     ]
     body.push(totalRow)
-    width.push(['4%', '8%', '8%', '12%', '5%', '5%', '9%', '9%', '5%', '9%', '9%', '6%', '9%'])
+    width.push(['4%', '7%', '7%', '11%', '4%', '5%', '9%', '9%', '5%', '9%', '9%', '9%', '5%', '9%'])
     return body
   }
 

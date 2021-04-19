@@ -139,6 +139,7 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
           prevSellPrice: item.sellPrice,
           prevDistPrice01: item.distPrice01,
           prevDistPrice02: item.distPrice02,
+          prevDistPrice03: item.distPrice03,
           sellPrice: item.sellPrice,
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02,

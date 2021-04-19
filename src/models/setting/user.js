@@ -1,3 +1,4 @@
+import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import { query, add, edit, remove, totp } from '../../services/users'
 import { pageModel } from '../common'
@@ -38,16 +39,22 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+    * query ({ payload = {} }, { select, call, put }) {
+      const { current, pageSize } = yield select(({ user }) => user.pagination)
+      const newPayload = {
+        page: current,
+        pageSize,
+        ...payload
+      }
+      const data = yield call(query, newPayload)
       if (data.success) {
         yield put({
           type: 'querySuccess',
           payload: {
             list: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
+              current: Number(newPayload.page) || 1,
+              pageSize: Number(newPayload.pageSize) || 5,
               total: data.total
             }
           }
@@ -82,8 +89,14 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
-        yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
+        message.success('Data has been saved')
+        yield put({
+          type: 'userRole/query',
+          payload: { userId: payload.id }
+        })
+        yield put({ type: 'userStore/getAllStores', payload: { userId: payload.id } })
+        yield put({ type: 'userStore/getUserStores', payload: { userId: payload.id } })
       } else {
         throw data
       }
@@ -95,9 +108,15 @@ export default modelExtend(pageModel, {
       const data = yield call(edit, newUser)
       yield put({ type: 'activeTab', payload: { activeTab: payload.activeTab } })
       if (data.success) {
-        yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
-        yield put({ type: 'app/query' })
+        message.success('Data has been saved')
+        // yield put({ type: 'app/query' })
+        yield put({ type: 'userStore/getAllStores', payload: { userId: payload.id } })
+        yield put({ type: 'userStore/getUserStores', payload: { userId: payload.id } })
+        yield put({
+          type: 'userRole/query',
+          payload: { userId: payload.id }
+        })
       } else {
         throw data
       }

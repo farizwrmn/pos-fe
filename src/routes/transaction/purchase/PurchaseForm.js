@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Popover, Table, Col, Row, Button } from 'antd'
+import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Table, Col, Row, Button } from 'antd'
 import moment from 'moment'
 import { configMain, numberFormat, alertModal } from 'utils'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
+import ModalSupplier from './ModalSupplier'
 
 const { checkPermissionMonthTransaction } = alertModal
 
 const { formatNumberIndonesia } = numberFormat
 
-const { TextArea, Search } = Input
 const Panel = Collapse.Panel
 const { prefix } = configMain
 const FormItem = Form.Item
@@ -26,9 +26,10 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
-  modalProductVisible, modalPurchaseVisible, searchTextSupplier, supplierInformation, listSupplier, onGetSupplier,
+const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
+  modalProductVisible, modalSupplierVisible, modalPurchaseVisible, searchTextSupplier, supplierInformation, listSupplier, onGetSupplier,
   onChooseItem, tmpSupplierData, onSearchSupplier, onSearchSupplierData, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
+  const { loading } = purchaseProps
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -112,6 +113,34 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
   }
   const hdlGetSupplier = () => {
     onGetSupplier()
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        modalSupplierVisible: true
+      }
+    })
+  }
+
+  const modalSupplierProps = {
+    title: 'Supplier',
+    visible: modalSupplierVisible,
+    footer: null,
+    hdlSearch,
+    onCancel () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalSupplierVisible: false
+        }
+      })
+    }
+  }
+
+  const buttonSupplierProps = {
+    type: 'primary',
+    onClick () {
+      hdlGetSupplier()
+    }
   }
 
   const columns = [
@@ -119,7 +148,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
       title: 'ID',
       dataIndex: 'supplierCode',
       key: 'supplierCode',
-      width: '10%'
+      width: '20%'
     },
     {
       title: 'Name',
@@ -137,6 +166,12 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
   const handleMenuClick = (record) => {
     let a = getFieldValue('transDate')
     onChooseSupplier(record)
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        modalSupplierVisible: false
+      }
+    })
     if (record.paymentTempo) {
       message.success(`Supplier ${record.supplierName}  ${record.paymentTempo ? `has ${record.paymentTempo} ${parseFloat(record.paymentTempo) > 1 ? 'days' : 'day'}` : ''} tempo`)
       setFieldsValue({ tempo: record.paymentTempo })
@@ -152,20 +187,6 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
     const { value } = e.target
     onChangeRounding(value)
   }
-  const contentPopover = (
-    <Table
-      bordered
-      pagination={paginationSupplier}
-      scroll={{ x: 500, y: 100 }}
-      columns={columns}
-      simple
-      dataSource={listSupplier}
-      size="small"
-      pageSize={5}
-      onChange={hdlSearchPagination}
-      onRowClick={_record => handleMenuClick(_record)}
-    />
-  )
   const confirmPurchase = () => {
     hdlChangePercent()
     validateFields((errors) => {
@@ -181,6 +202,10 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
         return
       }
       const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
+      if (!(supplierInformation && supplierInformation.id)) {
+        message.error('Supplier information is required')
+        return
+      }
       const data = {
         ...getFieldsValue(),
         supplierCode: supplierInformation.id,
@@ -217,28 +242,19 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1', '2']}>
             <Panel header="Invoice Information" key="1" style={customPanelStyle}>
               <Row>
-                <Col xs={24} sm={24} md={12} lg={12} xl={14}>
+                <Col md={24} lg={14}>
                   <FormItem label="Invoice No" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transNo', {
+                      initialValue: lastTrans,
                       rules: [{
                         required: true,
                         message: 'Required',
-                        pattern: /^[a-z0-9/-]{6,25}$/i
+                        pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                       }]
-                    })(<Input maxLength={25} />)}
+                    })(<Input maxLength={30} />)}
                   </FormItem>
-                  <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('taxType', {
-                      initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
-                      rules: [{
-                        required: true,
-                        message: 'Required'
-                      }]
-                    })(<Select onBlur={hdlChangePercent}>
-                      <Option value="I">Include</Option>
-                      <Option value="E">Exclude (0%)</Option>
-                      <Option value="S">Exclude (10%)</Option>
-                    </Select>)}
+                  <FormItem required label="Search" {...formItemLayout}>
+                    <Button {...buttonSupplierProps} size="default">{supplierInformation && supplierInformation.supplierName ? `${supplierInformation.supplierName.substring(0, 12)}${supplierInformation.address01 ? ` - ${supplierInformation.address01.substring(0, 10)}` : ''}` : 'Search Supplier'}</Button>
                   </FormItem>
                   <FormItem label="Disc Invoice(%)" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('discInvoicePercent', {
@@ -272,24 +288,7 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
                     </Select>))}
                   </FormItem> */}
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={14}>
-                  <FormItem label="Has Receive" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('receiveChecks', {
-                      rules: [{
-                        required: getFieldValue('receiveChecks'),
-                        message: 'Required'
-                      }]
-                    })(<Checkbox />)}
-                  </FormItem>
-                  {getFieldValue('receiveChecks') &&
-                    <FormItem label="Receive Date" {...formItemLayout}>
-                      {getFieldDecorator('receiveDate', {
-                        rules: [{
-                          required: true,
-                          message: 'Required'
-                        }]
-                      })(<DatePicker />)}
-                    </FormItem>}
+                <Col md={24} lg={10}>
                   <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('transDate', {
                       rules: [{
@@ -318,23 +317,55 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
         </Col>
         <Col xs={24} sm={24} md={9} lg={12} xl={12}>
           <Collapse stylebordered={false} bordered={false} defaultActiveKey={['1']}>
-            <Panel header="Search Supplier" key="1" style={customPanelStyle}>
-              <FormItem label="Search" {...formItemLayout}>
-                <div style={{ marginLeft: 20, clear: 'both', whiteSpace: 'nowrap' }}>
-                  <Popover placement="bottomLeft" content={contentPopover} trigger={['click']}>
-                    <Search onEnter={value => hdlSearch(value)} onSearch={value => hdlSearch(value)} onFocus={() => hdlGetSupplier()} />
-                  </Popover>
-                </div>
+            <Panel header="Advance Information" key="1" style={customPanelStyle}>
+              <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxType', {
+                  initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Select onBlur={hdlChangePercent}>
+                  <Option value="I">Include</Option>
+                  <Option value="E">Exclude (0%)</Option>
+                  <Option value="S">Exclude (10%)</Option>
+                </Select>)}
               </FormItem>
-              <FormItem label="id" hasfeedback {...formItemLayout}>
-                <Input disabled value={supplierInformation ? supplierInformation.id : null} />
+              <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxInvoiceNo', {
+                  rules: [{
+                    required: false,
+                    message: 'Required',
+                    pattern: /^[a-z0-9./-]{6,25}$/i
+                  }]
+                })(<Input maxLength={25} placeholder="Tax Invoice No" />)}
               </FormItem>
-              <FormItem label="Supplier Name" hasfeedback {...formItemLayout}>
-                <Input disabled value={supplierInformation ? supplierInformation.supplierName : null} />
+              <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxDate', {
+                  rules: [{
+                    required: false,
+                    message: 'Required'
+                  }]
+                })(<DatePicker placeholder="Tax Date" />)}
               </FormItem>
-              <FormItem label="Address" hasfeedback {...formItemLayout}>
-                <TextArea value={supplierInformation ? supplierInformation.address01 : null} autosize={{ minRows: 2, maxRows: 6 }} disabled />
+              <FormItem label="Has Receive" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('receiveChecks', {
+                  valuePropName: 'checked',
+                  rules: [{
+                    required: getFieldValue('receiveChecks'),
+                    message: 'Required'
+                  }]
+                })(<Checkbox />)}
               </FormItem>
+              {getFieldValue('receiveChecks') &&
+                <FormItem label="Receive Date" {...formItemLayout}>
+                  {getFieldDecorator('receiveDate', {
+                    rules: [{
+                      required: true,
+                      message: 'Required'
+                    }]
+                  })(<DatePicker />)}
+                </FormItem>}
             </Panel>
           </Collapse>
         </Col>
@@ -345,6 +376,23 @@ const PurchaseForm = ({ onDiscPercent, paginationSupplier, disableButton, roundi
             <Button type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
           </ButtonGroup>
           {modalProductVisible && <ModalBrowse {...purchaseProps} />}
+          {modalSupplierVisible && (
+            <ModalSupplier {...modalSupplierProps}>
+              <Table
+                bordered
+                pagination={paginationSupplier}
+                scroll={{ x: 500 }}
+                columns={columns}
+                simple
+                loading={loading.effects['purchase/querySupplier']}
+                dataSource={listSupplier}
+                size="small"
+                pageSize={10}
+                onChange={hdlSearchPagination}
+                onRowClick={_record => handleMenuClick(_record)}
+              />
+            </ModalSupplier>
+          )}
         </Col>
       </Row>
       <Browse {...purchaseProps} />

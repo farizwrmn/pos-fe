@@ -8,12 +8,12 @@ import PurchaseList from './PurchaseList'
 const Purchase = ({ location, dispatch, purchase, loading }) => {
   const {
     item,
-    paginationSupplier,
     supplierInformation,
     pagination,
     listProduct,
     rounding,
     dataBrowse,
+    paginationSupplier,
     listSupplier,
     tmpSupplierData,
     date,
@@ -27,10 +27,13 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     curDiscPercent,
     curDiscNominal,
     curHead,
-    listPurchaseLatestDetail
+    listPurchaseLatestDetail,
+    modalSupplierVisible,
+    lastTrans
   } = purchase
 
   const purchaseProps = {
+    lastTrans,
     date,
     datePicker,
     listPurchaseLatestDetail,
@@ -48,6 +51,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     listSupplier,
     modalProductVisible,
     modalPurchaseVisible,
+    modalSupplierVisible,
+    dispatch,
     supplierInformation: supplierInformation || null,
     tmpSupplierData,
     dataSource: listProduct,
@@ -181,7 +186,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         } else {
           arrayProd = JSON.parse(listByCode.slice())
         }
-        arrayProd.push({
+        const data = {
           no: arrayProd.length + 1,
           code: e.id,
           productCode: e.productCode,
@@ -194,10 +199,32 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           ppn: 0,
           ket: '',
           total: 0
+        }
+        arrayProd.push({
+          ...data
         })
         localStorage.setItem('product_detail', JSON.stringify(arrayProd))
         dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
         dispatch({ type: 'purchase/hideProductModal' })
+        dispatch({
+          type: 'purchase/modalEditShow',
+          payload: {
+            data: e
+          }
+        })
+        dispatch({
+          type: 'purchase/getPurchaseLatestDetail',
+          payload: {
+            productId: e.id
+          }
+        })
+        dispatch({
+          type: 'purchase/updateState',
+          payload: {
+            item: data,
+            modalPurchaseVisible: true
+          }
+        })
       } else {
         Modal.warning({
           title: 'Cannot add product',
@@ -224,7 +251,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
   return (
     <div className="content-inner">
       <PurchaseForm {...purchaseProps} />
-      <PurchaseList {...purchaseProps} />
+      {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
     </div>
   )
 }

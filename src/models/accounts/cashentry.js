@@ -2,22 +2,26 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
+import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from '../../services/sequence'
-import { query, add, edit, remove } from '../../services/payment/cashentry'
+import { queryById, query, queryId, add, edit, remove } from '../../services/payment/cashentry'
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { pageModel } from './../common'
 
 const success = () => {
-  message.success('Cash has been saved')
+  message.success('Expense has been saved')
 }
 
 export default modelExtend(pageModel, {
   namespace: 'cashentry',
 
   state: {
+    data: {},
+    listDetail: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
+    modalItemType: 'add',
     inputType: null,
     activeKey: '0',
     listCash: [],
@@ -33,9 +37,20 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, edit, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/cash-entry') {
+        const match = pathToRegexp('/cash-entry/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
+        if (pathname === '/cash-entry'
+          || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -44,6 +59,15 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') {
             dispatch({ type: 'query', payload: other })
+          }
+
+          if (edit && edit !== '' && edit !== '0') {
+            dispatch({
+              type: 'setEdit',
+              payload: {
+                edit
+              }
+            })
           } else {
             dispatch({ type: 'querySequence' })
           }
@@ -53,9 +77,25 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, cashEntryDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: cashEntryDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { edit, ...other } = payload
+      const data = yield call(query, other)
       if (data) {
         yield put({
           type: 'querySuccessCounter',
@@ -91,6 +131,30 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * setEdit ({ payload }, { call, put }) {
+      const data = yield call(queryId, { id: payload.edit, relationship: 1 })
+      if (data.success) {
+        const { cashEntryDetail, ...currentItem } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem,
+            modalType: 'edit',
+            listItem: cashEntryDetail ?
+              cashEntryDetail.map((item, index) => ({
+                no: index + 1,
+                ...item,
+                accountId: item.accountId,
+                accountName: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+              }))
+              : []
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
@@ -113,11 +177,12 @@ export default modelExtend(pageModel, {
       if (currentRegister.success) {
         if (currentRegister.data) {
           const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-          payload.data.cashierTransId = cashierInformation.id
-          payload.data.transDate = cashierInformation.period
+          payload.data.cashierTransId = cashierInformation ? cashierInformation.id : undefined
+          payload.data.transDate = cashierInformation ? cashierInformation.period : payload.data.transDate ? payload.data.transDate : undefined
           const data = yield call(add, payload)
           if (data.success) {
             success()
+            payload.reset()
             yield put({
               type: 'updateState',
               payload: {
@@ -140,12 +205,6 @@ export default modelExtend(pageModel, {
               content: 'Transaction has been saved'
             })
           } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                currentItem: payload.oldValue
-              }
-            })
             throw data
           }
         } else {
@@ -165,11 +224,13 @@ export default modelExtend(pageModel, {
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
+        payload.reset()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
             currentItem: {},
+            listItem: [],
             activeKey: '1'
           }
         })
@@ -182,12 +243,6 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     }

@@ -8,7 +8,7 @@ const Group = ({ item }) => {
   return (
     <div className={styles.item}>
       <Row>
-        <Col span={12} className={styles.left}>{item.key}</Col>
+        <Col span={24} className={styles.left}>{item.key}</Col>
       </Row>
       {item.detail && item.detail.map((item, index) => {
         return (

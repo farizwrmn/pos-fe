@@ -29,6 +29,17 @@ export async function queryFifoValue (params) {
   })
 }
 
+export async function queryFifoValueAll (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${fiforeport}/value-all`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryFifoCard (params) {
   const apiHeaderToken = crypt.apiheader()
   params.store = lstorage.getCurrentUserStore()
@@ -41,10 +52,33 @@ export async function queryFifoCard (params) {
   })
 }
 
+export async function queryFifoHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = '/inventory/stock-card'
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryFifoTransfer (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   const url = `${fiforeport}/transfer`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryFifoCategory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const url = `${fiforeport}/stock-category`
   return request({
     url,
     method: 'get',

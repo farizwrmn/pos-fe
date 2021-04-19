@@ -30,9 +30,9 @@ const Filter = ({
       <Col span={12} />
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('counterName')(
+          {getFieldDecorator('q')(
             <Search
-              placeholder="Search Counter"
+              placeholder="Search"
               onSearch={() => handleSubmit()}
             />
           )}

@@ -7,6 +7,8 @@ import { name } from 'utils/config.main'
 
 const NUMBER_OF_COLUMN = 5
 const NUMBER_OF_PRODUCT_NAME = 28
+const WIDTH_TABLE = (5 / 2.54) * 72
+const HEIGHT_TABLE = (3.8 / 2.54) * 72
 
 const PrintShelf = ({ stickers, user, aliases }) => {
   const createTableBody = (tableBody) => {
@@ -23,9 +25,14 @@ const PrintShelf = ({ stickers, user, aliases }) => {
             { text: maxStringPerRow1, style: 'productName1', alignment: 'center' },
             { text: maxStringPerRow2, style: 'productName2', alignment: 'center' }
           ]
+          const background = tableBody[key].info.categoryColor
+          const color = '#000'
+          // row.push({
+          //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
+          // })
           if (aliases.check1) {
             row.push({ text: aliases.alias1, style: 'info', margin: [0, 5, 0, 0] })
-            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), style: 'sellPrice' })
+            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), width: '100%', fillColor: background, background, color, style: 'sellPrice' })
           }
           if (aliases.check2) {
             // row.push({ text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] })
@@ -43,7 +50,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
               { text: moment().format('DD/MMM/YYYY'), style: 'productCode', alignment: 'right' }
             ]
           })
-          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'right' })
+          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'center' })
           body.push(row)
         }
       }
@@ -53,12 +60,14 @@ const PrintShelf = ({ stickers, user, aliases }) => {
   const styles = {
     info: {
       alignment: 'left',
-      fontSize: 7
+      fontSize: 7,
+      bold: true
     },
     sellPrice: {
       bold: true,
       alignment: 'center',
-      fontSize: 12,
+      fontSize: 17,
+      width: '100%',
       margin: [0, 5]
     },
     productName1: {
@@ -145,9 +154,6 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     y += NUMBER_OF_COLUMN
   }
 
-  const WIDTH_TABLE = (5 / 2.54) * 72
-  const HEIGHT_TABLE = (4 / 2.54) * 72
-
   const pdfProps = {
     name: 'Print',
     width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
@@ -156,6 +162,14 @@ const PrintShelf = ({ stickers, user, aliases }) => {
     pageOrientation: 'landscape',
     pageMargins: [17, 70, 17, 70],
     tableStyle: styles,
+    layout: {
+      hLineStyle () {
+        return { dash: { length: 10, space: 4 } }
+      },
+      vLineStyle () {
+        return { dash: { length: 4 } }
+      }
+    },
     tableBody: getList,
     footer
   }

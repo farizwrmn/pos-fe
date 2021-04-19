@@ -13,11 +13,21 @@ import PrintPDFSpecification from './PrintPDFSpecification'
 import PrintXLSSpecification from './PrintXLSSpecification'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
+import ModalQuantity from './ModalQuantity'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ specification, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ specification, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+  const {
+    modalSupplierVisible,
+    paginationSupplier,
+    listSupplier,
+    searchTextSupplier,
+    tmpSupplierData,
+    supplierInformation
+  } = purchase
   const { listVariantStock } = variantStock
+  const { listStoreLov } = store
   const { list,
     changed,
     listPrintAllStock,
@@ -35,7 +45,11 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     advancedForm,
     modalVariantVisible,
     modalSpecificationVisible,
-    modalProductVisible
+    modalProductVisible,
+    countStoreList,
+    modalQuantityVisible,
+    inventoryMode,
+    lastTrans
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -47,8 +61,21 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     display,
     isChecked,
     show,
+    inventoryMode,
     filter: {
       ...location.query
+    },
+    handleInventory () {
+      const { query, pathname } = location
+      const { q, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...other,
+          mode: 'inventory',
+          page: 1
+        }
+      }))
     },
     onFilterChange (value) {
       dispatch({
@@ -58,10 +85,11 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
         }
       })
       const { query, pathname } = location
+      const { mode, ...other } = query
       dispatch(routerRedux.push({
         pathname,
         query: {
-          ...query,
+          ...other,
           ...value,
           page: 1
         }
@@ -75,7 +103,7 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     },
     onResetClick () {
       const { query, pathname } = location
-      const { q, createdAt, page, ...other } = query
+      const { q, createdAt, page, order, mode, ...other } = query
 
       dispatch(routerRedux.push({
         pathname,
@@ -93,23 +121,49 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
     }
   }
 
+  const modalQuantityProps = {
+    count: countStoreList,
+    listStoreLov,
+    title: 'Other Store Qty',
+    loading: loading.effects['productstock/showProductStoreQty'],
+    visible: modalQuantityVisible,
+    footer: null,
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          countStoreList: [],
+          modalQuantityVisible: false
+        }
+      })
+    }
+  }
+
   const listProps = {
     dataSource: list,
     user,
     pagination,
     dispatch,
     storeInfo,
+    listCategory,
+    listBrand,
     loadingModel: loading,
-    loading: loading.effects['productstock/query'],
+    loading: loading.effects['productstock/query'] || loading.effects['productstock/queryInventory'],
     location,
-    onChange (page) {
+    onChange (page, filters) {
+      const { brandId, categoryId } = filters
       const { query, pathname } = location
+      if (inventoryMode === 'inventory') {
+        return
+      }
       dispatch(routerRedux.push({
         pathname,
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize
+          pageSize: page.pageSize,
+          brandId,
+          categoryId
         }
       }))
     },
@@ -131,10 +185,18 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
           disable: 'disabled'
         }
       })
-      const { pathname } = location
+
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          supplierInformation: {}
+        }
+      })
+      const { pathname, query } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
+          ...query,
           activeKey: 0
         }
       }))
@@ -199,28 +261,85 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
   }
 
   const formProps = {
+    lastTrans,
     listSpecification,
     listSpecificationCode,
     listVariantStock,
     listCategory,
     listBrand,
     listVariant,
+    supplierInformation,
     modalType,
     mode,
-    item: currentItem,
+    item: {
+      ...currentItem,
+      supplierId: supplierInformation && supplierInformation.id ? supplierInformation.id : currentItem.supplierId,
+      supplierCode: supplierInformation && supplierInformation.supplierCode ? supplierInformation.supplierCode : currentItem.supplierCode,
+      supplierName: supplierInformation && supplierInformation.supplierName ? supplierInformation.supplierName : currentItem.supplierName
+    },
+    modalSupplierVisible,
+    paginationSupplier,
+    listSupplier,
+    searchTextSupplier,
+    tmpSupplierData,
     loadingButton: loading,
     modalVariantVisible,
     modalSpecificationVisible,
     modalProductVisible,
     dispatch,
     disabled: `${modalType === 'edit' ? disable : ''}`,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (id, data) {
+    button: `${modalType === 'add' ? 'Save' : 'Update'}`,
+    onSubmit (id, data, reset) {
       dispatch({
         type: `productstock/${modalType}`,
         payload: {
           id,
-          data
+          data,
+          location,
+          reset
+        }
+      })
+    },
+    onGetSupplier () {
+      dispatch({ type: 'purchase/querySupplier' })
+    },
+    onChooseSupplier (data) {
+      dispatch({
+        type: 'purchase/onChooseSupplier',
+        payload: data
+      })
+    },
+    onSearchSupplierData (data) {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchTextSupplier: data.q
+        }
+      })
+      dispatch({
+        type: 'purchase/querySupplier',
+        payload: {
+          ...data
+        }
+      })
+    },
+    onChangeDate (e) {
+      dispatch({
+        type: 'purchase/chooseDate',
+        payload: e
+      })
+    },
+    onSearchSupplier (data) {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchTextSupplier: data
+        }
+      })
+      dispatch({
+        type: 'purchase/querySupplier',
+        payload: {
+          q: data
         }
       })
     },
@@ -436,12 +555,13 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
 
   return (
     <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'} >
+      {modalQuantityVisible && <ModalQuantity {...modalQuantityProps} />}
       {showPDFModal && <Modal {...PDFModalProps}>
         {printmode}
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
-          {advancedForm ? <AdvancedForm {...formProps} /> : <Form {...formProps} />}
+          {activeKey === '0' && advancedForm ? <AdvancedForm {...formProps} /> : <Form {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
@@ -453,6 +573,7 @@ const ProductStock = ({ specification, specificationStock, variant, variantStock
 }
 
 ProductStock.propTypes = {
+  purchase: PropTypes.object,
   specification: PropTypes.object,
   specificationStock: PropTypes.object,
   productstock: PropTypes.object,
@@ -466,4 +587,5 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ specification, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) => ({ specification, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ purchase, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
+  ({ purchase, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

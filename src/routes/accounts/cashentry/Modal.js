@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Select, Input, Form, InputNumber } from 'antd'
 
@@ -10,99 +10,101 @@ const formItemLayout = {
   wrapperCol: { span: 16 }
 }
 
-const ModalList = ({
-  addModalItem,
-  editModalItem,
-  listAccountCode,
-  listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
-  onDelete,
-  showLov,
-  item,
-  inputType,
-  modalType,
-  form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
-  ...modalProps }) => {
-  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  const handleClick = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
+class ModalList extends Component {
+  componentDidMount () {
+    setTimeout(() => {
+      const selector = document.getElementById('amountOut')
+      if (selector) {
+        selector.focus()
+        selector.select()
       }
-      const data = getFieldsValue()
-      data.no = item.no
-      data.accountName = data.accountId.label
-      data.accountId = data.accountId.key
-      if (modalType === 'add') {
-        addModalItem(data, inputType)
-      } else if (modalType === 'edit') {
-        editModalItem(data, inputType)
-      }
-      resetFields()
-    })
+    }, 100)
   }
 
-  const modalOpts = {
-    ...modalProps,
-    onOk: handleClick
-  }
+  render () {
+    const {
+      addModalItem,
+      editModalItem,
+      listAccountCode,
+      listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
+      onDelete,
+      showLov,
+      item,
+      modalItemType,
+      form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
+      ...modalProps
+    } = this.props
 
-  return (
-    <Modal {...modalOpts}>
-      <Form>
-        <FormItem {...formItemLayout} label="Account Code">
-          {getFieldDecorator('accountId', {
-            initialValue: item.accountId,
-            rules: [{
-              required: true,
-              message: 'Required'
-            }]
-          })(<Select
-            showSearch
-            allowClear
-            onFocus={() => showLov('accountCode')}
-            onSearch={value => showLov('accountCode', { q: value, pageSize: 15 })}
-            optionFilterProp="children"
-            labelInValue
-            filterOption={filterOption}
-          >{listAccountOpt}
-          </Select>)}
-        </FormItem>
-        {inputType === 'I' && <FormItem {...formItemLayout} label="Amount In">
-          {getFieldDecorator('amountIn', {
-            initialValue: item.amountIn,
-            rules: [{
-              required: true,
-              pattern: /^([0-9.]{0,19})$/i,
-              message: 'Quantity is not define'
-            }]
-          })(<InputNumber
-            min={0}
-            max={9999999999999999999}
-            style={{ width: '100%' }}
-          />)}
-        </FormItem>}
-        {inputType === 'E' && <FormItem {...formItemLayout} label="Amount Out">
-          {getFieldDecorator('amountOut', {
-            initialValue: item.amountOut,
-            rules: [{
-              required: true,
-              pattern: /^([0-9.]{0,19})$/i,
-              message: 'Quantity is not define'
-            }]
-          })(<InputNumber
-            min={0}
-            max={9999999999999999999}
-            style={{ width: '100%' }}
-          />)}
-        </FormItem>}
-        <FormItem {...formItemLayout} label="Description">
-          {getFieldDecorator('description', {
-            initialValue: item.description
-          })(<Input />)}
-        </FormItem>
-      </Form>
-    </Modal>
-  )
+    const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+    const handleClick = () => {
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const data = {
+          ...item,
+          ...getFieldsValue()
+        }
+        data.no = item.no
+        data.accountName = data.accountId.label
+        data.accountId = data.accountId.key
+        if (modalItemType === 'add') {
+          addModalItem(data)
+        } else if (modalItemType === 'edit') {
+          editModalItem(data)
+        }
+        resetFields()
+      })
+    }
+
+    const modalOpts = {
+      ...modalProps,
+      onOk: handleClick
+    }
+
+    return (
+      <Modal {...modalOpts}>
+        <Form>
+          <FormItem {...formItemLayout} label="Amount Out">
+            {getFieldDecorator('amountOut', {
+              initialValue: item.amountOut,
+              rules: [{
+                required: true,
+                pattern: /^([0-9.]{0,19})$/i,
+                message: 'Amount is not define'
+              }]
+            })(<InputNumber
+
+              min={0}
+              max={9999999999}
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="Account Code">
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={filterOption}
+            >{listAccountOpt}
+            </Select>)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="Description">
+            {getFieldDecorator('description', {
+              initialValue: item.description
+            })(<Input />)}
+          </FormItem>
+        </Form>
+      </Modal>
+    )
+  }
 }
 
 ModalList.propTypes = {

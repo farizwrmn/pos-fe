@@ -2,9 +2,10 @@ import React from 'react'
 import moment from 'moment'
 import { DropOption } from 'components'
 import { Table, Icon } from 'antd'
+import { routerRedux } from 'dva/router'
 import styles from '../../../themes/index.less'
 
-const List = ({ ...tableProps, printInvoice }) => {
+const List = ({ ...tableProps, dispatch, printInvoice }) => {
   const printPurchaseHistory = (record) => {
     printInvoice(record.transNo)
   }
@@ -13,6 +14,9 @@ const List = ({ ...tableProps, printInvoice }) => {
     if (e.key === '1') {
       printPurchaseHistory(record)
     }
+    if (e.key === '2') {
+      dispatch(routerRedux.push(`/accounts/payable/${encodeURIComponent(record.transNo)}`))
+    }
   }
 
   const columns = [
@@ -20,13 +24,20 @@ const List = ({ ...tableProps, printInvoice }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
+      sorter: () => { },
       render: _text => `${moment(_text).format('LL')}`
     },
     {
       title: 'No',
       dataIndex: 'transNo',
+      sorter: () => { },
       key: 'transNo'
+    },
+    {
+      title: 'Store',
+      dataIndex: 'storeName',
+      sorter: () => { },
+      key: 'storeName'
     },
     {
       title: 'Supplier',
@@ -45,6 +56,12 @@ const List = ({ ...tableProps, printInvoice }) => {
       dataIndex: 'discInvoiceNominal',
       key: 'discInvoiceNominal',
       className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Total',
+      dataIndex: 'nettoTotal',
+      key: 'nettoTotal',
       render: text => (text || '-').toLocaleString()
     },
     {
@@ -70,7 +87,8 @@ const List = ({ ...tableProps, printInvoice }) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Print', icon: 'printer' }
+            { key: '1', name: 'Print', icon: 'printer' },
+            { key: '2', name: 'Payment', icon: 'pay-circle-o' }
           ]}
         />)
       }

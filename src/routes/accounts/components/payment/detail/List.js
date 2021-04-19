@@ -1,20 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
-import { Table, Modal, Icon, Tag } from 'antd'
-import moment from 'moment'
+import { Table, Icon, Tag } from 'antd'
+import { numberFormat } from 'utils'
 
-const List = ({ cancelPayment, cashierInformation = {}, ...tableProps }) => {
+const numberFormatter = numberFormat.numberFormatter
+
+const List = ({ cancelPayment, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
-      if (record.cashierTransId === cashierInformation.id) {
-        cancelPayment(record)
-      } else {
-        Modal.warning({
-          title: 'Can`t Void this Invoice',
-          content: 'has been Closed'
-        })
-      }
+      cancelPayment(record)
     }
   }
 
@@ -38,17 +33,36 @@ const List = ({ cancelPayment, cashierInformation = {}, ...tableProps }) => {
         </span>)
     },
     {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 120
+    },
+    {
+      title: 'Time',
+      dataIndex: 'transTime',
+      key: 'transTime',
+      width: 120
+    },
+    {
       title: 'Type Code',
       dataIndex: 'typeCode',
       key: 'typeCode',
       width: 100
     },
     {
+      title: 'Charge',
+      dataIndex: 'chargeTotal',
+      key: 'chargeTotal',
+      width: 120,
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text)}</p>
+    },
+    {
       title: 'Amount',
       dataIndex: 'paid',
       key: 'paid',
       width: 120,
-      render: text => <p style={{ textAlign: 'right' }}>{text}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text)}</p>
     },
     {
       title: 'Description',
@@ -56,6 +70,18 @@ const List = ({ cancelPayment, cashierInformation = {}, ...tableProps }) => {
       key: 'description',
       width: 120,
       render: text => <p style={{ textAlign: 'left' }}>{text}</p>
+    },
+    {
+      title: 'Machine',
+      dataIndex: 'paymentMachine.name',
+      key: 'paymentMachine.name',
+      width: 120
+    },
+    {
+      title: 'Card',
+      dataIndex: 'cost.costBank.bankName',
+      key: 'cost.costBank.bankName',
+      width: 120
     },
     {
       title: 'Card Name',
@@ -70,19 +96,6 @@ const List = ({ cancelPayment, cashierInformation = {}, ...tableProps }) => {
       width: 120
     },
     {
-      title: 'Trans Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: 120,
-      render: _text => `${moment(_text).format('LL')}`
-    },
-    {
-      title: 'Trans Time',
-      dataIndex: 'transTime',
-      key: 'transTime',
-      width: 53
-    },
-    {
       title: <Icon type="setting" />,
       key: 'operation',
       fixed: 'right',
@@ -91,7 +104,7 @@ const List = ({ cancelPayment, cashierInformation = {}, ...tableProps }) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Void', icon: 'delete', disabled: record.cashierTransId !== cashierInformation.id }
+            { key: '1', name: 'Void', icon: 'delete' }
           ]}
         />)
       }

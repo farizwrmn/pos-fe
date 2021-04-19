@@ -3,12 +3,16 @@
  */
 import { Modal } from 'antd'
 import moment from 'moment'
-import { queryFifo, queryFifoValue, queryFifoCard, queryFifoTransfer } from '../../services/report/fifo'
+import { configMain } from 'utils'
+import { queryFifo, queryFifoValue, queryFifoValueAll, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
+
+const { prefix } = configMain
 
 export default {
   namespace: 'fifoReport',
 
   state: {
+    tmpListRekap: [],
     listRekap: [],
     period: moment().format('MM'),
     year: moment().format('YYYY'),
@@ -27,6 +31,22 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        if (location.pathname === '/' || location.pathname === '/dashboard') {
+          dispatch({
+            type: 'queryFifoValues',
+            payload: {
+              period: moment().format('M'),
+              year: moment().format('YYYY')
+            }
+          })
+        }
+
+        if (location.pathname === '/report/accounting/balance-sheet' && location.query.to) {
+          dispatch({
+            type: 'queryFifoValuesAll',
+            payload: location.query
+          })
+        }
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey && location.query.period && location.query.year) {
           if (location.query.activeKey ? location.query.activeKey === '0' || location.query.activeKey === '1' : false) {
             dispatch({
@@ -87,6 +107,25 @@ export default {
               }
             })
           }
+        } else if (location.pathname === '/report/fifo/history') {
+          if (location.query.from && location.query.to) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                from: location.query.from,
+                to: location.query.to
+              }
+            })
+          }
+          // else {
+          //   dispatch({
+          //     type: 'queryProductCode',
+          //     payload: {
+          //       period: moment().format('MM'),
+          //       year: moment().format('YYYY')
+          //     }
+          //   })
+          // }
         } else if (location.pathname === '/report/fifo/value' && location.query.period && location.query.year) {
           dispatch({
             type: 'queryFifoValues',
@@ -122,6 +161,7 @@ export default {
         yield put({
           type: 'querySuccessTrans',
           payload: {
+            tmpListRekap: data.data,
             listRekap: data.data,
             period: payload.period,
             year: payload.year,
@@ -187,6 +227,48 @@ export default {
         throw data
       }
     },
+    * queryFifoValuesAll ({ payload = {} }, { call, put }) {
+      const { to } = payload
+      const period = moment(to, 'YYYY-MM-DD').format('MM')
+      const year = moment(to, 'YYYY-MM-DD').format('YYYY')
+      const date = {
+        period,
+        year
+      }
+      yield put({
+        type: 'setPeriod',
+        payload: date
+      })
+      yield put({
+        type: 'setNull',
+        payload: date
+      })
+      const data = yield call(queryFifoValueAll, date)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            listRekap: data.data,
+            period: date.period,
+            year: date.year,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            },
+            date
+          }
+        })
+      } else {
+        // console.log('no Data')
+        // Modal.warning({
+        //   title: 'No Data',
+        //   content: 'No data inside storage'
+        // })
+        yield put({ type: 'setNull' })
+        throw data
+      }
+    },
     * queryCard ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
@@ -230,6 +312,56 @@ export default {
         }
       }
     },
+    * queryHistory ({ payload = {} }, { call, put }) {
+      let data
+      try {
+        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+        data = yield call(queryFifoHistory, {
+          ...payload,
+          from: storeInfo.startPeriod,
+          fromDate: payload.from
+        })
+        if (data.success === false) {
+          Modal.warning({
+            title: 'Something Went Wrong',
+            content: 'Please Refresh the page or change params'
+          })
+          console.log(`error Message: ${data.message}`)
+        }
+      } catch (e) {
+        console.log('error', e)
+      }
+      if (data.success) {
+        console.log('data.data', data.data)
+        if (data.data.length > 0) {
+          yield put({
+            type: 'querySuccessTrans',
+            payload: {
+              listRekap: data.data,
+              from: payload.from,
+              to: payload.to,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 5,
+                total: data.total
+              },
+              date: payload
+            }
+          })
+          yield put({
+            type: 'updateState',
+            payload: {
+              listRekap: data.data
+            }
+          })
+        } else {
+          Modal.warning({
+            title: 'No Data',
+            content: `No data inside storage, ${data.message}`
+          })
+        }
+      }
+    },
     * queryProductCode ({ payload = {} }, { call, put }) {
       const date = payload
       yield put({
@@ -260,12 +392,13 @@ export default {
   },
   reducers: {
     querySuccessTrans (state, action) {
-      const { listRekap, date, pagination, period, year } = action.payload
+      const { listRekap, tmpListRekap, date, pagination, period, year } = action.payload
       return {
         ...state,
         period,
         year,
         listRekap,
+        tmpListRekap: tmpListRekap || [],
         fromDate: date.period,
         toDate: date.year,
         pagination: {

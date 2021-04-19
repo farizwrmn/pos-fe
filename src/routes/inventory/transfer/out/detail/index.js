@@ -6,6 +6,7 @@ import { Row, Col, Button, Modal } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import ModalCancel from './ModalCancel'
+import ModalEdit from './ModalEdit'
 import PrintPDF from './PrintPDF'
 import TransDetail from './TransDetail'
 import styles from './index.less'
@@ -13,7 +14,7 @@ import styles from './index.less'
 const { checkPermissionMonthTransaction } = alertModal
 
 const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
-  const { data, listDetail, disableConfirm, showPrint, modalCancelVisible } = transferOutDetail
+  const { data, listDetail, disableConfirm, showPrint, modalCancelVisible, currentItem, modalEditVisible } = transferOutDetail
   const { listProducts } = transferOut
   const { user, storeInfo } = app
   const content = []
@@ -59,6 +60,32 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
     // dispatch(routerRedux.push('/inventory/transfer/in'))
   }
 
+  const postTrans = () => {
+    dispatch({
+      type: 'transferOutDetail/postTrans',
+      payload: {
+        data: {
+          id: data[0].id,
+          transNo: data[0].transNo,
+          storeId: data[0].storeId
+        }
+      }
+    })
+  }
+
+  const editTrans = () => {
+    dispatch({
+      type: 'transferOutDetail/editTrans',
+      payload: {
+        data: {
+          id: data[0].id,
+          transNo: data[0].transNo,
+          storeId: data[0].storeId
+        }
+      }
+    })
+  }
+
   const printProps = {
     listItem: listProducts,
     itemPrint: data[0],
@@ -69,7 +96,18 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
   }
 
   const formDetailProps = {
-    dataSource: listDetail
+    dataSource: listDetail,
+    editList (record) {
+      if (!loading.effects['transferOutDetail/editPrice']) {
+        dispatch({
+          type: 'transferOutDetail/editListPrice',
+          payload: {
+            currentItem: record,
+            modalEditVisible: true
+          }
+        })
+      }
+    }
   }
 
   const getProducts = (transNo) => {
@@ -150,6 +188,28 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
     }
   }
 
+  const modalEditProps = {
+    data,
+    item: currentItem,
+    visible: modalEditVisible,
+    title: `Edit Item ${currentItem && currentItem.productCode ? `${currentItem.productCode} - ${currentItem.productName}` : ''}`,
+    onOk (item, resetFields) {
+      dispatch({
+        type: 'transferOutDetail/editPrice',
+        payload: { data: item, resetFields }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'transferOutDetail/updateState',
+        payload: {
+          currentItem: {},
+          modalEditVisible: false
+        }
+      })
+    }
+  }
+
   return (<div className="wrapper">
     <Row>
       <Col lg={7}>
@@ -173,12 +233,15 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
           <Button type="danger" icon="delete" loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => voidTrans()}>Void</Button>
+          {data && data[0] && !data[0].paid && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail'] || loading.effects['transferOutDetail/editTrans']} disabled={loading.effects['transferOutDetail/editTrans'] || (data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1)} onClick={() => editTrans()}>Get Default Price</Button>}
+          {data && data[0] && !data[0].posting && !data[0].invoicing && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => postTrans()}>Post</Button>}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
         </div>
       </Col>
     </Row>
+    {modalEditVisible && <ModalEdit {...modalEditProps} />}
     {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
   </div >)
 }

@@ -1,13 +1,16 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
 import { lstorage, configMain, alertModal } from 'utils'
+import { routerRedux } from 'dva/router'
 import moment from 'moment'
+import { query as querySequence } from '../services/sequence'
 import {
   query,
   queryDetail,
   create,
   editPurchase,
   remove,
+  queryList,
   queryHistories,
   queryHistory,
   queryHistoryDetail,
@@ -29,6 +32,7 @@ export default modelExtend(pageModel, {
     date: '',
     readOnly: false,
     addItem: {},
+    lastTrans: '',
     searchTextSupplier: '',
     curHead: {
       discInvoiceNominal: 0,
@@ -49,6 +53,7 @@ export default modelExtend(pageModel, {
     searchVisible: false,
     modalType: '',
     modalPaymentVisible: false,
+    modalSupplierVisible: false,
     disableItem: {},
     modalProductVisible: false,
     selectedRowKeys: [],
@@ -81,16 +86,20 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
           dispatch({ type: 'changeRounding', payload: 0 })
+          dispatch({ type: 'queryLastAdjust' })
         } else if (location.pathname === '/transaction/purchase/edit') {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
         } else if (location.pathname === '/transaction/purchase/history') {
+          const { activeKey, ...other } = location.query
           dispatch({
-            type: 'queryHistory',
+            type: 'queryList',
             payload: {
               startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
-              endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+              endPeriod: moment().endOf('month').format('YYYY-MM-DD'),
+              order: '-transDate',
+              ...other
             }
           })
         }
@@ -99,6 +108,36 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'PRC',
+        type: lstorage.getCurrentUserStore(),
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
+
+    * queryList ({ payload = {} }, { call, put }) {
+      const data = yield call(queryList, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessHistory',
+          payload: {
+            listPurchaseHistories: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: Number(data.total || 0)
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * querySupplier ({ payload = {} }, { call, put }) {
       const data = yield call(querySupplier, payload)
       if (data.success) {
@@ -211,14 +250,31 @@ export default modelExtend(pageModel, {
         }
         const data = yield call(create, { id: payload.transNo, data: payload, add: arrayProd })
         if (data.success) {
-          Modal.info({
-            title: 'Transaction Success',
-            content: `Transaction ${payload.transNo} has been saved`
-          })
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
+          yield put({
+            type: 'queryLastAdjust'
+          })
           yield put({ type: 'resetBrowse' })
           yield put({ type: 'changeRounding', payload: 0 })
+          const modalMember = () => {
+            return new Promise((resolve, reject) => {
+              Modal.confirm({
+                title: 'Transaction Success',
+                content: `Go To Payment (${payload.transNo}) ?`,
+                onOk () {
+                  resolve()
+                },
+                onCancel () {
+                  reject()
+                }
+              })
+            })
+          }
+          yield modalMember()
+          yield put(routerRedux.push({
+            pathname: `/accounts/payable/${payload.transNo}`
+          }))
         } else {
           Modal.warning({
             title: 'Something went wrong',
@@ -242,7 +298,7 @@ export default modelExtend(pageModel, {
         voidData = payload.dataVoid.map((dataVoidMap) => {
           return ({
             storeId,
-            transNo: payload.id.transNo,
+            transNo: payload.e.transNo,
             productId: dataVoidMap.code,
             productName: dataVoidMap.name,
             qty: dataVoidMap.qty,
@@ -260,7 +316,7 @@ export default modelExtend(pageModel, {
       arrayProdAdd = addData.map((dataArrayProdAddtMap) => {
         return ({
           storeId,
-          transNo: payload.id.transNo,
+          transNo: payload.e.transNo,
           id: dataArrayProdAddtMap.id,
           productId: dataArrayProdAddtMap.code,
           productName: dataArrayProdAddtMap.name,
@@ -276,7 +332,7 @@ export default modelExtend(pageModel, {
       arrayProdEdit = editData.map((dataArrayProdEditMap) => {
         return ({
           storeId,
-          transNo: payload.id.transNo,
+          transNo: payload.e.transNo,
           id: dataArrayProdEditMap.id,
           productId: dataArrayProdEditMap.code,
           productName: dataArrayProdEditMap.name,
@@ -386,6 +442,14 @@ export default modelExtend(pageModel, {
           content: 'Content Not Found...!'
         })
         setTimeout(() => modal.destroy(), 1000)
+        yield put({
+          type: 'updateState',
+          payload: {
+            dataInvoice: [],
+            tmpInvoiceList: [],
+            listInvoice: []
+          }
+        })
       }
     },
     * getInvoiceDetail ({ payload }, { call, put }) {
@@ -590,6 +654,9 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
 
     querySuccess (state, action) {
       const { listPurchase, listSupplier, tmpSupplierData, paginationSupplier } = action.payload

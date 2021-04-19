@@ -1,7 +1,7 @@
 import { Modal, Tabs } from 'antd'
 import { DataQuery } from 'components'
 
-const { ProductFilter, Service } = DataQuery
+const { ProductFilter, ProductCategory, Service, ServiceCategory } = DataQuery
 const TabPane = Tabs.TabPane
 
 const Products = ({ modalProductVisible, getProduct, getService, ...modalProductProps }) => {
@@ -25,6 +25,20 @@ const Products = ({ modalProductVisible, getProduct, getService, ...modalProduct
         </TabPane>
         <TabPane tab="Service" key="1">
           <Service {...modalProductProps} />
+        </TabPane>
+        <TabPane tab="P.Category" key="2">
+          <ProductCategory
+            {...modalProductProps}
+            enableFilter={false}
+            showPagination={false}
+          />
+        </TabPane>
+        <TabPane tab="S.Category" key="3">
+          <ServiceCategory
+            {...modalProductProps}
+            enableFilter={false}
+            showPagination={false}
+          />
         </TabPane>
       </Tabs>
     </Modal>

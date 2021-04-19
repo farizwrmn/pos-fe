@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { queryCode, query, add, edit, remove } from '../../services/master/accountCode'
 import { pageModel } from './../common'
 
@@ -15,6 +16,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listAccountCode: [],
+    listAccountCodeExpense: [],
     listAccountCodeLov: [],
     pagination: {
       showSizeChanger: true,
@@ -28,7 +30,65 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+        if (pathname === '/transaction/adjust') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: [
+                'REVE',
+                'OINC',
+                'EXPS',
+                'OEXP',
+                'EQTY',
+                'COGS'
+              ],
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
+        if (pathname === '/cash-entry'
+          || pathname === '/transfer-entry'
+          || pathname === '/bank-recon'
+          || pathname === '/bank-history'
+          || pathname === '/master/paymentoption'
+          || pathname === '/bank-entry'
+          || matchEdc) {
+          dispatch({
+            type: 'queryExpense',
+            payload: {
+              accountType: pathname === '/bank-entry' ? undefined : [
+                'EXPS',
+                'OEXP'
+              ],
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
+        if (pathname === '/inventory/transfer/invoice') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
+        if (
+          pathname === '/master/account'
+          || pathname === '/accounts/payable-form'
+          || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -47,7 +107,8 @@ export default modelExtend(pageModel, {
               type: 'queryLov',
               payload: {
                 type: 'all',
-                field: 'id,accountCode,accountName,accountParentId'
+                field: 'id,accountCode,accountName,accountParentId',
+                order: 'accountCode'
               }
             })
           }
@@ -75,13 +136,29 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryExpense ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessExpense',
+          payload: {
+            listAccountCodeExpense: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
     * queryLov ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
           type: 'querySuccessCounterLov',
           payload: {
-            listAccountCode: data.data,
             listAccountCodeLov: data.data,
             pagination: {
               current: Number(payload.page) || 1,
@@ -135,6 +212,14 @@ export default modelExtend(pageModel, {
           payload: {
             type: 'all',
             field: 'id,accountCode,accountName,accountParentId'
+          }
+        })
+        yield put({
+          type: 'queryLov',
+          payload: {
+            type: 'all',
+            field: 'id,accountCode,accountName,accountParentId',
+            order: 'accountCode'
           }
         })
       } else {
@@ -193,11 +278,22 @@ export default modelExtend(pageModel, {
       }
     },
 
-    querySuccessCounterLov (state, action) {
-      const { listAccountCode, listAccountCodeLov, pagination } = action.payload
+    querySuccessExpense (state, action) {
+      const { listAccountCodeExpense, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        listAccountCodeExpense,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    querySuccessCounterLov (state, action) {
+      const { listAccountCodeLov, pagination } = action.payload
+      return {
+        ...state,
         listAccountCodeLov,
         pagination: {
           ...state.pagination,

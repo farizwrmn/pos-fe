@@ -93,7 +93,8 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
                   widths: [70, 5, 150],
                   body: [
                     [{ text: 'TANGGAL', border: [false] }, { text: '', border: [false] }, { text: moment(invoiceInfo.transDate).format('DD-MMM-YYYY'), alignment: 'center' }],
-                    [{ text: 'NO FAKTUR', border: [false] }, { text: '', border: [false] }, { text: (invoiceInfo.transNo || '').toString(), alignment: 'center' }]
+                    [{ text: 'NO FAKTUR', border: [false] }, { text: '', border: [false] }, { text: (invoiceInfo.transNo || '').toString(), alignment: 'center' }],
+                    [{ text: 'TAX NO', border: [false] }, { text: '', border: [false] }, { text: (invoiceInfo.taxInvoiceNo || '').toString(), alignment: 'center' }]
                   ]
                 }
               }
@@ -250,7 +251,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: '', border: [false] },
       { text: 'Total', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
-      { text: (subTotal - totalTax).toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
+      { text: (subTotal + totalTax).toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
       { text: `2. Total pembayaran jatuh tempo dalam ${invoiceInfo.tempo ? invoiceInfo.tempo : 0} hari`, colSpan: 3, border: [true, false, true, true] },

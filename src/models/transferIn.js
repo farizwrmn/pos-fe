@@ -5,6 +5,7 @@ import { configMain, lstorage } from 'utils'
 import { query, queryTrans as queryTransIn, queryDetail as queryInDetail, add } from '../services/transferStockIn'
 import { query as queryOut, queryDetail as queryOutDetail, queryByTransReceive } from '../services/transferStockOut'
 import { query as querySequence } from '../services/sequence'
+import { acceptTransOut } from '../services/transferOutAccept'
 import { pageModel } from './common'
 import { getDateTime } from '../services/setting/time'
 
@@ -261,6 +262,18 @@ export default modelExtend(pageModel, {
             listTransIn: data.mutasi
           }
         })
+      }
+    },
+    * acceptTransOut ({ payload }, { call, put }) {
+      let response = yield call(acceptTransOut, payload)
+      if (response && response.success && response.data) {
+        message.success('Accept request has sent')
+        yield put({
+          type: 'transferIn/queryOutDetail',
+          payload
+        })
+      } else {
+        throw response
       }
     }
   },

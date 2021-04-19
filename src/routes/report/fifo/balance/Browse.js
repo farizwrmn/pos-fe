@@ -40,23 +40,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'pQty',
           width: '50px',
           className: styles.alignRight,
-          render: text => parseFloat(text || '-').toLocaleString()
-        },
-        {
-          title: 'Price',
-          dataIndex: 'pPrice',
-          key: 'pPrice',
-          width: '100px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
-        },
-        {
-          title: 'Amount',
-          dataIndex: 'pAmount',
-          key: 'pAmount',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
+          render: text => (text === '' ? '-' : numberFormat.numberFormatter(text))
         },
         {
           title: 'Out',
@@ -64,23 +48,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           key: 'sQty',
           width: '50px',
           className: styles.alignRight,
-          render: text => parseFloat(text || '-').toLocaleString()
-        },
-        {
-          title: 'Price',
-          dataIndex: 'sPrice',
-          key: 'sPrice',
-          width: '100px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
-        },
-        {
-          title: 'Amount',
-          dataIndex: 'sAmount',
-          key: 'sAmount',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => formatNumberIndonesia(parseFloat(text || 0))
+          render: text => (text === '' ? '-' : numberFormat.numberFormatter(text))
         }
       )
       break
@@ -90,47 +58,31 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
           title: 'Product Code',
           dataIndex: 'productCode',
           key: 'productCode',
-          width: '227px'
+          width: '227px',
+          render: (text, record) => {
+            return (
+              <div>
+                <div>{record.productCode}</div>
+                <div>{record.productName}</div>
+              </div>
+            )
+          }
         },
         {
-          title: 'Begin',
-          dataIndex: 'beginQty',
-          key: 'beginQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'Purchase Qty',
-          dataIndex: 'purchaseQty',
-          key: 'purchaseQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'Adjust IN',
-          dataIndex: 'adjInQty',
-          key: 'adjInQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'POS Qty',
-          dataIndex: 'posQty',
-          key: 'posQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
-        },
-        {
-          title: 'Adjust OUT',
-          dataIndex: 'adjOutQty',
-          key: 'adjOutQty',
-          width: '150px',
-          className: styles.alignRight,
-          render: text => (text || '-').toLocaleString()
+          title: 'Sell Price',
+          dataIndex: 'sellPrice',
+          key: 'sellPrice',
+          width: '227px',
+          render: (text, record) => {
+            return (
+              <div>
+                <div>{`sellPrice: ${formatNumberIndonesia(record.sellPrice)}`}</div>
+                <div>{`distPrice01: ${formatNumberIndonesia(record.distPrice01)}`}</div>
+                <div>{`distPrice02: ${formatNumberIndonesia(record.distPrice02)}`}</div>
+                <div>{`distPrice03: ${formatNumberIndonesia(record.distPrice03)}`}</div>
+              </div>
+            )
+          }
         },
         {
           title: 'Count',

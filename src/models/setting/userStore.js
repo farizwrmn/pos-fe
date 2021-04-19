@@ -23,7 +23,13 @@ export default modelExtend(pageModel, {
             payload: location.query
           })
         }
-        if (location.pathname === '/marketing/promo') {
+        if (location.pathname === '/marketing/promo'
+          || location.pathname === '/report/accounting/profit-loss'
+          || location.pathname === '/report/accounts/payable'
+          || location.pathname === '/report/accounts/payment'
+          || location.pathname === '/inventory/transfer/invoice'
+          || location.pathname === '/master/store-price'
+          || location.pathname === '/master/store-price-upload') {
           dispatch({
             type: 'getAllListStores'
             // payload: location.query
@@ -94,10 +100,10 @@ export default modelExtend(pageModel, {
       // const newUser = { ...payload, customer }
       const data = yield call(saveUserDefaultStore, payload)
       if (data.success) {
-        messageInfo(data.message)
+        messageInfo(data.message, 'info', 3)
         yield put({
           type: 'updateState',
-          payload: data.defaultStore
+          payload: payload.defaultStore
         })
       } else {
         throw data
@@ -106,10 +112,10 @@ export default modelExtend(pageModel, {
     * saveCheckedStore ({ payload }, { call, put }) {
       const data = yield call(saveUserStore, payload)
       if (data.success) {
-        messageInfo(data.message)
+        messageInfo(data.message, 'info', 3)
         yield put({
           type: 'updateState',
-          payload: data.defaultStore
+          payload: payload.defaultStore
         })
       } else {
         throw data

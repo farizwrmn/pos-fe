@@ -1,10 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message } from 'antd'
+import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
+import moment from 'moment'
+import { IMAGEURL, rest } from 'utils/config.company'
+import ModalSupplier from './ModalSupplier'
 
+const { apiCompanyURL } = rest
 const { Variant, Specification, Stock } = DataQuery
+const { TextArea } = Input
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -42,9 +47,11 @@ const parentLeft = {
 }
 
 const AdvancedForm = ({
+  lastTrans,
   item = {},
   onSubmit,
   onCancel,
+  onGetSupplier,
   disabled,
   loadingButton,
   modalVariantVisible,
@@ -52,12 +59,22 @@ const AdvancedForm = ({
   modalProductVisible,
   listVariantStock,
   editItemProductById,
+  supplierInformation,
   dispatch,
   modalType,
   button,
   listCategory,
   showCategories,
   listBrand,
+  modalSupplierVisible,
+  paginationSupplier,
+  listSupplier,
+  tmpSupplierData,
+  searchTextSupplier,
+  onChooseSupplier,
+  onSearchSupplierData,
+  onSearchSupplier,
+  onChangeDate,
   listVariant,
   showBrands,
   showVariant,
@@ -73,7 +90,8 @@ const AdvancedForm = ({
     getFieldValue,
     resetFields,
     setFieldsValue
-  }
+  },
+  ...props
 }) => {
   const tailFormItemLayout = {
     wrapperCol: {
@@ -167,14 +185,16 @@ const AdvancedForm = ({
       data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
       data.usageTimePeriod = data.usageTimePeriod || 0
       data.usageMileage = data.usageMileage || 0
+      data.supplierId = modalType === 'add' && supplierInformation && supplierInformation.id
+        ? supplierInformation.id
+        : supplierInformation.id || item.supplierId
       let valid = true
       if (valid) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(data.productCode, data)
+            onSubmit(data.productCode, data, resetFields)
             // setTimeout(() => {
-            resetFields()
             // }, 500)
           },
           onCancel () { }
@@ -258,10 +278,12 @@ const AdvancedForm = ({
     },
     title: (
       <Row>
-        <Col span={12}><h3>Product Info</h3></Col>
-        <Col span={12} style={{ textAlign: 'right' }}>
+        <Col md={12} lg={3}>
+          <h3>Product Info</h3>
+        </Col>
+        <Col md={12} lg={9}>
           <Button
-            type="primary"
+            type="default"
             onClick={handleImportStock}
           >
             Import
@@ -355,9 +377,7 @@ const AdvancedForm = ({
         }
       })
     },
-    onRowClick (item) {
-      console.log('item', item)
-
+    onRowClick () {
       // const data = getFieldsValue()
       // dispatch({
       //   type: 'productstock/updateState',
@@ -421,6 +441,24 @@ const AdvancedForm = ({
       resetFields(['variantId'])
     }
   }
+
+  const hdlGetSupplier = () => {
+    onGetSupplier()
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        modalSupplierVisible: true
+      }
+    })
+  }
+
+  const buttonSupplierProps = {
+    type: 'primary',
+    onClick () {
+      hdlGetSupplier()
+    }
+  }
+
   const handleShowVariant = () => {
     if (item.variantId) {
       dispatch({
@@ -448,14 +486,88 @@ const AdvancedForm = ({
   }
   const variantIdFromItem = modalType === 'edit' && !!item.variantId
 
+  const hdlSearchPagination = (page) => {
+    const query = {
+      q: searchTextSupplier,
+      page: page.current,
+      pageSize: page.pageSize
+    }
+    onSearchSupplierData(query)
+  }
+
+  const hdlSearch = (e) => {
+    onSearchSupplier(e, tmpSupplierData)
+  }
+
+  const modalSupplierProps = {
+    title: 'Supplier',
+    visible: modalSupplierVisible,
+    footer: null,
+    hdlSearch,
+    onCancel () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalSupplierVisible: false
+        }
+      })
+    }
+  }
+
+  const handleMenuClick = (record) => {
+    let a = getFieldValue('transDate')
+    onChooseSupplier(record)
+    dispatch({
+      type: 'purchase/updateState',
+      payload: {
+        modalSupplierVisible: false
+      }
+    })
+    if (record.paymentTempo) {
+      message.success(`Supplier ${record.supplierName}  ${record.paymentTempo ? `has ${record.paymentTempo} ${parseFloat(record.paymentTempo) > 1 ? 'days' : 'day'}` : ''} tempo`)
+      setFieldsValue({ tempo: record.paymentTempo })
+      if (a) {
+        onChangeDate(moment(a).add(record.paymentTempo, 'days').format('YYYY-MM-DD'))
+      }
+    }
+  }
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'supplierCode',
+      key: 'supplierCode',
+      width: '20%'
+    },
+    {
+      title: 'Name',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
+      width: '45%'
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address01',
+      key: 'address01',
+      width: '45%'
+    }
+  ]
+
   return (
     <Form layout="horizontal">
+      <FooterToolbar>
+        <FormItem {...tailFormItemLayout}>
+          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" onClick={handleSubmit}>{button}</Button>
+        </FormItem>
+      </FooterToolbar>
       <Card {...cardProps}>
+        <BackTop visibilityHeight={10} />
         <Row>
           <Col {...column}>
             <FormItem label="Product Code" hasFeedback {...formItemLayout}>
               {getFieldDecorator('productCode', {
-                initialValue: item.productCode,
+                initialValue: modalType === 'add' && typeof lastTrans === 'string' ? lastTrans : item.productCode,
                 rules: [
                   {
                     required: true,
@@ -463,7 +575,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input disabled={disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
+              })(<Input disabled={modalType === 'add' && typeof lastTrans === 'string' ? true : disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)}
             </FormItem>
             <FormItem label="Product Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('productName', {
@@ -471,11 +583,10 @@ const AdvancedForm = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[A-Za-z0-9-._/ ]{3,60}$/i,
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={60} />)}
+              })(<Input maxLength={85} />)}
             </FormItem>
             <FormItem label="Category" hasFeedback {...formItemLayout}>
               {getFieldDecorator('categoryId', {
@@ -520,6 +631,9 @@ const AdvancedForm = ({
               >{productBrand}
               </Select>)}
             </FormItem>
+            <FormItem label="Supplier" {...formItemLayout}>
+              <Button {...buttonSupplierProps} size="default">{item.supplierId && item.supplierName ? `${item.supplierName.substring(0, 12)} (${item.supplierCode})` : 'Search Supplier'}</Button>
+            </FormItem>
             <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
               <Button.Group>
                 {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
@@ -530,12 +644,12 @@ const AdvancedForm = ({
           <Col {...column}>
             <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode01', {
-                initialValue: item.barCode01
+                initialValue: modalType === 'edit' ? item.barCode01 : getFieldValue('productCode')
               })(<Input />)}
             </FormItem>
             <FormItem label="Barcode 2" hasFeedback {...formItemLayout}>
               {getFieldDecorator('barCode02', {
-                initialValue: item.barCode02
+                initialValue: modalType === 'edit' ? item.barCode02 : getFieldValue('productCode')
               })(<Input />)}
             </FormItem>
 
@@ -666,12 +780,12 @@ const AdvancedForm = ({
                 <FormItem label="Track Qty" {...formItemLayout}>
                   {getFieldDecorator('trackQty', {
                     valuePropName: 'checked',
-                    initialValue: !!item.trackQty
+                    initialValue: item.trackQty == null ? true : !!item.trackQty
                   })(<Checkbox>Track</Checkbox>)}
                 </FormItem>
                 <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('alertQty', {
-                    initialValue: item.alertQty,
+                    initialValue: item.alertQty == null ? 1 : item.alertQty,
                     rules: [
                       {
                         required: getFieldValue('trackQty'),
@@ -704,17 +818,6 @@ const AdvancedForm = ({
                     valuePropName: 'checked',
                     initialValue: !!item.exception01
                   })(<Checkbox>Allow</Checkbox>)}
-                </FormItem>
-                <FormItem label="Image" {...formItemLayout}>
-                  {getFieldDecorator('productImage', {
-                    initialValue: item.productImage
-                  })(
-                    <Upload>
-                      <Button>
-                        <Icon type="upload" /> Click to Upload
-                      </Button>
-                    </Upload>
-                  )}
                 </FormItem>
                 <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('usageTimePeriod', {
@@ -753,15 +856,136 @@ const AdvancedForm = ({
                 </FormItem> */}
               </Col>
             </Row>
+            <Row>
+              <Col {...column}>
+                <FormItem label="Image" {...formItemLayout}>
+                  {getFieldDecorator('productImage', {
+                    initialValue: item.productImage
+                      && item.productImage != null
+                      && item.productImage !== '"no_image.png"'
+                      && item.productImage !== 'no_image.png' ?
+                      {
+                        fileList: JSON.parse(item.productImage).map((detail, index) => {
+                          return ({
+                            uid: index + 1,
+                            name: detail,
+                            status: 'done',
+                            url: `${IMAGEURL}/${detail}`,
+                            thumbUrl: `${IMAGEURL}/${detail}`
+                          })
+                        })
+                      }
+                      : item.productImage
+                  })(
+                    <Upload
+                      {...props}
+                      multiple
+                      showUploadList={{
+                        showPreviewIcon: true
+                      }}
+                      listType="picture"
+                      defaultFileList={
+                        item.productImage
+                          && item.productImage != null
+                          && item.productImage !== '"no_image.png"'
+                          && item.productImage !== 'no_image.png' ?
+                          JSON.parse(item.productImage).map((detail, index) => {
+                            return ({
+                              uid: index + 1,
+                              name: detail,
+                              status: 'done',
+                              url: `${IMAGEURL}/${detail}`,
+                              thumbUrl: `${IMAGEURL}/${detail}`
+                            })
+                          })
+                          : []
+                      }
+                      action={`${apiCompanyURL}/time/time`}
+                      onPreview={file => console.log('file', file)}
+                      onChange={(info) => {
+                        if (info.file.status !== 'uploading') {
+                          console.log('pending', info.fileList)
+                        }
+                        if (info.file.status === 'done') {
+                          console.log('success', info)
+                          message.success(`${info.file.name} file staged success`)
+                        } else if (info.file.status === 'error') {
+                          console.log('error', info)
+                          message.error(`${info.file.name} file staged failed.`)
+                        }
+                      }}
+                    >
+                      <Button>
+                        <Icon type="upload" /> Click to Upload
+                      </Button>
+                    </Upload>
+                  )}
+                </FormItem>
+                <FormItem label="Description" {...formItemLayout}>
+                  {getFieldDecorator('description', {
+                    initialValue: item.description,
+                    rules: [
+                      {
+                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
+                </FormItem>
+              </Col>
+              <Col {...column}>
+                <FormItem label="Dimension" {...formItemLayout}>
+                  {getFieldDecorator('dimension', {
+                    initialValue: item.dimension,
+                    rules: [
+                      {
+                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<Input maxLength={30} />)}
+                </FormItem>
+                <FormItem label="Weight" {...formItemLayout}>
+                  {getFieldDecorator('weight', {
+                    initialValue: item.weight,
+                    rules: [
+                      {
+                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<Input maxLength={20} />)}
+                </FormItem>
+                <FormItem label="Publish on e-commerce" {...formItemLayout}>
+                  {getFieldDecorator('activeShop', {
+                    valuePropName: 'checked',
+                    initialValue: item.activeShop === undefined
+                      ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
+                      : item.activeShop
+                  })(<Checkbox>Publish</Checkbox>)}
+                </FormItem>
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>
-      <FooterToolbar>
-        <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" onClick={handleSubmit}>{button}</Button>
-        </FormItem>
-      </FooterToolbar>
+      {modalSupplierVisible && (
+        <ModalSupplier {...modalSupplierProps}>
+          <Table
+            bordered
+            pagination={paginationSupplier}
+            scroll={{ x: 500 }}
+            columns={columns}
+            simple
+            loading={loadingButton.effects['purchase/querySupplier']}
+            dataSource={listSupplier}
+            size="small"
+            pageSize={10}
+            onChange={hdlSearchPagination}
+            onRowClick={_record => handleMenuClick(_record)}
+          />
+        </ModalSupplier>
+      )}
       {modalVariantVisible && <Variant {...modalVariantProps} />}
       {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
       {modalProductVisible && <Stock {...modalProductProps} />}

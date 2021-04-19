@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from '../../services/master/accountCode'
-import { pageModel } from './../common'
+import { query, add, edit, remove } from 'services/master/accountCode'
+import { pageModel } from '../common'
 
 const success = () => {
   message.success('Account Code has been saved')
@@ -15,7 +15,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
-    listAccountCode: [],
+    list: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -47,9 +47,9 @@ export default modelExtend(pageModel, {
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
-          type: 'querySuccessCounter',
+          type: 'querySuccess',
           payload: {
-            listAccountCode: data.data,
+            list: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
@@ -70,7 +70,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const data = yield call(add, payload.data)
       if (data.success) {
         success()
         yield put({
@@ -83,6 +83,9 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',
@@ -96,7 +99,7 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ accountCode }) => accountCode.currentItem.id)
-      const newCounter = { ...payload, id }
+      const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
@@ -116,6 +119,9 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',
@@ -129,11 +135,11 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-    querySuccessCounter (state, action) {
-      const { listAccountCode, pagination } = action.payload
+    querySuccess (state, action) {
+      const { list, pagination } = action.payload
       return {
         ...state,
-        listAccountCode,
+        list,
         pagination: {
           ...state.pagination,
           ...pagination

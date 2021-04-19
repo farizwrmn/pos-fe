@@ -28,6 +28,7 @@ const column = {
 }
 
 const formProductCategory = ({
+  lastTrans,
   item = {},
   onSubmit,
   onCancel,
@@ -142,7 +143,7 @@ const formProductCategory = ({
         <Col {...column}>
           <FormItem label="Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('categoryCode', {
-              initialValue: item.categoryCode,
+              initialValue: modalType === 'add' && typeof lastTrans === 'string' ? lastTrans : item.categoryCode,
               rules: [
                 {
                   required: true,
@@ -150,7 +151,7 @@ const formProductCategory = ({
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input disabled={disabled} maxLength={10} autoFocus />)}
+            })(<Input disabled={modalType === 'add' && typeof lastTrans === 'string' ? true : disabled} maxLength={10} autoFocus />)}
           </FormItem>
           <FormItem label="Category Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('categoryName', {
@@ -163,6 +164,16 @@ const formProductCategory = ({
                 }
               ]
             })(<Input />)}
+          </FormItem>
+          <FormItem label="Category Color" help="Usage in product sticker" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('categoryColor', {
+              initialValue: item.categoryColor,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Input type="color" />)}
           </FormItem>
           <FormItem label="Category Parent" hasFeedback {...formItemLayout}>
             {getFieldDecorator('categoryParentId', {

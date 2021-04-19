@@ -4,7 +4,6 @@ import moment from 'moment'
 import { isEmptyObject, lstorage, color, calendar } from 'utils'
 import {
   currencyFormatter,
-  discountFormatter,
   numberFormatter
 } from 'utils/string'
 import { Badge, Icon, Table, Tabs, Tag } from 'antd'
@@ -12,7 +11,7 @@ import styles from '../../../themes/index.less'
 
 const { dayByNumber } = calendar
 
-const { getCashierTrans, getServiceTrans, getBundleTrans } = lstorage
+const { getCashierTrans, getServiceTrans, getConsignment, getBundleTrans } = lstorage
 const TabPane = Tabs.TabPane
 const width = 1000
 
@@ -21,7 +20,7 @@ const TransactionDetail = ({
   pos
 }) => {
   const {
-    paymentListActiveKey,
+    paymentListActiveKey = '5',
     cashierInformation
   } = pos
 
@@ -44,6 +43,7 @@ const TransactionDetail = ({
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   const modalEditPayment = (record) => {
+    console.log('record', record)
     dispatch({
       type: 'pos/getMechanics'
     })
@@ -65,6 +65,16 @@ const TransactionDetail = ({
       payload: {
         item: record,
         modalType: 'modalService'
+      }
+    })
+  }
+
+  const modalEditConsignment = (record) => {
+    dispatch({
+      type: 'pos/showConsignmentListModal',
+      payload: {
+        item: record,
+        modalType: 'modalConsignment'
       }
     })
   }
@@ -119,15 +129,23 @@ const TransactionDetail = ({
       </span>)
   }
 
+  const product = getCashierTrans()
+  const service = getServiceTrans()
+  const consignment = getConsignment()
+
+  const listTrans = product.map(item => ({ ...item, typeTrans: 'Product' }))
+    .concat(service.map(item => ({ ...item, typeTrans: 'Service' })))
+    .concat(consignment.map(item => ({ ...item, typeTrans: 'Consignment' })))
+    .map((item, index) => ({ ...item, no: index + 1 }))
+
   return (
-    <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
+    <Tabs activeKey={paymentListActiveKey} defaultActiveKey="5" onChange={key => changePaymentListTab(key)} >
       <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
         <Table
           rowKey={(record, key) => key}
-          pagination={{ pageSize: 5 }}
           bordered
           size="small"
-          scroll={{ x: '680px', y: '220px' }}
+          scroll={{ x: '680px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
@@ -135,7 +153,9 @@ const TransactionDetail = ({
             {
               title: 'No',
               width: '40px',
-              dataIndex: 'no'
+              dataIndex: 'no',
+              sortOrder: 'descend',
+              sorter: (a, b) => a.no - b.no
             },
             {
               title: 'Product',
@@ -144,8 +164,7 @@ const TransactionDetail = ({
               render: (text, record) => {
                 return (
                   <div>
-                    <div>{`Product Code: ${record.code}`}</div>
-                    <div>{`Product Name: ${record.name}`}</div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
                   </div>
                 )
               }
@@ -163,20 +182,15 @@ const TransactionDetail = ({
               width: '250px',
               className: styles.alignRight,
               render: (text, record) => {
-                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                const disc1 = record.disc1
-                const disc2 = record.disc2
-                const disc3 = record.disc3
-                const discount = record.discount
+                // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                // const disc1 = record.disc1
+                // const disc2 = record.disc2
+                // const disc3 = record.disc3
+                // const discount = record.discount
                 const total = record.total
                 return (
                   <div>
-                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                    <div>{`Disc 1 + Disc 2 + Disc 3: ${discountFormatter(disc1)} + ${discountFormatter(disc2)} + ${discountFormatter(disc3)}`}</div>
-                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                    <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                    </div>
+                    <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                   </div>
                 )
               }
@@ -190,10 +204,9 @@ const TransactionDetail = ({
       <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
         <Table
           rowKey={(record, key) => key}
-          pagination={{ pageSize: 5 }}
           bordered
           size="small"
-          scroll={{ x: '580px', y: '220px' }}
+          scroll={{ x: '580px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
@@ -201,7 +214,9 @@ const TransactionDetail = ({
             {
               title: 'No',
               width: '40px',
-              dataIndex: 'no'
+              dataIndex: 'no',
+              sortOrder: 'descend',
+              sorter: (a, b) => a.no - b.no
             },
             {
               title: 'Product',
@@ -210,8 +225,7 @@ const TransactionDetail = ({
               render: (text, record) => {
                 return (
                   <div>
-                    <div>{`Product Code: ${record.code}`}</div>
-                    <div>{`Product Name: ${record.name}`}</div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
                   </div>
                 )
               }
@@ -229,20 +243,10 @@ const TransactionDetail = ({
               width: '250px',
               className: styles.alignRight,
               render: (text, record) => {
-                const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                const disc1 = record.disc1
-                const disc2 = record.disc2
-                const disc3 = record.disc3
-                const discount = record.discount
                 const total = record.total
                 return (
                   <div>
-                    <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                    <div>{`Disc 1 + Disc 2 + Disc 3: ${discountFormatter(disc1)} + ${discountFormatter(disc2)} + ${discountFormatter(disc3)}`}</div>
-                    <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                    <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                    </div>
+                    <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                   </div>
                 )
               }
@@ -253,13 +257,76 @@ const TransactionDetail = ({
           style={{ marginBottom: 16 }}
         />
       </TabPane>
-      <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="3">
+      <TabPane tab={<Badge count={objectSize('consignment')}>Consignment</Badge>} key="3">
         <Table
           rowKey={(record, key) => key}
-          pagination={{ pageSize: 5 }}
           bordered
           size="small"
-          scroll={{ x: '1000px', y: '220px' }}
+          scroll={{ x: '580px' }}
+          locale={{
+            emptyText: 'Your Consignment List'
+          }}
+          columns={[
+            {
+              title: 'No',
+              width: '40px',
+              dataIndex: 'no',
+              sortOrder: 'descend',
+              sorter: (a, b) => a.no - b.no
+            },
+            {
+              title: 'Product',
+              dataIndex: 'code',
+              width: '250px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
+                  </div>
+                )
+              }
+            },
+            {
+              title: 'Qty',
+              dataIndex: 'qty',
+              width: '40px',
+              className: styles.alignCenter,
+              render: text => numberFormatter((text).toLocaleString())
+            },
+            {
+              title: 'Price',
+              dataIndex: 'sellPrice',
+              width: '250px',
+              className: styles.alignRight,
+              render: (text, record) => {
+                // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                // const disc1 = record.disc1
+                // const disc2 = record.disc2
+                // const disc3 = record.disc3
+                // const discount = record.discount
+                const total = record.total
+                return (
+                  <div>
+                    <div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                    </div>
+                  </div>
+                )
+              }
+            }
+          ]}
+          onRowClick={_record => modalEditConsignment(_record)}
+          dataSource={getConsignment()}
+          pagination={false}
+          style={{ marginBottom: 16 }}
+        />
+      </TabPane>
+      <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="4">
+        <Table
+          rowKey={(record, key) => key}
+          bordered
+          size="small"
+          scroll={{ x: '1000px' }}
           locale={{
             emptyText: 'Your Bundle List'
           }}
@@ -271,7 +338,9 @@ const TransactionDetail = ({
               title: 'No',
               dataIndex: 'no',
               key: 'no',
-              width: '41px'
+              width: '47px',
+              sortOrder: 'descend',
+              sorter: (a, b) => a.no - b.no
             },
             {
               title: 'type',
@@ -336,6 +405,74 @@ const TransactionDetail = ({
               }
             }
           ]}
+        />
+      </TabPane>
+      <TabPane tab={<Badge count={listTrans.count}>Sales</Badge>} key="5">
+        <Table
+          rowKey={(record, key) => key}
+          bordered
+          size="small"
+          scroll={{ x: '580px' }}
+          locale={{
+            emptyText: 'Your Sales List'
+          }}
+          columns={[
+            {
+              title: 'No',
+              width: '40px',
+              dataIndex: 'no',
+              sortOrder: 'descend',
+              sorter: (a, b) => a.no - b.no
+            },
+            {
+              title: 'Type',
+              dataIndex: 'typeTrans',
+              width: '150px'
+            },
+            {
+              title: 'Product',
+              dataIndex: 'code',
+              width: '250px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
+                  </div>
+                )
+              }
+            },
+            {
+              title: 'Qty',
+              dataIndex: 'qty',
+              width: '40px',
+              className: styles.alignCenter,
+              render: text => numberFormatter((text).toLocaleString())
+            },
+            {
+              title: 'Price',
+              dataIndex: 'sellPrice',
+              width: '250px',
+              className: styles.alignRight,
+              render: (text, record) => {
+                // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+                // const disc1 = record.disc1
+                // const disc2 = record.disc2
+                // const disc3 = record.disc3
+                // const discount = record.discount
+                const total = record.total
+                return (
+                  <div>
+                    <div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                    </div>
+                  </div>
+                )
+              }
+            }
+          ]}
+          dataSource={listTrans}
+          pagination={false}
+          style={{ marginBottom: 16 }}
         />
       </TabPane>
     </Tabs>

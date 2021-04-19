@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, message, Button, Row, Col, Modal, Select } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select, DatePicker, message } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
+import { FooterToolbar } from 'components'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
 
@@ -34,23 +36,27 @@ const FormCounter = ({
   showLov,
   onSubmit,
   modalShow,
+  modalType,
+  modalItemType,
   modalShowList,
-  resetListItem,
+  storeInfo,
   listItem,
   modalVisible,
   modalProps,
   listDetailProps,
-  updateCurrentItem,
+  loading,
+  onCancel,
+  button,
+  listAccountCode,
   form: {
     getFieldDecorator,
-    getFieldValue,
     validateFields,
     getFieldsValue,
-    setFieldsValue,
     resetFields
-  },
-  inputType = getFieldValue('type')
+  }
 }) => {
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -62,97 +68,39 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       data.memberId = data.memberId ? data.memberId.key : null
       data.supplierId = data.supplierId ? data.supplierId.key : null
+      data.accountId = data.accountId ? data.accountId.key : null
       data.transType = data.transType ? data.transType.key : null
+      const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      data.transDate = transDate
+      if (transDate < storeInfo.startPeriod) {
+        message.error('This period has been closed')
+        return
+      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listItem, getFieldsValue())
-          resetFields()
+          onSubmit(data, listItem, getFieldsValue(), resetFields)
         },
         onCancel () { }
       })
     })
   }
   const hdlModalShow = () => {
-    validateFields(['type'], (errors) => {
-      if (errors) {
-        message.warning('Type is required', 1.5)
-        return
-      }
-      const type = getFieldValue('type')
-      modalShow(type)
-    })
-  }
-
-  const hdlModalReset = () => {
-    const oldType = getFieldValue('type')
-    const oldSupplierId = getFieldValue('supplierId')
-    const oldMemberId = getFieldValue('memberId')
-    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
-      if (errors) {
-        return
-      }
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          const type = getFieldValue('type')
-          resetListItem(type)
-        },
-        onCancel () {
-          if (oldType === 'I') {
-            setFieldsValue({
-              type: oldType
-            })
-            updateCurrentItem({
-              memberId: {
-                key: oldMemberId ? oldMemberId.key : null,
-                label: oldMemberId ? oldMemberId.label : null
-              },
-              supplierId: {
-                key: null,
-                label: null
-              },
-              ...item
-            })
-          } else if (oldType === 'E') {
-            setFieldsValue({
-              type: oldType
-            })
-            updateCurrentItem({
-              supplierId: {
-                key: oldSupplierId ? oldSupplierId.key : null,
-                label: oldSupplierId ? oldSupplierId.label : null
-              },
-              memberId: {
-                key: null,
-                label: null
-              },
-              ...item
-            })
-          }
-        }
-      })
-    })
+    modalShow()
   }
 
   const modalOpts = {
     showLov,
-    inputType: getFieldValue('type'),
+    modalItemType,
     ...modalProps
   }
 
   const handleModalShowList = (record) => {
-    validateFields(['type', 'supplierId', 'memberId'], (errors) => {
-      if (errors) {
-        return
-      }
-      record.accountId = {
-        key: record.accountId,
-        label: record.accountName
-      }
-      modalShowList(record)
-    })
+    record.accountId = {
+      key: record.accountId,
+      label: record.accountName
+    }
+    modalShowList(record)
   }
 
   const listDetailOpts = {
@@ -161,12 +109,17 @@ const FormCounter = ({
     ...listDetailProps
   }
 
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
+  }
+
   return (
     <div>
       <Form layout="horizontal">
         <Row>
           <Col {...column}>
-            <FormItem label="transNo" hasFeedback {...formItemLayout}>
+            <FormItem label="Trans No" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transNo', {
                 initialValue: item.transNo,
                 rules: [
@@ -186,22 +139,33 @@ const FormCounter = ({
             </FormItem>
           </Col>
           <Col {...column}>
-            <FormItem label="Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('type', {
-                initialValue: item.type,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <Select
-                  allowClear
-                  onChange={() => hdlModalReset()}
-                >
-                  <Option value="E">Out</Option>
-                  <Option value="I">In</Option>
-                </Select>)}
+            <FormItem {...formItemLayout} label="Account Code">
+              {getFieldDecorator('accountId', {
+                initialValue: item.accountId ? {
+                  key: item.accountId,
+                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+                } : undefined,
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                filterOption={filterOption}
+              >{listAccountOpt}
+              </Select>)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Trans Date">
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment.utc(item.transDate) : moment(),
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
             </FormItem>
           </Col>
         </Row>
@@ -214,17 +178,14 @@ const FormCounter = ({
         <Row style={{ marginBottom: '8px' }}>
           <ListDetail {...listDetailOpts} />
         </Row>
-        <Row>
-          <Col {...column} />
-          <Col {...column}>
-            <FormItem>
-              {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
-              <Button type="primary" onClick={handleSubmit} style={{ float: 'right' }}>Save</Button>
-            </FormItem>
-          </Col>
-        </Row>
+        <FooterToolbar>
+          <FormItem>
+            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+            <Button disabled={loading} type="primary" onClick={handleSubmit}>{button}</Button>
+          </FormItem>
+        </FooterToolbar>
       </Form>
-      {modalVisible && (inputType === 'I' || inputType === 'E') && <ModalList {...modalOpts} />}
+      {modalVisible && <ModalList {...modalOpts} />}
     </div>
   )
 }

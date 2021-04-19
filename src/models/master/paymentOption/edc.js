@@ -30,6 +30,8 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         const match = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
+          || pathToRegexp('/accounts/payment/:id').exec(pathname)
+          || pathToRegexp('/accounts/payable/:id').exec(pathname)
         if (match) {
           dispatch({
             type: 'updateState',
@@ -127,7 +129,6 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',

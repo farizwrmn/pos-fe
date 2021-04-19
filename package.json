@@ -2,7 +2,10 @@
   "private": true,
   "dependencies": {
     "antd": "^2.13.2",
+    "bwip-js": "^2.0.10",
     "classnames": "^2.2.5",
+    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^1.8.0",
     "draftjs-to-markdown": "^0.4.0",
     "dva": "^1.2.0",
     "dva-loading": "^0.2.0",
@@ -13,7 +16,7 @@
     "moment": "2.18.1",
     "nprogress": "^0.2.0",
     "path-to-regexp": "^1.7.0",
-    "pdfmake": "0.1.38",
+    "pdfmake": "0.1.68",
     "prop-types": "^15.6.0",
     "qs": "^6.5.0",
     "react": "^15.6.1",
@@ -75,12 +78,13 @@
     "dev8888": "set BROWSER=none&&set HOST=0.0.0.0&&PORT=8888 roadhog server",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "lint": "eslint --fix --ext .js src",
-    "build": "set NODE_ENV=production && roadhog build",
+    "build": "set NODE_ENV=production && node ./scripts/create-env.js && roadhog build",
     "babel-build": "babel src -d dist",
     "profile": "node --prof dist/bin/www.js",
     "test": "set NODE_ENV=test && jest --coverage",
     "test:watch": "NODE_ENV=test jest --watchAll",
     "serve": "serve -s dist",
-    "start": "node ./build/runServer.js"
+    "start": "node ./build/runServer.js",
+    "postinstall": "cp lib/package.json node_modules/bwip-js/package.json"
   }
 }

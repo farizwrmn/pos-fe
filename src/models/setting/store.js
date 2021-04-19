@@ -26,7 +26,10 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/setting/store') {
           dispatch({ type: 'getAllStores' })
           dispatch({ type: 'refreshSetting' })
-        } else if (location.pathname === '/master/employee') {
+        } else if (
+          location.pathname === '/master/employee'
+          || location.pathname === '/stock'
+        ) {
           dispatch({
             type: 'getStore'
           })

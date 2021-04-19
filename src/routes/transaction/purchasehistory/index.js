@@ -1,37 +1,38 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { lstorage } from 'utils'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import Filter from './Filter'
 import List from './List'
 import Modal from './Modal'
 import PrintPDF from './PrintPDF'
 
 const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
-  const { modalPrintInvoice, listPurchaseHistories, purchaseHistory, listPurchaseHistoryDetail } = purchase
+  const { modalPrintInvoice, pagination, listPurchaseHistories, purchaseHistory, listPurchaseHistoryDetail } = purchase
   const { user, storeInfo } = app
 
-  const store = lstorage.getCurrentUserStore()
   const filterProps = {
     filterChange (date) {
-      dispatch({
-        type: 'purchase/queryHistory',
-        payload: {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
           startPeriod: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          endPeriod: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
-          storeId: store
+          endPeriod: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
         }
-      })
+      }))
     },
-    filterTransNo (transNo) {
-      dispatch({
-        type: 'purchase/queryHistoryByTransNo',
-        payload: {
-          transNo,
-          storeId: store
+    filterTransNo (data) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...data
         }
-      })
+      }))
     }
   }
 
@@ -39,6 +40,20 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
     dataSource: listPurchaseHistories,
     loading: loading.effects['purchase/queryHistory'],
     location,
+    dispatch,
+    pagination,
+    onChange (page, filters, sorter) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          order: sorter && sorter.column ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}` : undefined,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
     printInvoice (transNo) {
       dispatch({
         type: 'purchase/queryHistoryDetail',

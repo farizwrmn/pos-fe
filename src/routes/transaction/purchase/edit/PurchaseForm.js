@@ -33,7 +33,10 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 }
 }
 
-const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+  const {
+    onInvoiceHeader
+  } = purchaseProps
   const getDiscTotal = (g) => {
     const data = { ...getFieldsValue() }
     let total = g.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
@@ -122,6 +125,13 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
   }
   const hdlBrowseInvoice = () => {
     handleBrowseInvoice()
+    let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
+    let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
+    const period = {
+      startPeriod,
+      endPeriod
+    }
+    onInvoiceHeader(period)
   }
   const hdlChangeRounding = (e) => {
     const { value } = e.target
@@ -158,9 +168,9 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                   rules: [{
                     required: true,
                     message: 'Required',
-                    pattern: /^[a-z0-9/-]{6,25}$/i
+                    pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                   }]
-                })(<Input maxLength={25} disabled />)}
+                })(<Input maxLength={30} disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
               <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
@@ -169,35 +179,29 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                     required: true,
                     message: 'Required'
                   }]
-                })(<DatePicker disabled />)}
+                })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
-              <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('taxType', {
-                  initialValue: transNo.taxType,
-                  rules: [{
-                    required: true,
-                    message: 'Required'
-                  }]
-                })(<Select onBlur={hdlChangePercent}>
-                  <Option value="I">Include</Option>
-                  <Option value="E">Exclude (0%)</Option>
-                  <Option value="S">Exclude (10%)</Option>
+              <FormItem label="Supplier" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('supplierCode', {
+                  initialValue: transNo.supplierCode ? {
+                    key: transNo.supplierCode,
+                    label: transNo.supplierName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  onFocus={() => brand()}
+                  onBlur={hdlChangePercent}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{supplierData}
                 </Select>)}
               </FormItem>
-            </Col>
-            <Col xs={24} sm={12} md={12} lg={12} xl={14}>
-              {/* <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('invoiceType', {
-                  initialValue: transNo.invoiceType,
-                  rules: [{
-                    required: true,
-                    message: 'Required'
-                  }]
-                })((<Select disabled>
-                  <Option value="C">CASH</Option>
-                  <Option value="K">KREDIT</Option>
-                </Select>))}
-              </FormItem> */}
               <FormItem label="Disc Inv(%)" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('discInvoicePercent', {
                   initialValue: transNo.discInvoicePercent,
@@ -228,26 +232,60 @@ const PurchaseForm = ({ onChooseInvoice, onDiscPercent, listSupplier, showSuppli
                   min={0}
                 />)}
               </FormItem>
-              <FormItem label="Supplier" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('supplierCode', {
-                  initialValue: transNo.supplierCode ? {
-                    key: transNo.supplierCode,
-                    label: transNo.supplierName
-                  } : {},
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  onFocus={() => brand()}
-                  onBlur={hdlChangePercent}
-                  optionFilterProp="children"
-                  labelInValue
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{supplierData}
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12} xl={14}>
+              {/* <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('invoiceType', {
+                  initialValue: transNo.invoiceType,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })((<Select disabled>
+                  <Option value="C">CASH</Option>
+                  <Option value="K">KREDIT</Option>
+                </Select>))}
+              </FormItem> */}
+              <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxType', {
+                  initialValue: transNo.taxType,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Select onBlur={hdlChangePercent}>
+                  <Option value="I">Include</Option>
+                  <Option value="E">Exclude (0%)</Option>
+                  <Option value="S">Exclude (10%)</Option>
                 </Select>)}
+              </FormItem>
+              <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxInvoiceNo', {
+                  initialValue: transNo.taxInvoiceNo,
+                  rules: [{
+                    required: false,
+                    message: 'Required',
+                    pattern: /^[a-z0-9./-]{6,25}$/i
+                  }]
+                })(<Input maxLength={25} placeholder="Tax Invoice No" />)}
+              </FormItem>
+              <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxDate', {
+                  initialValue: transNo.taxDate ? moment.utc(transNo.taxDate, 'YYYY-MM-DD') : null,
+                  rules: [{
+                    required: false,
+                    message: 'Required'
+                  }]
+                })(<DatePicker />)}
+              </FormItem>
+              <FormItem label="Receive Date" {...formItemLayout}>
+                {getFieldDecorator('receiveDate', {
+                  initialValue: transNo.receiveDate ? moment.utc(transNo.receiveDate, 'YYYY-MM-DD') : null,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
             </Col>
           </Row>

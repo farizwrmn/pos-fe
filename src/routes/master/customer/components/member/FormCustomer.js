@@ -48,6 +48,7 @@ const FormCustomer = ({
   defaultMember,
   onCancel,
   form: {
+    getFieldValue,
     getFieldsValue,
     getFieldDecorator,
     resetFields,
@@ -83,14 +84,14 @@ const FormCustomer = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
+          console.log('modalType', modalType)
+
           if (modalType === 'add' || modalType === 'edit') {
             onSubmit(data.memberCode, data, modalType)
           } else {
             confirmSendMember(data.memberCode, data, modalType)
           }
-          setTimeout(() => {
-            resetFields()
-          }, 500)
+          resetFields()
         },
         onCancel () { }
       })
@@ -181,7 +182,14 @@ const FormCustomer = ({
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input placeholder={(setting.memberCode || memberCodeDisable) ? 'Code generate by system' : ''} disabled={item.memberCode ? item.memberCode : (setting.memberCode ? setting.memberCode : memberCodeDisable)} style={{ height: '32px' }} maxLength={16} />)}
+                })(
+                  <Input
+                    placeholder={setting.memberCode || memberCodeDisable ? 'Code generate by system' : ''}
+                    disabled={item.memberCode && modalType === 'edit' ? item.memberCode : (setting.memberCode || memberCodeDisable)}
+                    style={{ height: '32px' }}
+                    maxLength={16}
+                  />
+                )}
               </Col>
               <Col xs={24} sm={4} md={6} lg={6}>
                 <Tooltip placement="bottomLeft" title="Get Default Code">
@@ -207,7 +215,7 @@ const FormCustomer = ({
               initialValue: item.idType,
               rules: [
                 {
-                  required: true
+                  required: !!getFieldValue('idNo')
                 }
               ]
             })(<Select
@@ -223,7 +231,7 @@ const FormCustomer = ({
               initialValue: item.idNo,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^[A-Za-z0-9-_. ]{3,30}$/i,
                   message: 'a-Z & 0-9'
                 }
@@ -235,7 +243,7 @@ const FormCustomer = ({
               initialValue: item.address01,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^[A-Za-z0-9-._/ ]{5,50}$/i,
                   message: 'a-Z & 0-9'
                 }
@@ -258,7 +266,7 @@ const FormCustomer = ({
               initialValue: item.cityId,
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
             })(<Select
@@ -298,7 +306,7 @@ const FormCustomer = ({
               initialValue: item.phoneNumber,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                   message: 'Input a Phone No.[xxxx xxxx xxxx]'
                 }
@@ -310,7 +318,7 @@ const FormCustomer = ({
               initialValue: item.mobileNumber,
               rules: [
                 {
-                  required: true,
+                  required: false,
                   pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                   message: 'mobile number is not valid'
                 }

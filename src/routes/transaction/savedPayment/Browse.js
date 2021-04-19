@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import { configMain, alertModal } from 'utils'
-import styles from '../../../themes/index.less'
+import styles from 'themes/index.less'
 
 const { checkPermissionMonthTransaction } = alertModal
-const { MonthPicker } = DatePicker
+const { RangePicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
 const { prefix } = configMain
@@ -27,13 +28,27 @@ const searchBarLayout = {
 }
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onGetDetail, cashierInformation, onShowCancelModal, onSearchChange, onChangePeriod, loading,
-  form: { getFieldDecorator } }) => {
+  dispatch,
+  dataSource,
+  tmpDataSource,
+  onGetDetail,
+  onShowCancelModal,
+  onSearchChange,
+  onChangePeriod,
+  loading,
+  app,
+  form: { getFieldDecorator }
+}) => {
+  const { user } = app
   const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       onGetDetail(record)
     } else if (e.key === '2') {
+      dispatch(routerRedux.push({
+        pathname: `/accounts/payment/${encodeURIComponent(record.transNo)}`
+      }))
+    } else if (e.key === '3') {
       const transDate = moment(record.transDate).format('YYYY-MM-DD')
 
       const checkPermission = checkPermissionMonthTransaction(transDate)
@@ -41,7 +56,7 @@ const BrowseGroup = ({
         return
       }
 
-      if (transDate >= storeInfo.startPeriod || record.transDate === cashierInformation.id) {
+      if (transDate >= storeInfo.startPeriod) {
         onShowCancelModal(record)
       } else {
         Modal.warning({
@@ -67,38 +82,37 @@ const BrowseGroup = ({
   }
   const columns = [
     {
+      title: 'No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: 120
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
       width: 150,
-      sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
-      render: _text => `${moment(_text).format('LL')}`
+      sorter: (a, b) => moment.utc(a.createdAt) - moment.utc(b.createdAt),
+      render: (text, record) => `${text} ${record.transTime}`
     },
     {
-      title: 'Car Unit',
-      dataIndex: 'policeNo',
-      key: 'policeNo',
-      width: 120
-    },
-    {
-      title: 'KM',
-      dataIndex: 'lastMeter',
-      key: 'lastMeter',
-      width: 120,
+      title: 'Total',
+      dataIndex: 'posTotal.netto',
+      key: 'posTotal.netto',
+      width: 70,
       className: styles.alignRight,
-      sorter: (a, b) => a.lastMeter - b.lastMeter,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Cashier ID',
-      dataIndex: 'cashierTransId',
-      key: 'cashierTransId',
-      width: 100
+      title: 'Cashier',
+      dataIndex: 'technicianName',
+      key: 'technicianName',
+      width: 120
     },
     {
-      title: 'Cashier',
-      dataIndex: 'cashierName',
-      key: 'cashierName',
+      title: 'Member',
+      dataIndex: 'memberName',
+      key: 'memberName',
       width: 100
     },
     {
@@ -107,11 +121,11 @@ const BrowseGroup = ({
       key: 'status',
       width: 100,
       render: text =>
-        (<span>
-          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
-          </Tag>
-        </span>),
+      (<span>
+        <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
+          {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+        </Tag>
+      </span>),
       filters: [{
         text: 'Active',
         value: 'A'
@@ -123,12 +137,6 @@ const BrowseGroup = ({
       onFilter: (value, record) => record.status.indexOf(value) === 0
     },
     {
-      title: 'No',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      width: 180
-    },
-    {
       title: <Icon type="setting" />,
       key: 'operation',
       fixed: 'right',
@@ -136,17 +144,25 @@ const BrowseGroup = ({
       render: (text, record) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
-          menuOptions={[
-            { key: '1', name: 'Print', icon: 'printer' },
-            { key: '2', name: 'Void', icon: 'delete' }
-          ]}
+          menuOptions={(
+            user.permissions.role === 'OWN'
+            || user.permissions.role === 'SPR'
+            || user.permissions.role === 'ADM'
+          ) ? [
+              { key: '1', name: 'Print', icon: 'printer' },
+              { key: '2', name: 'Payment', icon: 'pay-circle-o' },
+              { key: '3', name: 'Void', icon: 'delete' }
+            ] : [
+              { key: '1', name: 'Print', icon: 'printer' },
+              { key: '3', name: 'Void', icon: 'delete' }
+            ]}
         />)
       }
     }
   ]
-  const onChange = (date, dateString) => {
-    let dateFormat = moment(dateString).format('YYYY-MM-DD')
-    let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
+  const onChange = (date) => {
+    let dateFormat = moment(date[0]).format('YYYY-MM-DD')
+    let lastDate = moment(date[1]).format('YYYY-MM-DD')
     onChangePeriod(dateFormat, lastDate)
   }
 
@@ -160,11 +176,11 @@ const BrowseGroup = ({
         <Col {...filterItemLayout} >
           <FormItem hasFeedBack >
             {getFieldDecorator('period', {
-              initialValue: moment(new Date(), 'YYYYMM'),
+              initialValue: [moment().startOf('month'), moment().endOf('month')],
               rules: [{
                 required: true
               }]
-            })(<MonthPicker disabledDate={disabledDate} onChange={onChange} placeholder="Select Period" />)}
+            })(<RangePicker disabledDate={disabledDate} onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
         </Col>
         <Col {...searchBarLayout}>
@@ -176,7 +192,20 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} bordered columns={columns} dataSource={dataSource} loading={loading} />
+      <Table
+        pageSize={5}
+        size="small"
+        scroll={{ x: 1000, y: 500 }}
+        bordered
+        columns={columns}
+        dataSource={user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADM' ? dataSource.sort((a, b) => b.id - a.id) : dataSource.slice(dataSource.length - 5, dataSource.length).sort((a, b) => b.id - a.id)}
+        loading={loading}
+        pagination={user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADM'}
+      />
     </Form>
   )
 }

@@ -15,6 +15,7 @@ const Promo = ({
   className,
   visible = false,
   loading,
+  detail = true,
   onChooseItem,
   enableChoosePromoDetail = true,
   showPagination = true,
@@ -86,17 +87,6 @@ const Promo = ({
       render: (text, record) => {
         return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
       }
-    },
-    {
-      title: '',
-      width: `${width * 0.08}px`,
-      render: (text, record) => {
-        return (
-          <div>
-            <PromoProductReward enableChoosePromoDetail={enableChoosePromoDetail} currentId={record.id} onChooseItem={() => onChooseItem(record)} />
-          </div >
-        )
-      }
     }
   ],
   isModal = true,
@@ -154,6 +144,20 @@ const Promo = ({
         pageSize: page.pageSize
       }
     })
+  }
+
+  if (detail) {
+    columns = columns.concat([{
+      title: '',
+      width: `${width * 0.08}px`,
+      render: (text, record) => {
+        return (
+          <div>
+            <PromoProductReward enableChoosePromoDetail={enableChoosePromoDetail} currentId={record.id} onChooseItem={() => onChooseItem(record)} />
+          </div>
+        )
+      }
+    }])
   }
 
   return (
@@ -215,7 +219,7 @@ const Promo = ({
             <FormItem>
               <Button onClick={handleReset}>Reset</Button>
             </FormItem>
-            <Link target="_blank" to={'/master/product/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
+            <Link target="_blank" to={'/stock'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="dashed" size="large">Add New</Button></Link>
           </Form>}
           <Table
             {...tableProps}

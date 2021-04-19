@@ -13,11 +13,34 @@ const { pos, posdetail } = config.api
 //   })
 // }
 
+export async function queryList (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/pos-detail',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   const storeId = lstorage.getCurrentUserStore()
   params.storeId = storeId
   const url = pos
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPaymentPos (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const storeId = lstorage.getCurrentUserStore()
+  params.storeId = storeId
+  const url = '/payment/pos'
   return request({
     url,
     method: 'get',
@@ -53,6 +76,18 @@ export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   const url = `${posdetail}/${encodeURIComponent(params.id)}`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryDetailConsignment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `/posconsignment/${encodeURIComponent(params.id)}`
   return request({
     url,
     method: 'get',

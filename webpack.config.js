@@ -1,4 +1,5 @@
 // const webpack = require('webpack')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = (webpackConfig) => {
   // FilenameHash
@@ -20,6 +21,8 @@ module.exports = (webpackConfig) => {
   //   enforce: 'pre',
   //   loader: 'eslint',
   // }]
+
+  webpackConfig.plugins.push(new Dotenv())
 
   // plugins: [
   //   new webpack.DefinePlugin({

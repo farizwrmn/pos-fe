@@ -128,7 +128,7 @@ export default {
           title: 'Something went wrong',
           content: 'data is not found'
         })
-        yield put(routerRedux.push('/accounts/payment'))
+        yield put(routerRedux.push('/accounts/payable'))
       }
     },
     * add ({ payload }, { call, put }) {
@@ -150,7 +150,7 @@ export default {
           }
         })
         success('Payment has been saved')
-        // setInterval(() => { location.reload() }, 1000)
+        // setTimeout(() => { location.reload() }, 1000)
       } else {
         throw data
       }
@@ -174,7 +174,7 @@ export default {
           }
         })
         success(`Payment ${payload.transNo} has been void`)
-        // setInterval(() => { location.reload() }, 1000)
+        // setTimeout(() => { location.reload() }, 1000)
       } else {
         throw data
       }

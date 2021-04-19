@@ -109,9 +109,7 @@ export default modelExtend(pageModel, {
           }
           let tempData = data
           let sortArrayNullAsc = []
-          data = arrayToTree(tempData.filter(_ => _.mpid !== '-1'), 'menuId', 'mpid')
-          for (let key in data) sortArrayNullAsc.push(data[key])
-          data = arrayToTree(tempData.filter(_ => _.mpid === '-1'), 'menuId', 'mpid')
+          data = arrayToTree(tempData, 'menuId', 'bpid')
           for (let key in data) sortArrayNullAsc.push(data[key])
           sortArrayNullAsc.sort((x, y) => x.menuId - y.menuId)
           yield put({

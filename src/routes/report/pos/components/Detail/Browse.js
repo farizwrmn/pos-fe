@@ -3,69 +3,71 @@ import { Table } from 'antd'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 
-const { formatNumberIndonesia } = numberFormat
+const { numberFormatter } = numberFormat
 
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
-      title: 'Invoice',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      width: '155px'
-    },
-    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '175px',
+      width: '75px',
+      sorter: (a, b) => moment.utc(a.transDate, 'YYYY-MM-DD') - moment.utc(b.transDate, 'YYYY-MM-DD'),
       render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
+    },
+    {
+      title: 'Invoice',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: '100px'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '200px'
+      width: '150px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.productCode}</div>
+            <div>{record.productName}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: '250px'
+      title: 'Payment',
+      dataIndex: 'payment',
+      key: 'payment',
+      width: '150px',
+      render: (text) => {
+        if (text && text.length > 0) {
+          return (
+            <div>
+              <div>Machine: {text[0].paymentMachine ? text[0].paymentMachine.name : 'CASH'}</div>
+            </div>
+          )
+        }
+        return (
+          <div>
+            <div>PENDING</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
       width: '50px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
-    },
-    {
-      title: 'Unit Price',
-      dataIndex: 'sellingPrice',
-      key: 'sellingPrice',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
-    },
-    {
-      title: 'Sub Total',
-      dataIndex: 'total',
-      key: 'total',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
-    },
-    {
-      title: 'Discount',
-      dataIndex: 'totalDiscount',
-      key: 'totalDiscount',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text)}</p>
     },
     {
       title: 'Total',
       dataIndex: 'netto',
       key: 'netto',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+      width: '50px',
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text)}</p>
     }
   ]
 
@@ -73,7 +75,7 @@ const Browse = ({ ...browseProps }) => {
     <Table
       {...browseProps}
       bordered
-      scroll={{ x: 1200, y: 700 }}
+      scroll={{ x: 475 }}
       columns={columns}
       simple
       size="small"

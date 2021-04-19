@@ -3,7 +3,12 @@ import BodyItem from './BodyItem'
 import Group from './Group'
 import styles from './index.less'
 
-const Body = ({ dataPos = [], dataService = [], dataGroup = [] }) => {
+const Body = ({
+  dataPos = [],
+  dataService = [],
+  dataGroup = [],
+  dataConsignment = []
+}) => {
   return (
     <div>
       <div className={styles.borderedSection}>
@@ -13,6 +18,11 @@ const Body = ({ dataPos = [], dataService = [], dataGroup = [] }) => {
           )
         })}
         {dataService && dataService.filter(filtered => !filtered.bundlingId).map((item, index) => {
+          return (
+            <BodyItem key={index} item={item} />
+          )
+        })}
+        {dataConsignment && dataConsignment.map((item, index) => {
           return (
             <BodyItem key={index} item={item} />
           )

@@ -97,7 +97,7 @@
 //     mpid: '24',
 //     name: 'Stock',
 //     icon: 'shop',
-//     route: '/master/product/stock',
+//     route: '/stock',
 //   },
 //   {
 //     id: '25',

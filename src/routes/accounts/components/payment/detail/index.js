@@ -9,8 +9,14 @@ import FormPayment from './FormPayment'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
-const Detail = ({ paymentDetail, paymentOpts, pos, dispatch }) => {
+const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
   const { listDetail, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
+  const {
+    listPayment: listEdc
+  } = paymentEdc
+  const {
+    listPayment: listCost
+  } = paymentCost
   const { listOpts } = paymentOpts
   const { cashierInformation } = pos
   const content = []
@@ -30,10 +36,43 @@ const Detail = ({ paymentDetail, paymentOpts, pos, dispatch }) => {
   const modalProps = {
     width: '68%',
     data,
+    listEdc,
+    listCost,
     listAmount,
     cashierInformation,
     options: listOpts,
     visible: modalVisible,
+    onGetCost (machineId) {
+      dispatch({
+        type: 'paymentCost/query',
+        payload: {
+          machineId,
+          relationship: 1
+        }
+      })
+    },
+    onGetMachine (paymentOption) {
+      dispatch({
+        type: 'paymentEdc/query',
+        payload: {
+          paymentOption
+        }
+      })
+    },
+    onResetMachine () {
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          listPayment: []
+        }
+      })
+      dispatch({
+        type: 'paymentCost/updateState',
+        payload: {
+          listPayment: []
+        }
+      })
+    },
     onOk (e) {
       dispatch({
         type: 'paymentDetail/updateState',
@@ -156,4 +195,4 @@ Detail.propTypes = {
   pos: PropTypes.object.isRequired
 }
 
-export default connect(({ paymentDetail, pos, paymentOpts, dispatch, loading }) => ({ paymentDetail, pos, paymentOpts, dispatch, loading }))(Detail)
+export default connect(({ paymentDetail, paymentEdc, paymentCost, pos, paymentOpts, dispatch, loading }) => ({ paymentDetail, paymentEdc, paymentCost, pos, paymentOpts, dispatch, loading }))(Detail)

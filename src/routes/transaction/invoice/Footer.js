@@ -7,7 +7,7 @@ const Footer = () => {
       <div className={styles.reward}>
         <div>Redeem your reward at</div>
         <div>
-          <strong>www.k3mart.id</strong>
+          <strong>{window.location.hostname.replace('pos.', 'www.')}</strong>
         </div>
       </div>
       <div className={styles.amountSection}>

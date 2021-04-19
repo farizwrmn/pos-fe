@@ -4,7 +4,6 @@ import moment from 'moment'
 import { isEmptyObject, lstorage, color } from 'utils'
 import {
   currencyFormatter,
-  discountFormatter,
   numberFormatter
 } from 'utils/string'
 import { Icon, Table, Tabs } from 'antd'
@@ -24,6 +23,11 @@ class TransactionDetail extends Component {
       pos,
       product,
       service,
+      consignment,
+      listTrans = product.map(item => ({ ...item, type: 'Product' }))
+        .concat(service.map(item => ({ ...item, type: 'Service' })))
+        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+        .map((item, index) => ({ ...item, no: index + 1 })),
       loading
     } = this.props
     const {
@@ -87,14 +91,14 @@ class TransactionDetail extends Component {
 
     return (
       <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
-        <TabPane tab="Product" key="1">
+        <TabPane tab="Sales" key="1">
           <Table
             loading={loading}
             rowKey={(record, key) => key}
-            pagination={{ pageSize: 5 }}
             bordered
+            pagination={false}
             size="small"
-            scroll={{ x: '680px', y: '220px' }}
+            scroll={{ x: '680px' }}
             locale={{
               emptyText: 'Your Payment List'
             }}
@@ -102,7 +106,14 @@ class TransactionDetail extends Component {
               {
                 title: 'No',
                 width: '40px',
-                dataIndex: 'no'
+                dataIndex: 'no',
+                sortOrder: 'descend',
+                sorter: (a, b) => a.no - b.no
+              },
+              {
+                title: 'Type',
+                width: '150px',
+                dataIndex: 'type'
               },
               {
                 title: 'Product',
@@ -111,8 +122,7 @@ class TransactionDetail extends Component {
                 render: (text, record) => {
                   return (
                     <div>
-                      <div>{`Product Code: ${record.code}`}</div>
-                      <div>{`Product Name: ${record.name}`}</div>
+                      <div><strong>{record.code}</strong>-{record.name}</div>
                     </div>
                   )
                 }
@@ -130,96 +140,16 @@ class TransactionDetail extends Component {
                 width: '300px',
                 className: styles.alignRight,
                 render: (text, record) => {
-                  const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  const disc1 = record.disc1
-                  const disc2 = record.disc2
-                  const disc3 = record.disc3
-                  const discount = record.discount
                   const total = record.total
                   return (
                     <div>
-                      <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                      <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
-                      <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
-                      <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
-                      <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                      <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                      </div>
+                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
                     </div>
                   )
                 }
               }
             ]}
-            dataSource={product}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-        <TabPane tab="Service" key="2">
-          <Table
-            loading={loading}
-            rowKey={(record, key) => key}
-            pagination={{ pageSize: 5 }}
-            bordered
-            size="small"
-            scroll={{ x: '680px', y: '220px' }}
-            locale={{
-              emptyText: 'Your Payment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '40px',
-                dataIndex: 'no'
-              },
-              {
-                title: 'Service',
-                dataIndex: 'code',
-                width: '300px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div>{`Service Code: ${record.code}`}</div>
-                      <div>{`Service Name: ${record.name}`}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '300px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  const disc1 = record.disc1
-                  const disc2 = record.disc2
-                  const disc3 = record.disc3
-                  const discount = record.discount
-                  const total = record.total
-                  return (
-                    <div>
-                      <div>{`Sell Price: ${currencyFormatter(sellPrice)}`}</div>
-                      <div>{`Disc 1: ${discountFormatter(disc1)}`}</div>
-                      <div>{`Disc 2: ${discountFormatter(disc2)}`}</div>
-                      <div>{`Disc 3: ${discountFormatter(disc3)}`}</div>
-                      <div>{`Disc (N): ${currencyFormatter(discount)}`}</div>
-                      <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                      </div>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            dataSource={service}
+            dataSource={listTrans}
             style={{ marginBottom: 16 }}
           />
         </TabPane>

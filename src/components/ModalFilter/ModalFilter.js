@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { lstorage, formatDate } from 'utils'
-import { Form, Modal, DatePicker, Button, Select } from 'antd'
+import { lstorage } from 'utils'
+import { Form, Modal, DatePicker } from 'antd'
 import List from './List'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
-const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -38,8 +37,7 @@ const ModalFilter = ({
     validateFields
   }
 }) => {
-  const { list, listCashier, cashierInfo, modalVisible, searchText, listCashRegister, pagination,
-    currentCashier } = cashier
+  const { listCashier, modalVisible, searchText, pagination } = cashier
   const modalListProps = {
     listCashier,
     searchText,
@@ -126,48 +124,6 @@ const ModalFilter = ({
     }
   }
 
-  const openModal = () => {
-    dispatch({
-      type: 'cashier/updateState',
-      payload: {
-        modalVisible: true,
-        listCashier: list
-      }
-    })
-    dispatch({ type: 'cashier/query' })
-  }
-
-  const selectStatus = (value) => {
-    let item = {}
-    item.cashierId = cashierInfo.cashierId
-    item.status = value
-    item.storeId = lstorage.getCurrentUserStore()
-    if (item.cashierId) {
-      dispatch({
-        type: 'cashier/getCashRegisterByStore',
-        payload: {
-          item
-        }
-      })
-      dispatch({
-        type: 'cashier/updateState',
-        payload: {
-          currentCashier: { id: null, status: null }
-        }
-      })
-    }
-  }
-
-  let buttonName = 'Find Cashier'
-  if (cashierInfo.cashierId) {
-    let name = cashierInfo.cashierId
-    buttonName = name
-    if (name.length > 17) {
-      buttonName = `${name.slice(0, 17)}...`
-    }
-  }
-  const cashierTrans = (listCashRegister && listCashRegister.length) ? listCashRegister.map(x => (<Option value={x.id}>{`(${formatDate(x.period)}) ${x.shiftName}-${x.counterName}`}</Option>)) : []
-
   let modalOpts = {
     ...modalProps,
     onOk () {
@@ -175,15 +131,7 @@ const ModalFilter = ({
         if (errors) {
           return
         }
-        const item = getFieldsValue()
-        dispatch({
-          type: 'cashier/updateState',
-          payload: {
-            currentCashier: { id: item.cashierTransId || null, status: item.status }
-          }
-        })
-        let data = { date: item.date, cashierTransId: item.cashierTransId, ...item }
-
+        let data = { ...getFieldsValue() }
         onSubmitFilter(data)
       })
     }
@@ -204,29 +152,6 @@ const ModalFilter = ({
           )}
         </FormItem>
         {fields}
-        <FormItem label="Cashier Id" hasFeedback {...formItemLayout}>
-          <Button type="primary" size="large" onClick={openModal} style={{ width: '50%' }}>{buttonName}</Button>
-        </FormItem>
-        <FormItem label="Status" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('status', {
-            initialValue: currentCashier.status
-          })(<Select allowClear style={{ width: '50%' }} onChange={selectStatus}>
-            <Option value="O">Open</Option>
-            <Option value="C">Close</Option>
-            <Option value="R" disabled>Request</Option>
-            <Option value="V" disabled>Verify</Option>
-            <Option value="">All Status</Option>
-          </Select>)}
-        </FormItem>
-        <FormItem label="Cashier Trans" {...formItemLayout}>
-          {getFieldDecorator('cashierTransId', {
-            initialValue: currentCashier.id || ((listCashRegister && listCashRegister.length) ? listCashRegister[0].id : null)
-          })(
-            <Select allowClear disabled={!(listCashRegister && listCashRegister.length)}>
-              {cashierTrans}
-            </Select>
-          )}
-        </FormItem>
         {addOn.map(data =>
           (<FormItem label={data.label} {...formItemLayout}>
             {getFieldDecorator(data.decorator)(data.component)}

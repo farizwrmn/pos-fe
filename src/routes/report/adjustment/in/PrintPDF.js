@@ -65,7 +65,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN ADJUSTMENT IN PER FAKTUR',
+            text: 'LAPORAN ADJUSTMENT IN',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

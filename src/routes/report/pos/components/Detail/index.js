@@ -3,15 +3,26 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { ModalFilter } from 'components'
+import { routerRedux } from 'dva/router'
+import { numberFormat } from 'utils'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, loading, posReport, app }) => {
+const Report = ({ dispatch, loading, location, posReport, app }) => {
   const { listPOS, listPOSDetail, fromDate, toDate, modalFilterPOSByDetail } = posReport
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listPOSDetail,
-    loading: loading.effects['posReport/queryPOSDetail']
+    pagination: false,
+    loading: loading.effects['posReport/queryPOSDetail'],
+    title: () => {
+      let totalAfterDiscount = listPOSDetail.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
+      return (
+        <div className="total">
+          <div>{`Total: ${numberFormat.numberFormatter(totalAfterDiscount)}`}</div>
+        </div>
+      )
+    }
   }
 
   const showFilter = () => {
@@ -37,48 +48,40 @@ const Report = ({ dispatch, loading, posReport, app }) => {
     toDate,
     showFilter,
     onListReset () {
+      const { pathname, query } = location
       dispatch({
         type: 'posReport/setListNull'
       })
       dispatch({
         type: 'cashier/resetFilter'
       })
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: query.activeKey || '4'
+        }
+      }))
     }
   }
 
   const modalProps = {
     visible: modalFilterPOSByDetail,
-    date: [moment(fromDate, 'YYYY-MM-DD'), moment(toDate, 'YYYY-MM-DD')],
+    date: [moment.utc(fromDate, 'YYYY-MM-DD'), moment.utc(toDate, 'YYYY-MM-DD')],
     title: 'Filter',
     onCancel () {
       showFilter()
     },
     onSubmitFilter (data) {
-      const { date, ...other } = data
-      dispatch({
-        type: 'posReport/queryPOS',
-        payload: {
-          startPeriod: moment(date[0]).format('YYYY-MM-DD'),
-          endPeriod: moment(date[1]).format('YYYY-MM-DD'),
-          ...other,
-          status: 'A'
-        }
-      })
-      dispatch({
-        type: 'posReport/queryPOSDetail',
-        payload: {
-          from: moment(date[0]).format('YYYY-MM-DD'),
-          to: moment(date[1]).format('YYYY-MM-DD'),
-          ...other
-        }
-      })
-      dispatch({
-        type: 'posReport/setDate',
-        payload: {
+      const { date } = data
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
           from: moment(date[0]).format('YYYY-MM-DD'),
           to: moment(date[1]).format('YYYY-MM-DD')
         }
-      })
+      }))
       showFilter()
     }
   }

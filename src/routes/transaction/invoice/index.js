@@ -1,30 +1,35 @@
 import React from 'react'
 import { connect } from 'dva'
-import { posTotal } from 'utils'
+import { posTotal, lstorage } from 'utils'
 import moment from 'moment'
+import { LocaleProvider } from 'antd'
+import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 import Header from './Header'
 import Body from './Body'
 import Total from './Total'
-import Footer from './Footer'
+// import Footer from './Footer'
 import MerchantCopy from './MerchantCopy'
 import Member from './Member'
 import { groupProduct } from './utils'
+import ModalConfirm from './ModalConfirm'
 
-const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
+const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) => {
   const {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
-    posData
+    posData,
+    modalConfirmVisible
   } = pos
   const {
-    listAmount
+    listAmount,
+    listAmountInvoice
   } = paymentDetail
   const {
     listOpts
   } = paymentOpts
-  const { storeInfo } = app
+  const { storeInfo, user } = app
   const { companyInfo } = payment
   const data = {
     posData,
@@ -104,15 +109,18 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
   for (let k = 0; k < dataPos.length; k += 1) {
     dataPos[k].no = k + 1
   }
+
   const invoiceInfo = {
     dataPos,
     dataService,
+    posData,
     dataGroup: groupProduct(dataGroup),
-    transDatePrint: moment(`${posData.transDate} ${posData.transNo}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
+    transDatePrint: moment(`${posData.transDate} ${posData.transTime}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
     memberId: data.memberPrint.memberCode,
     gender: data.memberPrint.gender,
     company: data.companyPrint,
     lastTransNo: listPaymentDetail.id,
+    consignmentNo: data.posData.consignmentNo,
     unitInfo: {
       ...listPaymentDetail
     },
@@ -129,32 +137,93 @@ const Invoice = ({ pos, paymentOpts, paymentDetail, app, payment }) => {
     printNo: 'copy'
   }
 
+  const onShowDeliveryOrder = () => {
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalConfirmVisible: true
+      }
+    })
+  }
+
+  const formConfirmOpts = {
+    listItem: invoiceInfo.dataPos,
+    itemHeader: {
+      storeId: {
+        label: lstorage.getCurrentUserStoreName()
+      },
+      employeeId: {},
+      ...posData
+    }
+  }
+
+  const modalOpts = {
+    visible: modalConfirmVisible,
+    modalConfirmVisible,
+    user,
+    printNo: 1,
+    storeInfo,
+    ...formConfirmOpts,
+    onShowModal () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: true
+        }
+      })
+    },
+    onOkPrint () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: false
+        }
+      })
+    }
+  }
+
   return (
-    <div className={styles.invoiceMini}>
-      <Header invoiceInfo={invoiceInfo} />
-      <Body
-        dataPos={invoiceInfo.dataPos || []}
-        dataService={invoiceInfo.dataService || []}
-        dataGroup={invoiceInfo.dataGroup || []}
-      />
-      <Total
-        posData={posData}
-        listAmount={listAmount}
-        listOpts={listOpts}
-        dataPos={invoiceInfo.dataPos || []}
-        dataService={invoiceInfo.dataService || []}
-        dataGroup={invoiceInfo.dataGroup || []}
-      />
-      <div className={styles.separator} />
-      <Footer />
-      <MerchantCopy
-        posData={posData}
-        dataPos={invoiceInfo.dataPos || []}
-        dataService={invoiceInfo.dataService || []}
-        invoiceInfo={invoiceInfo}
-      />
-      <Member invoiceInfo={invoiceInfo} />
-    </div>
+    <LocaleProvider locale={enUS}>
+      <div className={styles.invoiceMini}>
+        <Header onShowDeliveryOrder={onShowDeliveryOrder} invoiceInfo={invoiceInfo} />
+        <Body
+          dataPos={invoiceInfo.dataPos || []}
+          dataService={invoiceInfo.dataService || []}
+          dataGroup={invoiceInfo.dataGroup || []}
+          dataConsignment={listPaymentDetail.dataConsignment || []}
+        />
+        <Total
+          posData={posData}
+          listAmount={listAmount}
+          listOpts={listOpts}
+          dataPos={invoiceInfo.dataPos || []}
+          dataService={invoiceInfo.dataService || []}
+          dataGroup={invoiceInfo.dataGroup || []}
+          dataConsignment={listPaymentDetail.dataConsignment || []}
+        />
+        {/* <div className={styles.separator} /> */}
+        {/* <Footer /> */}
+        <MerchantCopy
+          posData={posData}
+          dataPos={invoiceInfo.dataPos || []}
+          dataService={invoiceInfo.dataService || []}
+          dataConsignment={listPaymentDetail.dataConsignment || []}
+          dataGroup={invoiceInfo.dataGroup || []}
+          invoiceInfo={invoiceInfo}
+          listAmount={listAmountInvoice}
+        />
+        <Member invoiceInfo={invoiceInfo} />
+        {modalConfirmVisible && <ModalConfirm {...modalOpts} />}
+      </div>
+    </LocaleProvider>
   )
 }
 

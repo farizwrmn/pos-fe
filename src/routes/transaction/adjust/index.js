@@ -10,10 +10,11 @@ import AdjustFormEdit from './AdjustFormEdit'
 
 const TabPane = Tabs.TabPane
 
-const Adjust = ({ location, pos, dispatch, adjust, productstock, loading }) => {
+const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, loading }) => {
   const {
     activeKey, lastTrans, templistType, pagination, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalType
   } = adjust
+  const { listAccountCode } = accountCode
   const {
     tmpProductList
   } = pos
@@ -97,8 +98,10 @@ const Adjust = ({ location, pos, dispatch, adjust, productstock, loading }) => {
       })
     }
   }
+
   const adjustProps = {
     ...browseProps,
+    listAccountCode,
     item: currentItem,
     dispatch,
     lastTrans,
@@ -331,6 +334,7 @@ const Adjust = ({ location, pos, dispatch, adjust, productstock, loading }) => {
 
 Adjust.propTypes = {
   adjust: PropTypes.object.isRequired,
+  accountCode: PropTypes.object.isRequired,
   productstock: PropTypes.object.isRequired,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -338,4 +342,4 @@ Adjust.propTypes = {
 }
 
 
-export default connect(({ pos, adjust, productstock, loading }) => ({ pos, adjust, productstock, loading }))(Adjust)
+export default connect(({ pos, adjust, productstock, accountCode, loading }) => ({ pos, adjust, productstock, accountCode, loading }))(Adjust)

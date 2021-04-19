@@ -12,7 +12,7 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const ProductCategory = ({ productcategory, loading, dispatch, location, app }) => {
-  const { listCategory, listCategoryCurrent, expandedTree, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
+  const { listCategory, lastTrans, listCategoryCurrent, expandedTree, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
   const { storeInfo, user } = app
   const filterProps = {
     display,
@@ -113,6 +113,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
   }
 
   const formProps = {
+    lastTrans,
     listCategory,
     listCategoryCurrent,
     expandedTree,

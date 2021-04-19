@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import { query as querySequence } from 'services/sequence'
 import { query, queryCode, add, edit, remove } from '../../services/master/productcategory'
 import { pageModel } from './../common'
 
@@ -15,6 +16,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     display: 'none',
+    lastTrans: '',
     isChecked: false,
     selectedRowKeys: [],
     activeKey: '0',
@@ -31,6 +33,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/master/product/category') {
           if (!activeKey) dispatch({ type: 'refreshView' })
+          dispatch({ type: 'queryLastAdjust' })
           dispatch({ type: 'queryLov' })
           dispatch({
             type: 'updateState',
@@ -39,11 +42,13 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query' })
-        } else if (pathname === '/marketing/promo' || pathname === '/tools/sellprice') {
+        } else if (pathname === '/marketing/promo'
+          || pathname === '/stock'
+          || pathname === '/tools/sellprice') {
           dispatch({ type: 'query', payload: { type: 'all' } })
         } else if (
-          pathname === '/master/work-order/category' ||
-          (pathname === '/master/product/specification' && activeKey === 0) ||
+          pathname === '/master/work-order/category'
+          || (pathname === '/master/product/specification' && activeKey === 0) ||
           pathname === '/marketing/promo' || pathname === '/marketing/target'
         ) {
           dispatch({ type: 'query' })
@@ -53,6 +58,17 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'CT',
+        type: 1,
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
 
     * query ({ payload = {} }, { call, put }) {
       let data = yield call(query, payload)
@@ -177,6 +193,10 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
 
     switchIsChecked (state, { payload }) {
       return { ...state, isChecked: !state.isChecked, display: payload }

@@ -2,8 +2,12 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain } from 'utils'
+import { query as querySequence } from 'services/sequence'
 import moment from 'moment'
-import { query, queryById, add, edit, queryPOSproduct, remove } from '../../services/master/productstock'
+import FormData from 'form-data'
+import { queryFifo } from 'services/report/fifo'
+import { uploadProductImage } from 'services/utils/imageUploader'
+import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { add as addVariantStock } from '../../services/master/variantStock'
 import { addSome as addSomeSpecificationStock, edit as editSpecificationStock } from '../../services/master/specificationStock'
 import { pageModel } from './../common'
@@ -23,6 +27,7 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
+    lastTrans: '',
     activeKey: '0',
     disable: '',
     searchText: '',
@@ -43,8 +48,11 @@ export default modelExtend(pageModel, {
     period: [],
     showPDFModal: false,
     mode: '',
+    inventoryMode: null,
     changed: false,
     stockLoading: false,
+    countStoreList: [],
+    modalQuantityVisible: false,
     aliases: {
       check1: true,
       check2: false,
@@ -54,25 +62,48 @@ export default modelExtend(pageModel, {
       alias2: ''
     },
     pagination: {
-      current: 1
+      current: 1,
+      showSizeChanger: true
     }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, mode, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/product/stock') {
+        switch (pathname) {
+          case '/integration/marketplace-product':
+          case '/master/store-price':
+          case '/report/fifo/history':
+            dispatch({ type: 'query' })
+            break
+          default:
+        }
+        if (pathname === '/stock') {
+          dispatch({ type: 'queryLastAdjust' })
           if (!activeKey) dispatch({ type: 'refreshView' })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            if (mode === 'inventory') {
+              dispatch({
+                type: 'queryInventory',
+                payload: {
+                  period: moment().format('MM'),
+                  year: moment().format('YYYY')
+                }
+              })
+            } else {
+              dispatch({ type: 'query', payload: other })
+            }
+          }
           dispatch({
             type: 'updateState',
             payload: {
               changed: false,
               activeKey: activeKey || '0',
               listSticker: [],
-              listItem: []
+              listItem: [],
+              inventoryMode: mode
             }
           })
         } else if (pathname === '/master/product/sticker') {
@@ -83,6 +114,18 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'PS',
+        type: 1,
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({ type: 'SuccessTransNo', payload: transNo })
+    },
+
     * queryItem ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
@@ -90,6 +133,44 @@ export default modelExtend(pageModel, {
           type: 'querySuccessItem',
           payload: data.data
         })
+      }
+    },
+
+    * queryInventory ({ payload = {} }, { call, put }) {
+      const date = payload
+      yield put({
+        type: 'setPeriod',
+        payload: date
+      })
+      yield put({
+        type: 'setNull',
+        payload: date
+      })
+      const data = yield call(queryFifo, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data && data.data.length > 0
+              ? data.data
+                .filter(filtered => filtered.count > 0)
+                .sort((a, b) => b.count - a.count)
+              : [],
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: undefined
+          }
+        })
+      } else {
+        throw data
       }
     },
 
@@ -178,6 +259,25 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * showProductStoreQty ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproductStore, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            countStoreList: listProductData.data,
+            modalQuantityVisible: true
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
+
     * queryItemById ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data) {
@@ -207,8 +307,42 @@ export default modelExtend(pageModel, {
       const modalType = yield select(({ productstock }) => productstock.modalType)
       const listSpecification = yield select(({ specification }) => specification.listSpecification)
 
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
+          const formData = new FormData()
+          formData.append('file', item.originFileObj)
+          const responseUpload = yield call(uploadProductImage, formData)
+          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+            uploadedImage.push(responseUpload.data.filename)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.productImage = uploadedImage
+      } else {
+        payload.data.productImage = 'no_image.png'
+      }
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
         let loadData = {}
         if (payload.data.useVariant) {
           loadData = {
@@ -237,10 +371,20 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            activeKey: '1',
             modalType: 'add',
             currentItem: {}
           }
         })
+        const { pathname, query } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: 1,
+            activeKey: '1'
+          }
+        }))
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -254,14 +398,54 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
+          if (item && item.originFileObj) {
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadProductImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+          } else if (item && item.name) {
+            uploadedImage.push(item.name)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
+
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const productId = yield select(({ productstock }) => productstock.currentItem.id)
+      const { location } = payload
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.productImage = uploadedImage
+      } else {
+        payload.data.productImage = 'no_image.png'
+      }
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)
       let listSpecificationCode = yield select(({ specificationStock }) => specificationStock.listSpecificationCode)
       const typeInput = yield select(({ specificationStock }) => specificationStock.typeInput)
       let loadData = {}
       if (data.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
         if ((listSpecificationCode || []).length > 0) {
           if (typeInput === 'edit') {
             for (let n = 0; n < listSpecificationCode.length; n += 1) {
@@ -305,10 +489,12 @@ export default modelExtend(pageModel, {
                 activeKey: '1'
               }
             })
-            const { pathname } = location
+            const { pathname, query } = location
             yield put(routerRedux.push({
               pathname,
               query: {
+                ...query,
+                page: 1,
                 activeKey: '1'
               }
             }))
@@ -335,10 +521,12 @@ export default modelExtend(pageModel, {
               activeKey: '1'
             }
           })
-          const { pathname } = location
+          const { pathname, query } = location
           yield put(routerRedux.push({
             pathname,
             query: {
+              ...query,
+              page: 1,
               activeKey: '1'
             }
           }))
@@ -358,6 +546,11 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+
+    SuccessTransNo (state, action) {
+      return { ...state, lastTrans: action.payload }
+    },
+
     showLoading (state) {
       return {
         ...state,

@@ -1,14 +1,36 @@
-import { request, config, crypt } from '../../utils'
+import { request, lstorage, config, crypt } from '../../utils'
 
 const { cashier } = config.api
+
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${cashier}/cashentry/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = 'typeCode'
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${cashier}/cashentry`,
     method: 'get',
     data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.order = 'typeCode'
+  return request({
+    url: `${cashier}/cashentry/${params.id}`,
+    method: 'get',
     headers: apiHeaderToken
   })
 }

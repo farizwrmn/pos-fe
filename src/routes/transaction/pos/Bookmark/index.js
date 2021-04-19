@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Avatar, Tabs, Spin, Pagination } from 'antd'
-import { currencyFormatter } from 'utils/string'
+import { Card, Tabs, Spin, Pagination } from 'antd'
+// import { currencyFormatter } from 'utils/string'
 import styles from './bookmark.less'
 import EmptyBookmark from './EmptyBookmark'
 import EmptyBookmarkGroup from './EmptyBookmarkGroup'
 
+const gridStyle = {
+  width: '50%',
+  textAlign: 'center'
+}
+
 const Bookmark = ({
   onChange,
   onChoose,
+  onChooseBundle,
   loading,
   productBookmarkGroup,
   productBookmark
@@ -34,15 +40,27 @@ const Bookmark = ({
                       {list && list.length > 0 ?
                         list.map((item, index) => {
                           return (
-                            <Card.Grid onClick={() => onChoose(item.product)} key={index} className={styles.card}>
-                              <div>
+                            <Card.Grid
+                              style={gridStyle}
+                              key={index}
+                              className={styles.card}
+                              onClick={() => {
+                                if (item.type === 'PRODUCT') {
+                                  onChoose(item.product)
+                                }
+                                if (item.type === 'BUNDLE') {
+                                  onChooseBundle(item.bundle)
+                                }
+                              }}
+                            >
+                              {/* <div>
                                 <Avatar size="large" src="/product-placeholder.jpg" />
-                              </div>
-                              <div>{item && item.product ? item.product.productCode : null}</div>
+                              </div> */}
+                              {/* <div>{item && item.product ? item.product.productCode : item.bundle.code}</div> */}
                               <div>
-                                <h3>{item && item.product ? item.product.productName : null}</h3>
+                                <h3>{item && item.product ? item.product.productName : item.bundle.name}</h3>
                               </div>
-                              <div>{currencyFormatter(item && item.product ? item.product.sellPrice : null)}</div>
+                              {/* <div>{item && item.product ? currencyFormatter(item.product.sellPrice) : null}</div> */}
                             </Card.Grid>
                           )
                         }) : (

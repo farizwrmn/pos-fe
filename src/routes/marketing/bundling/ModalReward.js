@@ -27,12 +27,14 @@ const modal = ({
         ...getFieldsValue()
       }
       data.no = item.no
+      data.id = item.id
       data.type = item.type
+      data.categoryCode = item.categoryCode
       data.productId = item.productId
       data.productCode = item.productCode
       data.productName = item.productName
-      data.sellingPrice = item.sellPrice
-      data.sellPrice = item.sellPrice
+      data.sellingPrice = data.sellPrice
+      data.sellPrice = data.sellPrice
       data.discount = 0
       data.disc1 = 0
       data.disc2 = 0
@@ -58,7 +60,6 @@ const modal = ({
     ...formEditProps,
     onOk: handleOk
   }
-  console.log('item', item, item.distPrice02)
 
   return (
     <Modal title={`Reward for ${item.productCode} - ${item.productName}`}

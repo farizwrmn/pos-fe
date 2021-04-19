@@ -44,13 +44,7 @@ const BasicReport = ({
   footer = {}
 }) => {
   const printPdf = () => {
-    if (tableHeader.length === 0 && tableFooter.length === 0) {
-      console.log('no header/footer')
-      Modal.warning({
-        title: 'Empty Data',
-        content: 'No Data in Storage'
-      })
-    } else if (tableBody.length === 0) {
+    if (tableBody.length === 0) {
       console.log('no body of content')
       Modal.warning({
         title: 'Empty Data',

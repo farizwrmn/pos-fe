@@ -115,6 +115,9 @@ const Customer = ({ customer, loading, customergroup, customertype, city, misc, 
         type: 'customer/delete',
         payload: id
       })
+    },
+    onCashback (id) {
+      dispatch(routerRedux.push(`/master/customer-migration/${id}`))
     }
   }
 

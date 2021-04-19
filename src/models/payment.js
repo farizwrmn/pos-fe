@@ -8,9 +8,10 @@ import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
 import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
+import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
@@ -130,7 +131,10 @@ export default {
         } else {
           let arrayProd = []
           const product = getCashierTrans()
+          const consignment = getConsignment()
+          const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
+          const typePembelian = localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
           const dataPos = product.concat(service)
           const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
@@ -200,14 +204,17 @@ export default {
               totalPrice
             }
           })
-          const dineIn = grandTotal * (dineInTax / 100)
+          const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
               dataPos: newArrayProd,
+              dataConsignment: consignment,
               dataBundle,
               transNo: trans,
               taxType: companySetting,
+              taxInvoiceNo: payload.taxInfo.taxInvoiceNo,
+              taxDate: payload.taxInfo.taxDate,
               storeId: lstorage.getCurrentUserStore(),
               memberCode: payload.memberCode,
               discountLoyalty: payload.useLoyalty || 0,
@@ -216,6 +223,7 @@ export default {
               transTime: payload.transTime,
               total: payload.grandTotal,
               dineInTax: dineIn,
+              typePembelian: dineInTax === 10 ? TYPE_PEMBELIAN_DINEIN : (dineInTax === 0 ? typePembelian : TYPE_PEMBELIAN_UMUM),
               lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
               creditCardNo: payload.creditCardNo,
               creditCardType: payload.creditCardType,
@@ -236,11 +244,10 @@ export default {
             if (data_create.success) {
               const responsInsertPos = data_create.pos
               // const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
-              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
-              invoiceWindow.focus()
               try {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
+                localStorage.removeItem('consignment')
                 yield localStorage.removeItem('member')
                 yield localStorage.removeItem('memberUnit')
                 yield localStorage.removeItem('mechanic')
@@ -315,6 +322,14 @@ export default {
                 title: 'Information',
                 content: 'Transaction has been saved...!'
               })
+              yield put({
+                type: 'pos/updateState',
+                payload: {
+                  modalConfirmVisible: true
+                }
+              })
+              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              invoiceWindow.focus()
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
@@ -936,6 +951,7 @@ export default {
         try {
           localStorage.removeItem('cashier_trans')
           localStorage.removeItem('service_detail')
+          localStorage.removeItem('consignment')
           localStorage.removeItem('member')
           localStorage.removeItem('memberUnit')
           localStorage.removeItem('mechanic')

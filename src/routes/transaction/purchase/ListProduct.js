@@ -67,7 +67,15 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName'
-    }, {
+    },
+    {
+      title: 'Cost Price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
@@ -103,6 +111,7 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
         <FormItem>
           <Input placeholder="Search Product Name"
             value={searchText}
+            ref={input => input && input.focus()}
             size="small"
             onChange={e => handleChange(e)}
             onPressEnter={handleSearch}

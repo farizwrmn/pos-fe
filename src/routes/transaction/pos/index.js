@@ -4,6 +4,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
+import {
+  TYPE_PEMBELIAN_UMUM,
+  TYPE_PEMBELIAN_GRABFOOD,
+  TYPE_PEMBELIAN_DINEIN,
+  TYPE_PEMBELIAN_GRABMART
+} from 'utils/variable'
 import { Reminder, DataQuery } from 'components'
 import {
   Icon,
@@ -13,7 +19,8 @@ import {
   Col,
   Card,
   Button,
-  Modal
+  Modal,
+  message
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
@@ -28,11 +35,12 @@ import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
+import ModalLogin from '../ModalLogin'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getConsignment } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -46,11 +54,13 @@ const keyMap = {
 }
 
 const Pos = ({
+  pospromo,
   location,
   customer,
   loading,
   dispatch,
   pos,
+  login,
   // shift,
   // counter,
   app,
@@ -60,7 +70,7 @@ const Pos = ({
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
-  const { setting } = app
+  const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
   const {
@@ -69,16 +79,20 @@ const Pos = ({
     modalAssetVisible,
     modalMechanicVisible,
     modalProductVisible,
+    modalConsignmentVisible,
     modalPaymentVisible,
     curQty,
     totalItem,
     curTotal,
     searchText,
     itemService,
+    itemConsignment,
     itemPayment,
     memberInformation,
     memberUnitInfo,
     modalServiceListVisible,
+    modalConsignmentListVisible,
+    modalLoginVisible,
     mechanicInformation,
     curRecord,
     // modalShiftVisible,
@@ -95,8 +109,11 @@ const Pos = ({
     listServiceReminder,
     modalAddUnit,
     cashierInformation,
-    dineInTax
+    dineInTax,
+    typePembelian,
+    modalLoginType
   } = pos
+  const { modalLoginData } = login
   const { modalPromoVisible } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
@@ -120,8 +137,9 @@ const Pos = ({
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   let product = getCashierTrans()
+  let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-  let dataPos = product.concat(service)
+  let dataPos = product.concat(service).concat(consignment)
   let a = dataPos
   let usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
@@ -257,8 +275,6 @@ const Pos = ({
     },
     handlePromoBrowse () {
       resetSelectText()
-      console.log('memberInformation', memberInformation)
-
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         dispatch({
           type: 'promo/query',
@@ -408,7 +424,19 @@ const Pos = ({
         content: 'this action will reset your current process',
         onOk () {
           dispatch({
-            type: 'pos/removeTrans'
+            type: 'pos/showModalLogin',
+            payload: {
+              modalLoginType: 'resetAllPosInput'
+            }
+          })
+          dispatch({
+            type: 'login/updateState',
+            payload: {
+              modalLoginData: {
+                transNo: user.username,
+                memo: 'Cancel Input POS'
+              }
+            }
           })
         }
       })
@@ -542,6 +570,22 @@ const Pos = ({
       type: 'pos/getProducts',
       payload: {
         active: 1
+      }
+    })
+  }
+
+  const handleConsignmentBrowse = () => {
+    resetSelectText()
+    dispatch({
+      type: 'pos/showConsignmentModal',
+      payload: {
+        modalType: 'browseConsignment'
+      }
+    })
+    dispatch({
+      type: 'pos/getConsignments',
+      payload: {
+        page: 1
       }
     })
   }
@@ -722,6 +766,26 @@ const Pos = ({
     }
   }
 
+  const modalLoginProps = {
+    modalLoginType,
+    modalLoginData,
+    visible: modalLoginVisible,
+    title: 'Supervisor Verification',
+    width: '320px',
+    footer: null,
+    onCancel () {
+      dispatch({
+        type: 'pos/hideModalLogin'
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
   const modalPaymentProps = {
     location,
     loading,
@@ -735,29 +799,52 @@ const Pos = ({
       dispatch({ type: 'pos/hidePaymentModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/paymentDelete', payload: data })
-    },
-    onChooseItem (data) {
       dispatch({
-        type: 'pos/checkQuantityEditProduct',
+        type: 'pos/showModalLogin',
         payload: {
-          data,
-          setting
+          modalLoginType: 'payment'
         }
       })
-      // dispatch({
-      //   type: 'pos/updateState',
-      //   payload: {
-      //     modalProductVisible: false
-      //   }
-      // })
-      // dispatch({ type: 'pos/paymentEdit', payload: data })
-    },
-    onChangeTotalItem (data) {
       dispatch({
-        type: 'pos/setTotalItem',
-        payload: data
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
       })
+    },
+    onChooseItem (data) {
+      if (data && data.qty === 0) {
+        message.warning('Qty is 0')
+        return
+      }
+      if (
+        itemPayment.qty !== data.qty
+        && itemPayment.disc1 === data.disc1
+        && itemPayment.disc2 === data.disc2
+        && itemPayment.disc3 === data.disc3
+        && itemPayment.discount === data.discount
+      ) {
+        dispatch({
+          type: 'pos/checkQuantityEditProduct',
+          payload: {
+            data,
+            setting
+          }
+        })
+      } else {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'editPayment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      }
     }
   }
   const ModalServiceListProps = {
@@ -772,16 +859,82 @@ const Pos = ({
     onCancel () {
       dispatch({ type: 'pos/hideServiceListModal' })
     },
+    DeleteItem (data) {
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'service'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
+      })
+    },
     onChooseItem (data) {
-      dispatch({ type: 'pos/serviceEdit', payload: data })
-      dispatch({ type: 'pos/hideServiceListModal' })
+      if (
+        !(itemService.qty !== data.qty
+          && itemService.disc1 === data.disc1
+          && itemService.disc2 === data.disc2
+          && itemService.disc3 === data.disc3
+          && itemService.discount === data.discount)
+      ) {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'editPayment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      } else {
+        dispatch({ type: 'pos/serviceEdit', payload: data })
+        dispatch({ type: 'pos/hideServiceListModal' })
+      }
+    }
+  }
+
+  console.log('itemConsignment', itemConsignment)
+
+  const ModalConsignmentListProps = {
+    location,
+    loading,
+    totalItem,
+    pos,
+    item: itemConsignment,
+    visible: modalConsignmentListVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({ type: 'pos/hideConsignmentListModal' })
+    },
+    onChooseItem (data) {
+      dispatch({ type: 'pos/consignmentEdit', payload: data })
+      dispatch({ type: 'pos/hideConsignmentListModal' })
     },
     DeleteItem (data) {
-      dispatch({ type: 'pos/serviceDelete', payload: data })
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'consignment'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: data
+        }
+      })
     },
     onChangeTotalItem (data) {
       dispatch({
-        type: 'pos/setTotalItemService',
+        type: 'pos/setTotalItemConsignment',
         payload: data
       })
     }
@@ -826,6 +979,44 @@ const Pos = ({
     })
   }
 
+  const chooseConsignment = (item) => {
+    dispatch({
+      type: 'pos/chooseConsignment',
+      payload: {
+        item
+      }
+    })
+  }
+
+  const modalConsignmentProps = {
+    location,
+    loading,
+    dispatch,
+    pos,
+    visible: modalConsignmentVisible,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onChange (e) {
+      dispatch({
+        type: 'pos/getConsignments',
+        payload: {
+          q: searchText === '' ? null : searchText,
+          page: Number(e.current)
+        }
+      })
+    },
+    onCancel () { dispatch({ type: 'pos/hideConsignmentModal' }) },
+    onChooseItem (item) {
+      chooseConsignment(item)
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          paymentListActiveKey: '3'
+        }
+      })
+    }
+  }
+
   const modalProductProps = {
     location,
     loading,
@@ -856,6 +1047,12 @@ const Pos = ({
     },
     onChooseItem (item) {
       chooseProduct(item)
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          paymentListActiveKey: '1'
+        }
+      })
     }
   }
 
@@ -887,16 +1084,26 @@ const Pos = ({
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
-        const checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
-        if (checkExists.length === 0) {
-          arrayProd.push({
-            no: arrayProd.length + 1,
+        let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        const { currentReward } = pospromo
+        let qty = curQty
+        if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+          item.serviceCost = currentReward.sellPrice
+          qty = currentReward.qty
+          // eslint-disable-next-line eqeqeq
+          checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode && el.bundleId == currentReward.bundleId) : []
+        }
+        // eslint-disable-next-line eqeqeq
+        if (currentReward && currentReward.categoryCode && currentReward.type === 'S' && checkExists && checkExists[0] && checkExists[0].bundleId == currentReward.bundleId) {
+          arrayProd[checkExists[0].no - 1] = {
+            no: checkExists[0].no,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
-            qty: curQty,
+            qty: checkExists[0].qty + qty,
             typeCode: 'S',
             sellPrice: item.serviceCost,
             price: item.serviceCost,
@@ -904,7 +1111,56 @@ const Pos = ({
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: item.serviceCost * curQty
+            total: item.serviceCost * (checkExists[0].qty + qty)
+          }
+
+          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+
+          dispatch({
+            type: 'pos/queryServiceSuccessByCode',
+            payload: {
+              listByCode: item,
+              curRecord: curRecord + 1
+            }
+          })
+
+          let successModal = Modal.info({
+            title: 'Success add service',
+            content: 'Service has been added in Service`s Tab'
+          })
+
+          dispatch({
+            type: 'pos/hideServiceModal'
+          })
+
+          setTimeout(() => successModal.destroy(), 1000)
+
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              paymentListActiveKey: '2'
+            }
+          })
+
+          setCurBarcode('', 1)
+        } else if (checkExists.length === 0) {
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            code: item.serviceCode,
+            productId: item.id,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            name: item.serviceName,
+            qty,
+            typeCode: 'S',
+            sellPrice: item.serviceCost,
+            price: item.serviceCost,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: item.serviceCost * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -938,7 +1194,7 @@ const Pos = ({
           setCurBarcode('', 1)
         } else {
           Modal.warning({
-            title: 'Cannot add product',
+            title: 'Cannot add service',
             content: 'Already Exists in list'
           })
         }
@@ -1048,6 +1304,7 @@ const Pos = ({
           discount: dataProductFiltered[n].discount,
           name: dataProductFiltered[n].name,
           price: dataProductFiltered[n].price,
+          sellPrice: dataProductFiltered[n].sellPrice,
           qty: dataProductFiltered[n].qty,
           typeCode: dataProductFiltered[n].typeCode,
           total: dataProductFiltered[n].total
@@ -1068,6 +1325,7 @@ const Pos = ({
           discount: dataServiceFiltered[n].discount,
           name: dataServiceFiltered[n].name,
           price: dataServiceFiltered[n].price,
+          sellPrice: dataServiceFiltered[n].sellPrice,
           qty: dataServiceFiltered[n].qty,
           typeCode: dataServiceFiltered[n].typeCode,
           total: dataServiceFiltered[n].total
@@ -1130,7 +1388,9 @@ const Pos = ({
           type: 'pos/getProductByBarcode',
           payload: {
             id: value,
-            type: 'barcode'
+            type: 'barcode',
+            day: moment().isoWeekday(),
+            storeId: lstorage.getCurrentUserStore()
           }
         })
       }
@@ -1165,12 +1425,23 @@ const Pos = ({
     })
   }
 
-  const handleChangeDineIn = (event) => {
+  const handleChangeDineIn = (event, type) => {
     localStorage.setItem('dineInTax', event)
+    localStorage.setItem('typePembelian', type)
+
+    dispatch({
+      type: 'pos/changeDineIn',
+      payload: {
+        dineInTax: event,
+        typePembelian: type
+      }
+    })
+
     dispatch({
       type: 'pos/updateState',
       payload: {
-        dineInTax: event
+        dineInTax: event,
+        typePembelian: type
       }
     })
   }
@@ -1182,6 +1453,8 @@ const Pos = ({
     dispatch({
       type: 'productBookmark/query',
       payload: {
+        day: moment().isoWeekday(),
+        storeId: lstorage.getCurrentUserStore(),
         groupId: key,
         relationship: 1,
         page,
@@ -1192,6 +1465,19 @@ const Pos = ({
   const listBookmark = productBookmarkGroup.list
   const hasBookmark = listBookmark && listBookmark.length > 0
 
+  const chooseBundle = (item) => {
+    dispatch({
+      type: 'pospromo/addPosPromo',
+      payload: {
+        type: 'all',
+        bundleId: item.id,
+        currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+        currentProduct: getCashierTrans(),
+        currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1200,17 +1486,18 @@ const Pos = ({
       />
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
-          <Col md={10} sm={24}>
+          <Col md={7} sm={0} xs={0}>
             <Bookmark
               loading={loading.effects['productBookmark/query']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
+              onChooseBundle={chooseBundle}
               productBookmarkGroup={productBookmarkGroup}
               productBookmark={productBookmark}
             />
           </Col>
         ) : null}
-        <Col md={hasBookmark ? 14 : 24} sm={24}>
+        <Col md={hasBookmark ? 17 : 24} sm={24}>
           <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
@@ -1234,6 +1521,17 @@ const Pos = ({
                       }}
                     >
                       Product
+                    </Button>
+                    <Button
+                      type="default"
+                      size="medium"
+                      icon="barcode"
+                      onClick={handleConsignmentBrowse}
+                      style={{
+                        margin: '0px 5px'
+                      }}
+                    >
+                      Consignment
                     </Button>
                   </div>
 
@@ -1264,6 +1562,7 @@ const Pos = ({
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}
             {modalMechanicVisible && <Browse {...modalMechanicProps} />}
+            {modalConsignmentVisible && <Browse {...modalConsignmentProps} />}
             {modalProductVisible && <Browse {...modalProductProps} />}
             {modalServiceVisible && <Browse {...modalServiceProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
@@ -1272,13 +1571,17 @@ const Pos = ({
             {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
+            {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
+            {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
               <Col md={24} lg={12}>
                 <Button.Group>
-                  <Button size="large" onClick={() => handleChangeDineIn(0)} type={dineInTax === 0 ? 'primary' : 'secondary'}>Take Away (0%)</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(10)} type={dineInTax && dineInTax === 10 ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away (0%)</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Grab Food</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Grab Mart</Button>
+                  <Button size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
                 </Button.Group>
               </Col>
               <Col md={24} lg={12}>
@@ -1340,7 +1643,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, app, loading, customerunit, payment
+  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)

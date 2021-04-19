@@ -23,10 +23,13 @@ export default {
           location.pathname === '/transaction/pos/'
           || location.pathname === '/transaction/pos'
           || location.pathname === '/transaction/pos/payment'
+          || location.pathname === '/bank-entry'
           || location.pathname === '/balance/current'
           || location.pathname === '/balance/dashboard'
           || location.pathname === '/balance/closing'
+          || location.pathname === '/balance/history'
           || location.pathname === '/balance/approvement'
+          || location.pathname === '/report/pos/payment'
           || matchEdc
         ) {
           dispatch({

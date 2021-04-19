@@ -6,11 +6,12 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form, Modal, Select } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, Modal, Select, Input } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
+const { Search } = Input
 const Option = Select.Option
 
 const leftColumn = {
@@ -35,6 +36,7 @@ const Filter = ({
   onChangePeriod,
   // productCode,
   // productName,
+  onUpdateDataSource,
   listProduct,
   listCategory,
   listBrand,
@@ -131,12 +133,12 @@ const Filter = ({
   let optionSelectName = []
   const selectChildren = () => {
     for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelectCode.push(<Option key={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
+      optionSelectCode.push(<Option key={listProduct[i].productCode.toString(36)} title={listProduct[i].productCode.toString(36)}>{listProduct[i].productCode.toString(36)}</Option>)
     }
   }
   const selectChildrenName = () => {
     for (let i = 0; i < listProduct.length; i += 1) {
-      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)}>{listProduct[i].productName.toString(36)}</Option>)
+      optionSelectName.push(<Option key={listProduct[i].productName.toString(36)} title={`${listProduct[i].productCode.toString(36)} - ${listProduct[i].productName.toString(36)}`}>{listProduct[i].productName.toString(36)}</Option>)
     }
   }
 
@@ -146,12 +148,12 @@ const Filter = ({
 
   let categories = []
   if (listCategory.length) {
-    categories.push(listCategory.map(x => (<Option key={x.id}>{x.categoryName}</Option>)))
+    categories.push(listCategory.map(x => (<Option key={x.id} title={x.categoryName}>{x.categoryName}</Option>)))
   }
 
   let brands = []
   if (listBrand.length) {
-    brands.push(listBrand.map(x => (<Option key={x.id}>{x.brandName}</Option>)))
+    brands.push(listBrand.map(x => (<Option key={x.id} title={x.brandName}>{x.brandName}</Option>)))
   }
 
   const onSelectCategory = (value) => {
@@ -170,6 +172,10 @@ const Filter = ({
     resetFields(['category', 'productName'])
   }
 
+  function onChangeSearch (value) {
+    onUpdateDataSource(value)
+  }
+
   return (
     <Row>
       <Col {...leftColumn} >
@@ -180,6 +186,23 @@ const Filter = ({
             <MonthPicker onChange={onChange} placeholder="Select Period" />
           )}
         </FilterItem>
+        {
+          activeKey === '1' &&
+          <Row>
+            <Col lg={12} md={24} >
+              <FilterItem label="Search">
+                {getFieldDecorator('search')(
+                  <Search
+                    style={{ width: '189px', margin: '5px 0' }}
+                    onSearch={(value) => {
+                      onChangeSearch(value)
+                    }}
+                  />
+                )}
+              </FilterItem>
+            </Col>
+          </Row>
+        }
         {activeKey === '3' &&
           <Row>
             <Col lg={12} md={24} >

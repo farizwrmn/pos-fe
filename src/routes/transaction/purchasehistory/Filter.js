@@ -30,21 +30,21 @@ const Filter = ({
     resetFields
   }
 }) => {
-  const data = {
-    ...getFieldsValue()
-  }
-
   const handleChangeDate = (date, dateString) => {
     filterChange(dateString)
-    resetFields(['transNo'])
+    resetFields(['transNo', 'supplierName'])
   }
 
-  const searchTransNo = (transNo) => {
-    if (transNo.length > 0) {
-      filterTransNo(transNo)
-    } else {
-      filterChange(data.period)
+  const searchTransNo = () => {
+    const data = {
+      ...getFieldsValue()
     }
+    const { period, ...other } = data
+    filterTransNo({
+      startPeriod: moment(period).startOf('month').format('YYYY-MM-DD'),
+      endPeriod: moment(period).endOf('month').format('YYYY-MM-DD'),
+      ...other
+    })
   }
 
   const disabledDate = (current) => {
@@ -62,10 +62,10 @@ const Filter = ({
       </Col>
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('transNo')(
+          {getFieldDecorator('q')(
             <Search
               placeholder="Search Invoice"
-              onSearch={value => searchTransNo(value)}
+              onSearch={() => searchTransNo()}
             />
           )}
         </FormItem>
