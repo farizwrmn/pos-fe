@@ -144,8 +144,8 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       title: 'Posting',
       dataIndex: 'posting',
       key: 'posting',
-      render: (text) => {
-        if (text) {
+      render: (text, record) => {
+        if (text || record.invoicing || record.paid) {
           return (
             <Tag color="green">
               Posted
@@ -163,8 +163,8 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       title: 'Invoiced',
       dataIndex: 'invoicing',
       key: 'invoicing',
-      render: (text) => {
-        if (text) {
+      render: (text, record) => {
+        if (text || record.paid) {
           return (
             <Tag color="green">
               Ivoiced

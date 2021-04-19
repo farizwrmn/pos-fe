@@ -65,8 +65,8 @@ const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
       title: 'Posting',
       dataIndex: 'posting',
       key: 'posting',
-      render: (text) => {
-        if (text) {
+      render: (text, record) => {
+        if (text || record.invoicing || record.paid) {
           return (
             <Tag color="green">
               Posted

@@ -463,7 +463,7 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
     },
     onSubmit (data, detail, oldValue, reset) {
       dispatch({
-        type: 'transferInvoice/edit',
+        type: 'transferInvoice/payment',
         payload: {
           data,
           detail,

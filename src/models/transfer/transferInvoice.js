@@ -5,7 +5,7 @@ import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from 'services/sequence'
-import { queryById, query, queryId, add, edit, remove } from 'services/transfer/transferInvoice'
+import { queryById, query, queryId, add, edit, remove, payment } from 'services/transfer/transferInvoice'
 import { query as queryDetail } from 'services/transfer/transferInvoiceDetail'
 import { queryDetail as queryTransferDetail, queryCost } from 'services/transferStockOut'
 import { pageModel } from '../common'
@@ -291,6 +291,56 @@ export default modelExtend(pageModel, {
           title: 'Transaction success',
           content: 'Transaction has been saved'
         })
+      } else {
+        throw data
+      }
+    },
+
+    * payment ({ payload }, { select, call, put }) {
+      const id = yield select(({ transferInvoice }) => transferInvoice.currentItem.id)
+      const newCounter = { ...payload, id }
+      const data = yield call(payment, newCounter)
+      if (data.success) {
+        success()
+        payload.reset()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            listItem: [],
+            activeKey: payload.forPayment ? '2' : '1'
+          }
+        })
+        const { pathname } = location
+        if (payload.forPayment) {
+          yield put(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: '2'
+            }
+          }))
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalPaymentVisible: false
+            }
+          })
+          yield put({
+            type: 'query',
+            payload: {
+              forPayment: 1
+            }
+          })
+        } else {
+          yield put(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: '1'
+            }
+          }))
+          yield put({ type: 'query' })
+        }
       } else {
         throw data
       }
