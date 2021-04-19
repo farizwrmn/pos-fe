@@ -171,6 +171,11 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
     },
     addModalItem (data) {
       const { listItem } = transferInvoice
+      const filtered = listItem && listItem.filter(filtered => filtered.transNo === data.transNo)
+      if (filtered && filtered[0]) {
+        message.error('Item already exists')
+        return
+      }
       data.no = (listItem || []).length + 1
       listItem.push(data)
       dispatch({
@@ -458,7 +463,7 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
     },
     onSubmit (data, detail, oldValue, reset) {
       dispatch({
-        type: 'transferInvoice/edit',
+        type: 'transferInvoice/payment',
         payload: {
           data,
           detail,

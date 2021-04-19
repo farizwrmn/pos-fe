@@ -113,7 +113,12 @@ const FormCounter = ({
               initialValue: item.productId ? {
                 key: item.productId,
                 label: `${item.productName} (${item.productCode})`
-              } : undefined
+              } : undefined,
+              rules: [
+                {
+                  required: true
+                }
+              ]
             })(<Select
               style={{ width: '250px' }}
               placeholder="Select Product"

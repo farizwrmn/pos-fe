@@ -63,6 +63,16 @@ export async function edit (params) {
   })
 }
 
+export async function payment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/transfer-invoice-payment/${params.id}`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({
