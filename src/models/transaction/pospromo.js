@@ -316,6 +316,7 @@ export default modelExtend(pageModel, {
           if ((filteredProduct || []).length > 0) {
             let ary = currentProduct
             ary.remove(filteredProduct[0].no - 1)
+            const item = currentReward[n]
             let data = {
               no: filteredProduct[0].no,
               code: currentReward[n].productCode,
@@ -327,9 +328,9 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: filteredProduct[0].qty + currentReward[n].qty,
-              sellPrice: currentReward[n].sellPrice,
+              sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
               sellingPrice: currentReward[n].sellPrice,
-              price: currentReward[n].sellPrice,
+              price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
               disc2: currentReward[n].disc2,
