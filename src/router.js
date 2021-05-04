@@ -1276,7 +1276,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userRole'))
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/employee'))
-              cb(null, require('./routes/setting/user/'))
+              cb(null, require('./routes/setting/user'))
             }, 'setting-user')
           }
         }, {

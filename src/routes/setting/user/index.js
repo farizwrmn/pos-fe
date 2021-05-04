@@ -189,7 +189,11 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
   }
 
   const browseProps = {
-    dataSource: list,
+    dataSource: user.permissions.role === 'OWN' ?
+      list :
+      list ?
+        list.filter(filtered => filtered.userId !== 'ownerPos') :
+        [],
     loading: loading.effects['user/query'],
     pagination,
     location,
