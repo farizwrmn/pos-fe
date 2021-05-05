@@ -6,7 +6,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 import Modal from './Modal'
 
-const User = ({ location, dispatch, user, loading, misc, employee, userRole, userStore }) => {
+const User = ({ location, app, dispatch, user, loading, misc, employee, userRole, userStore }) => {
   const { list, pagination, currentItem, modalVisible, searchVisible, visiblePopover,
     disabledItem, modalType, selectedRowKeys, disableMultiSelect, activeTab,
     totpChecked, totp
@@ -189,7 +189,7 @@ const User = ({ location, dispatch, user, loading, misc, employee, userRole, use
   }
 
   const browseProps = {
-    dataSource: user.permissions.role === 'OWN' ?
+    dataSource: app.user.permissions.role === 'OWN' ?
       list :
       list ?
         list.filter(filtered => filtered.userId !== 'ownerPos') :
@@ -316,8 +316,9 @@ User.propTypes = {
   userStore: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object
+  loading: PropTypes.object,
+  app: PropTypes.object
 }
 
 
-export default connect(({ user, misc, employee, userRole, userStore, loading }) => ({ user, misc, employee, userRole, userStore, loading }))(User)
+export default connect(({ user, misc, employee, userRole, userStore, loading, app }) => ({ user, misc, employee, userRole, userStore, loading, app }))(User)
