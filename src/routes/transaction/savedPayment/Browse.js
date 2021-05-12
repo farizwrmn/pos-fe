@@ -200,7 +200,7 @@ const BrowseGroup = ({
         columns={columns}
         dataSource={user.permissions.role === 'OWN'
           || user.permissions.role === 'SPR'
-          || user.permissions.role === 'ADM' ? dataSource.sort((a, b) => b.id - a.id) : dataSource.slice(dataSource.length - 5, dataSource.length).sort((a, b) => b.id - a.id)}
+          || user.permissions.role === 'ADM' ? dataSource.sort((a, b) => b.id - a.id) : dataSource.sort((a, b) => a.id - b.id).slice(dataSource.length - 5, dataSource.length).sort((a, b) => b.id - a.id)}
         loading={loading}
         pagination={user.permissions.role === 'OWN'
           || user.permissions.role === 'SPR'
