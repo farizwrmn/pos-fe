@@ -74,7 +74,7 @@ export default modelExtend(pageModel, {
     * queryReturnPurchaseDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, returnPurchaseDetail, ...other } = data.data
+        const { returnPurchaseDetail, ...other } = data.data
         yield put({
           type: 'updateState',
           payload: {
