@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { lstorage } from 'utils'
 import { query, queryById, add, edit, approve, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
     listDetail: [],
     listItem: [],
     listProduct: [],
+    listInvoice: [],
     list: [],
     currentItem: {},
     currentItemList: {},
@@ -28,6 +29,8 @@ export default modelExtend(pageModel, {
     modalEditItemVisible: false,
     modalProductVisible: false,
     modalInvoiceVisible: false,
+
+    modalReturnVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -87,6 +90,27 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryReturnDetailInvoice ({ payload = {} }, { call, put }) {
+      const header = yield call(query, {
+        queryType: 'toPayable',
+        supplierId: payload.supplierId
+      })
+      if (header && header.success) {
+        console.log('header', header)
+        yield put({
+          type: 'updateState',
+          payload: {
+            listInvoice: header.data
+              .map(data => ({
+                ...data,
+                amount: data.returnPurchaseDetail.map(returnData => returnData.purchaseDetail.DPP) * -1,
+                paymentTotal: data.returnPurchaseDetail.map(returnData => returnData.purchaseDetail.DPP) * -1
+              }))
+          }
+        })
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {
@@ -117,6 +141,10 @@ export default modelExtend(pageModel, {
       const data = yield call(approve, payload)
       if (data.success) {
         yield put({ type: 'query' })
+        Modal.success({
+          title: 'Transaction success',
+          content: 'Transaction has been saved'
+        })
       } else {
         throw data
       }

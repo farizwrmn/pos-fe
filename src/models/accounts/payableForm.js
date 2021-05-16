@@ -11,7 +11,7 @@ const success = () => {
 }
 
 const checkExists = (index, list) => {
-  const filteredList = list.filter(filtered => filtered.id === index)
+  const filteredList = list.filter(filtered => filtered.transNo === index)
   if (filteredList && filteredList.length > 0) {
     return filteredList[0]
   }
@@ -175,15 +175,23 @@ export default modelExtend(pageModel, {
         ...payload.item,
         amount: payload.item.paymentTotal
       })
-      const exists = checkExists(payload.item.id, listItem)
+      const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         throw new Error('Item already exists')
       }
       if (payload.item.paymentTotal <= 0) {
-        throw new Error('Item already paid')
+        if (!payload.item.returnPurchaseDetail) {
+          throw new Error('Item already paid')
+        }
       }
       yield put({
         type: 'purchase/hideProductModal'
+      })
+      yield put({
+        type: 'returnPurchase/updateState',
+        payload: {
+          modalReturnVisible: false
+        }
       })
       yield put({
         type: 'updateState',

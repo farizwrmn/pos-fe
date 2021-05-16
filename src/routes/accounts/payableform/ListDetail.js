@@ -4,7 +4,10 @@ import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
 const Browse = ({
-  handleModalShowList, ...purchaseProps }) => {
+  handleModalShowList,
+  listItem,
+  ...purchaseProps
+}) => {
   const columns = [
     {
       title: 'No',
@@ -51,6 +54,13 @@ const Browse = ({
       size="small"
       pagination={{ pageSize: 5 }}
       onRowClick={_record => hdlModalShow(_record)}
+      footer={() => (
+        <div>
+          <div>Subtotal : {listItem.reduce((cnt, o) => cnt + (o.amount > 0 ? o.amount : 0), 0).toLocaleString()}</div>
+          <div>P.Return : {listItem.reduce((cnt, o) => cnt + (o.amount < 0 ? o.amount : 0), 0).toLocaleString()}</div>
+          <div>Total : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0).toLocaleString()}</div>
+        </div>)
+      }
     />
   )
 }
