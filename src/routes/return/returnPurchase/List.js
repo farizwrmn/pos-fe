@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
+import moment from 'moment'
 
 const confirm = Modal.confirm
 
@@ -48,12 +49,18 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
     {
       title: 'Date',
       dataIndex: 'createdAt',
-      key: 'createdAt'
+      key: 'createdAt',
+      render: text => moment(text).format('lll')
     },
     {
       title: 'Memo',
       dataIndex: 'memo',
       key: 'memo'
+    },
+    {
+      title: 'Purchase',
+      dataIndex: 'purchase.transNo',
+      key: 'purchase.transNo'
     },
     {
       title: 'Operation',

@@ -9,7 +9,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ payableForm, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
   const {
     modalVisible,
     currentItem,
@@ -145,18 +145,34 @@ const Cash = ({ payableForm, accountCode, paymentEdc, bank, paymentOpts, supplie
     }
   }
   const listDetailProps = {
-    dataSource: listItem
+    dataSource: listItem,
+    listItem
   }
   let timeout
 
   const purchaseProps = {
     purchase,
+    returnPurchase,
     loading,
     handleBrowseInvoice () {
       dispatch({
         type: 'purchase/showProductModal',
         payload: {
           modalType: 'browseInvoice'
+        }
+      })
+    },
+    handleBrowseReturn () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalType: 'browseReturn'
+        }
+      })
+      dispatch({
+        type: 'returnPurchase/updateState',
+        payload: {
+          modalReturnVisible: true
         }
       })
     },
@@ -305,6 +321,7 @@ const Cash = ({ payableForm, accountCode, paymentEdc, bank, paymentOpts, supplie
 }
 
 Cash.propTypes = {
+  returnPurchase: PropTypes.object,
   payableForm: PropTypes.object,
   accountCode: PropTypes.object,
   paymentOpts: PropTypes.object,
@@ -316,6 +333,7 @@ Cash.propTypes = {
 }
 
 export default connect(({
+  returnPurchase,
   payableForm,
   accountCode,
   paymentOpts,
@@ -326,6 +344,7 @@ export default connect(({
   purchase,
   app }) => (
   {
+    returnPurchase,
     payableForm,
     accountCode,
     paymentOpts,

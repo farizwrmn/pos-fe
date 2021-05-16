@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select, Spin, DatePicker, InputNumber } from 'antd'
+import { Form, message, Input, Button, Row, Col, Modal, Select, Spin, DatePicker, InputNumber } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
 import ModalBrowse from './ModalBrowse'
+import ModalReturn from './ModalReturn'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -66,8 +67,15 @@ const FormCounter = ({
     setFieldsValue
   }
 }) => {
-  const { handleBrowseInvoice, onInvoiceHeader, onChooseInvoice, purchase } = purchaseProps
+  const {
+    handleBrowseInvoice,
+    onInvoiceHeader,
+    onChooseInvoice,
+    purchase,
+    returnPurchase
+  } = purchaseProps
   const { modalProductVisible } = purchase
+  const { modalReturnVisible } = returnPurchase
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   // const handleCancel = () => {
   //   onCancel()
@@ -108,7 +116,11 @@ const FormCounter = ({
       if (errors) {
         return
       }
-      modalShowList(record)
+      if (record.amount >= 0) {
+        modalShowList(record)
+      } else {
+        message.warning('Return cannot be edit')
+      }
     })
   }
 
@@ -136,9 +148,41 @@ const FormCounter = ({
     })
   }
 
+  const hdlBrowseReturn = () => {
+    validateFields(['supplierId'], (errors) => {
+      if (errors) {
+        return
+      }
+      const supplierId = getFieldValue('supplierId')
+      if (supplierId && supplierId.key) {
+        dispatch({
+          type: 'returnPurchase/queryReturnDetailInvoice',
+          payload: {
+            supplierId: supplierId.key
+          }
+        })
+
+        dispatch({
+          type: 'purchase/updateState',
+          payload: {
+            modalType: 'browseReturn'
+          }
+        })
+
+        dispatch({
+          type: 'returnPurchase/updateState',
+          payload: {
+            modalReturnVisible: true
+          }
+        })
+      }
+    })
+  }
+
   const purchaseOpts = {
     onChooseInvoice (item) {
       resetFields()
+      console.log('item', item)
       onChooseInvoice(item)
     },
     dispatch,
@@ -156,6 +200,21 @@ const FormCounter = ({
         }
       })
     }
+  }
+
+  const returnOpts = {
+    loading,
+    onChooseInvoice (item) {
+      console.log('item', item)
+      onChooseInvoice(item)
+    },
+    listInvoice: returnPurchase.listInvoice,
+    listItem: returnPurchase.listItem,
+    dispatch,
+    modalType: purchase.modalType,
+    visible: modalReturnVisible,
+    location,
+    onInvoiceHeader () { }
   }
 
   const hdlModalReset = () => {
@@ -338,7 +397,9 @@ const FormCounter = ({
           <Col {...column}>
             {/* <Button type="primary" size="large" onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Add</Button> */}
             <Button type="primary" size="large" icon="plus-square-o" onClick={() => hdlBrowseInvoice()} style={{ marginRight: '5px', marginBottom: '5px' }}>INVOICE</Button>
+            <Button type="default" size="large" icon="minus-square-o" onClick={() => hdlBrowseReturn()} style={{ marginRight: '5px', marginBottom: '5px' }}>RETURN</Button>
             {modalProductVisible && <ModalBrowse {...purchaseOpts} />}
+            {modalReturnVisible && <ModalReturn {...returnOpts} />}
           </Col>
           <Col {...column} />
         </Row>
