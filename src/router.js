@@ -1356,7 +1356,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
-            }, 'setting-misc')
+            }, 'inventory-transfer-out-detail')
           }
         }, {
           path: 'inventory/transfer/out/:id',

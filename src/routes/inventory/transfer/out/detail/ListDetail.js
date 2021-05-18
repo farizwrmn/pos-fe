@@ -41,7 +41,15 @@ const List = ({ ...tableProps, editList }) => {
       title: 'Price',
       dataIndex: 'purchasePrice',
       key: 'purchasePrice',
-      width: '50px',
+      width: '70px',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Latest',
+      dataIndex: 'latestPrice',
+      key: 'latestPrice',
+      width: '70px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },

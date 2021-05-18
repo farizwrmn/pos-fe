@@ -49,14 +49,20 @@ export default {
         for (let key in response.data) {
           const item = response.data[key]
           const filteredPrice = response.data
-            .filter(filtered => filtered.productId === item.productId)
+            // eslint-disable-next-line eqeqeq
+            .filter(filtered => filtered.productId == item.productId)
             .reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0)
+          const filteredLatest = response.price
+            // eslint-disable-next-line eqeqeq
+            .filter(filtered => filtered.productId == item.productId)
+            .reduce((prev, next) => prev + (next.purchasePrice), 0)
           yield put({
             type: 'transferOutDetail/editPrice',
             payload: {
               data: {
                 productId: item.productId,
-                purchasePrice: item && item.qty && item.qty > 0 ? filteredPrice / item.qty : 0
+                purchasePrice: item && item.qty && item.qty > 0 ? filteredPrice / item.qty : 0,
+                latestPrice: filteredLatest > 0 ? filteredLatest : 0
               },
               break: true
             }
@@ -122,6 +128,9 @@ export default {
     },
 
     * editPrice ({ payload }, { call, put }) {
+      if (!payload.data.latestPrice) {
+        payload.data.latestPrice = 0
+      }
       const response = yield call(editPrice, payload.data)
       if (response && response.success) {
         yield put({
@@ -164,6 +173,7 @@ export default {
             productCode: data.mutasi[n].productCode,
             productName: data.mutasi[n].productName,
             qty: data.mutasi[n].qty,
+            latestPrice: data.mutasi[n].latestPrice,
             purchasePrice: data.mutasi[n].purchasePrice
           })
         }
