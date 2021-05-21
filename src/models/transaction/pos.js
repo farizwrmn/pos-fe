@@ -1548,8 +1548,19 @@ export default {
           })
         })
       }
-      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
+
       const { item, type } = payload
+      if (item && item.storePrice && item.storePrice[0]) {
+        const price = item.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+        if (price && price[0]) {
+          item.sellPrice = price[0].sellPrice
+          item.distPrice01 = price[0].distPrice01
+          item.distPrice02 = price[0].distPrice02
+          item.distPrice03 = price[0].distPrice03
+        }
+      }
+
+      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       let qty = 1
       if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
         item.sellPrice = currentReward.sellPrice

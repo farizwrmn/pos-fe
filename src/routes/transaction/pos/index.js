@@ -900,8 +900,6 @@ const Pos = ({
     }
   }
 
-  console.log('itemConsignment', itemConsignment)
-
   const ModalConsignmentListProps = {
     location,
     loading,
