@@ -112,10 +112,10 @@ const ListProduct = ({ onChooseItem, searchText, dispatch, loadingQty, loadingPr
             />
           </FormItem>
           <FormItem>
-            <Button disabled={loadingQty.effects['returnPurchase/showProductQty']} size="small" type="primary" onClick={handleSearch}>Search</Button>
+            <Button disabled={loadingQty.effects['returnPurchase/queryProduct'] || loadingQty.effects['returnPurchase/showProductQty']} size="small" type="primary" onClick={handleSearch}>Search</Button>
           </FormItem>
           <FormItem>
-            <Button disabled={loadingQty.effects['returnPurchase/showProductQty']} size="small" type="primary" onClick={handleReset}>Reset</Button>
+            <Button disabled={loadingQty.effects['returnPurchase/queryProduct'] || loadingQty.effects['returnPurchase/showProductQty']} size="small" type="primary" onClick={handleReset}>Reset</Button>
           </FormItem>
         </Form>
       )}
