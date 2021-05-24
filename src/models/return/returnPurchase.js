@@ -110,8 +110,8 @@ export default modelExtend(pageModel, {
             listInvoice: header.data
               .map(data => ({
                 ...data,
-                amount: data.returnPurchaseDetail.map(returnData => (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0)) * -1,
-                paymentTotal: data.returnPurchaseDetail.map(returnData => (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0)) * -1
+                amount: data.returnPurchaseDetail.map(returnData => (returnData.DPP > 0 ? returnData.DPP : (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0))) * -1,
+                paymentTotal: data.returnPurchaseDetail.map(returnData => (returnData.DPP > 0 ? returnData.DPP : (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0))) * -1
               }))
           }
         })
@@ -280,8 +280,10 @@ export default modelExtend(pageModel, {
         no: listItem.length + 1,
         transferStoreId: lstorage.getCurrentUserStore(),
         ...payload.item,
-        initialQty: payload.item.qty
+        initialQty: payload.item.qty,
+        DPP: payload.item.costPrice
       }
+      console.log('newData', newData)
       newListItem.push(newData)
       yield put({
         type: 'updateState',
