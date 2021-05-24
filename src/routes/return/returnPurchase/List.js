@@ -53,6 +53,11 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
       render: text => moment(text).format('lll')
     },
     {
+      title: 'Approve Date',
+      dataIndex: 'approveDate',
+      key: 'approveDate'
+    },
+    {
       title: 'Memo',
       dataIndex: 'memo',
       key: 'memo'

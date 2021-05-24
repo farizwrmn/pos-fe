@@ -5,7 +5,6 @@ import ListProduct from './ListProduct'
 import ListInvoice from './ListInvoice'
 
 const Browse = ({
-  searchText,
   showProductQty,
   modalInvoiceVisible,
   modalProductVisible,
@@ -18,10 +17,15 @@ const Browse = ({
   onChooseItem,
   totalItem,
   returnPurchase,
+  dispatch,
   ...modalProps
 }) => {
   const { listInvoice } = purchase
-  const { listProduct } = returnPurchase
+  const {
+    searchText,
+    listProduct,
+    pagination
+  } = returnPurchase
   const width = '80%'
   const modalOpts = {
     ...modalProps
@@ -34,7 +38,9 @@ const Browse = ({
       || loading.effects['purchase/queryHistory']
       || loading.effects['returnPurchase/getInvoiceDetailPurchase'],
     loadingProduct: loading,
-    pagination: null,
+    loadingQty: loading,
+    dispatch,
+    pagination: modalInvoiceVisible ? null : (pagination && pagination.current > 0 ? pagination : null),
     tmpInvoiceList,
     searchText,
     location,
@@ -45,6 +51,19 @@ const Browse = ({
     //     onChange(e)
     //   }
     // },
+    onChange (e) {
+      if (modalProductVisible && pagination && pagination.current > 0) {
+        dispatch({
+          type: 'returnPurchase/queryProduct',
+          payload: {
+            q: searchText === '' ? null : searchText,
+            active: 1,
+            page: Number(e.current),
+            pageSize: Number(e.pageSize)
+          }
+        })
+      }
+    },
     showProductQty (id) {
       showProductQty(id)
     },

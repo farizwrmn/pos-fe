@@ -2,11 +2,18 @@ import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { message, Modal } from 'antd'
-import { lstorage } from 'utils'
+import { configMain, lstorage } from 'utils'
+import moment from 'moment'
 import { query, queryById, add, edit, approve, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
 import { queryDetail as queryPurchaseDetail } from 'services/purchase'
+import {
+  query as queryProductStock,
+  queryPOSproduct
+} from 'services/master/productstock'
 import { pageModel } from './../common'
+
+const { prefix } = configMain
 
 const success = () => {
   message.success('Return Purchase has been saved')
@@ -17,6 +24,7 @@ export default modelExtend(pageModel, {
 
   state: {
     data: {},
+    searchText: '',
     listDetail: [],
     listItem: [],
     listProduct: [],
@@ -32,8 +40,8 @@ export default modelExtend(pageModel, {
 
     modalReturnVisible: false,
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
+      // showSizeChanger: true,
+      // showQuickJumper: true,
       current: 1
     }
   },
@@ -96,23 +104,94 @@ export default modelExtend(pageModel, {
         supplierId: payload.supplierId
       })
       if (header && header.success) {
-        console.log('header', header)
         yield put({
           type: 'updateState',
           payload: {
             listInvoice: header.data
               .map(data => ({
                 ...data,
-                amount: data.returnPurchaseDetail.map(returnData => returnData.purchaseDetail.DPP) * -1,
-                paymentTotal: data.returnPurchaseDetail.map(returnData => returnData.purchaseDetail.DPP) * -1
+                amount: data.returnPurchaseDetail.map(returnData => (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0)) * -1,
+                paymentTotal: data.returnPurchaseDetail.map(returnData => (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0)) * -1
               }))
           }
         })
       }
     },
 
+    * queryProduct ({ payload = {} }, { call, put }) {
+      const data = yield call(queryProductStock, payload)
+      let newData = data.data
+      if (data.success) {
+        yield put({
+          type: 'showProductQty',
+          payload: {
+            data: newData
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: newData
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: {
+              total: data.total,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Product Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+      }
+    },
+
+    * showProductQty ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
+          data = data.map((x) => {
+            if (x.id === listProductData.data[n].id) {
+              const { count, ...other } = x
+              return {
+                ...other,
+                ...listProductData.data[n],
+                productId: listProductData.data[n].id,
+                initialQty: listProductData.data[n].count,
+                qty: listProductData.data[n].count
+              }
+            }
+            return x
+          })
+        }
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: data
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        ...payload,
+        order: '-id'
+      })
       if (data.success) {
         yield put({
           type: 'querySuccess',

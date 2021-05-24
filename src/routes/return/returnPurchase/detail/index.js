@@ -26,7 +26,6 @@ const Detail = ({ returnPurchase, dispatch }) => {
         )
       }
       if (key && key === 'purchase' && data[key]) {
-        console.log(data[key].transNo)
         content.push(
           <div key={key} className={styles.item}>
             <div>{key}</div>
