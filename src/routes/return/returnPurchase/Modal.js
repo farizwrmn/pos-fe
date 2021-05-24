@@ -138,6 +138,24 @@ class TransferModal extends Component {
               />
             )}
           </FormItem>
+          <FormItem label="Price" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('DPP', {
+              initialValue: currentItemList.DPP,
+              rules: [{
+                required: true
+              }]
+            })(
+              <InputNumber
+                value={0}
+                min={0}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    handleOk()
+                  }
+                }}
+              />
+            )}
+          </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: currentItemList.description,
