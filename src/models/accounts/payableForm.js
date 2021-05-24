@@ -209,7 +209,8 @@ export default modelExtend(pageModel, {
         message.error('Require item in payload')
         return
       }
-      const exists = checkExists(payload.item.id, listItem)
+      console.log('payload.item', payload.item, listItem)
+      const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         yield put({
           type: 'updateState',
@@ -235,7 +236,7 @@ export default modelExtend(pageModel, {
         message.error('Require item in payload')
         return
       }
-      const exists = checkExists(payload.item.id, listItem)
+      const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         yield put({
           type: 'updateState',
