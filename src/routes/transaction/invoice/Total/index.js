@@ -27,7 +27,7 @@ const Total = ({
         <Col span={12} className={styles.right}>
           <span>
             <strong>
-              Service Tax
+              Service Charge
             </strong>
             :Rp
           </span>
