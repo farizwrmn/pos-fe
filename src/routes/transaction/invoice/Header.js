@@ -24,12 +24,16 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
             {invoiceInfo.transDatePrint}
           </Col>
         </Row>
-        <div>
-          <strong>#{invoiceInfo.lastTransNo}</strong>
-        </div>
-        <div>
-          #{invoiceInfo.consignmentNo}
-        </div>
+        {invoiceInfo && invoiceInfo.lastTransNo && (
+          <div>
+            <strong>#{invoiceInfo.lastTransNo}</strong>
+          </div>
+        )}
+        {invoiceInfo && invoiceInfo.consignmentNo && (
+          <div>
+            #{invoiceInfo.consignmentNo}
+          </div>
+        )}
       </div>
     </div>
   )
