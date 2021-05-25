@@ -54,7 +54,7 @@ const Member = ({
             </strong>
           </div>
           <div>
-            <strong>
+            <strong style={{ fontSize: '16px' }}>
               {rest.apiCompanyHost.replace('pos', 'www')}
             </strong>
           </div>
