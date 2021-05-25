@@ -111,18 +111,17 @@ export default modelExtend(pageModel, {
               .map(data => ({
                 ...data,
                 amount: data.returnPurchaseDetail.map((returnData) => {
-                  console.log('returnData', returnData)
                   if (returnData.DPP > 0) {
                     return returnData.DPP
                   }
                   return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
-                }) * -1,
+                }).reduce((prev, next) => prev + next, 0) * -1,
                 paymentTotal: data.returnPurchaseDetail.map((returnData) => {
                   if (returnData.DPP > 0) {
                     return returnData.DPP
                   }
                   return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
-                }) * -1
+                }).reduce((prev, next) => prev + next, 0) * -1
               }))
           }
         })
