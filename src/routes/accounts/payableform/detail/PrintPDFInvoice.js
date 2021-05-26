@@ -33,7 +33,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
 
   // Declare Variable
   // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -188,7 +188,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TRANSNO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
