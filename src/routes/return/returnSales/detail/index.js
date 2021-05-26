@@ -10,10 +10,15 @@ import {
 } from 'antd'
 import TransDetail from './TransDetail'
 import styles from './index.less'
+import PrintPDFInvoice from './PrintPDFInvoice'
 
 
-const Detail = ({ returnSales, dispatch }) => {
+const Detail = ({ app, returnSales, dispatch }) => {
   const { listDetail, data } = returnSales
+  const {
+    storeInfo,
+    user
+  } = app
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -36,6 +41,18 @@ const Detail = ({ returnSales, dispatch }) => {
     dataSource: listDetail
   }
 
+  const printProps = {
+    // listItem: listProducts,
+    // itemPrint: transHeader,
+    // itemHeader: transHeader,
+    listItem: listDetail,
+    itemPrint: data,
+    itemHeader: data,
+    storeInfo,
+    user,
+    printNo: 1
+  }
+
   return (<div className="wrapper">
     <Row>
       <Col lg={6}>
@@ -50,6 +67,7 @@ const Detail = ({ returnSales, dispatch }) => {
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
+          {listDetail && listDetail.length && <PrintPDFInvoice {...printProps} />}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
@@ -60,7 +78,8 @@ const Detail = ({ returnSales, dispatch }) => {
 }
 
 Detail.propTypes = {
+  app: PropTypes.object,
   returnSales: PropTypes.object
 }
 
-export default connect(({ returnSales }) => ({ returnSales }))(Detail)
+export default connect(({ app, returnSales }) => ({ app, returnSales }))(Detail)
