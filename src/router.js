@@ -1069,10 +1069,10 @@ const Routers = function ({ history, app }) {
             }, 'accounts/payable-form')
           }
         }, {
-          path: 'journal-entry/:id',
+          path: 'accounts/payable-form/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/accounts/journalentry'))
+              registerModel(app, require('./models/accounts/payableForm'))
               cb(null, require('./routes/accounts/payableform/detail'))
             }, 'accounts-payable-form-detail')
           }

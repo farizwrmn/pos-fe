@@ -110,8 +110,18 @@ export default modelExtend(pageModel, {
             listInvoice: header.data
               .map(data => ({
                 ...data,
-                amount: data.returnPurchaseDetail.map(returnData => (returnData.DPP > 0 ? returnData.DPP : (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0))) * -1,
-                paymentTotal: data.returnPurchaseDetail.map(returnData => (returnData.DPP > 0 ? returnData.DPP : (returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0))) * -1
+                amount: data.returnPurchaseDetail.map((returnData) => {
+                  if (returnData.DPP > 0) {
+                    return returnData.DPP * returnData.qty
+                  }
+                  return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
+                }).reduce((prev, next) => prev + next, 0) * -1,
+                paymentTotal: data.returnPurchaseDetail.map((returnData) => {
+                  if (returnData.DPP > 0) {
+                    return returnData.DPP * returnData.qty
+                  }
+                  return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
+                }).reduce((prev, next) => prev + next, 0) * -1
               }))
           }
         })

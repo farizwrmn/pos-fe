@@ -3,11 +3,12 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
-import { query, add, edit, remove } from 'services/payable/payableForm'
+import { queryById, query, add, edit, remove } from 'services/payable/payableForm'
+import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Payable Form has been saved')
 }
 
 const checkExists = (index, list) => {
@@ -41,6 +42,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...payload } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/accounts/payable-form/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/accounts/payable-form') {
           dispatch({
             type: 'updateState',
@@ -59,6 +70,22 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, payable, payableReturn, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: payable.concat(payableReturn)
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
