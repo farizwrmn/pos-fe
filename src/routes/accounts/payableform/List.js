@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Table } from 'antd'
+import { Link } from 'dva/router'
 import styles from '../../../themes/index.less'
 // import { DropOption } from 'components'
 
@@ -15,7 +16,14 @@ const List = ({
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => {
+        return (
+          <Link to={`/accounts/payable-form/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
       title: 'Date',
