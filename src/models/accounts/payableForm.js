@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
-import { queryById, query, add, edit, remove } from 'services/payable/payableForm'
+import { queryById, voidTrans, query, add, edit, remove } from 'services/payable/payableForm'
 import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
@@ -30,6 +30,7 @@ export default modelExtend(pageModel, {
     listItem: [],
     currentItemList: {},
     modalVisible: false,
+    modalCancelVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -81,6 +82,28 @@ export default modelExtend(pageModel, {
             data: other,
             listDetail: payable.concat(payableReturn)
           }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * voidTrans ({ payload }, { call, put }) {
+      // console.log('payload', payload)
+      const data = yield call(voidTrans, payload)
+      if (data.success) {
+        if (data.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalCancelVisible: false,
+              disableConfirm: false
+            }
+          })
+        }
+        yield put(routerRedux.push('/accounts/payable-form'))
+        Modal.info({
+          title: 'Transaction has been canceled'
         })
       } else {
         throw data

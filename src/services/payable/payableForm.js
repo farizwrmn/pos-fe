@@ -11,6 +11,18 @@ export async function queryById (params) {
   })
 }
 
+export async function voidTrans (params) {
+  let url = `/account-payable/payable-form/${params.id}`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'delete',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
