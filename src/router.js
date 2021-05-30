@@ -449,7 +449,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/balance/balance/'))
+              cb(null, require('./routes/balance/balance'))
             }, 'balance-current')
           }
         }, {
