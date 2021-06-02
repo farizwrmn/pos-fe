@@ -118,6 +118,14 @@ const Payment = ({
             break
           }
         }
+        if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
+          const modal = Modal.warning({
+            title: 'Warning',
+            content: 'Member Not Found...!'
+          })
+          setTimeout(() => modal.destroy(), 1000)
+          return
+        }
         if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
           Modal.error({
             title: 'Payment pending restricted',
