@@ -70,6 +70,7 @@ export default {
         }
       })
       dispatch({ type: 'query' })
+      // https://github.com/ibm-watson-data-lab/shopping-list-react-pouchdb/tree/master/src
       PouchDB.plugin(PouchDBFind)
       const localDB = new PouchDB(couchdb.COUCH_NAME)
       let remoteDB
