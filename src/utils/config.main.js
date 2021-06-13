@@ -1,10 +1,9 @@
 module.exports = {
-  name: 'www.k3bike.com',
+  name: 'www.k3mart.id',
   version: '2018.07.003',
   prefix: 'smiPos',
   footerText: 'Smartech Indo',
-  footerSubText: 'Point of Sales © 2019',
-  logo: '/logo.png',
+  footerSubText: 'Point of Sales © 2020',
   openPages: [
     '/login',
     '/nps/01',

@@ -1,4 +1,5 @@
 const production = process.env.NODE_ENV === 'production'
+const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart' // 'localhost'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
 const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'localhost' // 'localhost'
 const COUCH_NAME = production ? (process.env.CLOUDANT_NAME || 'k3mart') : 'k3mart' // 'localhost'
@@ -25,6 +26,7 @@ module.exports = {
     COUCH_URL,
     COUCH_NAME
   },
+  APPNAME,
   rest: {
     apiCompanyProtocol: APICOMPANYPROTOCOL,
     apiCompanyHost: APICOMPANYHOST,

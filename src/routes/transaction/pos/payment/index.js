@@ -220,7 +220,8 @@ const Payment = ({
     dispatch({
       type: 'paymentEdc/query',
       payload: {
-        paymentOption
+        paymentOption,
+        storeId: lstorage.getCurrentUserStore()
       }
     })
   }

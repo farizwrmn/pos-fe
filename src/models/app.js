@@ -5,7 +5,7 @@ import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
-import { couchdb } from 'utils/config.company'
+import { APPNAME, couchdb } from 'utils/config.company'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
@@ -71,6 +71,10 @@ export default {
       })
       dispatch({ type: 'query' })
       // https://github.com/ibm-watson-data-lab/shopping-list-react-pouchdb/tree/master/src
+
+      document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
+
+      document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
       PouchDB.plugin(PouchDBFind)
       const localDB = new PouchDB(couchdb.COUCH_NAME)
       let remoteDB
