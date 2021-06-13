@@ -3,6 +3,7 @@ import { parse } from 'qs'
 import moment from 'moment'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
+import { APPNAME } from 'utils/config.company'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
@@ -65,6 +66,9 @@ export default {
         }
       })
       dispatch({ type: 'query' })
+      document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
+
+      document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
       let tid
       window.onresize = () => {
         clearTimeout(tid)

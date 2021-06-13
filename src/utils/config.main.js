@@ -4,7 +4,6 @@ module.exports = {
   prefix: 'smiPos',
   footerText: 'Smartech Indo',
   footerSubText: 'Point of Sales © 2020',
-  logo: '/logo.png',
   openPages: [
     '/login',
     '/nps/01',
