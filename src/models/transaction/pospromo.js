@@ -317,6 +317,7 @@ export default modelExtend(pageModel, {
             let ary = currentProduct
             ary.remove(filteredProduct[0].no - 1)
             const item = currentReward[n]
+            const sellingPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice)
             let data = {
               no: filteredProduct[0].no,
               code: currentReward[n].productCode,
@@ -328,9 +329,9 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: filteredProduct[0].qty + currentReward[n].qty,
-              sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-              sellingPrice: currentReward[n].sellPrice,
-              price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+              sellPrice: memberInformation.showAsDiscount ? sellingPrice : item[memberInformation.memberSellPrice.toString()],
+              sellingPrice,
+              price: sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
               disc2: currentReward[n].disc2,
@@ -339,6 +340,7 @@ export default modelExtend(pageModel, {
             data.total = posTotal(data)
             arrayProd[filteredProduct[0].no - 1] = data
           } else {
+            const sellingPrice = (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice)
             let data = {
               no: arrayProd.length + 1,
               code: currentReward[n].productCode,
@@ -350,9 +352,9 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               typeCode: 'P',
               qty: currentReward[n].qty,
-              sellPrice: memberInformation.showAsDiscount ? currentReward[n].sellPrice : currentReward[n][memberInformation.memberSellPrice.toString()],
-              sellingPrice: (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice),
-              price: (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice),
+              sellPrice: memberInformation.showAsDiscount ? sellingPrice : currentReward[n][memberInformation.memberSellPrice.toString()],
+              sellingPrice,
+              price: sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
               disc2: currentReward[n].disc2,

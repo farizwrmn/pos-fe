@@ -1720,7 +1720,7 @@ export default {
             typeCode: 'P',
             qty: newQty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            price,
             discount: 0,
             disc1: 0,
             disc2: 0,

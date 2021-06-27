@@ -1079,12 +1079,21 @@ const Pos = ({
       })
     },
     onChooseItem (item) {
+      if (!(memberInformation && memberInformation.id)) {
+        Modal.info({
+          title: 'Member Information is not found',
+          content: 'Insert Member',
+          onOk () {
+          }
+        })
+      }
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
         let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
         const { currentReward } = pospromo
         let qty = curQty
+        console.log('currentReward', currentReward)
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
           item.serviceCost = currentReward.sellPrice
           qty = currentReward.qty
@@ -1093,6 +1102,12 @@ const Pos = ({
         }
         // eslint-disable-next-line eqeqeq
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S' && checkExists && checkExists[0] && checkExists[0].bundleId == currentReward.bundleId) {
+          if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+            item.sellPrice = currentReward.sellPrice
+            item.distPrice01 = currentReward.distPrice01
+            item.distPrice02 = currentReward.distPrice02
+            item.distPrice03 = currentReward.distPrice03
+          }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
@@ -1103,13 +1118,13 @@ const Pos = ({
             name: item.serviceName,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
-            sellPrice: item.serviceCost,
-            price: item.serviceCost,
+            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: item.serviceCost * (checkExists[0].qty + qty)
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * (checkExists[0].qty + qty)
           }
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -1142,6 +1157,12 @@ const Pos = ({
 
           setCurBarcode('', 1)
         } else if (checkExists.length === 0) {
+          if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+            item.sellPrice = currentReward.sellPrice
+            item.distPrice01 = currentReward.distPrice01
+            item.distPrice02 = currentReward.distPrice02
+            item.distPrice03 = currentReward.distPrice03
+          }
           arrayProd.push({
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
@@ -1152,13 +1173,13 @@ const Pos = ({
             name: item.serviceName,
             qty,
             typeCode: 'S',
-            sellPrice: item.serviceCost,
-            price: item.serviceCost,
+            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: item.serviceCost * qty
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
