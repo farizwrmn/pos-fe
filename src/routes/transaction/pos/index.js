@@ -1611,7 +1611,7 @@ const Pos = ({
                   <FormItem label="Total" {...formItemLayout1}>
                     <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                  <FormItem label="Dine In Tax" {...formItemLayout1}>
+                  <FormItem label="Service Charge" {...formItemLayout1}>
                     <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
                   <FormItem label="Netto" {...formItemLayout1}>

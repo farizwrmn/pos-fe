@@ -31,7 +31,7 @@ class TransactionDetail extends Component {
       loading
     } = this.props
     const {
-      paymentListActiveKey,
+      // paymentListActiveKey,
       cashierInformation
     } = pos
 
@@ -90,7 +90,7 @@ class TransactionDetail extends Component {
     }
 
     return (
-      <Tabs activeKey={paymentListActiveKey} onChange={key => changePaymentListTab(key)} >
+      <Tabs activeKey="1" onChange={key => changePaymentListTab(key)} >
         <TabPane tab="Sales" key="1">
           <Table
             loading={loading}
