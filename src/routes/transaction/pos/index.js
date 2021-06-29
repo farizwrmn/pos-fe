@@ -1468,7 +1468,7 @@ const Pos = ({
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
   const dineIn = curNetto * (dineInTax / 100)
 
-  const handleChangeBookmark = (key = 1, page = 1, pageSize = 10) => {
+  const handleChangeBookmark = (key = 1, page = 1) => {
     dispatch({
       type: 'productBookmark/query',
       payload: {
@@ -1477,7 +1477,7 @@ const Pos = ({
         groupId: key,
         relationship: 1,
         page,
-        pageSize
+        pageSize: 14
       }
     })
   }
@@ -1507,7 +1507,7 @@ const Pos = ({
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
             <Bookmark
-              loading={loading.effects['productBookmark/query']}
+              loading={loading.effects['productBookmark/query'] || loading.effects['pos/chooseProduct'] || loading.effects['pospromo/addPosPromo']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
               onChooseBundle={chooseBundle}
@@ -1611,7 +1611,7 @@ const Pos = ({
                   <FormItem label="Total" {...formItemLayout1}>
                     <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
-                  <FormItem label="Dine In Tax" {...formItemLayout1}>
+                  <FormItem label="Service Charge" {...formItemLayout1}>
                     <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
                   </FormItem>
                   <FormItem label="Netto" {...formItemLayout1}>

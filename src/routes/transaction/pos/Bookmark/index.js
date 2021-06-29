@@ -21,8 +21,8 @@ const Bookmark = ({
 }) => {
   const listBookmark = productBookmarkGroup.list
   const { filter, list, pagination } = productBookmark
-  const handleChangePagination = (page, pageSize) => {
-    onChange(filter.groupId, page, pageSize)
+  const handleChangePagination = (page) => {
+    onChange(filter.groupId, page)
   }
 
   return (
@@ -72,7 +72,7 @@ const Bookmark = ({
             )))}
           </Tabs>
           {listBookmark && listBookmark.length === 0 && (<EmptyBookmarkGroup />)}
-          <Pagination onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
+          <Pagination pageSize={14} onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
         </Card>
       ) : null}
     </div>
