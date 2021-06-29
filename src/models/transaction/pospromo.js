@@ -38,7 +38,17 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * addPosPromo ({ payload = {} }, { call, put }) {
+    * addPosPromo ({ payload = {} }, { call, select, put }) {
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        return
+      }
+
       const { bundleId, currentBundle, currentProduct, currentService, reject, resolve, ...other } = payload
       const data = yield call(query, { id: bundleId })
       const dataRules = yield call(queryRules, { bundleId, ...other })
@@ -329,7 +339,7 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: filteredProduct[0].qty + currentReward[n].qty,
-              sellPrice: memberInformation.showAsDiscount ? sellingPrice : item[memberInformation.memberSellPrice.toString()],
+              sellPrice: sellingPrice,
               sellingPrice,
               price: sellingPrice,
               discount: currentReward[n].discount,
@@ -352,7 +362,7 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               typeCode: 'P',
               qty: currentReward[n].qty,
-              sellPrice: memberInformation.showAsDiscount ? sellingPrice : currentReward[n][memberInformation.memberSellPrice.toString()],
+              sellPrice: sellingPrice,
               sellingPrice,
               price: sellingPrice,
               discount: currentReward[n].discount,

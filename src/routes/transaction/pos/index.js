@@ -1507,7 +1507,7 @@ const Pos = ({
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
             <Bookmark
-              loading={loading.effects['productBookmark/query']}
+              loading={loading.effects['productBookmark/query'] || loading.effects['pos/chooseProduct'] || loading.effects['pospromo/addPosPromo']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
               onChooseBundle={chooseBundle}
