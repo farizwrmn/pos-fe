@@ -37,7 +37,12 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query' })
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: { pageSize: 14 }
+            })
+          }
         }
       })
     }
@@ -46,7 +51,10 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        pageSize: 14,
+        ...payload
+      })
       if (data && data.data) {
         yield put({
           type: 'querySuccess',
@@ -54,7 +62,7 @@ export default modelExtend(pageModel, {
             list: data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null),
             pagination: {
               current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
+              pageSize: Number(payload.pageSize) || 14,
               total: data.total
             }
           }

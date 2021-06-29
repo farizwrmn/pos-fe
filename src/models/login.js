@@ -91,6 +91,8 @@ export default {
           yield put({
             type: 'pos/removeTrans'
           })
+          yield put({ type: 'pos/setDefaultMember' })
+          yield put({ type: 'pos/setDefaultEmployee' })
         }
         if (modalLoginType === 'editPayment') {
           if (modalLoginData && modalLoginData.typeCode === 'P') {

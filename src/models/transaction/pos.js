@@ -1247,12 +1247,8 @@ export default {
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
           })
-          let successModal = Modal.info({
-            title: 'Success add product',
-            content: 'Product has been added in Product`s Tab'
-          })
           yield put({ type: 'pos/hideProductModal' })
-          setTimeout(() => successModal.destroy(), 1000)
+          message.success('Success add product')
         }
       } else {
         Modal.warning({
@@ -1269,12 +1265,8 @@ export default {
         type: 'pos/setUtil',
         payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
       })
-      let successModal = Modal.info({
-        title: 'Success add product',
-        content: 'Product has been added in Product`s Tab'
-      })
       yield put({ type: 'pos/hideConsignmentModal' })
-      setTimeout(() => successModal.destroy(), 1000)
+      message.success('Success add product')
     },
 
     * getListProductData (payload, { call, put }) {
