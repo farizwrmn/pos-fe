@@ -1445,22 +1445,31 @@ const Pos = ({
   }
 
   const handleChangeDineIn = (event, type) => {
-    localStorage.setItem('dineInTax', event)
-    localStorage.setItem('typePembelian', type)
+    Modal.confirm({
+      title: 'Ubah Tipe Transaksi',
+      content: 'Anda yakin dengan transaksi ini ?',
+      onOk () {
+        localStorage.setItem('dineInTax', event)
+        localStorage.setItem('typePembelian', type)
 
-    dispatch({
-      type: 'pos/changeDineIn',
-      payload: {
-        dineInTax: event,
-        typePembelian: type
-      }
-    })
+        dispatch({
+          type: 'pos/changeDineIn',
+          payload: {
+            dineInTax: event,
+            typePembelian: type
+          }
+        })
 
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        dineInTax: event,
-        typePembelian: type
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            dineInTax: event,
+            typePembelian: type
+          }
+        })
+      },
+      onCancel () {
+
       }
     })
   }

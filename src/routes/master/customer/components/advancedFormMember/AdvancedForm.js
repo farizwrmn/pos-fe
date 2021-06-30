@@ -222,7 +222,7 @@ const FormCustomer = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[a-z0-9_. ,-]{3,50}$/i,
+                    pattern: /^[a-z0-9_. /,-]{3,50}$/i,
                     message: 'a-Z & 0-9'
                   }
                 ]
