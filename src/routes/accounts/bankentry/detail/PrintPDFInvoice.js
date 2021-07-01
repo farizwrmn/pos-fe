@@ -67,7 +67,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'right'
           },
           {
-            text: 'PURCHASE PAYMENT',
+            text: 'DEPOSIT ENTRY',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
