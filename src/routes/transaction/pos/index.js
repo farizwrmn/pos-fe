@@ -1173,13 +1173,13 @@ const Pos = ({
             name: item.serviceName,
             qty,
             typeCode: 'S',
-            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
+            sellPrice: item.serviceCost,
+            price: item.serviceCost,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * qty
+            total: item.serviceCost * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
