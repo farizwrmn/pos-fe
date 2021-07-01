@@ -261,8 +261,8 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.startDate = (data.Date || []).length > 0 ? data.Date[0] : null
-      data.endDate = (data.Date || []).length > 0 ? data.Date[1] : null
+      data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
+      data.endDate = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
       data.availableDate = (data.availableDate || []).length > 0 ? data.availableDate.toString() : null
       data.availableStore = (data.availableStore || []).length > 0 ? data.availableStore.toString() : null
       data.startHour = data.startHour ? moment(data.startHour).format('HH:mm') : null
@@ -309,11 +309,11 @@ const FormCounter = ({
       key: 'type',
       width: '100',
       render: text =>
-        (<span>
-          <Tag color={text === 'P' ? 'green' : 'blue'}>
-            {text === 'P' ? 'Product' : 'Service'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text === 'P' ? 'green' : 'blue'}>
+          {text === 'P' ? 'Product' : 'Service'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Code',
@@ -348,11 +348,11 @@ const FormCounter = ({
       key: 'type',
       width: '100',
       render: text =>
-        (<span>
-          <Tag color={text === 'P' ? 'green' : 'blue'}>
-            {text === 'P' ? 'Product' : 'Service'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text === 'P' ? 'green' : 'blue'}>
+          {text === 'P' ? 'Product' : 'Service'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Code',
