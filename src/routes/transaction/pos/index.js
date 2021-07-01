@@ -1107,6 +1107,11 @@ const Pos = ({
             item.distPrice01 = currentReward.distPrice01
             item.distPrice02 = currentReward.distPrice02
             item.distPrice03 = currentReward.distPrice03
+          } else {
+            item.sellPrice = item.serviceCost
+            item.distPrice01 = item.serviceCost
+            item.distPrice02 = item.serviceCost
+            item.distPrice03 = item.serviceCost
           }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
@@ -1162,6 +1167,11 @@ const Pos = ({
             item.distPrice01 = currentReward.distPrice01
             item.distPrice02 = currentReward.distPrice02
             item.distPrice03 = currentReward.distPrice03
+          } else {
+            item.sellPrice = item.serviceCost
+            item.distPrice01 = item.serviceCost
+            item.distPrice02 = item.serviceCost
+            item.distPrice03 = item.serviceCost
           }
           arrayProd.push({
             no: arrayProd.length + 1,
@@ -1173,13 +1183,13 @@ const Pos = ({
             name: item.serviceName,
             qty,
             typeCode: 'S',
-            sellPrice: item.serviceCost,
-            price: item.serviceCost,
+            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
+            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: item.serviceCost * qty
+            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
