@@ -10,10 +10,11 @@ import {
 } from 'antd'
 import TransDetail from './TransDetail'
 import styles from './index.less'
+import PrintPDFInvoice from './PrintPDFInvoice'
 
-
-const Detail = ({ bankentry, dispatch }) => {
+const Detail = ({ bankentry, app, dispatch }) => {
   const { listDetail, data } = bankentry
+  const { user, storeInfo } = app
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -36,6 +37,18 @@ const Detail = ({ bankentry, dispatch }) => {
     dataSource: listDetail
   }
 
+  const printProps = {
+    // listItem: listProducts,
+    // itemPrint: transHeader,
+    // itemHeader: transHeader,
+    listItem: listDetail,
+    itemPrint: data,
+    itemHeader: data,
+    storeInfo,
+    user,
+    printNo: 1
+  }
+
   return (<div className="wrapper">
     <Row>
       <Col lg={6}>
@@ -50,6 +63,7 @@ const Detail = ({ bankentry, dispatch }) => {
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
+          {listDetail && listDetail.length && <PrintPDFInvoice {...printProps} />}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
@@ -60,7 +74,8 @@ const Detail = ({ bankentry, dispatch }) => {
 }
 
 Detail.propTypes = {
+  app: PropTypes.object,
   bankentry: PropTypes.object
 }
 
-export default connect(({ bankentry }) => ({ bankentry }))(Detail)
+export default connect(({ app, bankentry }) => ({ app, bankentry }))(Detail)
