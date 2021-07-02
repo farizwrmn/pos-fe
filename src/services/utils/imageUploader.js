@@ -8,7 +8,7 @@ export async function uploadProductImage (params) {
     ...crypt.apiheader()
   }
   return request({
-    fullUrl: `${APIIMAGEURL}/image/upload/products`,
+    fullUrl: `${APIIMAGEURL}/image/upload/products?compress=1`,
     method: 'post',
     data: params,
     headers: apiHeaderToken,

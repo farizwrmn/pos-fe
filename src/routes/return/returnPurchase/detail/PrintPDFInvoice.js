@@ -86,7 +86,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'right'
           },
           {
-            text: 'RETUR JUAL',
+            text: 'RETUR BELI',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
