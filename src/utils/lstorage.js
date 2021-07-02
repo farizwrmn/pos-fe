@@ -74,6 +74,14 @@ const getCashierTrans = () => {
   return localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
 }
 
+const getPriceName = () => {
+  return localStorage.getItem('disPrece') ? JSON.parse(localStorage.getItem('disPrece')) : []
+}
+
+const setPriceName = (priceList) => {
+  return localStorage.getItem('disPrece', JSON.stringify(priceList || '[]'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -222,5 +230,7 @@ module.exports = {
   getServiceTrans,
   getBundleTrans,
   setItem,
-  getItem
+  getItem,
+  getPriceName,
+  setPriceName
 }

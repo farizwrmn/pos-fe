@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { Table, Modal, Form, Input, Button } from 'antd'
 import { numberFormat } from 'utils'
 import { Link } from 'dva/router'
+import { getDistPriceName } from 'utils/string'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
@@ -43,25 +44,25 @@ const Product = ({
       key: 'productName',
       width: '15%'
     }, {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }, {
-      title: 'Dist Price 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }, {
-      title: 'Dist Price 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }, {
-      title: 'Dist Price 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       width: '15%',
@@ -215,8 +216,8 @@ export default connect(
     productstock,
     productcategory,
     productbrand }) =>
-    ({
-      productstock,
-      productcategory,
-      productbrand
-    }))(Product)
+  ({
+    productstock,
+    productcategory,
+    productbrand
+  }))(Product)

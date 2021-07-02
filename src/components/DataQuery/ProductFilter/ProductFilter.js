@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Modal, Form, Input, Button, Select } from 'antd'
 import { numberFormat } from 'utils'
+import { getDistPriceName } from 'utils/string'
 import Spec from './Spec'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
@@ -66,25 +67,25 @@ const ProductFilter = ({
       render: (text, record) => record.brandName,
       filters: listBrand.map(x => ({ text: x.brandName, value: x.id }))
     }, {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }, {
-      title: 'Dist Price 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }, {
-      title: 'Dist Price 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       width: '15%',
       render: text => formatNumberIndonesia(text)
     }, {
-      title: 'Dist Price 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       width: '15%',
@@ -337,12 +338,12 @@ export default connect(
     variant,
     specification
   }) =>
-    ({
-      productstock,
-      bundling,
-      productcategory,
-      productbrand,
-      variant,
-      specification
-    })
+  ({
+    productstock,
+    bundling,
+    productcategory,
+    productbrand,
+    variant,
+    specification
+  })
 )(Form.create()(ProductFilter))

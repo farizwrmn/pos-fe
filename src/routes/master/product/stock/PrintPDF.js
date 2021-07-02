@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
+import { getDistPriceName } from 'utils/string'
 
 const PrintPDF = ({ data, user, storeInfo, name }) => {
   const styles = {
@@ -51,11 +52,11 @@ const PrintPDF = ({ data, user, storeInfo, name }) => {
       { text: 'QTY', style: 'tableHeader' },
       { text: 'MARGIN', style: 'tableHeader' },
       { text: 'MODAL', style: 'tableHeader' },
-      { text: 'HARGA JUAL', style: 'tableHeader' },
+      { text: getDistPriceName('sellPrice'), style: 'tableHeader' },
       { text: 'HARGA POKOK', style: 'tableHeader' },
-      { text: 'HARGA DIST-1', style: 'tableHeader' },
-      { text: 'HARGA DIST-2', style: 'tableHeader' },
-      { text: 'HARGA DIST-3', style: 'tableHeader' }
+      { text: getDistPriceName('distPrice01'), style: 'tableHeader' },
+      { text: getDistPriceName('distPrice02'), style: 'tableHeader' },
+      { text: getDistPriceName('distPrice03'), style: 'tableHeader' }
     ]
   ]
 

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicReport } from 'components'
+import { getDistPriceName } from 'utils/string'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
@@ -139,10 +140,10 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       { fontSize: 12, text: 'NO', alignment: 'center' },
       { fontSize: 12, text: 'KODE PRODUK', alignment: 'center' },
       { fontSize: 12, text: 'NAMA PRODUK', alignment: 'center' },
-      { fontSize: 12, text: 'HARGA JUAL', alignment: 'center' },
-      { fontSize: 12, text: 'HARGA DIST-1', alignment: 'center' },
-      { fontSize: 12, text: 'HARGA DIST-2', alignment: 'center' },
-      { fontSize: 12, text: 'HARGA DIST-3', alignment: 'center' },
+      { fontSize: 12, text: getDistPriceName('sellPrice'), alignment: 'center' },
+      { fontSize: 12, text: getDistPriceName('distPrice01'), alignment: 'center' },
+      { fontSize: 12, text: getDistPriceName('distPrice02'), alignment: 'center' },
+      { fontSize: 12, text: getDistPriceName('distPrice03'), alignment: 'center' },
       { fontSize: 12, text: 'HPP', alignment: 'center' },
       { fontSize: 12, text: 'SALDO', alignment: 'center' },
       { fontSize: 12, text: 'JUMLAH', alignment: 'center' }
