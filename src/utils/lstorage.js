@@ -79,7 +79,7 @@ const getPriceName = () => {
 }
 
 const setPriceName = (priceList) => {
-  return localStorage.getItem('disPrece', JSON.stringify(priceList || '[]'))
+  return localStorage.setItem('disPrece', JSON.stringify(priceList || '[]'))
 }
 
 const getConsignment = () => {
