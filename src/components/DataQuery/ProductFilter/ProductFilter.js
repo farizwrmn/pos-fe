@@ -338,12 +338,12 @@ export default connect(
     variant,
     specification
   }) =>
-  ({
-    productstock,
-    bundling,
-    productcategory,
-    productbrand,
-    variant,
-    specification
-  })
+    ({
+      productstock,
+      bundling,
+      productcategory,
+      productbrand,
+      variant,
+      specification
+    })
 )(Form.create()(ProductFilter))

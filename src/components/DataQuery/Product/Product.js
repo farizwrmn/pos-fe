@@ -216,8 +216,8 @@ export default connect(
     productstock,
     productcategory,
     productbrand }) =>
-  ({
-    productstock,
-    productcategory,
-    productbrand
-  }))(Product)
+    ({
+      productstock,
+      productcategory,
+      productbrand
+    }))(Product)
