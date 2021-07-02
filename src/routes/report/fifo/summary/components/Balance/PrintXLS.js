@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicExcelReport } from 'components'
+import { getDistPriceName } from 'utils/string'
 
 const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
@@ -94,10 +95,10 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'HARGA JUAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'HARGA DIST-1', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'HARGA DIST-2', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'HARGA DIST-3', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: getDistPriceName('sellPrice'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: getDistPriceName('distPrice01'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: getDistPriceName('distPrice02'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: getDistPriceName('distPrice03'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }

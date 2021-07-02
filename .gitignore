@@ -13,3 +13,4 @@ Dockerfile
 build/
 coverage/
 .env
+.env.*

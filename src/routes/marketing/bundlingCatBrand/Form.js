@@ -309,11 +309,11 @@ const FormCounter = ({
       key: 'type',
       width: '100',
       render: text =>
-      (<span>
-        <Tag color={text === 'P' ? 'green' : 'blue'}>
-          {text === 'P' ? 'Product' : 'Service'}
-        </Tag>
-      </span>)
+        (<span>
+          <Tag color={text === 'P' ? 'green' : 'blue'}>
+            {text === 'P' ? 'Product' : 'Service'}
+          </Tag>
+        </span>)
     },
     {
       title: 'Code',
@@ -348,11 +348,11 @@ const FormCounter = ({
       key: 'type',
       width: '100',
       render: text =>
-      (<span>
-        <Tag color={text === 'P' ? 'green' : 'blue'}>
-          {text === 'P' ? 'Product' : 'Service'}
-        </Tag>
-      </span>)
+        (<span>
+          <Tag color={text === 'P' ? 'green' : 'blue'}>
+            {text === 'P' ? 'Product' : 'Service'}
+          </Tag>
+        </span>)
     },
     {
       title: 'Code',
