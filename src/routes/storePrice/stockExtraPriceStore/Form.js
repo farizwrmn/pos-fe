@@ -10,6 +10,7 @@ import {
   Col,
   Modal
 } from 'antd'
+import { getDistPriceName } from 'utils/string'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -187,7 +188,7 @@ const FormCounter = ({
               {optionSelect}
             </Select>)}
           </FormItem>
-          <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('sellPrice', {
               initialValue: item.sellPrice,
               rules: [
@@ -199,7 +200,7 @@ const FormCounter = ({
               ]
             })(<InputNumber {...InputNumberProps} />)}
           </FormItem>
-          <FormItem label="Dist Price 1" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('distPrice01')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice01', {
               initialValue: item.distPrice01,
               rules: [
@@ -211,7 +212,7 @@ const FormCounter = ({
               ]
             })(<InputNumber {...InputNumberProps} />)}
           </FormItem>
-          <FormItem label="Dist Price 2" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('distPrice02')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice02', {
               initialValue: item.distPrice02,
               rules: [
@@ -223,7 +224,7 @@ const FormCounter = ({
               ]
             })(<InputNumber {...InputNumberProps} />)}
           </FormItem>
-          <FormItem label="Dist Price 3" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('distPrice03')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice03', {
               initialValue: item.distPrice03,
               rules: [

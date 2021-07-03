@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { getDistPriceName } from 'utils/string'
 // import styles from '../../../../../themes/index.less'
 
 const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey, onModalVisible }) => {
@@ -40,7 +41,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       }
     },
     {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       render (text, record) {
@@ -57,7 +58,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       }
     },
     {
-      title: 'Dist Price 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       render (text, record) {
@@ -74,7 +75,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       }
     },
     {
-      title: 'Dist Price 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       render (text, record) {
@@ -91,7 +92,7 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
       }
     },
     {
-      title: 'Dist Price 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       render (text, record) {
