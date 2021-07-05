@@ -222,7 +222,7 @@ const FormCustomer = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^[a-z0-9_. ,-]{3,50}$/i,
+                    pattern: /^[a-z0-9_. /,-]{3,50}$/i,
                     message: 'a-Z & 0-9'
                   }
                 ]
@@ -237,7 +237,7 @@ const FormCustomer = ({
                   {
                     required: getValidationValue(listDataTypes,
                       { formName: 'customer', fieldName: 'phoneNumber', value: 'required', defaultValue: true }),
-                    pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                    pattern: /^\(?(0|60|62)([0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                     message: 'Input a Phone No.[xxxx xxxx xxxx]'
                   }
                 ]
@@ -250,7 +250,7 @@ const FormCustomer = ({
                   {
                     required: getValidationValue(listDataTypes,
                       { formName: 'customer', fieldName: 'mobileNumber', value: 'required', defaultValue: true }),
-                    pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                    pattern: /^\(?(0|60|62)([0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                     message: 'mobile number is not valid'
                   }
                 ]

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, message } from 'antd'
+import { getDistPriceName } from 'utils/string'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -222,7 +223,7 @@ const formProductCategory = ({
           </FormItem>
         </Col>
         <Col {...column} >
-          <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('sellPrice', {
               initialValue: item.sellPrice,
               rules: [
@@ -255,7 +256,7 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
-          <FormItem label="Dist Price 1" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('distPrice01')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice01', {
               initialValue: item.distPrice01,
               rules: [
@@ -266,7 +267,7 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
-          <FormItem label="Dist Price 2" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('distPrice02')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice02', {
               initialValue: item.distPrice02,
               rules: [
@@ -277,7 +278,7 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
-          <FormItem label="Dist Price 3" hasFeedback {...formItemLayout}>
+          <FormItem label={getDistPriceName('distPrice03')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice03', {
               initialValue: item.distPrice03,
               rules: [

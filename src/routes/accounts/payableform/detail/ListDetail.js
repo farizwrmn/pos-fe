@@ -24,11 +24,11 @@ const List = ({ ...tableProps }) => {
       key: 'active',
       width: 120,
       render: text =>
-      (<span>
-        <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
-          {parseInt(text, 10) ? 'Active' : 'Canceled'}
-        </Tag>
-      </span>)
+        (<span>
+          <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
+            {parseInt(text, 10) ? 'Active' : 'Canceled'}
+          </Tag>
+        </span>)
     },
     {
       title: 'Date',

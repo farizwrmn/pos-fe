@@ -5,6 +5,7 @@ import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Sel
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
+import { getDistPriceName } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
 
 const { apiCompanyURL } = rest
@@ -711,7 +712,7 @@ const AdvancedForm = ({
         <Col {...parentLeft}>
           <Card {...cardProps} title={<h3>Pricing</h3>}>
             <Row>
-              <FormItem label="Sell Price" hasFeedback {...formItemLayout}>
+              <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('sellPrice', {
                   initialValue: item.sellPrice,
                   rules: [
@@ -723,7 +724,7 @@ const AdvancedForm = ({
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
-              <FormItem label="Dist Price 1" hasFeedback {...formItemLayout}>
+              <FormItem label={getDistPriceName('distPrice01')} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('distPrice01', {
                   initialValue: item.distPrice01,
                   rules: [
@@ -735,7 +736,7 @@ const AdvancedForm = ({
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
-              <FormItem label="Dist Price 2" hasFeedback {...formItemLayout}>
+              <FormItem label={getDistPriceName('distPrice02')} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('distPrice02', {
                   initialValue: item.distPrice02,
                   rules: [
@@ -747,7 +748,7 @@ const AdvancedForm = ({
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
-              <FormItem label="Dist Price 3" hasFeedback {...formItemLayout}>
+              <FormItem label={getDistPriceName('distPrice03')} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('distPrice03', {
                   initialValue: item.distPrice03,
                   rules: [

@@ -6,6 +6,7 @@ import { EnumRoleType } from 'enums'
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 import { APPNAME, couchdb } from 'utils/config.company'
+import { query as queryCustomerType } from '../services/master/customertype'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
@@ -142,6 +143,12 @@ export default {
         if (period.data[0]) {
           startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
           endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
+        }
+
+        const listPrice = yield call(queryCustomerType, {})
+        if (listPrice && listPrice.success) {
+          console.log('listPrice', listPrice.data)
+          lstorage.setPriceName(listPrice.data)
         }
 
         const storeInfoData = lstorage.getCurrentUserStoreDetail()

@@ -48,7 +48,7 @@ class Pos extends Component {
   }
 
   setListData (data) {
-    if (data && (data.key === 'dineInTax' || data.key === 'member' || data.key === 'cashier_trans' || data.key === 'service_detail')) {
+    if (data && (data.key === 'dineInTax' || data.key === 'member' || data.key === 'cashier_trans' || data.key === 'consignment' || data.key === 'service_detail')) {
       this.setState({ loading: true })
       this.setState({
         dineInTax: Number(localStorage.getItem('dineInTax')),
@@ -105,11 +105,11 @@ class Pos extends Component {
                 </FormItem>
               </Row>
               <Row>
-                <FormItem label="Netto" {...formItemLayout1}>
-                  <Input value={curNetto.toLocaleString()} style={{ fontSize: 20 }} />
-                </FormItem>
-                <FormItem label="Dine In Tax" {...formItemLayout1}>
+                <FormItem label="Service Charge" {...formItemLayout1}>
                   <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
+                </FormItem>
+                <FormItem label="Netto" {...formItemLayout1}>
+                  <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
                 </FormItem>
               </Row>
             </div>

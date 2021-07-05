@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { getDistPriceName } from 'utils/string'
 import styles from '../../../../themes/index.less'
 
 const List = ({ ...tableProps }) => {
@@ -43,28 +44,28 @@ const List = ({ ...tableProps }) => {
       className: styles.alignRight
     },
     {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'product.sellPrice',
       key: 'product.sellPrice',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'product.distPrice01',
       key: 'product.distPrice01',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'product.distPrice02',
       key: 'product.distPrice02',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'product.distPrice03',
       key: 'product.distPrice03',
       className: styles.alignRight,
