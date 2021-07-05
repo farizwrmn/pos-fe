@@ -69,6 +69,11 @@ const ListMember = ({ onChooseItem, pos, dispatch, location, ...tableProps }) =>
       key: 'mobileNumber',
       width: '200px'
     }, {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      width: '200px'
+    }, {
       title: 'Type',
       dataIndex: 'memberTypeName',
       key: 'memberTypeName',
