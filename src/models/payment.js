@@ -330,8 +330,8 @@ export default {
                   typePembelian: 1
                 }
               })
-              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
-              invoiceWindow.focus()
+              // const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              // invoiceWindow.focus()
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
