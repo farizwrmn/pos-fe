@@ -8,7 +8,7 @@ import {
 } from 'utils/variable'
 import Form from './Form'
 
-const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
+const Container = ({ loading, balance, shift, paymentOpts, dispatch, location }) => {
   const { modalType, currentItem, disable } = balance
   const { listShift } = shift
 
@@ -21,6 +21,7 @@ const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
   const formProps = {
     listShift: listShift || [],
     item: currentItem,
+    loading,
     dispatch,
     modalType,
     listProps,
@@ -51,6 +52,7 @@ const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
           description: data.description,
           detail: detail.concat(cash)
         }
+        console.log('balance/open')
         dispatch({
           type: 'balance/open',
           payload: {

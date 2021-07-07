@@ -33,6 +33,7 @@ const FormComponent = ({
   item = {},
   listShift = [],
   dispatch,
+  loading,
   button,
   onSubmit,
   modalType,
@@ -139,7 +140,7 @@ const FormComponent = ({
               <CurrentList {...currentListProps} />
             )}
           <FormItem {...tailFormItemLayout}>
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" disabled={loading.effects['balance/open']} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
       </Row>

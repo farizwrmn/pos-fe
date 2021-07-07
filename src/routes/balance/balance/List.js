@@ -23,8 +23,8 @@ const FormLabel = () => {
       <Col {...formItemLayout.labelCol} />
       <Col {...formItemLayout.wrapperCol}>
         <Row>
-          <Col span={8}><div>Sales</div></Col>
-          <Col span={8}><div>Petty-Cash</div></Col>
+          <Col span={12}><div>Sales</div></Col>
+          <Col span={12}><div>Petty-Cash</div></Col>
         </Row>
       </Col>
     </Row>
@@ -39,7 +39,7 @@ const FormComponent = ({
   return (
     <FormItem label={label} hasFeedback {...formItemLayout}>
       <Row>
-        <Col span={8}>
+        <Col span={12}>
           <div>
             {getFieldDecorator(`detail[${name}][balanceIn]`, {
               initialValue: 0,
@@ -49,12 +49,18 @@ const FormComponent = ({
                 }
               ]
             })(
-              <InputNumber min={0} style={{ width: '60%' }} />
+              <InputNumber
+                style={{ width: '95%' }}
+                // onClick={() => this.select()}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                min={0}
+              />
             )}
           </div>
         </Col>
         {name === 'C' && (
-          <Col span={8}>
+          <Col span={12}>
             <div>
               {getFieldDecorator(`cash[${name}][balanceIn]`, {
                 initialValue: 0,
@@ -64,7 +70,13 @@ const FormComponent = ({
                   }
                 ]
               })(
-                <InputNumber min={0} style={{ width: '60%' }} />
+                <InputNumber
+                  style={{ width: '100%' }}
+                  // onClick={() => this.select()}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}
+                />
               )}
             </div>
           </Col>
