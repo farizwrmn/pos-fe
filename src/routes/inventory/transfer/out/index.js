@@ -270,6 +270,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       })
     },
     onChooseInvoice (item) {
+      console.log('onChooseInvoice')
       dispatch({
         type: 'transferOut/getInvoiceDetailPurchase',
         payload: item
