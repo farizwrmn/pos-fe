@@ -47,7 +47,7 @@ export async function queryPOSstock (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   return request({
-    url: `${fiforeport}/balance`,
+    url: `${fiforeport}/stock`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

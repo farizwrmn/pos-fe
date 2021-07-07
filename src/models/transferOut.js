@@ -331,7 +331,7 @@ export default modelExtend(pageModel, {
     * getInvoiceDetailPurchase ({ payload }, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       let product = []
-      product = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      console.log('getInvoiceDetailPurchase')
       yield put({
         type: 'showProductModal',
         payload: {
@@ -339,6 +339,11 @@ export default modelExtend(pageModel, {
         }
       })
       const data = yield call(queryDetailInvoice, { transNo: payload.transNo })
+      product = yield call(queryProductsInStock, {
+        from: storeInfo.startPeriod,
+        to: moment().format('YYYY-MM-DD'),
+        product: data.data.map(editData => editData.productId).toString()
+      })
       let arrayProd = []
       for (let n = 0; n < data.data.length; n += 1) {
         const productCheck = product.data.filter(el => el.productId === data.data[n].productId)

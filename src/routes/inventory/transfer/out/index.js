@@ -188,9 +188,10 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           active: 1
         }
       })
-      dispatch({
-        type: 'pos/getListProductData'
-      })
+      console.log('call this')
+      // dispatch({
+      //   type: 'pos/getListProductData'
+      // })
       dispatch({
         type: 'pos/showProductModal',
         payload: {
