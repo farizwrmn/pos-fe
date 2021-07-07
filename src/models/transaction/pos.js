@@ -697,6 +697,7 @@ export default {
               policeNo: payload.data.policeNo,
               lastMeter: payload.data.lastMeter,
               data: data.pos,
+              bundling: data.bundling,
               merk: PosData.pos.merk,
               model: PosData.pos.model,
               type: PosData.pos.type,

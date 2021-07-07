@@ -123,7 +123,6 @@ export default {
 
         const listPrice = yield call(queryCustomerType, {})
         if (listPrice && listPrice.success) {
-          console.log('listPrice', listPrice.data)
           lstorage.setPriceName(listPrice.data)
         }
 

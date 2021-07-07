@@ -15,15 +15,18 @@ const group = (data, key, secondaryKey) => {
   }, [])
 }
 
-const groupProduct = (list) => {
+const groupProduct = (list, dataBundle = []) => {
   const listGroup = group(list, 'bundlingCode', 'bundlingName')
   let newList = []
   for (let key in listGroup) {
     const price = listGroup[key].reduce((prev, next) => prev + next.total, 0)
+    // eslint-disable-next-line no-loop-func
+    const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => filtered.bundlingId === listGroup[key][0].bundlingId) : []
     newList.push({
       key,
       detail: listGroup[key],
       price,
+      qty: filteredBundle && filteredBundle[0] ? filteredBundle[0].qty : 1,
       total: price
     })
   }
