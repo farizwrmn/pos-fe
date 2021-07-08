@@ -8,6 +8,9 @@ import {
 } from 'utils/string'
 import { Badge, Icon, Table, Tabs, Tag } from 'antd'
 import styles from '../../../themes/index.less'
+import {
+  groupProduct
+} from './utils'
 
 const { dayByNumber } = calendar
 
@@ -25,7 +28,12 @@ const TransactionDetail = ({
   } = pos
 
   const objectSize = (text) => {
-    let queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
+    let queue = []
+    if (text === 'bundle_promo') {
+      queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
+    } else {
+      queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)).filter(filtered => !filtered.bundleId) : []
+    }
     return (queue || []).length
   }
 
@@ -132,8 +140,13 @@ const TransactionDetail = ({
   const product = getCashierTrans()
   const service = getServiceTrans()
   const consignment = getConsignment()
+  const bundleItem = getBundleTrans()
+  const bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
 
-  const listTrans = product.map(item => ({ ...item, typeTrans: 'Product' }))
+  const listTrans = product
+    .filter(filtered => !filtered.bundleId)
+    .map(item => ({ ...item, typeTrans: 'Product' }))
+    .concat(bundle.map(item => ({ ...item, typeTrans: 'Bundle' })))
     .concat(service.map(item => ({ ...item, typeTrans: 'Service' })))
     .concat(consignment.map(item => ({ ...item, typeTrans: 'Consignment' })))
     .map((item, index) => ({ ...item, no: index + 1 }))
@@ -145,7 +158,7 @@ const TransactionDetail = ({
           rowKey={(record, key) => key}
           bordered
           size="small"
-          scroll={{ x: '680px' }}
+          scroll={{ x: '580px', y: '780px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
@@ -197,7 +210,8 @@ const TransactionDetail = ({
             }
           ]}
           onRowClick={record => modalEditPayment(record)}
-          dataSource={getCashierTrans()}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
+          dataSource={getCashierTrans().filter(filtered => !filtered.bundleId)}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
@@ -206,7 +220,7 @@ const TransactionDetail = ({
           rowKey={(record, key) => key}
           bordered
           size="small"
-          scroll={{ x: '580px' }}
+          scroll={{ x: '580px', y: '780px' }}
           locale={{
             emptyText: 'Your Payment List'
           }}
@@ -253,6 +267,7 @@ const TransactionDetail = ({
             }
           ]}
           onRowClick={_record => modalEditService(_record)}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
           dataSource={getServiceTrans()}
           style={{ marginBottom: 16 }}
         />
@@ -262,7 +277,7 @@ const TransactionDetail = ({
           rowKey={(record, key) => key}
           bordered
           size="small"
-          scroll={{ x: '580px' }}
+          scroll={{ x: '580px', y: '780px' }}
           locale={{
             emptyText: 'Your Consignment List'
           }}
@@ -316,6 +331,7 @@ const TransactionDetail = ({
             }
           ]}
           onRowClick={_record => modalEditConsignment(_record)}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
           dataSource={getConsignment()}
           pagination={false}
           style={{ marginBottom: 16 }}
@@ -326,11 +342,12 @@ const TransactionDetail = ({
           rowKey={(record, key) => key}
           bordered
           size="small"
-          scroll={{ x: '1000px' }}
+          scroll={{ x: '1000px', y: '780px' }}
           locale={{
             emptyText: 'Your Bundle List'
           }}
           onRowClick={_record => modalEditBundle(_record)}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
           dataSource={getBundleTrans()}
           style={{ marginBottom: 16 }}
           columns={[
@@ -343,25 +360,16 @@ const TransactionDetail = ({
               sorter: (a, b) => a.no - b.no
             },
             {
-              title: 'type',
-              dataIndex: 'type',
-              key: 'type',
-              width: `${width * 0.115}px`,
-              render: (text) => {
-                return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
-              }
-            },
-            {
-              title: 'Code',
+              title: 'Product',
               dataIndex: 'code',
-              key: 'code',
-              width: `${width * 0.1}px`
-            },
-            {
-              title: 'Name',
-              dataIndex: 'name',
-              key: 'name',
-              width: `${width * 0.15}px`
+              width: '250px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
+                  </div>
+                )
+              }
             },
             {
               title: 'Q',
@@ -412,7 +420,7 @@ const TransactionDetail = ({
           rowKey={(record, key) => key}
           bordered
           size="small"
-          scroll={{ x: '580px' }}
+          scroll={{ x: '580px', y: '780px' }}
           locale={{
             emptyText: 'Your Sales List'
           }}
@@ -470,6 +478,7 @@ const TransactionDetail = ({
               }
             }
           ]}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
           dataSource={listTrans}
           pagination={false}
           style={{ marginBottom: 16 }}

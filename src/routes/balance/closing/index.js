@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
 
-const Container = ({ balance, shift, userDetail, dispatch, paymentOpts }) => {
+const Container = ({ loading, balance, shift, userDetail, dispatch, paymentOpts }) => {
   const { currentItem } = balance
   const { listShift } = shift
   const { listOpts } = paymentOpts
@@ -11,6 +11,7 @@ const Container = ({ balance, shift, userDetail, dispatch, paymentOpts }) => {
 
   const listProps = {
     item: currentItem,
+    loading,
     listOpts,
     listShift,
     listUser: data && data.data,
@@ -85,12 +86,12 @@ export default connect(
     app,
     paymentOpts
   }) =>
-    ({
-      loading,
-      balance,
-      shift,
-      userDetail,
-      app,
-      paymentOpts
-    })
+  ({
+    loading,
+    balance,
+    shift,
+    userDetail,
+    app,
+    paymentOpts
+  })
 )(Container)

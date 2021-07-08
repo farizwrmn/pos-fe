@@ -52,7 +52,12 @@ const FormComponent = ({
                 }
               ]
             })(
-              <InputNumber min={0} style={{ width: '60%' }} />
+              <InputNumber
+                min={0}
+                style={{ width: '60%' }}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
             )}
           </div>
         </Col>
@@ -67,7 +72,12 @@ const FormComponent = ({
                   }
                 ]
               })(
-                <InputNumber min={0} style={{ width: '60%' }} />
+                <InputNumber
+                  min={0}
+                  style={{ width: '60%' }}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                />
               )}
             </div>
           )}
@@ -82,7 +92,12 @@ const FormComponent = ({
                 }
               ]
             })(
-              <InputNumber min={0} style={{ width: '60%' }} />
+              <InputNumber
+                min={0}
+                style={{ width: '60%' }}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
             )}
           </div>
         </Col>
@@ -93,6 +108,7 @@ const FormComponent = ({
 
 const List = ({
   item,
+  loading,
   listOpts = [],
   listShift,
   listUser,
@@ -145,7 +161,7 @@ const List = ({
           name={item.typeCode}
         />
       ))}
-      <Button type="primary" onClick={handleSubmit}>{button}</Button>
+      <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
     </Form>
   )
 }

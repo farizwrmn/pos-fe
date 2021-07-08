@@ -22,9 +22,13 @@ class TransactionDetail extends Component {
       dispatch,
       pos,
       product,
+      bundle,
       service,
       consignment,
-      listTrans = product.map(item => ({ ...item, type: 'Product' }))
+      listTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
         .concat(service.map(item => ({ ...item, type: 'Service' })))
         .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
         .map((item, index) => ({ ...item, no: index + 1 })),
@@ -98,7 +102,7 @@ class TransactionDetail extends Component {
             bordered
             pagination={false}
             size="small"
-            scroll={{ x: '680px' }}
+            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
             locale={{
               emptyText: 'Your Payment List'
             }}
@@ -109,11 +113,6 @@ class TransactionDetail extends Component {
                 dataIndex: 'no',
                 sortOrder: 'descend',
                 sorter: (a, b) => a.no - b.no
-              },
-              {
-                title: 'Type',
-                width: '150px',
-                dataIndex: 'type'
               },
               {
                 title: 'Product',

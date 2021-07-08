@@ -43,6 +43,23 @@ a {
 }
 
 :global {
+    .ant-table-tbody > tr.ant-table-row-level-1:hover > td {
+        background: unset;
+    }
+    .table-row-light {
+        background-color: #ffffff;
+        color: @text-color;
+    }
+    .table-row-dark {
+        background-color: @primary-color;
+        color: #ffffff;
+
+        &:hover {
+            background-color: @primary-color !important;
+            color: @text-color;
+        }
+    }
+
     .wrapper-switcher {
         position: fixed;
         width: 92%;

@@ -335,6 +335,7 @@ export default {
     },
 
     * paymentDelete ({ payload }, { put }) {
+      console.log('payload', payload)
       let dataPos = getCashierTrans()
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
@@ -360,6 +361,7 @@ export default {
           code: ary[n].code,
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
+          bundleCode: ary[n].bundleCode,
           bundleName: ary[n].bundleName,
           employeeId: ary[n].employeeId,
           employeeName: ary[n].employeeName,
@@ -375,6 +377,7 @@ export default {
           total: ary[n].total
         })
       }
+      console.log('arrayProd', arrayProd)
       if (arrayProd.length === 0) {
         localStorage.removeItem('cashier_trans')
         yield put({
@@ -420,6 +423,7 @@ export default {
           code: ary[n].code,
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
+          bundleCode: ary[n].bundleCode,
           bundleName: ary[n].bundleName,
           employeeId: ary[n].employeeId,
           employeeName: ary[n].employeeName,
@@ -701,6 +705,7 @@ export default {
               policeNo: payload.data.policeNo,
               lastMeter: payload.data.lastMeter,
               data: data.pos,
+              bundling: data.bundling,
               merk: PosData.pos.merk,
               model: PosData.pos.model,
               type: PosData.pos.type,
@@ -1586,6 +1591,7 @@ export default {
           const data = {
             no: currentItem.no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
@@ -1606,6 +1612,7 @@ export default {
             no: currentItem.no,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1633,6 +1640,7 @@ export default {
           const data = {
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
@@ -1653,6 +1661,7 @@ export default {
             no: arrayProd.length + 1,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1697,6 +1706,7 @@ export default {
             no: currentItem.no,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1716,6 +1726,7 @@ export default {
             no: currentItem.no,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,

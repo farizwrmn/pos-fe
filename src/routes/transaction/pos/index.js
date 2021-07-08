@@ -36,11 +36,12 @@ import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
+import { groupProduct } from './utils'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans, getConsignment } = lstorage
+const { getCashierTrans, getBundleTrans, getConsignment } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -139,7 +140,9 @@ const Pos = ({
   let product = getCashierTrans()
   let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-  let dataPos = product.concat(service).concat(consignment)
+  const bundleItem = getBundleTrans()
+  let bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
+  let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
   let a = dataPos
   let usageLoyalty = memberInformation.useLoyalty || 0
   const totalDiscount = usageLoyalty
@@ -1324,6 +1327,7 @@ const Pos = ({
           code: dataProductFiltered[n].code,
           productId: dataProductFiltered[n].productId,
           bundleId: dataProductFiltered[n].bundleId,
+          bundleCode: dataProductFiltered[n].bundleCode,
           bundleName: dataProductFiltered[n].bundleName,
           employeeId: dataProductFiltered[n].employeeId,
           employeeName: dataProductFiltered[n].employeeName,
@@ -1345,6 +1349,7 @@ const Pos = ({
           code: dataServiceFiltered[n].code,
           productId: dataServiceFiltered[n].productId,
           bundleId: dataServiceFiltered[n].bundleId,
+          bundleCode: dataServiceFiltered[n].bundleCode,
           bundleName: dataServiceFiltered[n].bundleName,
           employeeId: dataServiceFiltered[n].employeeId,
           employeeName: dataServiceFiltered[n].employeeName,
