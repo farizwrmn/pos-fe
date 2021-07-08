@@ -9,8 +9,6 @@ class CurrentItem extends React.Component {
       list
     } = this.props
 
-    console.log(title, list)
-
     return (
       <div>
         <Card title={title}>
