@@ -27,6 +27,7 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
     listProps,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     onSubmit (data) {
+      console.log('data', data)
       if (data) {
         const detail = listOpts && listOpts.map((item) => {
           const selected = data && data.detail && data.detail[item.typeCode]
@@ -78,12 +79,23 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
     }
   }
 
+  // if (loading && loading.effects['balance/active']) {
+  //   console.log('1')
+  //   return null
+  // }
+
+  if (currentItem && currentItem.id && Boolean(currentItem.id)) {
+    return (
+      <div className="content-inner">
+        <Form {...formProps} button="Close" />
+      </div>
+    )
+  }
+
   return (
-    <div className="content-inner">
-      {currentItem && currentItem.id ?
-        (<Form {...formProps} button="Close" />)
-        : (<Form {...formProps} button="Open" />)}
-    </div>
+    <div className="content-inner" >
+      <Form {...formProps} button="Open" />
+    </div >
   )
 }
 

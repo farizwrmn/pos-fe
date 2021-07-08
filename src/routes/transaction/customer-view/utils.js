@@ -21,7 +21,7 @@ const groupProduct = (list, dataBundle = []) => {
   for (let key in listGroup) {
     const price = listGroup[key].reduce((prev, next) => prev + next.total, 0)
     // eslint-disable-next-line no-loop-func
-    const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => filtered.bundlingId === listGroup[key][0].bundlingId) : []
+    const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => parseFloat(filtered.bundleId) === parseFloat(listGroup[key][0].bundleId)) : []
     newList.push({
       key,
       code: key,

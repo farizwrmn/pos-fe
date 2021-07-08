@@ -9,10 +9,12 @@ class CurrentItem extends React.Component {
       list
     } = this.props
 
+    console.log(title, list)
+
     return (
       <div>
         <Card title={title}>
-          {list && list.map(item => <Item item={item} />)}
+          {list && list.filter(filtered => filtered.balanceIn > 0).map(item => <Item item={item} />)}
         </Card>
       </div>
     )
