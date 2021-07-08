@@ -56,12 +56,31 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { storeId, ...other } = payload
+      const data = yield call(query, other)
       if (data.success) {
+        let listPayment = data.data
+        if (storeId) {
+          listPayment = listPayment.filter((filtered) => {
+            if (filtered.storeHide) {
+              const hideFrom = filtered.storeHide.split(',')
+              let exists = true
+              for (let key in hideFrom) {
+                const item = hideFrom[key]
+                if (parseFloat(item) === parseFloat(storeId)) {
+                  exists = false
+                  break
+                }
+              }
+              return exists
+            }
+            return true
+          })
+        }
         yield put({
           type: 'querySuccessCounter',
           payload: {
-            listPayment: data.data,
+            listPayment,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,

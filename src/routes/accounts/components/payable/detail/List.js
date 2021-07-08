@@ -1,18 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DropOption } from 'components'
+// import { DropOption } from 'components'
 import { numberFormat } from 'utils'
-import { Table, Icon, Tag } from 'antd'
+import { Table, Tag } from 'antd'
 import moment from 'moment'
 
 const numberFormatter = numberFormat.numberFormatter
 
 const List = ({ cancelPayment, ...tableProps }) => {
-  const hdlDropOptionClick = (record, e) => {
-    if (e.key === '1') {
-      cancelPayment(record)
-    }
-  }
+  // const hdlDropOptionClick = (record, e) => {
+  //   if (e.key === '1') {
+  //     cancelPayment(record)
+  //   }
+  // }
 
   const columns = [
     {
@@ -109,21 +109,21 @@ const List = ({ cancelPayment, ...tableProps }) => {
       key: 'updatedAt',
       width: 120,
       render: _text => `${moment(_text).format('LL')}`
-    },
-    {
-      title: <Icon type="setting" />,
-      key: 'operation',
-      fixed: 'right',
-      width: 75,
-      render: (text, record) => {
-        return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
-          type="primary"
-          menuOptions={[
-            { key: '1', name: 'Void', icon: 'delete' }
-          ]}
-        />)
-      }
     }
+    // {
+    //   title: <Icon type="setting" />,
+    //   key: 'operation',
+    //   fixed: 'right',
+    //   width: 75,
+    //   render: (text, record) => {
+    //     return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
+    //       type="primary"
+    //       menuOptions={[
+    //         { key: '1', name: 'Void', icon: 'delete' }
+    //       ]}
+    //     />)
+    //   }
+    // }
   ]
 
   return (

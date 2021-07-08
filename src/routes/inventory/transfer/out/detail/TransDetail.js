@@ -8,10 +8,6 @@ import List from './ListDetail'
 
 const formPayment = ({
   dataSource,
-  form: {
-    // getFieldDecorator,
-    resetFields
-  },
   ...formProps
 }) => {
   const listProps = {

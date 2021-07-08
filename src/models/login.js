@@ -1,6 +1,7 @@
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import { configMain, configCompany, queryURL, lstorage, messageInfo } from 'utils'
+import { APPNAME } from 'utils/config.company'
 import { login, getUserRole, getUserStore } from '../services/login'
 
 const { prefix } = configMain
@@ -18,7 +19,7 @@ export default {
     requiredRole: false,
     modalFingerprintVisible: false,
     visibleItem: { verificationCode: false },
-    logo: '/logo.png'
+    logo: `/logo-${APPNAME}.png`
   },
 
   subscriptions: {
@@ -90,6 +91,8 @@ export default {
           yield put({
             type: 'pos/removeTrans'
           })
+          yield put({ type: 'pos/setDefaultMember' })
+          yield put({ type: 'pos/setDefaultEmployee' })
         }
         if (modalLoginType === 'editPayment') {
           if (modalLoginData && modalLoginData.typeCode === 'P') {
@@ -231,14 +234,14 @@ export default {
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state,
-        logo: `logo${action.payload.cid}.png`
+        logo: `logo-${APPNAME}.png`
       }
     },
     getCompanyFailure (state) {
       lstorage.removeItemKey('cdi')
       return {
         ...state,
-        logo: 'logo.png'
+        logo: `logo-${APPNAME}.png`
       }
     },
     showLoginLoading (state) {

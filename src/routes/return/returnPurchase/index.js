@@ -104,6 +104,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
 
   const modalProductProps = {
     location,
+    dispatch,
     loading,
     purchase,
     returnPurchase,
@@ -164,13 +165,48 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     }
   }
 
-  const handleProductBrowse = () => {
-    dispatch({
-      type: 'returnPurchase/updateState',
-      payload: {
-        modalProductVisible: true
+  const handleProductBrowse = (reset, query, checked) => {
+    if (reset) {
+      if (query) {
+        dispatch({
+          type: 'returnPurchase/updateState',
+          payload: {
+            modalProductVisible: true
+          }
+        })
+        dispatch({
+          type: 'returnPurchase/queryProduct'
+        })
+      } else if (!checked || checked === undefined) {
+        dispatch({
+          type: 'returnPurchase/updateState',
+          payload: {
+            listProduct: [],
+            listItem: [],
+            pagination: {
+              total: 0,
+              current: 0,
+              pageSize: 0
+            }
+          }
+        })
+        dispatch({
+          type: 'returnPurchase/queryProduct'
+        })
       }
-    })
+    } else {
+      dispatch({
+        type: 'returnPurchase/updateState',
+        payload: {
+          modalProductVisible: true,
+          pagination: {
+            total: 0,
+            current: 0,
+            pageSize: 0
+          }
+        }
+      })
+    }
   }
 
   const formEditProps = {

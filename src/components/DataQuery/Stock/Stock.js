@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Modal, Tag, Form, Input, Button, Icon } from 'antd'
+import { getDistPriceName } from 'utils/string'
 import styles from '../../../themes/index.less'
 
 const FormItem = Form.Item
@@ -36,27 +37,27 @@ const Stock = ({
       key: 'productName'
     },
     {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist Price 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist Price 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     }, {
-      title: 'Dist Price 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       className: styles.alignRight,

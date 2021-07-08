@@ -6,6 +6,7 @@ import { DropOption } from 'components'
 import moment from 'moment'
 import { IMAGEURL } from 'utils/config.company'
 import { lstorage } from 'utils'
+import { getDistPriceName } from 'utils/string'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -138,7 +139,7 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
@@ -154,7 +155,7 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Dist Price 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
@@ -170,7 +171,7 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Dist Price 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
@@ -186,7 +187,7 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Dist Price 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       className: styles.alignRight,

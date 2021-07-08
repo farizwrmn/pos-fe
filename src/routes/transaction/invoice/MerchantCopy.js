@@ -37,7 +37,7 @@ const MerchantCopy = ({
           </Col>
           <Col span={12} className={styles.merchant}>
             <div className={styles.bordered}>
-              Merchant Copy Card / E-Wallet Transaction
+              Merchant Copy Card / Mart Transaction
             </div>
           </Col>
         </Row>
@@ -55,7 +55,7 @@ const MerchantCopy = ({
           </Col>
           <Col span={12} className={styles.merchant}>
             <div className={styles.bordered}>
-              Merchant Copy Card / E-Wallet Transaction
+              Merchant Copy Card / Consignment Transaction
             </div>
           </Col>
         </Row>

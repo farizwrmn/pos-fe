@@ -1,17 +1,18 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
-import { query, add, edit, remove } from 'services/payable/payableForm'
+import { queryById, voidTrans, query, add, edit, remove } from 'services/payable/payableForm'
+import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Payable Form has been saved')
 }
 
 const checkExists = (index, list) => {
-  const filteredList = list.filter(filtered => filtered.id === index)
+  const filteredList = list.filter(filtered => filtered.transNo === index)
   if (filteredList && filteredList.length > 0) {
     return filteredList[0]
   }
@@ -29,6 +30,7 @@ export default modelExtend(pageModel, {
     listItem: [],
     currentItemList: {},
     modalVisible: false,
+    modalCancelVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -41,6 +43,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...payload } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/accounts/payable-form/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/accounts/payable-form') {
           dispatch({
             type: 'updateState',
@@ -59,6 +71,44 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, payable, payableReturn, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: payable.concat(payableReturn)
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * voidTrans ({ payload }, { call, put }) {
+      // console.log('payload', payload)
+      const data = yield call(voidTrans, payload)
+      if (data.success) {
+        if (data.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalCancelVisible: false,
+              disableConfirm: false
+            }
+          })
+        }
+        yield put(routerRedux.push('/accounts/payable-form'))
+        Modal.info({
+          title: 'Transaction has been canceled'
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
@@ -175,15 +225,23 @@ export default modelExtend(pageModel, {
         ...payload.item,
         amount: payload.item.paymentTotal
       })
-      const exists = checkExists(payload.item.id, listItem)
+      const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         throw new Error('Item already exists')
       }
       if (payload.item.paymentTotal <= 0) {
-        throw new Error('Item already paid')
+        if (!payload.item.returnPurchaseDetail) {
+          throw new Error('Item already paid')
+        }
       }
       yield put({
         type: 'purchase/hideProductModal'
+      })
+      yield put({
+        type: 'returnPurchase/updateState',
+        payload: {
+          modalReturnVisible: false
+        }
       })
       yield put({
         type: 'updateState',
@@ -201,7 +259,8 @@ export default modelExtend(pageModel, {
         message.error('Require item in payload')
         return
       }
-      const exists = checkExists(payload.item.id, listItem)
+      console.log('payload.item', payload.item, listItem)
+      const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         yield put({
           type: 'updateState',
@@ -227,7 +286,7 @@ export default modelExtend(pageModel, {
         message.error('Require item in payload')
         return
       }
-      const exists = checkExists(payload.item.id, listItem)
+      const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         yield put({
           type: 'updateState',

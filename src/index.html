@@ -43,15 +43,17 @@
         }
         __oldConsoleError(message)
       }
-      setTimeout(
-        console.log.bind(console, '%cHello, are you a software engineer?           ',
-          'color: #FF6600; font-size: 32px; font-weight: bold; background: url(http://' + window.location.host +
-          '/logoDKT.png); background-size: 20px 32px; background-position: right center; background-repeat: no-repeat'
-        ), 0)
-      setTimeout(
-        console.log.bind(console,
-          '%clets join us to build this app even more cool. please send your resume to cs@gmail.com',
-          'color: #0099FF; font-size:16px;'), 0)
+      // setTimeout(
+      //   console.log.bind(console, '%cHello, are you a software engineer?           ',
+      //     'color: #FF6600; font-size: 32px; font-weight: bold; background: url(http://' + window.location.host +
+      //     '/logoDKT.png); background-size: 20px 32px; background-position: right center; background-repeat: no-repeat'
+      //   ),
+      //    0)
+      // setTimeout(
+      //   console.log.bind(console,
+      //     '%clets join us to build this app even more cool. please send your resume to cs@gmail.com',
+      //     'color: #0099FF; font-size:16px;'),
+      //    0)
     })()
 
   </script>
@@ -72,6 +74,7 @@
     // Raven.config('http://e96dbeb3819f43c7a0fa679375211815@172.17.0.4:9000/2').install()
 
   </script>
+  <script src="/public/pouchdb.min.js"></script>
   <script src="/index.js"></script>
 </body>
 

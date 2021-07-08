@@ -64,6 +64,21 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
       }
     },
     {
+      title: 'Price',
+      dataIndex: 'DPP',
+      key: 'DPP',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{(text || '-').toLocaleString()}</div>
+        }
+      }
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',

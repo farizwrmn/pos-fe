@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicReportCard } from 'components'
+import { lstorage } from 'utils'
 // import bwipjs from 'bwip-js'
 
 const NUMBER_OF_COLUMN = 2
@@ -36,8 +37,20 @@ const createTableBody = async (tableBody) => {
   //   // eslint-disable-next-line no-undef
   //   return btoa(String.fromCharCode.apply(null, u8))
   // }
+  const storeId = lstorage.getCurrentUserStore()
   for (let key in tableBody) {
     if (tableBody.hasOwnProperty(key)) {
+      const { info: item } = tableBody[key]
+      if (item && item.storePrice && item.storePrice[0]) {
+        // eslint-disable-next-line no-loop-func
+        const price = item.storePrice.filter(filtered => filtered.storeId === storeId)
+        if (price && price[0]) {
+          item.sellPrice = price[0].sellPrice
+          item.distPrice01 = price[0].distPrice01
+          item.distPrice02 = price[0].distPrice02
+          item.distPrice03 = price[0].distPrice03
+        }
+      }
       for (let i = 0; i < tableBody[key].qty; i += 1) {
         const productCode = tableBody[key].info.productCode.toString()
         const productName = tableBody[key].info.productName.slice(0, 85).toString()

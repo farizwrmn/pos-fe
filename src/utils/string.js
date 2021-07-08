@@ -7,6 +7,7 @@ import {
   PURCHASE,
   PPAY
 } from 'utils/variable'
+import lstorage from './lstorage'
 
 const currencyFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
@@ -65,11 +66,21 @@ const getLinkName = (id, transNo, transType) => {
   }
 }
 
+const getDistPriceName = (fromStock) => {
+  const listPrice = lstorage.getPriceName()
+  const selectedDist = listPrice.filter(filtered => filtered.sellPrice === fromStock)
+  if (selectedDist && selectedDist[0]) {
+    return `Price ${selectedDist[0].typeName}`
+  }
+  return fromStock
+}
+
 export {
   currencyFormatter,
   numberFormatter,
   discountFormatter,
   composeData,
   countFollower,
-  getLinkName
+  getLinkName,
+  getDistPriceName
 }

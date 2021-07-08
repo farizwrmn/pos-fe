@@ -3,7 +3,6 @@ import {
   prefix,
   footerText,
   footerSubText,
-  logo,
   openPages,
   disableMultiSelect
 } from '../config.main'
@@ -22,10 +21,6 @@ it('Should render App footerText', () =>
 
 it('Should render App footerSubText', () =>
   expect(footerSubText).toEqual('Point of Sales © 2019')
-)
-
-it('Should render App Logo String', () =>
-  expect(logo).toEqual('/logo.png')
 )
 
 it('Should render App openPages', () =>

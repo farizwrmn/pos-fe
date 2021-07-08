@@ -37,6 +37,7 @@ const List = ({
       <Table {...tableProps}
         bordered
         columns={columns}
+        pagination={false}
         simple
       />
     </div>

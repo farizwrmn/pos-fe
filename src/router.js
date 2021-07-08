@@ -256,7 +256,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/productstock'))
-              cb(null, require('./routes/master/product/printSticker/'))
+              cb(null, require('./routes/master/product/printSticker'))
             }, 'master-product-sticker')
           }
         }, {
@@ -449,7 +449,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/balance/balance/'))
+              cb(null, require('./routes/balance/balance'))
             }, 'balance-current')
           }
         }, {
@@ -1064,14 +1064,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/return/returnPurchase'))
               cb(null, require('./routes/accounts/payableform'))
             }, 'accounts/payable-form')
           }
         }, {
-          path: 'journal-entry/:id',
+          path: 'accounts/payable-form/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/accounts/journalentry'))
+              registerModel(app, require('./models/accounts/payableForm'))
               cb(null, require('./routes/accounts/payableform/detail'))
             }, 'accounts-payable-form-detail')
           }
@@ -1276,7 +1277,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userRole'))
               registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/master/employee'))
-              cb(null, require('./routes/setting/user/'))
+              cb(null, require('./routes/setting/user'))
             }, 'setting-user')
           }
         }, {
@@ -1355,7 +1356,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
-            }, 'setting-misc')
+            }, 'inventory-transfer-out-detail')
           }
         }, {
           path: 'inventory/transfer/out/:id',

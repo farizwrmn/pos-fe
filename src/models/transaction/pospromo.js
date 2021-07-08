@@ -38,7 +38,17 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * addPosPromo ({ payload = {} }, { call, put }) {
+    * addPosPromo ({ payload = {} }, { call, select, put }) {
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        return
+      }
+
       const { bundleId, currentBundle, currentProduct, currentService, reject, resolve, ...other } = payload
       const data = yield call(query, { id: bundleId })
       const dataRules = yield call(queryRules, { bundleId, ...other })
@@ -316,6 +326,8 @@ export default modelExtend(pageModel, {
           if ((filteredProduct || []).length > 0) {
             let ary = currentProduct
             ary.remove(filteredProduct[0].no - 1)
+            const item = currentReward[n]
+            const sellingPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice)
             let data = {
               no: filteredProduct[0].no,
               code: currentReward[n].productCode,
@@ -327,9 +339,9 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: filteredProduct[0].qty + currentReward[n].qty,
-              sellPrice: currentReward[n].sellPrice,
-              sellingPrice: currentReward[n].sellPrice,
-              price: currentReward[n].sellPrice,
+              sellPrice: sellingPrice,
+              sellingPrice,
+              price: sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
               disc2: currentReward[n].disc2,
@@ -338,6 +350,7 @@ export default modelExtend(pageModel, {
             data.total = posTotal(data)
             arrayProd[filteredProduct[0].no - 1] = data
           } else {
+            const sellingPrice = (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice)
             let data = {
               no: arrayProd.length + 1,
               code: currentReward[n].productCode,
@@ -349,9 +362,9 @@ export default modelExtend(pageModel, {
               name: currentReward[n].productName,
               typeCode: 'P',
               qty: currentReward[n].qty,
-              sellPrice: memberInformation.showAsDiscount ? currentReward[n].sellPrice : currentReward[n][memberInformation.memberSellPrice.toString()],
-              sellingPrice: (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice),
-              price: (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice),
+              sellPrice: sellingPrice,
+              sellingPrice,
+              price: sellingPrice,
               discount: currentReward[n].discount,
               disc1: currentReward[n].disc1,
               disc2: currentReward[n].disc2,

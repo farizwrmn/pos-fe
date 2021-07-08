@@ -1,4 +1,27 @@
-import { request, crypt } from '../../utils'
+import { request, lstorage, crypt } from '../../utils'
+
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `/account-payable/payable-form/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function voidTrans (params) {
+  let url = `/account-payable/payable-form/${params.id}`
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url,
+    method: 'delete',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()

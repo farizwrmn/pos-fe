@@ -4,6 +4,7 @@ import moment from 'moment'
 import { BasicReportCard } from 'components'
 import { currencyFormatter } from 'utils/string'
 import { name } from 'utils/config.main'
+import { lstorage } from 'utils'
 
 const NUMBER_OF_COLUMN = 5
 const NUMBER_OF_PRODUCT_NAME = 28
@@ -13,9 +14,20 @@ const HEIGHT_TABLE = (3.8 / 2.54) * 72
 const PrintShelf = ({ stickers, user, aliases }) => {
   const createTableBody = (tableBody) => {
     let body = []
+    const storeId = lstorage.getCurrentUserStore()
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         for (let i = 0; i < tableBody[key].qty; i += 1) {
+          const { info: item } = tableBody[key]
+          if (item && item.storePrice && item.storePrice[0]) {
+            const price = item.storePrice.filter(filtered => filtered.storeId === storeId)
+            if (price && price[0]) {
+              item.sellPrice = price[0].sellPrice
+              item.distPrice01 = price[0].distPrice01
+              item.distPrice02 = price[0].distPrice02
+              item.distPrice03 = price[0].distPrice03
+            }
+          }
           const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
           let maxStringPerRow2 = ' '
           if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {

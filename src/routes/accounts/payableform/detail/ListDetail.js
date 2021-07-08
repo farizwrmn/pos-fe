@@ -1,50 +1,67 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
+import moment from 'moment'
 import { numberFormat } from 'utils'
-import styles from '../../../../themes/index.less'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const numberFormatter = numberFormat.numberFormatter
 
-const List = ({ ...tableProps, editList }) => {
-  const handleMenuClick = (record) => {
-    editList(record)
+const List = ({ ...tableProps }) => {
+  const handleMenuClick = () => {
+    // editList(record)
   }
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 40
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: 150
     },
     {
-      title: 'Account Code',
-      dataIndex: 'accountCode.accountCode',
-      key: 'accountCode.accountCode',
+      title: 'Status',
+      dataIndex: 'active',
+      key: 'active',
+      width: 120,
+      render: text =>
+        (<span>
+          <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
+            {parseInt(text, 10) ? 'Active' : 'Canceled'}
+          </Tag>
+        </span>)
+    },
+    {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 120,
+      render: _text => `${moment(_text).format('LL')}`
+    },
+    {
+      title: 'Time',
+      dataIndex: 'transTime',
+      key: 'transTime',
+      width: 120
+    },
+    {
+      title: 'Type Code',
+      dataIndex: 'typeCode',
+      key: 'typeCode',
       width: 100
     },
     {
-      title: 'Account Name',
-      dataIndex: 'accountCode.accountName',
-      key: 'accountCode.accountName',
-      width: 200
+      title: 'Amount',
+      dataIndex: 'paid',
+      key: 'paid',
+      width: 120,
+      render: text => <p style={{ textAlign: 'right' }}>{numberFormatter(text || 0)}</p>
     },
     {
-      title: 'Debit',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
       width: 120,
-      className: styles.alignRight,
-      render: text => formatNumberIndonesia(text || 0)
-    },
-    {
-      title: 'Credit',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
-      width: 120,
-      className: styles.alignRight,
-      render: text => formatNumberIndonesia(text || 0)
+      render: text => <p style={{ textAlign: 'left' }}>{text}</p>
     }
   ]
 

@@ -13,3 +13,5 @@ Dockerfile
 build/
 coverage/
 .env
+src/models/secret.js
+.env.*

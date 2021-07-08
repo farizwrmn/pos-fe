@@ -1,12 +1,19 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
-import { lstorage } from 'utils'
+import { message, Modal } from 'antd'
+import { configMain, lstorage } from 'utils'
+import moment from 'moment'
 import { query, queryById, add, edit, approve, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
 import { queryDetail as queryPurchaseDetail } from 'services/purchase'
+import {
+  query as queryProductStock,
+  queryPOSproduct
+} from 'services/master/productstock'
 import { pageModel } from './../common'
+
+const { prefix } = configMain
 
 const success = () => {
   message.success('Return Purchase has been saved')
@@ -17,9 +24,11 @@ export default modelExtend(pageModel, {
 
   state: {
     data: {},
+    searchText: '',
     listDetail: [],
     listItem: [],
     listProduct: [],
+    listInvoice: [],
     list: [],
     currentItem: {},
     currentItemList: {},
@@ -28,9 +37,11 @@ export default modelExtend(pageModel, {
     modalEditItemVisible: false,
     modalProductVisible: false,
     modalInvoiceVisible: false,
+
+    modalReturnVisible: false,
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
+      // showSizeChanger: true,
+      // showQuickJumper: true,
       current: 1
     }
   },
@@ -74,7 +85,7 @@ export default modelExtend(pageModel, {
     * queryReturnPurchaseDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, returnPurchaseDetail, ...other } = data.data
+        const { returnPurchaseDetail, ...other } = data.data
         yield put({
           type: 'updateState',
           payload: {
@@ -87,8 +98,110 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryReturnDetailInvoice ({ payload = {} }, { call, put }) {
+      const header = yield call(query, {
+        queryType: 'toPayable',
+        supplierId: payload.supplierId
+      })
+      if (header && header.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listInvoice: header.data
+              .map(data => ({
+                ...data,
+                amount: data.returnPurchaseDetail.map((returnData) => {
+                  if (returnData.DPP > 0) {
+                    return returnData.DPP * returnData.qty
+                  }
+                  return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
+                }).reduce((prev, next) => prev + next, 0) * -1,
+                paymentTotal: data.returnPurchaseDetail.map((returnData) => {
+                  if (returnData.DPP > 0) {
+                    return returnData.DPP * returnData.qty
+                  }
+                  return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
+                }).reduce((prev, next) => prev + next, 0) * -1
+              }))
+          }
+        })
+      }
+    },
+
+    * queryProduct ({ payload = {} }, { call, put }) {
+      const data = yield call(queryProductStock, payload)
+      let newData = data.data
+      if (data.success) {
+        yield put({
+          type: 'showProductQty',
+          payload: {
+            data: newData
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: newData
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: {
+              total: data.total,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Product Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+      }
+    },
+
+    * showProductQty ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
+          data = data.map((x) => {
+            if (x.id === listProductData.data[n].id) {
+              const { count, ...other } = x
+              return {
+                ...other,
+                ...listProductData.data[n],
+                productId: listProductData.data[n].id,
+                initialQty: listProductData.data[n].count,
+                qty: listProductData.data[n].count
+              }
+            }
+            return x
+          })
+        }
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: data
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        ...payload,
+        order: '-id'
+      })
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -117,6 +230,10 @@ export default modelExtend(pageModel, {
       const data = yield call(approve, payload)
       if (data.success) {
         yield put({ type: 'query' })
+        Modal.success({
+          title: 'Transaction success',
+          content: 'Transaction has been saved'
+        })
       } else {
         throw data
       }
@@ -173,8 +290,10 @@ export default modelExtend(pageModel, {
         no: listItem.length + 1,
         transferStoreId: lstorage.getCurrentUserStore(),
         ...payload.item,
-        initialQty: payload.item.qty
+        initialQty: payload.item.qty,
+        DPP: payload.item.costPrice
       }
+      console.log('newData', newData)
       newListItem.push(newData)
       yield put({
         type: 'updateState',

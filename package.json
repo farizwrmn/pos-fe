@@ -18,6 +18,8 @@
     "path-to-regexp": "^1.7.0",
     "pdfmake": "0.1.68",
     "prop-types": "^15.6.0",
+    "pouchdb": "^7.0.0",
+    "pouchdb-find": "^7.0.0",
     "qs": "^6.5.0",
     "react": "^15.6.1",
     "react-countup": "^2.1.1",

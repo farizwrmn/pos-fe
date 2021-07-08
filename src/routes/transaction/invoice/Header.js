@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Col } from 'antd'
+import { APPNAME } from 'utils/config.company'
 import styles from './index.less'
 
 const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
@@ -7,9 +8,9 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
     <div>
       <div className={styles.center}>
         <img
-          src="/invoice-logo.png"
+          src={`/invoice-logo-${APPNAME}.png`}
           style={{ height: '100%', width: '100%' }}
-          alt="K3MART.ID"
+          alt={`${(APPNAME || '').toUpperCase()}`}
         />
         <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
       </div>
@@ -24,12 +25,16 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
             {invoiceInfo.transDatePrint}
           </Col>
         </Row>
-        <div>
-          <strong>#{invoiceInfo.lastTransNo}</strong>
-        </div>
-        <div>
-          #{invoiceInfo.consignmentNo}
-        </div>
+        {invoiceInfo && invoiceInfo.lastTransNo && (
+          <div>
+            <strong>#{invoiceInfo.lastTransNo}</strong>
+          </div>
+        )}
+        {invoiceInfo && invoiceInfo.consignmentNo && (
+          <div>
+            #{invoiceInfo.consignmentNo}
+          </div>
+        )}
       </div>
     </div>
   )

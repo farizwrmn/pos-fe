@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Icon, Form, Input, Button } from 'antd'
 import styles from 'themes/index.less'
 
-const ListProduct = ({ onChooseItem, loadingProduct, ...tableProps }) => {
+const FormItem = Form.Item
+
+const ListProduct = ({ onChooseItem, searchText, dispatch, loadingQty, loadingProduct, ...tableProps }) => {
   const handleMenuClick = (record) => {
     onChooseItem(record)
   }
@@ -29,7 +31,25 @@ const ListProduct = ({ onChooseItem, loadingProduct, ...tableProps }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
-      className: styles.alignRight
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loadingQty.effects['returnPurchase/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
+    },
+    {
+      title: 'Initial',
+      dataIndex: 'initialQty',
+      key: 'initialQty',
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loadingQty.effects['returnPurchase/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
     },
     {
       title: 'Price',
@@ -40,17 +60,77 @@ const ListProduct = ({ onChooseItem, loadingProduct, ...tableProps }) => {
     }
   ]
 
+  const handleChange = (e) => {
+    const { value } = e.target
+
+    dispatch({
+      type: 'returnPurchase/updateState',
+      payload: {
+        searchText: value
+      }
+    })
+  }
+
+  const handleSearch = () => {
+    dispatch({
+      type: 'returnPurchase/queryProduct',
+      payload: {
+        q: searchText
+      }
+    })
+  }
+
+  const handleReset = () => {
+    dispatch({
+      type: 'returnPurchase/updateState',
+      payload: {
+        listProduct: [],
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          current: 1,
+          pageSize: 10,
+          total: 0
+        }
+      }
+    })
+  }
+
+  const { pagination } = tableProps
+
   return (
-    <Table
-      {...tableProps}
-      bordered
-      loading={loadingProduct.effects['pos/getProducts'] || loadingProduct.effects['pos/checkQuantityNewProduct'] || loadingProduct.effects['pos/checkQuantityEditProduct']}
-      columns={columns}
-      simple
-      size="small"
-      rowKey={record => record.productCode}
-      onRowClick={record => handleMenuClick(record)}
-    />
+    <div>
+      {pagination && pagination.current > 0 && (
+        <Form layout="inline">
+          <FormItem>
+            <Input placeholder="Search Product Name"
+              value={searchText}
+              size="small"
+              onChange={e => handleChange(e)}
+              onPressEnter={handleSearch}
+              style={{ marginBottom: 16 }}
+            />
+          </FormItem>
+          <FormItem>
+            <Button disabled={loadingQty.effects['returnPurchase/queryProduct'] || loadingQty.effects['returnPurchase/showProductQty']} size="small" type="primary" onClick={handleSearch}>Search</Button>
+          </FormItem>
+          <FormItem>
+            <Button disabled={loadingQty.effects['returnPurchase/queryProduct'] || loadingQty.effects['returnPurchase/showProductQty']} size="small" type="primary" onClick={handleReset}>Reset</Button>
+          </FormItem>
+        </Form>
+      )}
+
+      <Table
+        {...tableProps}
+        bordered
+        loading={loadingProduct.effects['returnPurchase/queryProduct'] || loadingProduct.effects['pos/getProducts'] || loadingProduct.effects['pos/checkQuantityNewProduct'] || loadingProduct.effects['pos/checkQuantityEditProduct']}
+        columns={columns}
+        simple
+        size="small"
+        rowKey={record => record.productCode}
+        onRowClick={record => handleMenuClick(record)}
+      />
+    </div>
   )
 }
 

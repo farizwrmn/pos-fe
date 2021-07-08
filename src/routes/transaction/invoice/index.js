@@ -209,6 +209,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           dataGroup={invoiceInfo.dataGroup || []}
           dataConsignment={listPaymentDetail.dataConsignment || []}
         />
+        <Member invoiceInfo={invoiceInfo} />
         {/* <div className={styles.separator} /> */}
         {/* <Footer /> */}
         <MerchantCopy
@@ -220,7 +221,6 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           invoiceInfo={invoiceInfo}
           listAmount={listAmountInvoice}
         />
-        <Member invoiceInfo={invoiceInfo} />
         {modalConfirmVisible && <ModalConfirm {...modalOpts} />}
       </div>
     </LocaleProvider>

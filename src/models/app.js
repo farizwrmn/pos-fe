@@ -3,6 +3,10 @@ import { parse } from 'qs'
 import moment from 'moment'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
+import PouchDB from 'pouchdb'
+import PouchDBFind from 'pouchdb-find'
+import { APPNAME, couchdb } from 'utils/config.company'
+import { query as queryCustomerType } from '../services/master/customertype'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
@@ -20,6 +24,8 @@ import {
 export default {
   namespace: 'app',
   state: {
+    localDB: undefined,
+    remoteDB: undefined,
     user: {},
     storeInfo: {},
     setting: {},
@@ -65,6 +71,29 @@ export default {
         }
       })
       dispatch({ type: 'query' })
+      // https://github.com/ibm-watson-data-lab/shopping-list-react-pouchdb/tree/master/src
+
+      document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
+
+      document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
+      PouchDB.plugin(PouchDBFind)
+      const localDB = new PouchDB(couchdb.COUCH_NAME)
+      let remoteDB
+      try {
+        console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
+        if (couchdb && couchdb.COUCH_URL) {
+          remoteDB = new PouchDB(couchdb.COUCH_URL)
+        }
+      } catch (ex) {
+        console.log('secret.js file missing; disabling remote sync.')
+      }
+      dispatch({
+        type: 'localDatabase',
+        payload: {
+          localDB,
+          remoteDB
+        }
+      })
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -114,6 +143,12 @@ export default {
         if (period.data[0]) {
           startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
           endPeriod = moment(moment(moment(period.data[0].startPeriod).format('YYYY-MM-DD')).endOf('month')).format('YYYY-MM-DD')
+        }
+
+        const listPrice = yield call(queryCustomerType, {})
+        if (listPrice && listPrice.success) {
+          console.log('listPrice', listPrice.data)
+          lstorage.setPriceName(listPrice.data)
         }
 
         const storeInfoData = lstorage.getCurrentUserStoreDetail()
@@ -178,6 +213,29 @@ export default {
         window.location = `${location.origin}/login?from=${from}`
       }
     },
+
+    * localDatabase ({ payload = {} }, { put }) {
+      const { localDB, remoteDB } = payload
+      console.log('localDB', localDB)
+      if (localDB) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            localDB
+          }
+        })
+      }
+      console.log('remoteDB', remoteDB)
+      if (remoteDB) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            remoteDB
+          }
+        })
+      }
+    },
+
     * setSetting (payload, { call, put }) {
       let setting = {}
       try { setting = yield call(querySetting) } catch (e) { alert(`warning: ${e}`) }

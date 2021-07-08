@@ -752,8 +752,8 @@ export default {
         }
         const isAllow = allowPrint(PosData.pos.printNo, PosData.pos.printLimit)
         if (type === 'print' && isAllow) {
-          window.print()
-          window.onafterprint = () => { window.close() }
+          // window.print()
+          // window.onafterprint = () => { window.close() }
         }
         if (!isAllow) {
           window.close()
@@ -1247,12 +1247,8 @@ export default {
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
           })
-          let successModal = Modal.info({
-            title: 'Success add product',
-            content: 'Product has been added in Product`s Tab'
-          })
           yield put({ type: 'pos/hideProductModal' })
-          setTimeout(() => successModal.destroy(), 1000)
+          message.success('Success add product')
         }
       } else {
         Modal.warning({
@@ -1269,12 +1265,8 @@ export default {
         type: 'pos/setUtil',
         payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
       })
-      let successModal = Modal.info({
-        title: 'Success add product',
-        content: 'Product has been added in Product`s Tab'
-      })
       yield put({ type: 'pos/hideConsignmentModal' })
-      setTimeout(() => successModal.destroy(), 1000)
+      message.success('Success add product')
     },
 
     * getListProductData (payload, { call, put }) {
@@ -1548,8 +1540,19 @@ export default {
           })
         })
       }
-      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
+
       const { item, type } = payload
+      if (item && item.storePrice && item.storePrice[0]) {
+        const price = item.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+        if (price && price[0]) {
+          item.sellPrice = price[0].sellPrice
+          item.distPrice01 = price[0].distPrice01
+          item.distPrice02 = price[0].distPrice02
+          item.distPrice03 = price[0].distPrice03
+        }
+      }
+
+      const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       let qty = 1
       if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
         item.sellPrice = currentReward.sellPrice
@@ -1709,7 +1712,7 @@ export default {
             typeCode: 'P',
             qty: newQty,
             sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            price,
             discount: 0,
             disc1: 0,
             disc2: 0,

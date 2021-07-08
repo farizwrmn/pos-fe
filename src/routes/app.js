@@ -9,12 +9,13 @@ import NProgress from 'nprogress'
 import { LocaleProvider } from 'antd'
 import moment from 'moment'
 import enUS from 'antd/lib/locale-provider/en_US'
+import { APPNAME } from 'utils/config.company'
 import '../themes/index.less'
 import './app.less'
 import Error from './error'
 import ButtonIcon from '../../public/icons/Notifications_button_24.svg'
 
-const { prefix, openPages, logo } = configMain
+const { prefix, openPages } = configMain
 
 const {
   Header,
@@ -325,7 +326,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
       <Helmet>
         <title>{window.location.href}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href={logo} type="image/x-icon" />
+        <link rel="icon" href={`logo-${APPNAME}.png`} type="image/x-icon" />
       </Helmet>
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
         {!isNavbar ? <aside style={{ backgroundColor: sidebarColor }} className={classnames(styles.sider, { [styles.light]: !darkTheme })}>

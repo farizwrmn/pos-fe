@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Switch, Button, Row, Col, Modal } from 'antd'
 // import { lstorage } from 'utils'
 import ListItem from './ListItem'
 // import ModalConfirm from './ModalConfirm'
@@ -39,6 +39,7 @@ const FormAdd = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields
   },
   listProps
@@ -51,7 +52,9 @@ const FormAdd = ({
       }
       const data = {
         ...item,
-        ...getFieldsValue()
+        ...getFieldsValue(),
+        referenceNo: getFieldValue('requireInvoice') ? getFieldValue('referenceNo') : null,
+        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null
       }
       Modal.confirm({
         title: 'Save this transaction',
@@ -92,6 +95,17 @@ const FormAdd = ({
                 ]
               })(<Input disabled maxLength={20} />)}
             </FormItem>
+            <FormItem label="Required Invoice" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('requireInvoice', {
+                initialValue: true,
+                valuePropName: 'checked',
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<Switch defaultChecked onChange={checked => handleProductBrowse(true, false, checked)} />)}
+            </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
                 initialValue: item.referenceNo,
@@ -102,9 +116,14 @@ const FormAdd = ({
                 ]
               })(<Input disabled />)}
             </FormItem>
-            <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
-            {item && item.referenceNo && item.reference && (
+            {getFieldValue('requireInvoice') && (
+              <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+            )}
+            {getFieldValue('requireInvoice') && item && item.referenceNo && item.reference && (
               <Button type="primary" size="large" onClick={() => handleProductBrowse()}>Product</Button>
+            )}
+            {!getFieldValue('requireInvoice') && (
+              <Button type="primary" size="large" onClick={() => handleProductBrowse(true, true)}>Product</Button>
             )}
           </Col>
           <Col {...col}>
