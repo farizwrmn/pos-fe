@@ -322,12 +322,14 @@ export default {
                 title: 'Information',
                 content: 'Transaction has been saved...!'
               })
-              localStorage.setItem('typePembelian', 1)
+              localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
+              localStorage.setItem('dineInTax', 0)
               yield put({
                 type: 'pos/updateState',
                 payload: {
                   modalConfirmVisible: true,
-                  typePembelian: 1
+                  typePembelian: TYPE_PEMBELIAN_UMUM,
+                  dineInTax: 0
                 }
               })
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)

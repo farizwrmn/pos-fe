@@ -31,7 +31,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/' || location.pathname === '/dashboard') {
+        if (location.pathname === '/') {
           dispatch({
             type: 'queryFifoValues',
             payload: {

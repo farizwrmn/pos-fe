@@ -1037,6 +1037,13 @@ export default {
             tmpProductList: data
           }
         })
+        console.log('data', data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProductData: data
+          }
+        })
       } else {
         throw listProductData
       }
@@ -1271,7 +1278,7 @@ export default {
 
     * getListProductData (payload, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
+      const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: '' })
       if (data.success) {
         yield put({
           type: 'updateState',

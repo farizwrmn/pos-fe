@@ -30,7 +30,7 @@ class TransferModal extends Component {
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...formEditProps
     } = this.props
-    const { handleProductBrowse } = formEditProps.modalProductProps
+    // const { handleProductBrowse } = formEditProps.modalProductProps
     const handleOk = () => {
       validateFields((errors) => {
         if (errors) {
@@ -47,7 +47,7 @@ class TransferModal extends Component {
           data.productCode = currentItemList.productCode
           data.productName = currentItemList.productName
           onOkList(data)
-          handleProductBrowse()
+          // handleProductBrowse()
         } else {
           Modal.warning({
             title: 'Message Error',
