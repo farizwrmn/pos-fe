@@ -461,7 +461,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/detail/user'))
-              cb(null, require('./routes/balance/closing/'))
+              cb(null, require('./routes/balance/closing'))
             }, 'balance-closing')
           }
         }, {

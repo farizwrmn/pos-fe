@@ -10,13 +10,13 @@ const Group = ({ item }) => {
       <Row>
         <Col span={24} className={styles.left}>{item.key}</Col>
       </Row>
-      {item.detail && item.detail.map((item, index) => {
+      {/* {item.detail && item.detail.map((item, index) => {
         return (
           <GroupItem key={index} item={item} />
         )
-      })}
+      })} */}
       <Row>
-        <Col span={12} className={styles.left}>{`@${numberFormatter(item.price)}`}</Col>
+        <Col span={12} className={styles.left}>{`${numberFormatter(item.qty)} x @${numberFormatter(item.price)}`}</Col>
         <Col span={12} className={styles.right}>{numberFormatter(item.total)}</Col>
       </Row>
     </div>

@@ -134,7 +134,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Account Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('accountId', {
-              initialValue: item && item.accountId ? {
+              initialValue: item && item.accountId && item.accountCode ? {
                 key: item.accountId,
                 name: `${item.accountCode.accountName || ''} (${item.accountCode.accountCode})`
               } : {},

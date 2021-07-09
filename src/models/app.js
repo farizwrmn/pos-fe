@@ -3,7 +3,11 @@ import { parse } from 'qs'
 import moment from 'moment'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
-import { APPNAME } from 'utils/config.company'
+import PouchDB from 'pouchdb'
+import PouchDBFind from 'pouchdb-find'
+import debugPouch from 'pouchdb-debug'
+import { message } from 'antd'
+import { APPNAME, couchdb } from 'utils/config.company'
 import { query as queryCustomerType } from '../services/master/customertype'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
@@ -22,6 +26,9 @@ import {
 export default {
   namespace: 'app',
   state: {
+    localDB: undefined,
+    remoteDB: undefined,
+    offlineMode: false,
     user: {},
     storeInfo: {},
     setting: {},
@@ -67,9 +74,44 @@ export default {
         }
       })
       dispatch({ type: 'query' })
+      // https://github.com/ibm-watson-data-lab/shopping-list-react-pouchdb/tree/master/src
+
       document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
 
       document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
+      PouchDB.plugin(PouchDBFind)
+      const localDB = new PouchDB(couchdb.COUCH_NAME)
+      localDB.createIndex({
+        index: { fields: ['barCode01'] }
+      })
+      let remoteDB
+      try {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
+        }
+        if (couchdb && couchdb.COUCH_URL) {
+          remoteDB = new PouchDB(couchdb.COUCH_URL)
+          remoteDB.createIndex({
+            index: { fields: ['barCode01'] }
+          })
+        }
+      } catch (ex) {
+        console.log('secret.js file missing; disabling remote sync.')
+      }
+      dispatch({
+        type: 'replicateDatabase',
+        payload: {
+          localDB,
+          remoteDB
+        }
+      })
+      dispatch({
+        type: 'localDatabase',
+        payload: {
+          localDB,
+          remoteDB
+        }
+      })
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -123,7 +165,6 @@ export default {
 
         const listPrice = yield call(queryCustomerType, {})
         if (listPrice && listPrice.success) {
-          console.log('listPrice', listPrice.data)
           lstorage.setPriceName(listPrice.data)
         }
 
@@ -189,6 +230,64 @@ export default {
         window.location = `${location.origin}/login?from=${from}`
       }
     },
+
+    * replicateDatabase ({ payload = {} }, { put }) {
+      const { localDB, remoteDB } = payload
+      if (remoteDB && localDB) {
+        localDB.sync(remoteDB, {
+          live: true,
+          retry: true
+        }).on('complete', () => {
+          // yay, we're done!
+          message.info("You're sync to offline mode")
+        }).on('change', () => {
+          console.log('Sync Offline Database')
+        }).on('error', (err) => {
+          message.error('Error when trying to sync offline mode: ', err)
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            localDB
+          }
+        })
+      }
+    },
+
+    * localDatabase ({ payload = {} }, { put }) {
+      const { localDB, remoteDB } = payload
+      if (localDB) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            localDB
+          }
+        })
+      } else {
+        message.error('Offline Mode: Local Database Not Connected')
+      }
+
+      if (remoteDB) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('localDB', localDB)
+          console.log('remoteDB', remoteDB)
+          debugPouch(remoteDB)
+          remoteDB.info().then((info) => {
+            console.log('info', info)
+          })
+        }
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            remoteDB
+          }
+        })
+      } else {
+        message.error('Offline Mode: Remote Database Not Connected')
+      }
+    },
+
     * setSetting (payload, { call, put }) {
       let setting = {}
       try { setting = yield call(querySetting) } catch (e) { alert(`warning: ${e}`) }

@@ -44,11 +44,21 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/balance/current'
-          || pathname === '/balance/closing'
+        if (pathname === '/balance/current') {
+          dispatch({
+            type: 'active',
+            payload: {
+              countClosing: 1
+            }
+          })
+        }
+        if (pathname === '/balance/closing'
           || pathname === '/transaction/pos') {
           dispatch({
-            type: 'active'
+            type: 'active',
+            payload: {
+              countClosing: 0
+            }
           })
         }
         if (pathname === '/balance/dashboard') {
@@ -93,12 +103,16 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * active (payload, { call, put }) {
+    * active ({ payload = {} }, { call, put }) {
       const response = yield call(getActive)
       if (response && response.success) {
         let detail = {}
+        let countClosing = 0
         if (response.data && response.data.id) {
-          detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
+          if (payload && payload.countClosing) {
+            countClosing = payload.countClosing
+          }
+          detail = yield call(queryDetail, { countClosing, balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
         }
 
         yield put({
@@ -111,20 +125,23 @@ export default modelExtend(pageModel, {
         })
 
         yield put({
-          type: 'activeDetail'
+          type: 'activeDetail',
+          payload: {
+            countClosing
+          }
         })
       } else {
         throw response
       }
     },
 
-    * activeDetail (payload, { call, put, select }) {
+    * activeDetail ({ payload = {} }, { call, put, select }) {
       const currentItem = yield select(({ balance }) => balance.currentItem)
       const response = yield call(getActive)
       if (response && response.success) {
         let detail = {}
         if (response.data && response.data.id) {
-          detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_TRANSACTION })
+          detail = yield call(queryDetail, { countClosing: payload.countClosing, balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_TRANSACTION })
         }
 
         yield put({

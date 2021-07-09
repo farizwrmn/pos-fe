@@ -139,11 +139,11 @@ const BrowseGroup = ({
       key: 'statusActive',
       width: 120,
       render: text =>
-        (<span>
-          <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
-            {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
-          </Tag>
-        </span>),
+      (<span>
+        <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
+          {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
+        </Tag>
+      </span>),
       filters: [{
         text: 'Active',
         value: '1'
@@ -183,7 +183,7 @@ const BrowseGroup = ({
                 style={{ float: 'right' }}
                 type="primary"
               >
-                Add
+                Payable Form
               </Button>
             </Link>
           </FormItem>

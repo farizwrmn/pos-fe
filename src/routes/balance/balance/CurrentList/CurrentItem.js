@@ -12,7 +12,7 @@ class CurrentItem extends React.Component {
     return (
       <div>
         <Card title={title}>
-          {list && list.map(item => <Item item={item} />)}
+          {list && list.filter(filtered => filtered.balanceIn > 0).map(item => <Item item={item} />)}
         </Card>
       </div>
     )

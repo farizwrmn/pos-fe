@@ -39,7 +39,11 @@ import {
   query as queryProductStock,
   queryPOSproduct,
   queryPOSstock as queryProductsInStock,
-  queryByBarcode
+  queryByBarcode,
+  indexByBarcodeBundleOffline,
+  queryByBarcodeBundleOffline,
+  indexByBarcodeOffline,
+  queryByBarcodeOffline
 } from '../../services/master/productstock'
 import {
   query as queryConsignment
@@ -331,6 +335,7 @@ export default {
     },
 
     * paymentDelete ({ payload }, { put }) {
+      console.log('payload', payload)
       let dataPos = getCashierTrans()
       let arrayProd = dataPos.slice()
       Array.prototype.remove = function () {
@@ -356,6 +361,7 @@ export default {
           code: ary[n].code,
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
+          bundleCode: ary[n].bundleCode,
           bundleName: ary[n].bundleName,
           employeeId: ary[n].employeeId,
           employeeName: ary[n].employeeName,
@@ -371,6 +377,7 @@ export default {
           total: ary[n].total
         })
       }
+      console.log('arrayProd', arrayProd)
       if (arrayProd.length === 0) {
         localStorage.removeItem('cashier_trans')
         yield put({
@@ -416,6 +423,7 @@ export default {
           code: ary[n].code,
           productId: ary[n].productId,
           bundleId: ary[n].bundleId,
+          bundleCode: ary[n].bundleCode,
           bundleName: ary[n].bundleName,
           employeeId: ary[n].employeeId,
           employeeName: ary[n].employeeName,
@@ -697,6 +705,7 @@ export default {
               policeNo: payload.data.policeNo,
               lastMeter: payload.data.lastMeter,
               data: data.pos,
+              bundling: data.bundling,
               merk: PosData.pos.merk,
               model: PosData.pos.model,
               type: PosData.pos.type,
@@ -1582,6 +1591,7 @@ export default {
           const data = {
             no: currentItem.no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
@@ -1602,6 +1612,7 @@ export default {
             no: currentItem.no,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1629,6 +1640,7 @@ export default {
           const data = {
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
@@ -1649,6 +1661,7 @@ export default {
             no: arrayProd.length + 1,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1693,6 +1706,7 @@ export default {
             no: currentItem.no,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1712,6 +1726,7 @@ export default {
             no: currentItem.no,
             code: item.productCode,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
             employeeId: mechanicInformation.employeeId,
@@ -1785,8 +1800,70 @@ export default {
       }
     },
 
-    * getProductByBarcode ({ payload }, { call, put }) {
+    * getProductByBarcode ({ payload }, { select, call, put }) {
+      const localDB = yield select(({ app }) => app.localDB)
+      // OFFLINE BUNDLE
+      let startBundle = window.performance.now()
+      yield call(indexByBarcodeBundleOffline, {
+        localDB
+      })
+      const getResponseBundle = yield call(queryByBarcodeBundleOffline, {
+        localDB,
+        barCode01: payload.id
+      })
+      let endBundle = window.performance.now()
+      const timeToExecuteBundle = endBundle - startBundle
+      console.log('getResponseBundle', timeToExecuteBundle >= 1000 ? `${timeToExecuteBundle / 1000} s` : `${timeToExecuteBundle} ms`, getResponseBundle)
+
+      if (getResponseBundle && getResponseBundle.docs && getResponseBundle.docs[0]) {
+        if (getResponseBundle.docs[0].code) {
+          yield put({
+            type: 'pospromo/addPosPromo',
+            payload: {
+              type: 'all',
+              bundleId: getResponseBundle.docs[0].id,
+              currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+              currentProduct: getCashierTrans(),
+              currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+            }
+          })
+        }
+        return
+      }
+
+      // OFFLINE PRODUCT
+      let start = window.performance.now()
+      yield call(indexByBarcodeOffline, {
+        localDB
+      })
+      const getResponse = yield call(queryByBarcodeOffline, {
+        localDB,
+        barCode01: payload.id
+      })
+      let end = window.performance.now()
+      const timeToExecute = end - start
+      console.log('getResponse', timeToExecute >= 1000 ? `${timeToExecute / 1000} s` : `${timeToExecute} ms`, getResponse)
+
+      if (getResponse && getResponse.docs && getResponse.docs[0]) {
+        if (getResponse.docs[0].productCode) {
+          yield put({
+            type: 'pos/chooseProduct',
+            payload: {
+              item: getResponse.docs[0],
+              type: payload.type
+            }
+          })
+        }
+
+        return
+      }
+
+      // ONLINE
+      let startOnline = window.performance.now()
       const response = yield call(queryByBarcode, payload)
+      let endOnline = window.performance.now()
+      const timeToExecuteOnline = endOnline - startOnline
+      console.log('queryByBarcode', timeToExecuteOnline >= 1000 ? `${timeToExecuteOnline / 1000} s` : `${timeToExecuteOnline} ms`, response)
       if (response && response.success && response.data && response.data.id) {
         if (response.data.productCode) {
           yield put({
