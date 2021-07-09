@@ -279,7 +279,6 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
     },
     modalSupplierVisible,
     paginationSupplier,
-    loading,
     listSupplier,
     searchTextSupplier,
     tmpSupplierData,
