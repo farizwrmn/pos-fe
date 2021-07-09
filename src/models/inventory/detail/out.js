@@ -51,7 +51,7 @@ export default {
           const filteredPrice = response.data
             // eslint-disable-next-line eqeqeq
             .filter(filtered => filtered.productId == item.productId)
-            .reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0)
+            .reduce((prev, next) => prev + (next.purchasePrice), 0)
           const filteredLatest = response.price
             // eslint-disable-next-line eqeqeq
             .filter(filtered => filtered.productId == item.productId)
@@ -61,7 +61,7 @@ export default {
             payload: {
               data: {
                 productId: item.productId,
-                purchasePrice: item && item.qty && item.qty > 0 ? filteredPrice / item.qty : 0,
+                purchasePrice: item && item.qty && item.qty > 0 ? filteredPrice : 0,
                 latestPrice: filteredLatest > 0 ? filteredLatest : 0
               },
               break: true
