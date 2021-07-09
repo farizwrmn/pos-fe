@@ -51,18 +51,19 @@ export default {
           const filteredPrice = response.data
             // eslint-disable-next-line eqeqeq
             .filter(filtered => filtered.productId == item.productId)
-            .reduce((prev, next) => prev + (next.purchasePrice), 0)
           const filteredLatest = response.price
             // eslint-disable-next-line eqeqeq
             .filter(filtered => filtered.productId == item.productId)
-            .reduce((prev, next) => prev + (next.purchasePrice), 0)
+          console.log('filteredPrice', filteredPrice[0].purchasePrice)
+          console.log('filteredLatest', filteredLatest[0].purchasePrice)
           yield put({
             type: 'transferOutDetail/editPrice',
             payload: {
               data: {
                 productId: item.productId,
-                purchasePrice: item && item.qty && item.qty > 0 ? filteredPrice : 0,
-                latestPrice: filteredLatest > 0 ? filteredLatest : 0
+                purchasePrice: item && item.qty && item.qty > 0 && filteredPrice && filteredPrice[0]
+                  ? Math.ceil(filteredPrice[0].purchasePrice) : 0,
+                latestPrice: filteredLatest && filteredLatest[0] ? Math.ceil(filteredLatest[0].purchasePrice) : 0
               },
               break: true
             }
@@ -161,6 +162,8 @@ export default {
       const dataInvoice = []
       const dataDetail = []
       dataInvoice.push(invoiceInfo.mutasi)
+
+      console.log('data', data)
 
       if (invoiceInfo.mutasi) {
         for (let n = 0; n < data.mutasi.length; n += 1) {
