@@ -2,6 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Modal, InputNumber, Row, Col } from 'antd'
 import { lstorage } from 'utils'
+import {
+  BALANCE_TYPE_TRANSACTION,
+
+  TYPE_SALES,
+  TYPE_PETTY_CASH,
+  TYPE_CONSIGNMENT
+} from 'utils/variable'
 import FormHeader from './Form'
 
 const FormItem = Form.Item
@@ -37,15 +44,27 @@ const FormLabel = () => {
 const FormComponent = ({
   label,
   name,
-  getFieldDecorator
+  getFieldDecorator,
+  defaultValue
 }) => {
+  let sales = 0
+  let petty = 0
+  let consignment = 0
+  if (defaultValue.length > 0) {
+    const salesList = defaultValue.filter(filtered => filtered.type === TYPE_SALES)
+    sales = salesList && salesList[0] ? salesList[0].balanceIn : 0
+    const pettyList = defaultValue.filter(filtered => filtered.type === TYPE_PETTY_CASH)
+    petty = pettyList && pettyList[0] ? pettyList[0].balanceIn : 0
+    const consignmentList = defaultValue.filter(filtered => filtered.type === TYPE_CONSIGNMENT)
+    consignment = consignmentList && consignmentList[0] ? consignmentList[0].balanceIn : 0
+  }
   return (
     <FormItem label={label} hasFeedback {...formItemLayout}>
       <Row>
         <Col span={8}>
           <div>
             {getFieldDecorator(`detail[${name}][balanceIn]`, {
-              initialValue: 0,
+              initialValue: sales,
               rules: [
                 {
                   required: true
@@ -65,7 +84,7 @@ const FormComponent = ({
           {name === 'C' && (
             <div>
               {getFieldDecorator(`cash[${name}][balanceIn]`, {
-                initialValue: 0,
+                initialValue: petty,
                 rules: [
                   {
                     required: true
@@ -85,7 +104,7 @@ const FormComponent = ({
         <Col span={8}>
           <div>
             {getFieldDecorator(`consignment[${name}][balanceIn]`, {
-              initialValue: 0,
+              initialValue: consignment,
               rules: [
                 {
                   required: true
@@ -154,13 +173,27 @@ const List = ({
     <Form layout="horizontal">
       <FormHeader {...formComponentProps} />
       <FormLabel />
-      {listOpts && listOpts.map(item => (
-        <FormComponent
-          getFieldDecorator={getFieldDecorator}
-          label={item.typeName}
-          name={item.typeCode}
-        />
-      ))}
+      {listOpts && listOpts.map((detail) => {
+        const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
+        if (filteredValue && filteredValue[0]) {
+          return (
+            <FormComponent
+              defaultValue={filteredValue}
+              getFieldDecorator={getFieldDecorator}
+              label={detail.typeName}
+              name={detail.typeCode}
+            />
+          )
+        }
+        return (
+          <FormComponent
+            defaultValue={[]}
+            getFieldDecorator={getFieldDecorator}
+            label={detail.typeName}
+            name={detail.typeCode}
+          />
+        )
+      })}
       <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
     </Form>
   )
