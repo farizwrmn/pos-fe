@@ -558,8 +558,8 @@ const AdvancedForm = ({
     <Form layout="horizontal">
       <FooterToolbar>
         <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['productstock/add'] || loadingButton.effects['productstock/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" disabled={loadingButton && (loadingButton.effects['productstock/add'] || loadingButton.effects['productstock/edit'])} onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
       <Card {...cardProps}>
