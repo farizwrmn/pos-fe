@@ -50,6 +50,7 @@ const parentLeft = {
 const AdvancedForm = ({
   lastTrans,
   item = {},
+  loading,
   onSubmit,
   onCancel,
   onGetSupplier,
@@ -558,8 +559,8 @@ const AdvancedForm = ({
     <Form layout="horizontal">
       <FooterToolbar>
         <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          {modalType === 'edit' && <Button disabled={loading && (loading.effects['productstock/add'] || loading.effects['productstock/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" disabled={loading && (loading.effects['productstock/add'] || loading.effects['productstock/edit'])} onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
       <Card {...cardProps}>
