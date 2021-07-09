@@ -34,6 +34,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   const data = {
     posData,
     data: listPaymentDetail.data,
+    bundling: listPaymentDetail.bundling,
     memberPrint,
     mechanicPrint,
     companyPrint: storeInfo
@@ -41,6 +42,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   let dataPos = []
   let dataService = []
   let dataGroup = []
+  let dataBundle = data.bundling
   if (data && data.data) {
     for (let n = 0; n < data.data.length; n += 1) {
       if (data.data[n].productCode !== null && data.data[n].bundlingId === null) {
@@ -114,7 +116,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     dataPos,
     dataService,
     posData,
-    dataGroup: groupProduct(dataGroup),
+    dataGroup: groupProduct(dataGroup, dataBundle),
     transDatePrint: moment(`${posData.transDate} ${posData.transTime}`, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY HH:mm'),
     memberId: data.memberPrint.memberCode,
     gender: data.memberPrint.gender,

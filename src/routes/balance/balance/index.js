@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { Spin } from 'antd'
 import { routerRedux } from 'dva/router'
 import {
   TYPE_SALES,
@@ -8,7 +9,7 @@ import {
 } from 'utils/variable'
 import Form from './Form'
 
-const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
+const Container = ({ loading, balance, shift, paymentOpts, dispatch, location }) => {
   const { modalType, currentItem, disable } = balance
   const { listShift } = shift
 
@@ -21,11 +22,13 @@ const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
   const formProps = {
     listShift: listShift || [],
     item: currentItem,
+    loading,
     dispatch,
     modalType,
     listProps,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     onSubmit (data) {
+      console.log('data', data)
       if (data) {
         const detail = listOpts && listOpts.map((item) => {
           const selected = data && data.detail && data.detail[item.typeCode]
@@ -51,6 +54,7 @@ const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
           description: data.description,
           detail: detail.concat(cash)
         }
+        console.log('balance/open')
         dispatch({
           type: 'balance/open',
           payload: {
@@ -76,12 +80,22 @@ const Container = ({ balance, shift, paymentOpts, dispatch, location }) => {
     }
   }
 
+  if (loading && (loading.effects['balance/active'] || loading.effects['balance/activeDetail'])) {
+    return (<Spin size="large" />)
+  }
+
+  if (currentItem && currentItem.id && Boolean(currentItem.id)) {
+    return (
+      <div className="content-inner">
+        <Form {...formProps} button="Close" />
+      </div>
+    )
+  }
+
   return (
-    <div className="content-inner">
-      {currentItem && currentItem.id ?
-        (<Form {...formProps} button="Close" />)
-        : (<Form {...formProps} button="Open" />)}
-    </div>
+    <div className="content-inner" >
+      <Form {...formProps} button="Open" />
+    </div >
   )
 }
 

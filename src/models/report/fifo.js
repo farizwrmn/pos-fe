@@ -32,13 +32,13 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/' || location.pathname === '/dashboard') {
-          dispatch({
-            type: 'queryFifoValues',
-            payload: {
-              period: moment().format('M'),
-              year: moment().format('YYYY')
-            }
-          })
+          // dispatch({
+          //   type: 'queryFifoValues',
+          //   payload: {
+          //     period: moment().format('M'),
+          //     year: moment().format('YYYY')
+          //   }
+          // })
         }
 
         if (location.pathname === '/report/accounting/balance-sheet' && location.query.to) {

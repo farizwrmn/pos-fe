@@ -2,6 +2,8 @@ const production = process.env.NODE_ENV === 'production'
 const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart' // 'localhost'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
 const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'localhost' // 'localhost'
+const COUCH_NAME = production ? (process.env.CLOUDANT_NAME || 'k3mart') : 'k3mart' // 'localhost'
+const COUCH_URL = production ? (process.env.CLOUDANT_URL || 'http://k3mart:Lippo96400@localhost:5984/k3mart') : 'http://k3mart:Lippo96400@localhost:5984/k3mart' // 'localhost'
 const APICOMPANYPORT = production ? 443 : 6402
 const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
@@ -22,6 +24,10 @@ module.exports = {
   APISOCKET,
   IMAGEURL,
   APIIMAGEURL,
+  couchdb: {
+    COUCH_URL,
+    COUCH_NAME
+  },
   APPNAME,
   rest: {
     apiCompanyProtocol: APICOMPANYPROTOCOL,

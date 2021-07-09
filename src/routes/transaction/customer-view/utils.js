@@ -8,24 +8,28 @@ const chooseOnePaymentType = (type = 'C', list = []) => {
   return 'Cash'
 }
 
-const group = (data, key, secondaryKey) => {
+const group = (data, key) => {
   return _.reduce(data, (group, item) => {
-    (group[`${item[secondaryKey]} - ${item[key]}`] = group[`${item[secondaryKey]} - ${item[key]}`] || []).push(item)
+    (group[`${item[key]}`] = group[`${item[key]}`] || []).push(item)
     return group
   }, [])
 }
 
 const groupProduct = (list, dataBundle = []) => {
-  const listGroup = group(list, 'bundlingCode', 'bundlingName')
+  const listGroup = group(list, 'bundleCode')
   let newList = []
   for (let key in listGroup) {
-    const price = listGroup[key] ? listGroup[key].reduce((prev, next) => prev + next.total, 0) : []
+    const price = listGroup[key].reduce((prev, next) => prev + next.total, 0)
     // eslint-disable-next-line no-loop-func
-    const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => filtered.bundlingId === listGroup[key][0].bundlingId) : []
+    const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => parseFloat(filtered.bundleId) === parseFloat(listGroup[key][0].bundleId)) : []
     newList.push({
       key,
+      code: key,
+      name: filteredBundle && filteredBundle[0] ? filteredBundle[0].name : key,
       detail: listGroup[key],
       price,
+      sellPrice: price,
+      type: 'Bundle',
       qty: filteredBundle && filteredBundle[0] ? filteredBundle[0].qty : 1,
       total: price
     })
