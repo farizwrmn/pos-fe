@@ -883,7 +883,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/report/fifo/stockcard'))
-            }, 'report-purchase-summary-card')
+            }, 'report-stock-summary-card')
           }
         }, {
           path: 'report/fifo/history',

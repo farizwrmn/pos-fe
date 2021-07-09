@@ -8,8 +8,9 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, loading, app }) => {
+const Report = ({ dispatch, productstock, fifoReport, loading, app }) => {
   const { listRekap, period, year, listProduct } = fifoReport
+  const { list } = productstock
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listRekap,
@@ -25,8 +26,11 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
     }
   }
 
+  let timeout
   const filterProps = {
     listRekap,
+    loadingQuery: loading,
+    list,
     user,
     dispatch,
     storeInfo,
@@ -51,6 +55,30 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
           productName: (data.productName || '').toString()
         }
       })
+    },
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
     },
     onChangePeriod (month, yearPeriod) {
       dispatch({
@@ -88,7 +116,8 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
 Report.propTypes = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  fifoReport: PropTypes.object
+  fifoReport: PropTypes.object,
+  productstock: PropTypes.object
 }
 
-export default connect(({ fifoReport, loading, app }) => ({ fifoReport, loading, app }))(Report)
+export default connect(({ fifoReport, productstock, loading, app }) => ({ fifoReport, productstock, loading, app }))(Report)
