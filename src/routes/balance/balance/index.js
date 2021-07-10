@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Spin } from 'antd'
+// import { Spin } from 'antd'
 import { routerRedux } from 'dva/router'
 import {
   TYPE_SALES,
@@ -80,9 +80,9 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
     }
   }
 
-  if (loading && (loading.effects['balance/active'] || loading.effects['balance/activeDetail'])) {
-    return (<Spin size="large" />)
-  }
+  // if (loading && (loading.effects['balance/active'] || loading.effects['balance/activeDetail'])) {
+  //   return (<Spin size="large" />)
+  // }
 
   if (currentItem && currentItem.id && Boolean(currentItem.id)) {
     return (
