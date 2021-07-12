@@ -56,15 +56,10 @@ class Container extends React.Component {
       dataSource: listBalanceDetail,
       listOpts,
       item: currentItem,
+      okText: 'Print',
       visible: modalDetailVisible,
       onOk () {
-        dispatch({
-          type: 'balance/updateState',
-          payload: {
-            modalDetailVisible: false,
-            currentItem: {}
-          }
-        })
+        window.open(`/balance/invoice/${currentItem.id}`, '_blank')
       },
       onCancel () {
         dispatch({
@@ -108,11 +103,11 @@ export default connect(
     loading,
     app
   }) =>
-    ({
-      balance,
-      balanceDetail,
-      paymentOpts,
-      loading,
-      app
-    })
+  ({
+    balance,
+    balanceDetail,
+    paymentOpts,
+    loading,
+    app
+  })
 )(Container)

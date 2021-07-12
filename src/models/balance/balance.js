@@ -1,10 +1,11 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL, BALANCE_TYPE_TRANSACTION } from 'utils/variable'
 import moment from 'moment'
-import { query, add, edit, remove, approve } from '../../services/balance/balance'
+import { query, queryById, add, edit, remove, approve } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
   getActive,
@@ -44,6 +45,10 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        const match = pathToRegexp('/balance/invoice/:id').exec(location.pathname)
+        if (match) {
+          dispatch({ type: 'queryById', payload: { id: match[1] } })
+        }
         if (pathname === '/balance/current') {
           dispatch({
             type: 'active',
