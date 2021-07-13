@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from 'antd'
+import { Checkbox, message } from 'antd'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import moment from 'moment'
@@ -59,7 +59,11 @@ class Container extends React.Component {
       okText: 'Print',
       visible: modalDetailVisible,
       onOk () {
-        window.open(`/balance/invoice/${currentItem.id}`, '_blank')
+        if (currentItem.closed) {
+          window.open(`/balance/invoice/${currentItem.id}`, '_blank')
+        } else {
+          message.warning('Setoran belum ditutup')
+        }
       },
       onCancel () {
         dispatch({

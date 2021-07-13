@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL, BALANCE_TYPE_TRANSACTION } from 'utils/variable'
 import moment from 'moment'
-import { query, queryById, add, edit, remove, approve } from '../../services/balance/balance'
+import { query, add, edit, remove, approve } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
   getActive,
@@ -202,6 +202,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'active'
         })
+        window.open(`/balance/invoice/${payload.balanceId}`, '_blank')
         yield put(routerRedux.push('/balance/current'))
       } else {
         throw response
