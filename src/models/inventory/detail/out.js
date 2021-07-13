@@ -54,8 +54,6 @@ export default {
           const filteredLatest = response.price
             // eslint-disable-next-line eqeqeq
             .filter(filtered => filtered.productId == item.productId)
-          console.log('filteredPrice', filteredPrice[0].purchasePrice)
-          console.log('filteredLatest', filteredLatest[0].purchasePrice)
           yield put({
             type: 'transferOutDetail/editPrice',
             payload: {

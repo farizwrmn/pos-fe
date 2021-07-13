@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL, BALANCE_TYPE_TRANSACTION } from 'utils/variable'
@@ -9,7 +10,7 @@ import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
   getActive,
   open,
-  closed
+  closed as closeBalance
 } from '../../services/balance/balanceProcess'
 import { pageModel } from '../common'
 
@@ -44,6 +45,10 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        const match = pathToRegexp('/balance/invoice/:id').exec(location.pathname)
+        if (match) {
+          dispatch({ type: 'queryById', payload: { id: match[1] } })
+        }
         if (pathname === '/balance/current') {
           dispatch({
             type: 'active',
@@ -192,11 +197,12 @@ export default modelExtend(pageModel, {
     },
 
     * closed ({ payload }, { call, put }) {
-      const response = yield call(closed, payload)
+      const response = yield call(closeBalance, payload)
       if (response && response.success) {
         yield put({
           type: 'active'
         })
+        window.open(`/balance/invoice/${payload.data.balanceId}`, '_blank')
         yield put(routerRedux.push('/balance/current'))
       } else {
         throw response

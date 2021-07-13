@@ -22,27 +22,24 @@ const Container = ({ loading, balance, shift, userDetail, dispatch, paymentOpts 
         const params = {
           balanceId: currentItem.id,
           userId: data.approveUserId,
-          detail: listOpts && listOpts.map((item) => {
-            const selected = data && data.detail && data.detail[item.typeCode]
-            return ({
-              paymentOptionId: item.id,
-              balanceIn: selected.balanceIn
+          detail: listOpts && listOpts
+            .filter(filtered => (data && data.detail && data.detail[filtered.typeCode]))
+            .map((item) => {
+              const selected = data && data.detail && data.detail[item.typeCode]
+              return ({
+                paymentOptionId: item.id,
+                balanceIn: selected.balanceIn
+              })
+            }),
+          consignment: listOpts && listOpts
+            .filter(filtered => (data && data.consignment && data.consignment[filtered.typeCode]))
+            .map((item) => {
+              const selected = data && data.consignment && data.consignment[item.typeCode]
+              return ({
+                paymentOptionId: item.id,
+                balanceIn: selected.balanceIn
+              })
             })
-          }),
-          cash: listOpts && listOpts.filter(filtered => filtered.typeCode === 'C').map((item) => {
-            const selected = data && data.cash && data.cash[item.typeCode]
-            return ({
-              paymentOptionId: item.id,
-              balanceIn: selected.balanceIn
-            })
-          }),
-          consignment: listOpts && listOpts.map((item) => {
-            const selected = data && data.consignment && data.consignment[item.typeCode]
-            return ({
-              paymentOptionId: item.id,
-              balanceIn: selected.balanceIn
-            })
-          })
         }
         dispatch({
           type: 'balance/closed',

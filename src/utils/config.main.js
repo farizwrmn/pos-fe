@@ -10,7 +10,8 @@ module.exports = {
     '/nps/02',
     '/nps/03',
     '/transaction/pos/customer-view',
-    '/transaction/pos/invoice/:id'
+    '/transaction/pos/invoice/:id',
+    '/balance/invoice/:id'
   ],
   disableMultiSelect: true
 }

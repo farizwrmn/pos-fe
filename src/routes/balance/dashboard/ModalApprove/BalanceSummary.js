@@ -9,12 +9,14 @@ const BalanceSummary = ({
 }) => {
   return (
     <div>
-      {listOpts && listOpts.map(item => (
-        <div>
-          <div className={styles.left}>{`${item.typeName} (${item.typeCode}):`}</div>
-          <BalanceSummaryItem item={item} dataSource={dataSource} />
-        </div>
-      ))}
+      {listOpts && listOpts.map((item) => {
+        return (
+          <div>
+            <div className={styles.left}>{`${item.typeName} (${item.typeCode}):`}</div>
+            <BalanceSummaryItem item={item} dataSource={dataSource} />
+          </div>
+        )
+      })}
     </div>
   )
 }
