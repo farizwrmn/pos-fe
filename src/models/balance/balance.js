@@ -202,7 +202,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'active'
         })
-        window.open(`/balance/invoice/${payload.balanceId}`, '_blank')
+        window.open(`/balance/invoice/${payload.data.balanceId}`, '_blank')
         yield put(routerRedux.push('/balance/current'))
       } else {
         throw response
