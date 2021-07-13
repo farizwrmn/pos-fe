@@ -39,11 +39,11 @@ import {
   query as queryProductStock,
   queryPOSproduct,
   queryPOSstock as queryProductsInStock,
-  queryByBarcode
-  // indexByBarcodeBundleOffline,
-  // queryByBarcodeBundleOffline,
-  // indexByBarcodeOffline,
-  // queryByBarcodeOffline
+  queryByBarcode,
+  indexByBarcodeBundleOffline,
+  queryByBarcodeBundleOffline,
+  indexByBarcodeOffline,
+  queryByBarcodeOffline
 } from '../../services/master/productstock'
 import {
   query as queryConsignment
@@ -1800,64 +1800,64 @@ export default {
       }
     },
 
-    // * getProductByBarcode ({ payload }, { select, call, put }) {
-    * getProductByBarcode ({ payload }, { call, put }) {
-      // const localDB = yield select(({ app }) => app.localDB)
+    * getProductByBarcode ({ payload }, { select, call, put }) {
+      // * getProductByBarcode ({ payload }, { call, put }) {
+      const localDB = yield select(({ app }) => app.localDB)
       // OFFLINE BUNDLE
-      // let startBundle = window.performance.now()
-      // yield call(indexByBarcodeBundleOffline, {
-      //   localDB
-      // })
-      // const getResponseBundle = yield call(queryByBarcodeBundleOffline, {
-      //   localDB,
-      //   barCode01: payload.id
-      // })
-      // let endBundle = window.performance.now()
-      // const timeToExecuteBundle = endBundle - startBundle
-      // console.log('getResponseBundle', timeToExecuteBundle >= 1000 ? `${timeToExecuteBundle / 1000} s` : `${timeToExecuteBundle} ms`, getResponseBundle)
+      let startBundle = window.performance.now()
+      yield call(indexByBarcodeBundleOffline, {
+        localDB
+      })
+      const getResponseBundle = yield call(queryByBarcodeBundleOffline, {
+        localDB,
+        barCode01: payload.id
+      })
+      let endBundle = window.performance.now()
+      const timeToExecuteBundle = endBundle - startBundle
+      console.log('getResponseBundle', timeToExecuteBundle >= 1000 ? `${timeToExecuteBundle / 1000} s` : `${timeToExecuteBundle} ms`, getResponseBundle)
 
-      // if (getResponseBundle && getResponseBundle.docs && getResponseBundle.docs[0]) {
-      //   if (getResponseBundle.docs[0].code) {
-      //     yield put({
-      //       type: 'pospromo/addPosPromo',
-      //       payload: {
-      //         type: 'all',
-      //         bundleId: getResponseBundle.docs[0].id,
-      //         currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
-      //         currentProduct: getCashierTrans(),
-      //         currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      //       }
-      //     })
-      //   }
-      //   return
-      // }
+      if (getResponseBundle && getResponseBundle.docs && getResponseBundle.docs[0]) {
+        if (getResponseBundle.docs[0].code) {
+          yield put({
+            type: 'pospromo/addPosPromo',
+            payload: {
+              type: 'all',
+              bundleId: getResponseBundle.docs[0].id,
+              currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+              currentProduct: getCashierTrans(),
+              currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+            }
+          })
+        }
+        return
+      }
 
       // OFFLINE PRODUCT
-      // let start = window.performance.now()
-      // yield call(indexByBarcodeOffline, {
-      //   localDB
-      // })
-      // const getResponse = yield call(queryByBarcodeOffline, {
-      //   localDB,
-      //   barCode01: payload.id
-      // })
-      // let end = window.performance.now()
-      // const timeToExecute = end - start
-      // console.log('getResponse', timeToExecute >= 1000 ? `${timeToExecute / 1000} s` : `${timeToExecute} ms`, getResponse)
+      let start = window.performance.now()
+      yield call(indexByBarcodeOffline, {
+        localDB
+      })
+      const getResponse = yield call(queryByBarcodeOffline, {
+        localDB,
+        barCode01: payload.id
+      })
+      let end = window.performance.now()
+      const timeToExecute = end - start
+      console.log('getResponse', timeToExecute >= 1000 ? `${timeToExecute / 1000} s` : `${timeToExecute} ms`, getResponse)
 
-      // if (getResponse && getResponse.docs && getResponse.docs[0]) {
-      //   if (getResponse.docs[0].productCode) {
-      //     yield put({
-      //       type: 'pos/chooseProduct',
-      //       payload: {
-      //         item: getResponse.docs[0],
-      //         type: payload.type
-      //       }
-      //     })
-      //   }
+      if (getResponse && getResponse.docs && getResponse.docs[0]) {
+        if (getResponse.docs[0].productCode) {
+          yield put({
+            type: 'pos/chooseProduct',
+            payload: {
+              item: getResponse.docs[0],
+              type: payload.type
+            }
+          })
+        }
 
-      //   return
-      // }
+        return
+      }
 
       // ONLINE
       let startOnline = window.performance.now()
