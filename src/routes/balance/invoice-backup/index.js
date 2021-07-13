@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-// import { Spin } from 'antd'
 import { routerRedux } from 'dva/router'
 import {
   TYPE_SALES,
@@ -9,26 +8,22 @@ import {
 } from 'utils/variable'
 import Form from './Form'
 
-const Container = ({ loading, balance, shift, paymentOpts, dispatch, location }) => {
-  const { modalType, currentItem, disable } = balance
+const Container = ({ balance, balanceDetail, shift, paymentOpts, dispatch, location }) => {
+  const { modalType, disable } = balance
   const { listShift } = shift
-
+  const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
-
-  const listProps = {
-    listOpts
-  }
 
   const formProps = {
     listShift: listShift || [],
-    item: currentItem,
-    loading,
+    item: currentItem ? {
+      ...currentItem,
+      detail: listBalanceDetail
+    } : {},
     dispatch,
     modalType,
-    listProps,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     onSubmit (data) {
-      console.log('data', data)
       if (data) {
         const detail = listOpts && listOpts
           .filter(filtered => data && data.detail && data.detail[filtered.typeCode])
@@ -56,7 +51,6 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
           description: data.description,
           detail: detail.concat(cash)
         }
-        console.log('balance/open')
         dispatch({
           type: 'balance/open',
           payload: {
@@ -82,31 +76,22 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
     }
   }
 
-  // if (loading && (loading.effects['balance/active'] || loading.effects['balance/activeDetail'])) {
-  //   return (<Spin size="large" />)
-  // }
-
-  if (currentItem && currentItem.id && Boolean(currentItem.id)) {
-    return (
-      <div className="content-inner">
-        <Form {...formProps} button="Close" />
-      </div>
-    )
-  }
-
   return (
-    <div className="content-inner" >
-      <Form {...formProps} button="Open" />
-    </div >
+    <div className="content-inner">
+      {currentItem && currentItem.id && (
+        <Form {...formProps} button="Open" />
+      )}
+    </div>
   )
 }
 
 Container.propTypes = {
   balance: PropTypes.object,
+  balanceDetail: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ balance, shift, paymentOpts, loading, app }) => ({ balance, shift, paymentOpts, loading, app }))(Container)
+export default connect(({ balance, balanceDetail, shift, paymentOpts, loading, app }) => ({ balance, balanceDetail, shift, paymentOpts, loading, app }))(Container)

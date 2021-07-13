@@ -482,7 +482,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/balance/invoice/'))
+              cb(null, require('./routes/balance/invoice'))
             }, 'balance-invoice-detail')
           }
         }, {
@@ -883,7 +883,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/report/fifo/stockcard'))
-            }, 'report-purchase-summary-card')
+            }, 'report-stock-summary-card')
           }
         }, {
           path: 'report/fifo/history',

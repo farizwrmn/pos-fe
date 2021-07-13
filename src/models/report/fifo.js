@@ -93,20 +93,20 @@ export default {
             }
           })
         } else if (location.pathname === '/report/fifo/card') {
-          if (location.query.period && location.query.year) {
-            dispatch({
-              type: 'queryProductCode',
-              payload: location.query
-            })
-          } else {
-            dispatch({
-              type: 'queryProductCode',
-              payload: {
-                period: moment().format('MM'),
-                year: moment().format('YYYY')
-              }
-            })
-          }
+          // if (location.query.period && location.query.year) {
+          //   dispatch({
+          //     type: 'queryProductCode',
+          //     payload: location.query
+          //   })
+          // } else {
+          //   dispatch({
+          //     type: 'queryProductCode',
+          //     payload: {
+          //       period: moment().format('MM'),
+          //       year: moment().format('YYYY')
+          //     }
+          //   })
+          // }
         } else if (location.pathname === '/report/fifo/history') {
           if (location.query.from && location.query.to) {
             dispatch({

@@ -1,5 +1,5 @@
 /**
- * Created by veirry on 31/01/2021.
+ * Created by veirry on 28/11/17.
  */
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -9,7 +9,7 @@ import { BasicInvoice } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
+const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -20,29 +20,19 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.transNo).toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data && data.transDate ? moment(data.transDate, 'YYYY-MM-DD').format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.paid)), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.code || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.name || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
       count += 1
     }
-    if (parseFloat(itemHeader.discount) > 0) {
-      let row = []
-      row.push({ text: count, alignment: 'center', fontSize: 11 })
-      row.push({ text: 'Discount', alignment: 'left', fontSize: 11 })
-      row.push({ text: (itemHeader && itemHeader.transDate ? moment(itemHeader.transDate, 'YYYY-MM-DD').format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
-      row.push({ text: `-${formatNumberIndonesia(parseFloat(itemHeader.discount))}`, alignment: 'right', fontSize: 11 })
-      row.push({ text: '', alignment: 'left', fontSize: 11 })
-      body.push(row)
-    }
     return body
   }
 
   // Declare Variable
-  // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.paid), 0) - parseFloat(itemHeader.discount)
+  let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -63,6 +53,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       color: 'black'
     }
   }
+  console.log('itemHeader', itemHeader.technicianName)
+
   const header = {
     stack: [
       {
@@ -74,13 +66,13 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'right'
           },
           {
-            text: 'PURCHASE PAYMENT',
+            text: 'SURAT PENGANTAR',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
           },
           {
-            stack: storeInfo.stackHeader02
+            stack: storeInfo ? storeInfo.stackHeader02 : null
           }
         ]
       },
@@ -88,9 +80,33 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, { text: 'MACHINE', fontSize: 11 }, ':', { text: itemHeader.machineName, fontSize: 11 }],
-            [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'PAYMENT TYPE', fontSize: 11 }, ':', { text: itemHeader.typeName, fontSize: 11 }],
-            [{ text: 'SUPPLIER', fontSize: 11 }, ':', { text: itemHeader.supplierName, fontSize: 11 }, {}, { text: 'MEMO', fontSize: 11 }, ':', { text: (itemPrint.memo || '').toString(), fontSize: 11 }]
+            [
+              { text: 'NO TRANSAKSI', fontSize: 11 },
+              ':',
+              { text: (itemHeader.transNo || '').toString(), fontSize: 11 },
+              {},
+              { text: 'PIC', fontSize: 11 },
+              ':',
+              { text: (itemHeader && itemHeader.technicianName ? itemHeader.technicianName : '').toString(), fontSize: 11 }
+            ],
+            [
+              { text: 'TANGGAL', fontSize: 11 },
+              ':',
+              { text: moment().format('DD-MM-YYYY'), fontSize: 11 },
+              {},
+              { text: 'DESKRIPSI', fontSize: 11 },
+              ':',
+              { text: `KELUAR${`${itemHeader.description ? '/' : ''}`}${(itemHeader.description || '').toString()}`, fontSize: 11 }
+            ],
+            [
+              { text: 'KEPADA', fontSize: 11 },
+              ':',
+              { text: (itemHeader && itemHeader.memberName ? `${itemHeader.memberName}\n${itemHeader.address01}` : '').toString(), fontSize: 11 },
+              {},
+              {},
+              {},
+              {}
+            ]
           ]
         },
         layout: 'noBorders'
@@ -118,8 +134,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           },
           {
             columns: [
-              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeId ? itemHeader.employeeId.label : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user ? user.username : ''}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader && itemHeader.technicianName ? itemHeader.technicianName : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
               { text: 'Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n', fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
             ]
           },
@@ -197,9 +213,9 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TRANSNO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -207,14 +223,14 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   try {
     tableBody = createTableBody(listItem)
   } catch (e) {
-    console.log('error', e)
+    console.log(e)
   }
   const tableFooter = [
     [
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: formatNumberIndonesia(parseFloat(amountTotal)), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 12 },
       {}
     ]
   ]
@@ -235,7 +251,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '15%', '34%', '35%'],
+    width: ['6%', '20%', '34%', '6%', '34%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',

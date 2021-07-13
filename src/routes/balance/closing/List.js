@@ -73,6 +73,7 @@ const FormComponent = ({
             })(
               <InputNumber
                 min={0}
+                disabled
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -113,6 +114,7 @@ const FormComponent = ({
             })(
               <InputNumber
                 min={0}
+                disabled
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -185,14 +187,7 @@ const List = ({
             />
           )
         }
-        return (
-          <FormComponent
-            defaultValue={[]}
-            getFieldDecorator={getFieldDecorator}
-            label={detail.typeName}
-            name={detail.typeCode}
-          />
-        )
+        return null
       })}
       <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
     </Form>
