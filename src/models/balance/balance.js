@@ -10,7 +10,7 @@ import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
   getActive,
   open,
-  closed
+  closed as closeBalance
 } from '../../services/balance/balanceProcess'
 import { pageModel } from '../common'
 
@@ -197,7 +197,7 @@ export default modelExtend(pageModel, {
     },
 
     * closed ({ payload }, { call, put }) {
-      const response = yield call(closed, payload)
+      const response = yield call(closeBalance, payload)
       if (response && response.success) {
         yield put({
           type: 'active'
