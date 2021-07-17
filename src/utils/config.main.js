@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'www.k3mart.id',
+  name: 'www.k3bike.com',
   version: '2018.07.003',
   prefix: 'smiPos',
   footerText: 'Smartech Indo',
