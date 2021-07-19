@@ -106,9 +106,19 @@ const FormAdd = ({
                 ]
               })(<Switch defaultChecked onChange={checked => handleProductBrowse(true, false, checked)} />)}
             </FormItem>
-            <FormItem label="reference" hasFeedback {...formItemLayout}>
+            <FormItem label="referenceNo" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
                 initialValue: item.referenceNo,
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<Input disabled />)}
+            </FormItem>
+            <FormItem label="reference" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('reference', {
+                initialValue: item.reference,
                 rules: [
                   {
                     required: false
