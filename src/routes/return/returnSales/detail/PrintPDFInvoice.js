@@ -26,7 +26,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         row.push({ text: numberFormatter(parseFloat(data.qty)), alignment: 'right', fontSize: 11 })
 
         let total = 0
-        if (data.DPP <= 0) {
+        if (data.DPP <= 0 && data.purchaseDetail) {
           const dppItem = data.purchaseDetail.DPP / data.purchaseDetail.qty
           total = dppItem * data.qty
         } else {
@@ -47,7 +47,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let grandTotal = listItem.reduce((cnt, o) => {
     let total = 0
-    if (o.DPP <= 0) {
+    if (o.DPP <= 0 && o.purchaseDetail) {
       const dppItem = o.purchaseDetail.DPP / o.purchaseDetail.qty
       total = dppItem * o.qty
     } else {
