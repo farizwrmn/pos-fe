@@ -46,6 +46,7 @@ class TransferModal extends Component {
           data.transType = currentItemList.transType
           data.description = (data.description === '' || data.description === null ? null : data.description)
           data.productId = currentItemList.productId
+          data.initialQty = currentItemList.initialQty
           data.productCode = currentItemList.productCode
           data.productName = currentItemList.productName
           onOkList(data)
