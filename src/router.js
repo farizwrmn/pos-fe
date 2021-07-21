@@ -574,7 +574,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/purchase'))
-              cb(null, require('./routes/transaction/purchase/edit/'))
+              cb(null, require('./routes/transaction/purchase/edit'))
             }, 'transaction-purchase-add')
           }
         }, {
@@ -855,6 +855,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/fifo'))
+              registerModel(app, require('./models/purchase'))
               cb(null, require('./routes/report/fifo/summary/'))
             }, 'report-purchase-summary-trans')
           }

@@ -31,6 +31,16 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        if (location.pathname === '/report/fifo/summary') {
+          if (location.query.activeKey === '3') {
+            dispatch({
+              type: 'purchase/querySupplier',
+              payload: {
+                type: 'all'
+              }
+            })
+          }
+        }
         if (location.pathname === '/' || location.pathname === '/dashboard') {
           // dispatch({
           //   type: 'queryFifoValues',
@@ -56,6 +66,11 @@ export default {
           } else if (location.query.activeKey === '2') {
             dispatch({
               type: 'queryTransferFlow',
+              payload: location.query
+            })
+          } else if (location.query.activeKey === '3') {
+            dispatch({
+              type: 'queryInAdj',
               payload: location.query
             })
           }

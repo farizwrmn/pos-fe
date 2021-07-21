@@ -5,12 +5,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const { MonthPicker } = DatePicker
+const { Option } = Select
 
 const leftColumn = {
   xs: 24,
@@ -29,7 +30,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, getFieldDecorator }, activeKey, ...otherProps }) => {
+const Filter = ({ onChangePeriod, listSupplier = [], dispatch, onListReset, form: { resetFields, getFieldDecorator }, activeKey, ...otherProps }) => {
   const handleReset = () => {
     const { pathname } = location
     dispatch(routerRedux.push({
@@ -62,9 +63,28 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
     ...otherProps
   }
 
+  const supplierData = (listSupplier || []).length > 0 ? listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>) : []
+
   return (
     <Row>
       <Col {...leftColumn} >
+        <FilterItem label="Supplier">
+          {getFieldDecorator('supplierCode', {
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(<Select
+            showSearch
+            optionFilterProp="children"
+            labelInValue
+            style={{ width: '100%' }}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+          >{supplierData}
+          </Select>)}
+        </FilterItem>
+        <br />
         <FilterItem label="Period">
           {getFieldDecorator('rangePicker', { initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '' })(
             <MonthPicker onChange={onChange} placeholder="Select Period" />

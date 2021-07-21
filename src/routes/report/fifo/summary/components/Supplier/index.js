@@ -8,7 +8,8 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, fifoReport, loading, app }) => {
+const Report = ({ dispatch, purchase, fifoReport, loading, app }) => {
+  const { listSupplier } = purchase
   const { period, year, activeKey } = fifoReport
   let { listRekap } = fifoReport
   if (activeKey === '1') {
@@ -22,6 +23,7 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
   }
 
   const filterProps = {
+    listSupplier,
     activeKey,
     listRekap,
     user,
@@ -64,7 +66,8 @@ const Report = ({ dispatch, fifoReport, loading, app }) => {
 Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
+  purchase: PropTypes.object,
   fifoReport: PropTypes.object
 }
 
-export default connect(({ fifoReport, loading, app }) => ({ fifoReport, loading, app }))(Report)
+export default connect(({ purchase, fifoReport, loading, app }) => ({ purchase, fifoReport, loading, app }))(Report)
