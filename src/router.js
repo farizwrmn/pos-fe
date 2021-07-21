@@ -856,6 +856,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/report/fifo/summary/'))
             }, 'report-purchase-summary-trans')
           }

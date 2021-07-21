@@ -4,28 +4,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, purchase, fifoReport, loading, app }) => {
+const Report = ({ dispatch, store, purchase, fifoReport, loading, app }) => {
+  const { listStoreLov } = store
   const { listSupplier } = purchase
   const { period, year, activeKey } = fifoReport
-  let { listRekap } = fifoReport
-  if (activeKey === '1') {
-    listRekap = listRekap.filter(el => el.count !== 0)
-  }
+  let { listSupp } = fifoReport
   const { user, storeInfo } = app
 
   const browseProps = {
-    dataSource: listRekap,
+    dataSource: listSupp,
+    listStoreLov,
     loading: loading.effects['fifoReport/queryInAdj']
   }
 
   const filterProps = {
     listSupplier,
     activeKey,
-    listRekap,
+    listRekap: listSupp,
     user,
     dispatch,
     storeInfo,
@@ -36,22 +34,13 @@ const Report = ({ dispatch, purchase, fifoReport, loading, app }) => {
         type: 'fifoReport/setNull'
       })
     },
-    onChangePeriod (month, yearPeriod) {
+    onChangePeriod (data) {
       dispatch({
-        type: 'fifoReport/setPeriod',
+        type: 'fifoReport/queryFifoSupplierId',
         payload: {
-          month,
-          yearPeriod
+          supplierId: data.supplierId
         }
       })
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          period: month,
-          year: yearPeriod,
-          activeKey
-        }
-      }))
     }
   }
 
@@ -67,7 +56,8 @@ Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
   purchase: PropTypes.object,
+  store: PropTypes.object,
   fifoReport: PropTypes.object
 }
 
-export default connect(({ purchase, fifoReport, loading, app }) => ({ purchase, fifoReport, loading, app }))(Report)
+export default connect(({ store, purchase, fifoReport, loading, app }) => ({ store, purchase, fifoReport, loading, app }))(Report)

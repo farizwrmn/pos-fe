@@ -5,58 +5,51 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 
-const Browse = ({ ...browseProps }) => {
-  const columns = [
+const Browse = ({ listStoreLov, ...browseProps }) => {
+  const columns = ([
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode'
     },
     {
-      title: 'Begin',
-      dataIndex: 'beginQty',
-      key: 'beginQty',
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
+    },
+    {
+      title: 'Cost',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Purchase Qty',
-      dataIndex: 'purchaseQty',
-      key: 'purchaseQty',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Adjust IN',
-      dataIndex: 'adjInQty',
-      key: 'adjInQty',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'POS Qty',
-      dataIndex: 'posQty',
-      key: 'posQty',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Adjust OUT',
-      dataIndex: 'adjOutQty',
-      key: 'adjOutQty',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Count',
-      dataIndex: 'count',
-      key: 'count',
+      title: 'SellPrice',
+      dataIndex: 'sellPrice',
+      key: 'sellPrice',
       render: text => (text || '-').toLocaleString()
     }
-  ]
+  ])
+    .concat(listStoreLov
+      .filter(filtered => !filtered.storeName.includes('FK'))
+      .map(item => ({
+        title: item.storeName,
+        dataIndex: item.storeCode,
+        key: item.storeCode,
+        render: (text, record) => (record.storeCode || '-').toLocaleString()
+      })))
 
   return (
     <Table
       {...browseProps}
       bordered
       columns={columns}
+      scroll={{
+        x: 1500
+      }}
       simple
       size="small"
+      pagination={false}
       rowKey={record => record.transNo}
     />
   )

@@ -3,14 +3,11 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { routerRedux } from 'dva/router'
-import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, Row, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
 import PrintXLS from './PrintXLS'
-import PrintPDF from './PrintPDF'
 
-const { MonthPicker } = DatePicker
 const { Option } = Select
 
 const leftColumn = {
@@ -30,7 +27,20 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onChangePeriod, listSupplier = [], dispatch, onListReset, form: { resetFields, getFieldDecorator }, activeKey, ...otherProps }) => {
+const Filter = ({
+  onChangePeriod,
+  listSupplier = [],
+  dispatch,
+  onListReset,
+  form: {
+    resetFields,
+    getFieldDecorator,
+    validateFields,
+    getFieldsValue
+  },
+  activeKey,
+  ...otherProps
+}) => {
   const handleReset = () => {
     const { pathname } = location
     dispatch(routerRedux.push({
@@ -43,12 +53,19 @@ const Filter = ({ onChangePeriod, listSupplier = [], dispatch, onListReset, form
     onListReset()
   }
 
-  const onChange = (date, dateString) => {
-    if (date) {
-      let period = dateString ? moment(dateString).format('M') : null
-      let year = dateString ? moment(dateString).format('Y') : null
-      onChangePeriod(period, year)
-    }
+  const handleSearch = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue()
+      }
+      if (data.supplierCode) {
+        data.supplierId = data.supplierCode.key
+      }
+      onChangePeriod(data)
+    })
   }
 
   const params = location.search.substring(1)
@@ -84,14 +101,17 @@ const Filter = ({ onChangePeriod, listSupplier = [], dispatch, onListReset, form
           >{supplierData}
           </Select>)}
         </FilterItem>
-        <br />
-        <FilterItem label="Period">
-          {getFieldDecorator('rangePicker', { initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '' })(
-            <MonthPicker onChange={onChange} placeholder="Select Period" />
-          )}
-        </FilterItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
@@ -99,7 +119,6 @@ const Filter = ({ onChangePeriod, listSupplier = [], dispatch, onListReset, form
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        {<PrintPDF {...printProps} />}
         {<PrintXLS {...printProps} />}
       </Col>
     </Row>
