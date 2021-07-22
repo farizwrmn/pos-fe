@@ -5,6 +5,7 @@ import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
+import debugPouch from 'pouchdb-debug'
 import { message } from 'antd'
 import { APPNAME, couchdb } from 'utils/config.company'
 // import { APPNAME } from 'utils/config.company'
@@ -87,6 +88,7 @@ export default {
       let remoteDB
       try {
         if (process.env.NODE_ENV !== 'production') {
+          debugPouch(remoteDB)
           console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
         }
         if (couchdb && couchdb.COUCH_URL) {
