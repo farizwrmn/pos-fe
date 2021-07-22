@@ -81,7 +81,7 @@ export default {
 
       document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
       PouchDB.plugin(PouchDBFind)
-      const localDB = new PouchDB(couchdb.COUCH_NAME)
+      const localDB = new PouchDB(couchdb.COUCH_NAME, { auto_compaction: true })
       localDB.createIndex({
         index: { fields: ['barCode01'] }
       })
@@ -92,7 +92,7 @@ export default {
           console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
         }
         if (couchdb && couchdb.COUCH_URL) {
-          remoteDB = new PouchDB(couchdb.COUCH_URL)
+          remoteDB = new PouchDB(couchdb.COUCH_URL, { auto_compaction: true })
           remoteDB.createIndex({
             index: { fields: ['barCode01'] }
           })
