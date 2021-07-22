@@ -40,9 +40,9 @@ import {
   queryPOSproduct,
   queryPOSstock as queryProductsInStock,
   queryByBarcode,
-  indexByBarcodeBundleOffline,
+  // indexByBarcodeBundleOffline,
   queryByBarcodeBundleOffline,
-  indexByBarcodeOffline,
+  // indexByBarcodeOffline,
   queryByBarcodeOffline
 } from '../../services/master/productstock'
 import {
