@@ -126,10 +126,12 @@ const ImportStock = ({
               const distPrice01 = row.values[7]
               const distPrice02 = row.values[8]
               const distPrice03 = row.values[9]
-              const brandId = row.values[10]
-              const categoryId = row.values[11]
-              const trackQty = row.values[12]
-              const alertQty = row.values[13]
+              const distPrice04 = row.values[10]
+              const distPrice05 = row.values[11]
+              const brandId = row.values[12]
+              const categoryId = row.values[13]
+              const trackQty = row.values[14]
+              const alertQty = row.values[15]
               if (rowIndex >= 7) {
                 const data = {
                   productCode,
@@ -139,6 +141,8 @@ const ImportStock = ({
                   distPrice01,
                   distPrice02,
                   distPrice03,
+                  distPrice04,
+                  distPrice05,
                   brandId: Number(brandId),
                   categoryId: Number(categoryId),
                   trackQty,

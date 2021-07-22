@@ -110,6 +110,22 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} max={100} style={{ width: '100%' }} />)}
         </FormItem>
+        <FormItem label="distPrice04" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice04', {
+            initialValue: item.distPrice04,
+            rules: [{
+              required: true
+            }]
+          })(<InputNumber autoFocus min={0} max={100} style={{ width: '100%' }} />)}
+        </FormItem>
+        <FormItem label="distPrice05" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice05', {
+            initialValue: item.distPrice05,
+            rules: [{
+              required: true
+            }]
+          })(<InputNumber autoFocus min={0} max={100} style={{ width: '100%' }} />)}
+        </FormItem>
       </Form>
     </Modal>
   )

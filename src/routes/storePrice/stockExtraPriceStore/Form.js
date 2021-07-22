@@ -236,6 +236,30 @@ const FormCounter = ({
               ]
             })(<InputNumber {...InputNumberProps} />)}
           </FormItem>
+          <FormItem label={getDistPriceName('distPrice04')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice04', {
+              initialValue: item.distPrice04,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice05')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice05', {
+              initialValue: item.distPrice05,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>

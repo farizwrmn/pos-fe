@@ -26,6 +26,8 @@ const PrintShelf = ({ stickers, user, aliases }) => {
               item.distPrice01 = price[0].distPrice01
               item.distPrice02 = price[0].distPrice02
               item.distPrice03 = price[0].distPrice03
+              item.distPrice04 = price[0].distPrice04
+              item.distPrice05 = price[0].distPrice05
             }
           }
           const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()

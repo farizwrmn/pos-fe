@@ -97,6 +97,20 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: getDistPriceName('distPrice04'),
+      dataIndex: 'distPrice04',
+      key: 'distPrice04',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: getDistPriceName('distPrice05'),
+      dataIndex: 'distPrice05',
+      key: 'distPrice05',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',

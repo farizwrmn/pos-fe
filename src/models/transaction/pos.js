@@ -1565,6 +1565,8 @@ export default {
           item.distPrice01 = price[0].distPrice01
           item.distPrice02 = price[0].distPrice02
           item.distPrice03 = price[0].distPrice03
+          item.distPrice04 = price[0].distPrice04
+          item.distPrice05 = price[0].distPrice05
         }
       }
 
@@ -1575,6 +1577,8 @@ export default {
         item.distPrice01 = currentReward.distPrice01
         item.distPrice02 = currentReward.distPrice02
         item.distPrice03 = currentReward.distPrice03
+        item.distPrice04 = currentReward.distPrice04
+        item.distPrice05 = currentReward.distPrice05
         qty = currentReward.qty
       }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)

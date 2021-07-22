@@ -152,6 +152,8 @@ const FormCounter = ({
             distPrice01: categoryCode === null ? (type === 'P' ? item.distPrice01 : item.serviceCost) : 0,
             distPrice02: categoryCode === null ? (type === 'P' ? item.distPrice02 : item.serviceCost) : 0,
             distPrice03: categoryCode === null ? (type === 'P' ? item.distPrice03 : item.serviceCost) : 0,
+            distPrice04: categoryCode === null ? (type === 'P' ? item.distPrice04 : item.serviceCost) : 0,
+            distPrice05: categoryCode === null ? (type === 'P' ? item.distPrice05 : item.serviceCost) : 0,
             discount: 0,
             disc1: 0,
             disc2: 0,

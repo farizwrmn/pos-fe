@@ -90,6 +90,18 @@ const ProductFilter = ({
       key: 'distPrice03',
       width: '15%',
       render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice04'),
+      dataIndex: 'distPrice04',
+      key: 'distPrice04',
+      width: '15%',
+      render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice05'),
+      dataIndex: 'distPrice05',
+      key: 'distPrice05',
+      width: '15%',
+      render: text => formatNumberIndonesia(text)
     }
   ]
 
@@ -338,12 +350,12 @@ export default connect(
     variant,
     specification
   }) =>
-    ({
-      productstock,
-      bundling,
-      productcategory,
-      productbrand,
-      variant,
-      specification
-    })
+  ({
+    productstock,
+    bundling,
+    productcategory,
+    productbrand,
+    variant,
+    specification
+  })
 )(Form.create()(ProductFilter))
