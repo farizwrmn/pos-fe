@@ -24,7 +24,7 @@ const Browse = ({ listStoreLov, ...browseProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'SellPrice',
+      title: 'Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       render: text => (text || '-').toLocaleString()
@@ -36,7 +36,10 @@ const Browse = ({ listStoreLov, ...browseProps }) => {
         title: item.storeName,
         dataIndex: item.storeCode,
         key: item.storeCode,
-        render: (text, record) => (record.storeCode || '-').toLocaleString()
+        render: (text, record) => {
+          const count = record.listStore.filter(filtered => filtered.storeId === item.id).reduce((prev, next) => prev + (next.countIn - next.countOut), 0)
+          return (count || '-').toLocaleString()
+        }
       })))
 
   return (

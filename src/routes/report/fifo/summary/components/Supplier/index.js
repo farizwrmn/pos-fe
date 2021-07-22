@@ -10,17 +10,19 @@ import Filter from './Filter'
 const Report = ({ dispatch, store, purchase, fifoReport, loading, app }) => {
   const { listStoreLov } = store
   const { listSupplier } = purchase
-  const { period, year, activeKey } = fifoReport
+  const { period, year, activeKey, supplierName } = fifoReport
   let { listSupp } = fifoReport
   const { user, storeInfo } = app
 
   const browseProps = {
     dataSource: listSupp,
     listStoreLov,
-    loading: loading.effects['fifoReport/queryInAdj']
+    loading: loading.effects['fifoReport/queryFifoSupplierId']
   }
 
   const filterProps = {
+    supplierName,
+    listStoreLov,
     listSupplier,
     activeKey,
     listRekap: listSupp,
@@ -38,7 +40,8 @@ const Report = ({ dispatch, store, purchase, fifoReport, loading, app }) => {
       dispatch({
         type: 'fifoReport/queryFifoSupplierId',
         payload: {
-          supplierId: data.supplierId
+          supplierId: data.supplierId,
+          supplierName: data.supplierName
         }
       })
     }

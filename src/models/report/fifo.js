@@ -14,6 +14,7 @@ export default {
   state: {
     tmpListRekap: [],
     listRekap: [],
+    supplierName: '',
     period: moment().format('MM'),
     year: moment().format('YYYY'),
     listProduct: [],
@@ -398,7 +399,8 @@ export default {
           yield put({
             type: 'queryProductCodeSuccess',
             payload: {
-              listSupp: newData || []
+              listSupp: newData || [],
+              supplierName: payload.supplierName
             }
           })
         } else {

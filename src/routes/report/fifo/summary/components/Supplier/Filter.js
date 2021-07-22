@@ -62,6 +62,7 @@ const Filter = ({
         ...getFieldsValue()
       }
       if (data.supplierCode) {
+        data.supplierName = data.supplierCode.label
         data.supplierId = data.supplierCode.key
       }
       onChangePeriod(data)
