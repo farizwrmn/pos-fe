@@ -35,6 +35,8 @@ const modal = ({
       data.prevDistPrice01 = currentItemList.prevDistPrice01
       data.prevDistPrice02 = currentItemList.prevDistPrice02
       data.prevDistPrice03 = currentItemList.prevDistPrice03
+      data.prevDistPrice04 = currentItemList.prevDistPrice04
+      data.prevDistPrice05 = currentItemList.prevDistPrice05
       onOkList(data)
     })
   }
@@ -93,6 +95,22 @@ const modal = ({
       <FormItem label={getDistPriceName('distPrice03')} hasFeedback {...formItemLayout}>
         {getFieldDecorator('distPrice03', {
           initialValue: currentItemList.distPrice03,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label={getDistPriceName('distPrice04')} hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice04', {
+          initialValue: currentItemList.distPrice04,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label={getDistPriceName('distPrice05')} hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice05', {
+          initialValue: currentItemList.distPrice05,
           rules: [{
             required: true
           }]

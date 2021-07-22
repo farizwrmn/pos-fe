@@ -203,6 +203,38 @@ const List = ({ ...tableProps,
       }
     },
     {
+      title: getDistPriceName('distPrice04'),
+      dataIndex: 'distPrice04',
+      key: 'distPrice04',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice04
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
+      title: getDistPriceName('distPrice05'),
+      dataIndex: 'distPrice05',
+      key: 'distPrice05',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice05
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
       title: 'Track Qty',
       dataIndex: 'trackQty',
       key: 'trackQty',

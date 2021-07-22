@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
 import styles from './index.less'
-import GroupItem from './GroupItem'
+// import GroupItem from './GroupItem'
 
 const Group = ({ item }) => {
   return (

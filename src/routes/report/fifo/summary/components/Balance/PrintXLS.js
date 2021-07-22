@@ -67,6 +67,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: data.distPrice01, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.distPrice02, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.distPrice03, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.distPrice04, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: data.distPrice05, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.amount || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
@@ -99,6 +101,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: getDistPriceName('distPrice01'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: getDistPriceName('distPrice02'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: getDistPriceName('distPrice03'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: getDistPriceName('distPrice04'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: getDistPriceName('distPrice05'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }

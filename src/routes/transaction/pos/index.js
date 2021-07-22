@@ -1110,11 +1110,15 @@ const Pos = ({
             item.distPrice01 = currentReward.distPrice01
             item.distPrice02 = currentReward.distPrice02
             item.distPrice03 = currentReward.distPrice03
+            item.distPrice04 = currentReward.distPrice04
+            item.distPrice05 = currentReward.distPrice05
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
             item.distPrice02 = item.serviceCost
             item.distPrice03 = item.serviceCost
+            item.distPrice04 = item.serviceCost
+            item.distPrice05 = item.serviceCost
           }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
