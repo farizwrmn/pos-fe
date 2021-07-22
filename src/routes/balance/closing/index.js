@@ -83,12 +83,12 @@ export default connect(
     app,
     paymentOpts
   }) =>
-  ({
-    loading,
-    balance,
-    shift,
-    userDetail,
-    app,
-    paymentOpts
-  })
+    ({
+      loading,
+      balance,
+      shift,
+      userDetail,
+      app,
+      paymentOpts
+    })
 )(Container)
