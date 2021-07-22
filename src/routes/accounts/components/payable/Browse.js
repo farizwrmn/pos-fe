@@ -118,6 +118,14 @@ const BrowseGroup = ({
       render: text => formatNumberIndonesia(text)
     },
     {
+      title: 'Retur',
+      dataIndex: 'returnTotal',
+      key: 'returnTotal',
+      width: 100,
+      className: styles.alignRight,
+      render: text => formatNumberIndonesia(text)
+    },
+    {
       title: 'Status',
       dataIndex: 'statusPaid',
       key: 'statusPaid',
