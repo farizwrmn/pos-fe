@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+// import { Spin } from 'antd'
 import { routerRedux } from 'dva/router'
 import {
   TYPE_SALES,
@@ -27,17 +28,20 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
     listProps,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     onSubmit (data) {
+      console.log('data', data)
       if (data) {
-        const detail = listOpts && listOpts.map((item) => {
-          const selected = data && data.detail && data.detail[item.typeCode]
-          return ({
-            paymentOptionId: item.id,
-            balanceIn: selected.balanceIn,
-            type: TYPE_SALES
+        const detail = listOpts && listOpts
+          .filter(filtered => data && data.detail && data.detail[filtered.typeCode])
+          .map((item) => {
+            const selected = data && data.detail && data.detail[item.typeCode]
+            return ({
+              paymentOptionId: item.id,
+              balanceIn: selected.balanceIn,
+              type: TYPE_SALES
+            })
           })
-        })
         const cash = listOpts && listOpts
-          .filter(filtered => filtered.typeCode === 'C')
+          .filter(filtered => filtered.typeCode === 'C' && data && data.cash && data.cash[filtered.typeCode])
           .map((item) => {
             const selected = data && data.cash && data.cash[item.typeCode]
             return ({
@@ -78,12 +82,22 @@ const Container = ({ loading, balance, shift, paymentOpts, dispatch, location })
     }
   }
 
+  // if (loading && (loading.effects['balance/active'] || loading.effects['balance/activeDetail'])) {
+  //   return (<Spin size="large" />)
+  // }
+
+  if (currentItem && currentItem.id && Boolean(currentItem.id)) {
+    return (
+      <div className="content-inner">
+        <Form {...formProps} button="Close" />
+      </div>
+    )
+  }
+
   return (
-    <div className="content-inner">
-      {currentItem && currentItem.id ?
-        (<Form {...formProps} button="Close" />)
-        : (<Form {...formProps} button="Open" />)}
-    </div>
+    <div className="content-inner" >
+      <Form {...formProps} button="Open" />
+    </div >
   )
 }
 

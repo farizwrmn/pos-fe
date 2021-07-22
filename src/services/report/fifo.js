@@ -17,6 +17,18 @@ export async function queryFifo (params) {
   })
 }
 
+export async function queryFifoSupplier (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.store = lstorage.getCurrentUserStore()
+  const url = `${fiforeport}/supplier`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryFifoValue (params) {
   const apiHeaderToken = crypt.apiheader()
   params.store = lstorage.getCurrentUserStore()

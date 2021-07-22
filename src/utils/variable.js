@@ -2,6 +2,7 @@
 export const BALANCE_TYPE_AWAL = 0
 export const BALANCE_TYPE_CLOSING = 1
 export const BALANCE_TYPE_TRANSACTION = 2
+export const BALANCE_TYPE_CONSIGNMENT = 4
 export const BALANCE_TYPE_COMPARE = 3
 
 // type

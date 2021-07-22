@@ -283,7 +283,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
       dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
     }
   }
-  const match = pathToRegexp('/transaction/pos/invoice/:id').exec(pathname)
+  const match = pathToRegexp('/transaction/pos/invoice/:id').exec(pathname) || pathToRegexp('/balance/invoice/:id').exec(pathname)
 
   if (openPages && (openPages.includes(pathname) || match)) {
     return (<div>

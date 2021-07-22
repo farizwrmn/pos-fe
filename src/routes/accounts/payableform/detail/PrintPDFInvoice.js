@@ -28,12 +28,21 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       }
       count += 1
     }
+    if (parseFloat(itemHeader.discount) > 0) {
+      let row = []
+      row.push({ text: count, alignment: 'center', fontSize: 11 })
+      row.push({ text: 'Discount', alignment: 'left', fontSize: 11 })
+      row.push({ text: (itemHeader && itemHeader.transDate ? moment(itemHeader.transDate, 'YYYY-MM-DD').format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
+      row.push({ text: `-${formatNumberIndonesia(parseFloat(itemHeader.discount))}`, alignment: 'right', fontSize: 11 })
+      row.push({ text: '', alignment: 'left', fontSize: 11 })
+      body.push(row)
+    }
     return body
   }
 
   // Declare Variable
   // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
+  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.paid), 0) - parseFloat(itemHeader.discount)
   const styles = {
     header: {
       fontSize: 18,

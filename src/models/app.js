@@ -5,9 +5,9 @@ import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
-import debugPouch from 'pouchdb-debug'
 import { message } from 'antd'
 import { APPNAME, couchdb } from 'utils/config.company'
+// import { APPNAME } from 'utils/config.company'
 import { query as queryCustomerType } from '../services/master/customertype'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
@@ -271,7 +271,6 @@ export default {
         if (process.env.NODE_ENV !== 'production') {
           console.log('localDB', localDB)
           console.log('remoteDB', remoteDB)
-          debugPouch(remoteDB)
           remoteDB.info().then((info) => {
             console.log('info', info)
           })

@@ -141,7 +141,7 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem {...formItemLayout} label="Account Code">
               {getFieldDecorator('accountId', {
-                initialValue: item.accountId ? {
+                initialValue: item && item.accountId && item.accountCode ? {
                   key: item.accountId,
                   label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
                 } : undefined,

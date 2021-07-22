@@ -135,6 +135,10 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       })
     },
     onChooseItem (item) {
+      console.log('item', item, item.productId)
+      if (!item.productId) {
+        item.productId = item.id
+      }
       dispatch({
         type: 'returnPurchase/addItem',
         payload: {

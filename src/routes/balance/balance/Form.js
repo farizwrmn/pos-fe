@@ -76,6 +76,7 @@ const FormComponent = ({
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
+            console.log('handleSubmit', data)
             onSubmit(data)
             resetFields()
           },

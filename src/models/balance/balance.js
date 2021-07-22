@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL, BALANCE_TYPE_TRANSACTION } from 'utils/variable'
@@ -9,7 +10,7 @@ import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
   getActive,
   open,
-  closed
+  closed as closeBalance
 } from '../../services/balance/balanceProcess'
 import { pageModel } from '../common'
 
@@ -44,11 +45,25 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/balance/current'
-          || pathname === '/balance/closing'
+        const match = pathToRegexp('/balance/invoice/:id').exec(location.pathname)
+        if (match) {
+          dispatch({ type: 'queryById', payload: { id: match[1] } })
+        }
+        if (pathname === '/balance/current') {
+          dispatch({
+            type: 'active',
+            payload: {
+              countClosing: 1
+            }
+          })
+        }
+        if (pathname === '/balance/closing'
           || pathname === '/transaction/pos') {
           dispatch({
-            type: 'active'
+            type: 'active',
+            payload: {
+              countClosing: 0
+            }
           })
         }
         if (pathname === '/balance/dashboard') {
@@ -93,12 +108,16 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * active (payload, { call, put }) {
+    * active ({ payload = {} }, { call, put }) {
       const response = yield call(getActive)
       if (response && response.success) {
         let detail = {}
+        let countClosing = 0
         if (response.data && response.data.id) {
-          detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
+          if (payload && payload.countClosing) {
+            countClosing = payload.countClosing
+          }
+          detail = yield call(queryDetail, { countClosing, balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_AWAL })
         }
 
         yield put({
@@ -111,20 +130,23 @@ export default modelExtend(pageModel, {
         })
 
         yield put({
-          type: 'activeDetail'
+          type: 'activeDetail',
+          payload: {
+            countClosing
+          }
         })
       } else {
         throw response
       }
     },
 
-    * activeDetail (payload, { call, put, select }) {
+    * activeDetail ({ payload = {} }, { call, put, select }) {
       const currentItem = yield select(({ balance }) => balance.currentItem)
       const response = yield call(getActive)
       if (response && response.success) {
         let detail = {}
         if (response.data && response.data.id) {
-          detail = yield call(queryDetail, { balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_TRANSACTION })
+          detail = yield call(queryDetail, { countClosing: payload.countClosing, balanceId: response.data.id, relationship: 1, balanceType: BALANCE_TYPE_TRANSACTION })
         }
 
         yield put({
@@ -175,11 +197,12 @@ export default modelExtend(pageModel, {
     },
 
     * closed ({ payload }, { call, put }) {
-      const response = yield call(closed, payload)
+      const response = yield call(closeBalance, payload)
       if (response && response.success) {
         yield put({
           type: 'active'
         })
+        window.open(`/balance/invoice/${payload.data.balanceId}`, '_blank')
         yield put(routerRedux.push('/balance/current'))
       } else {
         throw response

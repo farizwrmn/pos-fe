@@ -1,7 +1,29 @@
 import React from 'react'
+import {
+  BALANCE_TYPE_AWAL,
+  BALANCE_TYPE_CLOSING,
+  BALANCE_TYPE_TRANSACTION,
+
+  TYPE_SALES,
+  TYPE_PETTY_CASH,
+  TYPE_CONSIGNMENT
+} from 'utils/variable'
 import BalanceSummaryItem from './BalanceSummaryItem'
 
 import styles from './index.less'
+
+const filterAndSum = (item, type, dataSource) => {
+  const awal = dataSource
+    .filter(filtered => filtered.type === type && filtered.paymentOptionId === item.id && filtered.balanceType === BALANCE_TYPE_AWAL)
+    .reduce((prev, next) => prev + next.balanceIn, 0)
+  const sales = dataSource
+    .filter(filtered => filtered.type === type && filtered.paymentOptionId === item.id && filtered.balanceType === BALANCE_TYPE_TRANSACTION)
+    .reduce((prev, next) => prev + next.balanceIn, 0)
+  const transaction = dataSource
+    .filter(filtered => filtered.type === type && filtered.paymentOptionId === item.id && filtered.balanceType === BALANCE_TYPE_CLOSING)
+    .reduce((prev, next) => prev + next.balanceIn, 0)
+  return ((awal + sales) - transaction) - (item.typeCode === 'C' ? awal : 0)
+}
 
 const BalanceSummary = ({
   listOpts,
@@ -9,12 +31,22 @@ const BalanceSummary = ({
 }) => {
   return (
     <div>
-      {listOpts && listOpts.map(item => (
-        <div>
-          <div className={styles.left}>{`${item.typeName} (${item.typeCode}):`}</div>
-          <BalanceSummaryItem item={item} dataSource={dataSource} />
-        </div>
-      ))}
+      {listOpts && listOpts.filter((filtered) => {
+        const sales = filterAndSum(filtered, TYPE_SALES, dataSource)
+        const cash = filterAndSum(filtered, TYPE_PETTY_CASH, dataSource)
+        const consignment = filterAndSum(filtered, TYPE_CONSIGNMENT, dataSource)
+        return sales > 0 || cash > 0 || consignment > 0
+      }).map((item) => {
+        const sales = filterAndSum(item, TYPE_SALES, dataSource)
+        const cash = filterAndSum(item, TYPE_PETTY_CASH, dataSource)
+        const consignment = filterAndSum(item, TYPE_CONSIGNMENT, dataSource)
+        return (
+          <div>
+            <div className={styles.left}>{`${item.typeName} (${item.typeCode}):`}</div>
+            <BalanceSummaryItem sales={sales} cash={cash} consignment={consignment} item={item} dataSource={dataSource} />
+          </div>
+        )
+      })}
     </div>
   )
 }

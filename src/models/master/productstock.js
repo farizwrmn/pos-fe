@@ -76,6 +76,7 @@ export default modelExtend(pageModel, {
           case '/integration/marketplace-product':
           case '/master/store-price':
           case '/report/fifo/history':
+          case '/report/fifo/card':
             dispatch({ type: 'query' })
             break
           default:
@@ -93,7 +94,13 @@ export default modelExtend(pageModel, {
                 }
               })
             } else {
-              dispatch({ type: 'query', payload: other })
+              dispatch({
+                type: 'query',
+                payload: {
+                  ...other,
+                  stockQuery: true
+                }
+              })
             }
           }
           dispatch({
@@ -205,7 +212,8 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const { stockQuery, ...otherPayload } = payload
+      const data = yield call(query, otherPayload)
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -218,12 +226,14 @@ export default modelExtend(pageModel, {
             }
           }
         })
-        yield put({
-          type: 'showProductQty',
-          payload: {
-            data: data.data
-          }
-        })
+        if (stockQuery) {
+          yield put({
+            type: 'showProductQty',
+            payload: {
+              data: data.data
+            }
+          })
+        }
       }
     },
 
@@ -297,7 +307,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys } = yield select(_ => _.productstock)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        yield put({ type: 'query' })
+        yield put({ type: 'query', payload: { stockQuery: true } })
       } else {
         throw data
       }
@@ -530,7 +540,7 @@ export default modelExtend(pageModel, {
               activeKey: '1'
             }
           }))
-          yield put({ type: 'query' })
+          yield put({ type: 'query', payload: { stockQuery: true } })
         }
       } else {
         let current = Object.assign({}, payload.id, payload.data)

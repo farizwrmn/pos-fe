@@ -1801,6 +1801,7 @@ export default {
     },
 
     * getProductByBarcode ({ payload }, { select, call, put }) {
+      // * getProductByBarcode ({ payload }, { call, put }) {
       const localDB = yield select(({ app }) => app.localDB)
       // OFFLINE BUNDLE
       let startBundle = window.performance.now()
