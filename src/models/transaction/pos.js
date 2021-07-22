@@ -1809,9 +1809,9 @@ export default {
       const localDB = yield select(({ app }) => app.localDB)
       // OFFLINE BUNDLE
       let startBundle = window.performance.now()
-      yield call(indexByBarcodeBundleOffline, {
-        localDB
-      })
+      // yield call(indexByBarcodeBundleOffline, {
+      //   localDB
+      // })
       const getResponseBundle = yield call(queryByBarcodeBundleOffline, {
         localDB,
         barCode01: payload.id
@@ -1838,9 +1838,9 @@ export default {
 
       // OFFLINE PRODUCT
       let start = window.performance.now()
-      yield call(indexByBarcodeOffline, {
-        localDB
-      })
+      // yield call(indexByBarcodeOffline, {
+      //   localDB
+      // })
       const getResponse = yield call(queryByBarcodeOffline, {
         localDB,
         barCode01: payload.id
