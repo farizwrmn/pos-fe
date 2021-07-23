@@ -5,7 +5,6 @@ import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
-import debugPouch from 'pouchdb-debug'
 import { message } from 'antd'
 import { APPNAME, couchdb } from 'utils/config.company'
 // import { APPNAME } from 'utils/config.company'
@@ -88,7 +87,7 @@ export default {
       let remoteDB
       try {
         if (process.env.NODE_ENV !== 'production') {
-          debugPouch(remoteDB)
+          // debugPouch(remoteDB)
           console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
         }
         if (couchdb && couchdb.COUCH_URL) {
@@ -98,7 +97,7 @@ export default {
           })
         }
       } catch (ex) {
-        console.log('secret.js file missing; disabling remote sync.')
+        console.log('secret.js file missing; disabling remote sync.', ex)
       }
       dispatch({
         type: 'replicateDatabase',
@@ -147,7 +146,7 @@ export default {
         if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)) {
           permissions.visit = menu.map(item => item.menuId)
         } else {
-          menu = menu.filter((item) => {
+          menu = menu && menu.filter((item) => {
             const cases = [
               permissions.visit.includes(item.menuId),
               item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
