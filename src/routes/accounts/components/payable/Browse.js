@@ -118,14 +118,6 @@ const BrowseGroup = ({
       render: text => formatNumberIndonesia(text)
     },
     {
-      title: 'Retur',
-      dataIndex: 'returnTotal',
-      key: 'returnTotal',
-      width: 100,
-      className: styles.alignRight,
-      render: text => formatNumberIndonesia(text)
-    },
-    {
       title: 'Status',
       dataIndex: 'statusPaid',
       key: 'statusPaid',
@@ -155,11 +147,11 @@ const BrowseGroup = ({
       key: 'statusActive',
       width: 120,
       render: text =>
-        (<span>
-          <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
-            {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
-          </Tag>
-        </span>),
+      (<span>
+        <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
+          {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
+        </Tag>
+      </span>),
       filters: [{
         text: 'Active',
         value: '1'
