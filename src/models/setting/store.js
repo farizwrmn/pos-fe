@@ -23,6 +23,9 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        if (location.pathname === '/report/fifo/summary' && location.query.activeKey === '3') {
+          dispatch({ type: 'getStore', payload: { type: 'all' } })
+        }
         if (location.pathname === '/setting/store') {
           dispatch({ type: 'getAllStores' })
           dispatch({ type: 'refreshSetting' })

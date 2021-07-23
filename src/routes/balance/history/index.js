@@ -107,11 +107,11 @@ export default connect(
     loading,
     app
   }) =>
-  ({
-    balance,
-    balanceDetail,
-    paymentOpts,
-    loading,
-    app
-  })
+    ({
+      balance,
+      balanceDetail,
+      paymentOpts,
+      loading,
+      app
+    })
 )(Container)

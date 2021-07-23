@@ -1,10 +1,10 @@
 /**
  * Created by Veirry on 19/09/2017.
  */
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain } from 'utils'
-import { queryFifo, queryFifoValue, queryFifoValueAll, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
+import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoValueAll, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
 
 const { prefix } = configMain
 
@@ -14,9 +14,11 @@ export default {
   state: {
     tmpListRekap: [],
     listRekap: [],
+    supplierName: '',
     period: moment().format('MM'),
     year: moment().format('YYYY'),
     listProduct: [],
+    listSupp: [],
     // productCode: [],
     // productName: [],
     activeKey: '0',
@@ -31,16 +33,6 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/' || location.pathname === '/dashboard') {
-          // dispatch({
-          //   type: 'queryFifoValues',
-          //   payload: {
-          //     period: moment().format('M'),
-          //     year: moment().format('YYYY')
-          //   }
-          // })
-        }
-
         if (location.pathname === '/report/accounting/balance-sheet' && location.query.to) {
           dispatch({
             type: 'queryFifoValuesAll',
@@ -385,6 +377,35 @@ export default {
             ...payload
           }
         })
+      } else {
+        throw data
+      }
+    },
+
+    * queryFifoSupplierId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryFifoSupplier, payload)
+      if (data.success) {
+        if (data.data) {
+          const newData = data.data.listProduct.map((item) => {
+            return ({
+              ...item,
+              listStore: data.data.listIn
+                .filter(filtered => filtered.productId === item.id)
+                .concat(data.data.listOut.filter(filtered => filtered.productId === item.id))
+            })
+          })
+            .filter(filtered => filtered.listStore.length > 0)
+          console.log('newData', newData)
+          yield put({
+            type: 'queryProductCodeSuccess',
+            payload: {
+              listSupp: newData || [],
+              supplierName: payload.supplierName
+            }
+          })
+        } else {
+          message.warning('No Data')
+        }
       } else {
         throw data
       }

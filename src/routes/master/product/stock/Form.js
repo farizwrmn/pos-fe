@@ -289,6 +289,28 @@ const formProductCategory = ({
               ]
             })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
           </FormItem>
+          <FormItem label={getDistPriceName('distPrice04')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice04', {
+              initialValue: item.distPrice04,
+              rules: [
+                {
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice05')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice05', {
+              initialValue: item.distPrice05,
+              rules: [
+                {
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber style={{ width: '100%' }} maxLength={20} />)}
+          </FormItem>
           <FormItem label="Track Qty" {...formItemLayout}>
             {getFieldDecorator('trackQty', {
               valuePropName: 'checked',

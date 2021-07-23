@@ -52,6 +52,8 @@ const modal = ({
           listItem[selectedRowKeys[i] - 1].distPrice01 = listItem[selectedRowKeys[i] - 1].prevDistPrice01
           listItem[selectedRowKeys[i] - 1].distPrice02 = listItem[selectedRowKeys[i] - 1].prevDistPrice02
           listItem[selectedRowKeys[i] - 1].distPrice03 = listItem[selectedRowKeys[i] - 1].prevDistPrice03
+          listItem[selectedRowKeys[i] - 1].distPrice04 = listItem[selectedRowKeys[i] - 1].prevDistPrice04
+          listItem[selectedRowKeys[i] - 1].distPrice05 = listItem[selectedRowKeys[i] - 1].prevDistPrice05
         }
         onOkList(listItem)
       }

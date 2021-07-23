@@ -140,10 +140,14 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
           prevDistPrice01: item.distPrice01,
           prevDistPrice02: item.distPrice02,
           prevDistPrice03: item.distPrice03,
+          prevDistPrice04: item.distPrice04,
+          prevDistPrice05: item.distPrice05,
           sellPrice: item.sellPrice,
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02,
-          distPrice03: item.distPrice03
+          distPrice03: item.distPrice03,
+          distPrice04: item.distPrice04,
+          distPrice05: item.distPrice05
         }
         arrayProd.push(data)
         dispatch({

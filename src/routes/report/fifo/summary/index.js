@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
-import { Summary, Balance, Transfer } from './components'
+import { Summary, Balance, Transfer, Supplier } from './components'
 
 const { TabPane } = Tabs
 
@@ -35,6 +35,9 @@ const Report = ({ dispatch, fifoReport }) => {
         </TabPane>
         <TabPane tab="Transfer" key="2">
           {activeKey === '2' && <Transfer />}
+        </TabPane>
+        <TabPane tab="Supplier" key="3">
+          {activeKey === '3' && <Supplier />}
         </TabPane>
       </Tabs>
     </div>

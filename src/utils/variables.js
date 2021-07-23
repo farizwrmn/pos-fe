@@ -65,29 +65,47 @@ const reArrangeMemberId = (item) => {
 }
 
 const insertCashierTrans = (dataObject) => {
-  const previousData = getCashierTrans()
+  let previousData = getCashierTrans()
   dataObject.sellingPrice = dataObject.price
   const total = posTotal(dataObject)
 
-  previousData.push({
-    no: dataObject.no,
-    bundleId: dataObject.bundleId,
-    employeeId: dataObject.employeeId,
-    employeeName: dataObject.employeeName,
-    productId: dataObject.productId,
-    code: dataObject.code,
-    name: dataObject.name,
-    qty: dataObject.qty,
-    typeCode: dataObject.typeCode,
-    sellPrice: dataObject.sellPrice,
-    price: dataObject.price,
-    discount: dataObject.discount,
-    disc1: dataObject.disc1,
-    disc2: dataObject.disc2,
-    disc3: dataObject.disc3,
-    total
-  })
-  localStorage.setItem('cashier_trans', JSON.stringify(previousData))
+  const filter = previousData && previousData.filter(filtered => filtered.code === dataObject.code && filtered.bundleId === dataObject.bundleId)
+
+  let newData = []
+
+  if (filter && filter[0]) {
+    newData = previousData.map((item) => {
+      if (item.code === filter[0].code && item.bundleId === filter[0].bundleId) {
+        item.qty += dataObject.qty
+        item.sellingPrice = dataObject.price
+        item.total = posTotal(item)
+        return item
+      }
+      return item
+    })
+  } else {
+    newData = previousData
+    newData.push({
+      no: dataObject.no,
+      bundleId: dataObject.bundleId,
+      employeeId: dataObject.employeeId,
+      employeeName: dataObject.employeeName,
+      productId: dataObject.productId,
+      code: dataObject.code,
+      name: dataObject.name,
+      qty: dataObject.qty,
+      typeCode: dataObject.typeCode,
+      sellPrice: dataObject.sellPrice,
+      price: dataObject.price,
+      discount: dataObject.discount,
+      disc1: dataObject.disc1,
+      disc2: dataObject.disc2,
+      disc3: dataObject.disc3,
+      total
+    })
+  }
+
+  localStorage.setItem('cashier_trans', JSON.stringify(newData))
 
   return previousData
 }
