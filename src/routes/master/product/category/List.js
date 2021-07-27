@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { IMAGEURL } from 'utils/config.company'
 import moment from 'moment'
 
 const confirm = Modal.confirm
@@ -34,7 +35,20 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Image',
       dataIndex: 'categoryImage',
-      key: 'categoryImage'
+      key: 'categoryImage',
+      width: '100px',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          const item = JSON.parse(text)
+          if (item && item[0]) {
+            return <img height="70px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+          }
+        }
+        return null
+      }
     },
     {
       title: 'Parent Category',

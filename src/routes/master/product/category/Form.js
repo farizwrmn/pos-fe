@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Tree, Select, Row, Col, Modal, message, Checkbox } from 'antd'
+import { Form, Input, Button, Tree, Select, Row, Col, Modal, message, Checkbox, Upload, Icon } from 'antd'
 import { arrayToTree } from 'utils'
+import { IMAGEURL, rest } from 'utils/config.company'
 
+const { apiCompanyURL } = rest
 const FormItem = Form.Item
 const Option = Select.Option
 const TreeNode = Tree.TreeNode
@@ -137,6 +139,8 @@ const formProductCategory = ({
   }
   const categoryVisual = getMenus(menuTree)
 
+  console.log('item', item)
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -192,6 +196,67 @@ const formProductCategory = ({
               filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
             >{productCategory}
             </Select>)}
+          </FormItem>
+          <FormItem label="Image" {...formItemLayout}>
+            {getFieldDecorator('categoryImage', {
+              initialValue: item.categoryImage
+                && item.categoryImage != null
+                && item.categoryImage !== '"no_image.png"'
+                && item.categoryImage !== 'no_image.png' ?
+                {
+                  fileList: JSON.parse(item.categoryImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                }
+                : item.categoryImage
+            })(
+              <Upload
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                listType="picture"
+                defaultFileList={
+                  item.categoryImage
+                    && item.categoryImage != null
+                    && item.categoryImage !== '"no_image.png"'
+                    && item.categoryImage !== 'no_image.png' ?
+                    JSON.parse(item.categoryImage).map((detail, index) => {
+                      return ({
+                        uid: index + 1,
+                        name: detail,
+                        status: 'done',
+                        url: `${IMAGEURL}/${detail}`,
+                        thumbUrl: `${IMAGEURL}/${detail}`
+                      })
+                    })
+                    : []
+                }
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
           </FormItem>
           <FormItem label="Loyalty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('loyaltyException', {
