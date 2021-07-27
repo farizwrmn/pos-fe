@@ -65,7 +65,12 @@ const Browse = ({
       width: 100,
       render: (text, record) => {
         if (record && record.userRole && record.userRole[0]) {
-          return record.userRole.map(item => item.userRole)
+          return record.userRole.map((item, index) => {
+            if (index + 1 === record.userRole.length) {
+              return item.userRole
+            }
+            return `${item.userRole}, `
+          })
         }
         return null
       }
