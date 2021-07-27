@@ -265,6 +265,12 @@ const formProductCategory = ({
               initialValue: item.loyaltyException === undefined ? true : item.loyaltyException
             })(<Checkbox />)}
           </FormItem>
+          <FormItem label="Commerce Exception" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('commerceException', {
+              valuePropName: 'checked',
+              initialValue: item.commerceException === undefined ? false : item.commerceException
+            })(<Checkbox />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
