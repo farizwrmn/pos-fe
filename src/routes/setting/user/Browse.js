@@ -53,12 +53,11 @@ const Browse = ({
       dataIndex: 'active',
       key: 'active',
       width: 110,
-      render: text =>
-        (<span>
-          <Tag color={text ? 'blue' : 'red'}>
-            {text ? 'Active' : 'Non-Active'}
-          </Tag>
-        </span>)
+      render: text => (<span>
+        <Tag color={text ? 'blue' : 'red'}>
+          {text ? 'Active' : 'Non-Active'}
+        </Tag>
+      </span>)
     }, {
       title: 'Role',
       dataIndex: 'userRoleCode',
@@ -156,7 +155,7 @@ const Browse = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '1440px', y: 240 }}
+        scroll={{ x: '1440px' }}
         columns={columns}
         simple
         rowKey={record => record.userId}

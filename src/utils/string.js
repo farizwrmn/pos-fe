@@ -70,7 +70,7 @@ const getDistPriceName = (fromStock) => {
   const listPrice = lstorage.getPriceName()
   const selectedDist = listPrice.filter(filtered => filtered.sellPrice === fromStock)
   if (selectedDist && selectedDist[0]) {
-    return `Price ${selectedDist[0].typeName}`
+    return `${selectedDist[0].typeName}`
   }
   return fromStock
 }
