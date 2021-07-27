@@ -62,7 +62,13 @@ const Browse = ({
       title: 'Role',
       dataIndex: 'userRoleCode',
       key: 'userRoleCode',
-      width: 100
+      width: 100,
+      render: (text, record) => {
+        if (record && record.userRole && record.userRole[0]) {
+          return record.userRole.map(item => item.userRole)
+        }
+        return null
+      }
     }, {
       title: 'Email',
       dataIndex: 'email',
