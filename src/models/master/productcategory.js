@@ -241,7 +241,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryEditItem ({ payload = {} }, { call, put }) {
-      const dataLov = yield call(query, { type: 'lov' })
+      const dataLov = yield call(query, { type: 'lov', id: payload.id })
       const data = yield call(queryCode, payload)
       if (data.success && dataLov.success) {
         yield put({
