@@ -31,25 +31,6 @@ const Filter = ({
   }
 }) => {
   const handleFields = (fields) => {
-    const { createdAt, customSearch } = fields
-    let finalObj = {}
-    let tempText = []
-    if (customSearch) {
-      // samadengan="page=1&pageSize=5"
-      tempText[0] = customSearch.split('&')
-      for (let i = 0; i < tempText[0].length; i += 1) {
-        console.log(tempText[0][i])
-        tempText[1] = tempText[0][i].split('=')
-        tempText[2] = `{"${tempText[1][0]}":"${tempText[1][1]}"}`
-        console.log(typeof tempText[2], 'tempText[2]', tempText[2])
-        console.log(JSON.parse(tempText[2]))
-        finalObj = Object.assign(finalObj, JSON.parse(tempText[2]))
-      }
-      fields = finalObj
-    } else if (createdAt.length) {
-      fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
-    }
-
     return fields
   }
 
