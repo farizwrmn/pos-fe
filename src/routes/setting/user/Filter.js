@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from 'components'
-import { Form, Button, Row, Col, DatePicker, Input, Collapse } from 'antd'
+import { Form, Button, Row, Col, Input, Collapse } from 'antd'
 
 const Search = Input.Search
-const { RangePicker } = DatePicker
 const Panel = Collapse.Panel
 
 const ColProps = {
@@ -33,25 +31,6 @@ const Filter = ({
   }
 }) => {
   const handleFields = (fields) => {
-    const { createdAt, customSearch } = fields
-    let finalObj = {}
-    let tempText = []
-    if (customSearch) {
-      // samadengan="page=1&pageSize=5"
-      tempText[0] = customSearch.split('&')
-      for (let i = 0; i < tempText[0].length; i += 1) {
-        console.log(tempText[0][i])
-        tempText[1] = tempText[0][i].split('=')
-        tempText[2] = `{"${tempText[1][0]}":"${tempText[1][1]}"}`
-        console.log(typeof tempText[2], 'tempText[2]', tempText[2])
-        console.log(JSON.parse(tempText[2]))
-        finalObj = Object.assign(finalObj, JSON.parse(tempText[2]))
-      }
-      fields = finalObj
-    } else if (createdAt.length) {
-      fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
-    }
-
     return fields
   }
 
@@ -81,13 +60,7 @@ const Filter = ({
     onSearchHide()
   }
 
-  const handleChange = (key, values) => {
-    let fields = getFieldsValue()
-    fields[key] = values
-    fields = handleFields(fields)
-    onFilterChange(fields)
-  }
-  const { name, customSearch } = filter
+  const { name } = filter
 
   let initialCreateTime = []
   if (filter.createdAt && filter.createdAt[0]) {
@@ -106,23 +79,10 @@ const Filter = ({
       <Panel header="Search" key="1">
         <Row gutter={24}>
           <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-            {getFieldDecorator('userName', { initialValue: name })(
+            {getFieldDecorator('q', { initialValue: name })(
               <Search placeholder="Search User Name" size="large" onSearch={handleSubmit} />
             )}
           </Col>
-          <Col {...ColProps} xl={{ span: 8 }} md={{ span: 10 }} sm={{ span: 14 }}>
-            <FilterItem label="CreatedAt">
-              {getFieldDecorator('createdAt', { initialValue: initialCreateTime })(
-                <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createdAt')} />
-              )}
-            </FilterItem>
-          </Col>
-          <Col {...ColProps} xl={{ span: 16 }} md={{ span: 18 }} sm={{ span: 22 }}>
-            {getFieldDecorator('customSearch', { initialValue: customSearch })(
-              <Input placeholder="Custom search query url" type="textarea" rows={2} />
-            )}
-          </Col>
-
           <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div >
