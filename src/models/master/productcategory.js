@@ -197,8 +197,8 @@ export default modelExtend(pageModel, {
         && payload.data.categoryImage
         && payload.data.categoryImage.fileList
         && payload.data.categoryImage.fileList.length > 0
-        && payload.data.categoryImage.fileList.length > 5) {
-        throw new Error('Cannot upload more than 5 image')
+        && payload.data.categoryImage.fileList.length > 1) {
+        throw new Error('Cannot upload more than 1 image')
       }
       // End - Upload Image
       if (uploadedImage && uploadedImage.length) {

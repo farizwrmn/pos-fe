@@ -42,6 +42,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           && text != null
           && text !== '"no_image.png"'
           && text !== 'no_image.png') {
+          console.log('text', text)
           const item = JSON.parse(text)
           if (item && item[0]) {
             return <img height="70px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
@@ -91,7 +92,6 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Operation',
       key: 'operation',
       width: 100,
-      fixed: 'right',
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
       }

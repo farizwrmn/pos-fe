@@ -217,6 +217,7 @@ const formProductCategory = ({
                 : item.categoryImage
             })(
               <Upload
+                multiple
                 showUploadList={{
                   showPreviewIcon: true
                 }}
