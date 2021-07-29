@@ -4,7 +4,7 @@ import { Icon, Tooltip, Popover } from 'antd'
 import { Link } from 'dva/router'
 import styles from './HeaderMenu.less'
 
-const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, popContent, total, showPopOver, handleVisibleChange }) => {
+const HeaderMenu = ({ prompt, title, icon, addClass, separator, onClick, clickRoute, popContent, total, showPopOver, handleVisibleChange }) => {
   const content = (
     <div classNames={styles.menuContent}>
       {popContent}
@@ -20,6 +20,7 @@ const HeaderMenu = ({ prompt, icon, addClass, separator, onClick, clickRoute, po
           onClick={onClick}
         >
           <Icon type={icon || prompt} />
+          {title && <span style={{ marginLeft: '5px' }}>{title}</span>}
         </div>
       </Tooltip>
     </Link>

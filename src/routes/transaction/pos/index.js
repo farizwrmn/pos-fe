@@ -14,7 +14,7 @@ import { Reminder, DataQuery } from 'components'
 import {
   Icon,
   Form,
-  Input,
+  // Input,
   Row,
   Col,
   Card,
@@ -42,12 +42,12 @@ const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
 const { getCashierTrans, getBundleTrans, getConsignment } = lstorage
-const FormItem = Form.Item
+// const FormItem = Form.Item
 
-const formItemLayout1 = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 11 }
-}
+// const formItemLayout1 = {
+//   labelCol: { span: 10 },
+//   wrapperCol: { span: 11 }
+// }
 
 const keyMap = {
   MEMBER: 'ctrl+m',
@@ -542,6 +542,59 @@ const Pos = ({
           {infoCashRegister.desc}
         </span>
       </span>)
+  }
+
+  const handlePromoBrowse = () => {
+    resetSelectText()
+    if (Object.assign(mechanicInformation || {}).length !== 0) {
+      dispatch({
+        type: 'promo/query',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          modalPromoVisible: true
+        }
+      })
+    } else if (Object.assign(memberInformation || {}).length === 0) {
+      Modal.info({
+        title: 'Member Information is not found',
+        content: 'Insert Member',
+        onOk () {
+          dispatch({
+            type: 'pos/getMembers'
+          })
+
+          dispatch({
+            type: 'pos/showMemberModal',
+            payload: {
+              modalType: 'browseMember'
+            }
+          })
+        }
+      })
+    } else {
+      Modal.info({
+        title: 'Employee Information is not found',
+        content: 'Insert Employee',
+        onOk () {
+          dispatch({ type: 'pos/hideProductModal' })
+          dispatch({
+            type: 'pos/getMechanics'
+          })
+
+          dispatch({
+            type: 'pos/showMechanicModal',
+            payload: {
+              modalType: 'browseMechanic'
+            }
+          })
+        }
+      })
+    }
   }
 
   const handleServiceBrowse = () => {
@@ -1545,59 +1598,60 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
-          <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+          <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={14} md={24}>
+                <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
                 </Col>
-                <Col lg={6} md={24}>
-                  <div
+                <Col lg={14} md={24}>
+                  <Button
+                    type="primary"
+                    size="medium"
+                    icon="barcode"
+                    onClick={handleProductBrowse}
                     style={{
-                      paddingTop: 5
+                      margin: '0px 5px',
+                      marginBottom: '5px'
                     }}
                   >
-                    <Button
-                      type="primary"
-                      size="medium"
-                      icon="barcode"
-                      onClick={handleProductBrowse}
-                      style={{
-                        margin: '0px 5px'
-                      }}
-                    >
-                      Product
-                    </Button>
-                    <Button
-                      type="default"
-                      size="medium"
-                      icon="barcode"
-                      onClick={handleConsignmentBrowse}
-                      style={{
-                        margin: '0px 5px'
-                      }}
-                    >
-                      Consignment
-                    </Button>
-                  </div>
-
-                  <div
+                    Product
+                  </Button>
+                  <Button
+                    type="default"
+                    size="medium"
+                    icon="barcode"
+                    onClick={handleConsignmentBrowse}
                     style={{
-                      paddingTop: 5
+                      margin: '0px 5px',
+                      marginBottom: '5px'
                     }}
                   >
-                    <Button type="primary"
-                      size="medium"
-                      icon="tool"
-                      onClick={handleServiceBrowse}
-                      style={{
-                        margin: '0px 5px'
-                      }}
-                    >
-                      Service
-                    </Button>
-                  </div>
+                    Consignment
+                  </Button>
+                  <Button type="primary"
+                    size="medium"
+                    icon="tool"
+                    onClick={handleServiceBrowse}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    Service
+                  </Button>
+                  <Button type="primary"
+                    size="medium"
+                    icon="tool"
+                    onClick={handlePromoBrowse}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    Bundle
+                  </Button>
                 </Col>
               </Row>
             </Form>
@@ -1623,28 +1677,30 @@ const Pos = ({
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
-              <Col md={24} lg={12}>
-                <Button.Group>
-                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away (0%)</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Grab Food</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Grab Mart</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
+              <Col md={24} lg={16} >
+                <Button.Group style={{ width: '100%' }}>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>GrabFood</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GrabMart</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GoFood</Button>
+                </Button.Group>
+                <br />
+                <br />
+                <Button.Group style={{ width: '100%' }}>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Tokopedia</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Shopee</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Bukalapak</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>JD.id</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Blibli</Button>
                 </Button.Group>
               </Col>
-              <Col md={24} lg={12}>
+              <Col md={24} lg={8}>
                 <div style={{ textAlign: 'right' }}>
-                  <FormItem label="Total Qty" {...formItemLayout1}>
-                    <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
-                  <FormItem label="Total" {...formItemLayout1}>
-                    <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
-                  <FormItem label="Service Charge" {...formItemLayout1}>
-                    <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
-                  <FormItem label="Netto" {...formItemLayout1}>
-                    <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
+                  <div style={{ fontSize: '16px' }}>Total Qty: <strong>{totalQty.toLocaleString()}</strong></div>
+                  <div style={{ fontSize: '16px' }}>Total: <strong>{totalPayment.toLocaleString()}</strong></div>
+                  <div style={{ fontSize: '16px' }}>Service Charge: <strong>{dineIn.toLocaleString()}</strong></div>
+                  <div style={{ fontSize: '16px' }}>Netto: <strong>{(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()}</strong></div>
                 </div>
               </Col>
             </Row>

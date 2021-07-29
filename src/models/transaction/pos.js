@@ -181,6 +181,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({ type: 'app/foldSider' })
           dispatch({
             type: 'setDefaultMember'
           })
