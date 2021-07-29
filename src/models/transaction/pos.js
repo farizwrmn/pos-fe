@@ -188,6 +188,9 @@ export default {
           dispatch({
             type: 'setDefaultEmployee'
           })
+          dispatch({
+            type: 'setPaymentShortcut'
+          })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry' || location.pathname === '/journal-entry') {
           let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
@@ -550,6 +553,16 @@ export default {
           }
         })
       }
+    },
+
+    * setPaymentShortcut (payload, { put }) {
+      const listPaymentShortcut = lstorage.getPaymentShortcut()
+      yield put({
+        type: 'updateState',
+        payload: {
+          listPaymentShortcut
+        }
+      })
     },
 
     * setDefaultEmployee ({ payload }, { call, put }) {
