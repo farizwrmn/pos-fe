@@ -90,6 +90,14 @@ const setPaymentShortcut = (priceList) => {
   return localStorage.setItem('payShortcut', JSON.stringify(priceList || '[]'))
 }
 
+const getPaymentShortcutSelected = () => {
+  return localStorage.getItem('payShortcutSelected') ? JSON.parse(localStorage.getItem('payShortcutSelected')) : []
+}
+
+const setPaymentShortcutSelected = (priceList) => {
+  return localStorage.setItem('payShortcutSelected', JSON.stringify(priceList || '{}'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -244,5 +252,7 @@ module.exports = {
   getPriceName,
   setPriceName,
   getPaymentShortcut,
-  setPaymentShortcut
+  setPaymentShortcut,
+  getPaymentShortcutSelected,
+  setPaymentShortcutSelected
 }

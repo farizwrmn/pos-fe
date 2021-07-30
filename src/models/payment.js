@@ -255,8 +255,12 @@ export default {
                 localStorage.removeItem('workorder')
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('bundle_promo')
+                localStorage.removeItem('payShortcutSelected')
                 yield put({
                   type: 'pos/setAllNull'
+                })
+                yield put({
+                  type: 'pos/setPaymentShortcut'
                 })
                 yield put({
                   type: 'pos/setDefaultMember'

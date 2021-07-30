@@ -138,6 +138,8 @@ export default {
     dataPosLoaded: false,
     memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : {},
     tmpMemberList: [],
+    listPaymentShortcut: [],
+    selectedPaymentShortcut: {},
     tmpMemberUnit: [],
     tmpMechanicList: [],
     tmpProductList: [],
@@ -555,13 +557,40 @@ export default {
       }
     },
 
-    * setPaymentShortcut (payload, { put }) {
+    * setDefaultPaymentShortcut (payload, { put }) {
       const listPaymentShortcut = lstorage.getPaymentShortcut()
-      console.log('listPaymentShortcut', listPaymentShortcut)
+      let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+
+      if (listPaymentShortcut && listPaymentShortcut.length > 0) {
+        selectedPaymentShortcut = listPaymentShortcut[0]
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedPaymentShortcut
+          }
+        })
+      }
+    },
+
+    * setPaymentShortcut ({ payload = {} }, { put }) {
+      const { item } = payload
+      const listPaymentShortcut = lstorage.getPaymentShortcut()
+      let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+      if (item && item.id) {
+        lstorage.setPaymentShortcutSelected(item)
+        selectedPaymentShortcut = item
+      }
+
+      if (selectedPaymentShortcut && !selectedPaymentShortcut.id &&
+        listPaymentShortcut && listPaymentShortcut.length > 0) {
+        selectedPaymentShortcut = listPaymentShortcut[0]
+      }
       yield put({
         type: 'updateState',
         payload: {
-          listPaymentShortcut
+          listPaymentShortcut,
+          selectedPaymentShortcut
         }
       })
     },

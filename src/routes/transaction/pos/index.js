@@ -8,7 +8,7 @@ import {
   // TYPE_PEMBELIAN_UMUM,
   // TYPE_PEMBELIAN_GRABFOOD,
   // TYPE_PEMBELIAN_DINEIN,
-  TYPE_PEMBELIAN_GRABMART
+  // TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { Reminder, DataQuery } from 'components'
 import {
@@ -111,9 +111,10 @@ const Pos = ({
     modalAddUnit,
     cashierInformation,
     dineInTax,
-    typePembelian,
+    // typePembelian,
     modalLoginType,
-    listPaymentShortcut
+    listPaymentShortcut,
+    selectedPaymentShortcut
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible } = promo
@@ -1517,7 +1518,7 @@ const Pos = ({
     })
   }
 
-  const handleChangeDineIn = (event, type) => {
+  const handleChangeDineIn = (event, type, item) => {
     Modal.confirm({
       title: 'Ubah Tipe Transaksi',
       content: 'Anda yakin dengan transaksi ini ?',
@@ -1538,6 +1539,13 @@ const Pos = ({
           payload: {
             dineInTax: event,
             typePembelian: type
+          }
+        })
+
+        dispatch({
+          type: 'pos/setPaymentShortcut',
+          payload: {
+            item
           }
         })
       },
@@ -1578,6 +1586,8 @@ const Pos = ({
       }
     })
   }
+
+  console.log('selectedPaymentShortcut', selectedPaymentShortcut)
 
   return (
     <div className="content-inner" >
@@ -1685,15 +1695,15 @@ const Pos = ({
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>GrabFood</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GrabMart</Button> */}
 
-                  {listPaymentShortcut && listPaymentShortcut
+                  {selectedPaymentShortcut && listPaymentShortcut && listPaymentShortcut
                     .filter(filtered => filtered.groupName === 'Payment1')
                     .map((item) => {
                       return (
                         <Button
                           style={{ width: '20%' }}
                           size="large"
-                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType)}
-                          type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}
+                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)}
+                          type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {item.shortcutName}
                         </Button>
@@ -1708,15 +1718,15 @@ const Pos = ({
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Bukalapak</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>JD.id</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Blibli</Button> */}
-                  {listPaymentShortcut && listPaymentShortcut
+                  {selectedPaymentShortcut && listPaymentShortcut && listPaymentShortcut
                     .filter(filtered => filtered.groupName === 'ECommerce')
                     .map((item) => {
                       return (
                         <Button
                           style={{ width: '20%' }}
                           size="large"
-                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType)}
-                          type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}
+                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)}
+                          type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {item.shortcutName}
                         </Button>
