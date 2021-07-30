@@ -563,14 +563,14 @@ export default {
 
       if (listPaymentShortcut && listPaymentShortcut.length > 0) {
         selectedPaymentShortcut = listPaymentShortcut[0]
-
-        yield put({
-          type: 'updateState',
-          payload: {
-            selectedPaymentShortcut
-          }
-        })
       }
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          selectedPaymentShortcut
+        }
+      })
     },
 
     * setPaymentShortcut ({ payload = {} }, { put }) {

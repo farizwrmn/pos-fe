@@ -1587,8 +1587,6 @@ const Pos = ({
     })
   }
 
-  console.log('selectedPaymentShortcut', selectedPaymentShortcut)
-
   return (
     <div className="content-inner" >
       <GlobalHotKeys
