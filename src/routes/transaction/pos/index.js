@@ -5,9 +5,9 @@ import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
 import {
-  TYPE_PEMBELIAN_UMUM,
-  TYPE_PEMBELIAN_GRABFOOD,
-  TYPE_PEMBELIAN_DINEIN,
+  // TYPE_PEMBELIAN_UMUM,
+  // TYPE_PEMBELIAN_GRABFOOD,
+  // TYPE_PEMBELIAN_DINEIN,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { Reminder, DataQuery } from 'components'
@@ -112,7 +112,8 @@ const Pos = ({
     cashierInformation,
     dineInTax,
     typePembelian,
-    modalLoginType
+    modalLoginType,
+    listPaymentShortcut
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible } = promo
@@ -1679,20 +1680,48 @@ const Pos = ({
             <Row>
               <Col md={24} lg={16} >
                 <Button.Group style={{ width: '100%' }}>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away</Button>
+                  {/* <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>GrabFood</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GrabMart</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GoFood</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GrabMart</Button> */}
+
+                  {listPaymentShortcut && listPaymentShortcut
+                    .filter(filtered => filtered.groupName === 'Payment1')
+                    .map((item) => {
+                      return (
+                        <Button
+                          style={{ width: '20%' }}
+                          size="large"
+                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType)}
+                          type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}
+                        >
+                          {item.shortcutName}
+                        </Button>
+                      )
+                    })}
                 </Button.Group>
                 <br />
                 <br />
                 <Button.Group style={{ width: '100%' }}>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Tokopedia</Button>
+                  {/* <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Tokopedia</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Shopee</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Bukalapak</Button>
                   <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>JD.id</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Blibli</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Blibli</Button> */}
+                  {listPaymentShortcut && listPaymentShortcut
+                    .filter(filtered => filtered.groupName === 'ECommerce')
+                    .map((item) => {
+                      return (
+                        <Button
+                          style={{ width: '20%' }}
+                          size="large"
+                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType)}
+                          type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}
+                        >
+                          {item.shortcutName}
+                        </Button>
+                      )
+                    })}
                 </Button.Group>
               </Col>
               <Col md={24} lg={8}>

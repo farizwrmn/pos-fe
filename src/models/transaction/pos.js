@@ -557,6 +557,7 @@ export default {
 
     * setPaymentShortcut (payload, { put }) {
       const listPaymentShortcut = lstorage.getPaymentShortcut()
+      console.log('listPaymentShortcut', listPaymentShortcut)
       yield put({
         type: 'updateState',
         payload: {

@@ -83,7 +83,7 @@ const setPriceName = (priceList) => {
 }
 
 const getPaymentShortcut = () => {
-  return localStorage.getItem('payShortcut') ? JSON.parse(localStorage.getItem('disPrece')) : []
+  return localStorage.getItem('payShortcut') ? JSON.parse(localStorage.getItem('payShortcut')) : []
 }
 
 const setPaymentShortcut = (priceList) => {
