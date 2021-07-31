@@ -19,6 +19,7 @@ const Payment = ({
   paymentEdc,
   paymentCost,
   loading,
+  selectedPaymentShortcut,
   dispatch,
   pos,
   payment,
@@ -258,6 +259,7 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    selectedPaymentShortcut,
     confirmPayment,
     cancelPayment,
     loading,

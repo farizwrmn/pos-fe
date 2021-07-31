@@ -449,6 +449,7 @@ const Pos = ({
   }
 
   const modalPaymentTypeProps = {
+    selectedPaymentShortcut,
     width: '650px',
     visible: paymentModalVisible,
     footer: null,

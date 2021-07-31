@@ -93,6 +93,8 @@ export default {
           })
           yield put({ type: 'pos/setDefaultMember' })
           yield put({ type: 'pos/setDefaultEmployee' })
+
+          yield put({ type: 'pos/setDefaultPaymentShortcut' })
         }
         if (modalLoginType === 'editPayment') {
           if (modalLoginData && modalLoginData.typeCode === 'P') {

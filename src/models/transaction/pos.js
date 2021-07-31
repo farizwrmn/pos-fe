@@ -319,7 +319,7 @@ export default {
 
     * changeDineIn ({ payload }, { put }) {
       const { typePembelian } = payload
-      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       let typePrice = 'originalSellPrice'
       if (typePembelian === TYPE_PEMBELIAN_GRABFOOD) {
         typePrice = 'otherSellPrice'
@@ -327,14 +327,14 @@ export default {
       if (typePembelian === TYPE_PEMBELIAN_GRABMART) {
         typePrice = 'martSellPrice'
       }
-      if (dataPos && dataPos.length) {
-        for (let key in dataPos) {
-          const item = dataPos[key]
-          dataPos[key].sellPrice = item[typePrice] == null ? item.price : item[typePrice]
-          dataPos[key].total = dataPos[key].sellPrice * item.qty
+      if (dataConsignment && dataConsignment.length) {
+        for (let key in dataConsignment) {
+          const item = dataConsignment[key]
+          dataConsignment[key].sellPrice = item[typePrice] == null ? item.price : item[typePrice]
+          dataConsignment[key].total = dataConsignment[key].sellPrice * item.qty
         }
       }
-      localStorage.setItem('consignment', JSON.stringify(dataPos))
+      localStorage.setItem('consignment', JSON.stringify(dataConsignment))
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
