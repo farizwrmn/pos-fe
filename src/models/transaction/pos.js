@@ -329,6 +329,7 @@ export default {
         for (let key in dataPos) {
           const item = dataPos[key]
           dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.price : item[selectedPaymentShortcut.sellPrice]
+          dataPos[key].price = item[selectedPaymentShortcut.sellPrice] == null ? item.price : item[selectedPaymentShortcut.sellPrice]
           dataPos[key].total = dataPos[key].sellPrice * item.qty
         }
       }
@@ -340,6 +341,7 @@ export default {
             memberInformation.memberSellPrice = 'retailPrice'
           }
           dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+          dataPos[key].price = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
           dataPos[key].total = dataPos[key].sellPrice * item.qty
         }
       }
