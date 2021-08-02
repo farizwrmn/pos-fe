@@ -317,9 +317,29 @@ export default {
       yield put({ type: 'setCurTotal' })
     },
 
-    * changeDineIn ({ payload }, { put }) {
-      const { typePembelian } = payload
+    * changeDineIn ({ payload }, { select, put }) {
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const { typePembelian, selectedPaymentShortcut } = payload
       let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+      if (selectedPaymentShortcut
+        && selectedPaymentShortcut.sellPrice) {
+        for (let key in dataPos) {
+          const item = dataPos[key]
+          console.log('test', item[selectedPaymentShortcut.sellPrice])
+          dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.price : item[selectedPaymentShortcut.sellPrice]
+          dataPos[key].total = dataPos[key].sellPrice * item.qty
+        }
+      }
+      // eslint-disable-next-line eqeqeq
+      if (selectedPaymentShortcut && selectedPaymentShortcut.sellPrice == undefined) {
+        for (let key in dataPos) {
+          const item = dataPos[key]
+          dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+          dataPos[key].total = dataPos[key].sellPrice * item.qty
+        }
+      }
+
       let typePrice = 'originalSellPrice'
       if (typePembelian === TYPE_PEMBELIAN_GRABFOOD) {
         typePrice = 'otherSellPrice'
@@ -335,6 +355,7 @@ export default {
         }
       }
       localStorage.setItem('consignment', JSON.stringify(dataConsignment))
+      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -370,6 +391,12 @@ export default {
           bundleName: ary[n].bundleName,
           employeeId: ary[n].employeeId,
           employeeName: ary[n].employeeName,
+          retailPrice: ary[n].retailPrice,
+          distPrice01: ary[n].distPrice01,
+          distPrice02: ary[n].distPrice02,
+          distPrice03: ary[n].distPrice03,
+          distPrice04: ary[n].distPrice04,
+          distPrice05: ary[n].distPrice05,
           disc1: ary[n].disc1,
           disc2: ary[n].disc2,
           disc3: ary[n].disc3,
@@ -493,6 +520,12 @@ export default {
           disc3: ary[n].disc3,
           discount: ary[n].discount,
           name: ary[n].name,
+          retailPrice: ary[n].retailPrice,
+          distPrice01: ary[n].distPrice01,
+          distPrice02: ary[n].distPrice02,
+          distPrice03: ary[n].distPrice03,
+          distPrice04: ary[n].distPrice04,
+          distPrice05: ary[n].distPrice05,
           sellPrice: ary[n].sellPrice,
           price: ary[n].price,
           otherSellPrice: ary[n].otherSellPrice,
@@ -1534,6 +1567,12 @@ export default {
         stock: item.quantity,
         productId: item.id,
         name: item.product.product_name,
+        retailPrice: item.sellPrice,
+        distPrice01: item.distPrice01,
+        distPrice02: item.distPrice02,
+        distPrice03: item.distPrice03,
+        distPrice04: item.distPrice04,
+        distPrice05: item.distPrice05,
         qty: 1,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
@@ -1554,6 +1593,12 @@ export default {
         productId: item.id,
         name: item.product.product_name,
         qty: 1,
+        retailPrice: item.sellPrice,
+        distPrice01: item.distPrice01,
+        distPrice02: item.distPrice02,
+        distPrice03: item.distPrice03,
+        distPrice04: item.distPrice04,
+        distPrice05: item.distPrice05,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
         martSellPrice: item.price_grabmart,
@@ -1635,6 +1680,8 @@ export default {
         if (currentReward && currentReward.categoryCode && currentReward.type === 'P' && checkExists && checkExists[0]) {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
+          const selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
+          const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
           const data = {
             no: currentItem.no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
@@ -1642,38 +1689,26 @@ export default {
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            retailPrice: item.sellPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: newQty,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * newQty
+            total: selectedPrice * newQty
           }
 
-          arrayProd[currentItem.no - 1] = {
-            no: currentItem.no,
-            code: item.productCode,
-            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
-            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: newQty,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * newQty
-          }
+          arrayProd[currentItem.no - 1] = data
           yield put({
             type: 'pos/checkQuantityEditProduct',
             payload: {
@@ -1684,6 +1719,8 @@ export default {
             }
           })
         } else if ((checkExists || []).length === 0) {
+          const selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
+          const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
           const data = {
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
@@ -1691,38 +1728,26 @@ export default {
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            retailPrice: item.sellPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
+            total: selectedPrice * curQty
           }
 
-          arrayProd.push({
-            no: arrayProd.length + 1,
-            code: item.productCode,
-            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
-            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice),
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice) * curQty
-          })
+          arrayProd.push(data)
           yield put({
             type: 'pos/checkQuantityNewProduct',
             payload: {
@@ -1749,6 +1774,7 @@ export default {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + 1
           const price = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
+          const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
           const data = {
             no: currentItem.no,
             code: item.productCode,
@@ -1756,11 +1782,17 @@ export default {
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             productId: item.id,
             name: item.productName,
+            retailPrice: item.sellPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: newQty,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
+            sellPrice: showDiscountPrice,
             price,
             discount: 0,
             disc1: 0,
@@ -1769,25 +1801,7 @@ export default {
             total: price * newQty
           }
 
-          arrayProd.push({
-            no: currentItem.no,
-            code: item.productCode,
-            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
-            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
-            productId: item.id,
-            name: item.productName,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: newQty,
-            sellPrice: memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()],
-            price,
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: price * newQty
-          })
+          arrayProd.push(data)
           yield put({
             type: 'pos/checkQuantityEditProduct',
             payload: {

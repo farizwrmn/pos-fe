@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
-import {
-  // TYPE_PEMBELIAN_UMUM,
-  // TYPE_PEMBELIAN_GRABFOOD,
-  // TYPE_PEMBELIAN_DINEIN,
-  // TYPE_PEMBELIAN_GRABMART
-} from 'utils/variable'
+// import {
+//   TYPE_PEMBELIAN_UMUM,
+//   TYPE_PEMBELIAN_GRABFOOD,
+//   TYPE_PEMBELIAN_DINEIN,
+//   TYPE_PEMBELIAN_GRABMART
+// } from 'utils/variable'
 import { Reminder, DataQuery } from 'components'
 import {
   Icon,
@@ -1184,6 +1184,12 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            retailPrice: item.retailPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
             sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
@@ -1244,6 +1250,12 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            retailPrice: item.retailPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             qty,
             typeCode: 'S',
             sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
@@ -1391,6 +1403,12 @@ const Pos = ({
           bundleName: dataProductFiltered[n].bundleName,
           employeeId: dataProductFiltered[n].employeeId,
           employeeName: dataProductFiltered[n].employeeName,
+          retailPrice: dataProductFiltered[n].retailPrice,
+          distPrice01: dataProductFiltered[n].distPrice01,
+          distPrice02: dataProductFiltered[n].distPrice02,
+          distPrice03: dataProductFiltered[n].distPrice03,
+          distPrice04: dataProductFiltered[n].distPrice04,
+          distPrice05: dataProductFiltered[n].distPrice05,
           disc1: dataProductFiltered[n].disc1,
           disc2: dataProductFiltered[n].disc2,
           disc3: dataProductFiltered[n].disc3,
@@ -1413,6 +1431,12 @@ const Pos = ({
           bundleName: dataServiceFiltered[n].bundleName,
           employeeId: dataServiceFiltered[n].employeeId,
           employeeName: dataServiceFiltered[n].employeeName,
+          retailPrice: dataProductFiltered[n].retailPrice,
+          distPrice01: dataProductFiltered[n].distPrice01,
+          distPrice02: dataProductFiltered[n].distPrice02,
+          distPrice03: dataProductFiltered[n].distPrice03,
+          distPrice04: dataProductFiltered[n].distPrice04,
+          distPrice05: dataProductFiltered[n].distPrice05,
           disc1: dataServiceFiltered[n].disc1,
           disc2: dataServiceFiltered[n].disc2,
           disc3: dataServiceFiltered[n].disc3,
@@ -1531,7 +1555,8 @@ const Pos = ({
           type: 'pos/changeDineIn',
           payload: {
             dineInTax: event,
-            typePembelian: type
+            typePembelian: type,
+            selectedPaymentShortcut: item
           }
         })
 
