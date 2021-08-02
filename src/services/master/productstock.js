@@ -114,8 +114,20 @@ export async function queryPOSstock (params) {
 }
 
 export async function queryPOSproduct (params) {
+  let product = []
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
+  if (params && params.product) {
+    product = params.product.toString().split(',')
+    if (product && product.length === 1) {
+      return request({
+        url: `${fiforeport}/new-saldo-stock`,
+        method: 'get',
+        data: params,
+        headers: apiHeaderToken
+      })
+    }
+  }
   return request({
     url: `${fiforeport}/stock`,
     method: 'get',
