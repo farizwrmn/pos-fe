@@ -323,18 +323,22 @@ export default {
       let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
       if (selectedPaymentShortcut
-        && selectedPaymentShortcut.sellPrice) {
+        && selectedPaymentShortcut.sellPrice
+        // eslint-disable-next-line eqeqeq
+        && selectedPaymentShortcut.memberId == 0) {
         for (let key in dataPos) {
           const item = dataPos[key]
-          console.log('test', item[selectedPaymentShortcut.sellPrice])
           dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.price : item[selectedPaymentShortcut.sellPrice]
           dataPos[key].total = dataPos[key].sellPrice * item.qty
         }
       }
       // eslint-disable-next-line eqeqeq
-      if (selectedPaymentShortcut && selectedPaymentShortcut.sellPrice == undefined) {
+      if (selectedPaymentShortcut && selectedPaymentShortcut.memberId == 1) {
         for (let key in dataPos) {
           const item = dataPos[key]
+          if (memberInformation.memberSellPrice === 'sellPrice') {
+            memberInformation.memberSellPrice = 'retailPrice'
+          }
           dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
           dataPos[key].total = dataPos[key].sellPrice * item.qty
         }
@@ -1622,6 +1626,7 @@ export default {
     },
 
     * chooseProduct ({ payload }, { select, put }) {
+      const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const modalMember = () => {
         return new Promise((resolve) => {
           Modal.info({
@@ -1680,8 +1685,15 @@ export default {
         if (currentReward && currentReward.categoryCode && currentReward.type === 'P' && checkExists && checkExists[0]) {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
-          const selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
+          let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 1) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+          }
           const data = {
             no: currentItem.no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
@@ -1719,8 +1731,15 @@ export default {
             }
           })
         } else if ((checkExists || []).length === 0) {
-          const selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
+          let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+          }
           const data = {
             no: arrayProd.length + 1,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
