@@ -19,7 +19,6 @@ const Payment = ({
   paymentEdc,
   paymentCost,
   loading,
-  selectedPaymentShortcut,
   dispatch,
   pos,
   payment,
@@ -51,6 +50,7 @@ const Payment = ({
     curShift,
     curCashierNo,
     cashierInformation,
+    selectedPaymentShortcut,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
