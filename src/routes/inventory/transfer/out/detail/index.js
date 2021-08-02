@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, Button, Modal } from 'antd'
+import { Row, Col, Button, Modal, message } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import ModalCancel from './ModalCancel'
@@ -130,7 +130,11 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
   }
 
   const clickPrint = () => {
-    const { transNo, storeIdReceiver } = data[0]
+    const { transNo, status, storeIdReceiver } = data[0]
+    if (parseFloat(status)) {
+      message.warning('Finished invoice cannot print')
+      return
+    }
     getProducts(transNo)
     getTrans(transNo, storeIdReceiver)
     dispatch({
