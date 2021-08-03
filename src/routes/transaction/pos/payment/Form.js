@@ -291,7 +291,7 @@ class FormPayment extends React.Component {
               })(
                 <TreeSelect
                   showSearch
-                  disabled={selectedPaymentShortcut && selectedPaymentShortcut.typeCode}
+                  disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine}
                   dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   treeNodeFilterProp="title"
                   filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
