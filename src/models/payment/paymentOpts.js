@@ -12,10 +12,19 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname) || pathToRegexp('/accounts/payable/:id').exec(location.pathname) || pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
+        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname) || pathToRegexp('/accounts/payable/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryOpts'
+          })
+        }
+        const matchInvoice = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
+        if (matchInvoice) {
+          dispatch({
+            type: 'queryOpts',
+            payload: {
+              type: 'all'
+            }
           })
         }
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
