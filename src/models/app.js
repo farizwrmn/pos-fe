@@ -9,6 +9,7 @@ import { message } from 'antd'
 // import { APPNAME, couchdb } from 'utils/config.company'
 import { APPNAME } from 'utils/config.company'
 import { query as queryCustomerType } from '../services/master/customertype'
+import { query as queryPaymentShortcut } from '../services/payment/paymentShortcut'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
@@ -167,6 +168,11 @@ export default {
         const listPrice = yield call(queryCustomerType, {})
         if (listPrice && listPrice.success) {
           lstorage.setPriceName(listPrice.data)
+        }
+
+        const listPaymentShortcut = yield call(queryPaymentShortcut, { type: 'all' })
+        if (listPaymentShortcut && listPaymentShortcut.success) {
+          lstorage.setPaymentShortcut(listPaymentShortcut.data)
         }
 
         const storeInfoData = lstorage.getCurrentUserStoreDetail()

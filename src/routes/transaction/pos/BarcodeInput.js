@@ -12,7 +12,7 @@ class BarcodeInput extends Component {
     const { onEnter } = this.props
     return (
       <div>
-        <Input
+        {/* <Input
           id="input-member"
           size="medium"
           style={{ fontSize: 24, marginTop: 5, marginBottom: 8 }}
@@ -25,7 +25,7 @@ class BarcodeInput extends Component {
             onEnter(event, 'member')
             this.setState({ member: '' })
           }}
-        />
+        /> */}
         <Input
           id="input-product"
           size="medium"

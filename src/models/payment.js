@@ -133,6 +133,7 @@ export default {
           const product = getCashierTrans()
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
+          // let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
           const typePembelian = localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 0
           const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -163,7 +164,12 @@ export default {
               productName: dataPos[key].name,
               qty: dataPos[key].qty,
               typeCode: dataPos[key].typeCode,
-              sellPrice: dataPos[key].sellPrice,
+              retailPrice: dataPos[key].retailPrice,
+              distPrice01: dataPos[key].distPrice01,
+              distPrice02: dataPos[key].distPrice02,
+              distPrice03: dataPos[key].distPrice03,
+              distPrice04: dataPos[key].distPrice04,
+              distPrice05: dataPos[key].distPrice05,
               sellingPrice: dataPos[key].price,
               DPP: dpp,
               PPN: ppn,
@@ -190,6 +196,12 @@ export default {
               productId: x.productId,
               productCode: x.productCode,
               productName: x.productName,
+              retailPrice: x.retailPrice,
+              distPrice01: x.distPrice01,
+              distPrice02: x.distPrice02,
+              distPrice03: x.distPrice03,
+              distPrice04: x.distPrice04,
+              distPrice05: x.distPrice05,
               qty: x.qty,
               typeCode: x.typeCode,
               sellPrice: x.sellPrice,
@@ -255,8 +267,12 @@ export default {
                 localStorage.removeItem('workorder')
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('bundle_promo')
+                localStorage.removeItem('payShortcutSelected')
                 yield put({
                   type: 'pos/setAllNull'
+                })
+                yield put({
+                  type: 'pos/setPaymentShortcut'
                 })
                 yield put({
                   type: 'pos/setDefaultMember'

@@ -82,6 +82,22 @@ const setPriceName = (priceList) => {
   return localStorage.setItem('disPrece', JSON.stringify(priceList || '[]'))
 }
 
+const getPaymentShortcut = () => {
+  return localStorage.getItem('payShortcut') ? JSON.parse(localStorage.getItem('payShortcut')) : []
+}
+
+const setPaymentShortcut = (priceList) => {
+  return localStorage.setItem('payShortcut', JSON.stringify(priceList || '[]'))
+}
+
+const getPaymentShortcutSelected = () => {
+  return localStorage.getItem('payShortcutSelected') ? JSON.parse(localStorage.getItem('payShortcutSelected')) : []
+}
+
+const setPaymentShortcutSelected = (priceList) => {
+  return localStorage.setItem('payShortcutSelected', JSON.stringify(priceList || '{}'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -111,6 +127,8 @@ const removeItemKeys = () => {
   localStorage.removeItem('isInit')
   localStorage.removeItem('service_detail')
   localStorage.removeItem('cashier_trans')
+  localStorage.removeItem('disPrece')
+  localStorage.removeItem('payShortcut')
   localStorage.removeItem('consignment')
   localStorage.removeItem('member')
   localStorage.removeItem('mechanic')
@@ -232,5 +250,9 @@ module.exports = {
   setItem,
   getItem,
   getPriceName,
-  setPriceName
+  setPriceName,
+  getPaymentShortcut,
+  setPaymentShortcut,
+  getPaymentShortcutSelected,
+  setPaymentShortcutSelected
 }

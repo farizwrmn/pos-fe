@@ -79,14 +79,14 @@ const LovButton = ({
   handleAddMember,
   // handleAssetBrowse,
   // handleAddAsset,
-  handlePromoBrowse,
+  // handlePromoBrowse,
   handleMechanicBrowse,
   // handleQueue,
   workOrderItem
 }) => {
-  const handleCustomerView = () => {
-    window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
-  }
+  // const handleCustomerView = () => {
+  //   window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
+  // }
 
   return (
     <div>
@@ -133,14 +133,6 @@ const LovButton = ({
       >
         {mechanicInformation && mechanicInformation.employeeName ? `Employee (${mechanicInformation.employeeName})` : 'Employee'}
       </Button>
-      <Button type="primary"
-        size="large"
-        icon="tag-o"
-        className="button-width01"
-        onClick={handlePromoBrowse}
-      >
-        Bundle
-      </Button>
       {/* </ButtonGroup> */}
       {/* <Badge count={objectSize()}>
         <Button type="primary"
@@ -152,14 +144,14 @@ const LovButton = ({
           Queue
         </Button>
       </Badge> */}
-      <Button
+      {/* <Button
         type="primary"
         size="large"
         icon="user"
         onClick={() => handleCustomerView()}
       >
         Customer View
-      </Button>
+      </Button> */}
     </div >
   )
 }

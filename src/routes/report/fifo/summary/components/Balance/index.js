@@ -11,9 +11,6 @@ import Filter from './Filter'
 const Report = ({ dispatch, fifoReport, loading, app }) => {
   const { period, year, activeKey } = fifoReport
   let { listRekap } = fifoReport
-  if (activeKey === '1') {
-    listRekap = listRekap.filter(el => el.count !== 0)
-  }
   const { user, storeInfo } = app
 
   const browseProps = {

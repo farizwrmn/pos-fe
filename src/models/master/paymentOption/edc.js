@@ -55,7 +55,7 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * query ({ payload = {} }, { call, put }) {
+    * query ({ payload = {} }, { select, call, put }) {
       const { storeId, ...other } = payload
       const data = yield call(query, other)
       if (data.success) {
@@ -76,6 +76,38 @@ export default modelExtend(pageModel, {
             }
             return true
           })
+        }
+        const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
+        if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode !== 'C') {
+          if (listPayment && listPayment.length === 1) {
+            yield put({
+              type: 'paymentCost/updateState',
+              payload: {
+                listPayment: []
+              }
+            })
+            yield put({
+              type: 'paymentCost/query',
+              payload: {
+                machineId: listPayment[0].id,
+                relationship: 1
+              }
+            })
+          } else {
+            yield put({
+              type: 'paymentCost/updateState',
+              payload: {
+                listPayment: []
+              }
+            })
+            yield put({
+              type: 'paymentCost/query',
+              payload: {
+                machineId: selectedPaymentShortcut.machine,
+                relationship: 1
+              }
+            })
+          }
         }
         yield put({
           type: 'querySuccessCounter',

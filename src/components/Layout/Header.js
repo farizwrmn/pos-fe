@@ -207,6 +207,15 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
         {/* <HeaderMenu prompt="home" clickRoute="/dashboard" /> */}
         {/* <HeaderMenu prompt="setting" /> */}
         {/* <HeaderMenu prompt="calculator" /> */}
+        <HeaderMenu
+          prompt="Customer View"
+          title="Customer View"
+          icon="laptop"
+          onClick={() => {
+            window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
+          }}
+          addClass="customer"
+        />
         <HeaderMenu prompt="calendar" {...calendarPopOver} total={totalBirhtday} popContent={<Calendar {...calendarProps} />} />
         <HeaderMenu prompt="change theme"
           icon="bulb"

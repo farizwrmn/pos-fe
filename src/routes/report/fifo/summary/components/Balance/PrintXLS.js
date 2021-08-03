@@ -9,7 +9,7 @@ import { getDistPriceName } from 'utils/string'
 
 const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + (parseFloat(o.costPrice) * parseFloat(o.count)), 0)
 
   const styles = {
     merchant: {
@@ -69,9 +69,9 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: data.distPrice03, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.distPrice04, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: data.distPrice05, alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (parseFloat(data.amount) / parseFloat(data.count)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (parseFloat(data.costPrice)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.amount || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.costPrice * data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push(row)
         start += 1
       }
@@ -103,7 +103,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: getDistPriceName('distPrice03'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: getDistPriceName('distPrice04'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: getDistPriceName('distPrice05'), alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'HPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'HPP (MASTER)', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'SALDO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
       ]

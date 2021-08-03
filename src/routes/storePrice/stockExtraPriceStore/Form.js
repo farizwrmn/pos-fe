@@ -118,7 +118,9 @@ const FormCounter = ({
           sellPrice: item.sellPrice,
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02,
-          distPrice03: item.distPrice03
+          distPrice03: item.distPrice03,
+          distPrice04: item.distPrice04,
+          distPrice05: item.distPrice05
         })
       }
     }

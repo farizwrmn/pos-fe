@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
 import moment from 'moment'
-import { Table, Button, Modal, Tag } from 'antd'
+import { Table, Button, Modal, Tag, message } from 'antd'
 import PrintPDF from './PrintPDF'
 
 const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
@@ -28,7 +28,11 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   } : {}
 
   const clickPrint = (record) => {
-    const { transNo, storeIdReceiver } = record
+    const { transNo, status, storeIdReceiver } = record
+    if (parseFloat(status)) {
+      message.warning('Finished invoice cannot print')
+      return
+    }
     getProducts(transNo)
     getTrans(transNo, storeIdReceiver)
     onShowPrint()

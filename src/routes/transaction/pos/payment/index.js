@@ -50,6 +50,7 @@ const Payment = ({
     curShift,
     curCashierNo,
     cashierInformation,
+    selectedPaymentShortcut,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -258,6 +259,7 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    selectedPaymentShortcut,
     confirmPayment,
     cancelPayment,
     loading,

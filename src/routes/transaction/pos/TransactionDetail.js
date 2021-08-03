@@ -173,7 +173,7 @@ const TransactionDetail = ({
             {
               title: 'Product',
               dataIndex: 'code',
-              width: '250px',
+              width: '300px',
               render: (text, record) => {
                 return (
                   <div>
@@ -192,7 +192,7 @@ const TransactionDetail = ({
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '250px',
+              width: '100px',
               className: styles.alignRight,
               render: (text, record) => {
                 // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
@@ -235,7 +235,7 @@ const TransactionDetail = ({
             {
               title: 'Product',
               dataIndex: 'code',
-              width: '250px',
+              width: '300px',
               render: (text, record) => {
                 return (
                   <div>
@@ -254,7 +254,7 @@ const TransactionDetail = ({
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '250px',
+              width: '100px',
               className: styles.alignRight,
               render: (text, record) => {
                 const total = record.total
@@ -292,7 +292,7 @@ const TransactionDetail = ({
             {
               title: 'Product',
               dataIndex: 'code',
-              width: '250px',
+              width: '300px',
               render: (text, record) => {
                 return (
                   <div>
@@ -311,7 +311,7 @@ const TransactionDetail = ({
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '250px',
+              width: '100px',
               className: styles.alignRight,
               render: (text, record) => {
                 // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
@@ -440,7 +440,7 @@ const TransactionDetail = ({
             {
               title: 'Product',
               dataIndex: 'code',
-              width: '250px',
+              width: '300px',
               render: (text, record) => {
                 return (
                   <div>
@@ -459,7 +459,7 @@ const TransactionDetail = ({
             {
               title: 'Price',
               dataIndex: 'sellPrice',
-              width: '250px',
+              width: '100px',
               className: styles.alignRight,
               render: (text, record) => {
                 // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
