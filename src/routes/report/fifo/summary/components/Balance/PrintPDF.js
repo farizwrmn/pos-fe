@@ -27,9 +27,9 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
           { text: formatNumberIndonesia(data.distPrice01), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.distPrice02), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.distPrice03), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.amount) / parseFloat(data.count)), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.amount)), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.count), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(data.costPrice), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -40,7 +40,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
 
   // Declare Variable
   let count = listRekap.reduce((cnt, o) => cnt + parseFloat(o.count), 0)
-  let amount = listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  let amount = listRekap.reduce((cnt, o) => cnt + (parseFloat(o.costPrice) * parseFloat(o.count)), 0)
 
   const styles = {
     header: {
@@ -144,7 +144,7 @@ const PrintPDF = ({ activeKey, user, listRekap, storeInfo, period, year }) => {
       { fontSize: 12, text: getDistPriceName('distPrice01'), alignment: 'center' },
       { fontSize: 12, text: getDistPriceName('distPrice02'), alignment: 'center' },
       { fontSize: 12, text: getDistPriceName('distPrice03'), alignment: 'center' },
-      { fontSize: 12, text: 'HPP', alignment: 'center' },
+      { fontSize: 12, text: 'HPP (MASTER)', alignment: 'center' },
       { fontSize: 12, text: 'SALDO', alignment: 'center' },
       { fontSize: 12, text: 'JUMLAH', alignment: 'center' }
     ]
