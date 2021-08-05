@@ -148,7 +148,7 @@ const Payment = ({
             content: 'Your Payment method is empty'
           })
         } else {
-          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode === 'C') : []
+          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C') : []
           dispatch({
             type: 'payment/create',
             payload: {
