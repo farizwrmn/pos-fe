@@ -1146,6 +1146,7 @@ const Pos = ({
           }
         })
       }
+      const { selectedPaymentShortcut } = pos
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
@@ -1176,6 +1177,15 @@ const Pos = ({
             item.distPrice04 = item.serviceCost
             item.distPrice05 = item.serviceCost
           }
+          let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+          }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
@@ -1192,13 +1202,13 @@ const Pos = ({
             distPrice05: item.distPrice05,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
-            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * (checkExists[0].qty + qty)
+            total: selectedPrice * (checkExists[0].qty + qty)
           }
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -1236,11 +1246,24 @@ const Pos = ({
             item.distPrice01 = currentReward.distPrice01
             item.distPrice02 = currentReward.distPrice02
             item.distPrice03 = currentReward.distPrice03
+            item.distPrice04 = currentReward.distPrice04
+            item.distPrice05 = currentReward.distPrice05
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
             item.distPrice02 = item.serviceCost
             item.distPrice03 = item.serviceCost
+            item.distPrice04 = item.serviceCost
+            item.distPrice05 = item.serviceCost
+          }
+          let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           arrayProd.push({
             no: arrayProd.length + 1,
@@ -1258,13 +1281,13 @@ const Pos = ({
             distPrice05: item.distPrice05,
             qty,
             typeCode: 'S',
-            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * qty
+            total: selectedPrice * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))

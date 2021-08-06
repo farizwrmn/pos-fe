@@ -303,6 +303,7 @@ export default modelExtend(pageModel, {
     },
     * setProductPos ({ payload = {} }, { select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
@@ -327,7 +328,13 @@ export default modelExtend(pageModel, {
             let ary = currentProduct
             ary.remove(filteredProduct[0].no - 1)
             const item = currentReward[n]
-            const sellingPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice)
+            let sellingPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice)
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              sellingPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
             let data = {
               no: filteredProduct[0].no,
               code: currentReward[n].productCode,
@@ -357,7 +364,14 @@ export default modelExtend(pageModel, {
             data.total = posTotal(data)
             arrayProd[filteredProduct[0].no - 1] = data
           } else {
-            const sellingPrice = (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice)
+            let sellingPrice = (memberInformation.memberSellPrice ? currentReward[n][memberInformation.memberSellPrice.toString()] : currentReward[n].sellPrice)
+            const item = currentReward[n]
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              sellingPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
             let data = {
               no: arrayProd.length + 1,
               code: currentReward[n].productCode,

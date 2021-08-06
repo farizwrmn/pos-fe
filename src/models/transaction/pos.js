@@ -328,8 +328,8 @@ export default {
         && selectedPaymentShortcut.memberId == 0) {
         for (let key in dataPos) {
           const item = dataPos[key]
-          dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.price : item[selectedPaymentShortcut.sellPrice]
-          dataPos[key].price = item[selectedPaymentShortcut.sellPrice] == null ? item.price : item[selectedPaymentShortcut.sellPrice]
+          dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
+          dataPos[key].price = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
           dataPos[key].total = dataPos[key].sellPrice * item.qty
         }
       }
@@ -1692,8 +1692,8 @@ export default {
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 1) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
             showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           const data = {
@@ -1739,7 +1739,7 @@ export default {
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] == null ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
             showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           const data = {
