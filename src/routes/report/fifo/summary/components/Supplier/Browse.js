@@ -37,8 +37,9 @@ const Browse = ({ listStoreLov, ...browseProps }) => {
         dataIndex: item.storeCode,
         key: item.storeCode,
         render: (text, record) => {
-          const count = record.listStore.filter(filtered => filtered.storeId === item.id).reduce((prev, next) => prev + (next.countIn - next.countOut), 0)
-          return (count || '-').toLocaleString()
+          const count = record.listStore.filter(filtered => filtered.storeId === item.id).reduce((prev, next) => prev + (!next.countSales ? (next.countIn - next.countOut) : 0), 0)
+          const countSales = record.listStore.filter(filtered => filtered.storeId === item.id).reduce((prev, next) => prev + (next.countSales || 0), 0)
+          return `${(count || '-').toLocaleString()}; Sales: ${(countSales || '-').toLocaleString()}`
         }
       })))
 

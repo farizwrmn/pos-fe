@@ -4,11 +4,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Button, Select, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, Row, DatePicker, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
+import moment from 'moment'
 import PrintXLS from './PrintXLS'
 
 const { Option } = Select
+const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -65,6 +67,10 @@ const Filter = ({
         data.supplierName = data.supplierCode.label
         data.supplierId = data.supplierCode.key
       }
+      if (data && data.transDate && data.transDate.length > 0) {
+        data.from = moment(data.transDate[0]).format('YYYY-MM-DD')
+        data.to = moment(data.transDate[1]).format('YYYY-MM-DD')
+      }
       onChangePeriod(data)
     })
   }
@@ -101,6 +107,14 @@ const Filter = ({
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
           >{supplierData}
           </Select>)}
+        </FilterItem>
+        <FilterItem label="Date" >
+          {getFieldDecorator('transDate', {
+            initialValue: [moment().startOf('month'), moment().endOf('month')],
+            rules: [{
+              required: true
+            }]
+          })(<RangePicker allowClear={false} placeholder="Select Period" />)}
         </FilterItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>

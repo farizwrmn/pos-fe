@@ -457,10 +457,10 @@ export default {
               listStore: data.data.listIn
                 .filter(filtered => filtered.productId === item.id)
                 .concat(data.data.listOut.filter(filtered => filtered.productId === item.id))
+                .concat(data.data.listSales ? data.data.listSales.filter(filtered => filtered.productId === item.id) : [])
             })
           })
             .filter(filtered => filtered.listStore.length > 0)
-          console.log('newData', newData)
           yield put({
             type: 'queryProductCodeSuccess',
             payload: {
