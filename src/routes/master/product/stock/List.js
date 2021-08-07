@@ -105,6 +105,19 @@ const List = ({ ...tableProps,
         )
       }
     },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplierId',
+      key: 'supplierId',
+      render: (text, record) => {
+        return (
+          <div>
+            <div><strong>{record.supplierCode}</strong></div>
+            <div>{record.supplierName}</div>
+          </div>
+        )
+      }
+    },
 
     {
       title: 'Brand',
