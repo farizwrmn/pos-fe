@@ -68,6 +68,7 @@ const PrintXLS = ({ listRekap, listStoreLov, supplierName, storeInfo }) => {
         let row = []
         row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.supplierName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.costPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
@@ -95,6 +96,7 @@ const PrintXLS = ({ listRekap, listStoreLov, supplierName, storeInfo }) => {
     const header = ([
       { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'SUPPLIER', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'COST', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
@@ -103,6 +105,7 @@ const PrintXLS = ({ listRekap, listStoreLov, supplierName, storeInfo }) => {
     ])
     tableHeader.push(header)
     const header1 = ([
+      { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },

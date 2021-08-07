@@ -8,6 +8,11 @@ import { Table } from 'antd'
 const Browse = ({ listStoreLov, ...browseProps }) => {
   const columns = ([
     {
+      title: 'Supplier',
+      dataIndex: 'supplierName',
+      key: 'supplierName'
+    },
+    {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode'
@@ -39,7 +44,7 @@ const Browse = ({ listStoreLov, ...browseProps }) => {
         render: (text, record) => {
           const count = record.listStore.filter(filtered => filtered.storeId === item.id).reduce((prev, next) => prev + (!next.countSales ? (next.countIn - next.countOut) : 0), 0)
           const countSales = record.listStore.filter(filtered => filtered.storeId === item.id).reduce((prev, next) => prev + (next.countSales || 0), 0)
-          return `${(count || '-').toLocaleString()}; Sales: ${(countSales || '-').toLocaleString()}`
+          return `${(count || '-').toLocaleString()} / ${(countSales || '-').toLocaleString()}`
         }
       })))
 
