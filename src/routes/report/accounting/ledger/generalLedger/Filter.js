@@ -67,7 +67,7 @@ const Filter = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.supplierCode) {
+      if (data.accountCode) {
         data.accountId = data.accountCode.key
       }
       if (data.rangePicker) {

@@ -2,6 +2,11 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
+import { queryEntryList } from 'services/payment/bankentry'
+import {
+  SALESPAY,
+  SALES
+} from 'utils/variable'
 import { query, queryPaymentSplit, add, cancelPayment } from '../../../services/payment/payment'
 import { queryDetail } from '../../../services/payment'
 
@@ -16,6 +21,7 @@ export default {
   state: {
     itemCancel: {},
     data: [],
+    listAccounting: [],
     listDetail: [],
     listAmount: [],
     listAmountInvoice: [],
@@ -34,7 +40,8 @@ export default {
             payload: {
               id: decodeURIComponent(match[1]),
               transNo: decodeURIComponent(match[1]),
-              storeId: lstorage.getCurrentUserStore()
+              storeId: lstorage.getCurrentUserStore(),
+              match
             }
           })
         }
@@ -119,6 +126,25 @@ export default {
           })
         }
       }
+      let listAccounting = []
+      if (payload && payload.match && invoiceInfo && invoiceInfo.data && invoiceInfo.data[0]) {
+        const reconData = yield call(queryEntryList, {
+          transactionId: invoiceInfo.data[0].id,
+          transactionType: SALES,
+          type: 'all'
+        })
+        if (reconData && reconData.data) {
+          listAccounting = listAccounting.concat(reconData.data)
+        }
+        const reconDataPayment = yield call(queryEntryList, {
+          transactionId: dataPayment.map(item => item.id),
+          transactionType: SALESPAY,
+          type: 'all'
+        })
+        if (reconDataPayment && reconDataPayment.data) {
+          listAccounting = listAccounting.concat(reconDataPayment.data)
+        }
+      }
       if (payment && payment.invoice) {
         for (let n = 0; n < payment.invoice.length; n += 1) {
           dataPaymentInvoice.push({
@@ -153,6 +179,7 @@ export default {
           yield put({
             type: 'updateState',
             payload: {
+              listAccounting,
               listDetail: dataPos,
               listAmount: dataPayment,
               listAmountInvoice: dataPaymentInvoice
