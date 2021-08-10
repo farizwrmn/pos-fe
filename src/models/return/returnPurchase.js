@@ -293,7 +293,6 @@ export default modelExtend(pageModel, {
         initialQty: payload.item.qty,
         DPP: payload.item.costPrice
       }
-      console.log('newData', newData)
       newListItem.push(newData)
       yield put({
         type: 'updateState',
