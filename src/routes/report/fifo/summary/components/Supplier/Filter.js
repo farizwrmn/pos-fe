@@ -4,11 +4,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Button, Select, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, Row, DatePicker, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
+import moment from 'moment'
 import PrintXLS from './PrintXLS'
 
 const { Option } = Select
+const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -37,6 +39,7 @@ const Filter = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue
+    // setFieldsValue
   },
   activeKey,
   ...otherProps
@@ -59,13 +62,21 @@ const Filter = ({
         return
       }
       const data = {
-        ...getFieldsValue()
+        ...getFieldsValue(),
+        supplierId: []
       }
-      if (data.supplierCode) {
-        data.supplierName = data.supplierCode.label
-        data.supplierId = data.supplierCode.key
+      console.log('data', data)
+      if (data.supplierCode && data.supplierCode.length > 0) {
+        for (let key in data.supplierCode) {
+          const item = data.supplierCode[key]
+          data.supplierId.push(item.key)
+        }
+        if (data && data.transDate && data.transDate.length > 0) {
+          data.from = moment(data.transDate[0]).format('YYYY-MM-DD')
+          data.to = moment(data.transDate[1]).format('YYYY-MM-DD')
+        }
+        onChangePeriod(data)
       }
-      onChangePeriod(data)
     })
   }
 
@@ -81,8 +92,53 @@ const Filter = ({
     ...otherProps
   }
 
-  const supplierData = (listSupplier || []).length > 0 ? listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>) : []
+  // const handleChange = (value) => {
+  //   let selectedValue = ''
+  //   if (value && value.length > 0) {
+  //     for (let key in value) {
+  //       if (value[key].key === 'all') {
+  //         selectedValue = 'all'
+  //       }
+  //     }
+  //   }
 
+  //   console.log('value', value, selectedValue, selectedValue === 'all')
+
+  //   if (selectedValue === 'all') {
+  //     setFieldsValue({ supplierCode: null })
+  //   }
+  // }
+
+  const normalizeAll = (value, prevValue = []) => {
+    console.log('value', value)
+    let selectedValue = ''
+    let selectedPrevValue = ''
+    for (let key in value) {
+      if (value[key].key === 'all') {
+        selectedValue = 'all'
+      }
+    }
+    for (let key in prevValue) {
+      if (prevValue[key].key === 'all') {
+        selectedPrevValue = 'all'
+      }
+    }
+    if (selectedValue === 'all' && value.length > 0) {
+      return ([{ key: 'all', label: 'Select All' }])
+    }
+    if (selectedValue === 'all' && selectedPrevValue !== 'all') {
+      // return (['all']).concat(listSupplier.map(item => item.id))
+      return ([{ key: 'all', label: 'Select All' }])
+    }
+    if (selectedValue !== 'all' && selectedPrevValue === 'all') {
+      return []
+    }
+    return value
+  }
+
+  const supplierData = (listSupplier || []).length > 0 ?
+    ([<Option value="all" key="all">Select All</Option>]).concat(listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>))
+    : []
   return (
     <Row>
       <Col {...leftColumn} >
@@ -92,15 +148,29 @@ const Filter = ({
               {
                 required: true
               }
-            ]
+            ],
+            normalize: normalizeAll
           })(<Select
             showSearch
             optionFilterProp="children"
             labelInValue
+            multiple
+            allowClear
+            maxTagCount={5}
+            // onChange={handleChange}
             style={{ width: '100%' }}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-          >{supplierData}
+          >
+            {supplierData}
           </Select>)}
+        </FilterItem>
+        <FilterItem label="Date" >
+          {getFieldDecorator('transDate', {
+            initialValue: [moment().startOf('month'), moment().endOf('month')],
+            rules: [{
+              required: true
+            }]
+          })(<RangePicker allowClear={false} placeholder="Select Period" />)}
         </FilterItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>

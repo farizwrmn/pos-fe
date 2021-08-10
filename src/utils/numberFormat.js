@@ -30,6 +30,15 @@ const toColumnName = (num) => {
   return ret
 }
 
+const numberToLetters = (num) => {
+  let letters = ''
+  while (num >= 0) {
+    letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[num % 26] + letters
+    num = Math.floor(num / 26) - 1
+  }
+  return letters
+}
+
 const numberFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
     return `${currency.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
@@ -41,5 +50,6 @@ module.exports = {
   formatNumberInExcel,
   formatNumberIndonesia,
   toColumnName,
-  numberFormatter
+  numberFormatter,
+  numberToLetters
 }
