@@ -125,13 +125,15 @@ export default {
           if (reconData && reconData.data) {
             listAccounting = listAccounting.concat(reconData.data)
           }
-          const reconDataPayment = yield call(queryEntryList, {
-            transactionId: dataPayment.map(item => item.id),
-            transactionType: PPAY,
-            type: 'all'
-          })
-          if (reconDataPayment && reconDataPayment.data) {
-            listAccounting = listAccounting.concat(reconDataPayment.data)
+          if (dataPayment && dataPayment.length > 0) {
+            const reconDataPayment = yield call(queryEntryList, {
+              transactionId: dataPayment.map(item => item.id),
+              transactionType: PPAY,
+              type: 'all'
+            })
+            if (reconDataPayment && reconDataPayment.data) {
+              listAccounting = listAccounting.concat(reconDataPayment.data)
+            }
           }
         }
         if (data.success) {
