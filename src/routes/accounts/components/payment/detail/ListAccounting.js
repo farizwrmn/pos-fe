@@ -19,6 +19,12 @@ const List = ({ cancelPayment, ...tableProps }) => {
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 80
+    },
+    {
       title: 'Code',
       dataIndex: 'accountCode',
       key: 'accountCode',
