@@ -76,7 +76,8 @@ const insertCashierTrans = (dataObject) => {
 
   if (filter && filter[0]) {
     newData = previousData.map((item) => {
-      if (item.code === filter[0].code && item.bundleId === filter[0].bundleId) {
+      // eslint-disable-next-line eqeqeq
+      if (item.code == filter[0].code && item.bundleId == filter[0].bundleId) {
         item.qty += dataObject.qty
         item.sellingPrice = dataObject.price
         item.total = posTotal(item)
