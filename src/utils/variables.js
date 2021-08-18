@@ -69,7 +69,8 @@ const insertCashierTrans = (dataObject) => {
   dataObject.sellingPrice = dataObject.price
   const total = posTotal(dataObject)
 
-  const filter = previousData && previousData.filter(filtered => filtered.code === dataObject.code && filtered.bundleId === dataObject.bundleId)
+  // eslint-disable-next-line eqeqeq
+  const filter = previousData && previousData.filter(filtered => filtered.code == dataObject.code && filtered.bundleId == dataObject.bundleId)
 
   let newData = []
 
