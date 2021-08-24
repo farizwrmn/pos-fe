@@ -98,7 +98,11 @@ class ModalList extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="Description">
             {getFieldDecorator('description', {
-              initialValue: item.description
+              initialValue: item.description,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
             })(<Input />)}
           </FormItem>
         </Form>
