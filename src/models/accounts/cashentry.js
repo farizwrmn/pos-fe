@@ -79,6 +79,7 @@ export default modelExtend(pageModel, {
   effects: {
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
+      console.log('data', data)
       if (data.success && data.data) {
         const { purchase, cashEntryDetail, ...other } = data.data
         yield put({

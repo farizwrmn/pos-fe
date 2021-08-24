@@ -139,7 +139,7 @@ const FormCounter = ({
             </FormItem>
             <FormItem {...formItemLayout} label="Trans Date">
               {getFieldDecorator('transDate', {
-                initialValue: item.transDate ? moment.utc(item.transDate) : moment(),
+                initialValue: item.transDate ? moment(item.transDate) : moment(),
                 rules: [{
                   required: true,
                   message: 'Required'
