@@ -35,7 +35,7 @@ class BarcodeInput extends Component {
             this.setState({ product: event.target.value })
           }}
           style={{ fontSize: 24, marginBottom: 8 }}
-          placeholder="Product (F2)"
+          placeholder="Product (F2); ie. 2*Barcode"
           onPressEnter={(event) => {
             onEnter(event, 'barcode')
             this.setState({ product: '' })

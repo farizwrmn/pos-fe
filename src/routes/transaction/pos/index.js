@@ -1525,10 +1525,21 @@ const Pos = ({
     const { value } = e.target
     if (value && value !== '') {
       if (kodeUtil === 'barcode') {
+        let qty = 1
+        let barcode = value
+        if (value && value.includes('*') && value.split('*').length === 2) {
+          const splittedValue = value.split('*')
+          if (splittedValue[0] && splittedValue[0].length < 4) {
+            qty = parseFloat(splittedValue[0])
+            console.log('splittedValue qty', qty)
+            barcode = splittedValue[1]
+          }
+        }
         dispatch({
           type: 'pos/getProductByBarcode',
           payload: {
-            id: value,
+            id: barcode,
+            qty,
             type: 'barcode',
             day: moment().isoWeekday(),
             storeId: lstorage.getCurrentUserStore()
@@ -1646,7 +1657,15 @@ const Pos = ({
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
             <Bookmark
-              loading={loading.effects['productBookmark/query'] || loading.effects['pos/chooseProduct'] || loading.effects['pospromo/addPosPromo']}
+              loading={
+                loading.effects['productBookmark/query']
+                || loading.effects['pos/chooseProduct']
+                || loading.effects['pos/checkQuantityEditProduct']
+                || loading.effects['pos/checkQuantityNewProduct']
+                || loading.effects['pos/chooseProduct']
+                || loading.effects['pos/chooseProduct']
+                || loading.effects['pospromo/addPosPromo']
+                || loading.effects['pos/getProductByBarcode']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
               onChooseBundle={chooseBundle}
