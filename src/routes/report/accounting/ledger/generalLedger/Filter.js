@@ -97,10 +97,6 @@ const Filter = ({
   const params = location.search.substring(1)
   let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
 
-  if (!query.year && !query.period) {
-    resetFields(['rangePicker'])
-  }
-
   const printProps = {
     activeKey,
     ...otherProps
