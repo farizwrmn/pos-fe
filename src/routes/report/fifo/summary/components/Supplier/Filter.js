@@ -65,7 +65,6 @@ const Filter = ({
         ...getFieldsValue(),
         supplierId: []
       }
-      console.log('data', data)
       if (data.supplierCode && data.supplierCode.length > 0) {
         for (let key in data.supplierCode) {
           const item = data.supplierCode[key]

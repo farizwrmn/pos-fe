@@ -10,7 +10,6 @@ import { BasicInvoice } from 'components'
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
-  console.log('data', user, listItem, itemHeader, storeInfo, printNo, itemPrint)
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []

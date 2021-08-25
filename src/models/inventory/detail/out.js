@@ -161,8 +161,6 @@ export default {
       const dataDetail = []
       dataInvoice.push(invoiceInfo.mutasi)
 
-      console.log('data', data)
-
       if (invoiceInfo.mutasi) {
         for (let n = 0; n < data.mutasi.length; n += 1) {
           dataDetail.push({
