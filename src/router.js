@@ -995,7 +995,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/customergroup'))
               cb(null, require('./routes/report/accounts/payable'))
-            }, 'report-account-summary')
+            }, 'report-account-payable')
           }
         }, {
           path: 'report/cashentry',
