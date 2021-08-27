@@ -110,7 +110,6 @@ const Filter = ({
   // }
 
   const normalizeAll = (value, prevValue = []) => {
-    console.log('value', value)
     let selectedValue = ''
     let selectedPrevValue = ''
     for (let key in value) {

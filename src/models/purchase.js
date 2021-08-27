@@ -91,6 +91,16 @@ export default modelExtend(pageModel, {
             })
           }
         }
+        if (location.pathname === '/report/accounts/payable') {
+          if (location.query && location.query.activeKey === '2') {
+            dispatch({
+              type: 'querySupplier',
+              payload: {
+                type: 'all'
+              }
+            })
+          }
+        }
         if (location.pathname === '/transaction/purchase/add') {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
