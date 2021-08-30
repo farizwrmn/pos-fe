@@ -84,7 +84,7 @@ const FormAdd = ({
   // }
 
   const supplierData = (listSupplier || []).length > 0 ?
-    ([<Option value="all" key="all">Select All</Option>]).concat(listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>))
+    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
 
   return (
@@ -102,8 +102,15 @@ const FormAdd = ({
                 ]
               })(<Input disabled maxLength={20} />)}
             </FormItem>
-            <FormItem required label="Search" {...formItemLayout}>
+            <FormItem required label="Supplier" {...formItemLayout}>
               {getFieldDecorator('supplierCode', {
+                initialValue: item.supplierId ? {
+                  key: item.supplierId,
+                  value: item.supplierId
+                } : {
+                  key: listSupplier[0].id,
+                  value: listSupplier[0].supplierName
+                },
                 rules: [
                   {
                     required: true
@@ -113,8 +120,6 @@ const FormAdd = ({
                 showSearch
                 optionFilterProp="children"
                 labelInValue
-                multiple
-                allowClear
                 maxTagCount={5}
                 // onChange={handleChange}
                 style={{ width: '100%' }}
