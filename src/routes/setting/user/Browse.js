@@ -53,17 +53,27 @@ const Browse = ({
       dataIndex: 'active',
       key: 'active',
       width: 110,
-      render: text =>
-        (<span>
-          <Tag color={text ? 'blue' : 'red'}>
-            {text ? 'Active' : 'Non-Active'}
-          </Tag>
-        </span>)
+      render: text => (<span>
+        <Tag color={text ? 'blue' : 'red'}>
+          {text ? 'Active' : 'Non-Active'}
+        </Tag>
+      </span>)
     }, {
       title: 'Role',
       dataIndex: 'userRoleCode',
       key: 'userRoleCode',
-      width: 100
+      width: 100,
+      render: (text, record) => {
+        if (record && record.userRole && record.userRole[0]) {
+          return record.userRole.map((item, index) => {
+            if (index + 1 === record.userRole.length) {
+              return item.userRole
+            }
+            return `${item.userRole}, `
+          })
+        }
+        return null
+      }
     }, {
       title: 'Email',
       dataIndex: 'email',
@@ -156,7 +166,7 @@ const Browse = ({
       <Table
         {...tableProps}
         bordered
-        scroll={{ x: '1440px', y: 240 }}
+        scroll={{ x: '1440px' }}
         columns={columns}
         simple
         rowKey={record => record.userId}

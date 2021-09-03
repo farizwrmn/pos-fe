@@ -73,6 +73,7 @@ const FormComponent = ({
             })(
               <InputNumber
                 min={0}
+                disabled
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -113,6 +114,7 @@ const FormComponent = ({
             })(
               <InputNumber
                 min={0}
+                disabled
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReportCard } from 'components'
 import { currencyFormatter } from 'utils/string'
-import { name } from 'utils/config.main'
+import { rest } from 'utils/config.company'
 import { lstorage } from 'utils'
 
 const NUMBER_OF_COLUMN = 5
@@ -64,7 +64,7 @@ const PrintShelf = ({ stickers, user, aliases }) => {
               { text: moment().format('DD/MMM/YYYY'), style: 'productCode', alignment: 'right' }
             ]
           })
-          row.push({ text: name, style: 'productCode', margin: [0, 5], alignment: 'center' })
+          row.push({ text: rest.apiCompanyHost.replace('pos', 'www'), style: 'productCode', margin: [0, 5], alignment: 'center' })
           body.push(row)
         }
       }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
+import { getDistPriceName } from 'utils/string'
 import styles from '../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -43,42 +44,42 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'product.productName'
     },
     {
-      title: 'Sell Price',
+      title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 01',
+      title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 02',
+      title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 03',
+      title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 04',
+      title: getDistPriceName('distPrice04'),
       dataIndex: 'distPrice04',
       key: 'distPrice04',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Dist 05',
+      title: getDistPriceName('distPrice05'),
       dataIndex: 'distPrice05',
       key: 'distPrice05',
       className: styles.alignRight,

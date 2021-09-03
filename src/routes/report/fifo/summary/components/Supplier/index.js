@@ -41,7 +41,9 @@ const Report = ({ dispatch, store, purchase, fifoReport, loading, app }) => {
         type: 'fifoReport/queryFifoSupplierId',
         payload: {
           supplierId: data.supplierId,
-          supplierName: data.supplierName
+          supplierName: data.supplierName,
+          from: data.from,
+          to: data.to
         }
       })
     }

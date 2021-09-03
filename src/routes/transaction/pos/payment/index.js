@@ -50,6 +50,7 @@ const Payment = ({
     curShift,
     curCashierNo,
     cashierInformation,
+    selectedPaymentShortcut,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -147,6 +148,7 @@ const Payment = ({
             content: 'Your Payment method is empty'
           })
         } else {
+          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C') : []
           dispatch({
             type: 'payment/create',
             payload: {
@@ -167,7 +169,8 @@ const Payment = ({
               address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
               lastTransNo,
               lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-              paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+              // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+              paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
               totalChange,
               unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
               totalDiscount: curTotalDiscount,
@@ -258,6 +261,7 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    selectedPaymentShortcut,
     confirmPayment,
     cancelPayment,
     loading,

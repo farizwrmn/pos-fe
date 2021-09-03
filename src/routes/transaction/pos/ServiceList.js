@@ -32,6 +32,12 @@ const PaymentList = ({
     data.productId = item.productId
     data.code = item.code
     data.name = item.name
+    data.retailPrice = item.retailPrice
+    data.distPrice01 = item.distPrice01
+    data.distPrice02 = item.distPrice02
+    data.distPrice03 = item.distPrice03
+    data.distPrice04 = item.distPrice04
+    data.distPrice05 = item.distPrice05
     data.sellPrice = item.sellPrice
     data.typeCode = item.typeCode
     if (data.employee) {

@@ -12,7 +12,7 @@ class BarcodeInput extends Component {
     const { onEnter } = this.props
     return (
       <div>
-        <Input
+        {/* <Input
           id="input-member"
           size="medium"
           style={{ fontSize: 24, marginTop: 5, marginBottom: 8 }}
@@ -25,7 +25,7 @@ class BarcodeInput extends Component {
             onEnter(event, 'member')
             this.setState({ member: '' })
           }}
-        />
+        /> */}
         <Input
           id="input-product"
           size="medium"
@@ -35,7 +35,7 @@ class BarcodeInput extends Component {
             this.setState({ product: event.target.value })
           }}
           style={{ fontSize: 24, marginBottom: 8 }}
-          placeholder="Product (F2)"
+          placeholder="Product (F2); ie. 2*Barcode"
           onPressEnter={(event) => {
             onEnter(event, 'barcode')
             this.setState({ product: '' })

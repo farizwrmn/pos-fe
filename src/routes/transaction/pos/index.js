@@ -4,17 +4,17 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
-import {
-  TYPE_PEMBELIAN_UMUM,
-  TYPE_PEMBELIAN_GRABFOOD,
-  TYPE_PEMBELIAN_DINEIN,
-  TYPE_PEMBELIAN_GRABMART
-} from 'utils/variable'
+// import {
+//   TYPE_PEMBELIAN_UMUM,
+//   TYPE_PEMBELIAN_GRABFOOD,
+//   TYPE_PEMBELIAN_DINEIN,
+//   TYPE_PEMBELIAN_GRABMART
+// } from 'utils/variable'
 import { Reminder, DataQuery } from 'components'
 import {
   Icon,
   Form,
-  Input,
+  // Input,
   Row,
   Col,
   Card,
@@ -42,12 +42,12 @@ const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
 const { getCashierTrans, getBundleTrans, getConsignment } = lstorage
-const FormItem = Form.Item
+// const FormItem = Form.Item
 
-const formItemLayout1 = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 11 }
-}
+// const formItemLayout1 = {
+//   labelCol: { span: 10 },
+//   wrapperCol: { span: 11 }
+// }
 
 const keyMap = {
   MEMBER: 'ctrl+m',
@@ -111,8 +111,10 @@ const Pos = ({
     modalAddUnit,
     cashierInformation,
     dineInTax,
-    typePembelian,
-    modalLoginType
+    // typePembelian,
+    modalLoginType,
+    listPaymentShortcut,
+    selectedPaymentShortcut
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible } = promo
@@ -447,6 +449,7 @@ const Pos = ({
   }
 
   const modalPaymentTypeProps = {
+    selectedPaymentShortcut,
     width: '650px',
     visible: paymentModalVisible,
     footer: null,
@@ -542,6 +545,59 @@ const Pos = ({
           {infoCashRegister.desc}
         </span>
       </span>)
+  }
+
+  const handlePromoBrowse = () => {
+    resetSelectText()
+    if (Object.assign(mechanicInformation || {}).length !== 0) {
+      dispatch({
+        type: 'promo/query',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          modalPromoVisible: true
+        }
+      })
+    } else if (Object.assign(memberInformation || {}).length === 0) {
+      Modal.info({
+        title: 'Member Information is not found',
+        content: 'Insert Member',
+        onOk () {
+          dispatch({
+            type: 'pos/getMembers'
+          })
+
+          dispatch({
+            type: 'pos/showMemberModal',
+            payload: {
+              modalType: 'browseMember'
+            }
+          })
+        }
+      })
+    } else {
+      Modal.info({
+        title: 'Employee Information is not found',
+        content: 'Insert Employee',
+        onOk () {
+          dispatch({ type: 'pos/hideProductModal' })
+          dispatch({
+            type: 'pos/getMechanics'
+          })
+
+          dispatch({
+            type: 'pos/showMechanicModal',
+            payload: {
+              modalType: 'browseMechanic'
+            }
+          })
+        }
+      })
+    }
   }
 
   const handleServiceBrowse = () => {
@@ -1090,6 +1146,7 @@ const Pos = ({
           }
         })
       }
+      const { selectedPaymentShortcut } = pos
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
@@ -1120,6 +1177,15 @@ const Pos = ({
             item.distPrice04 = item.serviceCost
             item.distPrice05 = item.serviceCost
           }
+          let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
+          }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
@@ -1128,15 +1194,21 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            retailPrice: item.retailPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
-            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * (checkExists[0].qty + qty)
+            total: selectedPrice * (checkExists[0].qty + qty)
           }
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -1174,11 +1246,24 @@ const Pos = ({
             item.distPrice01 = currentReward.distPrice01
             item.distPrice02 = currentReward.distPrice02
             item.distPrice03 = currentReward.distPrice03
+            item.distPrice04 = currentReward.distPrice04
+            item.distPrice05 = currentReward.distPrice05
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
             item.distPrice02 = item.serviceCost
             item.distPrice03 = item.serviceCost
+            item.distPrice04 = item.serviceCost
+            item.distPrice05 = item.serviceCost
+          }
+          let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           arrayProd.push({
             no: arrayProd.length + 1,
@@ -1188,15 +1273,21 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            retailPrice: item.retailPrice,
+            distPrice01: item.distPrice01,
+            distPrice02: item.distPrice02,
+            distPrice03: item.distPrice03,
+            distPrice04: item.distPrice04,
+            distPrice05: item.distPrice05,
             qty,
             typeCode: 'S',
-            sellPrice: memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()],
-            price: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost),
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
             discount: 0,
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost) * qty
+            total: selectedPrice * qty
           })
 
           localStorage.setItem('service_detail', JSON.stringify(arrayProd))
@@ -1335,6 +1426,12 @@ const Pos = ({
           bundleName: dataProductFiltered[n].bundleName,
           employeeId: dataProductFiltered[n].employeeId,
           employeeName: dataProductFiltered[n].employeeName,
+          retailPrice: dataProductFiltered[n].retailPrice,
+          distPrice01: dataProductFiltered[n].distPrice01,
+          distPrice02: dataProductFiltered[n].distPrice02,
+          distPrice03: dataProductFiltered[n].distPrice03,
+          distPrice04: dataProductFiltered[n].distPrice04,
+          distPrice05: dataProductFiltered[n].distPrice05,
           disc1: dataProductFiltered[n].disc1,
           disc2: dataProductFiltered[n].disc2,
           disc3: dataProductFiltered[n].disc3,
@@ -1357,6 +1454,12 @@ const Pos = ({
           bundleName: dataServiceFiltered[n].bundleName,
           employeeId: dataServiceFiltered[n].employeeId,
           employeeName: dataServiceFiltered[n].employeeName,
+          retailPrice: dataProductFiltered[n].retailPrice,
+          distPrice01: dataProductFiltered[n].distPrice01,
+          distPrice02: dataProductFiltered[n].distPrice02,
+          distPrice03: dataProductFiltered[n].distPrice03,
+          distPrice04: dataProductFiltered[n].distPrice04,
+          distPrice05: dataProductFiltered[n].distPrice05,
           disc1: dataServiceFiltered[n].disc1,
           disc2: dataServiceFiltered[n].disc2,
           disc3: dataServiceFiltered[n].disc3,
@@ -1422,10 +1525,21 @@ const Pos = ({
     const { value } = e.target
     if (value && value !== '') {
       if (kodeUtil === 'barcode') {
+        let qty = 1
+        let barcode = value
+        if (value && value.includes('*') && value.split('*').length === 2) {
+          const splittedValue = value.split('*')
+          if (splittedValue[0] && splittedValue[0].length < 4) {
+            qty = parseFloat(splittedValue[0])
+            console.log('splittedValue qty', qty)
+            barcode = splittedValue[1]
+          }
+        }
         dispatch({
           type: 'pos/getProductByBarcode',
           payload: {
-            id: value,
+            id: barcode,
+            qty,
             type: 'barcode',
             day: moment().isoWeekday(),
             storeId: lstorage.getCurrentUserStore()
@@ -1463,7 +1577,7 @@ const Pos = ({
     })
   }
 
-  const handleChangeDineIn = (event, type) => {
+  const handleChangeDineIn = (event, type, item) => {
     Modal.confirm({
       title: 'Ubah Tipe Transaksi',
       content: 'Anda yakin dengan transaksi ini ?',
@@ -1475,7 +1589,8 @@ const Pos = ({
           type: 'pos/changeDineIn',
           payload: {
             dineInTax: event,
-            typePembelian: type
+            typePembelian: type,
+            selectedPaymentShortcut: item
           }
         })
 
@@ -1484,6 +1599,13 @@ const Pos = ({
           payload: {
             dineInTax: event,
             typePembelian: type
+          }
+        })
+
+        dispatch({
+          type: 'pos/setPaymentShortcut',
+          payload: {
+            item
           }
         })
       },
@@ -1535,7 +1657,15 @@ const Pos = ({
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
             <Bookmark
-              loading={loading.effects['productBookmark/query'] || loading.effects['pos/chooseProduct'] || loading.effects['pospromo/addPosPromo']}
+              loading={
+                loading.effects['productBookmark/query']
+                || loading.effects['pos/chooseProduct']
+                || loading.effects['pos/checkQuantityEditProduct']
+                || loading.effects['pos/checkQuantityNewProduct']
+                || loading.effects['pos/chooseProduct']
+                || loading.effects['pos/chooseProduct']
+                || loading.effects['pospromo/addPosPromo']
+                || loading.effects['pos/getProductByBarcode']}
               onChange={handleChangeBookmark}
               onChoose={chooseProduct}
               onChooseBundle={chooseBundle}
@@ -1545,59 +1675,60 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
-          <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+          <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
               <Row>
-                <Col lg={14} md={24}>
+                <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
                 </Col>
-                <Col lg={6} md={24}>
-                  <div
+                <Col lg={14} md={24}>
+                  <Button
+                    type="primary"
+                    size="medium"
+                    icon="barcode"
+                    onClick={handleProductBrowse}
                     style={{
-                      paddingTop: 5
+                      margin: '0px 5px',
+                      marginBottom: '5px'
                     }}
                   >
-                    <Button
-                      type="primary"
-                      size="medium"
-                      icon="barcode"
-                      onClick={handleProductBrowse}
-                      style={{
-                        margin: '0px 5px'
-                      }}
-                    >
-                      Product
-                    </Button>
-                    <Button
-                      type="default"
-                      size="medium"
-                      icon="barcode"
-                      onClick={handleConsignmentBrowse}
-                      style={{
-                        margin: '0px 5px'
-                      }}
-                    >
-                      Consignment
-                    </Button>
-                  </div>
-
-                  <div
+                    Product
+                  </Button>
+                  <Button
+                    type="default"
+                    size="medium"
+                    icon="barcode"
+                    onClick={handleConsignmentBrowse}
                     style={{
-                      paddingTop: 5
+                      margin: '0px 5px',
+                      marginBottom: '5px'
                     }}
                   >
-                    <Button type="primary"
-                      size="medium"
-                      icon="tool"
-                      onClick={handleServiceBrowse}
-                      style={{
-                        margin: '0px 5px'
-                      }}
-                    >
-                      Service
-                    </Button>
-                  </div>
+                    Consignment
+                  </Button>
+                  <Button type="primary"
+                    size="medium"
+                    icon="tool"
+                    onClick={handleServiceBrowse}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    Service
+                  </Button>
+                  <Button type="primary"
+                    size="medium"
+                    icon="tool"
+                    onClick={handlePromoBrowse}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    Bundle
+                  </Button>
                 </Col>
               </Row>
             </Form>
@@ -1623,28 +1754,58 @@ const Pos = ({
 
             <TransactionDetail pos={pos} dispatch={dispatch} />
             <Row>
-              <Col md={24} lg={12}>
-                <Button.Group>
-                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away (0%)</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Grab Food</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Grab Mart</Button>
-                  <Button size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In (+10%)</Button>
+              <Col md={24} lg={16} >
+                <Button.Group style={{ width: '100%' }}>
+                  {/* <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>GrabFood</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GrabMart</Button> */}
+
+                  {selectedPaymentShortcut && listPaymentShortcut && listPaymentShortcut
+                    .filter(filtered => filtered.groupName === 'Payment1')
+                    .map((item) => {
+                      return (
+                        <Button
+                          style={{ width: '20%' }}
+                          size="large"
+                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)}
+                          type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
+                        >
+                          {item.shortcutName}
+                        </Button>
+                      )
+                    })}
+                </Button.Group>
+                <br />
+                <br />
+                <Button.Group style={{ width: '100%' }}>
+                  {/* <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Tokopedia</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Shopee</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Bukalapak</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>JD.id</Button>
+                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Blibli</Button> */}
+                  {selectedPaymentShortcut && listPaymentShortcut && listPaymentShortcut
+                    .filter(filtered => filtered.groupName === 'ECommerce')
+                    .map((item) => {
+                      return (
+                        <Button
+                          style={{ width: '20%' }}
+                          size="large"
+                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)}
+                          type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
+                        >
+                          {item.shortcutName}
+                        </Button>
+                      )
+                    })}
                 </Button.Group>
               </Col>
-              <Col md={24} lg={12}>
+              <Col md={24} lg={8}>
                 <div style={{ textAlign: 'right' }}>
-                  <FormItem label="Total Qty" {...formItemLayout1}>
-                    <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
-                  <FormItem label="Total" {...formItemLayout1}>
-                    <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
-                  <FormItem label="Service Charge" {...formItemLayout1}>
-                    <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
-                  <FormItem label="Netto" {...formItemLayout1}>
-                    <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
-                  </FormItem>
+                  <div style={{ fontSize: '16px' }}>Total Qty: <strong>{totalQty.toLocaleString()}</strong></div>
+                  <div style={{ fontSize: '16px' }}>Total: <strong>{totalPayment.toLocaleString()}</strong></div>
+                  <div style={{ fontSize: '16px' }}>Service Charge: <strong>{dineIn.toLocaleString()}</strong></div>
+                  <div style={{ fontSize: '16px' }}>Netto: <strong>{(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()}</strong></div>
                 </div>
               </Col>
             </Row>

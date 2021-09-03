@@ -3,13 +3,13 @@ import { parse } from 'qs'
 import moment from 'moment'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
-import PouchDB from 'pouchdb'
-import PouchDBFind from 'pouchdb-find'
-import debugPouch from 'pouchdb-debug'
+// import PouchDB from 'pouchdb'
+// import PouchDBFind from 'pouchdb-find'
 import { message } from 'antd'
-import { APPNAME, couchdb } from 'utils/config.company'
-// import { APPNAME } from 'utils/config.company'
+// import { APPNAME, couchdb } from 'utils/config.company'
+import { APPNAME } from 'utils/config.company'
 import { query as queryCustomerType } from '../services/master/customertype'
+import { query as queryPaymentShortcut } from '../services/payment/paymentShortcut'
 import { query, logout, changePw } from '../services/app'
 import { query as querySetting } from '../services/setting'
 import { totp, edit } from '../services/users'
@@ -80,40 +80,40 @@ export default {
       document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
 
       document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
-      PouchDB.plugin(PouchDBFind)
-      const localDB = new PouchDB(couchdb.COUCH_NAME)
-      localDB.createIndex({
-        index: { fields: ['barCode01'] }
-      })
-      let remoteDB
-      try {
-        if (process.env.NODE_ENV !== 'production') {
-          debugPouch(remoteDB)
-          console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
-        }
-        if (couchdb && couchdb.COUCH_URL) {
-          remoteDB = new PouchDB(couchdb.COUCH_URL)
-          remoteDB.createIndex({
-            index: { fields: ['barCode01'] }
-          })
-        }
-      } catch (ex) {
-        console.log('secret.js file missing; disabling remote sync.')
-      }
-      dispatch({
-        type: 'replicateDatabase',
-        payload: {
-          localDB,
-          remoteDB
-        }
-      })
-      dispatch({
-        type: 'localDatabase',
-        payload: {
-          localDB,
-          remoteDB
-        }
-      })
+      // PouchDB.plugin(PouchDBFind)
+      // const localDB = new PouchDB(couchdb.COUCH_NAME, { auto_compaction: true })
+      // // localDB.createIndex({
+      // //   index: { fields: ['barCode01'] }
+      // // })
+      // let remoteDB
+      // try {
+      //   if (process.env.NODE_ENV !== 'production') {
+      //     // debugPouch(remoteDB)
+      //     console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
+      //   }
+      //   if (couchdb && couchdb.COUCH_URL) {
+      //     remoteDB = new PouchDB(couchdb.COUCH_URL, { auto_compaction: true })
+      //     // remoteDB.createIndex({
+      //     //   index: { fields: ['barCode01'] }
+      //     // })
+      //   }
+      // } catch (ex) {
+      //   console.log('secret.js file missing; disabling remote sync.', ex)
+      // }
+      // dispatch({
+      //   type: 'replicateDatabase',
+      //   payload: {
+      //     localDB,
+      //     remoteDB
+      //   }
+      // })
+      // dispatch({
+      //   type: 'localDatabase',
+      //   payload: {
+      //     localDB,
+      //     remoteDB
+      //   }
+      // })
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -147,7 +147,7 @@ export default {
         if ([EnumRoleType.LVL0, EnumRoleType.IT].includes(permissions.role)) {
           permissions.visit = menu.map(item => item.menuId)
         } else {
-          menu = menu.filter((item) => {
+          menu = menu && menu.filter((item) => {
             const cases = [
               permissions.visit.includes(item.menuId),
               item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
@@ -168,6 +168,11 @@ export default {
         const listPrice = yield call(queryCustomerType, {})
         if (listPrice && listPrice.success) {
           lstorage.setPriceName(listPrice.data)
+        }
+
+        const listPaymentShortcut = yield call(queryPaymentShortcut, { type: 'all' })
+        if (listPaymentShortcut && listPaymentShortcut.success) {
+          lstorage.setPaymentShortcut(listPaymentShortcut.data)
         }
 
         const storeInfoData = lstorage.getCurrentUserStoreDetail()
@@ -241,7 +246,40 @@ export default {
           retry: true
         }).on('complete', () => {
           // yay, we're done!
-          message.info("You're sync to offline mode")
+          message.info("You're synced to offline mode")
+          localDB.createIndex({
+            index: {
+              fields: ['barcode01', 'table']
+            },
+            name: 'bundleBarcode-index',
+            ddoc: 'bundleBarcode-index',
+            type: 'json'
+          })
+          localDB.createIndex({
+            index: {
+              fields: ['barCode01', 'table']
+            },
+            name: 'productBarcode-index',
+            ddoc: 'productBarcode-index',
+            type: 'json'
+          })
+          remoteDB.createIndex({
+            index: {
+              fields: ['barcode01', 'table']
+            },
+            name: 'bundleBarcode-index',
+            ddoc: 'bundleBarcode-index',
+            type: 'json'
+          })
+          remoteDB.createIndex({
+            index: {
+              fields: ['barCode01', 'table']
+            },
+            name: 'productBarcode-index',
+            ddoc: 'productBarcode-index',
+            type: 'json'
+          })
+          console.log('Complete Sync Database')
         }).on('change', () => {
           console.log('Sync Offline Database')
         }).on('error', (err) => {

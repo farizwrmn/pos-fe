@@ -34,8 +34,17 @@ export async function queryByBarcode (params) {
 
 export async function indexByBarcodeOffline ({ localDB }) {
   return localDB.createIndex({
-    index: { fields: ['barCode01', 'table'] }
+    index: {
+      fields: ['barCode01', 'table']
+    },
+    name: 'productBarcode-index',
+    ddoc: 'productBarcode-index',
+    type: 'json'
   })
+}
+
+export async function getListIndex ({ localDB }) {
+  return localDB.getIndexes()
 }
 
 export async function queryByBarcodeOffline ({ localDB, barCode01 }) {
@@ -44,13 +53,19 @@ export async function queryByBarcodeOffline ({ localDB, barCode01 }) {
       barCode01,
       table: 'tbl_stock'
     },
+    use_index: 'productBarcode-index',
     limit: 1
   })
 }
 
 export async function indexByBarcodeBundleOffline ({ localDB }) {
   return localDB.createIndex({
-    index: { fields: ['barcode01', 'table'] }
+    index: {
+      fields: ['barcode01', 'table']
+    },
+    name: 'bundleBarcode-index',
+    ddoc: 'bundleBarcode-index',
+    type: 'json'
   })
 }
 
@@ -60,6 +75,7 @@ export async function queryByBarcodeBundleOffline ({ localDB, barCode01 }) {
       barcode01: barCode01,
       table: 'tbl_bundling'
     },
+    use_index: 'bundleBarcode-index',
     limit: 1
   })
 }
@@ -70,6 +86,7 @@ export async function queryProductStock ({ localDB, q }) {
       productName: { $regex: q },
       table: 'tbl_stock'
     },
+    use_index: 'bundleBarcode-index',
     limit: 20
   })
 }
@@ -97,8 +114,20 @@ export async function queryPOSstock (params) {
 }
 
 export async function queryPOSproduct (params) {
+  let product = []
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
+  if (params && params.product) {
+    product = params.product.toString().split(',')
+    if (product && product.length === 1) {
+      return request({
+        url: `${fiforeport}/new-saldo-stock`,
+        method: 'get',
+        data: params,
+        headers: apiHeaderToken
+      })
+    }
+  }
   return request({
     url: `${fiforeport}/stock`,
     method: 'get',

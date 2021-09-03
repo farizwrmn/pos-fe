@@ -16,9 +16,6 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app, load
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   let { listRekap, tmpListRekap } = fifoReport
-  if (activeKey === '1') {
-    listRekap = listRekap.filter(el => el.count !== 0)
-  }
 
   const { user, storeInfo } = app
   const browseProps = {

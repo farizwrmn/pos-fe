@@ -40,9 +40,14 @@ export default {
           })
         }
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey && location.query.period && location.query.year) {
-          if (location.query.activeKey ? location.query.activeKey === '0' || location.query.activeKey === '1' : false) {
+          if (location.query.activeKey === '0') {
             dispatch({
               type: 'queryInAdj',
+              payload: location.query
+            })
+          } else if (location.query.activeKey === '1') {
+            dispatch({
+              type: 'queryBalance',
               payload: location.query
             })
           } else if (location.query.activeKey === '2') {
@@ -155,6 +160,66 @@ export default {
           payload: {
             tmpListRekap: data.data,
             listRekap: data.data,
+            period: payload.period,
+            year: payload.year,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 5,
+              total: data.total
+            },
+            date
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryBalance ({ payload = {} }, { call, put }) {
+      console.log('queryBalance', payload)
+      const date = payload
+      yield put({
+        type: 'setPeriod',
+        payload: date
+      })
+      yield put({
+        type: 'setNull',
+        payload: date
+      })
+      const data = yield call(queryFifo, payload)
+      if (data.success) {
+        const listRekap = data.listProduct.map((item) => {
+          const filtered = data.data.filter(filtered => filtered.id === item.id)
+          if (filtered && filtered[0]) return filtered[0]
+          return ({
+            ...item,
+            adjInPrice: 0,
+            adjInQty: 0,
+            adjOutPrice: 0,
+            adjOutQty: 0,
+            amount: item.costPrice,
+            count: 0,
+            inTransferPrice: 0,
+            inTransferQty: 0,
+            inTransitPrice: 0,
+            inTransitQty: 0,
+            period: 7,
+            posPrice: 48000,
+            posQty: 6,
+            purchasePrice: 0,
+            purchaseQty: 0,
+            transferInPrice: 48000,
+            transferInQty: 6,
+            transferOutPrice: 0,
+            transferOutQty: 0,
+            year: 2021
+          })
+        })
+        console.log('listRekap', listRekap)
+        yield put({
+          type: 'querySuccessTrans',
+          payload: {
+            tmpListRekap: listRekap,
+            listRekap,
             period: payload.period,
             year: payload.year,
             pagination: {
@@ -392,10 +457,10 @@ export default {
               listStore: data.data.listIn
                 .filter(filtered => filtered.productId === item.id)
                 .concat(data.data.listOut.filter(filtered => filtered.productId === item.id))
+                .concat(data.data.listSales ? data.data.listSales.filter(filtered => filtered.productId === item.id) : [])
             })
           })
             .filter(filtered => filtered.listStore.length > 0)
-          console.log('newData', newData)
           yield put({
             type: 'queryProductCodeSuccess',
             payload: {

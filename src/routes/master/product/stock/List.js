@@ -105,6 +105,19 @@ const List = ({ ...tableProps,
         )
       }
     },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplierId',
+      key: 'supplierId',
+      render: (text, record) => {
+        return (
+          <div>
+            <div><strong>{record.supplierCode}</strong></div>
+            <div>{record.supplierName}</div>
+          </div>
+        )
+      }
+    },
 
     {
       title: 'Brand',
@@ -234,52 +247,55 @@ const List = ({ ...tableProps,
         return (currentPrice || '-').toLocaleString()
       }
     },
-    {
-      title: 'Track Qty',
-      dataIndex: 'trackQty',
-      key: 'trackQty',
-      render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'True' : 'False'}</Tag>
-      }
-    },
-    {
-      title: 'Alert Qty',
-      dataIndex: 'alertQty',
-      key: 'alertQty',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Created',
-      children: [
-        {
-          title: 'By',
-          dataIndex: 'createdBy',
-          key: 'createdBy'
-        },
-        {
-          title: 'Time',
-          dataIndex: 'createdAt',
-          key: 'createdAt',
-          render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
-        }
-      ]
-    },
+    // {
+    //   title: 'Track Qty',
+    //   dataIndex: 'trackQty',
+    //   key: 'trackQty',
+    //   render: (text) => {
+    //     return <Tag color={text ? 'blue' : 'red'}>{text ? 'True' : 'False'}</Tag>
+    //   }
+    // },
+    // {
+    //   title: 'Alert Qty',
+    //   dataIndex: 'alertQty',
+    //   key: 'alertQty',
+    //   className: styles.alignRight,
+    //   render: text => (text || '-').toLocaleString()
+    // },
+    // {
+    //   title: 'Created',
+    //   children: [
+    //     {
+    //       title: 'By',
+    //       dataIndex: 'createdBy',
+    //       key: 'createdBy'
+    //     },
+    //     {
+    //       title: 'Time',
+    //       dataIndex: 'createdAt',
+    //       key: 'createdAt',
+    //       render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
+    //     }
+    //   ]
+    // },
     {
       title: 'Updated',
-      children: [
-        {
-          title: 'By',
-          dataIndex: 'updatedBy',
-          key: 'updatedBy'
-        },
-        {
-          title: 'Time',
-          dataIndex: 'updatedAt',
-          key: 'updatedAt',
-          render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
-        }
-      ]
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
+      // children: [
+      //   {
+      //     title: 'By',
+      //     dataIndex: 'updatedBy',
+      //     key: 'updatedBy'
+      //   },
+      //   {
+      //     title: 'Time',
+      //     dataIndex: 'updatedAt',
+      //     key: 'updatedAt',
+      //     render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
+      //   }
+      // ]
     },
     {
       title: 'Operation',
@@ -308,9 +324,9 @@ const List = ({ ...tableProps,
         bordered
         columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
           ? columns
-          : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'margin')}
+          : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'supplierId' && filtered.key !== 'margin')}
         simple
-        scroll={{ x: 2500 }}
+        scroll={{ x: 2000 }}
         rowKey={record => record.id}
       />
     </div>

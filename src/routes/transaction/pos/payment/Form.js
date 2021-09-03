@@ -49,7 +49,29 @@ const formItemLayout = {
 class FormPayment extends React.Component {
   state = {
     taxInvoiceNo: undefined,
-    taxDate: undefined
+    taxDate: undefined,
+    typeCode: undefined,
+    machine: undefined,
+    bank: undefined
+  }
+
+  componentDidMount () {
+    const {
+      selectedPaymentShortcut,
+      onGetMachine,
+      onResetMachine
+    } = this.props
+    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode !== 'C') {
+      onResetMachine()
+      onGetMachine(selectedPaymentShortcut.typeCode)
+      // onGetCost(selectedPaymentShortcut.machine)
+    }
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      typeCode: selectedPaymentShortcut.typeCode,
+      machine: selectedPaymentShortcut.machine,
+      bank: selectedPaymentShortcut.bank
+    })
   }
 
   onChangeTaxInvoiceNo (e) {
@@ -94,11 +116,13 @@ class FormPayment extends React.Component {
         getFieldValue,
         resetFields,
         setFieldsValue
-      }
+      },
+      selectedPaymentShortcut
     } = this.props
     const {
       taxInvoiceNo,
-      taxDate
+      taxDate,
+      typeCode
     } = this.state
 
     const handleSubmit = () => {
@@ -252,14 +276,13 @@ class FormPayment extends React.Component {
       })
     }
 
-
     return (
       <Form layout="horizontal">
         <Row>
           <Col md={12} sm={24}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('typeCode', {
-                initialValue: item.typeCode ? item.typeCode : 'C',
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? typeCode : (item.typeCode ? item.typeCode : 'C'),
                 rules: [
                   {
                     required: true
@@ -268,6 +291,7 @@ class FormPayment extends React.Component {
               })(
                 <TreeSelect
                   showSearch
+                  disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine}
                   dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   treeNodeFilterProp="title"
                   filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
@@ -313,15 +337,17 @@ class FormPayment extends React.Component {
             {getFieldValue('typeCode') !== 'C' && listEdc && (
               <FormItem label="EDC" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('machine', {
-                  initialValue: item.machine,
+                  initialValue: selectedPaymentShortcut && selectedPaymentShortcut.machine ? (
+                    listEdc && listEdc.length === 1 ? listEdc[0].id : parseFloat(selectedPaymentShortcut.machine)
+                  ) : item.machine,
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C'
                     }
                   ]
                 })(
-                  <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                    {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
+                  <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                    {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
                   </Select>
                 )}
               </FormItem>
@@ -329,15 +355,17 @@ class FormPayment extends React.Component {
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('bank', {
-                  initialValue: item.bank,
+                  initialValue: selectedPaymentShortcut && selectedPaymentShortcut.bank ? (
+                    listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
+                  ) : item.bank,
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C'
                     }
                   ]
                 })(
-                  <Select style={{ width: '100%' }} min={0} maxLength={10}>
-                    {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                  <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.bank} style={{ width: '100%' }} min={0} maxLength={10}>
+                    {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
                   </Select>
                 )}
               </FormItem>
@@ -351,7 +379,9 @@ class FormPayment extends React.Component {
               {...formItemLayout}
             >
               {getFieldDecorator('printDate', {
-                initialValue: item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss') : null,
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.bank ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
+                  item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss')
+                    : null),
                 rules: [
                   {
                     required: getFieldValue('typeCode') !== 'C',
