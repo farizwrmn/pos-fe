@@ -64,6 +64,16 @@ export async function queryBankRecon (params) {
   })
 }
 
+export async function queryEntryList (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/accounting/ledger-entry',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function updateBankRecon (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -135,7 +135,7 @@ const groupByType = (
   }
 }
 
-const PrintXLS = ({ listTrans, listProfit, listRekap, storeInfo, fromDate, toDate }) => {
+const PrintXLS = ({ listTrans, listProfit, storeInfo, fromDate, toDate }) => {
   const title = [
     { value: 'LAPORAN NERACA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
@@ -168,8 +168,8 @@ const PrintXLS = ({ listTrans, listProfit, listRekap, storeInfo, fromDate, toDat
     LTLY: [],
 
     EQTY: [],
-    ...groubedByTeam,
-    INTR: []
+    INTR: [],
+    ...groubedByTeam
   }
 
   const groubedByTeamProfit = groupBy(listProfit, 'accountType')
@@ -227,7 +227,7 @@ const PrintXLS = ({ listTrans, listProfit, listRekap, storeInfo, fromDate, toDat
       {
         accountCode: 'SYSTEM',
         accountId: 31,
-        accountName: 'Laba Rugi',
+        accountName: 'Laba Ditahan',
         accountParentId: null,
         accountType: 'APAY',
         createdBy: 'SYSTEM',
@@ -238,21 +238,21 @@ const PrintXLS = ({ listTrans, listProfit, listRekap, storeInfo, fromDate, toDat
       }
     ]
 
-    const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
-    group.INTR = [
-      {
-        accountCode: 'SYSTEM',
-        accountId: 31,
-        accountName: 'Persediaan Barang Dagang',
-        accountParentId: null,
-        accountType: 'INTR',
-        createdBy: 'SYSTEM',
-        credit: 0,
-        debit: -1 * totalPersediaan,
-        entryType: 'D',
-        transactionType: 'INTR'
-      }
-    ]
+    // const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
+    // group.INTR = [
+    //   {
+    //     accountCode: 'SYSTEM',
+    //     accountId: 31,
+    //     accountName: 'Persediaan Barang Dagang',
+    //     accountParentId: null,
+    //     accountType: 'INTR',
+    //     createdBy: 'SYSTEM',
+    //     credit: 0,
+    //     debit: -1 * totalPersediaan,
+    //     entryType: 'D',
+    //     transactionType: 'INTR'
+    //   }
+    // ]
 
     // Start - REVE
     const { data: groupREVEBody } = createTableBody(
@@ -354,8 +354,8 @@ const PrintXLS = ({ listTrans, listProfit, listRekap, storeInfo, fromDate, toDat
             {
               type: 'PRFT',
               level: 1,
-              bodyTitle: 'Laba Rugi',
-              totalTitle: 'Jumlah Laba Rugi'
+              bodyTitle: 'Laba Ditahan',
+              totalTitle: 'Jumlah Laba'
             }
           ]
         }

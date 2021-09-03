@@ -94,7 +94,7 @@ const createTableBodyProfit = (tabledata, {
   return { total, groupBody }
 }
 
-const PrintPDF = ({ user, listTrans, listProfit, listRekap, storeInfo, from, to }) => {
+const PrintPDF = ({ user, listTrans, listProfit, storeInfo, from, to }) => {
   // Declare Variable
   const styles = {
     header: {
@@ -225,8 +225,8 @@ const PrintPDF = ({ user, listTrans, listProfit, listRekap, storeInfo, from, to 
 
     EQTY: [],
     PRFT: [],
-    ...groubedByTeam,
-    INTR: []
+    INTR: [],
+    ...groubedByTeam
   }
   const groubedByTeamProfit = groupBy(listProfit, 'accountType')
 
@@ -277,7 +277,7 @@ const PrintPDF = ({ user, listTrans, listProfit, listRekap, storeInfo, from, to 
       {
         accountCode: 'SYSTEM',
         accountId: 31,
-        accountName: 'Laba Rugi',
+        accountName: 'Laba Ditahan',
         accountParentId: null,
         accountType: 'APAY',
         createdBy: 'SYSTEM',
@@ -288,21 +288,21 @@ const PrintPDF = ({ user, listTrans, listProfit, listRekap, storeInfo, from, to 
       }
     ]
 
-    const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
-    group.INTR = [
-      {
-        accountCode: 'SYSTEM',
-        accountId: 31,
-        accountName: 'Persediaan Barang Dagang',
-        accountParentId: null,
-        accountType: 'INTR',
-        createdBy: 'SYSTEM',
-        credit: 0,
-        debit: -1 * totalPersediaan,
-        entryType: 'D',
-        transactionType: 'INTR'
-      }
-    ]
+    // const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
+    // group.INTR = [
+    //   {
+    //     accountCode: 'SYSTEM',
+    //     accountId: 31,
+    //     accountName: 'Persediaan Barang Dagang',
+    //     accountParentId: null,
+    //     accountType: 'INTR',
+    //     createdBy: 'SYSTEM',
+    //     credit: 0,
+    //     debit: -1 * totalPersediaan,
+    //     entryType: 'D',
+    //     transactionType: 'INTR'
+    //   }
+    // ]
 
     const { data: groupBANKBody } = createTableBody(
       group,
@@ -403,8 +403,8 @@ const PrintPDF = ({ user, listTrans, listProfit, listRekap, storeInfo, from, to 
             {
               type: 'PRFT',
               level: 1,
-              bodyTitle: 'Laba Rugi',
-              totalTitle: 'Jumlah Laba Rugi'
+              bodyTitle: 'Laba Ditahan',
+              totalTitle: 'Jumlah Laba'
             }
           ]
         }

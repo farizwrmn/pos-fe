@@ -634,7 +634,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
-              cb(null, require('./routes/report/accounting/ledger/generalLedger/'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/report/accounting/ledger/generalLedger'))
             }, 'report-accounting-general-ledger')
           }
         }, {
@@ -642,8 +643,9 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
-              cb(null, require('./routes/report/accounting/ledger/generalLedger/'))
-            }, 'report-accounting-general-ledger')
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/report/accounting/ledger/generalLedger'))
+            }, 'report-accounting-general-ledger-consolidation')
           }
         }, {
           path: 'report/accounting/consolidation/trial-balance',
@@ -989,11 +991,12 @@ const Routers = function ({ history, app }) {
           path: 'report/accounts/payable',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/report/accounts'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/customergroup'))
               cb(null, require('./routes/report/accounts/payable'))
-            }, 'report-account-summary')
+            }, 'report-account-payable')
           }
         }, {
           path: 'report/cashentry',

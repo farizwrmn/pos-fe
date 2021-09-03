@@ -63,6 +63,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') {
             dispatch({ type: 'query', payload })
           } else {
+            dispatch({ type: 'updateState', payload: { listItem: [] } })
             dispatch({ type: 'querySequence' })
           }
         }

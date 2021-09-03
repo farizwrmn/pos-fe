@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Switch, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Switch, Select, Button, Row, Col, Modal } from 'antd'
 // import { lstorage } from 'utils'
 import ListItem from './ListItem'
 // import ModalConfirm from './ModalConfirm'
 
 const FormItem = Form.Item
 const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -26,6 +27,7 @@ const col = {
 
 const FormAdd = ({
   item = {},
+  listSupplier,
   onSubmit,
   button,
   loadingButton,
@@ -54,7 +56,8 @@ const FormAdd = ({
         ...item,
         ...getFieldsValue(),
         referenceNo: getFieldValue('requireInvoice') ? getFieldValue('referenceNo') : null,
-        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null
+        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null,
+        supplierId: getFieldsValue('supplierCode') ? getFieldsValue('supplierCode').key : null
       }
       Modal.confirm({
         title: 'Save this transaction',
@@ -80,6 +83,10 @@ const FormAdd = ({
   //   ...formConfirmProps
   // }
 
+  const supplierData = (listSupplier || []).length > 0 ?
+    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
+    : []
+
   return (
     <div>
       <Form layout="horizontal">
@@ -94,6 +101,32 @@ const FormAdd = ({
                   }
                 ]
               })(<Input disabled maxLength={20} />)}
+            </FormItem>
+            <FormItem required label="Supplier" {...formItemLayout}>
+              {getFieldDecorator('supplierCode', {
+                initialValue: item.supplierId ? {
+                  key: item.supplierId,
+                  value: item.supplierId
+                } : {
+                  key: listSupplier[0].id,
+                  value: listSupplier[0].supplierName
+                },
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                optionFilterProp="children"
+                labelInValue
+                maxTagCount={5}
+                // onChange={handleChange}
+                style={{ width: '100%' }}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >
+                {supplierData}
+              </Select>)}
             </FormItem>
             <FormItem label="Required Invoice" hasFeedback {...formItemLayout}>
               {getFieldDecorator('requireInvoice', {

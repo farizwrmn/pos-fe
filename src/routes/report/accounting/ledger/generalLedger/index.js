@@ -5,11 +5,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import moment from 'moment'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, generalLedger, app, loading }) => {
+const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
   const { period, year, activeKey, listProduct } = generalLedger
+  const { listAccountCode } = accountCode
   let { listRekap } = generalLedger
   if (activeKey === '1') {
     listRekap = listRekap.filter(el => el.count !== 0)
@@ -23,6 +25,7 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
   }
 
   const filterProps = {
+    listAccountCode,
     activeKey,
     // productCode,
     // productName,
@@ -54,20 +57,21 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
         }
       })
     },
-    onChangePeriod (month, yearPeriod) {
+    onChangePeriod (data) {
       dispatch({
-        type: 'setPeriod',
+        type: 'generalLedger/setPeriod',
         payload: {
-          month,
-          yearPeriod
+          accountId: data.accountId,
+          from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
+          to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
         }
       })
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
-          period: month,
-          year: yearPeriod,
-          activeKey
+          accountId: data.accountId,
+          from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
+          to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
         }
       }))
     },
@@ -91,8 +95,9 @@ Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object.isRequired,
   generalLedger: PropTypes.object.isRequired,
+  accountCode: PropTypes.object,
   productcategory: PropTypes.object.isRequired,
   productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ generalLedger, productcategory, productbrand, app, loading }) => ({ generalLedger, productcategory, productbrand, app, loading }))(Report)
+export default connect(({ generalLedger, accountCode, productcategory, productbrand, app, loading }) => ({ generalLedger, accountCode, productcategory, productbrand, app, loading }))(Report)

@@ -33,12 +33,12 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/accounting/balance-sheet' && location.query.to) {
-          dispatch({
-            type: 'queryFifoValuesAll',
-            payload: location.query
-          })
-        }
+        // if (location.pathname === '/report/accounting/balance-sheet' && location.query.to) {
+        //   dispatch({
+        //     type: 'queryFifoValuesAll',
+        //     payload: location.query
+        //   })
+        // }
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey && location.query.period && location.query.year) {
           if (location.query.activeKey === '0') {
             dispatch({
@@ -389,7 +389,6 @@ export default {
         console.log('error', e)
       }
       if (data.success) {
-        console.log('data.data', data.data)
         if (data.data.length > 0) {
           yield put({
             type: 'querySuccessTrans',

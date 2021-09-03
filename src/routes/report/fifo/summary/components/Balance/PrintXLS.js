@@ -63,8 +63,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (parseFloat(data.costPrice)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.count || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (parseFloat(data.costPrice)), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push(row)
         start += 1
       }
