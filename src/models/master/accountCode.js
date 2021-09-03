@@ -48,6 +48,16 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/report/accounting/general-ledger'
+          || pathname === '/report/accounting/consolidation/general-ledger') {
+          dispatch({
+            type: 'query',
+            payload: {
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'

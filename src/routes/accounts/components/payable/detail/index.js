@@ -12,6 +12,7 @@ import { DataAdd } from 'components'
 import ModalPayment from './Modal'
 import ModalCancel from './ModalCancel'
 import FormPayment from './FormPayment'
+import FormAccounting from './FormAccounting'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
@@ -25,7 +26,7 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
   const {
     listPayment: listCost
   } = paymentCost
-  const { listDetail, visibleTooltip, valueNumber, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = payableDetail
+  const { listDetail, listAccounting, visibleTooltip, valueNumber, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = payableDetail
   const { listOpts } = paymentOpts
   const { listSupplierBank, modalAddBankVisible } = supplierBank
   const { listBank } = bank
@@ -178,6 +179,7 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
 
   const formProps = {
     data,
+    listAccounting,
     listAmount,
     openModal () {
       dispatch({
@@ -253,6 +255,12 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
           </Tag> */}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <FormPayment {...formProps} />
+          </Row>
+        </div>
+        <div className="content-inner-zero-min-height">
+          <h1>Accounting Journal</h1>
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <FormAccounting {...formProps} />
           </Row>
         </div>
       </Col>

@@ -3,6 +3,10 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
+import { queryEntryList } from 'services/payment/bankentry'
+import {
+  JOURNALENTRY
+} from 'utils/variable'
 import { queryById, query, queryId, add, edit, remove } from 'services/payment/journalentry'
 import { pageModel } from 'common'
 import pathToRegexp from 'path-to-regexp'
@@ -17,6 +21,7 @@ export default modelExtend(pageModel, {
   state: {
     data: {},
     listDetail: [],
+    listAccounting: [],
     currentItem: {},
     currentItemList: {},
     modalType: 'add',
@@ -44,7 +49,8 @@ export default modelExtend(pageModel, {
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1]),
-              storeId: lstorage.getCurrentUserStore()
+              storeId: lstorage.getCurrentUserStore(),
+              match
             }
           })
         }
@@ -79,11 +85,23 @@ export default modelExtend(pageModel, {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
         const { purchase, journalEntryDetail, ...other } = data.data
+        let listAccounting = []
+        if (payload && payload.match && other && other.id) {
+          const reconData = yield call(queryEntryList, {
+            transactionId: other.id,
+            transactionType: JOURNALENTRY,
+            type: 'all'
+          })
+          if (reconData && reconData.data) {
+            listAccounting = listAccounting.concat(reconData.data)
+          }
+        }
         yield put({
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: journalEntryDetail
+            listDetail: journalEntryDetail,
+            listAccounting
           }
         })
       } else {

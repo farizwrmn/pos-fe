@@ -39,7 +39,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     // sort,
     // showPrintModal
   } = returnPurchase
-  // const { modalProductVisible, listProductData, searchText } = purchase
+  const { listSupplier } = purchase
   const { user, storeInfo } = app
   // const filterProps = {
   //   display,
@@ -290,6 +290,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
 
   const formProps = {
     listProps,
+    listSupplier,
     formConfirmProps,
     modalConfirmVisible,
     listTrans: listReturnPurchase,

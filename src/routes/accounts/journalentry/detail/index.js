@@ -9,11 +9,12 @@ import {
   Button
 } from 'antd'
 import TransDetail from './TransDetail'
+import FormAccounting from './FormAccounting'
 import styles from './index.less'
 
 
 const Detail = ({ journalentry, dispatch }) => {
-  const { listDetail, data } = journalentry
+  const { listDetail, listAccounting, data } = journalentry
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -52,6 +53,12 @@ const Detail = ({ journalentry, dispatch }) => {
           <h1>Items</h1>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
+          </Row>
+        </div>
+        <div className="content-inner-zero-min-height">
+          <h1>Accounting Journal</h1>
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <FormAccounting listAccounting={listAccounting} />
           </Row>
         </div>
       </Col>

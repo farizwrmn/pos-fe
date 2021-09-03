@@ -6,11 +6,12 @@ import { Row, Col, Tag, Button } from 'antd'
 import ModalPayment from './Modal'
 import ModalCancel from './ModalCancel'
 import FormPayment from './FormPayment'
+import FormAccounting from './FormAccounting'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
 const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
-  const { listDetail, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
+  const { listDetail, listAccounting, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
   const {
     listPayment: listEdc
   } = paymentEdc
@@ -128,6 +129,7 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
 
   const formProps = {
     data,
+    listAccounting,
     listAmount,
     cashierInformation,
     openModal (e) {
@@ -180,6 +182,12 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
           </Tag>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <FormPayment {...formProps} />
+          </Row>
+        </div>
+        <div className="content-inner-zero-min-height">
+          <h1>Accounting Journal</h1>
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <FormAccounting {...formProps} />
           </Row>
         </div>
       </Col>

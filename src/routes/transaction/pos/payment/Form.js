@@ -230,7 +230,7 @@ class FormPayment extends React.Component {
     const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
     const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
     const dineIn = curNetto * (dineInTax / 100)
-    const curChange = curPayment - curNetto > 0 ? curPayment - (curNetto + dineIn) : 0
+    const curChange = (curPayment + curCharge) - (curNetto + dineIn) > 0 ? (curPayment + curCharge) - (curNetto + dineIn) : 0
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
 
