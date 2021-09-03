@@ -1286,10 +1286,11 @@ export default {
       const totalCashier = Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       const totalQueue = Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       const Quantity = Cashier.concat(Queue)
-      const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      let totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       // Call Products
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
+      let arrayProd = getCashierTrans()
       const listProduct = listProductData.data
       let tempListProduct = []
       function getSetting (setting) {
@@ -1314,6 +1315,13 @@ export default {
         return true
       }
       const outOfStock = getSetting(payload.setting)
+      const current = arrayProd.reduce((prev, next) => {
+        if (next.code === data.code) {
+          return prev + next.qty
+        }
+        return prev
+      }, 0)
+      totalQty += current
       if (listProductData.data.length > 0) {
         tempListProduct = listProduct.filter(el => el.productId === data.productId)
         const totalTempListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
@@ -1666,6 +1674,9 @@ export default {
 
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       let qty = 1
+      if (payload && payload.qty) {
+        qty = payload.qty
+      }
       if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
         item.sellPrice = currentReward.sellPrice
         item.distPrice01 = currentReward.distPrice01
@@ -1680,9 +1691,8 @@ export default {
       const curQty = yield select(({ pos }) => pos.curQty)
       const setting = yield select(({ app }) => app.setting)
       if (!!(memberInformation && memberInformation.id) && !!(mechanicInformation && mechanicInformation.employeeId)) {
-        let listByCode = getCashierTrans()
-        let arrayProd = listByCode
-        const checkExists = listByCode.filter(el => el.code === item.productCode)
+        let arrayProd = getCashierTrans()
+        const checkExists = arrayProd.filter(el => el.code === item.productCode)
         if (currentReward && currentReward.categoryCode && currentReward.type === 'P' && checkExists && checkExists[0]) {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
@@ -1731,7 +1741,9 @@ export default {
               type: payload.type
             }
           })
-        } else if ((checkExists || []).length === 0) {
+        } else if (
+          ((checkExists || []).length === 0)
+          || ((checkExists || []).length > 0 && type === 'barcode')) {
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           let showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
@@ -1790,51 +1802,51 @@ export default {
             title: 'Exists in bundle',
             content: 'This product exists in bundle'
           })
-        } else if ((checkExists || []).length > 0 && type === 'barcode') {
-          const currentItem = checkExists[0]
-          const newQty = currentItem.qty + 1
-          const price = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
-          const data = {
-            no: currentItem.no,
-            code: item.productCode,
-            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
-            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
-            productId: item.id,
-            name: item.productName,
-            retailPrice: item.sellPrice,
-            distPrice01: item.distPrice01,
-            distPrice02: item.distPrice02,
-            distPrice03: item.distPrice03,
-            distPrice04: item.distPrice04,
-            distPrice05: item.distPrice05,
-            employeeId: mechanicInformation.employeeId,
-            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-            typeCode: 'P',
-            qty: newQty,
-            sellPrice: showDiscountPrice,
-            price,
-            discount: 0,
-            disc1: 0,
-            disc2: 0,
-            disc3: 0,
-            total: price * newQty
-          }
-
-          arrayProd.push(data)
-          yield put({
-            type: 'pos/checkQuantityEditProduct',
-            payload: {
-              data,
-              setting
-            }
-          })
         } else {
           Modal.warning({
             title: 'Already Exists',
             content: 'Already Exists in list'
           })
         }
+        //   const currentItem = checkExists[0]
+        //   const newQty = currentItem.qty + 1
+        //   const price = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
+        //   const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
+        //   const data = {
+        //     no: currentItem.no,
+        //     code: item.productCode,
+        //     bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+        //     bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+        //     productId: item.id,
+        //     name: item.productName,
+        //     retailPrice: item.sellPrice,
+        //     distPrice01: item.distPrice01,
+        //     distPrice02: item.distPrice02,
+        //     distPrice03: item.distPrice03,
+        //     distPrice04: item.distPrice04,
+        //     distPrice05: item.distPrice05,
+        //     employeeId: mechanicInformation.employeeId,
+        //     employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+        //     typeCode: 'P',
+        //     qty: newQty,
+        //     sellPrice: showDiscountPrice,
+        //     price,
+        //     discount: 0,
+        //     disc1: 0,
+        //     disc2: 0,
+        //     disc3: 0,
+        //     total: price * newQty
+        //   }
+
+        //   arrayProd.push(data)
+        //   yield put({
+        //     type: 'pos/checkQuantityEditProduct',
+        //     payload: {
+        //       data,
+        //       setting
+        //     }
+        //   })
+        // }
       } else if (!(memberInformation && memberInformation.id)) {
         yield modalMember()
         yield put({ type: 'pos/hideProductModal' })
@@ -1950,6 +1962,7 @@ export default {
             type: 'pos/chooseProduct',
             payload: {
               item: response.data,
+              qty: payload.qty,
               type: payload.type
             }
           })

@@ -69,13 +69,15 @@ const insertCashierTrans = (dataObject) => {
   dataObject.sellingPrice = dataObject.price
   const total = posTotal(dataObject)
 
-  const filter = previousData && previousData.filter(filtered => filtered.code === dataObject.code && filtered.bundleId === dataObject.bundleId)
+  // eslint-disable-next-line eqeqeq
+  const filter = previousData && previousData.filter(filtered => filtered.code == dataObject.code && filtered.bundleId == dataObject.bundleId)
 
   let newData = []
 
   if (filter && filter[0]) {
     newData = previousData.map((item) => {
-      if (item.code === filter[0].code && item.bundleId === filter[0].bundleId) {
+      // eslint-disable-next-line eqeqeq
+      if (item.code == filter[0].code && item.bundleId == filter[0].bundleId) {
         item.qty += dataObject.qty
         item.sellingPrice = dataObject.price
         item.total = posTotal(item)

@@ -77,7 +77,7 @@ const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, on
     if (next.Out > 0) {
       return prev + (parseFloat(next.price) * parseFloat(next.Out) || 0)
     }
-    return 0
+    return prev + 0
   }, 0)
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const listAccountOpt = (listAccountCode || []).length > 0
