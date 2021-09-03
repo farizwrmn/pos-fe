@@ -389,7 +389,6 @@ export default {
         console.log('error', e)
       }
       if (data.success) {
-        console.log('data.data', data.data)
         if (data.data.length > 0) {
           yield put({
             type: 'querySuccessTrans',

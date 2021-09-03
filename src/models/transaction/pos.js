@@ -1128,7 +1128,6 @@ export default {
             tmpProductList: data
           }
         })
-        console.log('data', data)
         yield put({
           type: 'updateState',
           payload: {
