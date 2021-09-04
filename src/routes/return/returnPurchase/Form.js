@@ -56,9 +56,9 @@ const FormAdd = ({
         ...item,
         ...getFieldsValue(),
         referenceNo: getFieldValue('requireInvoice') ? getFieldValue('referenceNo') : null,
-        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null,
-        supplierId: getFieldsValue('supplierCode') ? getFieldsValue('supplierCode').key : null
+        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null
       }
+      data.supplierId = data.supplierCode.key
       Modal.confirm({
         title: 'Save this transaction',
         content: 'Are you sure?',
@@ -107,10 +107,10 @@ const FormAdd = ({
                 initialValue: item.supplierId ? {
                   key: item.supplierId,
                   value: item.supplierId
-                } : {
+                } : listSupplier && listSupplier[0] ? {
                   key: listSupplier[0].id,
                   value: listSupplier[0].supplierName
-                },
+                } : undefined,
                 rules: [
                   {
                     required: true
