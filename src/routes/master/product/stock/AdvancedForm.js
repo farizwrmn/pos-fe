@@ -554,6 +554,8 @@ const AdvancedForm = ({
     }
   ]
 
+  console.log('props', props)
+
   return (
     <Form layout="horizontal">
       <FooterToolbar>
@@ -885,22 +887,22 @@ const AdvancedForm = ({
               <Col {...column}>
                 <FormItem label="Image" {...formItemLayout}>
                   {getFieldDecorator('productImage', {
+                    valuePropName: 'fileList',
                     initialValue: item.productImage
                       && item.productImage != null
+                      && item.productImage !== '["no_image.png"]'
                       && item.productImage !== '"no_image.png"'
                       && item.productImage !== 'no_image.png' ?
-                      {
-                        fileList: JSON.parse(item.productImage).map((detail, index) => {
-                          return ({
-                            uid: index + 1,
-                            name: detail,
-                            status: 'done',
-                            url: `${IMAGEURL}/${detail}`,
-                            thumbUrl: `${IMAGEURL}/${detail}`
-                          })
+                      JSON.parse(item.productImage).map((detail, index) => {
+                        return ({
+                          uid: index + 1,
+                          name: detail,
+                          status: 'done',
+                          url: `${IMAGEURL}/${detail}`,
+                          thumbUrl: `${IMAGEURL}/${detail}`
                         })
-                      }
-                      : item.productImage
+                      })
+                      : []
                   })(
                     <Upload
                       {...props}
@@ -909,22 +911,6 @@ const AdvancedForm = ({
                         showPreviewIcon: true
                       }}
                       listType="picture"
-                      defaultFileList={
-                        item.productImage
-                          && item.productImage != null
-                          && item.productImage !== '"no_image.png"'
-                          && item.productImage !== 'no_image.png' ?
-                          JSON.parse(item.productImage).map((detail, index) => {
-                            return ({
-                              uid: index + 1,
-                              name: detail,
-                              status: 'done',
-                              url: `${IMAGEURL}/${detail}`,
-                              thumbUrl: `${IMAGEURL}/${detail}`
-                            })
-                          })
-                          : []
-                      }
                       action={`${apiCompanyURL}/time/time`}
                       onPreview={file => console.log('file', file)}
                       onChange={(info) => {

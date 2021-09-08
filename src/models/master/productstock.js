@@ -346,7 +346,7 @@ export default modelExtend(pageModel, {
       if (uploadedImage && uploadedImage.length) {
         payload.data.productImage = uploadedImage
       } else {
-        payload.data.productImage = 'no_image.png'
+        payload.data.productImage = '["no_image.png"]'
       }
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
@@ -445,7 +445,7 @@ export default modelExtend(pageModel, {
       if (uploadedImage && uploadedImage.length) {
         payload.data.productImage = uploadedImage
       } else {
-        payload.data.productImage = 'no_image.png'
+        payload.data.productImage = '["no_image.png"]'
       }
       const newProductStock = { ...payload, id }
       const data = yield call(edit, newProductStock)

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
-import Form from './Form'
 import AdvancedForm from './AdvancedForm'
 import List from './List'
 import Filter from './Filter'
@@ -561,7 +560,7 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
       </Modal>}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
-          {activeKey === '0' && advancedForm ? <AdvancedForm {...formProps} /> : <Form {...formProps} />}
+          {activeKey === '0' && <AdvancedForm {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />

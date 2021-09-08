@@ -125,6 +125,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    mode: '',
     modalType,
     typeModal,
     listAllStores,
@@ -151,7 +152,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
       } else {
         dispatch({
           type: 'bundling/edit',
-          payload: data
+          payload: { ...data, location }
         })
       }
     },

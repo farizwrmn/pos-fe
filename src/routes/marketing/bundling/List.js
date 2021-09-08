@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
 import { calendar } from 'utils'
+import { IMAGEURL } from 'utils/config.company'
 
 const { dayByNumber } = calendar
 
@@ -22,6 +23,25 @@ const List = ({ ...tableProps, editItem, voidItem }) => {
       key: 'type',
       render: (text) => {
         return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
+      }
+    },
+    {
+      title: 'Image',
+      dataIndex: 'productImage',
+      key: 'productImage',
+      width: '100px',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '["no_image.png"]'
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          const item = JSON.parse(text)
+          if (item && item[0]) {
+            return <img height="20px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+          }
+        }
+        return (<div>No Image</div>)
       }
     },
     {

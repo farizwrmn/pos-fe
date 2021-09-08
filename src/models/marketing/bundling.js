@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message, Modal } from 'antd'
+import FormData from 'form-data'
 import { posTotal } from 'utils'
+import { uploadBundleImage } from 'services/utils/imageUploader'
 import { query as querySequence } from '../../services/sequence'
 import { query as queryStock } from '../../services/master/productstock'
 import { query, add, edit, remove, cancel } from '../../services/marketing/bundling'
@@ -227,6 +229,35 @@ export default modelExtend(pageModel, {
       const checkExists = payload.listReward.filter(el => el.total < 0)
       if ((payload.listReward || []).length > 0 || (payload.listRules || []).length > 0) {
         if ((checkExists || []).length === 0) {
+          // Start - Upload Image
+          const uploadedImage = []
+          if (payload
+            && payload.productImage
+            && payload.productImage.fileList
+            && payload.productImage.fileList.length > 0
+            && payload.productImage.fileList.length <= 5) {
+            for (let key in payload.productImage.fileList) {
+              const item = payload.productImage.fileList[key]
+              const formData = new FormData()
+              formData.append('file', item.originFileObj)
+              const responseUpload = yield call(uploadBundleImage, formData)
+              if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+                uploadedImage.push(responseUpload.data.filename)
+              }
+            }
+          } else if (payload
+            && payload.productImage
+            && payload.productImage.fileList
+            && payload.productImage.fileList.length > 0
+            && payload.productImage.fileList.length > 5) {
+            throw new Error('Cannot upload more than 5 image')
+          }
+          // End - Upload Image
+          if (uploadedImage && uploadedImage.length) {
+            payload.data.productImage = uploadedImage
+          } else {
+            payload.data.productImage = '["no_image.png"]'
+          }
           const data = yield call(add, payload)
           if (data.success) {
             success()
@@ -284,7 +315,44 @@ export default modelExtend(pageModel, {
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ bundling }) => bundling.currentItem.id)
       const listReward = yield select(({ bundling }) => bundling.listReward)
-      const newCounter = { ...payload, listReward, id }
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload
+        && payload.productImage
+        && payload.productImage.fileList
+        && payload.productImage.fileList.length > 0
+        && payload.productImage.fileList.length <= 5) {
+        for (let key in payload.productImage.fileList) {
+          const item = payload.productImage.fileList[key]
+          if (item && item.originFileObj) {
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadBundleImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+          } else if (item && item.name) {
+            uploadedImage.push(item.name)
+          }
+        }
+      } else if (payload
+        && payload.productImage
+        && payload.productImage.fileList
+        && payload.productImage.fileList.length > 0
+        && payload.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
+
+      if (uploadedImage && uploadedImage.length) {
+        payload.productImage = uploadedImage
+      } else {
+        payload.productImage = '["no_image.png"]'
+      }
+      const { location, ...otherPayload } = payload
+      console.log('payload', id)
+      const newCounter = { ...otherPayload, listReward, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
