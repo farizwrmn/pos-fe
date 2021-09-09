@@ -31,6 +31,7 @@ import styles from '../../../themes/index.less'
 
 const Option = Select.Option
 const TreeNode = Tree.TreeNode
+const { TextArea } = Input
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
 const { apiCompanyURL } = rest
@@ -663,13 +664,24 @@ const FormCounter = ({
               ]
             })(<Input maxLength={20} />)}
           </FormItem>
+          <FormItem label="Description" {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                  message: 'Required when product image is filled'
+                }
+              ]
+            })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
+          </FormItem>
           <FormItem label="Publish on e-commerce" {...formItemLayout}>
             {getFieldDecorator('activeShop', {
               valuePropName: 'checked',
               initialValue: item.activeShop === undefined
                 ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
                 : item.activeShop
-            })(<Checkbox>Publish</Checkbox>)}
+            })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
           </FormItem>
         </Col>
         <Col {...column}>
@@ -695,7 +707,7 @@ const FormCounter = ({
       {modalEditRulesVisible && <ModalRules {...modalRulesProps} />}
       {modalEditRewardVisible && <ModalReward {...modalRewardProps} />}
       {modalProductVisible && <ModalLov {...modalProductProps} />}
-    </Form>
+    </Form >
   )
 }
 
