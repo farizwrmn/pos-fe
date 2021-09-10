@@ -961,8 +961,9 @@ const AdvancedForm = ({
                     initialValue: item.weight,
                     rules: [
                       {
-                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
-                        message: 'Required when product image is filled'
+                        required: true,
+                        message: 'Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L',
+                        pattern: /^\(?([0-9]{1,5})\)?[ ]?(g|kg|per pack|ml|L)$/
                       }
                     ]
                   })(<Input maxLength={20} />)}
