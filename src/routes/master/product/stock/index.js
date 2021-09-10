@@ -16,7 +16,7 @@ import ModalQuantity from './ModalQuantity'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ specification, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const {
     modalSupplierVisible,
     paginationSupplier,
@@ -25,6 +25,7 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
     tmpSupplierData,
     supplierInformation
   } = purchase
+  const { list: listGrabCategory } = grabCategory
   const { listVariantStock } = variantStock
   const { listStoreLov } = store
   const { list,
@@ -260,6 +261,7 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
   }
 
   const formProps = {
+    listGrabCategory,
     lastTrans,
     listSpecification,
     listSpecificationCode,
@@ -572,6 +574,7 @@ const ProductStock = ({ specification, purchase, store, specificationStock, vari
 }
 
 ProductStock.propTypes = {
+  grabCategory: PropTypes.object,
   purchase: PropTypes.object,
   specification: PropTypes.object,
   specificationStock: PropTypes.object,
@@ -586,5 +589,5 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchase, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
-  ({ purchase, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ purchase, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
+  ({ purchase, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

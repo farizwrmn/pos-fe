@@ -59,6 +59,7 @@ const AdvancedForm = ({
   modalSpecificationVisible,
   modalProductVisible,
   listVariantStock,
+  listGrabCategory,
   editItemProductById,
   supplierInformation,
   dispatch,
@@ -255,6 +256,7 @@ const AdvancedForm = ({
     showVariantId()
   }
 
+  const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
   const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
@@ -554,7 +556,6 @@ const AdvancedForm = ({
     }
   ]
 
-  console.log('props', props)
 
   return (
     <Form layout="horizontal">
@@ -611,6 +612,26 @@ const AdvancedForm = ({
                 labelInValue
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >{productCategory}
+              </Select>)}
+            </FormItem>
+            <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('grabCategoryId', {
+                initialValue: item.grabCategoryId ? {
+                  key: item.grabCategoryId,
+                  label: item.grabCategoryName
+                } : {},
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >{grabCategory}
               </Select>)}
             </FormItem>
             <FormItem label="Brand" hasFeedback {...formItemLayout}>

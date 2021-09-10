@@ -10,9 +10,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
+const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location, app }) => {
   const { typeModal, pagination, modalCancelVisible, invoiceCancel, listBundling, itemEditListRules, itemEditListReward, modalEditRulesVisible, modalEditRewardVisible, listRules, listReward, modalType, currentItem, activeKey, modalProductVisible } = bundling
   const { listAllStores } = userStore
+  const { list: listGrabCategory } = grabCategory
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -128,6 +129,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
     mode: '',
     modalType,
     typeModal,
+    listGrabCategory,
     listAllStores,
     listRules,
     listReward,
@@ -364,6 +366,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
 }
 
 Master.propTypes = {
+  grabCategory: PropTypes.object,
   bundling: PropTypes.object,
   productstock: PropTypes.object,
   service: PropTypes.object,
@@ -374,4 +377,4 @@ Master.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ bundling, productstock, service, userStore, loading, app }) => ({ bundling, productstock, service, userStore, loading, app }))(Master)
+export default connect(({ bundling, grabCategory, productstock, service, userStore, loading, app }) => ({ bundling, grabCategory, productstock, service, userStore, loading, app }))(Master)

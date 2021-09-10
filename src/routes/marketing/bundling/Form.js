@@ -59,6 +59,7 @@ const column = {
 const FormCounter = ({
   showRules = false,
   item = {},
+  listGrabCategory = [],
   listAllStores = [],
   onSubmit,
   showModal,
@@ -468,7 +469,7 @@ const FormCounter = ({
     return current && current < moment().startOf('day')
   }
 
-  console.log('props', props)
+  const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
 
   return (
     <Form layout="horizontal">
@@ -605,6 +606,26 @@ const FormCounter = ({
               valuePropName: 'checked',
               initialValue: item.applyMultiple ? (item.applyMultiple === '0' ? 0 : 1) : item.applyMultiple
             })(<Checkbox />)}
+          </FormItem>
+          <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('grabCategoryId', {
+              initialValue: item.grabCategoryId ? {
+                key: item.grabCategoryId,
+                label: item.grabCategoryName
+              } : {},
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >{grabCategory}
+            </Select>)}
           </FormItem>
           <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('productImage', {
