@@ -20,7 +20,7 @@ import {
 import moment from 'moment'
 import _ from 'lodash'
 import { posTotal } from 'utils'
-import { IMAGEURL, rest } from 'utils/config.company'
+import { rest } from 'utils/config.company'
 import ModalLov from './ModalLov'
 import ModalRules from './ModalRules'
 import ModalReward from './ModalReward'
@@ -628,23 +628,9 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('productImage', {
-              initialValue: item.productImage
-                && item.productImage != null
-                && item.productImage !== '["no_image.png"]'
-                && item.productImage !== '"no_image.png"'
-                && item.productImage !== 'no_image.png' ?
-                {
-                  fileList: JSON.parse(item.productImage).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
-                      status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
-                }
-                : []
+              initialValue: modalType === 'edit' ? {
+                fileList: item.productImageUrl
+              } : []
             })(
               <Upload
                 {...props}
@@ -652,21 +638,7 @@ const FormCounter = ({
                 showUploadList={{
                   showPreviewIcon: true
                 }}
-                defaultFileList={item.productImage
-                  && item.productImage != null
-                  && item.productImage !== '["no_image.png"]'
-                  && item.productImage !== '"no_image.png"'
-                  && item.productImage !== 'no_image.png' ?
-                  JSON.parse(item.productImage).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
-                      status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
-                  : []}
+                defaultFileList={modalType === 'edit' ? item.productImageUrl : []}
                 listType="picture"
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}
@@ -716,7 +688,7 @@ const FormCounter = ({
             {getFieldDecorator('activeShop', {
               valuePropName: 'checked',
               initialValue: item.activeShop === undefined
-                ? false
+                ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
                 : item.activeShop
             })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
           </FormItem>

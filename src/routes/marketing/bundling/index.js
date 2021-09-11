@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs, Modal } from 'antd'
+import { IMAGEURL } from 'utils/config.company'
 import ModalCancel from './ModalCancel'
 import Form from './Form'
 import List from './List'
@@ -46,6 +47,21 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
     },
     editItem (item) {
       const { pathname } = location
+      item.productImageUrl = item.productImage
+        && item.productImage != null
+        && item.productImage !== '["no_image.png"]'
+        && item.productImage !== '"no_image.png"'
+        && item.productImage !== 'no_image.png' ?
+        JSON.parse(item.productImage).map((detail, index) => {
+          return ({
+            uid: index + 1,
+            name: detail,
+            status: 'done',
+            url: `${IMAGEURL}/${detail}`,
+            thumbUrl: `${IMAGEURL}/${detail}`
+          })
+        })
+        : []
       dispatch({
         type: 'bundling/editItem',
         payload: { item, pathname }

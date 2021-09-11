@@ -426,12 +426,6 @@ export default modelExtend(pageModel, {
           total: posTotal(dataReward.data[n])
         })
       }
-      yield put(routerRedux.push({
-        pathname: payload.pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
       yield put({
         type: 'updateState',
         payload: {
