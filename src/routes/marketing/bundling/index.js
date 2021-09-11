@@ -141,20 +141,22 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
     modalProductVisible,
     loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, listRules, listReward) {
+    onSubmit (data, listRules, listReward, reset) {
       if (modalType === 'add') {
         dispatch({
           type: 'bundling/add',
           payload: {
             data,
             listRules,
-            listReward
+            listReward,
+            reset,
+            location
           }
         })
       } else {
         dispatch({
           type: 'bundling/edit',
-          payload: { ...data, location }
+          payload: { ...data, location, reset }
         })
       }
     },

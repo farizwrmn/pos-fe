@@ -318,6 +318,8 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
+      data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
       data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
       data.endDate = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
       data.availableDate = (data.availableDate || []).length > 0 ? data.availableDate.toString() : null
@@ -327,10 +329,7 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listRules, listReward)
-          // setTimeout(() => {
-          resetFields()
-          // }, 500)
+          onSubmit(data, listRules, listReward, resetFields)
         },
         onCancel () { }
       })
@@ -653,6 +652,21 @@ const FormCounter = ({
                 showUploadList={{
                   showPreviewIcon: true
                 }}
+                defaultFileList={item.productImage
+                  && item.productImage != null
+                  && item.productImage !== '["no_image.png"]'
+                  && item.productImage !== '"no_image.png"'
+                  && item.productImage !== 'no_image.png' ?
+                  JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                  : []}
                 listType="picture"
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}
@@ -702,7 +716,7 @@ const FormCounter = ({
             {getFieldDecorator('activeShop', {
               valuePropName: 'checked',
               initialValue: item.activeShop === undefined
-                ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
+                ? false
                 : item.activeShop
             })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
           </FormItem>

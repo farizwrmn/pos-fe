@@ -270,6 +270,9 @@ export default modelExtend(pageModel, {
                 listReward: []
               }
             })
+            if (payload && payload.reset) {
+              payload.reset()
+            }
             yield put({
               type: 'query',
               payload: {
@@ -278,12 +281,6 @@ export default modelExtend(pageModel, {
             })
             yield put({ type: 'querySequence' })
           } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                currentItem: payload.data
-              }
-            })
             throw data
           }
         } else {
@@ -291,23 +288,11 @@ export default modelExtend(pageModel, {
             title: "Total's value is below zero",
             content: 'You have a product with below zero total'
           })
-          yield put({
-            type: 'updateState',
-            payload: {
-              currentItem: payload.data
-            }
-          })
         }
       } else {
         Modal.warning({
           title: 'No Item Rules or Reward',
           content: 'Please choose reward or rules item'
-        })
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload.data
-          }
         })
       }
     },
@@ -375,6 +360,9 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         })
+        if (payload && payload.reset) {
+          payload.reset()
+        }
         const { pathname } = location
         yield put(routerRedux.push({
           pathname,
