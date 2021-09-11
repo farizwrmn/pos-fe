@@ -313,10 +313,11 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      const productImage = yield select(({ bundling }) => bundling.currentItem.productImage)
       const id = yield select(({ bundling }) => bundling.currentItem.id)
       const listReward = yield select(({ bundling }) => bundling.listReward)
       // Start - Upload Image
-      const uploadedImage = []
+      let uploadedImage = []
       if (payload
         && payload
         && payload.productImage
@@ -342,6 +343,12 @@ export default modelExtend(pageModel, {
         && payload.productImage.fileList.length > 0
         && payload.productImage.fileList.length > 5) {
         throw new Error('Cannot upload more than 5 image')
+      } else if (productImage
+        && productImage != null
+        && productImage !== '["no_image.png"]'
+        && productImage !== '"no_image.png"'
+        && productImage !== 'no_image.png') {
+        uploadedImage = JSON.parse(productImage)
       }
       // End - Upload Image
 
@@ -351,8 +358,12 @@ export default modelExtend(pageModel, {
         payload.productImage = '["no_image.png"]'
       }
       const { location, ...otherPayload } = payload
-      console.log('payload', id)
       const newCounter = { ...otherPayload, listReward, id }
+      if (uploadedImage && uploadedImage.length > 0) {
+        newCounter.productImage = uploadedImage
+      } else {
+        newCounter.productImage = '["no_image.png"]'
+      }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
