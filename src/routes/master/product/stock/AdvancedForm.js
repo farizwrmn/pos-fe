@@ -621,7 +621,7 @@ const AdvancedForm = ({
                 } : {},
                 rules: [
                   {
-                    required: false
+                    required: true
                   }
                 ]
               })(<Select
