@@ -668,7 +668,7 @@ const FormCounter = ({
                 {
                   required: true,
                   message: 'Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L',
-                  pattern: /^\(?([0-9]{1,5})\)?[ ]?(g|kg|per pack|ml|L)$/
+                  pattern: /^([0-9]{1,5})[ ](g|kg|per pack|ml|L)$/
                 }
               ]
             })(<Input maxLength={20} />)}
