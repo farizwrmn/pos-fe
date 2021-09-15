@@ -76,10 +76,7 @@ export default {
       })
       dispatch({ type: 'query' })
       // https://github.com/ibm-watson-data-lab/shopping-list-react-pouchdb/tree/master/src
-
-      document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
-
-      document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
+      document.querySelector("link[rel='shortcut icon']").href = `${window.location.origin}/favicon-${APPNAME}.ico`
       // PouchDB.plugin(PouchDBFind)
       // const localDB = new PouchDB(couchdb.COUCH_NAME, { auto_compaction: true })
       // // localDB.createIndex({
