@@ -279,7 +279,7 @@ const FormCounter = ({
               } : null,
               rules: [
                 {
-                  required: false
+                  required: true
                 }
               ]
             })(<Select
