@@ -11,6 +11,7 @@ import {
 import {
   queryPaymentSplit
 } from 'services/payment/payment'
+import { queryById as queryStoreById } from '../../services/store/store'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
 import {
@@ -76,6 +77,7 @@ export default {
     listProduct: [],
     listConsignment: [],
     listSequence: {},
+    currentStore: {},
     listUnitUsage: [],
     posData: [],
     listByCode: [],
@@ -180,6 +182,11 @@ export default {
               pageSize: 10,
               storeId: lstorage.getCurrentUserStore()
             }
+          })
+        }
+        if (location.pathname === '/transaction/pos/customer-view') {
+          dispatch({
+            type: 'getStore'
           })
         }
         if (location.pathname === '/transaction/pos') {
@@ -610,6 +617,18 @@ export default {
           selectedPaymentShortcut
         }
       })
+    },
+
+    * getStore (payload, { call, put }) {
+      const data = yield call(queryStoreById, { id: lstorage.getCurrentUserStore() })
+      if (data.success && data.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentStore: data.data
+          }
+        })
+      }
     },
 
     * setPaymentShortcut ({ payload = {} }, { put }) {
