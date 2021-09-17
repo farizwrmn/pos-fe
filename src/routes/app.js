@@ -43,6 +43,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
     if (!loading.global) {
       NProgress.done()
       lastHref = href
+      document.querySelector("link[rel='shortcut icon']").href = `${window.location.origin}/favicon-${APPNAME}.ico`
     }
   }
 

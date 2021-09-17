@@ -59,6 +59,7 @@ const AdvancedForm = ({
   modalSpecificationVisible,
   modalProductVisible,
   listVariantStock,
+  listGrabCategory,
   editItemProductById,
   supplierInformation,
   dispatch,
@@ -173,34 +174,34 @@ const AdvancedForm = ({
         message.warning('Must Choose Variant')
         return
       }
-      data.categoryName = data.categoryId ? data.categoryId.label : null
-      data.categoryId = data.categoryId ? data.categoryId.key : null
-      data.brandName = data.brandId ? data.brandId.label : null
-      data.brandId = data.brandId ? data.brandId.key : null
-      data.variantName = data.variantId ? data.variantId.label : null
-      data.variantId = data.variantId ? data.variantId.key : null
-      data.productParentId = item.productParentId
-      data.productParentName = item.productParentName
-      data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
-      data.trackQty = !data.trackQty || data.trackQty === 0 || data.trackQty === false ? 0 : 1
-      data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
-      data.usageTimePeriod = data.usageTimePeriod || 0
-      data.usageMileage = data.usageMileage || 0
-      data.supplierId = modalType === 'add' && supplierInformation && supplierInformation.id
-        ? supplierInformation.id
-        : supplierInformation.id || item.supplierId
-      let valid = true
-      if (valid) {
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onSubmit(data.productCode, data, resetFields)
-            // setTimeout(() => {
-            // }, 500)
-          },
-          onCancel () { }
-        })
-      }
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk () {
+          const data = getFieldsValue()
+          data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
+          data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
+          data.categoryName = data.categoryId ? data.categoryId.label : null
+          data.categoryId = data.categoryId ? data.categoryId.key : null
+          data.brandName = data.brandId ? data.brandId.label : null
+          data.brandId = data.brandId ? data.brandId.key : null
+          data.variantName = data.variantId ? data.variantId.label : null
+          data.variantId = data.variantId ? data.variantId.key : null
+          data.productParentId = item.productParentId
+          data.productParentName = item.productParentName
+          data.active = !data.active || data.active === 0 || data.active === false ? 0 : 1
+          data.trackQty = !data.trackQty || data.trackQty === 0 || data.trackQty === false ? 0 : 1
+          data.exception01 = !data.exception01 || data.exception01 === 0 || data.exception01 === false ? 0 : 1
+          data.usageTimePeriod = data.usageTimePeriod || 0
+          data.usageMileage = data.usageMileage || 0
+          data.supplierId = modalType === 'add' && supplierInformation && supplierInformation.id
+            ? supplierInformation.id
+            : supplierInformation.id || item.supplierId
+          onSubmit(data.productCode, data, resetFields)
+          // setTimeout(() => {
+          // }, 500)
+        },
+        onCancel () { }
+      })
     })
   }
 
@@ -255,6 +256,7 @@ const AdvancedForm = ({
     showVariantId()
   }
 
+  const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
   const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
@@ -611,6 +613,26 @@ const AdvancedForm = ({
               >{productCategory}
               </Select>)}
             </FormItem>
+            <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('grabCategoryId', {
+                initialValue: item.grabCategoryId ? {
+                  key: item.grabCategoryId,
+                  label: item.grabCategoryName
+                } : {},
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >{grabCategory}
+              </Select>)}
+            </FormItem>
             <FormItem label="Brand" hasFeedback {...formItemLayout}>
               {getFieldDecorator('brandId', {
                 initialValue: item.brandId ? {
@@ -887,6 +909,7 @@ const AdvancedForm = ({
                   {getFieldDecorator('productImage', {
                     initialValue: item.productImage
                       && item.productImage != null
+                      && item.productImage !== '["no_image.png"]'
                       && item.productImage !== '"no_image.png"'
                       && item.productImage !== 'no_image.png' ?
                       {
@@ -900,7 +923,7 @@ const AdvancedForm = ({
                           })
                         })
                       }
-                      : item.productImage
+                      : []
                   })(
                     <Upload
                       {...props}
@@ -908,23 +931,22 @@ const AdvancedForm = ({
                       showUploadList={{
                         showPreviewIcon: true
                       }}
-                      listType="picture"
-                      defaultFileList={
-                        item.productImage
-                          && item.productImage != null
-                          && item.productImage !== '"no_image.png"'
-                          && item.productImage !== 'no_image.png' ?
-                          JSON.parse(item.productImage).map((detail, index) => {
-                            return ({
-                              uid: index + 1,
-                              name: detail,
-                              status: 'done',
-                              url: `${IMAGEURL}/${detail}`,
-                              thumbUrl: `${IMAGEURL}/${detail}`
-                            })
+                      defaultFileList={item.productImage
+                        && item.productImage != null
+                        && item.productImage !== '["no_image.png"]'
+                        && item.productImage !== '"no_image.png"'
+                        && item.productImage !== 'no_image.png' ?
+                        JSON.parse(item.productImage).map((detail, index) => {
+                          return ({
+                            uid: index + 1,
+                            name: detail,
+                            status: 'done',
+                            url: `${IMAGEURL}/${detail}`,
+                            thumbUrl: `${IMAGEURL}/${detail}`
                           })
-                          : []
-                      }
+                        })
+                        : []}
+                      listType="picture"
                       action={`${apiCompanyURL}/time/time`}
                       onPreview={file => console.log('file', file)}
                       onChange={(info) => {
@@ -970,13 +992,18 @@ const AdvancedForm = ({
                     ]
                   })(<Input maxLength={30} />)}
                 </FormItem>
-                <FormItem label="Weight" {...formItemLayout}>
+                <FormItem
+                  label="Weight"
+                  help="Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L"
+                  {...formItemLayout}
+                >
                   {getFieldDecorator('weight', {
                     initialValue: item.weight,
                     rules: [
                       {
-                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
-                        message: 'Required when product image is filled'
+                        required: true,
+                        message: 'Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L',
+                        pattern: /^([0-9]{1,5})[ ](g|kg|per pack|ml|L)$/
                       }
                     ]
                   })(<Input maxLength={20} />)}

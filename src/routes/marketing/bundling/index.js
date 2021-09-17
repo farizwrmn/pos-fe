@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs, Modal } from 'antd'
+import { IMAGEURL } from 'utils/config.company'
 import ModalCancel from './ModalCancel'
 import Form from './Form'
 import List from './List'
@@ -10,9 +11,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
+const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location, app }) => {
   const { typeModal, pagination, modalCancelVisible, invoiceCancel, listBundling, itemEditListRules, itemEditListReward, modalEditRulesVisible, modalEditRewardVisible, listRules, listReward, modalType, currentItem, activeKey, modalProductVisible } = bundling
   const { listAllStores } = userStore
+  const { list: listGrabCategory } = grabCategory
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -45,6 +47,21 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
     },
     editItem (item) {
       const { pathname } = location
+      item.productImageUrl = item.productImage
+        && item.productImage != null
+        && item.productImage !== '["no_image.png"]'
+        && item.productImage !== '"no_image.png"'
+        && item.productImage !== 'no_image.png' ?
+        JSON.parse(item.productImage).map((detail, index) => {
+          return ({
+            uid: index + 1,
+            name: detail,
+            status: 'done',
+            url: `${IMAGEURL}/${detail}`,
+            thumbUrl: `${IMAGEURL}/${detail}`
+          })
+        })
+        : []
       dispatch({
         type: 'bundling/editItem',
         payload: { item, pathname }
@@ -125,8 +142,10 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    mode: '',
     modalType,
     typeModal,
+    listGrabCategory,
     listAllStores,
     listRules,
     listReward,
@@ -138,20 +157,22 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
     modalProductVisible,
     loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, listRules, listReward) {
+    onSubmit (data, listRules, listReward, reset) {
       if (modalType === 'add') {
         dispatch({
           type: 'bundling/add',
           payload: {
             data,
             listRules,
-            listReward
+            listReward,
+            reset,
+            location
           }
         })
       } else {
         dispatch({
           type: 'bundling/edit',
-          payload: data
+          payload: { ...data, location, reset }
         })
       }
     },
@@ -363,6 +384,7 @@ const Master = ({ bundling, userStore, loading, dispatch, location, app }) => {
 }
 
 Master.propTypes = {
+  grabCategory: PropTypes.object,
   bundling: PropTypes.object,
   productstock: PropTypes.object,
   service: PropTypes.object,
@@ -373,4 +395,4 @@ Master.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ bundling, productstock, service, userStore, loading, app }) => ({ bundling, productstock, service, userStore, loading, app }))(Master)
+export default connect(({ bundling, grabCategory, productstock, service, userStore, loading, app }) => ({ bundling, grabCategory, productstock, service, userStore, loading, app }))(Master)

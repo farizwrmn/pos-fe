@@ -1,9 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, message, Button, Row, Col, Tag, Tree, Select, DatePicker, TimePicker, Checkbox, Modal } from 'antd'
+import {
+  Form,
+  Input,
+  Upload,
+  Icon,
+  message,
+  Button,
+  Row,
+  Col,
+  Tag,
+  Tree,
+  Select,
+  DatePicker,
+  TimePicker,
+  Checkbox,
+  Modal
+} from 'antd'
 import moment from 'moment'
 import _ from 'lodash'
 import { posTotal } from 'utils'
+import { rest } from 'utils/config.company'
 import ModalLov from './ModalLov'
 import ModalRules from './ModalRules'
 import ModalReward from './ModalReward'
@@ -14,8 +31,10 @@ import styles from '../../../themes/index.less'
 
 const Option = Select.Option
 const TreeNode = Tree.TreeNode
+const { TextArea } = Input
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
+const { apiCompanyURL } = rest
 
 const formItemLayout = {
   labelCol: {
@@ -40,6 +59,7 @@ const column = {
 const FormCounter = ({
   showRules = false,
   item = {},
+  listGrabCategory = [],
   listAllStores = [],
   onSubmit,
   showModal,
@@ -70,7 +90,8 @@ const FormCounter = ({
     getFieldsValue,
     getFieldValue,
     resetFields
-  }
+  },
+  ...props
 }) => {
   const modalProductProps = {
     isModal: false,
@@ -297,6 +318,8 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
+      data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
       data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
       data.endDate = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
       data.availableDate = (data.availableDate || []).length > 0 ? data.availableDate.toString() : null
@@ -306,10 +329,7 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, listRules, listReward)
-          // setTimeout(() => {
-          resetFields()
-          // }, 500)
+          onSubmit(data, listRules, listReward, resetFields)
         },
         onCancel () { }
       })
@@ -447,6 +467,9 @@ const FormCounter = ({
     // Can not select days before today and today
     return current && current < moment().startOf('day')
   }
+
+  const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -583,6 +606,92 @@ const FormCounter = ({
               initialValue: item.applyMultiple ? (item.applyMultiple === '0' ? 0 : 1) : item.applyMultiple
             })(<Checkbox />)}
           </FormItem>
+          <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('grabCategoryId', {
+              initialValue: item.grabCategoryId ? {
+                key: item.grabCategoryId,
+                label: item.grabCategoryName
+              } : {},
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >{grabCategory}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Image" {...formItemLayout}>
+            {getFieldDecorator('productImage', {
+              initialValue: modalType === 'edit' ? {
+                fileList: item.productImageUrl
+              } : []
+            })(
+              <Upload
+                {...props}
+                multiple
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                defaultFileList={modalType === 'edit' ? item.productImageUrl : []}
+                listType="picture"
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
+          </FormItem>
+          <FormItem label="Weight" {...formItemLayout}>
+            {getFieldDecorator('weight', {
+              initialValue: item.weight,
+              rules: [
+                {
+                  required: true,
+                  message: 'Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L',
+                  pattern: /^([0-9]{1,5})[ ](g|kg|per pack|ml|L)$/
+                }
+              ]
+            })(<Input maxLength={20} />)}
+          </FormItem>
+          <FormItem label="Description" {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                  message: 'Required when product image is filled'
+                }
+              ]
+            })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
+          </FormItem>
+          <FormItem label="Publish on e-commerce" {...formItemLayout}>
+            {getFieldDecorator('activeShop', {
+              valuePropName: 'checked',
+              initialValue: item.activeShop === undefined
+                ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
+                : item.activeShop
+            })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
+          </FormItem>
         </Col>
         <Col {...column}>
           {showRules && (
@@ -607,7 +716,7 @@ const FormCounter = ({
       {modalEditRulesVisible && <ModalRules {...modalRulesProps} />}
       {modalEditRewardVisible && <ModalReward {...modalRewardProps} />}
       {modalProductVisible && <ModalLov {...modalProductProps} />}
-    </Form>
+    </Form >
   )
 }
 
