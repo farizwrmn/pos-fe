@@ -346,7 +346,7 @@ export default modelExtend(pageModel, {
       if (uploadedImage && uploadedImage.length) {
         payload.data.productImage = uploadedImage
       } else {
-        payload.data.productImage = 'no_image.png'
+        payload.data.productImage = '["no_image.png"]'
       }
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
@@ -409,7 +409,8 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       // Start - Upload Image
-      const uploadedImage = []
+      const productImage = yield select(({ productstock }) => productstock.currentItem.productImage)
+      let uploadedImage = []
       if (payload
         && payload.data
         && payload.data.productImage
@@ -436,18 +437,24 @@ export default modelExtend(pageModel, {
         && payload.data.productImage.fileList.length > 0
         && payload.data.productImage.fileList.length > 5) {
         throw new Error('Cannot upload more than 5 image')
+      } else if (productImage
+        && productImage != null
+        && productImage !== '["no_image.png"]'
+        && productImage !== '"no_image.png"'
+        && productImage !== 'no_image.png') {
+        uploadedImage = JSON.parse(productImage)
       }
       // End - Upload Image
 
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const productId = yield select(({ productstock }) => productstock.currentItem.id)
       const { location } = payload
-      if (uploadedImage && uploadedImage.length) {
-        payload.data.productImage = uploadedImage
-      } else {
-        payload.data.productImage = 'no_image.png'
-      }
       const newProductStock = { ...payload, id }
+      if (uploadedImage && uploadedImage.length > 0) {
+        newProductStock.data.productImage = uploadedImage
+      } else {
+        newProductStock.data.productImage = '["no_image.png"]'
+      }
       const data = yield call(edit, newProductStock)
       let listSpecificationCode = yield select(({ specificationStock }) => specificationStock.listSpecificationCode)
       const typeInput = yield select(({ specificationStock }) => specificationStock.typeInput)

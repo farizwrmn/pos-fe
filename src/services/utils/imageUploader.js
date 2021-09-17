@@ -16,6 +16,21 @@ export async function uploadProductImage (params) {
   })
 }
 
+export async function uploadBundleImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/bundles?compress=1`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
+
 export async function uploadCategoryImage (params) {
   const apiHeaderToken = {
     'Content-Type': 'application/x-www-form-urlencoded',
