@@ -3,9 +3,6 @@ import { parse } from 'qs'
 import moment from 'moment'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
-// import PouchDB from 'pouchdb'
-// import PouchDBFind from 'pouchdb-find'
-import { message } from 'antd'
 // import { APPNAME, couchdb } from 'utils/config.company'
 import { APPNAME } from 'utils/config.company'
 import { query as queryCustomerType } from '../services/master/customertype'
@@ -27,9 +24,6 @@ import {
 export default {
   namespace: 'app',
   state: {
-    localDB: undefined,
-    remoteDB: undefined,
-    offlineMode: false,
     user: {},
     storeInfo: {},
     setting: {},
@@ -75,42 +69,10 @@ export default {
         }
       })
       dispatch({ type: 'query' })
-      // https://github.com/ibm-watson-data-lab/shopping-list-react-pouchdb/tree/master/src
-      document.querySelector("link[rel='shortcut icon']").href = `${window.location.origin}/favicon-${APPNAME}.ico`
-      // PouchDB.plugin(PouchDBFind)
-      // const localDB = new PouchDB(couchdb.COUCH_NAME, { auto_compaction: true })
-      // // localDB.createIndex({
-      // //   index: { fields: ['barCode01'] }
-      // // })
-      // let remoteDB
-      // try {
-      //   if (process.env.NODE_ENV !== 'production') {
-      //     // debugPouch(remoteDB)
-      //     console.log('couchdb.COUCH_URL', couchdb.COUCH_URL)
-      //   }
-      //   if (couchdb && couchdb.COUCH_URL) {
-      //     remoteDB = new PouchDB(couchdb.COUCH_URL, { auto_compaction: true })
-      //     // remoteDB.createIndex({
-      //     //   index: { fields: ['barCode01'] }
-      //     // })
-      //   }
-      // } catch (ex) {
-      //   console.log('secret.js file missing; disabling remote sync.', ex)
-      // }
-      // dispatch({
-      //   type: 'replicateDatabase',
-      //   payload: {
-      //     localDB,
-      //     remoteDB
-      //   }
-      // })
-      // dispatch({
-      //   type: 'localDatabase',
-      //   payload: {
-      //     localDB,
-      //     remoteDB
-      //   }
-      // })
+
+      document.querySelector("link[rel='shortcut icon']").href = `favicon-${APPNAME}.ico`
+
+      document.querySelector("link[rel*='icon']").href = `favicon-${APPNAME}.ico`
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -232,95 +194,6 @@ export default {
       } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
-      }
-    },
-
-    * replicateDatabase ({ payload = {} }, { put }) {
-      const { localDB, remoteDB } = payload
-      if (remoteDB && localDB) {
-        localDB.sync(remoteDB, {
-          live: true,
-          retry: true
-        }).on('complete', () => {
-          // yay, we're done!
-          message.info("You're synced to offline mode")
-          localDB.createIndex({
-            index: {
-              fields: ['barcode01', 'table']
-            },
-            name: 'bundleBarcode-index',
-            ddoc: 'bundleBarcode-index',
-            type: 'json'
-          })
-          localDB.createIndex({
-            index: {
-              fields: ['barCode01', 'table']
-            },
-            name: 'productBarcode-index',
-            ddoc: 'productBarcode-index',
-            type: 'json'
-          })
-          remoteDB.createIndex({
-            index: {
-              fields: ['barcode01', 'table']
-            },
-            name: 'bundleBarcode-index',
-            ddoc: 'bundleBarcode-index',
-            type: 'json'
-          })
-          remoteDB.createIndex({
-            index: {
-              fields: ['barCode01', 'table']
-            },
-            name: 'productBarcode-index',
-            ddoc: 'productBarcode-index',
-            type: 'json'
-          })
-          console.log('Complete Sync Database')
-        }).on('change', () => {
-          console.log('Sync Offline Database')
-        }).on('error', (err) => {
-          message.error('Error when trying to sync offline mode: ', err)
-        })
-        yield put({
-          type: 'updateState',
-          payload: {
-            localDB
-          }
-        })
-      }
-    },
-
-    * localDatabase ({ payload = {} }, { put }) {
-      const { localDB, remoteDB } = payload
-      if (localDB) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            localDB
-          }
-        })
-      } else {
-        message.error('Offline Mode: Local Database Not Connected')
-      }
-
-      if (remoteDB) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('localDB', localDB)
-          console.log('remoteDB', remoteDB)
-          remoteDB.info().then((info) => {
-            console.log('info', info)
-          })
-        }
-
-        yield put({
-          type: 'updateState',
-          payload: {
-            remoteDB
-          }
-        })
-      } else {
-        message.error('Offline Mode: Remote Database Not Connected')
       }
     },
 
