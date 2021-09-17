@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import { Form, Input, Row, Col, Card } from 'antd'
+import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
 
@@ -79,6 +80,7 @@ class Pos extends Component {
       loading,
       memberInformation
     } = this.state
+    const { currentStore } = pos
 
     // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
     let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
@@ -104,7 +106,7 @@ class Pos extends Component {
                 loading={loading}
               />
             </Col>
-            <Col span={8}>
+            <Col span={8} style={{ alignItems: 'center', textAlign: 'center' }} >
               <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>
                   <div style={{ float: 'right' }}>
@@ -129,6 +131,7 @@ class Pos extends Component {
                   </div>
                 </Form>
               </Card>
+              <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" />
             </Col>
           </Row>
         </Card>
