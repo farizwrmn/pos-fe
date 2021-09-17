@@ -79,7 +79,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 9 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 9 }, {}, { text: 'REF', fontSize: 9 }, ':', { text: (itemHeader.referenceTrans ? (itemHeader.referenceTrans || '') : '').toString(), fontSize: 9 }],
-            [{ text: 'TANGGAL', fontSize: 9 }, ':', { text: moment(itemHeader.transDate, 'YYYY-MM-DD').format('DD-MM-YYYY'), fontSize: 9 }, {}, { text: 'NO POLISI', fontSize: 9 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 9 }],
+            [{ text: 'TANGGAL', fontSize: 9 }, ':', { text: moment(itemHeader.transDate).format('DD-MM-YYYY'), fontSize: 9 }, {}, { text: 'NO POLISI', fontSize: 9 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 9 }],
             [{ text: 'DARI', fontSize: 9 }, ':', { text: (itemHeader.storeId ? (itemHeader.storeId.label || '') : '').toString(), fontSize: 9 }, {}, { text: 'TOTAL PACK', fontSize: 9 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 9 }],
             [{ text: 'KEPADA', fontSize: 9 }, ':', { text: (itemHeader.storeNameSender ? (itemHeader.storeNameSender.label || '') : '').toString(), fontSize: 9 }, {}, { text: 'DESKRIPSI', fontSize: 9 }, ':', { text: `MASUK${itemHeader.description ? `/${itemHeader.description}` : ''}`, fontSize: 9 }]
           ]
