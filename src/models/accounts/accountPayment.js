@@ -116,6 +116,9 @@ export default {
         data
       }
     },
+    searchPOS (state, action) {
+      return { ...state, listPayment: action.payload }
+    },
     updateState (state, { payload }) {
       return { ...state, ...payload }
     }

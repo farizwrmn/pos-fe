@@ -169,7 +169,7 @@ const Pos = ({ location, dispatch, accountPayment, loading, pos, app }) => {
     },
     onSearchChange (data) {
       dispatch({
-        type: 'pos/searchPOS',
+        type: 'accountPayment/searchPOS',
         payload: data
       })
     },
