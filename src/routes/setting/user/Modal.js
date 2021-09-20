@@ -240,14 +240,14 @@ const modal = ({
 
   const renderTreeNodes = (data) => {
     return data.map((item) => {
-      if (item.children) {
+      if (item.children && item.children[0] && item.children[0].key) {
         return (
           <TreeNode title={item.title} key={item.key} dataRef={item}>
             {renderTreeNodes(item.children)}
           </TreeNode>
         )
       }
-      return <TreeNode {...item} />
+      return <TreeNode key={item.key} title={item.title} />
     })
   }
 
@@ -328,7 +328,7 @@ const modal = ({
                 <Col span={14}>
                   {getFieldDecorator('userId', {
                     initialValue: item.userId,
-                    rules: [{ required: true, min: 6 }]
+                    rules: [{ required: true, min: 5 }]
                   })(
                     <Input disabled />
                   )}
@@ -341,7 +341,7 @@ const modal = ({
                 rules: [
                   {
                     required: true,
-                    pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
+                    // pattern: /^\(?(0[0-9]{3})\)?[-. ]?([0-9]{2,4})[-. ]?([0-9]{4,5})$/,
                     message: 'mobile number is not valid'
                   }
                 ]
@@ -386,7 +386,7 @@ const modal = ({
                 {getFieldDecorator('oldpassword', {
                   initialValue: 'xxxxxx',
                   rules: [{
-                    required: true, min: 6, message: 'Please input your old password!'
+                    required: true, min: 5, message: 'Please input your old password!'
                   }]
                 })(
                   <Input type="password" />
@@ -396,7 +396,7 @@ const modal = ({
                 {getFieldDecorator('password', {
                   initialValue: 'xxxxxx',
                   rules: [{
-                    required: true, min: 6, message: 'Please input your new password!'
+                    required: true, min: 5, message: 'Please input your new password!'
                   }, {
                     validator: hdlCheckConfirm
                   }]
@@ -408,7 +408,7 @@ const modal = ({
                 {getFieldDecorator('confirm', {
                   initialValue: 'xxxxxx',
                   rules: [{
-                    required: true, min: 6, message: 'Please confirm your password!'
+                    required: true, min: 5, message: 'Please confirm your password!'
                   }, {
                     validator: hdlCheckPassword
                   }]
