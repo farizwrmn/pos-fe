@@ -320,7 +320,7 @@ const modal = ({
                     trigger="click"
                   >
                     <Button type="primary"
-                      disabled={disabledItem.getEmployee}
+                      disabled={modalType === 'edit' || disabledItem.getEmployee}
                     > Get Employee
                     </Button>
                   </Popover>
