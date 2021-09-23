@@ -17,7 +17,6 @@ const Report = ({
     listHris
   } = employee
   const { user, storeInfo } = app
-  console.log('listHris', listHris)
   const filterProps = {
     user,
     listRekap: listHris,
@@ -31,19 +30,12 @@ const Report = ({
         type: 'employee/setNull'
       })
     },
-    onChangePeriod (month, yearPeriod) {
-      dispatch({
-        type: 'employee/setPeriod',
-        payload: {
-          month,
-          yearPeriod
-        }
-      })
+    onChangePeriod (from, to) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
         query: {
-          period: month,
-          year: yearPeriod,
+          from,
+          to,
           activeKey
         }
       }))
