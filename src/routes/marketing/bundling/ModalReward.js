@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, InputNumber, Modal, Button } from 'antd'
 import { posTotal } from 'utils'
+import { getDistPriceName } from 'utils/string'
 
 const FormItem = Form.Item
 
@@ -81,7 +82,7 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="sellPrice" hasFeedback {...formItemLayout}>
+        <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
           {getFieldDecorator('sellPrice', {
             initialValue: item.sellPrice,
             rules: [{
@@ -89,7 +90,7 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="distPrice01" hasFeedback {...formItemLayout}>
+        <FormItem label={getDistPriceName('distPrice01')} hasFeedback {...formItemLayout}>
           {getFieldDecorator('distPrice01', {
             initialValue: item.distPrice01,
             rules: [{
@@ -97,7 +98,7 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="distPrice02" hasFeedback {...formItemLayout}>
+        <FormItem label={getDistPriceName('distPrice02')} hasFeedback {...formItemLayout}>
           {getFieldDecorator('distPrice02', {
             initialValue: item.distPrice02,
             rules: [{
@@ -105,7 +106,7 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="distPrice03" hasFeedback {...formItemLayout}>
+        <FormItem label={getDistPriceName('distPrice03')} hasFeedback {...formItemLayout}>
           {getFieldDecorator('distPrice03', {
             initialValue: item.distPrice03,
             rules: [{
@@ -113,7 +114,7 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="distPrice04" hasFeedback {...formItemLayout}>
+        <FormItem label={getDistPriceName('distPrice04')} hasFeedback {...formItemLayout}>
           {getFieldDecorator('distPrice04', {
             initialValue: item.distPrice04,
             rules: [{
@@ -121,7 +122,7 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="distPrice05" hasFeedback {...formItemLayout}>
+        <FormItem label={getDistPriceName('distPrice05')} hasFeedback {...formItemLayout}>
           {getFieldDecorator('distPrice05', {
             initialValue: item.distPrice05,
             rules: [{
