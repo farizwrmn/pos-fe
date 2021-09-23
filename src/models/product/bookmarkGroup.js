@@ -115,7 +115,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ productbrand }) => productbrand.currentItem.brandCode)
+      const id = yield select(({ productBookmarkGroup }) => productBookmarkGroup.currentItem.id)
       const newProductBrand = { ...payload, id }
       const data = yield call(edit, newProductBrand)
       if (data.success) {
