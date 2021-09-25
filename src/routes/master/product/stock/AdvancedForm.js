@@ -14,6 +14,96 @@ const { TextArea } = Input
 const FormItem = Form.Item
 const Option = Select.Option
 
+const formatWeight = (dimension) => {
+  try {
+    if (dimension) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length > 0) {
+        newDimension = splitted[splitted.length - 1]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '100 g'
+    }
+    return dimension
+  } catch (error) {
+    console.log('formatWeight', error)
+    return '100 g'
+  }
+}
+
+const formatBox = (dimension) => {
+  try {
+    if (dimension && dimension.includes('X')) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length === 3) {
+        newDimension = splitted[0]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '1'
+    }
+    return '1'
+  } catch (error) {
+    console.log('formatBox', error)
+    return '1'
+  }
+}
+
+const formatPack = (dimension) => {
+  try {
+    if (dimension) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length === 3) {
+        newDimension = splitted[1]
+      }
+      if (splitted && splitted.length === 2) {
+        newDimension = splitted[0]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '1'
+    }
+    return dimension
+  } catch (error) {
+    console.log('formatPack', error)
+    return '1'
+  }
+}
+
+const formatDimension = (productName) => {
+  try {
+    let newDimension = ''
+    if (productName) {
+      const splitted = productName.split(' ')
+      if (splitted && splitted.length > 0) {
+        const dimension = splitted[splitted.length - 1]
+        const dimensionSplit = dimension.split('X')
+        if (dimension
+          && /^(g|kg|per pack|ml|L)$/.test(dimensionSplit[dimensionSplit.length - 1])
+          && splitted[splitted.length - 2]
+          && (
+            /^([0-9]{1,})$/.test(splitted[splitted.length - 2])
+            || splitted[splitted.length - 2].includes('X'))
+        ) {
+          newDimension = `${splitted[splitted.length - 2]} ${dimension}`
+        }
+      }
+      return newDimension
+    }
+    return productName
+  } catch (e) {
+    console.log('formatDimension', e)
+    return ''
+  }
+}
+
 const formItemLayout = {
   style: {
     marginTop: 8
@@ -978,10 +1068,11 @@ const AdvancedForm = ({
                 </FormItem>
                 <FormItem label="Dimension" {...formItemLayout}>
                   {getFieldDecorator('dimension', {
-                    initialValue: item.dimension,
+                    initialValue: modalType === 'add' ?
+                      formatDimension(getFieldValue('productName')) : item.dimension,
                     rules: [
                       {
-                        required: false,
+                        required: true,
                         message: 'Required when product image is filled'
                       }
                     ]
@@ -1002,7 +1093,7 @@ const AdvancedForm = ({
               <Col {...column}>
                 <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
                   {getFieldDecorator('dimensionBox', {
-                    initialValue: modalType === 'edit' ? item.dimensionBox : 1,
+                    initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
                     rules: [
                       {
                         required: true,
@@ -1010,11 +1101,11 @@ const AdvancedForm = ({
                         message: 'Required when product image is filled'
                       }
                     ]
-                  })(<Input maxLength={30} />)}
+                  })(<Input maxLength={25} />)}
                 </FormItem>
                 <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
                   {getFieldDecorator('dimensionPack', {
-                    initialValue: modalType === 'edit' ? item.dimensionPack : 1,
+                    initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
                     rules: [
                       {
                         required: true,
@@ -1022,7 +1113,7 @@ const AdvancedForm = ({
                         message: 'Required when product image is filled'
                       }
                     ]
-                  })(<Input maxLength={30} />)}
+                  })(<Input maxLength={25} />)}
                 </FormItem>
                 <FormItem
                   label="Weight"
@@ -1030,7 +1121,7 @@ const AdvancedForm = ({
                   {...formItemLayout}
                 >
                   {getFieldDecorator('weight', {
-                    initialValue: modalType === 'edit' ? item.weight : '100 g',
+                    initialValue: modalType === 'edit' ? item.weight : formatWeight(formatDimension(getFieldValue('productName'))),
                     rules: [
                       {
                         required: true,
