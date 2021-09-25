@@ -501,10 +501,10 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Barcode" hasFeedback {...formItemLayout}>
             {getFieldDecorator('barcode01', {
-              initialValue: item.barcode01,
+              initialValue: modalType === 'edit' ? item.barcode01 : item.code,
               rules: [
                 {
-                  required: false
+                  required: true
                 }
               ]
             })(<Input maxLength={50} />)}

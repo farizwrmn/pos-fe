@@ -3,13 +3,12 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
 import { FilterItem } from 'components'
 import PrintXLS from './PrintXLS'
 
-const { MonthPicker } = DatePicker
+const { RangePicker } = DatePicker
 
 const leftColumn = {
   xs: 24,
@@ -41,19 +40,10 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
     onListReset()
   }
 
-  const onChange = (date, dateString) => {
-    if (date) {
-      let period = dateString ? moment(dateString).format('M') : null
-      let year = dateString ? moment(dateString).format('Y') : null
-      onChangePeriod(period, year)
-    }
-  }
-
-  const params = location.search.substring(1)
-  let query = params ? JSON.parse(`{"${decodeURI(params).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`) : {}
-
-  if (!query.year && !query.period) {
-    resetFields(['rangePicker'])
+  const onChange = (value) => {
+    const from = value[0].format('YYYY-MM-DD')
+    const to = value[1].format('YYYY-MM-DD')
+    onChangePeriod(from, to)
   }
 
   const printProps = {
@@ -65,8 +55,8 @@ const Filter = ({ onChangePeriod, dispatch, onListReset, form: { resetFields, ge
     <Row>
       <Col {...leftColumn} >
         <FilterItem label="Period">
-          {getFieldDecorator('rangePicker', { initialValue: query.year && query.period ? moment(`${query.year}-${query.period}`, 'YYYY-MM') : '' })(
-            <MonthPicker onChange={onChange} placeholder="Select Period" />
+          {getFieldDecorator('rangePicker')(
+            <RangePicker onChange={onChange} placeholder="Select Period" size="large" format="DD-MMM-YYYY" />
           )}
         </FilterItem>
       </Col>
