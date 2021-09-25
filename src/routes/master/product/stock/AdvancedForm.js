@@ -842,7 +842,7 @@ const AdvancedForm = ({
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label="Location 1" hasFeedback {...formItemLayout}>
+                {/* <FormItem label="Location 1" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('location01', {
                     initialValue: item.location01
                   })(<Input />)}
@@ -851,7 +851,7 @@ const AdvancedForm = ({
                   {getFieldDecorator('location02', {
                     initialValue: item.location02
                   })(<Input />)}
-                </FormItem>
+                </FormItem> */}
               </Col>
               <Col {...column}>
                 <FormItem label="Status" {...formItemLayout}>
@@ -866,7 +866,7 @@ const AdvancedForm = ({
                     initialValue: !!item.exception01
                   })(<Checkbox>Allow</Checkbox>)}
                 </FormItem>
-                <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
+                {/* <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('usageTimePeriod', {
                     initialValue: item.usageTimePeriod,
                     rules: [
@@ -885,7 +885,7 @@ const AdvancedForm = ({
                       }
                     ]
                   })(<InputNumber min={0} maxLength={15} placeholder="km" style={{ width: '60%', marginRight: 0 }} />)}
-                </FormItem>
+                </FormItem> */}
                 {/* <FormItem label="Aspect Ratio" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('aspectRatio', {
                     initialValue: item.aspectRatio
@@ -905,6 +905,14 @@ const AdvancedForm = ({
             </Row>
             <Row>
               <Col {...column}>
+                <FormItem label="Publish on e-commerce" {...formItemLayout}>
+                  {getFieldDecorator('activeShop', {
+                    valuePropName: 'checked',
+                    initialValue: item.activeShop === undefined
+                      ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
+                      : item.activeShop
+                  })(<Checkbox>Publish</Checkbox>)}
+                </FormItem>
                 <FormItem label="Image" {...formItemLayout}>
                   {getFieldDecorator('productImage', {
                     initialValue: item.productImage
@@ -968,6 +976,17 @@ const AdvancedForm = ({
                     </Upload>
                   )}
                 </FormItem>
+                <FormItem label="Dimension" {...formItemLayout}>
+                  {getFieldDecorator('dimension', {
+                    initialValue: item.dimension,
+                    rules: [
+                      {
+                        required: false,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<Input maxLength={30} />)}
+                </FormItem>
                 <FormItem label="Description" {...formItemLayout}>
                   {getFieldDecorator('description', {
                     initialValue: item.description,
@@ -977,16 +996,29 @@ const AdvancedForm = ({
                         message: 'Required when product image is filled'
                       }
                     ]
-                  })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
+                  })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
                 </FormItem>
               </Col>
               <Col {...column}>
-                <FormItem label="Dimension" {...formItemLayout}>
-                  {getFieldDecorator('dimension', {
-                    initialValue: item.dimension,
+                <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
+                  {getFieldDecorator('dimensionBox', {
+                    initialValue: modalType === 'edit' ? item.dimensionBox : 1,
                     rules: [
                       {
-                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                        required: true,
+                        pattern: /^([0-9]{1,5})$/,
+                        message: 'Required when product image is filled'
+                      }
+                    ]
+                  })(<Input maxLength={30} />)}
+                </FormItem>
+                <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
+                  {getFieldDecorator('dimensionPack', {
+                    initialValue: modalType === 'edit' ? item.dimensionPack : 1,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^([0-9]{1,5})$/,
                         message: 'Required when product image is filled'
                       }
                     ]
@@ -998,7 +1030,7 @@ const AdvancedForm = ({
                   {...formItemLayout}
                 >
                   {getFieldDecorator('weight', {
-                    initialValue: item.weight,
+                    initialValue: modalType === 'edit' ? item.weight : '100 g',
                     rules: [
                       {
                         required: true,
@@ -1007,14 +1039,6 @@ const AdvancedForm = ({
                       }
                     ]
                   })(<Input maxLength={20} />)}
-                </FormItem>
-                <FormItem label="Publish on e-commerce" {...formItemLayout}>
-                  {getFieldDecorator('activeShop', {
-                    valuePropName: 'checked',
-                    initialValue: item.activeShop === undefined
-                      ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
-                      : item.activeShop
-                  })(<Checkbox>Publish</Checkbox>)}
                 </FormItem>
               </Col>
             </Row>
