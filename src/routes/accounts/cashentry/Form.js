@@ -135,7 +135,9 @@ const FormCounter = ({
               })(<Input maxLength={40} autoFocus />)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description')(<Input />)}
+              {getFieldDecorator('description', {
+                initialValue: item.description
+              })(<Input maxLength={255} />)}
             </FormItem>
           </Col>
           <Col {...column}>

@@ -91,7 +91,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/jobposition'))
               registerModel(app, require('./models/master/city'))
               registerModel(app, require('./models/misc'))
-              cb(null, require('./routes/master/employee/'))
+              cb(null, require('./routes/master/employee'))
             }, 'master-employee')
           }
         }, {

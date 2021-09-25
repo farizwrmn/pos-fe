@@ -108,7 +108,6 @@ class FormEmployee extends Component {
       onCancel()
       resetFields()
     }
-    console.log('listStoreLov', listStoreLov)
 
     const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
     const stores = listStoreLov.length > 0 ? listStoreLov.map(c => <Option value={c.id} key={c.id}>{c.storeName}</Option>) : []

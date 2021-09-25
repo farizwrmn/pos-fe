@@ -19,6 +19,8 @@ export default modelExtend(pageModel, {
   state: {
     list: [],
     listHris: [],
+    from: undefined,
+    to: undefined,
     period: moment().format('MM'),
     year: moment().format('YYYY'),
     listLovEmployee: [],
@@ -38,8 +40,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const {
           activeKey,
-          period,
-          year
+          from,
+          to
         } = location.query
         const { pathname } = location
         switch (pathname) {
@@ -59,8 +61,8 @@ export default modelExtend(pageModel, {
               dispatch({
                 type: 'getCheckinReport',
                 payload: {
-                  period,
-                  year
+                  from,
+                  to
                 }
               })
             }
@@ -176,7 +178,9 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listHris: response.data
+            listHris: response.data,
+            from: payload.from,
+            to: payload.to
           }
         })
       } else {
