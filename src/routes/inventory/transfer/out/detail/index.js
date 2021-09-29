@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router'
 import { Row, Col, Button, Modal } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
+import FormAccounting from 'components/accounting/FormAccounting'
 import ModalCancel from './ModalCancel'
 import ModalEdit from './ModalEdit'
 import PrintPDF from './PrintPDF'
@@ -14,7 +15,7 @@ import styles from './index.less'
 const { checkPermissionMonthTransaction } = alertModal
 
 const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
-  const { data, listDetail, disableConfirm, showPrint, modalCancelVisible, currentItem, modalEditVisible } = transferOutDetail
+  const { data, listAccounting, listDetail, disableConfirm, showPrint, modalCancelVisible, currentItem, modalEditVisible } = transferOutDetail
   const { listProducts } = transferOut
   const { user, storeInfo } = app
   const content = []
@@ -210,6 +211,11 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
     }
   }
 
+  const formProps = {
+    data,
+    listAccounting
+  }
+
   return (<div className="wrapper">
     <Row>
       <Col lg={7}>
@@ -237,6 +243,12 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
           {data && data[0] && !data[0].posting && !data[0].invoicing && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => postTrans()}>Post</Button>}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
+          </Row>
+        </div>
+        <div className="content-inner-zero-min-height">
+          <h1>Accounting Journal</h1>
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <FormAccounting {...formProps} />
           </Row>
         </div>
       </Col>

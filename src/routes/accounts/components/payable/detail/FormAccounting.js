@@ -2,64 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Form
-  // Button,
-  // Row
 } from 'antd'
 import ListAccounting from './ListAccounting'
 
-// const FormItem = Form.Item
-
-// const formItemLayout = {
-//   labelCol: {
-//     xs: {
-//       span: 13
-//     },
-//     sm: {
-//       span: 8
-//     },
-//     md: {
-//       span: 7
-//     }
-//   },
-//   wrapperCol: {
-//     xs: {
-//       span: 11
-//     },
-//     sm: {
-//       span: 14
-//     },
-//     md: {
-//       span: 14
-//     }
-//   }
-// }
-
 const FormAccounting = ({
-  listAccounting,
-  cancelPayment,
-  editItem,
-  cashierInformation,
-  form: {
-    resetFields
-  }
+  listAccounting
 }) => {
   const listProps = {
-    dataSource: listAccounting,
-    cashierInformation,
-    cancelPayment,
-    editList (data) {
-      editItem(data)
-      resetFields()
-    }
+    dataSource: listAccounting
   }
 
   return (
     <Form layout="horizontal">
-      {/* <Row>
-        <FormItem style={{ margin: '5px 10px', float: 'right' }} {...formItemLayout}>
-          <Button onClick={() => showModal('modalVisible')} disabled={curPayment >= (data.length > 0 ? data[0].nettoTotal : 0)}>Add</Button>
-        </FormItem>
-      </Row> */}
       <ListAccounting {...listProps} />
     </Form>
   )
