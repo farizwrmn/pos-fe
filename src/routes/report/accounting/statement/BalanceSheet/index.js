@@ -8,8 +8,9 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, accountingStatementReport, fifoReport, loading, app }) => {
+const Report = ({ dispatch, userStore, accountingStatementReport, fifoReport, loading, app }) => {
   const { listBalanceSheet: listTrans, listProfit, from, to, productCode } = accountingStatementReport
+  const { listAllStores } = userStore
   const { listRekap } = fifoReport
   const { user, storeInfo } = app
   const browseProps = {
@@ -26,6 +27,7 @@ const Report = ({ dispatch, accountingStatementReport, fifoReport, loading, app 
   }
 
   const filterProps = {
+    listAllStores,
     listTrans,
     listProfit,
     listRekap,
@@ -39,27 +41,13 @@ const Report = ({ dispatch, accountingStatementReport, fifoReport, loading, app 
         type: 'accountingStatementReport/setListNull'
       })
     },
-    onDateChange (to) {
-      // dispatch({
-      //   type: 'accountingStatementReport/queryBalanceSheet',
-      //   payload: {
-      //     from,
-      //     to
-      //   }
-      // })
-      // dispatch({
-      //   type: 'accountingStatementReport/setDate',
-      //   payload: {
-      //     from,
-      //     to
-      //   }
-      // })
+    onDateChange (value) {
       const { pathname, query } = location
       dispatch(routerRedux.push({
         pathname,
         query: {
           ...query,
-          to
+          ...value
         }
       }))
     }
@@ -74,10 +62,11 @@ const Report = ({ dispatch, accountingStatementReport, fifoReport, loading, app 
 }
 
 Report.propTyps = {
+  userStore: PropTypes.object,
   fifoReport: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
   accountingStatementReport: PropTypes.object
 }
 
-export default connect(({ loading, fifoReport, accountingStatementReport, app }) => ({ loading, fifoReport, accountingStatementReport, app }))(Report)
+export default connect(({ loading, userStore, fifoReport, accountingStatementReport, app }) => ({ loading, userStore, fifoReport, accountingStatementReport, app }))(Report)
