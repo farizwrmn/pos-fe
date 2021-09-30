@@ -35,19 +35,6 @@ const Report = ({ dispatch, accountingStatementReport, loading, app }) => {
       })
     },
     onDateChange (from, to) {
-      dispatch({
-        type: 'accountingStatementReport/queryBalanceSheet',
-        payload: {
-          listTrans: []
-        }
-      })
-      // dispatch({
-      //   type: 'accountingStatementReport/setDate',
-      //   payload: {
-      //     from,
-      //     to
-      //   }
-      // })
       const { pathname, query } = location
       dispatch(routerRedux.push({
         pathname,

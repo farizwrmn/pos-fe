@@ -2,6 +2,8 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
+import { queryEntryList } from 'services/payment/bankentry'
+import { MUIN } from 'utils/variable'
 import { queryTrans, queryDetail, voidTrans } from '../../../services/transferStockIn.js'
 
 const { stockMinusAlert } = alertModal
@@ -14,6 +16,7 @@ export default {
     itemCancel: {},
     showPrint: false,
     data: [],
+    listAccounting: [],
     listDetail: [],
     listAmount: [],
     listPaymentOpts: [],
@@ -58,6 +61,15 @@ export default {
           })
         }
         if (data.success) {
+          let listAccounting = []
+          const reconData = yield call(queryEntryList, {
+            transactionId: invoiceInfo.mutasi.id,
+            transactionType: MUIN,
+            type: 'all'
+          })
+          if (reconData && reconData.data) {
+            listAccounting = listAccounting.concat(reconData.data)
+          }
           yield put({
             type: 'querySuccess',
             payload: {
@@ -67,7 +79,8 @@ export default {
           yield put({
             type: 'updateState',
             payload: {
-              listDetail: dataDetail
+              listDetail: dataDetail,
+              listAccounting
             }
           })
         }

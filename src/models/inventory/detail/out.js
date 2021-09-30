@@ -2,6 +2,8 @@ import pathToRegexp from 'path-to-regexp'
 import { Modal } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
+import { queryEntryList } from 'services/payment/bankentry'
+import { MUOUT } from 'utils/variable'
 import { queryByTrans, queryDetail, editPrice, queryPrice, queryPriceList, postTrans, voidTrans } from '../../../services/transferStockOut.js'
 
 export default {
@@ -12,6 +14,7 @@ export default {
     itemCancel: {},
     showPrint: false,
     data: [],
+    listAccounting: [],
     listDetail: [],
     listAmount: [],
     listPaymentOpts: [],
@@ -177,6 +180,15 @@ export default {
           })
         }
         if (data.success) {
+          let listAccounting = []
+          const reconData = yield call(queryEntryList, {
+            transactionId: invoiceInfo.mutasi.id,
+            transactionType: MUOUT,
+            type: 'all'
+          })
+          if (reconData && reconData.data) {
+            listAccounting = listAccounting.concat(reconData.data)
+          }
           yield put({
             type: 'querySuccess',
             payload: {
@@ -186,7 +198,8 @@ export default {
           yield put({
             type: 'updateState',
             payload: {
-              listDetail: dataDetail
+              listDetail: dataDetail,
+              listAccounting
             }
           })
         }

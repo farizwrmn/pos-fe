@@ -1,4 +1,4 @@
-import { request, crypt, lstorage } from 'utils'
+import { request, crypt } from 'utils'
 
 export async function queryProfitLoss (params = {}) {
   // eslint-disable-next-line eqeqeq
@@ -12,7 +12,6 @@ export async function queryProfitLoss (params = {}) {
 }
 
 export async function queryBalanceSheet (params = {}) {
-  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/report/accounting/balance-sheet',
@@ -23,7 +22,6 @@ export async function queryBalanceSheet (params = {}) {
 }
 
 export async function queryCashFlow (params = {}) {
-  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/report/accounting/cash-flow',

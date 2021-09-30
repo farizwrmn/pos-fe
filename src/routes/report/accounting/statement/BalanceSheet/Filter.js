@@ -4,10 +4,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
+
+const { Option } = Select
 
 const leftColumn = {
   xs: 24,
@@ -26,13 +28,20 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
   const { to } = printProps
-  const handleChange = (date) => {
-    if (date) {
-      const to = date.format('YYYY-MM-DD')
-      onDateChange(to)
-    }
+  const handleChange = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getFieldsValue()
+      const params = {
+        storeId: data.storeId,
+        to: data.to.format('YYYY-MM-DD')
+      }
+      onDateChange(params)
+    })
   }
 
   const handleReset = () => {
@@ -51,18 +60,51 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
     onListReset()
   }
 
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+
   return (
     <Row>
       <Col {...leftColumn} >
         <FilterItem label="Trans Date">
           {getFieldDecorator('to', {
-            initialValue: to ? moment.utc(to, 'YYYY-MM-DD') : null
+            initialValue: to ? moment.utc(to, 'YYYY-MM-DD') : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
           })(
-            <DatePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+            <DatePicker size="large" format="DD-MMM-YYYY" />
+          )}
+        </FilterItem>
+        <FilterItem
+          label="Store"
+          help="clear it if available all stores"
+        >
+          {getFieldDecorator('storeId')(
+            <Select
+              mode="multiple"
+              allowClear
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose StoreId"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenTransNo}
+            </Select>
           )}
         </FilterItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleChange()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"

@@ -10,7 +10,13 @@ import { numberFormat } from 'utils'
 
 const numberFormatter = numberFormat.numberFormatter
 
-const List = (tableProps) => {
+const List = ({ cancelPayment, ...tableProps }) => {
+  // const hdlDropOptionClick = (record, e) => {
+  //   if (e.key === '1') {
+  //     cancelPayment(record)
+  //   }
+  // }
+
   const columns = [
     {
       title: 'ID',
