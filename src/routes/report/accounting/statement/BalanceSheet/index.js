@@ -14,7 +14,7 @@ const Report = ({ dispatch, userStore, accountingStatementReport, fifoReport, lo
   const { listRekap } = fifoReport
   const { user, storeInfo } = app
   const browseProps = {
-    loading: loading.effects['accountingStatementReport/queryBalanceSheet'],
+    loading: loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query'],
     dataSource: listTrans,
     listTrans,
     listProfit,
