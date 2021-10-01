@@ -83,6 +83,7 @@ export default {
         yield put({
           type: 'query',
           payload: {
+            storeId: payload.storeId || undefined,
             to: payload.to
           }
         })
