@@ -58,6 +58,23 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/accounts/payable-form') {
+          dispatch({
+            type: 'queryExpense',
+            payload: {
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'
@@ -97,7 +114,6 @@ export default modelExtend(pageModel, {
         }
         if (
           pathname === '/master/account'
-          || pathname === '/accounts/payable-form'
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',

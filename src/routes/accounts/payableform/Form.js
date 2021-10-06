@@ -48,13 +48,11 @@ const FormCounter = ({
   modalVisible,
   listAccountCode,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
+  listAccountCodeExpense,
+  listAccountExpenseOpt = (listAccountCodeExpense || []).length > 0 ? listAccountCodeExpense.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
   modalProps,
-  listPayment,
   listDetailProps,
-  listOpts,
   listSupplier,
-  bankOpt = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{`${c.name} ${c.accountCode && c.accountCode.accountCode ? `(${c.accountCode.accountCode})` : ''}`}</Option>) : [],
-  paymentOpt = (listOpts || []).length > 0 ? listOpts.filter(filtered => filtered.typeCode !== 'C').map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
   updateCurrentItem,
@@ -302,62 +300,22 @@ const FormCounter = ({
             </FormItem>
           </Col>
           <Col {...column}>
-            <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('typeCode', {
-                initialValue: modalType === 'edit' && item.typeCode ? {
-                  key: item.typeCode,
-                  label: `${item.typeName} (${item.typeCode})`
-                }
-                  : undefined,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
+            <FormItem {...formItemLayout} label="Bank">
+              {getFieldDecorator('accountId', {
+                initialValue: item.accountId,
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
               })(<Select
                 showSearch
                 allowClear
-                onFocus={() => showLov('paymentOpts')}
                 optionFilterProp="children"
                 labelInValue
                 filterOption={filterOption}
-              >{paymentOpt}
+              >{listAccountOpt}
               </Select>)}
             </FormItem>
-            {getFieldValue('typeCode') && getFieldValue('typeCode').key !== 'C' && (
-              <FormItem label="Bank" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('bankId', {
-                  initialValue: modalType === 'edit' && item.bankId ? {
-                    key: item.bankId,
-                    label: `${item.bankName} (${item.bankCode})`
-                  }
-                    : undefined,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') && getFieldValue('typeCode').key !== 'C'
-                    }
-                  ]
-                })(
-                  // <AutoComplete {...autoCompleteProps} />
-                  <Select
-                    showSearch
-                    allowClear
-                    onFocus={() => {
-                      validateFields(['typeCode'], (errors) => {
-                        if (errors) {
-                          return
-                        }
-                        showLov('paymentEdc', { paymentOption: getFieldValue('typeCode').key, type: 'all' })
-                      })
-                    }}
-                    optionFilterProp="children"
-                    labelInValue
-                    filterOption={filterOption}
-                  >{bankOpt}
-                  </Select>
-                )}
-              </FormItem>
-            )}
             <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
               {getFieldDecorator('discount', {
                 initialValue: 0,
@@ -388,7 +346,7 @@ const FormCounter = ({
                 optionFilterProp="children"
                 labelInValue
                 filterOption={filterOption}
-              >{listAccountOpt}
+              >{listAccountExpenseOpt}
               </Select>)}
             </FormItem>
           </Col>
