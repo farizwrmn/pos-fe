@@ -9,6 +9,7 @@ import moment from 'moment'
 
 
 const Browse = ({
+  pagination,
   onEndPeriod, onStartPeriod, accountActive,
   ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
@@ -100,6 +101,7 @@ const Browse = ({
       }
     }
   ]
+
   return (
     <div>
       <Row>
@@ -119,6 +121,7 @@ const Browse = ({
           <Table
             {...tableProps}
             bordered
+            pagination={pagination}
             scroll={{ x: '1480px', y: '240px' }}
             columns={columns}
             simple
