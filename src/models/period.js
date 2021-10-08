@@ -123,44 +123,36 @@ export default {
       }
     },
     * end ({ payload }, { call, put }) {
-      if (payload.storeId === lstorage.getCurrentUserStore()) {
-        payload.storeid = lstorage.getCurrentUserStore()
-        const period = moment(payload.endPeriod).format('M')
-        const year = moment(payload.endPeriod).format('YYYY')
-        const check = yield call(queryFifo, { period, year })
-        const dataCheck = check.data.filter(el => el.count < 0)
-        if (dataCheck.length > 0) {
-          console.log('dataCheck', dataCheck[0])
-          Modal.warning({
-            title: 'Inventory Error',
-            content: `Please Check Inventory before Closed transaction ${dataCheck[0].productCode}`
-          })
-        } else if (dataCheck.length === 0) {
-          const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
-          if (data.success) {
-            yield put({ type: 'addPeriod', payload })
-          } else {
-            Modal.error({
-              title: 'Something went wrong',
-              content: 'Try restart transaction'
-            })
-          }
-          if (data.success) {
-            yield put({ type: 'modalCloseHide' })
-            yield put({ type: 'queryPeriod' })
-            Modal.info({
-              title: 'Last period',
-              content: 'Last period has been closed'
-            })
-          } else {
-            throw data
-          }
-        }
-      } else {
+      const period = moment(payload.endPeriod).format('M')
+      const year = moment(payload.endPeriod).format('YYYY')
+      const check = yield call(queryFifo, { period, year, store: payload.storeId })
+      const dataCheck = check.data.filter(el => el.count < 0)
+      if (dataCheck.length > 0) {
+        console.log('dataCheck', dataCheck[0])
         Modal.warning({
-          title: 'Cannot close another store period',
-          content: `You are currently at ${lstorage.getCurrentUserStoreName()}`
+          title: 'Inventory Error',
+          content: `Please Check Inventory before Closed transaction ${dataCheck[0].productCode}`
         })
+      } else if (dataCheck.length === 0) {
+        const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
+        if (data.success) {
+          yield put({ type: 'addPeriod', payload })
+        } else {
+          Modal.error({
+            title: 'Something went wrong',
+            content: 'Try restart transaction'
+          })
+        }
+        if (data.success) {
+          yield put({ type: 'modalCloseHide' })
+          yield put({ type: 'queryPeriod' })
+          Modal.info({
+            title: 'Last period',
+            content: 'Last period has been closed'
+          })
+        } else {
+          throw data
+        }
       }
     }
   },
