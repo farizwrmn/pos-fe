@@ -89,6 +89,7 @@ class FormEmployee extends Component {
         const data = {
           ...getFieldsValue()
         }
+        data.positionId = data.positionId ? data.positionId.key : null
         if (data.employeeId) {
           Modal.confirm({
             title: 'Do you want to save this item?',
@@ -156,7 +157,7 @@ class FormEmployee extends Component {
               </FormItem>
               <FormItem label="Position" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('positionId', {
-                  initialValue: item.positionId,
+                  initialValue: item.positionId ? { key: item.positionId } : {},
                   rules: [
                     {
                       required: true
@@ -166,6 +167,10 @@ class FormEmployee extends Component {
                   optionFilterProp="children"
                   onFocus={() => jobPosition()}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+
+                  showSearch
+                  allowClear
+                  labelInValue
                 >{jobposition}
                 </Select>)}
               </FormItem>

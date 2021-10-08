@@ -130,9 +130,10 @@ export default {
         const check = yield call(queryFifo, { period, year })
         const dataCheck = check.data.filter(el => el.count < 0)
         if (dataCheck.length > 0) {
+          console.log('dataCheck', dataCheck[0])
           Modal.warning({
             title: 'Inventory Error',
-            content: 'Please Check Inventory before Closed transaction'
+            content: `Please Check Inventory before Closed transaction ${dataCheck[0].productCode}`
           })
         } else if (dataCheck.length === 0) {
           const data = yield call(updatePeriod, { id: payload.accountNumber, data: payload })
