@@ -97,7 +97,7 @@ export default {
     * addPeriod ({ payload }, { call, put }) {
       const invoice = {
         seqCode: 'PRD',
-        type: lstorage.getCurrentUserStore()
+        type: payload.storeId
       }
       const transNo = yield call(querySequence, invoice)
       // const misc = yield call(miscQuery, { code: 'FORMAT', name: 'PERIODE' })
@@ -106,7 +106,6 @@ export default {
       // const formatAccount = `${formatType}/${dateFormat}/0001`
       payload.accountNumber = transNo.data
       payload.active = 1
-      payload.storeId = lstorage.getCurrentUserStore()
       payload.startPeriod = moment(moment(payload.endPeriod).add(1, 'days')).format('YYYY-MM-DD')
       payload.endPeriod = moment(payload.startPeriod).endOf('month')
       const data = yield call(createPeriod, { id: payload.accountNumber, data: payload })
