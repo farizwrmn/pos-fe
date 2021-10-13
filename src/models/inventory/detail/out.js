@@ -57,13 +57,21 @@ export default {
           const filteredLatest = response.price
             // eslint-disable-next-line eqeqeq
             .filter(filtered => filtered.productId == item.productId)
+          let masterCostPrice = 0
+          const masterProduct = response.product
+            // eslint-disable-next-line eqeqeq
+            .filter(filtered => filtered.id == item.productId)
+          if (masterProduct && masterProduct[0]) {
+            masterCostPrice = masterProduct[0].costPrice
+          }
+
           yield put({
             type: 'transferOutDetail/editPrice',
             payload: {
               data: {
                 productId: item.productId,
                 purchasePrice: item && item.qty && item.qty > 0 && filteredPrice && filteredPrice[0]
-                  ? Math.ceil(filteredPrice[0].purchasePrice) : 0,
+                  ? (filteredPrice[0].purchasePrice > 0 ? Math.ceil(filteredPrice[0].purchasePrice) : masterCostPrice) : 0,
                 latestPrice: filteredLatest && filteredLatest[0] ? Math.ceil(filteredLatest[0].purchasePrice) : 0
               },
               break: true

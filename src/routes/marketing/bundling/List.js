@@ -4,6 +4,7 @@ import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
 import { calendar } from 'utils'
 import { IMAGEURL } from 'utils/config.company'
+import { withoutFormat } from 'utils/string'
 
 const { dayByNumber } = calendar
 
@@ -38,7 +39,7 @@ const List = ({ ...tableProps, editItem, voidItem }) => {
           && text !== 'no_image.png') {
           const item = JSON.parse(text)
           if (item && item[0]) {
-            return <img height="20px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+            return <img height="70px" src={`${IMAGEURL}/${withoutFormat(item[0])}-main.jpg`} alt="no_image" />
           }
         }
         return (<div>No Image</div>)

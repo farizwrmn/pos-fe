@@ -6,7 +6,7 @@ import { DropOption } from 'components'
 import moment from 'moment'
 import { IMAGEURL } from 'utils/config.company'
 import { lstorage } from 'utils'
-import { getDistPriceName } from 'utils/string'
+import { getDistPriceName, withoutFormat } from 'utils/string'
 import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -60,7 +60,7 @@ const List = ({ ...tableProps,
           && text !== 'no_image.png') {
           const item = JSON.parse(text)
           if (item && item[0]) {
-            return <img height="70px" src={`${IMAGEURL}/${item[0]}`} alt="no_image" />
+            return <img height="70px" src={`${IMAGEURL}/${withoutFormat(item[0])}-main.jpg`} alt="no_image" />
           }
         }
         return null
