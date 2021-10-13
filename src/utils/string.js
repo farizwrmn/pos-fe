@@ -75,6 +75,12 @@ const getDistPriceName = (fromStock) => {
   return fromStock
 }
 
+function withoutFormat (file) {
+  const formats = ['png', 'jpg', 'jpeg', 'gif']
+  const regex = new RegExp(`.(${formats.join('|')})$`, 'gi')
+  return file.replace(regex, '')
+}
+
 export {
   currencyFormatter,
   numberFormatter,
@@ -82,5 +88,6 @@ export {
   composeData,
   countFollower,
   getLinkName,
-  getDistPriceName
+  getDistPriceName,
+  withoutFormat
 }
