@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
@@ -85,6 +86,19 @@ const List = ({ ...tableProps, editItem, voidItem }) => {
       render: (text, record) => {
         return `${record.startHour} ~ ${record.endHour}`
       }
+    },
+    {
+      title: 'Publish',
+      dataIndex: 'activeShop',
+      key: 'activeShop',
+      width: 100,
+      render: text => (
+        <span>
+          <Tag color={text == '1' ? 'green' : 'red'}>
+            {text == '1' ? 'Published' : 'Offline'}
+          </Tag>
+        </span>
+      )
     },
     {
       title: 'Status',
