@@ -42,7 +42,10 @@ import { groupProduct } from './utils'
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans, getBundleTrans, getConsignment, getServiceTrans } = lstorage
+const {
+  getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
+  setCashierTrans, setBundleTrans, setServiceTrans
+} = lstorage
 // const FormItem = Form.Item
 
 // const formItemLayout1 = {
@@ -1213,7 +1216,7 @@ const Pos = ({
             total: selectedPrice * (checkExists[0].qty + qty)
           }
 
-          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+          setServiceTrans(JSON.stringify(arrayProd))
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1292,7 +1295,7 @@ const Pos = ({
             total: selectedPrice * qty
           })
 
-          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+          setServiceTrans(JSON.stringify(arrayProd))
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1482,6 +1485,7 @@ const Pos = ({
           type: dataBundleFiltered[o].type,
           code: dataBundleFiltered[o].code,
           name: dataBundleFiltered[o].name,
+          categoryCode: dataBundleFiltered[0].categoryCode,
           startDate: dataBundleFiltered[o].startDate,
           endDate: dataBundleFiltered[o].endDate,
           startHour: dataBundleFiltered[o].startHour,
@@ -1490,9 +1494,9 @@ const Pos = ({
           qty: dataBundleFiltered[o].qty
         })
       }
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProduct))
-      localStorage.setItem('service_detail', JSON.stringify(arrayService))
-      localStorage.setItem('bundle_promo', JSON.stringify(arrayBundle))
+      setCashierTrans(JSON.stringify(arrayProduct))
+      setServiceTrans(JSON.stringify(arrayService))
+      setBundleTrans(JSON.stringify(arrayBundle))
 
       dispatch({
         type: 'pos/updateState',

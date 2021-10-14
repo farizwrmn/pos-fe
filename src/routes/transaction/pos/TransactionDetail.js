@@ -87,11 +87,12 @@ const TransactionDetail = ({
     })
   }
 
-  const modalEditBundle = () => {
+  const modalEditBundle = (item) => {
+    console.log('item', item)
     dispatch({
-      type: 'pos/updateState',
+      type: 'pos/openVoidSuspend',
       payload: {
-        modalVoidSuspendVisible: true
+        item
       }
     })
   }

@@ -1,5 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {
+  setCashierTrans,
+  setServiceTrans,
+  setBundleTrans
+} from 'utils/lstorage'
 import { Card, Table, Modal, Button, Tabs } from 'antd'
 import { connect } from 'dva'
 
@@ -91,9 +96,9 @@ const ListQueue = ({ pos, dispatch }) => {
           memberId: trans.id
         }
       })
-      localStorage.setItem('cashier_trans', JSON.stringify(trans.cashier_trans))
-      localStorage.setItem('service_detail', JSON.stringify(trans.service_detail))
-      localStorage.setItem('bundle_promo', JSON.stringify(trans.bundle_promo))
+      setCashierTrans(JSON.stringify(trans.cashier_trans))
+      setServiceTrans(JSON.stringify(trans.service_detail))
+      setBundleTrans(JSON.stringify(trans.bundle_promo))
       localStorage.setItem('queue', JSON.stringify(queue))
       dispatch({
         type: 'pos/setCurTotal'

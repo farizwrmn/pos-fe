@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey } from './lstorage'
+import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -113,7 +113,7 @@ const insertCashierTrans = (dataObject) => {
     })
   }
 
-  localStorage.setItem('cashier_trans', JSON.stringify(newData))
+  setCashierTrans(JSON.stringify(newData))
 
   return previousData
 }
@@ -144,7 +144,7 @@ const insertConsignment = (dataObject) => {
     disc3: dataObject.disc3,
     total
   })
-  localStorage.setItem('consignment', JSON.stringify(previousData))
+  setConsignment(JSON.stringify(previousData))
 
   return previousData
 }

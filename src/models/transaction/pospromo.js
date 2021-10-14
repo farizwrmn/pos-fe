@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { compare, posTotal } from 'utils'
+import { setCashierTrans, setServiceTrans, setBundleTrans } from 'utils/lstorage'
 import { query } from '../../services/marketing/bundling'
 import { query as queryRules } from '../../services/marketing/bundlingRules'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
@@ -244,6 +245,7 @@ export default modelExtend(pageModel, {
             no: (arrayProd || []).length + 1,
             applyMultiple: currentBundle[n].applyMultiple,
             bundleId: currentBundle[n].bundleId,
+            categoryCode: currentBundle[n].categoryCode,
             type: currentBundle[n].type,
             code: currentBundle[n].code,
             name: currentBundle[n].name,
@@ -270,7 +272,7 @@ export default modelExtend(pageModel, {
             qty: currentBundle[n].qty
           })
         }
-        localStorage.setItem('bundle_promo', JSON.stringify(arrayProd))
+        setBundleTrans(JSON.stringify(arrayProd))
       }
       yield put({
         type: 'updateState',
@@ -284,6 +286,7 @@ export default modelExtend(pageModel, {
         no: (currentBundle || []).length + 1,
         applyMultiple: item.applyMultiple,
         bundleId: item.id,
+        categoryCode: item.categoryCode,
         type: item.type,
         code: item.code,
         name: item.name,
@@ -294,7 +297,7 @@ export default modelExtend(pageModel, {
         availableDate: item.availableDate,
         qty: 1
       })
-      localStorage.setItem('bundle_promo', JSON.stringify(currentBundle))
+      setBundleTrans(JSON.stringify(currentBundle))
       yield put({
         type: 'updateState',
         payload: {}
@@ -401,7 +404,7 @@ export default modelExtend(pageModel, {
             arrayProd.push(data)
           }
         }
-        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        setCashierTrans(JSON.stringify(arrayProd))
       }
       yield put({
         type: 'updateState',
@@ -539,7 +542,7 @@ export default modelExtend(pageModel, {
             })
           }
         }
-        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        setServiceTrans(JSON.stringify(arrayProd))
       }
       yield put({
         type: 'updateState',

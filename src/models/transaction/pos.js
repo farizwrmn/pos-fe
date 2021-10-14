@@ -11,6 +11,7 @@ import {
 import {
   queryPaymentSplit
 } from 'services/payment/payment'
+import { query as queryReward } from 'services/marketing/bundlingReward'
 import { queryById as queryStoreById } from '../../services/store/store'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
@@ -55,7 +56,10 @@ import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } f
 const { prefix } = configMain
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
-const { getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
+const {
+  getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
+  setCashierTrans, setServiceTrans, setConsignment
+} = lstorage
 
 const { updateCashierTrans } = cashierService
 
@@ -297,7 +301,7 @@ export default {
     * paymentEdit ({ payload }, { put }) {
       let dataPos = getCashierTrans()
       dataPos[payload.no - 1] = payload
-      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
+      setCashierTrans(JSON.stringify(dataPos))
       yield put({ type: 'hidePaymentModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -305,7 +309,7 @@ export default {
     * serviceEdit ({ payload }, { put }) {
       let dataPos = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
       dataPos[payload.no - 1] = payload
-      localStorage.setItem('service_detail', JSON.stringify(dataPos))
+      setServiceTrans(JSON.stringify(dataPos))
       yield put({ type: 'hideServiceModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -320,7 +324,7 @@ export default {
         return
       }
       dataPos[payload.no - 1] = payload
-      localStorage.setItem('consignment', JSON.stringify(dataPos))
+      setConsignment(JSON.stringify(dataPos))
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -368,8 +372,8 @@ export default {
           dataConsignment[key].total = dataConsignment[key].sellPrice * item.qty
         }
       }
-      localStorage.setItem('consignment', JSON.stringify(dataConsignment))
-      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
+      setConsignment(JSON.stringify(dataConsignment))
+      setCashierTrans(JSON.stringify(dataPos))
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -433,7 +437,7 @@ export default {
           type: 'hidePaymentModal'
         })
       } else {
-        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        setCashierTrans(JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -493,7 +497,7 @@ export default {
           type: 'hideServiceListModal'
         })
       } else {
-        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        setServiceTrans(JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -558,7 +562,7 @@ export default {
           type: 'hideConsignmentListModal'
         })
       } else {
-        localStorage.setItem('consignment', JSON.stringify(arrayProd))
+        setConsignment(JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -1650,6 +1654,27 @@ export default {
           arrayProd,
           setting,
           type: payload.type
+        }
+      })
+    },
+
+    * openVoidSuspend ({ payload = {} }, { call, put }) {
+      const { bundleId } = payload
+      const dataReward = yield call(queryReward, { bundleId, type: 'all' })
+      console.log('dataReward', dataReward)
+      if (dataReward && dataReward.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalVoidSuspendVisible: true
+          }
+        })
+        return
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalVoidSuspendVisible: true
         }
       })
     },

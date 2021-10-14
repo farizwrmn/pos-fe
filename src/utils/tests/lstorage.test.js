@@ -1,4 +1,4 @@
-import { getCashierTrans, putStorageKey, removeAllKey, getIdBE, getDomainBE, getPortBE, removeItemKeys, removeItemKey, getItem } from '../lstorage'
+import { getCashierTrans, putStorageKey, removeAllKey, getIdBE, getDomainBE, getPortBE, removeItemKeys, removeItemKey, getItem, setCashierTrans } from '../lstorage'
 
 it('Return Cashier Trans LocalStorage', () => {
   const arrayItem = [
@@ -21,7 +21,7 @@ it('Return Cashier Trans LocalStorage', () => {
       total: 200000
     }
   ]
-  localStorage.setItem('cashier_trans', JSON.stringify(arrayItem))
+  setCashierTrans(JSON.stringify(arrayItem))
   expect(getCashierTrans()).toEqual(arrayItem)
 })
 

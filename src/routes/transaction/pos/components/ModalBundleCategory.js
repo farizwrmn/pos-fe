@@ -52,8 +52,8 @@ const modal = ({
         <Button size="large" key="back" onClick={handleCancel}>
           Cancel
         </Button>,
-        <Button size="large" key="delete" type="danger" onClick={handleDelete}>
-          Void
+        <Button size="large" key="submit" type="primary" onClick={handleDelete}>
+          Submit
         </Button>
       ]}
     >
