@@ -19,6 +19,11 @@ export default modelExtend(pageModel, {
     typeModal: null,
     modalPromoVisible: false,
     currentReward: {},
+
+    // Start - Category Promo List
+    listCategory: [],
+    // End - Category Promo List
+
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -49,23 +54,17 @@ export default modelExtend(pageModel, {
         return
       }
 
-      const { bundleId, currentBundle, currentProduct, currentService, reject, resolve, ...other } = payload
+      const { bundleId, currentBundle, currentProduct, currentService } = payload
       const data = yield call(query, { id: bundleId })
-      const dataRules = yield call(queryRules, { bundleId, ...other })
-      const dataReward = yield call(queryReward, { bundleId, ...other })
+      const dataRules = yield call(queryRules, { bundleId, type: 'all' })
+      const dataReward = yield call(queryReward, { bundleId, type: 'all' })
       if (data.success && dataRules.success && dataReward.success) {
         const item = data.data[0]
-        // const itemRulesProduct = dataRules.data.filter(x => x.type === 'P')
-        // const itemRulesService = dataRules.data.filter(x => x.type !== 'P')
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
         const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
         if (item && dataRules.data && dataReward.data) {
           const resultCompareBundle = compareBundleExists(currentBundle, item)
-          // const resultCompareRulesProductRequired = compareExistsByIdAndQty(currentProduct, itemRulesProduct)
-          // const resultCompareRulesServiceRequired = compareExistsByIdAndQty(currentService, itemRulesService)
-          // const resultCompareRulesProduct = compareExistsById(currentProduct, itemRulesProduct)
-          // const resultCompareRulesService = compareExistsById(currentService, itemRulesService)
           const resultCompareRewardProduct = compareExistsById(currentProduct, itemRewardProduct)
           const resultCompareRewardService = compareExistsById(currentService, itemRewardService)
           const result = resultCompareRewardProduct.data || resultCompareRewardService.data

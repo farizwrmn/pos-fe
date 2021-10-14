@@ -31,6 +31,7 @@ import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
+import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
@@ -41,7 +42,7 @@ import { groupProduct } from './utils'
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans, getBundleTrans, getConsignment } = lstorage
+const { getCashierTrans, getBundleTrans, getConsignment, getServiceTrans } = lstorage
 // const FormItem = Form.Item
 
 // const formItemLayout1 = {
@@ -102,6 +103,7 @@ const Pos = ({
     // curCashierNo,
     modalQueueVisible,
     modalVoidSuspendVisible,
+    modalBundleCategoryVisible,
     modalWorkOrderVisible,
     listUnitUsage,
     showAlert,
@@ -1388,7 +1390,7 @@ const Pos = ({
     }
   }
 
-  const ModalVoidSuspendProps = {
+  const modalVoidSuspendProps = {
     visible: modalVoidSuspendVisible,
     onCancel () {
       dispatch({
@@ -1521,6 +1523,19 @@ const Pos = ({
     }
   }
 
+  const modalBundleCategoryProps = {
+    visible: modalBundleCategoryVisible,
+    onCancel () {
+
+    },
+    onCancelList () {
+
+    },
+    onVoid () {
+
+    }
+  }
+
   const handleKeyPress = async (e, kodeUtil) => {
     const { value } = e.target
     if (value && value !== '') {
@@ -1638,11 +1653,10 @@ const Pos = ({
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
-        type: 'all',
         bundleId: item.id,
-        currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+        currentBundle: getBundleTrans(),
         currentProduct: getCashierTrans(),
-        currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        currentService: getServiceTrans()
       }
     })
   }
@@ -1746,7 +1760,8 @@ const Pos = ({
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
-            {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
+            {modalVoidSuspendVisible && <ModalVoidSuspend {...modalVoidSuspendProps} />}
+            {modalVoidSuspendVisible && <ModalBundleCategory {...modalBundleCategoryProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}

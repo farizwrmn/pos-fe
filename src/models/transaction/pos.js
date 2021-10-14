@@ -55,7 +55,7 @@ import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } f
 const { prefix } = configMain
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
-const { getCashierTrans, getConsignment } = lstorage
+const { getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
 
 const { updateCashierTrans } = cashierService
 
@@ -106,6 +106,7 @@ export default {
     modalServiceVisible: false,
     modalQueueVisible: false,
     modalVoidSuspendVisible: false,
+    modalBundleCategoryVisible: false,
     modalVisible: false,
     modalPrintVisible: false,
     modalCancelVisible: false,
@@ -1808,14 +1809,6 @@ export default {
               type: payload.type
             }
           })
-          // yield put({
-          //   type: 'pos/updateState',
-          //   payload: {
-          //     paymentListActiveKey: '1'
-          //     // ,
-          //     // modalProductVisible: false
-          //   }
-          // })
         } else if ((checkExists || []).length > 0 && checkExists[0].bundleId) {
           Modal.warning({
             title: 'Exists in bundle',
@@ -1827,45 +1820,6 @@ export default {
             content: 'Already Exists in list'
           })
         }
-        //   const currentItem = checkExists[0]
-        //   const newQty = currentItem.qty + 1
-        //   const price = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-        //   const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
-        //   const data = {
-        //     no: currentItem.no,
-        //     code: item.productCode,
-        //     bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
-        //     bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
-        //     productId: item.id,
-        //     name: item.productName,
-        //     retailPrice: item.sellPrice,
-        //     distPrice01: item.distPrice01,
-        //     distPrice02: item.distPrice02,
-        //     distPrice03: item.distPrice03,
-        //     distPrice04: item.distPrice04,
-        //     distPrice05: item.distPrice05,
-        //     employeeId: mechanicInformation.employeeId,
-        //     employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-        //     typeCode: 'P',
-        //     qty: newQty,
-        //     sellPrice: showDiscountPrice,
-        //     price,
-        //     discount: 0,
-        //     disc1: 0,
-        //     disc2: 0,
-        //     disc3: 0,
-        //     total: price * newQty
-        //   }
-
-        //   arrayProd.push(data)
-        //   yield put({
-        //     type: 'pos/checkQuantityEditProduct',
-        //     payload: {
-        //       data,
-        //       setting
-        //     }
-        //   })
-        // }
       } else if (!(memberInformation && memberInformation.id)) {
         yield modalMember()
         yield put({ type: 'pos/hideProductModal' })
@@ -1936,11 +1890,10 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              type: 'all',
               bundleId: response.data.id,
-              currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+              currentBundle: getBundleTrans(),
               currentProduct: getCashierTrans(),
-              currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+              currentService: getServiceTrans()
             }
           })
         }
@@ -2004,13 +1957,6 @@ export default {
     },
 
     * getProducts ({ payload }, { select, call, put }) {
-      // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      // let data = {}
-      // if (payload.outOfStock) {
-      //   data = yield call(queryProductStock, payload)
-      // } else {
-      //   data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-      // }
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       if (currentReward && currentReward.categoryCode) {
         payload.categoryCode = currentReward.categoryCode

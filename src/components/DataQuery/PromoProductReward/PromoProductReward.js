@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import { Popover, Tag, Row, Col, Button, Table } from 'antd'
 import styles from '../../../themes/index.less'
 
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getBundleTrans, getServiceTrans } = lstorage
 
 const width = 500
 const PromoProductReward = ({
@@ -155,29 +155,20 @@ const PromoProductReward = ({
   }
 
   const choosePromo = () => {
-    new Promise((resolve, reject) => {
-      dispatch({
-        type: 'pospromo/addPosPromo',
-        payload: {
-          type: 'all',
-          bundleId: currentId,
-          currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
-          currentProduct: getCashierTrans(),
-          currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-          resolve,
-          reject
-        }
-      })
-    }).then((res) => {
-      console.log(res)
-      dispatch({
-        type: 'promo/updateState',
-        payload: {
-          modalPromoVisible: false
-        }
-      })
-    }).catch((err) => {
-      console.log(err)
+    dispatch({
+      type: 'pospromo/addPosPromo',
+      payload: {
+        bundleId: currentId,
+        currentBundle: getBundleTrans(),
+        currentProduct: getCashierTrans(),
+        currentService: getServiceTrans()
+      }
+    })
+    dispatch({
+      type: 'promo/updateState',
+      payload: {
+        modalPromoVisible: false
+      }
     })
   }
   const titlePopover = () => {
