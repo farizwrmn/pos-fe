@@ -14,40 +14,40 @@ const PromoProductReward = ({
   loading,
   currentId = null,
   enableChoosePromoDetail,
-  columnsRules = [
-    {
-      title: 'type',
-      dataIndex: 'type',
-      key: 'type',
-      width: `${width * 0.15}px`,
-      render: (text) => {
-        return (
-          <span>
-            <Tag color={text === 'P' ? 'green' : 'blue'}>
-              {text === 'P' ? 'Product' : 'Service'}
-            </Tag>
-          </span>)
-      }
-    },
-    {
-      title: 'Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
-      width: `${width * 0.15}px`
-    },
-    {
-      title: 'Item',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: `${width * 0.15}px`
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
-      width: `${width * 0.15}px`
-    }
-  ],
+  // columnsRules = [
+  //   {
+  //     title: 'type',
+  //     dataIndex: 'type',
+  //     key: 'type',
+  //     width: `${width * 0.15}px`,
+  //     render: (text) => {
+  //       return (
+  //         <span>
+  //           <Tag color={text === 'P' ? 'green' : 'blue'}>
+  //             {text === 'P' ? 'Product' : 'Service'}
+  //           </Tag>
+  //         </span>)
+  //     }
+  //   },
+  //   {
+  //     title: 'Code',
+  //     dataIndex: 'productCode',
+  //     key: 'productCode',
+  //     width: `${width * 0.15}px`
+  //   },
+  //   {
+  //     title: 'Item',
+  //     dataIndex: 'productName',
+  //     key: 'productName',
+  //     width: `${width * 0.15}px`
+  //   },
+  //   {
+  //     title: 'Qty',
+  //     dataIndex: 'qty',
+  //     key: 'qty',
+  //     width: `${width * 0.15}px`
+  //   }
+  // ],
   columnsReward = [
     {
       title: 'type',
@@ -97,10 +97,10 @@ const PromoProductReward = ({
   ...tableProps
 }) => {
   const { listReward } = bundlingReward
-  const { listRules } = bundlingRules
+  // const { listRules } = bundlingRules
   const content = (
     <div>
-      <h3>Reward</h3>
+      {/* <h3>Reward</h3> */}
       <Table
         {...tableProps}
         dataSource={listReward}
@@ -108,10 +108,11 @@ const PromoProductReward = ({
         scroll={{ x: 500, y: 388 }}
         columns={columnsReward}
         simple
+        pagination={false}
         rowKey={record => record.id}
         onRowClick={onRowClick}
       />
-      <h3>Rules</h3>
+      {/* <h3>Rules</h3>
       <Table
         {...tableProps}
         dataSource={listRules}
@@ -121,7 +122,7 @@ const PromoProductReward = ({
         simple
         rowKey={record => record.id}
         onRowClick={onRowClick}
-      />
+      /> */}
     </div>
   )
 

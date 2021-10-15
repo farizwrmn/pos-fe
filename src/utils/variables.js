@@ -77,7 +77,7 @@ const insertCashierTrans = (dataObject) => {
   if (filter && filter[0]) {
     newData = previousData.map((item) => {
       // eslint-disable-next-line eqeqeq
-      if (item.code == filter[0].code && item.bundleId == filter[0].bundleId) {
+      if (item.code == filter[0].code && item.bundleId == filter[0].bundleId && item.categoryCode == filter[0].categoryCode) {
         item.qty += dataObject.qty
         item.sellingPrice = dataObject.price
         item.total = posTotal(item)
@@ -93,6 +93,7 @@ const insertCashierTrans = (dataObject) => {
       employeeId: dataObject.employeeId,
       employeeName: dataObject.employeeName,
       productId: dataObject.productId,
+      categoryCode: dataObject.categoryCode,
       code: dataObject.code,
       name: dataObject.name,
       qty: dataObject.qty,

@@ -381,53 +381,10 @@ export default {
     * paymentDelete ({ payload }, { put }) {
       console.log('payload', payload)
       let dataPos = getCashierTrans()
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function () {
-        let what
-        let a = arguments
-        let L = a.length
-        let ax
-        while (L && this.length) {
-          what = a[L -= 1]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
-          }
-        }
-        return this
-      }
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          bundleId: ary[n].bundleId,
-          bundleCode: ary[n].bundleCode,
-          bundleName: ary[n].bundleName,
-          employeeId: ary[n].employeeId,
-          employeeName: ary[n].employeeName,
-          retailPrice: ary[n].retailPrice,
-          distPrice01: ary[n].distPrice01,
-          distPrice02: ary[n].distPrice02,
-          distPrice03: ary[n].distPrice03,
-          distPrice04: ary[n].distPrice04,
-          distPrice05: ary[n].distPrice05,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          price: ary[n].price,
-          sellPrice: ary[n].sellPrice,
-          qty: ary[n].qty,
-          typeCode: ary[n].typeCode,
-          total: ary[n].total
-        })
-      }
-      console.log('arrayProd', arrayProd)
+      let arrayProd = dataPos
+        // eslint-disable-next-line eqeqeq
+        .filter(filtered => filtered.no != payload.Record)
+        .map((item, index) => ({ ...item, no: index + 1 }))
       if (arrayProd.length === 0) {
         localStorage.removeItem('cashier_trans')
         yield put({
@@ -449,45 +406,10 @@ export default {
 
     * serviceDelete ({ payload }, { put }) {
       let dataPos = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function () {
-        let what
-        let a = arguments
-        let L = a.length
-        let ax
-        while (L && this.length) {
-          what = a[L -= 1]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
-          }
-        }
-        return this
-      }
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          bundleId: ary[n].bundleId,
-          bundleCode: ary[n].bundleCode,
-          bundleName: ary[n].bundleName,
-          employeeId: ary[n].employeeId,
-          employeeName: ary[n].employeeName,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          price: ary[n].price,
-          qty: ary[n].qty,
-          typeCode: ary[n].typeCode,
-          total: ary[n].total
-        })
-      }
+      let arrayProd = dataPos
+        // eslint-disable-next-line eqeqeq
+        .filter(filtered => filtered.no != payload.Record)
+        .map((item, index) => ({ ...item, no: index + 1 }))
       if (arrayProd.length === 0) {
         localStorage.removeItem('service_detail')
         yield put({
@@ -509,50 +431,10 @@ export default {
 
     * consignmentDelete ({ payload }, { put }) {
       let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function () {
-        let what
-        let a = arguments
-        let L = a.length
-        let ax
-        while (L && this.length) {
-          what = a[L -= 1]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
-          }
-        }
-        return this
-      }
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          stock: ary[n].stock,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          retailPrice: ary[n].retailPrice,
-          distPrice01: ary[n].distPrice01,
-          distPrice02: ary[n].distPrice02,
-          distPrice03: ary[n].distPrice03,
-          distPrice04: ary[n].distPrice04,
-          distPrice05: ary[n].distPrice05,
-          sellPrice: ary[n].sellPrice,
-          price: ary[n].price,
-          otherSellPrice: ary[n].otherSellPrice,
-          martSellPrice: ary[n].martSellPrice,
-          originalSellPrice: ary[n].originalSellPrice,
-          qty: ary[n].qty,
-          total: ary[n].total
-        })
-      }
+      let arrayProd = dataPos
+        // eslint-disable-next-line eqeqeq
+        .filter(filtered => filtered.no != payload.Record)
+        .map((item, index) => ({ ...item, no: index + 1 }))
       if (arrayProd.length === 0) {
         localStorage.removeItem('consignment')
         yield put({
@@ -1194,6 +1076,7 @@ export default {
       }
     },
     * checkQuantityEditProduct ({ payload }, { call, put }) {
+      console.log('checkQuantityEditProduct')
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
@@ -1284,6 +1167,7 @@ export default {
     },
 
     * checkQuantityNewProduct ({ payload }, { call, put }) {
+      console.log('checkQuantityNewProduct')
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
@@ -1622,31 +1506,7 @@ export default {
         disc3: 0,
         total: item[typePrice] == null ? item.price : item[typePrice]
       }
-
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: item.product.product_code,
-        stock: item.quantity,
-        productId: item.id,
-        name: item.product.product_name,
-        qty: 1,
-        retailPrice: item.sellPrice,
-        distPrice01: item.distPrice01,
-        distPrice02: item.distPrice02,
-        distPrice03: item.distPrice03,
-        distPrice04: item.distPrice04,
-        distPrice05: item.distPrice05,
-        sellPrice: item[typePrice] == null ? item.price : item[typePrice],
-        otherSellPrice: item.price_grabfood_gofood,
-        martSellPrice: item.price_grabmart,
-        originalSellPrice: item.price,
-        price: item[typePrice] == null ? item.price : item[typePrice],
-        discount: 0,
-        disc1: 0,
-        disc2: 0,
-        disc3: 0,
-        total: item[typePrice] == null ? item.price : item[typePrice]
-      })
+      arrayProd.push(data)
       yield put({
         type: 'pos/checkQuantityNewConsignment',
         payload: {
@@ -1752,6 +1612,7 @@ export default {
           }
           const data = {
             no: currentItem.no,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
@@ -1800,6 +1661,7 @@ export default {
           }
           const data = {
             no: arrayProd.length + 1,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,

@@ -156,6 +156,7 @@ export default {
             arrayProd.push({
               storeId,
               transNo: trans,
+              categoryCode: dataPos[key].categoryCode,
               bundleId: dataPos[key].bundleId,
               employeeId: dataPos[key].employeeId,
               employeeName: dataPos[key].employeeName,
@@ -190,6 +191,7 @@ export default {
             return {
               storeId: x.storeId,
               transNo: x.transNo,
+              categoryCode: x.categoryCode,
               bundleId: x.bundleId,
               employeeId: x.employeeId,
               employeeName: x.employeeName,

@@ -84,6 +84,7 @@ export default {
         dataPos.push({
           no: n + 1,
           id: data.pos[n].id,
+          categoryCode: data.pos[n].categoryCode,
           typeCode: data.pos[n].typeCode,
           productCode: data.pos[n].productCode || data.pos[n].serviceCode,
           productName: data.pos[n].productName || data.pos[n].serviceName,

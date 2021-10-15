@@ -1193,6 +1193,7 @@ const Pos = ({
           }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
@@ -1272,6 +1273,7 @@ const Pos = ({
           }
           arrayProd.push({
             no: arrayProd.length + 1,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
@@ -1426,6 +1428,7 @@ const Pos = ({
           no: n + 1,
           code: dataProductFiltered[n].code,
           productId: dataProductFiltered[n].productId,
+          categoryCode: dataProductFiltered[n].categoryCode,
           bundleId: dataProductFiltered[n].bundleId,
           bundleCode: dataProductFiltered[n].bundleCode,
           bundleName: dataProductFiltered[n].bundleName,
@@ -1454,6 +1457,7 @@ const Pos = ({
           no: n + 1,
           code: dataServiceFiltered[n].code,
           productId: dataServiceFiltered[n].productId,
+          categoryCode: dataServiceFiltered[n].categoryCode,
           bundleId: dataServiceFiltered[n].bundleId,
           bundleCode: dataServiceFiltered[n].bundleCode,
           bundleName: dataServiceFiltered[n].bundleName,
