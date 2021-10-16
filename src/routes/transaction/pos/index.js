@@ -75,6 +75,7 @@ const Pos = ({
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
+  const { currentReward } = pospromo
   const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
@@ -107,7 +108,11 @@ const Pos = ({
     modalQueueVisible,
     modalVoidSuspendVisible,
     modalBundleCategoryVisible,
+    tmpProductList,
+    tmpServiceList,
     modalWorkOrderVisible,
+    dataReward,
+    currentCategory,
     listUnitUsage,
     showAlert,
     // cashierBalance,
@@ -1158,7 +1163,6 @@ const Pos = ({
         let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
         const { currentReward } = pospromo
         let qty = curQty
-        console.log('currentReward', currentReward)
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
           item.serviceCost = currentReward.sellPrice
           qty = currentReward.qty
@@ -1532,15 +1536,60 @@ const Pos = ({
   }
 
   const modalBundleCategoryProps = {
+    loading: loading.effects['pos/chooseProductPromo'],
     visible: modalBundleCategoryVisible,
+    dataReward,
+    currentCategory,
+    currentReward: currentReward ? currentReward.type : null,
+    listProduct: currentReward && currentReward.type === 'P' ? tmpProductList : tmpServiceList,
     onCancel () {
-
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          dataReward: [],
+          currentCategory: [],
+          modalBundleCategoryVisible: false
+        }
+      })
+      dispatch({
+        type: 'pospromo/updateState',
+        payload: {
+          currentReward: {},
+          bundleData: {}
+        }
+      })
     },
-    onCancelList () {
+    onOk (data, reset) {
+      let listProductQty = []
+      for (let key in data.bundle) {
+        const item = data.bundle[key]
+        const filteredExists = listProductQty.filter(filtered => filtered.key === item.key)
+        if (filteredExists && filteredExists.length > 0) {
+          listProductQty = listProductQty.map((productItem) => {
+            if (productItem.key === item.key) {
+              return ({
+                ...productItem,
+                qty: productItem.qty + 1
+              })
+            }
+            return productItem
+          })
+        } else {
+          item.qty = 1
+          listProductQty.push(item)
+        }
+      }
 
-    },
-    onVoid () {
-
+      console.log('data', listProductQty)
+      if (currentReward && currentReward.type === 'P') {
+        dispatch({
+          type: 'pos/chooseProductPromo',
+          payload: {
+            data: listProductQty,
+            reset
+          }
+        })
+      }
     }
   }
 
@@ -1769,7 +1818,7 @@ const Pos = ({
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalVoidSuspendVisible && <ModalVoidSuspend {...modalVoidSuspendProps} />}
-            {modalVoidSuspendVisible && <ModalBundleCategory {...modalBundleCategoryProps} />}
+            {modalBundleCategoryVisible && <ModalBundleCategory {...modalBundleCategoryProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}

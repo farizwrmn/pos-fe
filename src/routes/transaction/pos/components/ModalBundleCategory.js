@@ -11,19 +11,19 @@ const formItemLayout = {
 }
 
 const modal = ({
-  paymentOpt = (localStorage.getItem('bundle_promo') ?
-    JSON.parse(localStorage.getItem('bundle_promo')) : [] || []).length > 0 ?
-    (localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []).map(c => <Option value={c.bundleId} key={c.bundleId}>{`${c.name} (${c.code})`}</Option>) : [],
-  dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
-  onCancelList,
-  onVoid,
-  form: { getFieldDecorator, validateFields, getFieldsValue, getFieldValue, resetFields },
+  listProduct,
+  onCancel,
+  onOk,
+  dataReward,
+  currentCategory,
+  currentReward,
+  loading,
+  form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...formEditProps
 }) => {
-  const dataBundleFiltered = dataBundle.filter(x => x.bundleId === (getFieldValue('bundleId') ? getFieldValue('bundleId').key : 0))
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const handleCancel = () => {
-    onCancelList()
+    onCancel()
   }
   const handleDelete = () => {
     validateFields((errors) => {
@@ -33,45 +33,90 @@ const modal = ({
       const data = {
         ...getFieldsValue()
       }
-      data.bundleId = data.bundleId.key
-      Modal.confirm({
-        title: `Delete ${dataBundleFiltered[0] ? dataBundleFiltered[0].name : ''}`,
-        content: 'Are you sure ?',
-        onOk () {
-          onVoid(data.bundleId)
-          resetFields()
-        }
-      })
+      if (data && data.bundle) {
+        data.bundle = data.bundle.map((item) => {
+          const filteredProduct = listProduct.filter(filtered => filtered.id === item.key)
+          if (filteredProduct && filteredProduct[0]) {
+            return ({
+              ...item,
+              item: filteredProduct[0]
+            })
+          }
+          return null
+        })
+      }
+      onOk(data, resetFields)
     })
   }
 
   return (
-    <Modal title="Choose the bundle you want to void"
+    <Modal title="Choose Bundle Items"
+      onCancel={loading ? () => { } : onCancel}
       {...formEditProps}
       footer={[
-        <Button size="large" key="back" onClick={handleCancel}>
+        <Button disabled={loading} size="large" key="back" onClick={handleCancel}>
           Cancel
         </Button>,
-        <Button size="large" key="submit" type="primary" onClick={handleDelete}>
+        <Button disabled={loading} size="large" key="submit" type="primary" onClick={handleDelete}>
           Submit
         </Button>
       ]}
     >
-      <Form layout="horizontal">
-        <FormItem label="Bundle" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('bundleId', {
-            rules: [{
-              required: true
-            }]
-          })(<Select
-            showSearch
-            allowClear
-            optionFilterProp="children"
-            labelInValue
-            filterOption={filterOption}
-          >{paymentOpt}
-          </Select>)}
-        </FormItem>
+      <Form layout="vertical">
+        {currentReward === 'P' && dataReward && dataReward.map((data) => {
+          return (
+            <FormItem label={data.label.productName} hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`bundle[${data.key}]`, {
+                initialValue: data.initialValue && data.initialValue.key ? {
+                  key: data.initialValue.key,
+                  label: data.initialValue.label
+                } : undefined,
+                rules: [{
+                  required: true
+                }]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                disabled={loading}
+                filterOption={filterOption}
+              >{
+                  listProduct && listProduct
+                    .filter(filtered => filtered.count > 0)
+                    .map(c => <Option value={c.id} key={c.id} title={`${c.productCode} - ${c.productName}`}>{`${c.productName} (${c.productCode})`}</Option>)
+                }
+              </Select>)}
+            </FormItem>
+          )
+        })}
+
+        {currentReward === 'S' && dataReward && dataReward.map((data) => {
+          return (
+            <FormItem label={data.label.productName} hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`bundle[${data.key}]`, {
+                initialValue: data.initialValue && data.initialValue.key ? {
+                  key: data.initialValue.key,
+                  label: data.initialValue.label
+                } : undefined,
+                rules: [{
+                  required: true
+                }]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                disabled={loading}
+                filterOption={filterOption}
+              >{
+                  listProduct && listProduct
+                    .map(c => <Option value={c.id} key={c.id} title={`${c.serviceCode} - ${c.serviceName}`}>{`${c.serviceName} (${c.serviceCode})`}</Option>)
+                }
+              </Select>)}
+            </FormItem>
+          )
+        })}
       </Form>
     </Modal>
   )

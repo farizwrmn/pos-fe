@@ -17,9 +17,9 @@ export default modelExtend(pageModel, {
     typeModal: null,
     modalPromoVisible: false,
     currentReward: {},
-    bundleData: {},
 
     // Start - Category Promo List
+    bundleData: {},
     listCategory: [],
     // End - Category Promo List
 
@@ -315,9 +315,9 @@ export default modelExtend(pageModel, {
             }
           })
           yield put({
-            type: 'pos/updateState',
+            type: 'pos/openVoidSuspend',
             payload: {
-              modalBundleCategoryVisible: true
+              bundleId: bundleData.item.id
             }
           })
         }
@@ -337,9 +337,9 @@ export default modelExtend(pageModel, {
           })
 
           yield put({
-            type: 'pos/updateState',
+            type: 'pos/openVoidSuspend',
             payload: {
-              modalBundleCategoryVisible: true
+              bundleId: bundleData.item.id
             }
           })
         }
