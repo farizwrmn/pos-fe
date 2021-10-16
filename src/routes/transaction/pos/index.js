@@ -1580,10 +1580,19 @@ const Pos = ({
         }
       }
 
-      console.log('data', listProductQty)
       if (currentReward && currentReward.type === 'P') {
         dispatch({
           type: 'pos/chooseProductPromo',
+          payload: {
+            data: listProductQty,
+            reset
+          }
+        })
+      }
+
+      if (currentReward && currentReward.type === 'S') {
+        dispatch({
+          type: 'pos/chooseServicePromo',
           payload: {
             data: listProductQty,
             reset

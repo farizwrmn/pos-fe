@@ -119,6 +119,14 @@ export default modelExtend(pageModel, {
               }
             })
           }
+        } else {
+          console.log('categoryExists', categoryExists)
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentReward: categoryExists
+            }
+          })
         }
         yield put({
           type: 'addPosPromoItem',
@@ -363,6 +371,7 @@ export default modelExtend(pageModel, {
               code: reward.productCode,
               productId: reward.productId,
               name: reward.productName,
+              categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
               bundleCode: reward.bundleCode,
               bundleName: reward.bundleName,
@@ -391,6 +400,7 @@ export default modelExtend(pageModel, {
               code: reward.productCode,
               productId: reward.productId,
               name: reward.productName,
+              categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
               bundleCode: reward.bundleCode,
               bundleName: reward.bundleName,

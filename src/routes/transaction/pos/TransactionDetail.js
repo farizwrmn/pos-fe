@@ -101,7 +101,7 @@ const TransactionDetail = ({
     .filter(filtered => !filtered.bundleId)
     .map(item => ({ ...item, typeTrans: 'Product' }))
     .concat(bundle.map(item => ({ ...item, typeTrans: 'Bundle' })))
-    .concat(service.map(item => ({ ...item, typeTrans: 'Service' })))
+    .concat(service.filter(filtered => !filtered.bundleId).map(item => ({ ...item, typeTrans: 'Service' })))
     .concat(consignment.map(item => ({ ...item, typeTrans: 'Consignment' })))
     .map((item, index) => ({ ...item, no: index + 1 }))
 
@@ -222,7 +222,7 @@ const TransactionDetail = ({
           ]}
           onRowClick={_record => modalEditService(_record)}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-          dataSource={getServiceTrans()}
+          dataSource={getServiceTrans().filter(filtered => !filtered.bundleId)}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
@@ -369,7 +369,7 @@ const TransactionDetail = ({
           ]}
         />
       </TabPane>
-      <TabPane tab={<Badge count={listTrans.count}>Sales</Badge>} key="5">
+      <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="5">
         <Table
           rowKey={(record, key) => key}
           bordered
