@@ -100,7 +100,6 @@ export default modelExtend(pageModel, {
         const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
-        console.log('exists', exists)
         if (!categoryExists) {
           if (exists) {
             yield put({
@@ -120,7 +119,6 @@ export default modelExtend(pageModel, {
             })
           }
         } else {
-          console.log('categoryExists', categoryExists)
           yield put({
             type: 'updateState',
             payload: {
@@ -172,7 +170,6 @@ export default modelExtend(pageModel, {
       })
     },
     * setBundleNeverExists ({ payload = {} }, { put }) {
-      console.log('setBundleNeverExists', payload)
       const currentBundle = payload.currentBundle
       const item = payload.item
       currentBundle.push({
@@ -317,15 +314,10 @@ export default modelExtend(pageModel, {
           //   }
           // })
           yield put({
-            type: 'pos/getProducts',
-            payload: {
-              active: 1
-            }
-          })
-          yield put({
             type: 'pos/openVoidSuspend',
             payload: {
-              bundleId: bundleData.item.id
+              bundleId: bundleData.item.id,
+              mode: 'add'
             }
           })
         }
@@ -338,16 +330,10 @@ export default modelExtend(pageModel, {
           // })
 
           yield put({
-            type: 'pos/getServices',
-            payload: {
-              active: 1
-            }
-          })
-
-          yield put({
             type: 'pos/openVoidSuspend',
             payload: {
-              bundleId: bundleData.item.id
+              bundleId: bundleData.item.id,
+              mode: 'add'
             }
           })
         }

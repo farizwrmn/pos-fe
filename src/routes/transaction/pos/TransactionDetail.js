@@ -77,7 +77,9 @@ const TransactionDetail = ({
     dispatch({
       type: 'pos/openVoidSuspend',
       payload: {
-        item
+        bundleId: item.bundleId,
+        mode: 'edit',
+        currentBundle: item
       }
     })
   }

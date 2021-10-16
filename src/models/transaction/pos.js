@@ -1531,10 +1531,41 @@ export default {
           const dataService = getServiceTrans()
           let listCategory = []
           const item = currentCategory[0]
+          yield put({
+            type: 'pospromo/updateState',
+            payload: {
+              currentReward: currentCategory[0]
+            }
+          })
+          if (payload.mode === 'edit') {
+            payload.currentBundle.id = payload.currentBundle.bundleId
+            yield put({
+              type: 'pospromo/updateState',
+              payload: {
+                bundleData: {
+                  mode: payload.mode,
+                  item: payload.currentBundle,
+                  currentBundle: getBundleTrans()
+                }
+              }
+            })
+          }
           if (item && item.type === 'P') {
             // eslint-disable-next-line no-loop-func
             listCategory = listCategory.concat(dataPos.filter(filtered => (filtered.bundleId === item.bundleId && filtered.categoryCode === item.categoryCode)))
+            yield put({
+              type: 'pos/getProducts',
+              payload: {
+                active: 1
+              }
+            })
           } else {
+            yield put({
+              type: 'pos/getServices',
+              payload: {
+                active: 1
+              }
+            })
             // eslint-disable-next-line no-loop-func
             listCategory = listCategory.concat(dataService.filter(filtered => (filtered.bundleId === item.bundleId && filtered.categoryCode === item.categoryCode)))
           }
@@ -1553,7 +1584,6 @@ export default {
               for (let index = 0; index < listCategory[key].qty; index += 1) {
                 let item = {}
                 item = listCategory[key]
-                console.log('item', item)
                 listReward.push({
                   initialValue: {
                     key: item.productId,
@@ -1566,14 +1596,16 @@ export default {
                 indexCount += 1
               }
             }
-            for (let key = 0; key < currentCategory[0].qty; key += 1) {
-              let item = {}
+            if (payload.mode === 'add') {
+              for (let key = 0; key < currentCategory[0].qty; key += 1) {
+                let item = {}
 
-              listReward.push({
-                label: currentCategory[0],
-                key: key + indexCount,
-                item
-              })
+                listReward.push({
+                  label: currentCategory[0],
+                  key: key + indexCount,
+                  item
+                })
+              }
             }
           } else {
             for (let key = 0; key < currentCategory[0].qty + qtyBundle; key += 1) {
@@ -1649,16 +1681,18 @@ export default {
           if (payload.reset) {
             payload.reset()
           }
-          if (exists) {
-            yield put({
-              type: 'pospromo/setBundleAlreadyExists',
-              payload: bundleData
-            })
-          } else {
-            yield put({
-              type: 'pospromo/setBundleNeverExists',
-              payload: bundleData
-            })
+          if (bundleData.mode !== 'edit') {
+            if (exists) {
+              yield put({
+                type: 'pospromo/setBundleAlreadyExists',
+                payload: bundleData
+              })
+            } else {
+              yield put({
+                type: 'pospromo/setBundleNeverExists',
+                payload: bundleData
+              })
+            }
           }
           yield put({
             type: 'pospromo/updateState',
@@ -1749,7 +1783,6 @@ export default {
               modalBundleCategoryVisible: false
             }
           })
-          console.log('listProductData', data)
         }
       }
     },
@@ -1882,7 +1915,6 @@ export default {
             modalBundleCategoryVisible: false
           }
         })
-        console.log('listProductData', data)
       }
     },
 
