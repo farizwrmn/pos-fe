@@ -1875,29 +1875,30 @@ export default {
         const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
         for (let key in data) {
           const item = data[key]
-          let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
-          let showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[memberInformation.memberSellPrice.toString()]
+          if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+            item.item.sellPrice = currentReward.sellPrice
+            item.item.distPrice01 = currentReward.distPrice01
+            item.item.distPrice02 = currentReward.distPrice02
+            item.item.distPrice03 = currentReward.distPrice03
+            item.item.distPrice04 = currentReward.distPrice04
+            item.item.distPrice05 = currentReward.distPrice05
+          } else {
+            item.item.sellPrice = item.item.serviceCost
+            item.item.distPrice01 = item.item.serviceCost
+            item.item.distPrice02 = item.item.serviceCost
+            item.item.distPrice03 = item.item.serviceCost
+            item.item.distPrice04 = item.item.serviceCost
+            item.item.distPrice05 = item.item.serviceCost
+          }
+          let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
+          console.log('selectedPrice', selectedPrice)
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
-            showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[selectedPaymentShortcut.sellPrice]
-          }
-          if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
-            item.sellPrice = currentReward.sellPrice
-            item.distPrice01 = currentReward.distPrice01
-            item.distPrice02 = currentReward.distPrice02
-            item.distPrice03 = currentReward.distPrice03
-            item.distPrice04 = currentReward.distPrice04
-            item.distPrice05 = currentReward.distPrice05
-          } else {
-            item.sellPrice = item.serviceCost
-            item.distPrice01 = item.serviceCost
-            item.distPrice02 = item.serviceCost
-            item.distPrice03 = item.serviceCost
-            item.distPrice04 = item.serviceCost
-            item.distPrice05 = item.serviceCost
+            selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[selectedPaymentShortcut.sellPrice]
           }
 
           const dataService = {
