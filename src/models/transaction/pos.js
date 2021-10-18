@@ -1769,8 +1769,36 @@ export default {
 
           setCashierTrans(JSON.stringify(arrayProd))
 
+          const productData = yield select(({ pospromo }) => pospromo.productData)
+          const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
+
+          if (productData && productData.currentProduct) {
+            yield put({
+              type: 'setProductPos',
+              payload: productData
+            })
+          }
+
+          if (serviceData && serviceData.currentProduct) {
+            yield put({
+              type: 'pospromo/setServicePos',
+              payload: serviceData
+            })
+          }
+
           yield put({
             type: 'setCurTotal'
+          })
+
+          yield put({
+            type: 'pospromo/updateState',
+            payload: {
+              currentReward: {},
+              bundleData: {},
+              listCategory: [],
+              productData: {},
+              serviceData: {}
+            }
           })
 
           yield put({
@@ -1868,8 +1896,6 @@ export default {
             item.distPrice05 = item.serviceCost
           }
 
-          console.log('currentReward', currentReward)
-
           const dataService = {
             no: arrayProd.length + 1,
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
@@ -1900,6 +1926,34 @@ export default {
         }
 
         setServiceTrans(JSON.stringify(arrayProd))
+
+        const productData = yield select(({ pospromo }) => pospromo.productData)
+        const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
+
+        if (productData && productData.currentProduct) {
+          yield put({
+            type: 'setProductPos',
+            payload: productData
+          })
+        }
+
+        if (serviceData && serviceData.currentProduct) {
+          yield put({
+            type: 'pospromo/setServicePos',
+            payload: serviceData
+          })
+        }
+
+        yield put({
+          type: 'pospromo/updateState',
+          payload: {
+            currentReward: {},
+            bundleData: {},
+            listCategory: [],
+            productData: {},
+            serviceData: {}
+          }
+        })
 
         yield put({
           type: 'setCurTotal'

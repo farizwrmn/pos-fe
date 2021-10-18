@@ -16,11 +16,13 @@ export default modelExtend(pageModel, {
     searchText: null,
     typeModal: null,
     modalPromoVisible: false,
-    currentReward: {},
 
     // Start - Category Promo List
+    currentReward: {},
     bundleData: {},
     listCategory: [],
+    productData: {},
+    serviceData: {},
     // End - Category Promo List
 
     pagination: {
@@ -44,20 +46,36 @@ export default modelExtend(pageModel, {
   effects: {
     * addPosPromoItem ({ payload = {} }, { put }) {
       const { bundleData, currentProduct, itemRewardProduct, currentService, itemRewardService, itemRewardCategory } = payload
-      yield put({
-        type: 'setProductPos',
-        payload: {
-          currentProduct,
-          currentReward: itemRewardProduct
-        }
-      })
-      yield put({
-        type: 'setServicePos',
-        payload: {
-          currentProduct: currentService,
-          currentReward: itemRewardService
-        }
-      })
+      if (itemRewardCategory.length === 0) {
+        yield put({
+          type: 'setProductPos',
+          payload: {
+            currentProduct,
+            currentReward: itemRewardProduct
+          }
+        })
+        yield put({
+          type: 'setServicePos',
+          payload: {
+            currentProduct: currentService,
+            currentReward: itemRewardService
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            productData: {
+              currentProduct,
+              currentReward: itemRewardProduct
+            },
+            serviceData: {
+              currentProduct: currentService,
+              currentReward: itemRewardService
+            }
+          }
+        })
+      }
       yield put({
         type: 'setCategoryPos',
         payload: {
