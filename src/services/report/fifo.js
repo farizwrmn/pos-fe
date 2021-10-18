@@ -7,7 +7,9 @@ const { fiforeport } = config.api
 
 export async function queryFifo (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.store = lstorage.getCurrentUserStore()
+  if (!params.store) {
+    params.store = lstorage.getCurrentUserStore()
+  }
   const url = `${fiforeport}/products`
   return request({
     url,

@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import { Popover, Tag, Row, Col, Button, Table } from 'antd'
 import styles from '../../../themes/index.less'
 
-const { getCashierTrans } = lstorage
+const { getCashierTrans, getBundleTrans, getServiceTrans } = lstorage
 
 const width = 500
 const PromoProductReward = ({
@@ -14,40 +14,40 @@ const PromoProductReward = ({
   loading,
   currentId = null,
   enableChoosePromoDetail,
-  columnsRules = [
-    {
-      title: 'type',
-      dataIndex: 'type',
-      key: 'type',
-      width: `${width * 0.15}px`,
-      render: (text) => {
-        return (
-          <span>
-            <Tag color={text === 'P' ? 'green' : 'blue'}>
-              {text === 'P' ? 'Product' : 'Service'}
-            </Tag>
-          </span>)
-      }
-    },
-    {
-      title: 'Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
-      width: `${width * 0.15}px`
-    },
-    {
-      title: 'Item',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: `${width * 0.15}px`
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
-      width: `${width * 0.15}px`
-    }
-  ],
+  // columnsRules = [
+  //   {
+  //     title: 'type',
+  //     dataIndex: 'type',
+  //     key: 'type',
+  //     width: `${width * 0.15}px`,
+  //     render: (text) => {
+  //       return (
+  //         <span>
+  //           <Tag color={text === 'P' ? 'green' : 'blue'}>
+  //             {text === 'P' ? 'Product' : 'Service'}
+  //           </Tag>
+  //         </span>)
+  //     }
+  //   },
+  //   {
+  //     title: 'Code',
+  //     dataIndex: 'productCode',
+  //     key: 'productCode',
+  //     width: `${width * 0.15}px`
+  //   },
+  //   {
+  //     title: 'Item',
+  //     dataIndex: 'productName',
+  //     key: 'productName',
+  //     width: `${width * 0.15}px`
+  //   },
+  //   {
+  //     title: 'Qty',
+  //     dataIndex: 'qty',
+  //     key: 'qty',
+  //     width: `${width * 0.15}px`
+  //   }
+  // ],
   columnsReward = [
     {
       title: 'type',
@@ -97,10 +97,10 @@ const PromoProductReward = ({
   ...tableProps
 }) => {
   const { listReward } = bundlingReward
-  const { listRules } = bundlingRules
+  // const { listRules } = bundlingRules
   const content = (
     <div>
-      <h3>Reward</h3>
+      {/* <h3>Reward</h3> */}
       <Table
         {...tableProps}
         dataSource={listReward}
@@ -108,10 +108,11 @@ const PromoProductReward = ({
         scroll={{ x: 500, y: 388 }}
         columns={columnsReward}
         simple
+        pagination={false}
         rowKey={record => record.id}
         onRowClick={onRowClick}
       />
-      <h3>Rules</h3>
+      {/* <h3>Rules</h3>
       <Table
         {...tableProps}
         dataSource={listRules}
@@ -121,7 +122,7 @@ const PromoProductReward = ({
         simple
         rowKey={record => record.id}
         onRowClick={onRowClick}
-      />
+      /> */}
     </div>
   )
 
@@ -155,29 +156,20 @@ const PromoProductReward = ({
   }
 
   const choosePromo = () => {
-    new Promise((resolve, reject) => {
-      dispatch({
-        type: 'pospromo/addPosPromo',
-        payload: {
-          type: 'all',
-          bundleId: currentId,
-          currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
-          currentProduct: getCashierTrans(),
-          currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : [],
-          resolve,
-          reject
-        }
-      })
-    }).then((res) => {
-      console.log(res)
-      dispatch({
-        type: 'promo/updateState',
-        payload: {
-          modalPromoVisible: false
-        }
-      })
-    }).catch((err) => {
-      console.log(err)
+    dispatch({
+      type: 'pospromo/addPosPromo',
+      payload: {
+        bundleId: currentId,
+        currentBundle: getBundleTrans(),
+        currentProduct: getCashierTrans(),
+        currentService: getServiceTrans()
+      }
+    })
+    dispatch({
+      type: 'promo/updateState',
+      payload: {
+        modalPromoVisible: false
+      }
     })
   }
   const titlePopover = () => {

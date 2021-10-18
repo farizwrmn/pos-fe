@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { isEmptyObject, lstorage, color, calendar } from 'utils'
+import { lstorage, calendar } from 'utils'
 import {
   currencyFormatter,
   numberFormatter
 } from 'utils/string'
-import { Badge, Icon, Table, Tabs, Tag } from 'antd'
+import { Badge, Table, Tabs, Tag } from 'antd'
 import styles from '../../../themes/index.less'
 import {
   groupProduct
@@ -23,8 +23,7 @@ const TransactionDetail = ({
   pos
 }) => {
   const {
-    paymentListActiveKey = '5',
-    cashierInformation
+    paymentListActiveKey = '5'
   } = pos
 
   const objectSize = (text) => {
@@ -36,19 +35,6 @@ const TransactionDetail = ({
     }
     return (queue || []).length
   }
-
-  let currentCashier = {
-    cashierId: null,
-    employeeName: null,
-    shiftId: null,
-    shiftName: null,
-    counterId: null,
-    counterName: null,
-    period: null,
-    status: null,
-    cashActive: null
-  }
-  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   const modalEditPayment = (record) => {
     console.log('record', record)
@@ -87,11 +73,13 @@ const TransactionDetail = ({
     })
   }
 
-  const modalEditBundle = () => {
+  const modalEditBundle = (item) => {
     dispatch({
-      type: 'pos/updateState',
+      type: 'pos/openVoidSuspend',
       payload: {
-        modalVoidSuspendVisible: true
+        bundleId: item.bundleId,
+        mode: 'edit',
+        currentBundle: item
       }
     })
   }
@@ -105,38 +93,6 @@ const TransactionDetail = ({
     })
   }
 
-  let infoCashRegister = {}
-  infoCashRegister.title = 'Cashier Information'
-  infoCashRegister.titleColor = color.normal
-  infoCashRegister.descColor = color.error
-  infoCashRegister.dotVisible = false
-  infoCashRegister.cashActive = ((currentCashier.cashActive || '0') === '1')
-
-  let checkTimeDiff = lstorage.getLoginTimeDiff()
-  if (checkTimeDiff > 500) {
-    console.log('something fishy', checkTimeDiff)
-  } else {
-    const currentDate = moment(new Date(), 'DD/MM/YYYY').subtract(lstorage.getLoginTimeDiff(), 'milliseconds').toDate().format('yyyy-MM-dd')
-    if (!currentCashier.period) {
-      infoCashRegister.desc = '* Select the correct cash register'
-      infoCashRegister.dotVisible = true
-    } else if (currentCashier.period !== currentDate) {
-      if (currentCashier.period && currentDate) {
-        const diffDays = moment.duration(moment(currentCashier.period, 'YYYY-MM-DD').diff(currentDate)).asDays()
-        infoCashRegister.desc = `${diffDays} day${Math.abs(diffDays) > 1 ? 's' : ''}`
-        infoCashRegister.dotVisible = true
-      }
-    }
-    infoCashRegister.Caption = infoCashRegister.title + (infoCashRegister.desc || '')
-    infoCashRegister.CaptionObject =
-      (<span style={{ color: infoCashRegister.titleColor }}>
-        <Icon type={infoCashRegister.cashActive ? 'smile-o' : 'frown-o'} /> {infoCashRegister.title}
-        <span style={{ display: 'block', color: infoCashRegister.descColor }}>
-          {infoCashRegister.desc}
-        </span>
-      </span>)
-  }
-
   const product = getCashierTrans()
   const service = getServiceTrans()
   const consignment = getConsignment()
@@ -147,7 +103,7 @@ const TransactionDetail = ({
     .filter(filtered => !filtered.bundleId)
     .map(item => ({ ...item, typeTrans: 'Product' }))
     .concat(bundle.map(item => ({ ...item, typeTrans: 'Bundle' })))
-    .concat(service.map(item => ({ ...item, typeTrans: 'Service' })))
+    .concat(service.filter(filtered => !filtered.bundleId).map(item => ({ ...item, typeTrans: 'Service' })))
     .concat(consignment.map(item => ({ ...item, typeTrans: 'Consignment' })))
     .map((item, index) => ({ ...item, no: index + 1 }))
 
@@ -268,7 +224,7 @@ const TransactionDetail = ({
           ]}
           onRowClick={_record => modalEditService(_record)}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-          dataSource={getServiceTrans()}
+          dataSource={getServiceTrans().filter(filtered => !filtered.bundleId)}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
@@ -415,7 +371,7 @@ const TransactionDetail = ({
           ]}
         />
       </TabPane>
-      <TabPane tab={<Badge count={listTrans.count}>Sales</Badge>} key="5">
+      <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="5">
         <Table
           rowKey={(record, key) => key}
           bordered

@@ -28,7 +28,7 @@ const groupProduct = (list, dataBundle = []) => {
     const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => parseFloat(filtered.bundleId) === parseFloat(listGroup[key][0].bundleId)) : []
     newList.push({
       key,
-      code: key,
+      code: filteredBundle && filteredBundle[0] ? filteredBundle[0].code : key,
       name: filteredBundle && filteredBundle[0] ? filteredBundle[0].name : key,
       detail: listGroup[key],
       price,
