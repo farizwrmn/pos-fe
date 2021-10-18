@@ -1543,21 +1543,24 @@ const Pos = ({
     currentReward: currentReward ? currentReward.type : null,
     listProduct: currentReward && currentReward.type === 'P' ? tmpProductList : tmpServiceList,
     onCancel () {
-      // dispatch({
-      //   type: 'pos/updateState',
-      //   payload: {
-      //     dataReward: [],
-      //     currentCategory: [],
-      //     modalBundleCategoryVisible: false
-      //   }
-      // })
-      // dispatch({
-      //   type: 'pospromo/updateState',
-      //   payload: {
-      //     currentReward: {},
-      //     bundleData: {}
-      //   }
-      // })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          dataReward: [],
+          currentCategory: [],
+          modalBundleCategoryVisible: false
+        }
+      })
+      dispatch({
+        type: 'pospromo/updateState',
+        payload: {
+          currentReward: {},
+          bundleData: {},
+          listCategory: [],
+          productData: {},
+          serviceData: {}
+        }
+      })
     },
     onOk (data, reset) {
       let listProductQty = []

@@ -84,7 +84,7 @@ const modal = ({
               >{
                   listProduct && listProduct
                     .filter(filtered => filtered.count > 0)
-                    .map(c => <Option value={c.id} key={c.id} title={`${c.productCode} - ${c.productName}`}>{`${c.productName} (${c.productCode})`}</Option>)
+                    .map(c => <Option value={c.id} key={c.id} title={`${c.productCode} - ${c.productName}`}>{c.productName}</Option>)
                 }
               </Select>)}
             </FormItem>

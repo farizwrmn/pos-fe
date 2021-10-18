@@ -1699,7 +1699,9 @@ export default {
             payload: {
               currentReward: {},
               bundleData: {},
-              listCategory: []
+              listCategory: [],
+              productData: {},
+              serviceData: {}
             }
           })
 
@@ -1772,14 +1774,14 @@ export default {
           const productData = yield select(({ pospromo }) => pospromo.productData)
           const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
 
-          if (productData && productData.currentProduct) {
+          if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
             yield put({
-              type: 'setProductPos',
+              type: 'pospromo/setProductPos',
               payload: productData
             })
           }
 
-          if (serviceData && serviceData.currentProduct) {
+          if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
             yield put({
               type: 'pospromo/setServicePos',
               payload: serviceData
@@ -1833,16 +1835,18 @@ export default {
         if (payload.reset) {
           payload.reset()
         }
-        if (exists) {
-          yield put({
-            type: 'pospromo/setBundleAlreadyExists',
-            payload: bundleData
-          })
-        } else {
-          yield put({
-            type: 'pospromo/setBundleNeverExists',
-            payload: bundleData
-          })
+        if (bundleData.mode !== 'edit') {
+          if (exists) {
+            yield put({
+              type: 'pospromo/setBundleAlreadyExists',
+              payload: bundleData
+            })
+          } else {
+            yield put({
+              type: 'pospromo/setBundleNeverExists',
+              payload: bundleData
+            })
+          }
         }
         yield put({
           type: 'pospromo/updateState',
@@ -1855,7 +1859,7 @@ export default {
 
         let arrayProd = dataService
           .map((item) => {
-            if (item.bundleId === currentReward.bundleId && item.serviceTypeId === currentReward.categoryCode) {
+            if (item.bundleId === currentReward.bundleId && item.categoryCode === currentReward.categoryCode) {
               return ({
                 ...item,
                 no: null
@@ -1930,14 +1934,14 @@ export default {
         const productData = yield select(({ pospromo }) => pospromo.productData)
         const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
 
-        if (productData && productData.currentProduct) {
+        if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
           yield put({
-            type: 'setProductPos',
+            type: 'pospromo/setProductPos',
             payload: productData
           })
         }
 
-        if (serviceData && serviceData.currentProduct) {
+        if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
           yield put({
             type: 'pospromo/setServicePos',
             payload: serviceData
