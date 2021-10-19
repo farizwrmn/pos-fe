@@ -95,9 +95,19 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/accounts/payable-form') {
+          dispatch({
+            type: 'queryLov',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              field: 'id,accountCode,accountName,accountParentId',
+              order: 'accountCode'
+            }
+          })
+        }
         if (
           pathname === '/master/account'
-          || pathname === '/accounts/payable-form'
           || pathname === '/journal-entry') {
           dispatch({
             type: 'updateState',

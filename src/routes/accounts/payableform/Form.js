@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, message, Input, Button, Row, Col, Modal, Select, Spin, DatePicker, InputNumber } from 'antd'
+import { Form, message, Input, Button, Row, Col, Modal, Select, Spin, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
@@ -49,12 +49,12 @@ const FormCounter = ({
   listAccountCode,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
   modalProps,
-  listPayment,
+  // listPayment,
   listDetailProps,
-  listOpts,
+  // listOpts,
   listSupplier,
-  bankOpt = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{`${c.name} ${c.accountCode && c.accountCode.accountCode ? `(${c.accountCode.accountCode})` : ''}`}</Option>) : [],
-  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
+  // bankOpt = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{`${c.name} ${c.accountCode && c.accountCode.accountCode ? `(${c.accountCode.accountCode})` : ''}`}</Option>) : [],
+  // paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
   updateCurrentItem,
@@ -93,6 +93,7 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       data.supplierId = data.supplierId ? data.supplierId.key : null
       data.discountAccountId = data.discountAccountId ? data.discountAccountId.key : null
+      data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
       data.typeCode = data.typeCode ? data.typeCode.key : null
       data.bankId = data.bankId ? data.bankId.key : null
       Modal.confirm({
@@ -303,62 +304,25 @@ const FormCounter = ({
           </Col>
           <Col {...column}>
             <FormItem label="Payment Method" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('typeCode', {
-                initialValue: modalType === 'edit' && item.typeCode ? {
-                  key: item.typeCode,
-                  label: `${item.typeName} (${item.typeCode})`
-                }
-                  : undefined,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
+              {getFieldDecorator('accountId', {
+                initialValue: item && item.accountCode ? {
+                  key: item.accountId,
+                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+                } : undefined,
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
               })(<Select
                 showSearch
                 allowClear
-                onFocus={() => showLov('paymentOpts')}
                 optionFilterProp="children"
                 labelInValue
                 filterOption={filterOption}
-              >{paymentOpt}
+              >{listAccountOpt}
               </Select>)}
             </FormItem>
-            {getFieldValue('typeCode') && getFieldValue('typeCode').key !== 'C' && (
-              <FormItem label="Bank" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('bankId', {
-                  initialValue: modalType === 'edit' && item.bankId ? {
-                    key: item.bankId,
-                    label: `${item.bankName} (${item.bankCode})`
-                  }
-                    : undefined,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') && getFieldValue('typeCode').key !== 'C'
-                    }
-                  ]
-                })(
-                  // <AutoComplete {...autoCompleteProps} />
-                  <Select
-                    showSearch
-                    allowClear
-                    onFocus={() => {
-                      validateFields(['typeCode'], (errors) => {
-                        if (errors) {
-                          return
-                        }
-                        showLov('paymentEdc', { paymentOption: getFieldValue('typeCode').key, type: 'all' })
-                      })
-                    }}
-                    optionFilterProp="children"
-                    labelInValue
-                    filterOption={filterOption}
-                  >{bankOpt}
-                  </Select>
-                )}
-              </FormItem>
-            )}
-            <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
+            {/* <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
               {getFieldDecorator('discount', {
                 initialValue: 0,
                 rules: [{
@@ -390,7 +354,7 @@ const FormCounter = ({
                 filterOption={filterOption}
               >{listAccountOpt}
               </Select>)}
-            </FormItem>
+            </FormItem> */}
           </Col>
         </Row>
         <Row>
