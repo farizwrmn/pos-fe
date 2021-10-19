@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Input, Form, InputNumber } from 'antd'
+import { Modal, Select, Input, Form, InputNumber } from 'antd'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -12,7 +13,9 @@ const formItemLayout = {
 const ModalList = ({
   editModalItem,
   item,
-  form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
+  listAccountCode,
+  listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
+  form: { resetFields, getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
   ...modalProps }) => {
   const handleClick = () => {
     validateFields((errors) => {
@@ -33,6 +36,8 @@ const ModalList = ({
     onOk: handleClick
   }
 
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+
   return (
     <Modal {...modalOpts}>
       <Form>
@@ -49,6 +54,39 @@ const ModalList = ({
             max={item.paymentTotal}
             style={{ width: '100%' }}
           />)}
+        </FormItem>
+        <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('discount', {
+            initialValue: 0,
+            rules: [{
+              required: true,
+              pattern: /^([0-9.-]{0,19})$/i,
+              message: 'Required'
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              step={10000}
+              max={item.amount}
+              min={0}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Discount Account">
+          {getFieldDecorator('discountAccountId', {
+            initialValue: item.discountAccountId,
+            rules: [{
+              required: getFieldValue('discount') > 0,
+              message: 'Required'
+            }]
+          })(<Select
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            labelInValue
+            filterOption={filterOption}
+          >{listAccountOpt}
+          </Select>)}
         </FormItem>
         <FormItem {...formItemLayout} label="Description">
           {getFieldDecorator('description', {

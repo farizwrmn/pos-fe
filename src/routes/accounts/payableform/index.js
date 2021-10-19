@@ -21,7 +21,7 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
     list
   } = payableForm
   const { listPayment } = paymentEdc
-  const { listAccountCodeLov } = accountCode
+  const { listAccountCodeLov, listAccountCode } = accountCode
   const { listOpts } = paymentOpts
   const { listBank } = bank
   const { listSupplier } = supplier
@@ -195,6 +195,7 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
     }
   }
   const formProps = {
+    listAccountCodeAll: listAccountCode,
     listPayment,
     purchaseProps,
     dispatch,

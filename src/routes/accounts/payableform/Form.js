@@ -48,6 +48,7 @@ const FormCounter = ({
   modalVisible,
   listAccountCode,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
+  listAccountCodeAll,
   modalProps,
   // listPayment,
   listDetailProps,
@@ -380,7 +381,7 @@ const FormCounter = ({
           </Col>
         </Row>
       </Form>
-      {modalVisible && <ModalList {...modalOpts} />}
+      {modalVisible && <ModalList listAccountCode={listAccountCodeAll} {...modalOpts} />}
     </div>
   )
 }

@@ -97,6 +97,14 @@ export default modelExtend(pageModel, {
         }
         if (pathname === '/accounts/payable-form') {
           dispatch({
+            type: 'query',
+            payload: {
+              type: 'all',
+              field: 'id,accountCode,accountName,accountParentId',
+              order: 'accountCode'
+            }
+          })
+          dispatch({
             type: 'queryLov',
             payload: {
               accountType: 'BANK',
