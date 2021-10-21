@@ -97,7 +97,8 @@ const TransactionDetail = ({
   const service = getServiceTrans()
   const consignment = getConsignment()
   const bundleItem = getBundleTrans()
-  const bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
+  const bundle = groupProduct((product.filter(filtered => filtered.bundleId))
+    .concat(service.filter(filtered => filtered.bundleId)), bundleItem)
 
   const listTrans = product
     .filter(filtered => !filtered.bundleId)

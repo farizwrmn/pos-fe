@@ -381,7 +381,6 @@ export default {
     },
 
     * paymentDelete ({ payload }, { put }) {
-      console.log('payload', payload)
       let dataPos = getCashierTrans()
       let arrayProd = dataPos
         // eslint-disable-next-line eqeqeq
@@ -1078,7 +1077,6 @@ export default {
       }
     },
     * checkQuantityEditProduct ({ payload = {} }, { call, put }) {
-      console.log('checkQuantityEditProduct')
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
@@ -1169,7 +1167,6 @@ export default {
     },
 
     * checkQuantityNewProduct ({ payload }, { call, put }) {
-      console.log('checkQuantityNewProduct')
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
@@ -1694,16 +1691,6 @@ export default {
               })
             }
           }
-          yield put({
-            type: 'pospromo/updateState',
-            payload: {
-              currentReward: {},
-              bundleData: {},
-              listCategory: [],
-              productData: {},
-              serviceData: {}
-            }
-          })
 
           let arrayProd = dataPos
             .map((item) => {
@@ -1723,6 +1710,14 @@ export default {
           const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
           for (let key in data) {
             const item = data[key]
+            if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
+              item.item.sellPrice = currentReward.sellPrice
+              item.item.distPrice01 = currentReward.distPrice01
+              item.item.distPrice02 = currentReward.distPrice02
+              item.item.distPrice03 = currentReward.distPrice03
+              item.item.distPrice04 = currentReward.distPrice04
+              item.item.distPrice05 = currentReward.distPrice05
+            }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
             let showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[memberInformation.memberSellPrice.toString()]
             if (selectedPaymentShortcut
@@ -1731,14 +1726,6 @@ export default {
               && selectedPaymentShortcut.memberId == 0) {
               selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
               showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[selectedPaymentShortcut.sellPrice]
-            }
-            if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
-              item.sellPrice = currentReward.sellPrice
-              item.distPrice01 = currentReward.distPrice01
-              item.distPrice02 = currentReward.distPrice02
-              item.distPrice03 = currentReward.distPrice03
-              item.distPrice04 = currentReward.distPrice04
-              item.distPrice05 = currentReward.distPrice05
             }
             const dataProduct = {
               no: arrayProd.length + 1,
@@ -1777,14 +1764,20 @@ export default {
           if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
             yield put({
               type: 'pospromo/setProductPos',
-              payload: productData
+              payload: {
+                currentProduct: arrayProd,
+                currentReward: productData.currentReward
+              }
             })
           }
 
           if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
             yield put({
               type: 'pospromo/setServicePos',
-              payload: serviceData
+              payload: {
+                currentProduct: getServiceTrans(),
+                currentReward: serviceData.currentReward
+              }
             })
           }
 
@@ -1848,14 +1841,6 @@ export default {
             })
           }
         }
-        yield put({
-          type: 'pospromo/updateState',
-          payload: {
-            currentReward: {},
-            bundleData: {},
-            listCategory: []
-          }
-        })
 
         let arrayProd = dataService
           .map((item) => {
@@ -1891,7 +1876,6 @@ export default {
             item.item.distPrice05 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
-          console.log('selectedPrice', selectedPrice)
           let showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
@@ -1938,14 +1922,20 @@ export default {
         if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
           yield put({
             type: 'pospromo/setProductPos',
-            payload: productData
+            payload: {
+              currentProduct: getCashierTrans(),
+              currentReward: productData.currentReward
+            }
           })
         }
 
         if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
           yield put({
             type: 'pospromo/setServicePos',
-            payload: serviceData
+            payload: {
+              currentProduct: serviceData.currentProduct,
+              currentReward: serviceData.currentReward
+            }
           })
         }
 
