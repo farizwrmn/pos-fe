@@ -55,14 +55,16 @@ class Pos extends Component {
       this.setState({ loading: true })
       const bundleItem = getBundleTrans()
       const product = getCashierTrans()
-      const bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
-      console.log('bundle', bundle)
+      const service = getServiceTrans()
+      const consignment = getConsignment()
+      const bundle = groupProduct((product.filter(filtered => filtered.bundleId))
+        .concat(service.filter(filtered => filtered.bundleId)), bundleItem)
       this.setState({
         dineInTax: Number(localStorage.getItem('dineInTax')),
         bundle,
         product,
-        service: getServiceTrans(),
-        consignment: getConsignment(),
+        service: service.filter(filtered => !filtered.bundleId),
+        consignment,
         memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : []
       })
       this.setState({ loading: false })
