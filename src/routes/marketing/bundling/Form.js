@@ -704,7 +704,7 @@ const FormCounter = ({
             </div>
           )}
           <Row>
-            <Col span={12}><h2 className="h2-add-items">Reward</h2></Col>
+            <Col span={12}><h2 className="h2-add-items">Items</h2></Col>
             <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
           </Row>
           <ListReward {...listRewardProps} />

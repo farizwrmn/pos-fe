@@ -9,13 +9,13 @@ const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
 const APISOCKET = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}`
 
-const IMAGEURL = production ? 'https://graph.k3mart.id/image' : 'http://localhost:3100'
-const APIIMAGECOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
-const APIIMAGECOMPANYHOST = production ? ('graph.k3mart.id') : 'localhost' // 'localhost'
+const IMAGEURL = true ? 'https://graph.k3mart.id/image' : 'http://localhost:3100'
+const APIIMAGECOMPANYPROTOCOL = true ? 'https' : 'http' // 'localhost'
+const APIIMAGECOMPANYHOST = true ? ('graph.k3mart.id') : 'localhost' // 'localhost'
 const APIIMAGEPROTOCOL = APIIMAGECOMPANYPROTOCOL
 const APIIMAGEHOST = APIIMAGECOMPANYHOST
-const APIIMAGEPORT = production ? 443 : 4000
-const APIIMAGEVERSION = production ? '/api/image' : ''
+const APIIMAGEPORT = true ? 443 : 4000
+const APIIMAGEVERSION = true ? '/api/image' : ''
 const APIIMAGEURL = `${APIIMAGEPROTOCOL}://${APIIMAGEHOST}:${APIIMAGEPORT}${APIIMAGEVERSION}`
 
 module.exports = {

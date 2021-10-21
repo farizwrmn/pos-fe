@@ -11,6 +11,7 @@ import {
 import {
   queryPaymentSplit
 } from 'services/payment/payment'
+import { query as queryReward } from 'services/marketing/bundlingReward'
 import { queryById as queryStoreById } from '../../services/store/store'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
@@ -55,7 +56,10 @@ import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } f
 const { prefix } = configMain
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
-const { getCashierTrans, getConsignment } = lstorage
+const {
+  getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
+  setCashierTrans, setServiceTrans, setConsignment
+} = lstorage
 
 const { updateCashierTrans } = cashierService
 
@@ -65,6 +69,8 @@ export default {
 
   state: {
     list: [],
+    dataReward: [],
+    currentCategory: [],
     tmpList: [],
     listCashier: [],
     listPayment: [],
@@ -106,6 +112,7 @@ export default {
     modalServiceVisible: false,
     modalQueueVisible: false,
     modalVoidSuspendVisible: false,
+    modalBundleCategoryVisible: false,
     modalVisible: false,
     modalPrintVisible: false,
     modalCancelVisible: false,
@@ -296,21 +303,21 @@ export default {
     * paymentEdit ({ payload }, { put }) {
       let dataPos = getCashierTrans()
       dataPos[payload.no - 1] = payload
-      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
+      setCashierTrans(JSON.stringify(dataPos))
       yield put({ type: 'hidePaymentModal' })
       yield put({ type: 'setCurTotal' })
     },
 
     * serviceEdit ({ payload }, { put }) {
-      let dataPos = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      dataPos[payload.no - 1] = payload
-      localStorage.setItem('service_detail', JSON.stringify(dataPos))
+      let dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      dataService[payload.no - 1] = payload
+      setServiceTrans(JSON.stringify(dataService))
       yield put({ type: 'hideServiceModal' })
       yield put({ type: 'setCurTotal' })
     },
 
     * consignmentEdit ({ payload }, { put }) {
-      let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
+      let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       if (payload && payload.qty > payload.stock) {
         Modal.confirm({
           title: 'Out of Stock',
@@ -318,8 +325,8 @@ export default {
         })
         return
       }
-      dataPos[payload.no - 1] = payload
-      localStorage.setItem('consignment', JSON.stringify(dataPos))
+      dataConsignment[payload.no - 1] = payload
+      setConsignment(JSON.stringify(dataConsignment))
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -367,62 +374,18 @@ export default {
           dataConsignment[key].total = dataConsignment[key].sellPrice * item.qty
         }
       }
-      localStorage.setItem('consignment', JSON.stringify(dataConsignment))
-      localStorage.setItem('cashier_trans', JSON.stringify(dataPos))
+      setConsignment(JSON.stringify(dataConsignment))
+      setCashierTrans(JSON.stringify(dataPos))
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
 
     * paymentDelete ({ payload }, { put }) {
-      console.log('payload', payload)
       let dataPos = getCashierTrans()
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function () {
-        let what
-        let a = arguments
-        let L = a.length
-        let ax
-        while (L && this.length) {
-          what = a[L -= 1]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
-          }
-        }
-        return this
-      }
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          bundleId: ary[n].bundleId,
-          bundleCode: ary[n].bundleCode,
-          bundleName: ary[n].bundleName,
-          employeeId: ary[n].employeeId,
-          employeeName: ary[n].employeeName,
-          retailPrice: ary[n].retailPrice,
-          distPrice01: ary[n].distPrice01,
-          distPrice02: ary[n].distPrice02,
-          distPrice03: ary[n].distPrice03,
-          distPrice04: ary[n].distPrice04,
-          distPrice05: ary[n].distPrice05,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          price: ary[n].price,
-          sellPrice: ary[n].sellPrice,
-          qty: ary[n].qty,
-          typeCode: ary[n].typeCode,
-          total: ary[n].total
-        })
-      }
-      console.log('arrayProd', arrayProd)
+      let arrayProd = dataPos
+        // eslint-disable-next-line eqeqeq
+        .filter(filtered => filtered.no != payload.Record)
+        .map((item, index) => ({ ...item, no: index + 1 }))
       if (arrayProd.length === 0) {
         localStorage.removeItem('cashier_trans')
         yield put({
@@ -432,7 +395,7 @@ export default {
           type: 'hidePaymentModal'
         })
       } else {
-        localStorage.setItem('cashier_trans', JSON.stringify(arrayProd))
+        setCashierTrans(JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -444,45 +407,10 @@ export default {
 
     * serviceDelete ({ payload }, { put }) {
       let dataPos = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function () {
-        let what
-        let a = arguments
-        let L = a.length
-        let ax
-        while (L && this.length) {
-          what = a[L -= 1]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
-          }
-        }
-        return this
-      }
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          bundleId: ary[n].bundleId,
-          bundleCode: ary[n].bundleCode,
-          bundleName: ary[n].bundleName,
-          employeeId: ary[n].employeeId,
-          employeeName: ary[n].employeeName,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          price: ary[n].price,
-          qty: ary[n].qty,
-          typeCode: ary[n].typeCode,
-          total: ary[n].total
-        })
-      }
+      let arrayProd = dataPos
+        // eslint-disable-next-line eqeqeq
+        .filter(filtered => filtered.no != payload.Record)
+        .map((item, index) => ({ ...item, no: index + 1 }))
       if (arrayProd.length === 0) {
         localStorage.removeItem('service_detail')
         yield put({
@@ -492,7 +420,7 @@ export default {
           type: 'hideServiceListModal'
         })
       } else {
-        localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+        setServiceTrans(JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -504,50 +432,10 @@ export default {
 
     * consignmentDelete ({ payload }, { put }) {
       let dataPos = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
-      let arrayProd = dataPos.slice()
-      Array.prototype.remove = function () {
-        let what
-        let a = arguments
-        let L = a.length
-        let ax
-        while (L && this.length) {
-          what = a[L -= 1]
-          while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1)
-          }
-        }
-        return this
-      }
-
-      let ary = arrayProd
-      ary.remove(arrayProd[payload.Record - 1])
-      arrayProd = []
-      for (let n = 0; n < ary.length; n += 1) {
-        arrayProd.push({
-          no: n + 1,
-          code: ary[n].code,
-          productId: ary[n].productId,
-          stock: ary[n].stock,
-          disc1: ary[n].disc1,
-          disc2: ary[n].disc2,
-          disc3: ary[n].disc3,
-          discount: ary[n].discount,
-          name: ary[n].name,
-          retailPrice: ary[n].retailPrice,
-          distPrice01: ary[n].distPrice01,
-          distPrice02: ary[n].distPrice02,
-          distPrice03: ary[n].distPrice03,
-          distPrice04: ary[n].distPrice04,
-          distPrice05: ary[n].distPrice05,
-          sellPrice: ary[n].sellPrice,
-          price: ary[n].price,
-          otherSellPrice: ary[n].otherSellPrice,
-          martSellPrice: ary[n].martSellPrice,
-          originalSellPrice: ary[n].originalSellPrice,
-          qty: ary[n].qty,
-          total: ary[n].total
-        })
-      }
+      let arrayProd = dataPos
+        // eslint-disable-next-line eqeqeq
+        .filter(filtered => filtered.no != payload.Record)
+        .map((item, index) => ({ ...item, no: index + 1 }))
       if (arrayProd.length === 0) {
         localStorage.removeItem('consignment')
         yield put({
@@ -557,7 +445,7 @@ export default {
           type: 'hideConsignmentListModal'
         })
       } else {
-        localStorage.setItem('consignment', JSON.stringify(arrayProd))
+        setConsignment(JSON.stringify(arrayProd))
         yield put({
           type: 'setCurTotal'
         })
@@ -1188,7 +1076,7 @@ export default {
         throw listProductData
       }
     },
-    * checkQuantityEditProduct ({ payload }, { call, put }) {
+    * checkQuantityEditProduct ({ payload = {} }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
@@ -1617,31 +1505,7 @@ export default {
         disc3: 0,
         total: item[typePrice] == null ? item.price : item[typePrice]
       }
-
-      arrayProd.push({
-        no: arrayProd.length + 1,
-        code: item.product.product_code,
-        stock: item.quantity,
-        productId: item.id,
-        name: item.product.product_name,
-        qty: 1,
-        retailPrice: item.sellPrice,
-        distPrice01: item.distPrice01,
-        distPrice02: item.distPrice02,
-        distPrice03: item.distPrice03,
-        distPrice04: item.distPrice04,
-        distPrice05: item.distPrice05,
-        sellPrice: item[typePrice] == null ? item.price : item[typePrice],
-        otherSellPrice: item.price_grabfood_gofood,
-        martSellPrice: item.price_grabmart,
-        originalSellPrice: item.price,
-        price: item[typePrice] == null ? item.price : item[typePrice],
-        discount: 0,
-        disc1: 0,
-        disc2: 0,
-        disc3: 0,
-        total: item[typePrice] == null ? item.price : item[typePrice]
-      })
+      arrayProd.push(data)
       yield put({
         type: 'pos/checkQuantityNewConsignment',
         payload: {
@@ -1651,6 +1515,456 @@ export default {
           type: payload.type
         }
       })
+    },
+
+    * openVoidSuspend ({ payload = {} }, { call, put }) {
+      const { bundleId } = payload
+      const dataReward = yield call(queryReward, { bundleId, type: 'all' })
+      if (dataReward && dataReward.success && dataReward.data && dataReward.data.length > 0) {
+        const currentCategory = dataReward.data.filter(filtered => filtered.categoryCode)
+        if (currentCategory && currentCategory.length > 0) {
+          const dataBundle = getBundleTrans()
+          const dataPos = getCashierTrans()
+          const dataService = getServiceTrans()
+          let listCategory = []
+          const item = currentCategory[0]
+          yield put({
+            type: 'pospromo/updateState',
+            payload: {
+              currentReward: currentCategory[0]
+            }
+          })
+          if (payload.mode === 'edit') {
+            payload.currentBundle.id = payload.currentBundle.bundleId
+            yield put({
+              type: 'pospromo/updateState',
+              payload: {
+                bundleData: {
+                  mode: payload.mode,
+                  item: payload.currentBundle,
+                  currentBundle: getBundleTrans()
+                }
+              }
+            })
+          }
+          if (item && item.type === 'P') {
+            // eslint-disable-next-line no-loop-func
+            listCategory = listCategory.concat(dataPos.filter(filtered => (filtered.bundleId === item.bundleId && filtered.categoryCode === item.categoryCode)))
+            yield put({
+              type: 'pos/getProducts',
+              payload: {
+                active: 1
+              }
+            })
+          } else {
+            yield put({
+              type: 'pos/getServices',
+              payload: {
+                active: 1
+              }
+            })
+            // eslint-disable-next-line no-loop-func
+            listCategory = listCategory.concat(dataService.filter(filtered => (filtered.bundleId === item.bundleId && filtered.categoryCode === item.categoryCode)))
+          }
+
+          let listReward = []
+
+          const existsBundle = dataBundle.filter(filtered => filtered.bundleId === bundleId)
+          let qtyBundle = 0
+          if (existsBundle && existsBundle[0]) {
+            qtyBundle = existsBundle[0].qty
+          }
+
+          if (listCategory && listCategory.length > 0) {
+            let indexCount = 0
+            for (let key in listCategory) {
+              for (let index = 0; index < listCategory[key].qty; index += 1) {
+                let item = {}
+                item = listCategory[key]
+                listReward.push({
+                  initialValue: {
+                    key: item.productId,
+                    label: item.name
+                  },
+                  label: currentCategory[0],
+                  key: indexCount,
+                  item
+                })
+                indexCount += 1
+              }
+            }
+            if (payload.mode === 'add') {
+              for (let key = 0; key < currentCategory[0].qty; key += 1) {
+                let item = {}
+
+                listReward.push({
+                  label: currentCategory[0],
+                  key: key + indexCount,
+                  item
+                })
+              }
+            }
+          } else {
+            for (let key = 0; key < currentCategory[0].qty + qtyBundle; key += 1) {
+              let item = {}
+
+              listReward.push({
+                label: currentCategory[0],
+                key,
+                item
+              })
+            }
+          }
+
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentCategory,
+              dataReward: listReward,
+              modalBundleCategoryVisible: true
+            }
+          })
+        }
+        return
+      }
+      throw dataReward
+    },
+
+    * chooseProductPromo ({ payload = {} }, { select, call, put }) {
+      const { data } = payload
+      const listProductId = data ? data.map(item => item.item.id) : []
+      if (listProductId.length === 0) {
+        message.error('List Product is not found')
+        return
+      }
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: listProductId.toString() })
+      if (listProductData && listProductData.success && data && data.length > 0) {
+        let success = false
+        let message = ''
+        const dataPos = getCashierTrans()
+        for (let key in data) {
+          const { item } = data[key]
+          const filteredStock = listProductData.data.filter(filtered => filtered.productId === item.id)
+          const existsQty = dataPos
+            .filter(filtered => filtered.productId === item.id && filtered.categoryCode !== item.categoryCode)
+            .reduce((prev, next) => prev + next.qty, 0)
+          if (filteredStock && filteredStock[0]) {
+            const totalQty = data[key].qty + existsQty
+            if (filteredStock[0].count >= totalQty) {
+              success = true
+            } else {
+              success = false
+              message = `Your input: ${existsQty + data[key].qty} Available: ${filteredStock[0].count}`
+              break
+            }
+          } else {
+            success = false
+            message = `Your input: ${existsQty + data[key].qty} Available: Not Found`
+            break
+          }
+        }
+        if (!success) {
+          Modal.warning({
+            title: 'No available stock',
+            content: message
+          })
+        } else {
+          const currentBundle = getBundleTrans()
+          const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+          const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
+          const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
+          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+          if (payload.reset) {
+            payload.reset()
+          }
+          if (bundleData.mode !== 'edit') {
+            if (exists) {
+              yield put({
+                type: 'pospromo/setBundleAlreadyExists',
+                payload: bundleData
+              })
+            } else {
+              yield put({
+                type: 'pospromo/setBundleNeverExists',
+                payload: bundleData
+              })
+            }
+          }
+
+          let arrayProd = dataPos
+            .map((item) => {
+              if (item.bundleId === currentReward.bundleId && item.categoryCode === currentReward.categoryCode) {
+                return ({
+                  ...item,
+                  no: null
+                })
+              }
+              return item
+            })
+            .filter(filtered => filtered.no)
+            .map((item, index) => ({ ...item, no: index + 1 }))
+
+          const memberInformation = yield select(({ pos }) => pos.memberInformation)
+          const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
+          const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
+          for (let key in data) {
+            const item = data[key]
+            if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
+              item.item.sellPrice = currentReward.sellPrice
+              item.item.distPrice01 = currentReward.distPrice01
+              item.item.distPrice02 = currentReward.distPrice02
+              item.item.distPrice03 = currentReward.distPrice03
+              item.item.distPrice04 = currentReward.distPrice04
+              item.item.distPrice05 = currentReward.distPrice05
+            }
+            let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
+            let showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[memberInformation.memberSellPrice.toString()]
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[selectedPaymentShortcut.sellPrice]
+            }
+            const dataProduct = {
+              no: arrayProd.length + 1,
+              categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
+              bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
+              bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+              code: item.item.productCode,
+              productId: item.item.id,
+              name: item.item.productName,
+              retailPrice: item.item.sellPrice,
+              distPrice01: item.item.distPrice01,
+              distPrice02: item.item.distPrice02,
+              distPrice03: item.item.distPrice03,
+              distPrice04: item.item.distPrice04,
+              distPrice05: item.item.distPrice05,
+              employeeId: mechanicInformation.employeeId,
+              employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+              typeCode: 'P',
+              qty: item.qty,
+              sellPrice: showDiscountPrice,
+              price: selectedPrice,
+              discount: 0,
+              disc1: 0,
+              disc2: 0,
+              disc3: 0,
+              total: selectedPrice * item.qty
+            }
+            arrayProd.push(dataProduct)
+          }
+
+          setCashierTrans(JSON.stringify(arrayProd))
+
+          const productData = yield select(({ pospromo }) => pospromo.productData)
+          const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
+
+          if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
+            yield put({
+              type: 'pospromo/setProductPos',
+              payload: {
+                currentProduct: arrayProd,
+                currentReward: productData.currentReward
+              }
+            })
+          }
+
+          if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
+            yield put({
+              type: 'pospromo/setServicePos',
+              payload: {
+                currentProduct: getServiceTrans(),
+                currentReward: serviceData.currentReward
+              }
+            })
+          }
+
+          yield put({
+            type: 'setCurTotal'
+          })
+
+          yield put({
+            type: 'pospromo/updateState',
+            payload: {
+              currentReward: {},
+              bundleData: {},
+              listCategory: [],
+              productData: {},
+              serviceData: {}
+            }
+          })
+
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              bundleData: {},
+              listCategory: [],
+              dataReward: [],
+              currentCategory: [],
+              modalBundleCategoryVisible: false
+            }
+          })
+        }
+      }
+    },
+
+    * chooseServicePromo ({ payload = {} }, { select, put }) {
+      const { data } = payload
+      const listProductId = data ? data.map(item => item.item.id) : []
+      if (listProductId.length === 0) {
+        message.error('List Service is not found')
+        return
+      }
+      if (data && data.length > 0) {
+        const dataService = getServiceTrans()
+
+        const currentBundle = getBundleTrans()
+        const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
+        const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
+        const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
+        const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+        if (payload.reset) {
+          payload.reset()
+        }
+        if (bundleData.mode !== 'edit') {
+          if (exists) {
+            yield put({
+              type: 'pospromo/setBundleAlreadyExists',
+              payload: bundleData
+            })
+          } else {
+            yield put({
+              type: 'pospromo/setBundleNeverExists',
+              payload: bundleData
+            })
+          }
+        }
+
+        let arrayProd = dataService
+          .map((item) => {
+            if (item.bundleId === currentReward.bundleId && item.categoryCode === currentReward.categoryCode) {
+              return ({
+                ...item,
+                no: null
+              })
+            }
+            return item
+          })
+          .filter(filtered => filtered.no)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+
+        const memberInformation = yield select(({ pos }) => pos.memberInformation)
+        const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
+        const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
+        for (let key in data) {
+          const item = data[key]
+          if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
+            item.item.sellPrice = currentReward.sellPrice
+            item.item.distPrice01 = currentReward.distPrice01
+            item.item.distPrice02 = currentReward.distPrice02
+            item.item.distPrice03 = currentReward.distPrice03
+            item.item.distPrice04 = currentReward.distPrice04
+            item.item.distPrice05 = currentReward.distPrice05
+          } else {
+            item.item.sellPrice = item.item.serviceCost
+            item.item.distPrice01 = item.item.serviceCost
+            item.item.distPrice02 = item.item.serviceCost
+            item.item.distPrice03 = item.item.serviceCost
+            item.item.distPrice04 = item.item.serviceCost
+            item.item.distPrice05 = item.item.serviceCost
+          }
+          let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
+          let showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[memberInformation.memberSellPrice.toString()]
+          if (selectedPaymentShortcut
+            && selectedPaymentShortcut.sellPrice
+            // eslint-disable-next-line eqeqeq
+            && selectedPaymentShortcut.memberId == 0) {
+            selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[selectedPaymentShortcut.sellPrice]
+          }
+
+          const dataService = {
+            no: arrayProd.length + 1,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
+            bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            code: item.item.serviceCode,
+            productId: item.item.id,
+            name: item.item.serviceName,
+            retailPrice: item.item.sellPrice,
+            distPrice01: item.item.distPrice01,
+            distPrice02: item.item.distPrice02,
+            distPrice03: item.item.distPrice03,
+            distPrice04: item.item.distPrice04,
+            distPrice05: item.item.distPrice05,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            typeCode: 'S',
+            qty: item.qty,
+            sellPrice: showDiscountPrice,
+            price: selectedPrice,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: selectedPrice * item.qty
+          }
+          arrayProd.push(dataService)
+        }
+
+        setServiceTrans(JSON.stringify(arrayProd))
+
+        const productData = yield select(({ pospromo }) => pospromo.productData)
+        const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
+
+        if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
+          yield put({
+            type: 'pospromo/setProductPos',
+            payload: {
+              currentProduct: getCashierTrans(),
+              currentReward: productData.currentReward
+            }
+          })
+        }
+
+        if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
+          yield put({
+            type: 'pospromo/setServicePos',
+            payload: {
+              currentProduct: serviceData.currentProduct,
+              currentReward: serviceData.currentReward
+            }
+          })
+        }
+
+        yield put({
+          type: 'pospromo/updateState',
+          payload: {
+            currentReward: {},
+            bundleData: {},
+            listCategory: [],
+            productData: {},
+            serviceData: {}
+          }
+        })
+
+        yield put({
+          type: 'setCurTotal'
+        })
+
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            bundleData: {},
+            listCategory: [],
+            dataReward: [],
+            currentCategory: [],
+            modalBundleCategoryVisible: false
+          }
+        })
+      }
     },
 
     * chooseProduct ({ payload }, { select, put }) {
@@ -1726,6 +2040,7 @@ export default {
           }
           const data = {
             no: currentItem.no,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
@@ -1774,6 +2089,7 @@ export default {
           }
           const data = {
             no: arrayProd.length + 1,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
             code: item.productCode,
@@ -1808,14 +2124,6 @@ export default {
               type: payload.type
             }
           })
-          // yield put({
-          //   type: 'pos/updateState',
-          //   payload: {
-          //     paymentListActiveKey: '1'
-          //     // ,
-          //     // modalProductVisible: false
-          //   }
-          // })
         } else if ((checkExists || []).length > 0 && checkExists[0].bundleId) {
           Modal.warning({
             title: 'Exists in bundle',
@@ -1827,45 +2135,6 @@ export default {
             content: 'Already Exists in list'
           })
         }
-        //   const currentItem = checkExists[0]
-        //   const newQty = currentItem.qty + 1
-        //   const price = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-        //   const showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
-        //   const data = {
-        //     no: currentItem.no,
-        //     code: item.productCode,
-        //     bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
-        //     bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
-        //     productId: item.id,
-        //     name: item.productName,
-        //     retailPrice: item.sellPrice,
-        //     distPrice01: item.distPrice01,
-        //     distPrice02: item.distPrice02,
-        //     distPrice03: item.distPrice03,
-        //     distPrice04: item.distPrice04,
-        //     distPrice05: item.distPrice05,
-        //     employeeId: mechanicInformation.employeeId,
-        //     employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
-        //     typeCode: 'P',
-        //     qty: newQty,
-        //     sellPrice: showDiscountPrice,
-        //     price,
-        //     discount: 0,
-        //     disc1: 0,
-        //     disc2: 0,
-        //     disc3: 0,
-        //     total: price * newQty
-        //   }
-
-        //   arrayProd.push(data)
-        //   yield put({
-        //     type: 'pos/checkQuantityEditProduct',
-        //     payload: {
-        //       data,
-        //       setting
-        //     }
-        //   })
-        // }
       } else if (!(memberInformation && memberInformation.id)) {
         yield modalMember()
         yield put({ type: 'pos/hideProductModal' })
@@ -1936,11 +2205,10 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              type: 'all',
               bundleId: response.data.id,
-              currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+              currentBundle: getBundleTrans(),
               currentProduct: getCashierTrans(),
-              currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+              currentService: getServiceTrans()
             }
           })
         }
@@ -2004,13 +2272,6 @@ export default {
     },
 
     * getProducts ({ payload }, { select, call, put }) {
-      // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      // let data = {}
-      // if (payload.outOfStock) {
-      //   data = yield call(queryProductStock, payload)
-      // } else {
-      //   data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD') })
-      // }
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       if (currentReward && currentReward.categoryCode) {
         payload.categoryCode = currentReward.categoryCode

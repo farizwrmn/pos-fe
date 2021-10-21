@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey } from './lstorage'
+import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -77,7 +77,7 @@ const insertCashierTrans = (dataObject) => {
   if (filter && filter[0]) {
     newData = previousData.map((item) => {
       // eslint-disable-next-line eqeqeq
-      if (item.code == filter[0].code && item.bundleId == filter[0].bundleId) {
+      if (item.code == filter[0].code && item.bundleId == filter[0].bundleId && item.categoryCode == filter[0].categoryCode) {
         item.qty += dataObject.qty
         item.sellingPrice = dataObject.price
         item.total = posTotal(item)
@@ -93,6 +93,7 @@ const insertCashierTrans = (dataObject) => {
       employeeId: dataObject.employeeId,
       employeeName: dataObject.employeeName,
       productId: dataObject.productId,
+      categoryCode: dataObject.categoryCode,
       code: dataObject.code,
       name: dataObject.name,
       qty: dataObject.qty,
@@ -113,7 +114,7 @@ const insertCashierTrans = (dataObject) => {
     })
   }
 
-  localStorage.setItem('cashier_trans', JSON.stringify(newData))
+  setCashierTrans(JSON.stringify(newData))
 
   return previousData
 }
@@ -144,7 +145,7 @@ const insertConsignment = (dataObject) => {
     disc3: dataObject.disc3,
     total
   })
-  localStorage.setItem('consignment', JSON.stringify(previousData))
+  setConsignment(JSON.stringify(previousData))
 
   return previousData
 }
