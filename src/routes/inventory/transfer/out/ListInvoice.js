@@ -95,7 +95,7 @@ const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...t
       width: '45%'
     },
     {
-      title: 'SupplierName',
+      title: 'Supplier Name',
       dataIndex: 'supplierName',
       key: 'supplierName',
       width: '30%'
