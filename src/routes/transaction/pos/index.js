@@ -31,6 +31,7 @@ import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
 import ModalVoidSuspend from './components/ModalVoidSuspend'
+import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
@@ -41,7 +42,10 @@ import { groupProduct } from './utils'
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const { prefix } = configMain
-const { getCashierTrans, getBundleTrans, getConsignment } = lstorage
+const {
+  getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
+  setCashierTrans, setBundleTrans, setServiceTrans
+} = lstorage
 // const FormItem = Form.Item
 
 // const formItemLayout1 = {
@@ -71,6 +75,7 @@ const Pos = ({
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
+  const { currentReward } = pospromo
   const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
@@ -102,7 +107,12 @@ const Pos = ({
     // curCashierNo,
     modalQueueVisible,
     modalVoidSuspendVisible,
+    modalBundleCategoryVisible,
+    tmpProductList,
+    tmpServiceList,
     modalWorkOrderVisible,
+    dataReward,
+    currentCategory,
     listUnitUsage,
     showAlert,
     // cashierBalance,
@@ -1153,7 +1163,6 @@ const Pos = ({
         let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
         const { currentReward } = pospromo
         let qty = curQty
-        console.log('currentReward', currentReward)
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
           item.serviceCost = currentReward.sellPrice
           qty = currentReward.qty
@@ -1188,6 +1197,7 @@ const Pos = ({
           }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
@@ -1211,7 +1221,7 @@ const Pos = ({
             total: selectedPrice * (checkExists[0].qty + qty)
           }
 
-          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+          setServiceTrans(JSON.stringify(arrayProd))
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1267,6 +1277,7 @@ const Pos = ({
           }
           arrayProd.push({
             no: arrayProd.length + 1,
+            categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             code: item.serviceCode,
             productId: item.id,
@@ -1290,7 +1301,7 @@ const Pos = ({
             total: selectedPrice * qty
           })
 
-          localStorage.setItem('service_detail', JSON.stringify(arrayProd))
+          setServiceTrans(JSON.stringify(arrayProd))
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1388,7 +1399,7 @@ const Pos = ({
     }
   }
 
-  const ModalVoidSuspendProps = {
+  const modalVoidSuspendProps = {
     visible: modalVoidSuspendVisible,
     onCancel () {
       dispatch({
@@ -1421,6 +1432,7 @@ const Pos = ({
           no: n + 1,
           code: dataProductFiltered[n].code,
           productId: dataProductFiltered[n].productId,
+          categoryCode: dataProductFiltered[n].categoryCode,
           bundleId: dataProductFiltered[n].bundleId,
           bundleCode: dataProductFiltered[n].bundleCode,
           bundleName: dataProductFiltered[n].bundleName,
@@ -1449,6 +1461,7 @@ const Pos = ({
           no: n + 1,
           code: dataServiceFiltered[n].code,
           productId: dataServiceFiltered[n].productId,
+          categoryCode: dataServiceFiltered[n].categoryCode,
           bundleId: dataServiceFiltered[n].bundleId,
           bundleCode: dataServiceFiltered[n].bundleCode,
           bundleName: dataServiceFiltered[n].bundleName,
@@ -1480,6 +1493,7 @@ const Pos = ({
           type: dataBundleFiltered[o].type,
           code: dataBundleFiltered[o].code,
           name: dataBundleFiltered[o].name,
+          categoryCode: dataBundleFiltered[0].categoryCode,
           startDate: dataBundleFiltered[o].startDate,
           endDate: dataBundleFiltered[o].endDate,
           startHour: dataBundleFiltered[o].startHour,
@@ -1488,9 +1502,9 @@ const Pos = ({
           qty: dataBundleFiltered[o].qty
         })
       }
-      localStorage.setItem('cashier_trans', JSON.stringify(arrayProduct))
-      localStorage.setItem('service_detail', JSON.stringify(arrayService))
-      localStorage.setItem('bundle_promo', JSON.stringify(arrayBundle))
+      setCashierTrans(JSON.stringify(arrayProduct))
+      setServiceTrans(JSON.stringify(arrayService))
+      setBundleTrans(JSON.stringify(arrayBundle))
 
       dispatch({
         type: 'pos/updateState',
@@ -1518,6 +1532,76 @@ const Pos = ({
       //     }
       //   })
       // }
+    }
+  }
+
+  const modalBundleCategoryProps = {
+    loading: loading.effects['pos/chooseProductPromo'],
+    visible: modalBundleCategoryVisible,
+    dataReward,
+    currentCategory,
+    currentReward: currentReward ? currentReward.type : null,
+    listProduct: currentReward && currentReward.type === 'P' ? tmpProductList : tmpServiceList,
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          dataReward: [],
+          currentCategory: [],
+          modalBundleCategoryVisible: false
+        }
+      })
+      dispatch({
+        type: 'pospromo/updateState',
+        payload: {
+          currentReward: {},
+          bundleData: {},
+          listCategory: [],
+          productData: {},
+          serviceData: {}
+        }
+      })
+    },
+    onOk (data, reset) {
+      let listProductQty = []
+      for (let key in data.bundle) {
+        const item = data.bundle[key]
+        const filteredExists = listProductQty.filter(filtered => filtered.key === item.key)
+        if (filteredExists && filteredExists.length > 0) {
+          listProductQty = listProductQty.map((productItem) => {
+            if (productItem.key === item.key) {
+              return ({
+                ...productItem,
+                qty: productItem.qty + 1
+              })
+            }
+            return productItem
+          })
+        } else {
+          item.qty = 1
+          listProductQty.push(item)
+        }
+      }
+
+      if (currentReward && currentReward.type === 'P') {
+        dispatch({
+          type: 'pos/chooseProductPromo',
+          payload: {
+            data: listProductQty,
+            reset
+          }
+        })
+      }
+
+      if (currentReward && currentReward.type === 'S') {
+        dispatch({
+          type: 'pos/chooseServicePromo',
+          payload: {
+            data: listProductQty,
+            reset
+          }
+        })
+      }
     }
   }
 
@@ -1638,11 +1722,10 @@ const Pos = ({
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
-        type: 'all',
         bundleId: item.id,
-        currentBundle: localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : [],
+        currentBundle: getBundleTrans(),
         currentProduct: getCashierTrans(),
-        currentService: localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+        currentService: getServiceTrans()
       }
     })
   }
@@ -1746,7 +1829,8 @@ const Pos = ({
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
-            {modalVoidSuspendVisible && <ModalVoidSuspend {...ModalVoidSuspendProps} />}
+            {modalVoidSuspendVisible && <ModalVoidSuspend {...modalVoidSuspendProps} />}
+            {modalBundleCategoryVisible && <ModalBundleCategory {...modalBundleCategoryProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}

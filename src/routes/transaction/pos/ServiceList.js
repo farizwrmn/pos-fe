@@ -30,6 +30,7 @@ const PaymentList = ({
     data.sellingPrice = data.price
     data.total = posTotal(data)
     data.productId = item.productId
+    data.categoryCode = item.categoryCode
     data.code = item.code
     data.name = item.name
     data.retailPrice = item.retailPrice

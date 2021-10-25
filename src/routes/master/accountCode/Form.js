@@ -238,7 +238,7 @@ const FormCounter = ({
                   pattern: /^[a-z0-9.-/]{1,9}$/i
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<Input maxLength={50} autoFocus disabled={modalType === 'edit'} />)}
           </FormItem>
           <FormItem label="Account Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('accountName', {
@@ -248,7 +248,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<Input maxLength={40} />)}
+            })(<Input maxLength={40} disabled={modalType === 'edit'} />)}
           </FormItem>
           <FormItem label="Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('accountType', {

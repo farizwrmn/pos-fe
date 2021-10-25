@@ -110,6 +110,22 @@ const getBundleTrans = () => {
   return localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
 }
 
+const setCashierTrans = (data) => {
+  return localStorage.setItem('cashier_trans', data)
+}
+
+const setConsignment = (data) => {
+  return localStorage.setItem('consignment', data)
+}
+
+const setServiceTrans = (data) => {
+  return localStorage.setItem('service_detail', data)
+}
+
+const setBundleTrans = (data) => {
+  return localStorage.setItem('bundle_promo', data)
+}
+
 // remove item
 const removeItemKey = (key) => {
   localStorage.removeItem(`${prefix}${key}`)
@@ -247,6 +263,10 @@ module.exports = {
   getConsignment,
   getServiceTrans,
   getBundleTrans,
+  setCashierTrans,
+  setConsignment,
+  setServiceTrans,
+  setBundleTrans,
   setItem,
   getItem,
   getPriceName,

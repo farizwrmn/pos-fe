@@ -18,12 +18,20 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
-      dispatch({
-        type: 'bundling/query',
-        payload: {
+      // dispatch({
+      //   type: 'bundling/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
           ...value
         }
-      })
+      }))
     }
   }
 

@@ -54,7 +54,7 @@ const FormCounter = ({
   listOpts,
   listSupplier,
   bankOpt = (listPayment || []).length > 0 ? listPayment.map(c => <Option value={c.id} key={c.id}>{`${c.name} ${c.accountCode && c.accountCode.accountCode ? `(${c.accountCode.accountCode})` : ''}`}</Option>) : [],
-  paymentOpt = (listOpts || []).length > 0 ? listOpts.filter(filtered => filtered.typeCode !== 'C').map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
+  paymentOpt = (listOpts || []).length > 0 ? listOpts.map(c => <Option value={c.typeCode} key={c.typeCode}>{`${c.typeName} (${c.typeCode})`}</Option>) : [],
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
   updateCurrentItem,

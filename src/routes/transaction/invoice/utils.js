@@ -25,7 +25,7 @@ const groupProduct = (list, dataBundle = []) => {
     newList.push({
       key,
       detail: listGroup[key],
-      price,
+      price: price / (filteredBundle && filteredBundle[0] ? filteredBundle[0].qty : 1),
       qty: filteredBundle && filteredBundle[0] ? filteredBundle[0].qty : 1,
       total: price
     })

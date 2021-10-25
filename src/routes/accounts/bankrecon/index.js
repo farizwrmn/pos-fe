@@ -36,7 +36,6 @@ const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
     pagination,
     dispatch,
     onSubmit (item) {
-      console.log('item', item)
       dispatch({
         type: 'bankentry/updateBankRecon',
         payload: {

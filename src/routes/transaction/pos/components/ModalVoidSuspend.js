@@ -10,7 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
+const ModalVoidSuspend = ({
   paymentOpt = (localStorage.getItem('bundle_promo') ?
     JSON.parse(localStorage.getItem('bundle_promo')) : [] || []).length > 0 ?
     (localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []).map(c => <Option value={c.bundleId} key={c.bundleId}>{`${c.name} (${c.code})`}</Option>) : [],
@@ -44,12 +44,10 @@ const modal = ({
       })
     })
   }
-  const modalOpts = {
-    ...formEditProps
-  }
+
   return (
     <Modal title="Choose the bundle you want to void"
-      {...modalOpts}
+      {...formEditProps}
       footer={[
         <Button size="large" key="back" onClick={handleCancel}>
           Cancel
@@ -98,7 +96,7 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalVoidSuspend.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -106,4 +104,4 @@ modal.propTypes = {
   onVoid: PropTypes.func.isRequired
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalVoidSuspend)

@@ -20,14 +20,12 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/stock'
           || pathname === '/marketing/promo') {
           dispatch({
             type: 'query',
             payload: {
-              ...other,
               type: 'all'
             }
           })
