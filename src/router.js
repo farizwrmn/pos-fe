@@ -1413,7 +1413,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/period'))
-              cb(null, require('./routes/setting/periode/'))
+              cb(null, require('./routes/setting/periode'))
             }, 'setting-misc')
           }
         }, {

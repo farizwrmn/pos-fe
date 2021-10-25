@@ -928,6 +928,7 @@ export default {
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       if (currentReward && currentReward.categoryCode) {
         payload.serviceTypeId = currentReward.categoryCode
+        payload.type = 'all'
       }
       const data = yield call(queryService, payload)
       if (data.data !== null) {
@@ -2275,6 +2276,7 @@ export default {
       const currentReward = yield select(({ pospromo }) => (pospromo ? pospromo.currentReward : {}))
       if (currentReward && currentReward.categoryCode) {
         payload.categoryCode = currentReward.categoryCode
+        payload.type = 'all'
       }
       const data = yield call(queryProductStock, payload)
       let newData = data.data
