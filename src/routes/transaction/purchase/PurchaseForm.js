@@ -225,8 +225,7 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
         return
       }
       if (transDate >= formattedStartPeriod) {
-        onOk(data)
-        resetFields()
+        onOk(data, resetFields)
       } else {
         Modal.warning({
           title: 'Period has been closed',

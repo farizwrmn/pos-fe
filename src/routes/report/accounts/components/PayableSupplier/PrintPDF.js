@@ -5,19 +5,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
-import { numberFormat, formatDate } from 'utils'
+import { numberFormat } from 'utils'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
-  // Declare Variable
-  let beginTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.beginValue || 0), 0)
-  let nettoTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal || 0), 0)
-  let paidTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paid || 0), 0)
-  let paidBankTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.paidBank || 0), 0)
-  let returnTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.returnTotal || 0), 0)
-  let adjustTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.adjustTotal || 0), 0)
-  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.nettoTotal ? ((o.nettoTotal || 0) - ((o.paid || 0) + (o.paidBank || 0))) : ((o.beginValue || 0) - ((o.paid || 0) + (o.paidBank || 0))) || 0), 0)
+const PrintPDF = ({ user, listTrans, storeInfo }) => {
+  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.payable), 0)
 
   // Declare Function
   const createTableBody = (tabledata) => {
@@ -27,31 +20,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        const totalValue = data.nettoTotal ? ((data.nettoTotal || 0) - ((data.paid || 0) + (data.paidBank || 0))) : ((data.beginValue || 0) - ((data.paid || 0) + (data.paidBank || 0)))
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
-          { text: (data.supplierName || ''), alignment: 'left', fontSize: 11 },
-          { text: (data.supplierTaxId || ''), alignment: 'left', fontSize: 11 },
-          { text: (data.address01 || data.address02 || ''), alignment: 'left', fontSize: 11 },
-          { text: (data.accountNo || ''), alignment: 'left', fontSize: 11 },
-
-          { text: formatDate(data.invoiceDate), alignment: 'left', fontSize: 11 },
-          { text: formatDate(data.dueDate), alignment: 'left', fontSize: 11 },
-          { text: (data.transNo || ''), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(data.beginValue || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.nettoTotal || 0), alignment: 'right', fontSize: 11 },
-
-          { text: formatDate(data.transDate), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(data.paid || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 }), alignment: 'right', fontSize: 11 },
-          { text: (data.bankName || ''), alignment: 'right', fontSize: 11 },
-          { text: (data.checkNo || ''), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.paidBank || 0), alignment: 'right', fontSize: 11 },
-
-          { text: formatNumberIndonesia((data.paid + data.paidBank) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.returnTotal || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(data.adjustTotal || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(totalValue), alignment: 'right', fontSize: 11 },
-          { text: (data.detail || ''), alignment: 'right', fontSize: 11 }
+          { text: (data['supplier.supplierName'] || ''), alignment: 'left', fontSize: 11 },
+          { text: (data['supplier.supplierTaxId'] || ''), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.payable), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -90,32 +63,13 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN PEMBAYARAN HUTANG',
+            text: 'LAPORAN SISA HUTANG',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
           },
           {
             canvas: [{ type: 'line', x1: 0, y1: 5, x2: 2000, y2: 5, lineWidth: 0.5 }]
-          },
-          {
-            columns: [
-              {
-                text: `\nPERIODE: ${formatDate(from)}  TO  ${formatDate(to)}`,
-                fontSize: 12,
-                alignment: 'left'
-              },
-              {
-                text: '',
-                fontSize: 12,
-                alignment: 'center'
-              },
-              {
-                text: '',
-                fontSize: 12,
-                alignment: 'right'
-              }
-            ]
           }
         ]
       }
@@ -156,131 +110,39 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 12, text: 'NO', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SUPPLIER', colSpan: '4', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: 'TGL FAKTUR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TGL JTO', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO FAKTUR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SALDO AWAL', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PEMBELIAN', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: 'PEMBAYARAN', colSpan: '6', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'RETUR PEMBELIAN', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'ADJ', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SALDO AKHIR', rowSpan: '2', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'KETERANGAN', rowSpan: '2', style: 'tableHeader', alignment: 'center' }
-    ],
-    [
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAMA SUPPLIER', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NPWP', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'ALAMAT', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO REK', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: 'TGL BYR TERAKHIR', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CASH', style: 'tableHeader', alignment: 'center' },
-      // { fontSize: 12, text: 'VIA BANK', colSpan: '3', style: 'tableHeader', alignment: 'center' },
-      // { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      // { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA BANK', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NO GIRO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NOMINAL BANK', style: 'tableHeader', alignment: 'center' },
-
-      { fontSize: 12, text: 'JUMLAH BAYAR', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'SISA HUTANG', style: 'tableHeader', alignment: 'center' }
     ]
-    // ,
-    // [
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: 'NAMA BANK', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: 'NO GIRO', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: 'NOMINAL BANK', style: 'tableHeader', alignment: 'center' },
-
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' },
-    //   { fontSize: 12, text: '', style: 'tableHeader', alignment: 'center' }
-    // ]
   ]
+  console.log('tableHeader', tableHeader)
+
   let tableBody = []
   try {
     tableBody = createTableBody(listTrans)
+    console.log('tableBody', tableBody)
   } catch (e) {
     console.log(e)
   }
   const tableFooter = [
     [
-      { text: 'SUBTOTAL', colSpan: 8, alignment: 'center', fontSize: 12 },
-      {},
-      {},
+      { text: 'SUBTOTAL', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
 
-      {},
-      {},
-      {},
-      { text: `${(beginTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(nettoTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-
-      {},
-      { text: `${(paidTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      {},
-      {},
-      { text: `${(paidBankTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-
-      { text: `${(paidTotal + paidBankTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(returnTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(adjustTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 },
-      {}
+      { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
+  console.log('tableFooter', tableFooter)
 
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: [
-      '3%', '6%', '6%', '5%', '5%',
-      '5%', '5%', '5%', '5%', '5%',
-      '5%', '5%', '5%', '5%', '5%',
-      '5%', '5%', '5%', '5%', '5%'
-    ],
+    width: ['10%', '30%', '30%', '30%'],
     pageMargins: [50, 130, 50, 60],
-    pageSize: { width: 1483, height: 2100 },
-    pageOrientation: 'landscape',
+    pageSize: 'A4',
+    pageOrientation: 'portrait',
     tableStyle: styles,
     layout: 'noBorder',
     tableHeader,

@@ -8,7 +8,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, purchase, accountsReport, userStore, app, loading }) => {
-  const { listBySupplier, from, to, productCode } = accountsReport
+  const { listTrans: listBySupplier, from, to, productCode } = accountsReport
   const { listSupplier } = purchase
   const { user, storeInfo } = app
   const { listAllStores } = userStore
@@ -38,21 +38,10 @@ const Report = ({ dispatch, purchase, accountsReport, userStore, app, loading })
         type: 'accountsReport/setListNull'
       })
     },
-    onDateChange (from, to, storeId) {
+    onDateChange (data) {
       dispatch({
         type: 'accountsReport/queryPayableTrans',
-        payload: {
-          from,
-          to,
-          storeId
-        }
-      })
-      dispatch({
-        type: 'accountsReport/setDate',
-        payload: {
-          from,
-          to
-        }
+        payload: data
       })
     }
   }
