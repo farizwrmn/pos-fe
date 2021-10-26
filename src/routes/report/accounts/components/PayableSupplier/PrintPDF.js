@@ -69,7 +69,7 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 2000, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 742, y2: 5, lineWidth: 0.5 }]
           }
         ]
       }
@@ -81,7 +81,7 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 2000, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 742, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -139,7 +139,7 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
     width: ['10%', '30%', '30%', '30%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
-    pageOrientation: 'portrait',
+    pageOrientation: 'landscape',
     tableStyle: styles,
     layout: 'noBorder',
     tableHeader,
