@@ -26,6 +26,7 @@ const ModalList = ({
         ...item,
         ...getFieldsValue()
       }
+      data.discountAccountId = data.discountAccount && data.discountAccount.key ? data.discountAccount.key : null
       editModalItem(data)
       resetFields()
     })
@@ -55,9 +56,14 @@ const ModalList = ({
             style={{ width: '100%' }}
           />)}
         </FormItem>
+        <FormItem {...formItemLayout} label="Description">
+          {getFieldDecorator('description', {
+            initialValue: item.description
+          })(<Input />)}
+        </FormItem>
         <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
           {getFieldDecorator('discount', {
-            initialValue: 0,
+            initialValue: item.discount || 0,
             rules: [{
               required: true,
               pattern: /^([0-9.-]{0,19})$/i,
@@ -73,8 +79,11 @@ const ModalList = ({
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="Discount Account">
-          {getFieldDecorator('discountAccountId', {
-            initialValue: item.discountAccountId,
+          {getFieldDecorator('discountAccount', {
+            initialValue: item.discountAccount ? {
+              key: item.discountAccount.key,
+              label: item.discountAccount.label
+            } : undefined,
             rules: [{
               required: getFieldValue('discount') > 0,
               message: 'Required'
@@ -87,11 +96,6 @@ const ModalList = ({
             filterOption={filterOption}
           >{listAccountOpt}
           </Select>)}
-        </FormItem>
-        <FormItem {...formItemLayout} label="Description">
-          {getFieldDecorator('description', {
-            initialValue: item.description
-          })(<Input />)}
         </FormItem>
       </Form>
     </Modal>
