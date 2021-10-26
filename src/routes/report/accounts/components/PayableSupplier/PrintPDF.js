@@ -116,12 +116,10 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
       { fontSize: 12, text: 'SISA HUTANG', style: 'tableHeader', alignment: 'center' }
     ]
   ]
-  console.log('tableHeader', tableHeader)
 
   let tableBody = []
   try {
     tableBody = createTableBody(listTrans)
-    console.log('tableBody', tableBody)
   } catch (e) {
     console.log(e)
   }
@@ -134,7 +132,6 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
       { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
-  console.log('tableFooter', tableFooter)
 
   // Declare additional Props
   const pdfProps = {
