@@ -1,45 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import {
-  Form
-  // Button,
-  // Row
+  Form,
+  Button,
+  Row
 } from 'antd'
 import List from './List'
 
-// const FormItem = Form.Item
+const FormItem = Form.Item
 
-// const formItemLayout = {
-//   labelCol: {
-//     xs: {
-//       span: 13
-//     },
-//     sm: {
-//       span: 8
-//     },
-//     md: {
-//       span: 7
-//     }
-//   },
-//   wrapperCol: {
-//     xs: {
-//       span: 11
-//     },
-//     sm: {
-//       span: 14
-//     },
-//     md: {
-//       span: 14
-//     }
-//   }
-// }
 const formPayment = ({
   listAmount,
-  // curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0),
-  // data,
   cancelPayment,
   editItem,
-  // openModal,
   form: {
     resetFields
   }
@@ -53,17 +27,13 @@ const formPayment = ({
     }
   }
 
-  // const showModal = () => {
-  //   openModal()
-  // }
-
   return (
     <Form layout="horizontal">
-      {/* <Row>
-        <FormItem style={{ margin: '5px 10px', float: 'right' }} {...formItemLayout}>
-          <Button onClick={() => showModal()} disabled={curPayment >= data.nettoTotal}>Add</Button>
+      <Row>
+        <FormItem style={{ margin: '5px 10px', float: 'right' }}>
+          <Link target="_blank" to={'/accounts/payable-form'}> <Button type="primary">Payment</Button></Link>
         </FormItem>
-      </Row> */}
+      </Row>
       <List {...listProps} />
     </Form >
   )

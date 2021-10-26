@@ -65,8 +65,8 @@ const BrowseGroup = ({
     },
     {
       title: 'Date',
-      dataIndex: 'invoiceDate',
-      key: 'invoiceDate',
+      dataIndex: 'transDate',
+      key: 'transDate',
       width: 150,
       render: text => formatDate(text)
     },
@@ -95,8 +95,16 @@ const BrowseGroup = ({
     },
     {
       title: 'Total',
-      dataIndex: 'nettoTotal',
-      key: 'nettoTotal',
+      dataIndex: 'netto',
+      key: 'netto',
+      width: 100,
+      className: styles.alignRight,
+      render: text => formatNumberIndonesia(text)
+    },
+    {
+      title: 'Paid',
+      dataIndex: 'paid',
+      key: 'paid',
       width: 100,
       className: styles.alignRight,
       render: text => formatNumberIndonesia(text)
@@ -111,8 +119,8 @@ const BrowseGroup = ({
     },
     {
       title: 'Owing',
-      dataIndex: 'sisa',
-      key: 'sisa',
+      dataIndex: 'paymentTotal',
+      key: 'paymentTotal',
       width: 100,
       className: styles.alignRight,
       render: text => formatNumberIndonesia(text)
@@ -147,11 +155,11 @@ const BrowseGroup = ({
       key: 'statusActive',
       width: 120,
       render: text =>
-        (<span>
-          <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
-            {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
-          </Tag>
-        </span>),
+      (<span>
+        <Tag color={text === '1' ? 'blue' : text === '0' ? 'red' : 'white'}>
+          {text === '1' ? 'Active' : text === '0' ? 'Canceled' : ''}
+        </Tag>
+      </span>),
       filters: [{
         text: 'Active',
         value: '1'
@@ -203,7 +211,7 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table {...browseProps} bordered pageSize={5} size="small" scroll={{ x: 1000, y: 500 }} columns={columns} dataSource={dataSource} />
+      <Table {...browseProps} bordered pagination={false} size="small" scroll={{ x: 1000, y: 500 }} columns={columns} dataSource={dataSource} />
     </Form>
   )
 }

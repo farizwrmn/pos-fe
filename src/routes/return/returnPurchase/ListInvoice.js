@@ -73,7 +73,7 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
       key: 'receiveDate'
     },
     {
-      title: 'SupplierName',
+      title: 'Supplier Name',
       dataIndex: 'supplierName',
       key: 'supplierName'
     },

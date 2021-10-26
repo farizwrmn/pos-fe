@@ -8,13 +8,14 @@ const Browse = ({ location, purchase, onChange, loading, pagination, onChooseIte
   const modalOpts = {
     ...purchaseProps
   }
-  let listProductFilter = listProduct.filter(el => el.active === true)
+  let listProductFilter = listProduct.filter(el => el.active)
   const listProps = {
     purchaseProps,
     dataSource: listProductFilter,
     loading: loading.effects[(
       'purchase/getProducts'
     )],
+    loadingProduct: loading,
     location,
     item: itemPayment,
     isMotion,

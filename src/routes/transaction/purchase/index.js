@@ -63,10 +63,13 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onOk (data) {
+    onOk (data, reset) {
       dispatch({
         type: 'purchase/add',
-        payload: data
+        payload: {
+          transData: data,
+          reset
+        }
       })
     },
     onChange (e) {
