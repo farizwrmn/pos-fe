@@ -30,6 +30,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     // currentItemList,
     modalEditItemVisible,
     modalConfirmVisible,
+    reference,
+    referenceNo,
     // formType,
     // display,
     // activeKey,
@@ -207,6 +209,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
 
   const formEditProps = {
     visible: modalEditItemVisible,
+    reference,
+    referenceNo,
     item: currentItem,
     listStore: lstorage.getListUserStores(),
     currentItemList,
@@ -281,6 +285,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
   }
 
   const formProps = {
+    reference,
+    referenceNo,
     listProps,
     listSupplier,
     formConfirmProps,
@@ -310,6 +316,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       dispatch({
         type: 'returnPurchase/updateState',
         payload: {
+          reference: null,
+          referenceNo: null,
           formType: 'add',
           currentItem: {},
           currentItemList: {}
@@ -320,9 +328,10 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       dispatch({
         type: 'returnPurchase/updateState',
         payload: {
+          reference: null,
+          referenceNo: null,
           formType: 'add',
           listItem: [],
-          currentItem: {},
           currentItemList: {}
         }
       })

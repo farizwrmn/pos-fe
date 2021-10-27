@@ -46,6 +46,8 @@ const FormAdd = ({
     resetFields,
     setFieldsValue
   },
+  reference,
+  referenceNo,
   listProps
 }) => {
   const handleInvoice = () => {
@@ -57,6 +59,7 @@ const FormAdd = ({
         ...item,
         ...getFieldsValue()
       }
+      resetFields(['reference', 'referenceNo'])
       data.supplierId = data.supplierCode.key
       handleInvoiceBrowse({
         supplierCode: data.supplierId
@@ -129,6 +132,23 @@ const FormAdd = ({
     })
   }
 
+  const handleChangeInvoice = (checked) => {
+    const oldValue = getFieldValue('requireInvoice')
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        handleProductBrowse(true, false, checked)
+        resetListItem()
+      },
+      onCancel () {
+        setFieldsValue({
+          requireInvoice: oldValue
+        })
+      }
+    })
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -179,11 +199,11 @@ const FormAdd = ({
                     required: false
                   }
                 ]
-              })(<Switch defaultChecked onChange={checked => handleProductBrowse(true, false, checked)} />)}
+              })(<Switch defaultChecked onChange={checked => handleChangeInvoice(checked)} />)}
             </FormItem>
             <FormItem label="referenceNo" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
-                initialValue: item.referenceNo,
+                initialValue: referenceNo,
                 rules: [
                   {
                     required: false
@@ -193,7 +213,7 @@ const FormAdd = ({
             </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('reference', {
-                initialValue: item.reference,
+                initialValue: reference,
                 rules: [
                   {
                     required: false

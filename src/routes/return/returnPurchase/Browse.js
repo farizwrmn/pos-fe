@@ -31,8 +31,6 @@ const Browse = ({
     ...modalProps
   }
 
-  console.log('listProduct', listProduct)
-
   const listProps = {
     purchase,
     dataSource: modalInvoiceVisible ? listInvoice : (listProduct.map(item => ({ ...item, DPP: item.dpp }))),

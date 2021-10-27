@@ -32,6 +32,8 @@ export default modelExtend(pageModel, {
     list: [],
     currentItem: {},
     currentItemList: {},
+    reference: null,
+    referenceNo: null,
     modalType: 'add',
     activeKey: '0',
     modalEditItemVisible: false,
@@ -135,13 +137,13 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'showProductQty',
           payload: {
-            data: newData
+            data: newData.map(item => ({ ...item, dpp: item.costPrice, DPP: item.costPrice }))
           }
         })
         yield put({
           type: 'updateState',
           payload: {
-            listProduct: newData
+            listProduct: newData.map(item => ({ ...item, dpp: item.costPrice, DPP: item.costPrice }))
           }
         })
         yield put({
@@ -179,7 +181,9 @@ export default modelExtend(pageModel, {
                 ...listProductData.data[n],
                 productId: listProductData.data[n].id,
                 initialQty: listProductData.data[n].count,
-                qty: listProductData.data[n].count
+                qty: listProductData.data[n].count,
+                DPP: x.costPrice,
+                dpp: listProductData.data[n].count * x.costPrice
               }
             }
             return x
@@ -253,7 +257,7 @@ export default modelExtend(pageModel, {
       })
       if (response.success && response.data) {
         yield put({
-          type: 'updateItem',
+          type: 'updateState',
           payload: {
             reference: payload.id,
             referenceNo: payload.transNo
@@ -291,7 +295,8 @@ export default modelExtend(pageModel, {
         transferStoreId: lstorage.getCurrentUserStore(),
         ...payload.item,
         initialQty: payload.item.qty,
-        DPP: payload.item.DPP || payload.item.costPrice
+        DPP: payload.item.DPP / payload.item.qty || payload.item.costPrice, // Akan di simpan ke table
+        dpp: payload.item.DPP || payload.item.costPrice * payload.item.qty // Total qty * harga
       }
       newListItem.push(newData)
       yield put({
@@ -383,6 +388,16 @@ export default modelExtend(pageModel, {
           }
         })
         payload.resetFields()
+        yield put({
+          type: 'returnPurchase/updateState',
+          payload: {
+            reference: null,
+            referenceNo: null,
+            formType: 'add',
+            currentItem: {},
+            currentItemList: {}
+          }
+        })
         yield put({
           type: 'querySequence',
           payload: {
