@@ -27,6 +27,20 @@ const Browse = ({
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Discount',
+      dataIndex: 'discount',
+      key: 'discount',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Discount',
+      dataIndex: 'discountAccount.label',
+      key: 'discountAccount.label',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Must Paid',
       dataIndex: 'paymentTotal',
       key: 'paymentTotal',

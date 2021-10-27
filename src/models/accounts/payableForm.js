@@ -292,12 +292,15 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            modalVisible: false,
+            currentItemList: {},
             listItem: listItem
               .filter(filtered => filtered.no !== payload.item.no)
-              .map((item, index) => ({ no: index + 1, ...item }))
+              .map((item, index) => ({ ...item, no: index + 1 }))
           }
         })
         message.success('Success delete item')
+        return
       }
       throw new Error('Item not found')
     }

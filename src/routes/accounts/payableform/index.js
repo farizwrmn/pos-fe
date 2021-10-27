@@ -127,6 +127,14 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
     title: 'Add Detail',
     item: currentItemList,
     visible: modalVisible,
+    onDelete (item) {
+      dispatch({
+        type: 'payableForm/deleteItem',
+        payload: {
+          item
+        }
+      })
+    },
     onCancel () {
       dispatch({
         type: 'payableForm/updateState',

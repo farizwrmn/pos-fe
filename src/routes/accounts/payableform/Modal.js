@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Select, Input, Form, InputNumber } from 'antd'
+import { Modal, Select, Button, Input, Form, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -14,6 +14,8 @@ const ModalList = ({
   editModalItem,
   item,
   listAccountCode,
+  onCancel,
+  onDelete,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
   form: { resetFields, getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
   ...modalProps }) => {
@@ -32,6 +34,21 @@ const ModalList = ({
     })
   }
 
+  const handleDelete = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...item,
+        ...getFieldsValue()
+      }
+      data.discountAccountId = data.discountAccount && data.discountAccount.key ? data.discountAccount.key : null
+      onDelete(data)
+      resetFields()
+    })
+  }
+
   const modalOpts = {
     ...modalProps,
     onOk: handleClick
@@ -40,7 +57,16 @@ const ModalList = ({
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
 
   return (
-    <Modal {...modalOpts}>
+    <Modal {...modalOpts}
+      onCancel={onCancel}
+      footer={[
+        <Button size="large" key="delete" type="danger" onClick={handleDelete}>Delete</Button>,
+        <Button size="large" key="back" onClick={onCancel}>Cancel</Button>,
+        <Button size="large" key="submit" type="primary" onClick={handleClick}>
+          Ok
+        </Button>
+      ]}
+    >
       <Form>
         <FormItem {...formItemLayout} label="Amount In">
           {getFieldDecorator('amount', {
