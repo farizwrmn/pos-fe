@@ -46,6 +46,21 @@ const FormAdd = ({
   },
   listProps
 }) => {
+  const handleInvoice = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...item,
+        ...getFieldsValue()
+      }
+      data.supplierId = data.supplierCode.key
+      handleInvoiceBrowse({
+        supplierCode: data.supplierId
+      })
+    })
+  }
   // const {  } = modalProductProps
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -160,7 +175,7 @@ const FormAdd = ({
               })(<Input disabled />)}
             </FormItem>
             {getFieldValue('requireInvoice') && (
-              <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+              <Button size="large" type="default" onClick={() => handleInvoice()} style={{ marginRight: '10px' }}>Invoice</Button>
             )}
             {getFieldValue('requireInvoice') && item && item.referenceNo && item.reference && (
               <Button type="primary" size="large" onClick={() => handleProductBrowse()}>Product</Button>

@@ -13,6 +13,17 @@ export async function query (params) {
   })
 }
 
+export async function queryPayable (params) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/purchase-payable',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryList (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

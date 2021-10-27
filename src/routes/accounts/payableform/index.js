@@ -176,12 +176,12 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
         }
       })
     },
-    onInvoiceHeader (period, supplierId) {
+    onInvoiceHeader (suppliercode) {
       dispatch({
-        type: 'purchase/getInvoiceHeader',
+        type: 'purchase/getInvoicePayable',
         payload: {
-          ...period,
-          supplierId
+          suppliercode,
+          order: 'transDate'
         }
       })
     },

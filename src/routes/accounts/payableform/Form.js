@@ -137,15 +137,9 @@ const FormCounter = ({
         return
       }
       handleBrowseInvoice()
-      let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
-      let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
-      const period = {
-        startPeriod,
-        endPeriod
-      }
       const supplierId = getFieldValue('supplierId')
       if (supplierId && supplierId.key) {
-        onInvoiceHeader(period, supplierId.key)
+        onInvoiceHeader(supplierId.key)
       }
     })
   }

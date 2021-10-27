@@ -6,6 +6,7 @@ import moment from 'moment'
 import { query as querySequence } from '../services/sequence'
 import {
   query,
+  queryPayable,
   queryDetail,
   create,
   editPurchase,
@@ -488,7 +489,37 @@ export default modelExtend(pageModel, {
     * getInvoiceHeader ({ payload }, { call, put }) {
       const dataDetail = yield call(query, payload)
       let dataInvoice = dataDetail.data
-      if (dataDetail.data.length > 0) {
+      if (dataDetail && dataDetail.data && dataDetail.data.length > 0) {
+        yield put({
+          type: 'queryGetInvoiceSuccess',
+          payload: {
+            dataInvoice,
+            tmpInvoiceList: dataInvoice,
+            pagination: {
+              total: Number(dataDetail.total || 0)
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Content Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        yield put({
+          type: 'updateState',
+          payload: {
+            dataInvoice: [],
+            tmpInvoiceList: [],
+            listInvoice: []
+          }
+        })
+      }
+    },
+    * getInvoicePayable ({ payload }, { call, put }) {
+      const dataDetail = yield call(queryPayable, payload)
+      let dataInvoice = dataDetail.data
+      if (dataDetail && dataDetail.data && dataDetail.data.length > 0) {
         yield put({
           type: 'queryGetInvoiceSuccess',
           payload: {

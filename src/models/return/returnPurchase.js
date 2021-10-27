@@ -291,7 +291,7 @@ export default modelExtend(pageModel, {
         transferStoreId: lstorage.getCurrentUserStore(),
         ...payload.item,
         initialQty: payload.item.qty,
-        DPP: payload.item.costPrice
+        DPP: payload.item.DPP
       }
       newListItem.push(newData)
       yield put({

@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Button, Input, Form, Row, Col, DatePicker } from 'antd'
+import { Table, Button, Input, Form, Row, Col } from 'antd'
 import { connect } from 'dva'
-import moment from 'moment'
 import styles from 'themes/index.less'
+import { numberFormatter } from 'utils/string'
 
-const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 
-const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
+const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
   const { searchText, tmpInvoiceList } = purchase
 
   const handleMenuClick = (record) => {
@@ -44,16 +43,6 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
         tmpInvoiceList
       }
     })
-  }
-
-  const changeMonth = (date, dateString) => {
-    let startPeriod = moment(dateString, 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
-    let endPeriod = moment(dateString, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
-    const period = {
-      startPeriod,
-      endPeriod
-    }
-    onInvoiceHeader(period)
   }
 
   const columns = [
@@ -109,16 +98,13 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
               <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
             </FormItem>
           </Col>
-          <Col lg={8} md={10}>
-            <FormItem>
-              <MonthPicker onChange={changeMonth} placeholder="Select Period" />
-            </FormItem>
-          </Col>
         </Row>
       </Form>
 
       <Table
         {...tableProps}
+        title={() => `Total: ${numberFormatter(listInvoice ? listInvoice.reduce((prev, next) => prev + next.paymentTotal, 0) : 0)}`}
+        pagination={false}
         bordered
         columns={columns}
         simple
