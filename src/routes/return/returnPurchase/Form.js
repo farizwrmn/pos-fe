@@ -28,6 +28,7 @@ const col = {
 const FormAdd = ({
   item = {},
   listSupplier,
+  resetListItem,
   onSubmit,
   button,
   loadingButton,
@@ -42,7 +43,8 @@ const FormAdd = ({
     validateFields,
     getFieldsValue,
     getFieldValue,
-    resetFields
+    resetFields,
+    setFieldsValue
   },
   listProps
 }) => {
@@ -102,6 +104,31 @@ const FormAdd = ({
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
 
+  const handleChangeSupplier = () => {
+    const oldSupplierCode = getFieldValue('supplierCode')
+    validateFields(['supplierCode'], (errors) => {
+      if (errors) {
+        return
+      }
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          const type = getFieldValue('type')
+          resetListItem(type)
+        },
+        onCancel () {
+          setFieldsValue({
+            supplierCode: {
+              key: oldSupplierCode ? oldSupplierCode.key : null,
+              label: oldSupplierCode ? oldSupplierCode.label : null
+            }
+          })
+        }
+      })
+    })
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -136,7 +163,7 @@ const FormAdd = ({
                 optionFilterProp="children"
                 labelInValue
                 maxTagCount={5}
-                // onChange={handleChange}
+                onChange={handleChangeSupplier}
                 style={{ width: '100%' }}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >

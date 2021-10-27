@@ -316,6 +316,17 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
         }
       })
     },
+    resetListItem () {
+      dispatch({
+        type: 'returnPurchase/updateState',
+        payload: {
+          formType: 'add',
+          listItem: [],
+          currentItem: {},
+          currentItemList: {}
+        }
+      })
+    },
     handleProductBrowse,
     handleInvoiceBrowse (data) {
       dispatch({
