@@ -87,9 +87,9 @@ const ModalList = ({
             initialValue: item.description
           })(<Input />)}
         </FormItem>
-        <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('discount', {
-            initialValue: item.discount || 0,
+        <FormItem label="Disc Invoice 1 (N)" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('discount[0]', {
+            initialValue: item.discount && item.discount[0] ? item.discount[0] : 0,
             rules: [{
               required: true,
               pattern: /^([0-9.-]{0,19})$/i,
@@ -104,14 +104,86 @@ const ModalList = ({
             />
           )}
         </FormItem>
-        <FormItem {...formItemLayout} label="Discount Account">
-          {getFieldDecorator('discountAccount', {
-            initialValue: item.discountAccount ? {
-              key: item.discountAccount.key,
-              label: item.discountAccount.label
+        <FormItem {...formItemLayout} label="Discount Account 1">
+          {getFieldDecorator('discountAccount[0]', {
+            initialValue: item.discountAccount && item.discountAccount[0] ? {
+              key: item.discountAccount[0].key,
+              label: item.discountAccount[0].label
             } : undefined,
             rules: [{
-              required: getFieldValue('discount') > 0,
+              required: getFieldValue('discount[0]') > 0,
+              message: 'Required'
+            }]
+          })(<Select
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            labelInValue
+            filterOption={filterOption}
+          >{listAccountOpt}
+          </Select>)}
+        </FormItem>
+        <FormItem label="Disc Invoice 2(N)" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('discount[1]', {
+            initialValue: item.discount && item.discount[1] ? item.discount[1] : 0,
+            rules: [{
+              required: true,
+              pattern: /^([0-9.-]{0,19})$/i,
+              message: 'Required'
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              step={10000}
+              max={item.amount}
+              min={0}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Discount Account 2">
+          {getFieldDecorator('discountAccount[1]', {
+            initialValue: item.discountAccount && item.discountAccount[1] ? {
+              key: item.discountAccount[1].key,
+              label: item.discountAccount[1].label
+            } : undefined,
+            rules: [{
+              required: getFieldValue('discount[1]') > 0,
+              message: 'Required'
+            }]
+          })(<Select
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            labelInValue
+            filterOption={filterOption}
+          >{listAccountOpt}
+          </Select>)}
+        </FormItem>
+        <FormItem label="Disc Invoice 3(N)" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('discount[2]', {
+            initialValue: item.discount && item.discount[2] ? item.discount[2] : 0,
+            rules: [{
+              required: true,
+              pattern: /^([0-9.-]{0,19})$/i,
+              message: 'Required'
+            }]
+          })(
+            <InputNumber
+              defaultValue={0}
+              step={10000}
+              max={item.amount}
+              min={0}
+            />
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Discount Account 3">
+          {getFieldDecorator('discountAccount[2]', {
+            initialValue: item.discountAccount && item.discountAccount[2] ? {
+              key: item.discountAccount[2].key,
+              label: item.discountAccount[2].label
+            } : undefined,
+            rules: [{
+              required: getFieldValue('discount[2]') > 0,
               message: 'Required'
             }]
           })(<Select
