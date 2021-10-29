@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Select, Button, Input, Form, InputNumber } from 'antd'
+import { message, Modal, Select, Button, Input, Form, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -28,7 +28,10 @@ const ModalList = ({
         ...item,
         ...getFieldsValue()
       }
-      data.discountAccountId = data.discountAccount && data.discountAccount.key ? data.discountAccount.key : null
+      if (data.discount && data.discount.length > 0 ? (data.amount - data.discount[0] - data.discount[1] - data.discount[2]) > 0 : true) {
+        message.error('Discount exceed amount')
+        return
+      }
       editModalItem(data)
       resetFields()
     })
@@ -100,7 +103,6 @@ const ModalList = ({
               defaultValue={0}
               step={10000}
               max={item.amount}
-              min={0}
             />
           )}
         </FormItem>
@@ -136,7 +138,6 @@ const ModalList = ({
               defaultValue={0}
               step={10000}
               max={item.amount}
-              min={0}
             />
           )}
         </FormItem>
@@ -172,7 +173,6 @@ const ModalList = ({
               defaultValue={0}
               step={10000}
               max={item.amount}
-              min={0}
             />
           )}
         </FormItem>

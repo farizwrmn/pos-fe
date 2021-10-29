@@ -91,6 +91,23 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      if (listItem && listItem.length === 0) {
+        message.error('Detail cannot be empty')
+        return
+      }
+      let total = 0
+      for (let key in listItem) {
+        const item = listItem[key]
+        let totalDiscount = 0
+        if (item && item.discount && item.discount.length > 0) {
+          totalDiscount = item.discount.reduce((prev, next) => prev + next, 0)
+        }
+        total += item.amount - totalDiscount
+      }
+      if (total <= 0) {
+        message.error('Total payment cannot under zero')
+        return
+      }
       data.storeId = lstorage.getCurrentUserStore()
       data.supplierId = data.supplierId ? data.supplierId.key : null
       data.discountAccountId = data.discountAccountId ? data.discountAccountId.key : null
