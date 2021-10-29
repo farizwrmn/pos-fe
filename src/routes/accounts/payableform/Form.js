@@ -100,7 +100,7 @@ const FormCounter = ({
         const item = listItem[key]
         let totalDiscount = 0
         if (item && item.discount && item.discount.length > 0) {
-          totalDiscount = item.discount.reduce((prev, next) => prev + next, 0)
+          totalDiscount = item.discount.reduce((prev, next) => prev + parseFloat(next), 0)
         }
         total += item.amount - totalDiscount
       }

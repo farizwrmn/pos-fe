@@ -28,7 +28,7 @@ const ModalList = ({
         ...item,
         ...getFieldsValue()
       }
-      if (data.discount && data.discount.length > 0 ? (data.amount - data.discount[0] - data.discount[1] - data.discount[2]) > 0 : true) {
+      if (data.discount && data.discount.length > 0 ? (data.amount - data.discount[0] - data.discount[1] - data.discount[2]) < 0 : false) {
         message.error('Discount exceed amount')
         return
       }
@@ -113,7 +113,7 @@ const ModalList = ({
               label: item.discountAccount[0].label
             } : undefined,
             rules: [{
-              required: getFieldValue('discount[0]') > 0,
+              required: getFieldValue('discount[0]') !== 0,
               message: 'Required'
             }]
           })(<Select
@@ -148,7 +148,7 @@ const ModalList = ({
               label: item.discountAccount[1].label
             } : undefined,
             rules: [{
-              required: getFieldValue('discount[1]') > 0,
+              required: getFieldValue('discount[1]') !== 0,
               message: 'Required'
             }]
           })(<Select
@@ -183,7 +183,7 @@ const ModalList = ({
               label: item.discountAccount[2].label
             } : undefined,
             rules: [{
-              required: getFieldValue('discount[2]') > 0,
+              required: getFieldValue('discount[2]') !== 0,
               message: 'Required'
             }]
           })(<Select

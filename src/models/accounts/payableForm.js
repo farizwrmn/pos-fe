@@ -260,7 +260,6 @@ export default modelExtend(pageModel, {
         message.error('Require item in payload')
         return
       }
-      console.log('payload.item', payload.item, listItem)
       const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         yield put({
