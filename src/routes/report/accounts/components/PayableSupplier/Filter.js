@@ -3,12 +3,10 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Select, DatePicker, Row, Col, Icon, Form, message } from 'antd'
-import moment from 'moment'
+import { Button, Select, Row, Col, Icon, Form } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { RangePicker } = DatePicker
 const { Option } = Select
 const FormItem = Form.Item
 
@@ -29,22 +27,15 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, listSupplier, listAllStores, loading, onListReset, form: { getFieldsValue, getFieldValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
-  // const handleChange = (value) => {
-  //   const from = moment(value, 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
-  //   const to = moment(value, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
-  //   onDateChange(from, to)
-  // }
+const Filter = ({ onDateChange, listSupplier, listAllStores, loading, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, validateFields, getFieldDecorator }, ...printProps }) => {
   const handleSearch = () => {
-    const storeId = getFieldValue('storeId')
-    const dateString = getFieldValue('rangePicker')
-    if (!dateString) {
-      message.warning('Require Date')
-      return
-    }
-    const from = moment(dateString[0]).format('YYYY-MM-DD')
-    const to = moment(dateString[1]).format('YYYY-MM-DD')
-    onDateChange(from, to, storeId)
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getFieldsValue()
+      onDateChange(data)
+    })
   }
 
   const handleReset = () => {
@@ -66,44 +57,13 @@ const Filter = ({ onDateChange, listSupplier, listAllStores, loading, onListRese
   let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
 
   const supplierData = (listSupplier || []).length > 0 ?
-    ([<Option value="all" key="all">Select All</Option>]).concat(listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>))
+    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
-
-  const normalizeAll = (value, prevValue = []) => {
-    let selectedValue = ''
-    let selectedPrevValue = ''
-    for (let key in value) {
-      if (value[key].key === 'all') {
-        selectedValue = 'all'
-      }
-    }
-    for (let key in prevValue) {
-      if (prevValue[key].key === 'all') {
-        selectedPrevValue = 'all'
-      }
-    }
-    if (selectedValue === 'all' && value.length > 0) {
-      return ([{ key: 'all', label: 'Select All' }])
-    }
-    if (selectedValue === 'all' && selectedPrevValue !== 'all') {
-      // return (['all']).concat(listSupplier.map(item => item.id))
-      return ([{ key: 'all', label: 'Select All' }])
-    }
-    if (selectedValue !== 'all' && selectedPrevValue === 'all') {
-      return []
-    }
-    return value
-  }
 
   return (
     <Row >
       <Col {...leftColumn} >
         <Form>
-          <FormItem label="Trans Date">
-            {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" style={{ width: '189px' }} placeholder="Select Period" />
-            )}
-          </FormItem>
           <FormItem
             label="Store"
           >
@@ -121,17 +81,9 @@ const Filter = ({ onDateChange, listSupplier, listAllStores, loading, onListRese
             )}
           </FormItem>
           <FormItem label="Supplier">
-            {getFieldDecorator('supplierCode', {
-              rules: [
-                {
-                  required: true
-                }
-              ],
-              normalize: normalizeAll
-            })(<Select
+            {getFieldDecorator('supplierId')(<Select
               showSearch
               optionFilterProp="children"
-              labelInValue
               multiple
               allowClear
               maxTagCount={5}

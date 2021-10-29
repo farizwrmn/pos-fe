@@ -33,7 +33,7 @@ const Browse = ({
 
   const listProps = {
     purchase,
-    dataSource: modalInvoiceVisible ? listInvoice : listProduct,
+    dataSource: modalInvoiceVisible ? listInvoice : (listProduct.map(item => ({ ...item, DPP: item.dpp }))),
     loading: loading.effects['purchase/getInvoiceHeader']
       || loading.effects['purchase/queryHistory']
       || loading.effects['returnPurchase/getInvoiceDetailPurchase'],

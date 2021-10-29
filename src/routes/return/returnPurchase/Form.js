@@ -28,6 +28,7 @@ const col = {
 const FormAdd = ({
   item = {},
   listSupplier,
+  resetListItem,
   onSubmit,
   button,
   loadingButton,
@@ -42,10 +43,29 @@ const FormAdd = ({
     validateFields,
     getFieldsValue,
     getFieldValue,
-    resetFields
+    resetFields,
+    setFieldsValue
   },
+  reference,
+  referenceNo,
   listProps
 }) => {
+  const handleInvoice = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...item,
+        ...getFieldsValue()
+      }
+      resetFields(['reference', 'referenceNo'])
+      data.supplierId = data.supplierCode.key
+      handleInvoiceBrowse({
+        supplierCode: data.supplierId
+      })
+    })
+  }
   // const {  } = modalProductProps
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -87,6 +107,48 @@ const FormAdd = ({
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
 
+  const handleChangeSupplier = () => {
+    const oldSupplierCode = getFieldValue('supplierCode')
+    validateFields(['supplierCode'], (errors) => {
+      if (errors) {
+        return
+      }
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          const type = getFieldValue('type')
+          resetListItem(type)
+        },
+        onCancel () {
+          setFieldsValue({
+            supplierCode: {
+              key: oldSupplierCode ? oldSupplierCode.key : null,
+              label: oldSupplierCode ? oldSupplierCode.label : null
+            }
+          })
+        }
+      })
+    })
+  }
+
+  const handleChangeInvoice = (checked) => {
+    const oldValue = getFieldValue('requireInvoice')
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        handleProductBrowse(true, false, checked)
+        resetListItem()
+      },
+      onCancel () {
+        setFieldsValue({
+          requireInvoice: oldValue
+        })
+      }
+    })
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -121,7 +183,7 @@ const FormAdd = ({
                 optionFilterProp="children"
                 labelInValue
                 maxTagCount={5}
-                // onChange={handleChange}
+                onChange={handleChangeSupplier}
                 style={{ width: '100%' }}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >
@@ -137,11 +199,11 @@ const FormAdd = ({
                     required: false
                   }
                 ]
-              })(<Switch defaultChecked onChange={checked => handleProductBrowse(true, false, checked)} />)}
+              })(<Switch defaultChecked onChange={checked => handleChangeInvoice(checked)} />)}
             </FormItem>
             <FormItem label="referenceNo" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
-                initialValue: item.referenceNo,
+                initialValue: referenceNo,
                 rules: [
                   {
                     required: false
@@ -151,7 +213,7 @@ const FormAdd = ({
             </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('reference', {
-                initialValue: item.reference,
+                initialValue: reference,
                 rules: [
                   {
                     required: false
@@ -160,7 +222,7 @@ const FormAdd = ({
               })(<Input disabled />)}
             </FormItem>
             {getFieldValue('requireInvoice') && (
-              <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+              <Button size="large" type="default" onClick={() => handleInvoice()} style={{ marginRight: '10px' }}>Invoice</Button>
             )}
             {getFieldValue('requireInvoice') && item && item.referenceNo && item.reference && (
               <Button type="primary" size="large" onClick={() => handleProductBrowse()}>Product</Button>

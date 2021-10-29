@@ -260,7 +260,6 @@ export default modelExtend(pageModel, {
         message.error('Require item in payload')
         return
       }
-      console.log('payload.item', payload.item, listItem)
       const exists = checkExists(payload.item.transNo, listItem)
       if (exists) {
         yield put({
@@ -292,12 +291,15 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            modalVisible: false,
+            currentItemList: {},
             listItem: listItem
               .filter(filtered => filtered.no !== payload.item.no)
-              .map((item, index) => ({ no: index + 1, ...item }))
+              .map((item, index) => ({ ...item, no: index + 1 }))
           }
         })
         message.success('Success delete item')
+        return
       }
       throw new Error('Item not found')
     }

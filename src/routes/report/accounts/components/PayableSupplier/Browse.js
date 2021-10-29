@@ -3,8 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag } from 'antd'
-import moment from 'moment'
+import { Table } from 'antd'
 import { numberFormat } from 'utils'
 
 const { formatNumberIndonesia } = numberFormat
@@ -12,51 +11,17 @@ const { formatNumberIndonesia } = numberFormat
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
-      title: 'Invoice',
-      dataIndex: 'transNo',
-      key: 'transNo',
+      title: 'Supplier',
+      dataIndex: 'supplier.supplierName',
+      key: 'supplier.supplierName',
       width: '155px'
     },
     {
-      title: 'Date',
-      dataIndex: 'invoiceDate',
-      key: 'invoiceDate',
-      width: '175px',
-      render: text => `${moment(text).format('DD-MMM-YYYY')}`
-    },
-    {
-      title: 'Total',
-      dataIndex: 'nettoTotal',
-      key: 'nettoTotal',
+      title: 'Owing',
+      dataIndex: 'payable',
+      key: 'payable',
       width: '100px',
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
-    },
-    {
-      title: 'Paid',
-      dataIndex: 'paid',
-      key: 'paid',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
-    },
-    {
-      title: 'Change',
-      dataIndex: 'change',
-      key: 'change',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
-    },
-    {
-      title: 'Status',
-      dataIndex: 'statusPaid',
-      key: 'statusPaid',
-      width: '100px',
-      render: text => (
-        <span>
-          <Tag color={text === 'PAID' ? 'green' : text === 'PARTIAL' ? 'yellow' : 'red'}>
-            {(text || '')}
-          </Tag>
-        </span>
-      )
     }
   ]
 

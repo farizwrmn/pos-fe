@@ -213,7 +213,8 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                 })(<InputNumber
                   onBlur={hdlChangePercent}
                   defaultValue={0}
-                  step={500}
+                  step={10}
+                  max={100}
                   min={0}
                 />)}
               </FormItem>

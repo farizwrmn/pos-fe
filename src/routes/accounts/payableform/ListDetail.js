@@ -27,6 +27,37 @@ const Browse = ({
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Discount',
+      dataIndex: 'discount',
+      key: 'discount',
+      className: styles.alignRight,
+      render: (text) => {
+        let totalDiscount = 0
+        if (text && text.length > 0) {
+          totalDiscount = text.reduce((prev, next) => prev + next, 0)
+        }
+        return (totalDiscount || '-').toLocaleString()
+      }
+    },
+    {
+      title: 'Discount Account',
+      dataIndex: 'discountAccount',
+      key: 'discountAccount',
+      className: styles.alignRight,
+      render: (text) => {
+        let discount = ''
+        if (text && text.length > 0) {
+          for (let key in text) {
+            let item = text[key]
+            if (item && item.label) {
+              discount += `${item.label}, `
+            }
+          }
+        }
+        return (discount || '-').toLocaleString()
+      }
+    },
+    {
       title: 'Must Paid',
       dataIndex: 'paymentTotal',
       key: 'paymentTotal',
@@ -54,12 +85,19 @@ const Browse = ({
       size="small"
       pagination={{ pageSize: 5 }}
       onRowClick={_record => hdlModalShow(_record)}
-      footer={() => (
-        <div>
-          <div>Subtotal : {listItem.reduce((cnt, o) => cnt + (o.amount > 0 ? o.amount : 0), 0).toLocaleString()}</div>
-          <div>P.Return : {listItem.reduce((cnt, o) => cnt + (o.amount < 0 ? o.amount : 0), 0).toLocaleString()}</div>
-          <div>Total : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0).toLocaleString()}</div>
-        </div>)
+      footer={() => {
+        const discount = listItem.reduce((cnt, o) => cnt + (o.discount && o.discount.length > 0 ? o.discount.reduce((prev, next) => prev + next, 0) : 0), 0) || 0
+        const subtotal = listItem.reduce((cnt, o) => cnt + (o.amount > 0 ? o.amount : 0), 0)
+        const returnTotal = listItem.reduce((cnt, o) => cnt + (o.amount < 0 ? o.amount : 0), 0)
+        const total = listItem.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0) - discount
+        return (
+          <div>
+            <div>Subtotal : {subtotal.toLocaleString()}</div>
+            <div>P.Return : {returnTotal.toLocaleString()}</div>
+            <div>Discount : {discount.toLocaleString()}</div>
+            <div>Total : {total.toLocaleString()}</div>
+          </div>)
+      }
       }
     />
   )

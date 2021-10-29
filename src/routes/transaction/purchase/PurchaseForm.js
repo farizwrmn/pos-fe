@@ -225,8 +225,7 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
         return
       }
       if (transDate >= formattedStartPeriod) {
-        onOk(data)
-        resetFields()
+        onOk(data, resetFields)
       } else {
         Modal.warning({
           title: 'Period has been closed',
@@ -264,7 +263,7 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
                         pattern: /^([0-9.-]{0,5})$/i,
                         message: 'Required'
                       }]
-                    })(<InputNumber onBlur={hdlChangePercent} size="large" min={0} max={100} step={0.1} defaultValue={0} />)}
+                    })(<InputNumber onBlur={hdlChangePercent} size="large" min={0} max={100} step={10} defaultValue={0} />)}
                   </FormItem>
                   <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('discInvoiceNominal', {

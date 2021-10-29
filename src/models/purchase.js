@@ -6,6 +6,7 @@ import moment from 'moment'
 import { query as querySequence } from '../services/sequence'
 import {
   query,
+  queryPayable,
   queryDetail,
   create,
   editPurchase,
@@ -17,7 +18,7 @@ import {
   queryDetailByProductId
 } from '../services/purchase'
 import { pageModel } from './common'
-import { query as queryProducts } from '../services/master/productstock'
+import { query as queryProducts, queryPOSproduct } from '../services/master/productstock'
 import { query as querySupplier } from '../services/master/supplier'
 
 const { stockMinusAlert } = alertModal
@@ -157,6 +158,40 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * showProductQty ({ payload }, { call, put }) {
+      let { data } = payload
+      console.log('data', data)
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      console.log('listProductData', listProductData)
+      if (listProductData.success) {
+        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
+          data = data.map((x) => {
+            if (x.id === listProductData.data[n].id) {
+              const { count, ...other } = x
+              return {
+                ...other,
+                ...listProductData.data[n]
+              }
+            }
+            return x
+          })
+        }
+
+        console.log('data', data)
+        yield put({
+          type: 'queryGetProductsSuccess',
+          payload: {
+            productInformation: data
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
+
     * querySupplier ({ payload = {} }, { call, put }) {
       const data = yield call(querySupplier, payload)
       if (data.success) {
@@ -247,7 +282,8 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
 
-    * add ({ payload }, { call, put }) {
+    * add ({ payload = {} }, { call, put }) {
+      const { transData } = payload
       const storeId = lstorage.getCurrentUserStore()
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
       if ((purchase_detail || []).length !== 0) {
@@ -255,7 +291,7 @@ export default modelExtend(pageModel, {
         for (let n = 0; n < purchase_detail.length; n += 1) {
           arrayProd.push({
             storeId,
-            transNo: payload.transNo,
+            transNo: transData.transNo,
             productId: purchase_detail[n].code,
             productName: purchase_detail[n].name,
             qty: purchase_detail[n].qty,
@@ -264,10 +300,10 @@ export default modelExtend(pageModel, {
             PPN: purchase_detail[n].ppn,
             discPercent: purchase_detail[n].disc1,
             discNominal: purchase_detail[n].discount,
-            transType: payload.transType
+            transType: transData.transType
           })
         }
-        const data = yield call(create, { id: payload.transNo, data: payload, add: arrayProd })
+        const data = yield call(create, { id: transData.transNo, data: transData, add: arrayProd })
         if (data.success) {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
@@ -280,7 +316,7 @@ export default modelExtend(pageModel, {
             return new Promise((resolve, reject) => {
               Modal.confirm({
                 title: 'Transaction Success',
-                content: `Go To Payment (${payload.transNo}) ?`,
+                content: `Go To Payment (${transData.transNo}) ?`,
                 onOk () {
                   resolve()
                 },
@@ -292,8 +328,11 @@ export default modelExtend(pageModel, {
           }
           yield modalMember()
           yield put(routerRedux.push({
-            pathname: `/accounts/payable/${payload.transNo}`
+            pathname: `/accounts/payable/${transData.transNo}`
           }))
+          if (payload && payload.reset) {
+            payload.reset()
+          }
         } else {
           Modal.warning({
             title: 'Something went wrong',
@@ -429,6 +468,12 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        yield put({
+          type: 'showProductQty',
+          payload: {
+            data: newData
+          }
+        })
       }
       if (dataDetail && dataDetail.success) {
         let dataInvoice = dataDetail.data
@@ -444,7 +489,37 @@ export default modelExtend(pageModel, {
     * getInvoiceHeader ({ payload }, { call, put }) {
       const dataDetail = yield call(query, payload)
       let dataInvoice = dataDetail.data
-      if (dataDetail.data.length > 0) {
+      if (dataDetail && dataDetail.data && dataDetail.data.length > 0) {
+        yield put({
+          type: 'queryGetInvoiceSuccess',
+          payload: {
+            dataInvoice,
+            tmpInvoiceList: dataInvoice,
+            pagination: {
+              total: Number(dataDetail.total || 0)
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Content Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        yield put({
+          type: 'updateState',
+          payload: {
+            dataInvoice: [],
+            tmpInvoiceList: [],
+            listInvoice: []
+          }
+        })
+      }
+    },
+    * getInvoicePayable ({ payload }, { call, put }) {
+      const dataDetail = yield call(queryPayable, payload)
+      let dataInvoice = dataDetail.data
+      if (dataDetail && dataDetail.data && dataDetail.data.length > 0) {
         yield put({
           type: 'queryGetInvoiceSuccess',
           payload: {

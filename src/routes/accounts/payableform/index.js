@@ -21,7 +21,7 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
     list
   } = payableForm
   const { listPayment } = paymentEdc
-  const { listAccountCodeLov } = accountCode
+  const { listAccountCodeLov, listAccountCode } = accountCode
   const { listOpts } = paymentOpts
   const { listBank } = bank
   const { listSupplier } = supplier
@@ -127,6 +127,14 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
     title: 'Add Detail',
     item: currentItemList,
     visible: modalVisible,
+    onDelete (item) {
+      dispatch({
+        type: 'payableForm/deleteItem',
+        payload: {
+          item
+        }
+      })
+    },
     onCancel () {
       dispatch({
         type: 'payableForm/updateState',
@@ -176,12 +184,12 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
         }
       })
     },
-    onInvoiceHeader (period, supplierId) {
+    onInvoiceHeader (suppliercode) {
       dispatch({
-        type: 'purchase/getInvoiceHeader',
+        type: 'purchase/getInvoicePayable',
         payload: {
-          ...period,
-          supplierId
+          suppliercode,
+          order: 'transDate'
         }
       })
     },
@@ -195,6 +203,7 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
     }
   }
   const formProps = {
+    listAccountCodeAll: listAccountCode,
     listPayment,
     purchaseProps,
     dispatch,

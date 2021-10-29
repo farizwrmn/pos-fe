@@ -71,7 +71,7 @@ const Filter = ({ onDateChange, listAllStores, loading, onListReset, form: { get
         <Form>
           <FormItem label="Trans Date">
             {getFieldDecorator('rangePicker')(
-              <RangePicker size="large" style={{ width: '189px' }} placeholder="Select Period" />
+              <RangePicker size="large" style={{ width: '189px' }} />
             )}
           </FormItem>
           <FormItem
