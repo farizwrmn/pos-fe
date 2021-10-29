@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import moment from 'moment'
 import { Button, Tabs } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
@@ -31,6 +30,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     // currentItemList,
     modalEditItemVisible,
     modalConfirmVisible,
+    reference,
+    referenceNo,
     // formType,
     // display,
     // activeKey,
@@ -65,6 +66,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
 
   const listProps = {
     dataSource: listItem,
+    listItem,
     loading: loading.effects['returnPurchase/query'],
     pagination: false,
     location,
@@ -135,7 +137,6 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       })
     },
     onChooseItem (item) {
-      console.log('item', item, item.productId)
       if (!item.productId) {
         item.productId = item.id
       }
@@ -146,18 +147,11 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
         }
       })
     },
-    onInvoiceHeader (period) {
-      // dispatch({
-      //   type: 'purchase/queryHistory',
-      //   payload: {
-      //     ...period
-      //   }
-      // })
+    onInvoiceHeader () {
       dispatch({
-        type: 'purchase/getInvoiceHeader',
+        type: 'purchase/getInvoicePayable',
         payload: {
-          ...period,
-          type: 'return'
+          order: 'transDate'
         }
       })
     },
@@ -215,6 +209,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
 
   const formEditProps = {
     visible: modalEditItemVisible,
+    reference,
+    referenceNo,
     item: currentItem,
     listStore: lstorage.getListUserStores(),
     currentItemList,
@@ -289,6 +285,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
   }
 
   const formProps = {
+    reference,
+    referenceNo,
     listProps,
     listSupplier,
     formConfirmProps,
@@ -318,21 +316,28 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       dispatch({
         type: 'returnPurchase/updateState',
         payload: {
+          reference: null,
+          referenceNo: null,
           formType: 'add',
           currentItem: {},
           currentItemList: {}
         }
       })
     },
-    handleProductBrowse,
-    handleInvoiceBrowse () {
+    resetListItem () {
       dispatch({
-        type: 'purchase/queryHistory',
+        type: 'returnPurchase/updateState',
         payload: {
-          startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
-          endPeriod: moment().endOf('month').format('YYYY-MM-DD')
+          reference: null,
+          referenceNo: null,
+          formType: 'add',
+          listItem: [],
+          currentItemList: {}
         }
       })
+    },
+    handleProductBrowse,
+    handleInvoiceBrowse (data) {
       dispatch({
         type: 'purchase/updateState',
         payload: {
@@ -345,18 +350,9 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
           modalInvoiceVisible: true
         }
       })
-      let startPeriod = moment().startOf('month').format('YYYY-MM-DD')
-      let endPeriod = moment().endOf('month').format('YYYY-MM-DD')
-      const period = {
-        startPeriod,
-        endPeriod
-      }
       dispatch({
-        type: 'purchase/getInvoiceHeader',
-        payload: {
-          ...period,
-          type: 'return'
-        }
+        type: 'purchase/getInvoicePayable',
+        payload: data
       })
     }
   }

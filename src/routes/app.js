@@ -310,11 +310,9 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
     askAgain: true,
     onPermissionDenied () {
       dispatch({ type: 'app/permissionDenied' })
-      console.log('permission denied!')
     },
     onPermissionGranted () {
       dispatch({ type: 'app/permissionGranted' })
-      console.log('permission granted!')
     },
     notSupported () {
       dispatch({ type: 'app/permissionDenied' })

@@ -1,12 +1,10 @@
-import { request, config, crypt, lstorage } from 'utils'
-
-const { paymentOpts } = config.api
+import { request, crypt, lstorage } from 'utils'
 
 export async function queryPayable (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
   return request({
-    url: `${paymentOpts}/payable/purchase`,
+    url: '/payment/payable/purchase',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -16,7 +14,7 @@ export async function queryPayable (params) {
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable-detail/${params.id}`,
+    url: `/payment/payable-detail/${params.id}`,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -26,7 +24,7 @@ export async function queryById (params) {
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable`,
+    url: '/payment/payable',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -36,7 +34,7 @@ export async function query (params) {
 export async function queryPaymentGroup (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable`,
+    url: '/payment/payable',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -46,7 +44,7 @@ export async function queryPaymentGroup (params) {
 export async function queryPaymentWithPOS (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/report/purchase`,
+    url: '/payment/report/purchase',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -56,7 +54,7 @@ export async function queryPaymentWithPOS (params) {
 export async function queryPaymentSplit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable/some`,
+    url: '/payment/payable/some',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -66,7 +64,7 @@ export async function queryPaymentSplit (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable`,
+    url: '/payment/payable',
     method: 'post',
     data: params,
     body: params,
@@ -77,7 +75,7 @@ export async function add (params) {
 export async function addSome (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/some`,
+    url: '/payment/some',
     method: 'post',
     data: params,
     body: params,
@@ -88,7 +86,7 @@ export async function addSome (params) {
 export async function cancelPayment (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/payable/cancel`,
+    url: '/payment/payable/cancel',
     method: 'put',
     data: params,
     body: params,

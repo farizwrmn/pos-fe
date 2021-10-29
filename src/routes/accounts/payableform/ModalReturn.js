@@ -40,8 +40,6 @@ const Browse = ({
     }
   }
 
-  console.log('modalType', modalType)
-
   return (
     <Modal {...modalOpts} width={'70%'} height="80%" footer={null}>
       {(modalType === 'browseReturn') && <ListReturn {...listProps} />}

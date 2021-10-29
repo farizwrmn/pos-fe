@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Button, Input, Form } from 'antd'
+import { Table, Button, Input, Form, Icon } from 'antd'
 import { connect } from 'dva'
 import { getDistPriceName } from 'utils/string'
 import styles from '../../../themes/index.less'
 
 const FormItem = Form.Item
 
-const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
+const ListProduct = ({ onChooseItem, purchase, dispatch, loadingProduct, ...tableProps }) => {
   const { searchText } = purchase
   const { pagination } = tableProps
   const handleMenuClick = (record) => {
@@ -117,6 +117,18 @@ const ListProduct = ({ onChooseItem, purchase, dispatch, ...tableProps }) => {
       key: 'distPrice05',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'count',
+      key: 'count',
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loadingProduct.effects['pos/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
     }
   ]
 

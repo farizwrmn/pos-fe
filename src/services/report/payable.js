@@ -4,11 +4,9 @@ const { paymentOpts } = config.api
 
 export async function queryPayableWithBank (params) {
   const apiHeaderToken = crypt.apiheader()
-  if (!params.storeId) {
-    params.storeId = lstorage.getCurrentUserStore()
-  }
   return request({
-    url: `${paymentOpts}/report/ap`,
+    // url: `${paymentOpts}/report/ap`,
+    url: `${paymentOpts}/report/payable-remain`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

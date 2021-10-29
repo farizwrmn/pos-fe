@@ -181,6 +181,7 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
     data,
     listAccounting,
     listAmount,
+    dispatch,
     openModal () {
       dispatch({
         type: 'payableDetail/updateState',
