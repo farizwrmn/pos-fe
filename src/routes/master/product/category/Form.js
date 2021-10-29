@@ -139,8 +139,6 @@ const formProductCategory = ({
   }
   const categoryVisual = getMenus(menuTree)
 
-  console.log('item', item)
-
   return (
     <Form layout="horizontal">
       <Row>

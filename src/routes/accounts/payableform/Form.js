@@ -195,7 +195,6 @@ const FormCounter = ({
   const purchaseOpts = {
     onChooseInvoice (item) {
       resetFields()
-      console.log('item', item)
       onChooseInvoice(item)
     },
     dispatch,
@@ -218,7 +217,6 @@ const FormCounter = ({
   const returnOpts = {
     loading,
     onChooseInvoice (item) {
-      console.log('item', item)
       onChooseInvoice(item)
     },
     listInvoice: returnPurchase.listInvoice,

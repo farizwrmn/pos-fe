@@ -4,7 +4,6 @@ import { numberFormatter } from 'utils/string'
 import styles from './index.less'
 
 const BodyItem = ({ item }) => {
-  console.log('item', item)
   return (
     <div className={styles.item}>
       <Row>
