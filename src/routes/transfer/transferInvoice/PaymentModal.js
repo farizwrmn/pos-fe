@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Input, Form, InputNumber, Select } from 'antd'
+import { Modal, Input, Form, DatePicker, InputNumber, Select } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
 
@@ -116,6 +117,16 @@ class ModalList extends Component {
               filterOption={filterOption}
             >{listAccountOpt}
             </Select>)}
+          </FormItem>
+          <FormItem label="Payment Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('paymentDate', {
+              initialValue: item.paymentDate ? moment(item.birthDate) : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<DatePicker />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Memo">
             {getFieldDecorator('memo', {
