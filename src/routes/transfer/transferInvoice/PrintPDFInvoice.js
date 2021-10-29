@@ -21,7 +21,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data && data.transferOut ? data.transferOut.transNo : '' || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data && data.transferOut ? moment(data.transferOut.createdAt).format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data && data.transferOut ? moment(data.transferOut.transDate, 'YYYY-MM-DD HH:mm:ss').format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(parseFloat(data.amount)), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.memo || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
