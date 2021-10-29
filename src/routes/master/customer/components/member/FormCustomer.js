@@ -84,8 +84,6 @@ const FormCustomer = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          console.log('modalType', modalType)
-
           if (modalType === 'add' || modalType === 'edit') {
             onSubmit(data.memberCode, data, modalType)
           } else {

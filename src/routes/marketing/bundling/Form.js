@@ -457,7 +457,6 @@ const FormCounter = ({
     columns: columnsReward,
     onRowClick (item) {
       // if (modalType === 'add') {
-      console.log('item', item)
       showModalEdit(item, 1)
       // }
     }
