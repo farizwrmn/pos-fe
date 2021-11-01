@@ -109,8 +109,6 @@ const FormCounter = ({
     modalShowList(record)
   }
 
-  console.log('listItem', listItem)
-
   const listDetailOpts = {
     handleModalShowList,
     listItem,
