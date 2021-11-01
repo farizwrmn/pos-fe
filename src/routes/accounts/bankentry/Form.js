@@ -68,7 +68,13 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       data.memberId = data.memberId ? data.memberId.key : null
       data.supplierId = data.supplierId ? data.supplierId.key : null
-      data.accountId = data.accountId ? data.accountId.key : null
+      if (data.accountCode && data.accountCode.key) {
+        data.accountCode = data.accountCode && data.accountCode.key ? data.accountCode : undefined
+        data.accountId = data.accountCode && data.accountCode.key ? data.accountCode.key : undefined
+      } else {
+        message.error('Choose Account Code')
+        return
+      }
       data.transType = data.transType ? data.transType.key : null
       const transDate = moment(data.transDate).format('YYYY-MM-DD')
       data.transDate = transDate
