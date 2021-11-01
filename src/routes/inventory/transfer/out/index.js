@@ -563,8 +563,8 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       dispatch({
         type: 'transferOut/queryTransferOut',
         payload: {
-          start: moment(period, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
-          end: moment(period, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+          start: moment().startOf('month').format('YYYY-MM-DD'),
+          end: moment().endOf('month').format('YYYY-MM-DD')
         }
       })
     }
