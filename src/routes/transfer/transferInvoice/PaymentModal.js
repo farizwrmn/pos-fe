@@ -120,7 +120,7 @@ class ModalList extends Component {
           </FormItem>
           <FormItem label="Payment Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('paymentDate', {
-              initialValue: item.paymentDate ? moment(item.birthDate) : null,
+              initialValue: item.paymentDate ? moment(item.paymentDate) : null,
               rules: [
                 {
                   required: true
