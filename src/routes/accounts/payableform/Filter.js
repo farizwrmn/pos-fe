@@ -14,6 +14,7 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  item,
   onFilterChange,
   listAllStores,
   form: {
@@ -21,8 +22,11 @@ const Filter = ({
     getFieldsValue
   }
 }) => {
-  const handleSubmit = () => {
+  const handleSubmit = (storeId) => {
     let field = getFieldsValue()
+    if (storeId) {
+      field.storeId = storeId
+    }
     onFilterChange(field)
   }
 
@@ -32,19 +36,22 @@ const Filter = ({
     <Row>
       <Col span={12}>
         <FormItem>
-          {getFieldDecorator('storeId')(<Select
-            style={{ width: 245 }}
-            placeholder="Select Store"
-            onChange={() => handleSubmit()}
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {childrenTransNo}
-          </Select>)}
+          {getFieldDecorator('storeId')(
+            <Select
+              style={{ width: 245 }}
+              placeholder="Select Store"
+              onChange={storeId => handleSubmit(storeId)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenTransNo}
+            </Select>)}
         </FormItem>
       </Col>
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('q')(
+          {getFieldDecorator('q', {
+            initialValue: item.q
+          })(
             <Search
               placeholder="Search"
               onSearch={() => handleSubmit()}

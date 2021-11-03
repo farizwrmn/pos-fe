@@ -10,6 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Cash = ({ payableForm, userStore, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+  const { query } = location
   const { listAllStores } = userStore
   const {
     modalVisible,
@@ -28,6 +29,7 @@ const Cash = ({ payableForm, userStore, returnPurchase, accountCode, paymentEdc,
   const { listSupplier } = supplier
   const { user, storeInfo } = app
   const filterProps = {
+    item: query || {},
     listAllStores,
     onFilterChange (value) {
       const { query, pathname } = location
