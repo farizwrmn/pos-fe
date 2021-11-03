@@ -240,12 +240,13 @@ export default modelExtend(pageModel, {
           // Start - Upload Image
           const uploadedImage = []
           if (payload
-            && payload.productImage
-            && payload.productImage.fileList
-            && payload.productImage.fileList.length > 0
-            && payload.productImage.fileList.length <= 5) {
-            for (let key in payload.productImage.fileList) {
-              const item = payload.productImage.fileList[key]
+            && payload.data
+            && payload.data.productImage
+            && payload.data.productImage.fileList
+            && payload.data.productImage.fileList.length > 0
+            && payload.data.productImage.fileList.length <= 5) {
+            for (let key in payload.data.productImage.fileList) {
+              const item = payload.data.productImage.fileList[key]
               const formData = new FormData()
               formData.append('file', item.originFileObj)
               const responseUpload = yield call(uploadBundleImage, formData)
@@ -254,20 +255,24 @@ export default modelExtend(pageModel, {
               }
             }
           } else if (payload
-            && payload.productImage
-            && payload.productImage.fileList
-            && payload.productImage.fileList.length > 0
-            && payload.productImage.fileList.length > 5) {
+            && payload.data
+            && payload.data.productImage
+            && payload.data.productImage.fileList
+            && payload.data.productImage.fileList.length > 0
+            && payload.data.productImage.fileList.length > 5) {
             throw new Error('Cannot upload more than 5 image')
           }
-          // End - Upload Image
           if (uploadedImage && uploadedImage.length) {
             payload.data.productImage = uploadedImage
           } else {
             payload.data.productImage = '["no_image.png"]'
           }
+          // End - Upload Image
           const data = yield call(add, payload)
           if (data.success) {
+            if (payload && payload.reset) {
+              payload.reset()
+            }
             success()
             yield put({
               type: 'updateState',
@@ -278,9 +283,6 @@ export default modelExtend(pageModel, {
                 listReward: []
               }
             })
-            if (payload && payload.reset) {
-              payload.reset()
-            }
             yield put({
               type: 'query',
               payload: {
