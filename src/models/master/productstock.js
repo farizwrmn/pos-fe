@@ -342,12 +342,12 @@ export default modelExtend(pageModel, {
         && payload.data.productImage.fileList.length > 5) {
         throw new Error('Cannot upload more than 5 image')
       }
-      // End - Upload Image
       if (uploadedImage && uploadedImage.length) {
         payload.data.productImage = uploadedImage
       } else {
         payload.data.productImage = '["no_image.png"]'
       }
+      // End - Upload Image
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         if (payload.reset) {
