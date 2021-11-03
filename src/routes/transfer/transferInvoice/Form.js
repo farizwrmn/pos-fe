@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal, Select, message } from 'antd'
+import { Form, Input, Button, Row, Col, DatePicker, Modal, Select, message } from 'antd'
 import { lstorage } from 'utils'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
@@ -216,6 +216,16 @@ const FormCounter = ({
               >
                 {childrenStoreReceived}
               </Select>)}
+            </FormItem>
+            <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment(item.transDate) : moment(),
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<DatePicker />)}
             </FormItem>
           </Col>
         </Row>

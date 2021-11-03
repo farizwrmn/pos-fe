@@ -162,7 +162,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <Row>
             <Col xs={24} sm={12} md={12} lg={12} xl={14}>
-              <FormItem label="Invoice No" hasFeedback {...formItemLayout}>
+              <FormItem label="Form No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transNo', {
                   initialValue: transNo.transNo,
                   rules: [{
@@ -170,7 +170,16 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                     message: 'Required',
                     pattern: /^[a-z0-9/.,_"'-]{6,30}$/i
                   }]
-                })(<Input maxLength={30} disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
+                })(<Input disabled maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Reference" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('reference', {
+                  initialValue: transNo.reference,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Input maxLength={30} />)}
               </FormItem>
               <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('transDate', {
