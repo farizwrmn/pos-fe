@@ -9,7 +9,8 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+const Cash = ({ payableForm, userStore, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+  const { listAllStores } = userStore
   const {
     modalVisible,
     currentItem,
@@ -27,13 +28,16 @@ const Cash = ({ payableForm, returnPurchase, accountCode, paymentEdc, bank, paym
   const { listSupplier } = supplier
   const { user, storeInfo } = app
   const filterProps = {
+    listAllStores,
     onFilterChange (value) {
-      dispatch({
-        type: 'payableForm/query',
-        payload: {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
           ...value
         }
-      })
+      }))
     }
   }
 
@@ -345,6 +349,7 @@ export default connect(({
   returnPurchase,
   payableForm,
   accountCode,
+  userStore,
   paymentOpts,
   paymentEdc,
   bank,
@@ -356,6 +361,7 @@ export default connect(({
     returnPurchase,
     payableForm,
     accountCode,
+    userStore,
     paymentOpts,
     paymentEdc,
     bank,

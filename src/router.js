@@ -1071,6 +1071,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/return/returnPurchase'))
               cb(null, require('./routes/accounts/payableform'))
             }, 'accounts/payable-form')
