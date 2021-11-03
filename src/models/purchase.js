@@ -813,7 +813,7 @@ export default modelExtend(pageModel, {
       const reg = new RegExp(searchText, 'gi')
       let newData
       newData = tmpInvoiceList.map((record) => {
-        const match = record.transNo.match(reg) || record.transDate.match(reg) || record.supplierName.match(reg)
+        const match = record.transNo.match(reg) || record.transDate.match(reg) || record.supplierName.match(reg) || record.reference.match(reg)
         if (!match) {
           return null
         }
