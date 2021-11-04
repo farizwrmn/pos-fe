@@ -99,6 +99,8 @@ const insertCashierTrans = (dataObject) => {
       qty: dataObject.qty,
       typeCode: dataObject.typeCode,
       sellPrice: dataObject.sellPrice,
+      hide: dataObject.hide,
+      replaceable: dataObject.replaceable,
       retailPrice: dataObject.retailPrice,
       distPrice01: dataObject.distPrice01,
       distPrice02: dataObject.distPrice02,

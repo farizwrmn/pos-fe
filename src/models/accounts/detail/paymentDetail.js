@@ -84,6 +84,9 @@ export default {
         dataPos.push({
           no: n + 1,
           id: data.pos[n].id,
+          bundleId: data.pos[n].bundleId,
+          hide: data.pos[n].hide,
+          replaceable: data.pos[n].replaceable,
           categoryCode: data.pos[n].categoryCode,
           typeCode: data.pos[n].typeCode,
           productCode: data.pos[n].productCode || data.pos[n].serviceCode,

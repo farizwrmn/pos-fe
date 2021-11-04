@@ -142,7 +142,7 @@ const modal = ({
           {getFieldDecorator('hide', {
             valuePropName: 'checked',
             initialValue: item.hide === undefined
-              ? false
+              ? true
               : item.hide
           })(<Checkbox>Hide</Checkbox>)}
         </FormItem>

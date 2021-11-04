@@ -167,6 +167,14 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, listRules, listReward, reset) {
       if (modalType === 'add') {
+        let haveReplace = false
+        for (let key in listReward) {
+          const item = listReward[key]
+          if (item.replaceable) {
+            haveReplace = true
+            break
+          }
+        }
         dispatch({
           type: 'bundling/add',
           payload: {

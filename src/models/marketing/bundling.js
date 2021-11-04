@@ -425,6 +425,8 @@ export default modelExtend(pageModel, {
         listReward.push({
           no: n + 1,
           id: dataReward.data[n].id,
+          hide: dataReward.data[n].hide,
+          replaceable: dataReward.data[n].replaceable,
           type: dataReward.data[n].type,
           productId: dataReward.data[n].productId,
           productCode: dataReward.data[n].productCode,
