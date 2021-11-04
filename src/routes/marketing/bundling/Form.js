@@ -15,7 +15,8 @@ import {
   DatePicker,
   TimePicker,
   Checkbox,
-  Modal
+  Modal,
+  InputNumber
 } from 'antd'
 import moment from 'moment'
 import _ from 'lodash'
@@ -452,6 +453,7 @@ const FormCounter = ({
       }
     }
   }
+
   const listRewardProps = {
     dataSource: listReward,
     columns: columnsReward,
@@ -719,6 +721,52 @@ const FormCounter = ({
                 : item.activeShop
             })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
           </FormItem>
+          <FormItem label="Always On" {...formItemLayout}>
+            {getFieldDecorator('alwaysOn', {
+              valuePropName: 'checked',
+              initialValue: item.alwaysOn === undefined
+                ? false
+                : item.alwaysOn
+            })(<Checkbox>Always On</Checkbox>)}
+          </FormItem>
+          <FormItem label="Have Target Price" {...formItemLayout}>
+            {getFieldDecorator('haveTargetPrice', {
+              valuePropName: 'checked',
+              initialValue: item.haveTargetPrice === undefined
+                ? false
+                : item.haveTargetPrice
+            })(<Checkbox>Target Price</Checkbox>)}
+          </FormItem>
+          {getFieldValue('haveTargetPrice') && (<FormItem {...formItemLayout} label="Cost Price">
+            {getFieldDecorator('targetCostPrice', {
+              initialValue: item.targetCostPrice,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^([0-9.]{0,11})$/i
+              }]
+            })(
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+              />
+            )}
+          </FormItem>)}
+          {getFieldValue('haveTargetPrice') && (<FormItem {...formItemLayout} label="Retail Price">
+            {getFieldDecorator('targetRetailPrice', {
+              initialValue: item.targetRetailPrice,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^([0-9.]{0,11})$/i
+              }]
+            })(
+              <InputNumber
+                style={{ width: '100%', marginBottom: '20px' }}
+                min={0}
+              />
+            )}
+          </FormItem>)}
         </Col>
         <Col {...column}>
           {showRules && (

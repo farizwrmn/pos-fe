@@ -31,13 +31,16 @@ const TransactionDetail = ({
     if (text === 'bundle_promo') {
       queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
     } else {
-      queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)).filter(filtered => !filtered.bundleId) : []
+      queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
     }
     return (queue || []).length
   }
 
   const modalEditPayment = (record) => {
     console.log('record', record)
+    if (record && record.bundleId) {
+      return
+    }
     dispatch({
       type: 'pos/getMechanics'
     })
@@ -51,6 +54,9 @@ const TransactionDetail = ({
   }
 
   const modalEditService = (record) => {
+    if (record && record.bundleId) {
+      return
+    }
     dispatch({
       type: 'pos/getMechanics'
     })
@@ -132,6 +138,13 @@ const TransactionDetail = ({
               dataIndex: 'code',
               width: '300px',
               render: (text, record) => {
+                if (record && record.bundleId) {
+                  return (
+                    <div>
+                      <div><strong>{record.code}</strong>-{record.name} ({record.bundleCode})</div>
+                    </div>
+                  )
+                }
                 return (
                   <div>
                     <div><strong>{record.code}</strong>-{record.name}</div>
@@ -168,7 +181,7 @@ const TransactionDetail = ({
           ]}
           onRowClick={record => modalEditPayment(record)}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-          dataSource={getCashierTrans().filter(filtered => !filtered.bundleId)}
+          dataSource={getCashierTrans()}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
@@ -225,7 +238,7 @@ const TransactionDetail = ({
           ]}
           onRowClick={_record => modalEditService(_record)}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-          dataSource={getServiceTrans().filter(filtered => !filtered.bundleId)}
+          dataSource={getServiceTrans()}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
