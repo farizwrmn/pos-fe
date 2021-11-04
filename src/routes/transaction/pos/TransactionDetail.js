@@ -180,7 +180,7 @@ const TransactionDetail = ({
           ]}
           onRowClick={record => modalEditPayment(record)}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-          dataSource={getCashierTrans().filter(filtered => filtered.bundleId && !filtered.hide)}
+          dataSource={getCashierTrans().filter(filtered => (filtered.bundleId && !filtered.hide) || !filtered.bundleId)}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
@@ -244,7 +244,7 @@ const TransactionDetail = ({
           ]}
           onRowClick={_record => modalEditService(_record)}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-          dataSource={getServiceTrans().filter(filtered => !filtered.bundleId && !filtered.hide)}
+          dataSource={getServiceTrans().filter(filtered => (!filtered.bundleId && !filtered.hide) || !filtered.bundleId)}
           style={{ marginBottom: 16 }}
         />
       </TabPane>
