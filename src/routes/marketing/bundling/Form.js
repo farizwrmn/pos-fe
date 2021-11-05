@@ -729,6 +729,14 @@ const FormCounter = ({
                 : item.alwaysOn
             })(<Checkbox>Always On</Checkbox>)}
           </FormItem>
+          <FormItem label="Build your own component" help="You don't need to define the list, build it in transaction form" {...formItemLayout}>
+            {getFieldDecorator('buildComponent', {
+              valuePropName: 'checked',
+              initialValue: item.buildComponent === undefined
+                ? false
+                : item.buildComponent
+            })(<Checkbox>Build Component</Checkbox>)}
+          </FormItem>
           <FormItem label="Have Target Price" {...formItemLayout}>
             {getFieldDecorator('haveTargetPrice', {
               valuePropName: 'checked',
@@ -778,12 +786,16 @@ const FormCounter = ({
               <ListRules {...listRulesProps} />
             </div>
           )}
-          <Row>
-            <Col span={12}><h2 className="h2-add-items">Items</h2></Col>
-            <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
-          </Row>
-          <ListReward {...listRewardProps} />
-          Product is using Non-Member Price
+          {!getFieldValue('buildComponent') && (
+            <div>
+              <Row>
+                <Col span={12}><h2 className="h2-add-items">Items</h2></Col>
+                <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
+              </Row>
+              <ListReward {...listRewardProps} />
+              Product is using Non-Member Price
+            </div>
+          )}
         </Col>
       </Row>
       <Button size="large" disabled={item.status === '0'} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>

@@ -14,6 +14,8 @@ const PromoProductReward = ({
   loading,
   currentId = null,
   enableChoosePromoDetail,
+  app,
+  item,
   // columnsRules = [
   //   {
   //     title: 'type',
@@ -209,4 +211,4 @@ PromoProductReward.propTypes = {
   loading: PropTypes.object
 }
 
-export default connect(({ pos, bundlingRules, bundlingReward, pospromo, promo, loading }) => ({ pos, bundlingRules, bundlingReward, pospromo, promo, loading }))(PromoProductReward)
+export default connect(({ pos, app, bundlingRules, bundlingReward, pospromo, promo, loading }) => ({ pos, app, bundlingRules, bundlingReward, pospromo, promo, loading }))(PromoProductReward)

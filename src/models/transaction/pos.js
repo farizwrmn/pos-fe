@@ -69,6 +69,7 @@ export default {
 
   state: {
     currentReplaceBundle: {},
+    currentBuildComponent: {},
     list: [],
     dataReward: [],
     currentCategory: [],
@@ -198,6 +199,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
           dispatch({
             type: 'setDefaultMember'
@@ -1981,8 +1983,6 @@ export default {
 
     * replaceProduct ({ payload = {} }, { select, put }) {
       const { item, currentReplaceBundle } = payload
-      console.log('currentReplaceBundle', currentReplaceBundle)
-      console.log('item', item)
       let arrayProd = getCashierTrans()
       const checkExists = arrayProd.filter(el => el.code === item.productCode)
       if (checkExists && checkExists.length > 0) {
@@ -1993,7 +1993,17 @@ export default {
       const data = {
         ...currentReplaceBundle,
         oldValue: currentReplaceBundle.oldValue ? currentReplaceBundle.oldValue : currentReplaceBundle,
-        newValue: item,
+        newValue: {
+          productCode: item.productCode,
+          productName: item.productName,
+          productId: item.id,
+          sellPrice: item.sellPrice,
+          distPrice01: item.distPrice01,
+          distPrice02: item.distPrice02,
+          distPrice03: item.distPrice03,
+          distPrice04: item.distPrice04,
+          distPrice05: item.distPrice05
+        },
         code: item.productCode,
         productId: item.id,
         name: item.productName
@@ -2014,7 +2024,6 @@ export default {
     * chooseProduct ({ payload }, { select, put }) {
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
-      console.log('currentReplaceBundle', currentReplaceBundle)
       if (currentReplaceBundle && currentReplaceBundle.no) {
         yield put({
           type: 'replaceProduct',
@@ -2245,7 +2254,28 @@ export default {
       }
     },
 
-    // * getProductByBarcode ({ payload }, { select, call, put }) {
+    * setCurrentBuildComponent (payload, { put }) {
+      const bundle = getBundleTrans()
+      if (bundle && bundle.length > 0) {
+        const bundleWithBuildComponent = bundle.filter(filtered => filtered.buildComponent)
+        if (bundleWithBuildComponent && bundleWithBuildComponent[0]) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentBuildComponent: bundleWithBuildComponent[0]
+            }
+          })
+          return
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentBuildComponent: {}
+        }
+      })
+    },
+
     * getProductByBarcode ({ payload }, { call, put }) {
       // ONLINE
       let startOnline = window.performance.now()
@@ -2587,6 +2617,7 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          currentBuildComponent: {},
           currentReplaceBundle: {},
           mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
           lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
@@ -3082,6 +3113,8 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        currentReplaceBundle: {},
+        currentBuildComponent: {},
         curQty: 1,
         curRecord: 1,
         curTotal: 0,

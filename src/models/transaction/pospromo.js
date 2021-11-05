@@ -88,6 +88,11 @@ export default modelExtend(pageModel, {
 
     * addPosPromo ({ payload = {} }, { call, select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
+      if (currentBuildComponent && currentBuildComponent.no) {
+        message.error('Only allow 1 bundle for custom')
+        return
+      }
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
         const modal = Modal.warning({
           title: 'Warning',
@@ -182,6 +187,7 @@ export default modelExtend(pageModel, {
         return data
       })
       setBundleTrans(JSON.stringify(arrayProd))
+      yield put({ type: 'pos/setCurrentBuildComponent' })
       yield put({
         type: 'updateState',
         payload: {}
@@ -206,9 +212,11 @@ export default modelExtend(pageModel, {
         endDate: item.endDate,
         startHour: item.startHour,
         endHour: item.endHour,
+        buildComponent: item.buildComponent,
         availableDate: item.availableDate,
         qty: 1
       })
+      yield put({ type: 'pos/setCurrentBuildComponent' })
       setBundleTrans(JSON.stringify(currentBundle))
       yield put({
         type: 'updateState',
@@ -448,6 +456,17 @@ export default modelExtend(pageModel, {
   reducers: {
     updateState (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    setAllNull (state) {
+      return {
+        ...state,
+        currentReward: {},
+        bundleData: {},
+        listCategory: [],
+        productData: {},
+        serviceData: {}
+      }
     },
 
     changeTab (state, { payload }) {

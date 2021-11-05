@@ -20,7 +20,8 @@ import {
   Card,
   Button,
   Modal,
-  message
+  message,
+  Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
@@ -125,7 +126,8 @@ const Pos = ({
     // typePembelian,
     modalLoginType,
     listPaymentShortcut,
-    selectedPaymentShortcut
+    selectedPaymentShortcut,
+    currentBuildComponent
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible } = promo
@@ -1719,6 +1721,21 @@ const Pos = ({
     })
   }
 
+  const handleCloseBuildComponent = (event) => {
+    event.preventDefault()
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        dispatch({ type: 'pos/removeTrans' })
+        dispatch({ type: 'pos/setDefaultMember' })
+        dispatch({ type: 'pos/setDefaultEmployee' })
+
+        dispatch({ type: 'pos/setDefaultPaymentShortcut' })
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1750,6 +1767,11 @@ const Pos = ({
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
+              {currentBuildComponent && currentBuildComponent.no && (
+                <div style={{ marginBottom: '10px' }}>
+                  <Tag closable color="orange" onClose={handleCloseBuildComponent}>{currentBuildComponent.name}</Tag>
+                </div>
+              )}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />

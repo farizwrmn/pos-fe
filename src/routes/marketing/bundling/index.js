@@ -175,6 +175,17 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
             break
           }
         }
+        if (data.buildComponent && !data.haveTargetPrice) {
+          message.error('Required: Have Target Price')
+          return
+        }
+        if (data.buildComponent) {
+          listReward = []
+          if (data.applyMultiple) {
+            message.error('Required: Build Component Only For 1 Each Transaction')
+            return
+          }
+        }
         if (haveReplace) {
           if (data && !data.haveTargetPrice) {
             message.error('Required: Target Price')

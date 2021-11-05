@@ -282,6 +282,9 @@ export default {
                   type: 'pos/setAllNull'
                 })
                 yield put({
+                  type: 'pospromo/setAllNull'
+                })
+                yield put({
                   type: 'pos/setPaymentShortcut'
                 })
                 yield put({
