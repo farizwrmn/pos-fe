@@ -94,6 +94,7 @@ export default {
           qty: data.pos[n].qty || 0,
           sellPrice: data.pos[n].sellPrice || 0,
           oldValue: data.pos[n].oldValue,
+          newValue: data.pos[n].newValue,
           retailPrice: data.pos[n].retailPrice || 0,
           distPrice01: data.pos[n].distPrice01 || 0,
           distPrice02: data.pos[n].distPrice02 || 0,

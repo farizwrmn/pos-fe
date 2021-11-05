@@ -102,6 +102,7 @@ const insertCashierTrans = (dataObject) => {
       hide: dataObject.hide,
       replaceable: dataObject.replaceable,
       oldValue: dataObject.oldValue,
+      newValue: dataObject.newValue,
       retailPrice: dataObject.retailPrice,
       distPrice01: dataObject.distPrice01,
       distPrice02: dataObject.distPrice02,
