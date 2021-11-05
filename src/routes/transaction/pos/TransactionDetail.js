@@ -19,6 +19,7 @@ const TabPane = Tabs.TabPane
 const width = 1000
 
 const TransactionDetail = ({
+  handleProductBrowse,
   dispatch,
   pos
 }) => {
@@ -37,7 +38,14 @@ const TransactionDetail = ({
   }
 
   const modalEditPayment = (record) => {
-    if (record && record.bundleId) {
+    if (record && record.bundleId && record.replaceable) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          currentReplaceBundle: record
+        }
+      })
+      handleProductBrowse()
       return
     }
     dispatch({

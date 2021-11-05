@@ -1207,6 +1207,7 @@ const Pos = ({
             name: item.serviceName,
             hide: item.hide,
             replaceable: item.replaceable,
+            oldValue: item.oldValue,
             retailPrice: item.retailPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -1289,6 +1290,7 @@ const Pos = ({
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            oldValue: item.oldValue,
             retailPrice: item.retailPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -1821,7 +1823,7 @@ const Pos = ({
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
             {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
 
-            <TransactionDetail pos={pos} dispatch={dispatch} />
+            <TransactionDetail pos={pos} dispatch={dispatch} handleProductBrowse={handleProductBrowse} />
             <Row>
               <Col md={24} lg={16} >
                 <Button.Group style={{ width: '100%' }}>

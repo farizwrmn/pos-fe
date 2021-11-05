@@ -68,6 +68,7 @@ export default {
   namespace: 'pos',
 
   state: {
+    currentReplaceBundle: {},
     list: [],
     dataReward: [],
     currentCategory: [],
@@ -1488,6 +1489,7 @@ export default {
         stock: item.quantity,
         productId: item.id,
         name: item.product.product_name,
+        oldValue: item.oldValue,
         retailPrice: item.sellPrice,
         distPrice01: item.distPrice01,
         distPrice02: item.distPrice02,
@@ -1738,6 +1740,7 @@ export default {
               code: item.item.productCode,
               productId: item.item.id,
               name: item.item.productName,
+              oldValue: item.item.oldValue,
               retailPrice: item.item.sellPrice,
               distPrice01: item.item.distPrice01,
               distPrice02: item.item.distPrice02,
@@ -1898,6 +1901,7 @@ export default {
             code: item.item.serviceCode,
             productId: item.item.id,
             name: item.item.serviceName,
+            oldValue: item.item.oldValue,
             retailPrice: item.item.sellPrice,
             distPrice01: item.item.distPrice01,
             distPrice02: item.item.distPrice02,
@@ -1972,8 +1976,51 @@ export default {
       }
     },
 
+    * replaceProduct ({ payload = {} }, { select, put }) {
+      const { item, currentReplaceBundle } = payload
+      console.log('currentReplaceBundle', currentReplaceBundle)
+      console.log('item', item)
+      let arrayProd = getCashierTrans()
+      const checkExists = arrayProd.filter(el => el.code === item.productCode)
+      if (checkExists && checkExists.length > 0) {
+        message.error('Already Exists')
+        return
+      }
+      const setting = yield select(({ app }) => app.setting)
+      const data = {
+        ...currentReplaceBundle,
+        oldValue: currentReplaceBundle.oldValue ? currentReplaceBundle.oldValue : currentReplaceBundle,
+        code: item.productCode,
+        productId: item.id,
+        name: item.productName
+      }
+
+      arrayProd[currentReplaceBundle.no - 1] = data
+      yield put({
+        type: 'pos/checkQuantityEditProduct',
+        payload: {
+          data,
+          arrayProd,
+          setting,
+          type: payload.type
+        }
+      })
+    },
+
     * chooseProduct ({ payload }, { select, put }) {
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
+      const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
+      console.log('currentReplaceBundle', currentReplaceBundle)
+      if (currentReplaceBundle && currentReplaceBundle.no) {
+        yield put({
+          type: 'replaceProduct',
+          payload: {
+            item: payload.item,
+            currentReplaceBundle
+          }
+        })
+        return
+      }
       const modalMember = () => {
         return new Promise((resolve) => {
           Modal.info({
@@ -2053,6 +2100,7 @@ export default {
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            oldValue: item.oldValue,
             retailPrice: item.sellPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -2104,6 +2152,7 @@ export default {
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            oldValue: item.oldValue,
             retailPrice: item.sellPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -2254,7 +2303,10 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
-          modalProductVisible: false, listProduct: [], tmpProductList: []
+          modalProductVisible: false,
+          listProduct: [],
+          tmpProductList: [],
+          currentReplaceBundle: {}
         }
       })
       yield put({
@@ -2529,6 +2581,7 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          currentReplaceBundle: {},
           mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
           lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
           memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
