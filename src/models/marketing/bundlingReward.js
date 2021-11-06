@@ -69,26 +69,18 @@ export default modelExtend(pageModel, {
 
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
       if (listProductData.success) {
-        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
-          data = data.map((x) => {
-            if (x.active !== '1') {
-              return {
-                qty: 0,
-                stock: listProductData.data[n].count || 0,
-                ...x
-              }
+        data = data.map((x) => {
+          const filteredProduct = listProductData.data.filter(filtered => filtered.id === x.productId)
+          if (filteredProduct && filteredProduct[0]) {
+            const { count, ...other } = x
+            return {
+              ...other,
+              stock: filteredProduct[0].count,
+              ...filteredProduct[0]
             }
-            if (x.productId === listProductData.data[n].id) {
-              const { count, ...other } = x
-              return {
-                ...other,
-                stock: listProductData.data[n].count || 0,
-                ...listProductData.data[n]
-              }
-            }
-            return x
-          })
-        }
+          }
+          return x
+        })
         yield put({
           type: 'updateState',
           payload: {
