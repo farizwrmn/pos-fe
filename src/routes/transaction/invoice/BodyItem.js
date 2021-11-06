@@ -10,7 +10,7 @@ const BodyItem = ({ item }) => {
         <Col span={24} className={styles.left}>{item.name} - {item.code}</Col>
       </Row>
       <Row>
-        <Col span={12} className={styles.left}>{numberFormatter(item.qty)} x @{numberFormatter(item.price)}</Col>
+        <Col span={12} className={styles.left}>{numberFormatter(item.qty)} x @{numberFormatter(item.total / item.qty)}</Col>
         <Col span={12} className={styles.right}>{numberFormatter(item.total)}</Col>
       </Row>
     </div>

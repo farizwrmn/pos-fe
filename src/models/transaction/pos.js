@@ -69,6 +69,7 @@ export default {
   namespace: 'pos',
 
   state: {
+    standardInvoice: true,
     currentReplaceBundle: {},
     currentBuildComponent: {},
     list: [],
@@ -182,7 +183,24 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
+        let match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
+        const matchAdmin = pathToRegexp('/transaction/pos/admin-invoice/:id').exec(location.pathname)
+        if (matchAdmin) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              standardInvoice: false
+            }
+          })
+          match = matchAdmin
+        } else {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              standardInvoice: true
+            }
+          })
+        }
         const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({
@@ -764,7 +782,7 @@ export default {
         let dataPos = []
         let dataService = []
         for (let n = 0; n < data.pos.length; n += 1) {
-          if (data.pos[n].serviceCode === null || data.pos[n].serviceName === null) {
+          if (data.pos[n].typeCode === 'P') {
             let productId = data.pos[n].productCode
             let productName = data.pos[n].productName
             dataPos.push({
@@ -780,7 +798,7 @@ export default {
                 ((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) - (((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) * (data.pos[n].disc2 / 100)) -
                 ((((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) * (data.pos[n].disc2 / 100)) * (data.pos[n].disc3 / 100))
             })
-          } else if (data.pos[n].productCode === null || data.pos[n].productName === null) {
+          } else if (data.pos[n].typeCode === 'S') {
             let productId = data.pos[n].serviceCode
             let productName = data.pos[n].serviceName
             dataService.push({

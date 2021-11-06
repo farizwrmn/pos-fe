@@ -775,6 +775,19 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-history')
           }
         }, {
+          path: 'transaction/pos/admin-invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/accounts/detail/paymentDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/transaction/invoice/'))
+            }, 'transaction-pos-invoice-admin-print')
+          }
+        }, {
           path: 'transaction/pos/invoice/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
