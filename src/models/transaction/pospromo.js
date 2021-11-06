@@ -1,7 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { posTotal } from 'utils'
-import { setCashierTrans, setServiceTrans, setBundleTrans } from 'utils/lstorage'
+import {
+  getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
+  setCashierTrans, setServiceTrans, setBundleTrans
+} from 'utils/lstorage'
 import { query } from '../../services/marketing/bundling'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
@@ -166,6 +169,17 @@ export default modelExtend(pageModel, {
         message.success('Success add bundle')
       } else if (data.success && data.data[0]) {
         const item = data.data[0]
+        const product = getCashierTrans()
+        const service = getServiceTrans()
+        const consignment = getConsignment()
+        const bundle = getBundleTrans()
+        if (product.length > 0 || service.length > 0 || consignment.length > 0 || bundle.length > 0) {
+          Modal.error({
+            title: 'Failed to add bundle',
+            content: 'Already Have other item in list'
+          })
+          return
+        }
         if (item && item.buildComponent) {
           yield put({
             type: 'setBundleNeverExists',
