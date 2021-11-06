@@ -292,7 +292,7 @@ class TransactionDetail extends Component {
             ]}
             onRowClick={_record => modalEditService(_record)}
             rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            dataSource={getServiceTrans().filter(filtered => (!filtered.bundleId && !filtered.hide) || !filtered.bundleId)}
+            dataSource={getServiceTrans().filter(filtered => (filtered.bundleId && !filtered.hide) || !filtered.bundleId)}
             style={{ marginBottom: 16 }}
           />
         </TabPane>

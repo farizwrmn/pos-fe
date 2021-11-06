@@ -777,18 +777,22 @@ const Pos = ({
       dispatch({ type: 'pos/hidePaymentModal' })
     },
     DeleteItem (data) {
-      dispatch({
-        type: 'pos/showModalLogin',
-        payload: {
-          modalLoginType: 'payment'
-        }
-      })
-      dispatch({
-        type: 'login/updateState',
-        payload: {
-          modalLoginData: data
-        }
-      })
+      if (currentBuildComponent && currentBuildComponent.no) {
+        dispatch({ type: 'pos/paymentDelete', payload: data })
+      } else {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'payment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      }
     },
     onChooseItem (data) {
       if (data && data.qty === 0) {
@@ -1144,6 +1148,29 @@ const Pos = ({
 
           setServiceTrans(JSON.stringify(arrayProd))
 
+          if (currentBuildComponent && currentBuildComponent.no) {
+            const service = getServiceTrans()
+            if (service && service.length > 0) {
+              const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+              if (serviceSelected && serviceSelected[0]) {
+                dispatch({
+                  type: 'pos/setServiceDiff',
+                  payload: {
+                    item: serviceSelected[0]
+                  }
+                })
+              } else {
+                dispatch({
+                  type: 'pos/setNewServiceDiff'
+                })
+              }
+            } else {
+              dispatch({
+                type: 'pos/setNewServiceDiff'
+              })
+            }
+          }
+
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
             payload: {
@@ -1229,6 +1256,29 @@ const Pos = ({
           })
 
           setServiceTrans(JSON.stringify(arrayProd))
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            const service = getServiceTrans()
+            if (service && service.length > 0) {
+              const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+              if (serviceSelected && serviceSelected[0]) {
+                dispatch({
+                  type: 'pos/setServiceDiff',
+                  payload: {
+                    item: serviceSelected[0]
+                  }
+                })
+              } else {
+                dispatch({
+                  type: 'pos/setNewServiceDiff'
+                })
+              }
+            } else {
+              dispatch({
+                type: 'pos/setNewServiceDiff'
+              })
+            }
+          }
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1655,11 +1705,35 @@ const Pos = ({
   const buttomButtonProps = {
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        let haveUnderZero = false
+
+        for (let key in service) {
+          const item = service[key]
+          if (item.total < 0) {
+            haveUnderZero = true
+            break
+          }
+        }
+
+        if (haveUnderZero) {
+          Modal.error({
+            title: 'Invalid Service Cost',
+            content: 'Please Check Service Section and Reduce some Product'
+          })
+          return
+        }
+
         const total = (parseFloat(curNetto) + parseFloat(dineIn))
-        if (total > currentBuildComponent.targetCostPrice) {
+        const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+        let servicePrice = 0
+        if (serviceSelected && serviceSelected[0]) {
+          servicePrice = serviceSelected[0].total
+        }
+        if (total - servicePrice > currentBuildComponent.targetCostPrice) {
           Modal.error({
             title: 'Cost price exceed',
-            content: `Bundle cost price limit is ${currentBuildComponent.targetCostPrice.toLocaleString()}; Your Input: ${total.toLocaleString()}`
+            content: `Bundle cost price limit is ${currentBuildComponent.targetCostPrice.toLocaleString()}; Your Input: ${(total - servicePrice).toLocaleString()}`
           })
           return
         }
@@ -1823,6 +1897,7 @@ const Pos = ({
                   <Button type="primary"
                     size="medium"
                     icon="tool"
+                    disabled={currentBuildComponent && currentBuildComponent.no}
                     onClick={handleServiceBrowse}
                     style={{
                       margin: '0px 5px',
