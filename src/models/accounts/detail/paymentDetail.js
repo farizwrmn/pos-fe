@@ -85,6 +85,8 @@ export default {
           no: n + 1,
           id: data.pos[n].id,
           bundleId: data.pos[n].bundleId,
+          bundleCode: data.pos[n].bundleCode,
+          bundleName: data.pos[n].bundleName,
           hide: data.pos[n].hide,
           replaceable: data.pos[n].replaceable,
           categoryCode: data.pos[n].categoryCode,

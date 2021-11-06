@@ -1738,6 +1738,7 @@ export default {
               categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
               bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
               bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+              bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleName : undefined,
               hide: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.hide : undefined,
               replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.replaceable : undefined,
               code: item.item.productCode,
@@ -1900,6 +1901,7 @@ export default {
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleName : undefined,
             hide: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.hide : undefined,
             replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.replaceable : undefined,
             code: item.item.serviceCode,
@@ -2024,6 +2026,8 @@ export default {
     * chooseProduct ({ payload }, { select, put }) {
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
+
       if (currentReplaceBundle && currentReplaceBundle.no) {
         yield put({
           type: 'replaceProduct',
@@ -2108,6 +2112,7 @@ export default {
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleName : undefined,
             hide: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.hide : undefined,
             replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.replaceable : undefined,
             code: item.productCode,
@@ -2132,6 +2137,12 @@ export default {
             disc2: 0,
             disc3: 0,
             total: selectedPrice * newQty
+          }
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            data.bundleId = currentBuildComponent.bundleId
+            data.bundleCode = currentBuildComponent.code
+            data.bundleName = currentBuildComponent.name
           }
 
           arrayProd[currentItem.no - 1] = data
@@ -2161,6 +2172,7 @@ export default {
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleName : undefined,
             hide: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.hide : undefined,
             replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.replaceable : undefined,
             code: item.productCode,
@@ -2185,6 +2197,12 @@ export default {
             disc2: 0,
             disc3: 0,
             total: selectedPrice * curQty
+          }
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            data.bundleId = currentBuildComponent.bundleId
+            data.bundleCode = currentBuildComponent.code
+            data.bundleName = currentBuildComponent.name
           }
 
           arrayProd.push(data)

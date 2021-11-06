@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col, Button } from 'antd'
-// import styles from './bottomButton.less'
 
 const LovButton = ({
   handlePayment,
-  // handleSuspend,
   handleCancel
 }) => {
   return (
@@ -21,14 +19,6 @@ const LovButton = ({
           </Button>
         </Col>
         <Col md={24} lg={18} >
-          {/* <Button
-            style={{ fontWeight: 400, fontSize: 'large', width: '100%', height: 40 }}
-            type="primary"
-            className={styles.suspend}
-            onClick={handleSuspend}
-          >
-            Suspend
-          </Button> */}
           <Button
             style={{
               fontWeight: 400,
@@ -49,7 +39,6 @@ const LovButton = ({
 
 LovButton.propTypes = {
   handlePayment: PropTypes.func.isRequired
-  // handleSuspend: PropTypes.func.isRequired
 }
 
 export default LovButton

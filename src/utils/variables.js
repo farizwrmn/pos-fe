@@ -90,6 +90,8 @@ const insertCashierTrans = (dataObject) => {
     newData.push({
       no: dataObject.no,
       bundleId: dataObject.bundleId,
+      bundleCode: dataObject.bundleCode,
+      bundleName: dataObject.bundleName,
       employeeId: dataObject.employeeId,
       employeeName: dataObject.employeeName,
       productId: dataObject.productId,

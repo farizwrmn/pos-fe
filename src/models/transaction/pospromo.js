@@ -164,6 +164,17 @@ export default modelExtend(pageModel, {
           }
         })
         message.success('Success add bundle')
+      } else if (data.success && data.data[0]) {
+        const item = data.data[0]
+        if (item && item.buildComponent) {
+          yield put({
+            type: 'setBundleNeverExists',
+            payload: {
+              currentBundle,
+              item
+            }
+          })
+        }
       } else {
         if (dataReward.data && dataReward.data.length === 0) {
           Modal.error({

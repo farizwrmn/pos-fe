@@ -367,100 +367,6 @@ const Pos = ({
     }
   }
 
-  const buttomButtonProps = {
-    handlePayment () {
-      let defaultRole = ''
-      const localId = localStorage.getItem(`${prefix}udi`)
-      if (localId && localId.indexOf('#') > -1) {
-        defaultRole = localId.split(/[# ]+/).pop()
-      }
-      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
-      const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
-      if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'Member Unit is not Defined '
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
-      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'You are inserting Member Unit without Work Order'
-        })
-      } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'You are Work Order without Member Unit'
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
-      if (memberData === null) {
-        Modal.warning({
-          title: 'Member Validation',
-          content: 'Member Data Cannot be Null'
-        })
-        return
-      }
-      dispatch({ type: 'pos/setCurTotal' })
-
-      dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
-
-      // Untuk tipe page
-      // dispatch(routerRedux.push('/transaction/pos/payment'))
-      dispatch({
-        type: 'payment/showPaymentModal'
-      })
-    },
-    handleSuspend () {
-      if (document.getElementById('KM')) document.getElementById('KM').value = 0
-      dispatch({ type: 'pos/insertQueueCache' })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          showAlert: false
-        }
-      })
-    },
-    handleVoidPromo () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalVoidSuspendVisible: true
-        }
-      })
-    },
-    handleCancel () {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          dispatch({
-            type: 'pos/showModalLogin',
-            payload: {
-              modalLoginType: 'resetAllPosInput'
-            }
-          })
-          dispatch({
-            type: 'login/updateState',
-            payload: {
-              modalLoginData: {
-                transNo: user.username,
-                memo: 'Cancel Input POS'
-              }
-            }
-          })
-        }
-      })
-    }
-  }
-
   const modalPaymentTypeProps = {
     selectedPaymentShortcut,
     width: '650px',
@@ -1202,6 +1108,8 @@ const Pos = ({
             no: checkExists[0].no,
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleName : undefined,
             code: item.serviceCode,
             productId: item.id,
             employeeId: mechanicInformation.employeeId,
@@ -1226,6 +1134,12 @@ const Pos = ({
             disc2: 0,
             disc3: 0,
             total: selectedPrice * (checkExists[0].qty + qty)
+          }
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            arrayProd[checkExists[0].no - 1].bundleId = currentBuildComponent.bundleId
+            arrayProd[checkExists[0].no - 1].bundleCode = currentBuildComponent.code
+            arrayProd[checkExists[0].no - 1].bundleName = currentBuildComponent.name
           }
 
           setServiceTrans(JSON.stringify(arrayProd))
@@ -1286,6 +1200,8 @@ const Pos = ({
             no: arrayProd.length + 1,
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleName : undefined,
             hide: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.hide : undefined,
             replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.replaceable : undefined,
             code: item.serviceCode,
@@ -1736,6 +1652,110 @@ const Pos = ({
     })
   }
 
+  const buttomButtonProps = {
+    handlePayment () {
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const total = (parseFloat(curNetto) + parseFloat(dineIn))
+        if (total > currentBuildComponent.targetCostPrice) {
+          Modal.error({
+            title: 'Cost price exceed',
+            content: `Bundle cost price limit is ${currentBuildComponent.targetCostPrice.toLocaleString()}; Your Input: ${total.toLocaleString()}`
+          })
+          return
+        }
+      }
+      let defaultRole = ''
+      const localId = localStorage.getItem(`${prefix}udi`)
+      if (localId && localId.indexOf('#') > -1) {
+        defaultRole = localId.split(/[# ]+/).pop()
+      }
+      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+      const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+      if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'Member Unit is not Defined '
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'You are inserting Member Unit without Work Order'
+        })
+      } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'You are Work Order without Member Unit'
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (memberData === null) {
+        Modal.warning({
+          title: 'Member Validation',
+          content: 'Member Data Cannot be Null'
+        })
+        return
+      }
+      dispatch({ type: 'pos/setCurTotal' })
+
+      dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+      // Untuk tipe page
+      // dispatch(routerRedux.push('/transaction/pos/payment'))
+      dispatch({
+        type: 'payment/showPaymentModal'
+      })
+    },
+    handleSuspend () {
+      if (document.getElementById('KM')) document.getElementById('KM').value = 0
+      dispatch({ type: 'pos/insertQueueCache' })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          showAlert: false
+        }
+      })
+    },
+    handleVoidPromo () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: true
+        }
+      })
+    },
+    handleCancel () {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          dispatch({
+            type: 'pos/showModalLogin',
+            payload: {
+              modalLoginType: 'resetAllPosInput'
+            }
+          })
+          dispatch({
+            type: 'login/updateState',
+            payload: {
+              modalLoginData: {
+                transNo: user.username,
+                memo: 'Cancel Input POS'
+              }
+            }
+          })
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1751,8 +1771,6 @@ const Pos = ({
                 || loading.effects['pos/chooseProduct']
                 || loading.effects['pos/checkQuantityEditProduct']
                 || loading.effects['pos/checkQuantityNewProduct']
-                || loading.effects['pos/chooseProduct']
-                || loading.effects['pos/chooseProduct']
                 || loading.effects['pospromo/addPosPromo']
                 || loading.effects['pos/getProductByBarcode']}
               onChange={handleChangeBookmark}
@@ -1794,6 +1812,7 @@ const Pos = ({
                     size="medium"
                     icon="barcode"
                     onClick={handleConsignmentBrowse}
+                    disabled={currentBuildComponent && currentBuildComponent.no}
                     style={{
                       margin: '0px 5px',
                       marginBottom: '5px'
@@ -1816,6 +1835,7 @@ const Pos = ({
                     size="medium"
                     icon="tool"
                     onClick={handlePromoBrowse}
+                    disabled={currentBuildComponent && currentBuildComponent.no}
                     style={{
                       margin: '0px 5px',
                       marginBottom: '5px'
