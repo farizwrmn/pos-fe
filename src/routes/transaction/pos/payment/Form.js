@@ -61,7 +61,7 @@ class FormPayment extends React.Component {
       onGetMachine,
       onResetMachine
     } = this.props
-    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode !== 'C') {
+    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
       onResetMachine()
       onGetMachine(selectedPaymentShortcut.typeCode)
       // onGetCost(selectedPaymentShortcut.machine)
@@ -246,19 +246,15 @@ class FormPayment extends React.Component {
     }
 
     const onChangePaymentType = (value) => {
-      if (value === 'C') {
-        resetFields()
-        onResetMachine()
-      } else {
-        setFieldsValue({
-          printDate: moment(),
-          machine: undefined,
-          bank: undefined
-        })
-        validateFields()
-        onResetMachine()
-        onGetMachine(value)
-      }
+      resetFields()
+      setFieldsValue({
+        printDate: moment(),
+        machine: undefined,
+        bank: undefined
+      })
+      validateFields()
+      onResetMachine()
+      onGetMachine(value)
     }
 
     const onChangeMachine = (machineId) => {
@@ -334,42 +330,38 @@ class FormPayment extends React.Component {
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
             </FormItem>
-            {getFieldValue('typeCode') !== 'C' && listEdc && (
-              <FormItem label="EDC" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('machine', {
-                  initialValue: selectedPaymentShortcut && selectedPaymentShortcut.machine ? (
-                    listEdc && listEdc.length === 1 ? listEdc[0].id : parseFloat(selectedPaymentShortcut.machine)
-                  ) : item.machine,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') !== 'C'
-                    }
-                  ]
-                })(
-                  <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                    {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
-                  </Select>
-                )}
-              </FormItem>
-            )}
-            {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Card" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('bank', {
-                  initialValue: selectedPaymentShortcut && selectedPaymentShortcut.bank ? (
-                    listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
-                  ) : item.bank,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') !== 'C'
-                    }
-                  ]
-                })(
-                  <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.bank} style={{ width: '100%' }} min={0} maxLength={10}>
-                    {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
-                  </Select>
-                )}
-              </FormItem>
-            )}
+            <FormItem label="EDC" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('machine', {
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
+                  listEdc && listEdc.length === 1 ? listEdc[0].id : parseFloat(selectedPaymentShortcut.machine)
+                ) : item.machine,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C'
+                  }
+                ]
+              })(
+                <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem label="Card" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bank', {
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
+                  listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
+                ) : item.bank,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C'
+                  }
+                ]
+              })(
+                <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.bank} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                </Select>
+              )}
+            </FormItem>
             <FormItem
               label="Print Date"
               hasFeedback
