@@ -98,6 +98,7 @@ const ListQueue = ({ pos, dispatch }) => {
       })
       setCashierTrans(JSON.stringify(trans.cashier_trans))
       setServiceTrans(JSON.stringify(trans.service_detail))
+      dispatch({ type: 'pos/setCurrentBuildComponent' })
       setBundleTrans(JSON.stringify(trans.bundle_promo))
       localStorage.setItem('queue', JSON.stringify(queue))
       dispatch({

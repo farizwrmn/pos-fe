@@ -20,7 +20,8 @@ import {
   Card,
   Button,
   Modal,
-  message
+  message,
+  Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import Browse from './Browse'
@@ -30,7 +31,7 @@ import ModalUnit from './ModalUnit'
 import ModalMember from './ModalMember'
 import LovButton from './components/LovButton'
 import BottomButton from './components/BottomButton'
-import ModalVoidSuspend from './components/ModalVoidSuspend'
+// import ModalVoidSuspend from './components/ModalVoidSuspend'
 import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
@@ -44,7 +45,8 @@ const { Promo } = DataQuery
 const { prefix } = configMain
 const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
-  setCashierTrans, setBundleTrans, setServiceTrans
+  // setCashierTrans, setBundleTrans,
+  setServiceTrans
 } = lstorage
 // const FormItem = Form.Item
 
@@ -106,7 +108,7 @@ const Pos = ({
     // dataCashierTrans,
     // curCashierNo,
     modalQueueVisible,
-    modalVoidSuspendVisible,
+    // modalVoidSuspendVisible,
     modalBundleCategoryVisible,
     tmpProductList,
     tmpServiceList,
@@ -124,7 +126,8 @@ const Pos = ({
     // typePembelian,
     modalLoginType,
     listPaymentShortcut,
-    selectedPaymentShortcut
+    selectedPaymentShortcut,
+    currentBuildComponent
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible } = promo
@@ -361,100 +364,6 @@ const Pos = ({
           content: 'Please finish your current Transaction...!'
         })
       }
-    }
-  }
-
-  const buttomButtonProps = {
-    handlePayment () {
-      let defaultRole = ''
-      const localId = localStorage.getItem(`${prefix}udi`)
-      if (localId && localId.indexOf('#') > -1) {
-        defaultRole = localId.split(/[# ]+/).pop()
-      }
-      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
-      const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
-      if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'Member Unit is not Defined '
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
-      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'You are inserting Member Unit without Work Order'
-        })
-      } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'You are Work Order without Member Unit'
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
-      if (memberData === null) {
-        Modal.warning({
-          title: 'Member Validation',
-          content: 'Member Data Cannot be Null'
-        })
-        return
-      }
-      dispatch({ type: 'pos/setCurTotal' })
-
-      dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
-
-      // Untuk tipe page
-      // dispatch(routerRedux.push('/transaction/pos/payment'))
-      dispatch({
-        type: 'payment/showPaymentModal'
-      })
-    },
-    handleSuspend () {
-      if (document.getElementById('KM')) document.getElementById('KM').value = 0
-      dispatch({ type: 'pos/insertQueueCache' })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          showAlert: false
-        }
-      })
-    },
-    handleVoidPromo () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalVoidSuspendVisible: true
-        }
-      })
-    },
-    handleCancel () {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          dispatch({
-            type: 'pos/showModalLogin',
-            payload: {
-              modalLoginType: 'resetAllPosInput'
-            }
-          })
-          dispatch({
-            type: 'login/updateState',
-            payload: {
-              modalLoginData: {
-                transNo: user.username,
-                memo: 'Cancel Input POS'
-              }
-            }
-          })
-        }
-      })
     }
   }
 
@@ -868,18 +777,22 @@ const Pos = ({
       dispatch({ type: 'pos/hidePaymentModal' })
     },
     DeleteItem (data) {
-      dispatch({
-        type: 'pos/showModalLogin',
-        payload: {
-          modalLoginType: 'payment'
-        }
-      })
-      dispatch({
-        type: 'login/updateState',
-        payload: {
-          modalLoginData: data
-        }
-      })
+      if (currentBuildComponent && currentBuildComponent.no) {
+        dispatch({ type: 'pos/paymentDelete', payload: data })
+      } else {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'payment'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: data
+          }
+        })
+      }
     },
     onChooseItem (data) {
       if (data && data.qty === 0) {
@@ -1199,11 +1112,17 @@ const Pos = ({
             no: checkExists[0].no,
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleName : undefined,
             code: item.serviceCode,
             productId: item.id,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            hide: item.hide,
+            replaceable: item.replaceable,
+            oldValue: item.oldValue,
+            newValue: item.newValue,
             retailPrice: item.retailPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -1221,7 +1140,36 @@ const Pos = ({
             total: selectedPrice * (checkExists[0].qty + qty)
           }
 
+          if (currentBuildComponent && currentBuildComponent.no) {
+            arrayProd[checkExists[0].no - 1].bundleId = currentBuildComponent.bundleId
+            arrayProd[checkExists[0].no - 1].bundleCode = currentBuildComponent.code
+            arrayProd[checkExists[0].no - 1].bundleName = currentBuildComponent.name
+          }
+
           setServiceTrans(JSON.stringify(arrayProd))
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            const service = getServiceTrans()
+            if (service && service.length > 0) {
+              const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+              if (serviceSelected && serviceSelected[0]) {
+                dispatch({
+                  type: 'pos/setServiceDiff',
+                  payload: {
+                    item: serviceSelected[0]
+                  }
+                })
+              } else {
+                dispatch({
+                  type: 'pos/setNewServiceDiff'
+                })
+              }
+            } else {
+              dispatch({
+                type: 'pos/setNewServiceDiff'
+              })
+            }
+          }
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1279,11 +1227,17 @@ const Pos = ({
             no: arrayProd.length + 1,
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
+            bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleName : undefined,
+            hide: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.hide : undefined,
+            replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.replaceable : undefined,
             code: item.serviceCode,
             productId: item.id,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             name: item.serviceName,
+            oldValue: item.oldValue,
+            newValue: item.newValue,
             retailPrice: item.retailPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -1302,6 +1256,29 @@ const Pos = ({
           })
 
           setServiceTrans(JSON.stringify(arrayProd))
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            const service = getServiceTrans()
+            if (service && service.length > 0) {
+              const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+              if (serviceSelected && serviceSelected[0]) {
+                dispatch({
+                  type: 'pos/setServiceDiff',
+                  payload: {
+                    item: serviceSelected[0]
+                  }
+                })
+              } else {
+                dispatch({
+                  type: 'pos/setNewServiceDiff'
+                })
+              }
+            } else {
+              dispatch({
+                type: 'pos/setNewServiceDiff'
+              })
+            }
+          }
 
           dispatch({
             type: 'pos/queryServiceSuccessByCode',
@@ -1399,141 +1376,121 @@ const Pos = ({
     }
   }
 
-  const modalVoidSuspendProps = {
-    visible: modalVoidSuspendVisible,
-    onCancel () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalVoidSuspendVisible: false
-        }
-      })
-    },
-    onCancelList () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalVoidSuspendVisible: false
-        }
-      })
-    },
-    onVoid (id) {
-      const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
-      const dataProduct = getCashierTrans()
-      const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      const dataBundleFiltered = dataBundle.filter(x => x.bundleId !== id)
-      const dataProductFiltered = dataProduct.filter(x => x.bundleId !== id)
-      const dataServiceFiltered = dataService.filter(x => x.bundleId !== id)
-      let arrayProduct = []
-      let arrayService = []
-      let arrayBundle = []
-      for (let n = 0; n < (dataProductFiltered || []).length; n += 1) {
-        arrayProduct.push({
-          no: n + 1,
-          code: dataProductFiltered[n].code,
-          productId: dataProductFiltered[n].productId,
-          categoryCode: dataProductFiltered[n].categoryCode,
-          bundleId: dataProductFiltered[n].bundleId,
-          bundleCode: dataProductFiltered[n].bundleCode,
-          bundleName: dataProductFiltered[n].bundleName,
-          employeeId: dataProductFiltered[n].employeeId,
-          employeeName: dataProductFiltered[n].employeeName,
-          retailPrice: dataProductFiltered[n].retailPrice,
-          distPrice01: dataProductFiltered[n].distPrice01,
-          distPrice02: dataProductFiltered[n].distPrice02,
-          distPrice03: dataProductFiltered[n].distPrice03,
-          distPrice04: dataProductFiltered[n].distPrice04,
-          distPrice05: dataProductFiltered[n].distPrice05,
-          disc1: dataProductFiltered[n].disc1,
-          disc2: dataProductFiltered[n].disc2,
-          disc3: dataProductFiltered[n].disc3,
-          discount: dataProductFiltered[n].discount,
-          name: dataProductFiltered[n].name,
-          price: dataProductFiltered[n].price,
-          sellPrice: dataProductFiltered[n].sellPrice,
-          qty: dataProductFiltered[n].qty,
-          typeCode: dataProductFiltered[n].typeCode,
-          total: dataProductFiltered[n].total
-        })
-      }
-      for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
-        arrayService.push({
-          no: n + 1,
-          code: dataServiceFiltered[n].code,
-          productId: dataServiceFiltered[n].productId,
-          categoryCode: dataServiceFiltered[n].categoryCode,
-          bundleId: dataServiceFiltered[n].bundleId,
-          bundleCode: dataServiceFiltered[n].bundleCode,
-          bundleName: dataServiceFiltered[n].bundleName,
-          employeeId: dataServiceFiltered[n].employeeId,
-          employeeName: dataServiceFiltered[n].employeeName,
-          retailPrice: dataProductFiltered[n].retailPrice,
-          distPrice01: dataProductFiltered[n].distPrice01,
-          distPrice02: dataProductFiltered[n].distPrice02,
-          distPrice03: dataProductFiltered[n].distPrice03,
-          distPrice04: dataProductFiltered[n].distPrice04,
-          distPrice05: dataProductFiltered[n].distPrice05,
-          disc1: dataServiceFiltered[n].disc1,
-          disc2: dataServiceFiltered[n].disc2,
-          disc3: dataServiceFiltered[n].disc3,
-          discount: dataServiceFiltered[n].discount,
-          name: dataServiceFiltered[n].name,
-          price: dataServiceFiltered[n].price,
-          sellPrice: dataServiceFiltered[n].sellPrice,
-          qty: dataServiceFiltered[n].qty,
-          typeCode: dataServiceFiltered[n].typeCode,
-          total: dataServiceFiltered[n].total
-        })
-      }
-      for (let o = 0; o < (dataBundleFiltered || []).length; o += 1) {
-        arrayBundle.push({
-          no: o + 1,
-          applyMultiple: dataBundleFiltered[o].applyMultiple,
-          bundleId: dataBundleFiltered[o].bundleId,
-          type: dataBundleFiltered[o].type,
-          code: dataBundleFiltered[o].code,
-          name: dataBundleFiltered[o].name,
-          categoryCode: dataBundleFiltered[0].categoryCode,
-          startDate: dataBundleFiltered[o].startDate,
-          endDate: dataBundleFiltered[o].endDate,
-          startHour: dataBundleFiltered[o].startHour,
-          endHour: dataBundleFiltered[o].endHour,
-          availableDate: dataBundleFiltered[o].availableDate,
-          qty: dataBundleFiltered[o].qty
-        })
-      }
-      setCashierTrans(JSON.stringify(arrayProduct))
-      setServiceTrans(JSON.stringify(arrayService))
-      setBundleTrans(JSON.stringify(arrayBundle))
+  // const modalVoidSuspendProps = {
+  //   visible: modalVoidSuspendVisible,
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'pos/updateState',
+  //       payload: {
+  //         modalVoidSuspendVisible: false
+  //       }
+  //     })
+  //   },
+  //   onCancelList () {
+  //     dispatch({
+  //       type: 'pos/updateState',
+  //       payload: {
+  //         modalVoidSuspendVisible: false
+  //       }
+  //     })
+  //   },
+  //   onVoid (id) {
+  //     const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
+  //     const dataProduct = getCashierTrans()
+  //     const dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+  //     const dataBundleFiltered = dataBundle.filter(x => x.bundleId !== id)
+  //     const dataProductFiltered = dataProduct.filter(x => x.bundleId !== id)
+  //     const dataServiceFiltered = dataService.filter(x => x.bundleId !== id)
+  //     let arrayProduct = []
+  //     let arrayService = []
+  //     let arrayBundle = []
+  //     for (let n = 0; n < (dataProductFiltered || []).length; n += 1) {
+  //       arrayProduct.push({
+  //         no: n + 1,
+  //         code: dataProductFiltered[n].code,
+  //         productId: dataProductFiltered[n].productId,
+  //         categoryCode: dataProductFiltered[n].categoryCode,
+  //         bundleId: dataProductFiltered[n].bundleId,
+  //         bundleCode: dataProductFiltered[n].bundleCode,
+  //         bundleName: dataProductFiltered[n].bundleName,
+  //         employeeId: dataProductFiltered[n].employeeId,
+  //         employeeName: dataProductFiltered[n].employeeName,
+  //         retailPrice: dataProductFiltered[n].retailPrice,
+  //         distPrice01: dataProductFiltered[n].distPrice01,
+  //         distPrice02: dataProductFiltered[n].distPrice02,
+  //         distPrice03: dataProductFiltered[n].distPrice03,
+  //         distPrice04: dataProductFiltered[n].distPrice04,
+  //         distPrice05: dataProductFiltered[n].distPrice05,
+  //         disc1: dataProductFiltered[n].disc1,
+  //         disc2: dataProductFiltered[n].disc2,
+  //         disc3: dataProductFiltered[n].disc3,
+  //         discount: dataProductFiltered[n].discount,
+  //         name: dataProductFiltered[n].name,
+  //         price: dataProductFiltered[n].price,
+  //         sellPrice: dataProductFiltered[n].sellPrice,
+  //         qty: dataProductFiltered[n].qty,
+  //         typeCode: dataProductFiltered[n].typeCode,
+  //         total: dataProductFiltered[n].total
+  //       })
+  //     }
+  //     for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
+  //       arrayService.push({
+  //         no: n + 1,
+  //         code: dataServiceFiltered[n].code,
+  //         productId: dataServiceFiltered[n].productId,
+  //         categoryCode: dataServiceFiltered[n].categoryCode,
+  //         bundleId: dataServiceFiltered[n].bundleId,
+  //         bundleCode: dataServiceFiltered[n].bundleCode,
+  //         bundleName: dataServiceFiltered[n].bundleName,
+  //         employeeId: dataServiceFiltered[n].employeeId,
+  //         employeeName: dataServiceFiltered[n].employeeName,
+  //         retailPrice: dataProductFiltered[n].retailPrice,
+  //         distPrice01: dataProductFiltered[n].distPrice01,
+  //         distPrice02: dataProductFiltered[n].distPrice02,
+  //         distPrice03: dataProductFiltered[n].distPrice03,
+  //         distPrice04: dataProductFiltered[n].distPrice04,
+  //         distPrice05: dataProductFiltered[n].distPrice05,
+  //         disc1: dataServiceFiltered[n].disc1,
+  //         disc2: dataServiceFiltered[n].disc2,
+  //         disc3: dataServiceFiltered[n].disc3,
+  //         discount: dataServiceFiltered[n].discount,
+  //         name: dataServiceFiltered[n].name,
+  //         price: dataServiceFiltered[n].price,
+  //         sellPrice: dataServiceFiltered[n].sellPrice,
+  //         qty: dataServiceFiltered[n].qty,
+  //         typeCode: dataServiceFiltered[n].typeCode,
+  //         total: dataServiceFiltered[n].total
+  //       })
+  //     }
+  //     for (let o = 0; o < (dataBundleFiltered || []).length; o += 1) {
+  //       arrayBundle.push({
+  //         no: o + 1,
+  //         applyMultiple: dataBundleFiltered[o].applyMultiple,
+  //         bundleId: dataBundleFiltered[o].bundleId,
+  //         type: dataBundleFiltered[o].type,
+  //         code: dataBundleFiltered[o].code,
+  //         name: dataBundleFiltered[o].name,
+  //         categoryCode: dataBundleFiltered[0].categoryCode,
+  //         startDate: dataBundleFiltered[o].startDate,
+  //         endDate: dataBundleFiltered[o].endDate,
+  //         startHour: dataBundleFiltered[o].startHour,
+  //         endHour: dataBundleFiltered[o].endHour,
+  //         availableDate: dataBundleFiltered[o].availableDate,
+  //         qty: dataBundleFiltered[o].qty
+  //       })
+  //     }
+  //     setCashierTrans(JSON.stringify(arrayProduct))
+  //     setServiceTrans(JSON.stringify(arrayService))
+  //     setBundleTrans(JSON.stringify(arrayBundle))
 
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalVoidSuspendVisible: false
-        }
-      })
-      // for (let m = 0; m < (dataProductFiltered || []).length; m += 1) {
-      //   dispatch({
-      //     type: 'pos/paymentDelete',
-      //     payload: {
-      //       Record: dataProductFiltered[m].no,
-      //       Payment: 'Delete',
-      //       VALUE: 0
-      //     }
-      //   })
-      // }
-      // for (let n = 0; n < (dataServiceFiltered || []).length; n += 1) {
-      //   dispatch({
-      //     type: 'pos/serviceDelete',
-      //     payload: {
-      //       Record: dataServiceFiltered[n].no,
-      //       Payment: 'Delete',
-      //       VALUE: 0
-      //     }
-      //   })
-      // }
-    }
-  }
+  //     dispatch({
+  //       type: 'pos/updateState',
+  //       payload: {
+  //         modalVoidSuspendVisible: false
+  //       }
+  //     })
+  //   }
+  // }
 
   const modalBundleCategoryProps = {
     loading: loading.effects['pos/chooseProductPromo'],
@@ -1730,6 +1687,149 @@ const Pos = ({
     })
   }
 
+  const handleCloseBuildComponent = (event) => {
+    event.preventDefault()
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        dispatch({ type: 'pos/removeTrans' })
+        dispatch({ type: 'pos/setDefaultMember' })
+        dispatch({ type: 'pos/setDefaultEmployee' })
+
+        dispatch({ type: 'pos/setDefaultPaymentShortcut' })
+      }
+    })
+  }
+
+  const buttomButtonProps = {
+    handlePayment () {
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        let haveUnderZero = false
+
+        for (let key in service) {
+          const item = service[key]
+          if (item.total < 0) {
+            haveUnderZero = true
+            break
+          }
+        }
+
+        if (haveUnderZero) {
+          Modal.error({
+            title: 'Invalid Service Cost',
+            content: 'Please Check Service Section and Reduce some Product'
+          })
+          return
+        }
+
+        const total = (parseFloat(curNetto) + parseFloat(dineIn))
+        const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+        let servicePrice = 0
+        if (serviceSelected && serviceSelected[0]) {
+          servicePrice = serviceSelected[0].total
+        }
+        if (total - servicePrice > currentBuildComponent.targetCostPrice) {
+          Modal.error({
+            title: 'Cost price exceed',
+            content: `Bundle cost price limit is ${currentBuildComponent.targetCostPrice.toLocaleString()}; Your Input: ${(total - servicePrice).toLocaleString()}`
+          })
+          return
+        }
+      }
+      let defaultRole = ''
+      const localId = localStorage.getItem(`${prefix}udi`)
+      if (localId && localId.indexOf('#') > -1) {
+        defaultRole = localId.split(/[# ]+/).pop()
+      }
+      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+      const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+      if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'Member Unit is not Defined '
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'You are inserting Member Unit without Work Order'
+        })
+      } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+        Modal.warning({
+          title: 'Unit Validation',
+          content: 'You are Work Order without Member Unit'
+        })
+        if (defaultRole !== 'OWN') {
+          return
+        }
+      }
+      if (memberData === null) {
+        Modal.warning({
+          title: 'Member Validation',
+          content: 'Member Data Cannot be Null'
+        })
+        return
+      }
+      dispatch({ type: 'pos/setCurTotal' })
+
+      dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+      // Untuk tipe page
+      // dispatch(routerRedux.push('/transaction/pos/payment'))
+      dispatch({
+        type: 'payment/showPaymentModal'
+      })
+    },
+    handleSuspend () {
+      if (document.getElementById('KM')) document.getElementById('KM').value = 0
+      dispatch({ type: 'pos/insertQueueCache' })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          showAlert: false
+        }
+      })
+    },
+    handleVoidPromo () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoidSuspendVisible: true
+        }
+      })
+    },
+    handleCancel () {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          dispatch({
+            type: 'pos/showModalLogin',
+            payload: {
+              modalLoginType: 'resetAllPosInput'
+            }
+          })
+          dispatch({
+            type: 'login/updateState',
+            payload: {
+              modalLoginData: {
+                transNo: user.username,
+                memo: 'Cancel Input POS'
+              }
+            }
+          })
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1745,8 +1845,6 @@ const Pos = ({
                 || loading.effects['pos/chooseProduct']
                 || loading.effects['pos/checkQuantityEditProduct']
                 || loading.effects['pos/checkQuantityNewProduct']
-                || loading.effects['pos/chooseProduct']
-                || loading.effects['pos/chooseProduct']
                 || loading.effects['pospromo/addPosPromo']
                 || loading.effects['pos/getProductByBarcode']}
               onChange={handleChangeBookmark}
@@ -1761,6 +1859,11 @@ const Pos = ({
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
+              {currentBuildComponent && currentBuildComponent.no && (
+                <div style={{ marginBottom: '10px' }}>
+                  <Tag closable color="orange" onClose={handleCloseBuildComponent}>{currentBuildComponent.name}</Tag>
+                </div>
+              )}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
@@ -1783,6 +1886,7 @@ const Pos = ({
                     size="medium"
                     icon="barcode"
                     onClick={handleConsignmentBrowse}
+                    disabled={currentBuildComponent && currentBuildComponent.no}
                     style={{
                       margin: '0px 5px',
                       marginBottom: '5px'
@@ -1793,6 +1897,7 @@ const Pos = ({
                   <Button type="primary"
                     size="medium"
                     icon="tool"
+                    disabled={currentBuildComponent && currentBuildComponent.no}
                     onClick={handleServiceBrowse}
                     style={{
                       margin: '0px 5px',
@@ -1805,6 +1910,7 @@ const Pos = ({
                     size="medium"
                     icon="tool"
                     onClick={handlePromoBrowse}
+                    disabled={currentBuildComponent && currentBuildComponent.no}
                     style={{
                       margin: '0px 5px',
                       marginBottom: '5px'
@@ -1829,14 +1935,14 @@ const Pos = ({
             {modalQueueVisible && <Browse {...modalQueueProps} />}
             {modalPromoVisible && <Promo {...modalPromoProps} />}
             {modalQueueVisible && <Browse {...modalQueueProps} />}
-            {modalVoidSuspendVisible && <ModalVoidSuspend {...modalVoidSuspendProps} />}
+            {/* {modalVoidSuspendVisible && <ModalVoidSuspend {...modalVoidSuspendProps} />} */}
             {modalBundleCategoryVisible && <ModalBundleCategory {...modalBundleCategoryProps} />}
             {modalPaymentVisible && <ModalEditBrowse {...modalPaymentProps} />}
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
             {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
 
-            <TransactionDetail pos={pos} dispatch={dispatch} />
+            <TransactionDetail pos={pos} dispatch={dispatch} handleProductBrowse={handleProductBrowse} />
             <Row>
               <Col md={24} lg={16} >
                 <Button.Group style={{ width: '100%' }}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Modal, Button } from 'antd'
+import { Form, InputNumber, Checkbox, Modal, Button } from 'antd'
 import { posTotal } from 'utils'
 import { getDistPriceName } from 'utils/string'
 
@@ -129,6 +129,22 @@ const modal = ({
               required: true
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+        </FormItem>
+        <FormItem label="Can Be Replace" {...formItemLayout}>
+          {getFieldDecorator('replaceable', {
+            valuePropName: 'checked',
+            initialValue: item.replaceable === undefined
+              ? false
+              : item.replaceable
+          })(<Checkbox>Can Be Replace</Checkbox>)}
+        </FormItem>
+        <FormItem label="Hide" {...formItemLayout}>
+          {getFieldDecorator('hide', {
+            valuePropName: 'checked',
+            initialValue: item.hide === undefined
+              ? true
+              : item.hide
+          })(<Checkbox>Hide</Checkbox>)}
         </FormItem>
       </Form>
     </Modal>

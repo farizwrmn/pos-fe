@@ -122,6 +122,7 @@
     "Element": true,
     "Image": true,
     "FileReader": true,
+    "Event": true,
     "_": true
   },
   "parserOptions": {

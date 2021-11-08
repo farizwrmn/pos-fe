@@ -153,7 +153,7 @@ const Promo = ({
       render: (text, record) => {
         return (
           <div>
-            <PromoProductReward enableChoosePromoDetail={enableChoosePromoDetail} currentId={record.id} onChooseItem={() => onChooseItem(record)} />
+            <PromoProductReward enableChoosePromoDetail={enableChoosePromoDetail} currentId={record.id} item={record} onChooseItem={() => onChooseItem(record)} />
           </div>
         )
       }

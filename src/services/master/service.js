@@ -2,6 +2,16 @@ import { request, config, crypt } from '../../utils'
 
 const { services, misc } = config.api
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${services}/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

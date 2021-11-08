@@ -285,8 +285,9 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
     }
   }
   const match = pathToRegexp('/transaction/pos/invoice/:id').exec(pathname) || pathToRegexp('/balance/invoice/:id').exec(pathname)
+  const matchAdmin = pathToRegexp('/transaction/pos/admin-invoice/:id').exec(pathname) || pathToRegexp('/balance/invoice/:id').exec(pathname)
 
-  if (openPages && (openPages.includes(pathname) || match)) {
+  if (openPages && (openPages.includes(pathname) || match || matchAdmin)) {
     return (<div>
       <Loader spinning={loading.effects['app/query']} />
       {children}

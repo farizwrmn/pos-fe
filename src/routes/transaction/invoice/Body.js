@@ -1,14 +1,21 @@
 import React from 'react'
 import BodyItem from './BodyItem'
 import Group from './Group'
+import GroupShow from './GroupShow'
 import styles from './index.less'
 
 const Body = ({
+  user,
+  standardInvoice,
   dataPos = [],
   dataService = [],
   dataGroup = [],
   dataConsignment = []
 }) => {
+  let role = false
+  if (user && user.permissions && user.permissions.role) {
+    role = user.permissions.role === 'SPR' || user.permissions.role === 'OWN' || user.permissions.role === 'ADM'
+  }
   return (
     <div>
       <div className={styles.borderedSection}>
@@ -27,11 +34,20 @@ const Body = ({
             <BodyItem key={index} item={item} />
           )
         })}
-        {dataGroup && dataGroup.map((item, index) => {
+        {standardInvoice && dataGroup && dataGroup.map((item, index) => {
           return (
             <Group key={index} item={item} />
           )
         })}
+        {!standardInvoice && role && dataGroup ? dataGroup.map((item, index) => {
+          return (
+            <GroupShow key={index} item={item} />
+          )
+        }) : (!standardInvoice && role && dataGroup ? dataGroup.map((item, index) => {
+          return (
+            <Group key={index} item={item} />
+          )
+        }) : null)}
       </div>
     </div>
   )

@@ -234,75 +234,68 @@ export default modelExtend(pageModel, {
           return
         }
       }
-      const checkExists = payload.listReward.filter(el => el.total < 0)
-      if ((payload.listReward || []).length > 0 || (payload.listRules || []).length > 0) {
-        if ((checkExists || []).length === 0) {
-          // Start - Upload Image
-          const uploadedImage = []
-          if (payload
-            && payload.data
-            && payload.data.productImage
-            && payload.data.productImage.fileList
-            && payload.data.productImage.fileList.length > 0
-            && payload.data.productImage.fileList.length <= 5) {
-            for (let key in payload.data.productImage.fileList) {
-              const item = payload.data.productImage.fileList[key]
-              const formData = new FormData()
-              formData.append('file', item.originFileObj)
-              const responseUpload = yield call(uploadBundleImage, formData)
-              if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
-                uploadedImage.push(responseUpload.data.filename)
-              }
+      const checkExists = payload.data.buildComponent ? [] : payload.listReward.filter(el => el.total < 0)
+      if ((checkExists || []).length === 0) {
+        // Start - Upload Image
+        const uploadedImage = []
+        if (payload
+          && payload.data
+          && payload.data.productImage
+          && payload.data.productImage.fileList
+          && payload.data.productImage.fileList.length > 0
+          && payload.data.productImage.fileList.length <= 5) {
+          for (let key in payload.data.productImage.fileList) {
+            const item = payload.data.productImage.fileList[key]
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadBundleImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
             }
-          } else if (payload
-            && payload.data
-            && payload.data.productImage
-            && payload.data.productImage.fileList
-            && payload.data.productImage.fileList.length > 0
-            && payload.data.productImage.fileList.length > 5) {
-            throw new Error('Cannot upload more than 5 image')
           }
-          if (uploadedImage && uploadedImage.length) {
-            payload.data.productImage = uploadedImage
-          } else {
-            payload.data.productImage = '["no_image.png"]'
-          }
-          // End - Upload Image
-          const data = yield call(add, payload)
-          if (data.success) {
-            if (payload && payload.reset) {
-              payload.reset()
-            }
-            success()
-            yield put({
-              type: 'updateState',
-              payload: {
-                modalType: 'add',
-                currentItem: {},
-                listRules: [],
-                listReward: []
-              }
-            })
-            yield put({
-              type: 'query',
-              payload: {
-                type: 'all'
-              }
-            })
-            yield put({ type: 'querySequence' })
-          } else {
-            throw data
-          }
+        } else if (payload
+          && payload.data
+          && payload.data.productImage
+          && payload.data.productImage.fileList
+          && payload.data.productImage.fileList.length > 0
+          && payload.data.productImage.fileList.length > 5) {
+          throw new Error('Cannot upload more than 5 image')
+        }
+        if (uploadedImage && uploadedImage.length) {
+          payload.data.productImage = uploadedImage
         } else {
-          Modal.warning({
-            title: "Total's value is below zero",
-            content: 'You have a product with below zero total'
+          payload.data.productImage = '["no_image.png"]'
+        }
+        // End - Upload Image
+        const data = yield call(add, payload)
+        if (data.success) {
+          if (payload && payload.reset) {
+            payload.reset()
+          }
+          success()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {},
+              listRules: [],
+              listReward: []
+            }
           })
+          yield put({
+            type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
+          yield put({ type: 'querySequence' })
+        } else {
+          throw data
         }
       } else {
         Modal.warning({
-          title: 'No Item Rules or Reward',
-          content: 'Please choose reward or rules item'
+          title: "Total's value is below zero",
+          content: 'You have a product with below zero total'
         })
       }
     },
@@ -425,6 +418,8 @@ export default modelExtend(pageModel, {
         listReward.push({
           no: n + 1,
           id: dataReward.data[n].id,
+          hide: dataReward.data[n].hide,
+          replaceable: dataReward.data[n].replaceable,
           type: dataReward.data[n].type,
           productId: dataReward.data[n].productId,
           productCode: dataReward.data[n].productCode,

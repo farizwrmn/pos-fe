@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs, Modal } from 'antd'
+import { Button, Tabs, Modal, message } from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import ModalCancel from './ModalCancel'
 import Form from './Form'
@@ -167,6 +167,36 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, listRules, listReward, reset) {
       if (modalType === 'add') {
+        let haveReplace = false
+        for (let key in listReward) {
+          const item = listReward[key]
+          if (item.replaceable) {
+            haveReplace = true
+            break
+          }
+        }
+        if (data.buildComponent && !data.haveTargetPrice) {
+          message.error('Required: Have Target Price')
+          return
+        }
+        if (data.buildComponent) {
+          listReward = []
+          if (data.applyMultiple) {
+            message.error('Required: Build Component Only For 1 Each Transaction')
+            return
+          }
+        }
+        if (haveReplace) {
+          if (data && !data.haveTargetPrice) {
+            message.error('Required: Target Price')
+            return
+          }
+          const totalReward = listReward.reduce((prev, next) => prev + (next.qty * next.sellPrice), 0)
+          if (totalReward > data.targetCostPrice) {
+            message.error('Required: Reward Total exceed Cost Price')
+            return
+          }
+        }
         dispatch({
           type: 'bundling/add',
           payload: {
