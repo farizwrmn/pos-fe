@@ -313,7 +313,7 @@ const Payment = ({
       onResetMachine()
     },
     editItem (data) {
-      if (data && data.typeCode !== 'C') {
+      if (data && data.typeCode) {
         onGetMachine(data.typeCode)
         onGetCost(data.machine)
       }
