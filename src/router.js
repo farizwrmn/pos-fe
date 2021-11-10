@@ -1513,6 +1513,14 @@ const Routers = function ({ history, app }) {
             }, 'marketing-bundling')
           }
         }, {
+          path: 'marketing/voucher',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/voucher'))
+              cb(null, require('./routes/marketing/voucher'))
+            }, 'marketing-voucher')
+          }
+        }, {
           path: 'monitor/cashier/request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
