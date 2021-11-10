@@ -161,7 +161,10 @@ export default modelExtend(pageModel, {
                 no: index + 1,
                 ...item,
                 accountId: item.accountId,
-                accountName: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+                accountCode: {
+                  key: item.accountId,
+                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+                }
               }))
               : []
           }

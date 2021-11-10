@@ -4,7 +4,7 @@ import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
 import { queryEntryList } from 'services/payment/bankentry'
 import { MUOUT } from 'utils/variable'
-import { queryByTrans, queryDetail, editPrice, queryPrice, queryPriceList, postTrans, voidTrans } from '../../../services/transferStockOut.js'
+import { queryByTrans, queryDetail, editPrice, queryPrice, queryPriceList, postTrans, voidTrans } from '../../../services/transferStockOut'
 
 export default {
 
@@ -69,6 +69,8 @@ export default {
             type: 'transferOutDetail/editPrice',
             payload: {
               data: {
+                storeId: payload.data.storeId,
+                transNo: payload.data.transNo,
                 productId: item.productId,
                 purchasePrice: item && item.qty && item.qty > 0 && filteredPrice && filteredPrice[0]
                   ? (filteredPrice[0].purchasePrice > 0 ? Math.ceil(filteredPrice[0].purchasePrice) : masterCostPrice) : 0,

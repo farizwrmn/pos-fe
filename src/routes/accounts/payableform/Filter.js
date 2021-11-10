@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input } from 'antd'
+import { Form, Row, Col, Input, Select } from 'antd'
 
 const Search = Input.Search
 const FormItem = Form.Item
+const { Option } = Select
 
 const searchBarLayout = {
   sm: { span: 24 },
@@ -13,24 +14,44 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  item,
   onFilterChange,
+  listAllStores,
   form: {
     getFieldDecorator,
     getFieldsValue
   }
 }) => {
-  const handleSubmit = () => {
+  const handleSubmit = (storeId) => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
+    if (storeId) {
+      field.storeId = storeId
+    }
     onFilterChange(field)
   }
 
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option title={`${x.storeName} (${x.storeCode})`} key={x.id}>{`${x.storeName} (${x.storeCode})`}</Option>)) : []
+
   return (
     <Row>
-      <Col span={12} />
+      <Col span={12}>
+        <FormItem>
+          {getFieldDecorator('storeId')(
+            <Select
+              style={{ width: 245 }}
+              placeholder="Select Store"
+              onChange={storeId => handleSubmit(storeId)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenTransNo}
+            </Select>)}
+        </FormItem>
+      </Col>
       <Col {...searchBarLayout} >
         <FormItem >
-          {getFieldDecorator('q')(
+          {getFieldDecorator('q', {
+            initialValue: item.q
+          })(
             <Search
               placeholder="Search"
               onSearch={() => handleSubmit()}

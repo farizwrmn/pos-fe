@@ -20,7 +20,8 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     memberPrint,
     mechanicPrint,
     posData,
-    modalConfirmVisible
+    modalConfirmVisible,
+    standardInvoice
   } = pos
   const {
     listAmount,
@@ -45,7 +46,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
   let dataBundle = data.bundling
   if (data && data.data) {
     for (let n = 0; n < data.data.length; n += 1) {
-      if (data.data[n].productCode !== null && data.data[n].bundlingId === null) {
+      if (data.data[n].typeCode === 'P' && data.data[n].bundlingId === null) {
         let productId = data.data[n].productCode
         let productName = data.data[n].productName
         dataPos.push({
@@ -64,7 +65,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           disc3: data.data[n].disc3,
           total: posTotal(data.data[n])
         })
-      } else if (data.data[n].serviceCode !== null && data.data[n].bundlingId === null) {
+      } else if (data.data[n].typeCode === 'S' && data.data[n].bundlingId === null) {
         let productId = data.data[n].serviceCode
         let productName = data.data[n].serviceName
         dataService.push({
@@ -84,8 +85,8 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
           total: posTotal(data.data[n])
         })
       } else if (data.data[n].bundlingId !== null) {
-        let productId = data.data[n].productCode
-        let productName = data.data[n].productName
+        let productId = data.data[n].productCode || data.data[n].serviceCode
+        let productName = data.data[n].productName || data.data[n].serviceName
         dataGroup.push({
           no: '',
           code: productId,
@@ -197,6 +198,8 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
       <div className={styles.invoiceMini}>
         <Header onShowDeliveryOrder={onShowDeliveryOrder} invoiceInfo={invoiceInfo} />
         <Body
+          user={app.user}
+          standardInvoice={standardInvoice}
           dataPos={invoiceInfo.dataPos || []}
           dataService={invoiceInfo.dataService || []}
           dataGroup={invoiceInfo.dataGroup || []}

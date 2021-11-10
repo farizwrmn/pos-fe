@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -63,9 +63,23 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
       key: 'memo'
     },
     {
-      title: 'Purchase',
-      dataIndex: 'purchase.transNo',
-      key: 'purchase.transNo'
+      title: 'Status',
+      dataIndex: 'payableId',
+      key: 'payableId',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="grey">
+              Already Used
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="green">
+            Available
+          </Tag>
+        )
+      }
     },
     {
       title: 'Operation',

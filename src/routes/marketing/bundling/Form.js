@@ -15,12 +15,13 @@ import {
   DatePicker,
   TimePicker,
   Checkbox,
-  Modal
+  Modal,
+  InputNumber
 } from 'antd'
 import moment from 'moment'
 import _ from 'lodash'
 import { posTotal } from 'utils'
-import { rest } from 'utils/config.company'
+import { IMAGEURL, rest } from 'utils/config.company'
 import ModalLov from './ModalLov'
 import ModalRules from './ModalRules'
 import ModalReward from './ModalReward'
@@ -452,6 +453,7 @@ const FormCounter = ({
       }
     }
   }
+
   const listRewardProps = {
     dataSource: listReward,
     columns: columnsReward,
@@ -627,9 +629,23 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('productImage', {
-              initialValue: modalType === 'edit' ? {
-                fileList: item.productImageUrl
-              } : []
+              initialValue: item.productImage
+                && item.productImage != null
+                && item.productImage !== '["no_image.png"]'
+                && item.productImage !== '"no_image.png"'
+                && item.productImage !== 'no_image.png' ?
+                {
+                  fileList: JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                }
+                : []
             })(
               <Upload
                 {...props}
@@ -637,7 +653,21 @@ const FormCounter = ({
                 showUploadList={{
                   showPreviewIcon: true
                 }}
-                defaultFileList={modalType === 'edit' ? item.productImageUrl : []}
+                defaultFileList={item.productImage
+                  && item.productImage != null
+                  && item.productImage !== '["no_image.png"]'
+                  && item.productImage !== '"no_image.png"'
+                  && item.productImage !== 'no_image.png' ?
+                  JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                  : []}
                 listType="picture"
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}
@@ -691,6 +721,60 @@ const FormCounter = ({
                 : item.activeShop
             })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
           </FormItem>
+          <FormItem label="Always On" {...formItemLayout}>
+            {getFieldDecorator('alwaysOn', {
+              valuePropName: 'checked',
+              initialValue: item.alwaysOn === undefined
+                ? false
+                : item.alwaysOn
+            })(<Checkbox>Always On</Checkbox>)}
+          </FormItem>
+          <FormItem label="Build your own component" help="You don't need to define the list, build it in transaction form" {...formItemLayout}>
+            {getFieldDecorator('buildComponent', {
+              valuePropName: 'checked',
+              initialValue: item.buildComponent === undefined
+                ? false
+                : item.buildComponent
+            })(<Checkbox>Build Component</Checkbox>)}
+          </FormItem>
+          <FormItem label="Have Target Price" {...formItemLayout}>
+            {getFieldDecorator('haveTargetPrice', {
+              valuePropName: 'checked',
+              initialValue: item.haveTargetPrice === undefined
+                ? false
+                : item.haveTargetPrice
+            })(<Checkbox>Target Price</Checkbox>)}
+          </FormItem>
+          {getFieldValue('haveTargetPrice') && (<FormItem {...formItemLayout} label="Cost Price">
+            {getFieldDecorator('targetCostPrice', {
+              initialValue: item.targetCostPrice,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^([0-9.]{0,11})$/i
+              }]
+            })(
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+              />
+            )}
+          </FormItem>)}
+          {getFieldValue('haveTargetPrice') && (<FormItem {...formItemLayout} label="Retail Price">
+            {getFieldDecorator('targetRetailPrice', {
+              initialValue: item.targetRetailPrice,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^([0-9.]{0,11})$/i
+              }]
+            })(
+              <InputNumber
+                style={{ width: '100%', marginBottom: '20px' }}
+                min={0}
+              />
+            )}
+          </FormItem>)}
         </Col>
         <Col {...column}>
           {showRules && (
@@ -702,12 +786,16 @@ const FormCounter = ({
               <ListRules {...listRulesProps} />
             </div>
           )}
-          <Row>
-            <Col span={12}><h2 className="h2-add-items">Items</h2></Col>
-            <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
-          </Row>
-          <ListReward {...listRewardProps} />
-          Product is using Non-Member Price
+          {!getFieldValue('buildComponent') && (
+            <div>
+              <Row>
+                <Col span={12}><h2 className="h2-add-items">Items</h2></Col>
+                <Col span={12}><Button disabled={modalType !== 'add'} className="button-add-items-right" type="primary" icon="plus" onClick={() => handleGetService('Reward')}>Add Items</Button></Col>
+              </Row>
+              <ListReward {...listRewardProps} />
+              Product is using Non-Member Price
+            </div>
+          )}
         </Col>
       </Row>
       <Button size="large" disabled={item.status === '0'} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>

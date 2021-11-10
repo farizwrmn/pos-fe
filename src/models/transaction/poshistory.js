@@ -15,6 +15,8 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
+        console.log('infoStore', infoStore)
         if (location.pathname === '/inventory/transfer/out') {
           dispatch({
             type: 'query',

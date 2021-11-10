@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Select, Input, Form, Radio, InputNumber } from 'antd'
+import { Modal, Select, Input, Form, Radio, InputNumber, message } from 'antd'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -44,14 +44,18 @@ class ModalList extends Component {
           ...getFieldsValue()
         }
         data.no = item.no
-        data.accountName = data.accountId ? data.accountId.label : null
-        data.accountId = data.accountId ? data.accountId.key : null
-        if (modalItemType === 'add') {
-          addModalItem(data)
-        } else if (modalItemType === 'edit') {
-          editModalItem(data)
+        if (data.accountCode && data.accountCode.key) {
+          data.accountCode = data.accountCode && data.accountCode.key ? data.accountCode : undefined
+          data.accountId = data.accountCode && data.accountCode.key ? data.accountCode.key : undefined
+          if (modalItemType === 'add') {
+            addModalItem(data)
+          } else if (modalItemType === 'edit') {
+            editModalItem(data)
+          }
+          resetFields()
+        } else {
+          message.error('Choose Account Code')
         }
-        resetFields()
       })
     }
 
@@ -108,8 +112,11 @@ class ModalList extends Component {
             />)}
           </FormItem>}
           <FormItem {...formItemLayout} label="Account Code">
-            {getFieldDecorator('accountId', {
-              initialValue: item.accountId,
+            {getFieldDecorator('accountCode', {
+              initialValue: item.accountCode ? {
+                key: item.accountCode.key,
+                label: item.accountCode.label
+              } : { label: 'Choose Account Code' },
               rules: [{
                 required: true,
                 message: 'Required'

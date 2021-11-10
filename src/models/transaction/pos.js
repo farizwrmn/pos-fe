@@ -12,6 +12,7 @@ import {
   queryPaymentSplit
 } from 'services/payment/payment'
 import { query as queryReward } from 'services/marketing/bundlingReward'
+import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
 import * as cashierService from '../../services/cashier'
 import { queryWOHeader } from '../../services/transaction/workOrder'
@@ -49,7 +50,7 @@ import {
 import {
   query as queryConsignment
 } from '../../services/master/consignment'
-import { query as queryService } from '../../services/master/service'
+import { query as queryService, queryById as queryServiceById } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
@@ -68,6 +69,9 @@ export default {
   namespace: 'pos',
 
   state: {
+    standardInvoice: true,
+    currentReplaceBundle: {},
+    currentBuildComponent: {},
     list: [],
     dataReward: [],
     currentCategory: [],
@@ -179,7 +183,24 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
+        let match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
+        const matchAdmin = pathToRegexp('/transaction/pos/admin-invoice/:id').exec(location.pathname)
+        if (matchAdmin) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              standardInvoice: false
+            }
+          })
+          match = matchAdmin
+        } else {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              standardInvoice: true
+            }
+          })
+        }
         const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({
@@ -197,6 +218,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
           dispatch({
             type: 'setDefaultMember'
@@ -300,10 +322,33 @@ export default {
       }
     },
 
-    * paymentEdit ({ payload }, { put }) {
+    * paymentEdit ({ payload }, { select, put }) {
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
       let dataPos = getCashierTrans()
       dataPos[payload.no - 1] = payload
       setCashierTrans(JSON.stringify(dataPos))
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        if (service && service.length > 0) {
+          const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+          if (serviceSelected && serviceSelected[0]) {
+            yield put({
+              type: 'setServiceDiff',
+              payload: {
+                item: serviceSelected[0]
+              }
+            })
+          } else {
+            yield put({
+              type: 'setNewServiceDiff'
+            })
+          }
+        } else {
+          yield put({
+            type: 'setNewServiceDiff'
+          })
+        }
+      }
       yield put({ type: 'hidePaymentModal' })
       yield put({ type: 'setCurTotal' })
     },
@@ -333,6 +378,7 @@ export default {
 
     * changeDineIn ({ payload }, { select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
       const { typePembelian, selectedPaymentShortcut } = payload
       let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
@@ -376,11 +422,35 @@ export default {
       }
       setConsignment(JSON.stringify(dataConsignment))
       setCashierTrans(JSON.stringify(dataPos))
+
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        if (service && service.length > 0) {
+          const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+          if (serviceSelected && serviceSelected[0]) {
+            yield put({
+              type: 'setServiceDiff',
+              payload: {
+                item: serviceSelected[0]
+              }
+            })
+          } else {
+            yield put({
+              type: 'setNewServiceDiff'
+            })
+          }
+        } else {
+          yield put({
+            type: 'setNewServiceDiff'
+          })
+        }
+      }
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
 
-    * paymentDelete ({ payload }, { put }) {
+    * paymentDelete ({ payload }, { select, put }) {
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
       let dataPos = getCashierTrans()
       let arrayProd = dataPos
         // eslint-disable-next-line eqeqeq
@@ -402,6 +472,28 @@ export default {
         yield put({
           type: 'hidePaymentModal'
         })
+      }
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        if (service && service.length > 0) {
+          const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+          if (serviceSelected && serviceSelected[0]) {
+            yield put({
+              type: 'setServiceDiff',
+              payload: {
+                item: serviceSelected[0]
+              }
+            })
+          } else {
+            yield put({
+              type: 'setNewServiceDiff'
+            })
+          }
+        } else {
+          yield put({
+            type: 'setNewServiceDiff'
+          })
+        }
       }
     },
 
@@ -714,7 +806,7 @@ export default {
         let dataPos = []
         let dataService = []
         for (let n = 0; n < data.pos.length; n += 1) {
-          if (data.pos[n].serviceCode === null || data.pos[n].serviceName === null) {
+          if (data.pos[n].typeCode === 'P') {
             let productId = data.pos[n].productCode
             let productName = data.pos[n].productName
             dataPos.push({
@@ -730,7 +822,7 @@ export default {
                 ((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) - (((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) * (data.pos[n].disc2 / 100)) -
                 ((((data.pos[n].qty * data.pos[n].sellingPrice) * (data.pos[n].disc1 / 100)) * (data.pos[n].disc2 / 100)) * (data.pos[n].disc3 / 100))
             })
-          } else if (data.pos[n].productCode === null || data.pos[n].productName === null) {
+          } else if (data.pos[n].typeCode === 'S') {
             let productId = data.pos[n].serviceCode
             let productName = data.pos[n].serviceName
             dataService.push({
@@ -1167,7 +1259,8 @@ export default {
       }
     },
 
-    * checkQuantityNewProduct ({ payload }, { call, put }) {
+    * checkQuantityNewProduct ({ payload }, { select, call, put }) {
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
@@ -1262,6 +1355,28 @@ export default {
           })
           yield put({ type: 'pos/hideProductModal' })
           message.success('Success add product')
+        }
+        if (currentBuildComponent && currentBuildComponent.no) {
+          const service = getServiceTrans()
+          if (service && service.length > 0) {
+            const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+            if (serviceSelected && serviceSelected[0]) {
+              yield put({
+                type: 'setServiceDiff',
+                payload: {
+                  item: serviceSelected[0]
+                }
+              })
+            } else {
+              yield put({
+                type: 'setNewServiceDiff'
+              })
+            }
+          } else {
+            yield put({
+              type: 'setNewServiceDiff'
+            })
+          }
         }
       } else {
         Modal.warning({
@@ -1488,6 +1603,8 @@ export default {
         stock: item.quantity,
         productId: item.id,
         name: item.product.product_name,
+        oldValue: item.oldValue,
+        newValue: item.newValue,
         retailPrice: item.sellPrice,
         distPrice01: item.distPrice01,
         distPrice02: item.distPrice02,
@@ -1733,9 +1850,14 @@ export default {
               categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
               bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
               bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+              bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleName : undefined,
+              hide: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.hide : undefined,
+              replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.replaceable : undefined,
               code: item.item.productCode,
               productId: item.item.id,
               name: item.item.productName,
+              oldValue: item.item.oldValue,
+              newValue: item.item.newValue,
               retailPrice: item.item.sellPrice,
               distPrice01: item.item.distPrice01,
               distPrice02: item.item.distPrice02,
@@ -1891,9 +2013,14 @@ export default {
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.bundleName : undefined,
+            hide: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.hide : undefined,
+            replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'S' ? currentReward.replaceable : undefined,
             code: item.item.serviceCode,
             productId: item.item.id,
             name: item.item.serviceName,
+            oldValue: item.item.oldValue,
+            newValue: item.item.newValue,
             retailPrice: item.item.sellPrice,
             distPrice01: item.item.distPrice01,
             distPrice02: item.item.distPrice02,
@@ -1968,8 +2095,160 @@ export default {
       }
     },
 
+    * replaceProduct ({ payload = {} }, { select, put }) {
+      const { item, currentReplaceBundle } = payload
+      let arrayProd = getCashierTrans()
+      const checkExists = arrayProd.filter(el => el.code === item.productCode)
+      if (checkExists && checkExists.length > 0) {
+        message.error('Already Exists')
+        return
+      }
+      const setting = yield select(({ app }) => app.setting)
+      const data = {
+        ...currentReplaceBundle,
+        oldValue: currentReplaceBundle.oldValue ? currentReplaceBundle.oldValue : currentReplaceBundle,
+        newValue: {
+          productCode: item.productCode,
+          productName: item.productName,
+          productId: item.id,
+          sellPrice: item.sellPrice,
+          distPrice01: item.distPrice01,
+          distPrice02: item.distPrice02,
+          distPrice03: item.distPrice03,
+          distPrice04: item.distPrice04,
+          distPrice05: item.distPrice05
+        },
+        code: item.productCode,
+        productId: item.id,
+        name: item.productName
+      }
+
+      arrayProd[currentReplaceBundle.no - 1] = data
+      yield put({
+        type: 'pos/checkQuantityEditProduct',
+        payload: {
+          data,
+          arrayProd,
+          setting,
+          type: payload.type
+        }
+      })
+    },
+
+    * setNewServiceDiff (payload, { call, put, select }) {
+      console.log('setNewServiceDiff')
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
+      const memberInformation = yield select(({ pos }) => (pos ? pos.memberInformation : {}))
+      const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
+      const dineInTax = yield select(({ pos }) => pos.dineInTax)
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const response = yield call(queryServiceById, { id: 'TDF' })
+        if (response && response.success) {
+          let product = getCashierTrans()
+          let consignment = getConsignment()
+          let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+          const bundleItem = getBundleTrans()
+          let bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
+          let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
+          let a = dataPos
+          let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
+          let usageLoyalty = memberInformation.useLoyalty || 0
+          const totalDiscount = usageLoyalty
+          const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+          const dineIn = curNetto * (dineInTax / 100)
+          const netto = parseFloat(curNetto) + parseFloat(dineIn)
+          const arrayProd = getServiceTrans()
+          let price = currentBuildComponent.targetRetailPrice - netto
+          arrayProd.push({
+            no: arrayProd.length + 1,
+            bundleId: currentBuildComponent.bundleId,
+            bundleCode: currentBuildComponent.code,
+            bundleName: currentBuildComponent.name,
+            hide: false,
+            replaceable: false,
+            code: response.data.serviceCode,
+            name: response.data.serviceName,
+            productId: response.data.id,
+            employeeId: mechanicInformation.employeeId,
+            employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
+            retailPrice: price,
+            distPrice01: price,
+            distPrice02: price,
+            distPrice03: price,
+            distPrice04: price,
+            distPrice05: price,
+            qty: 1,
+            typeCode: 'S',
+            sellPrice: price,
+            price,
+            discount: 0,
+            disc1: 0,
+            disc2: 0,
+            disc3: 0,
+            total: price
+          })
+
+          setServiceTrans(JSON.stringify(arrayProd))
+          yield put({
+            type: 'setCurTotal'
+          })
+        }
+      }
+    },
+
+    * setServiceDiff ({ payload }, { put, select }) {
+      console.log('setServiceDiff')
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
+      const memberInformation = yield select(({ pos }) => (pos ? pos.memberInformation : {}))
+      const dineInTax = yield select(({ pos }) => pos.dineInTax)
+      if (currentBuildComponent && currentBuildComponent.no) {
+        let product = getCashierTrans()
+        let consignment = getConsignment()
+        let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(filtered => filtered.code !== 'TDF') : []
+        const bundleItem = getBundleTrans()
+        let bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
+        let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
+        let a = dataPos
+        let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
+        let usageLoyalty = memberInformation.useLoyalty || 0
+        const totalDiscount = usageLoyalty
+        const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+        const dineIn = curNetto * (dineInTax / 100)
+        const netto = parseFloat(curNetto) + parseFloat(dineIn)
+        const arrayProd = getServiceTrans()
+        let price = currentBuildComponent.targetRetailPrice - netto
+        payload.item.retailPrice = price
+        payload.item.distPrice01 = price
+        payload.item.distPrice02 = price
+        payload.item.distPrice03 = price
+        payload.item.distPrice04 = price
+        payload.item.distPrice05 = price
+        payload.item.sellPrice = price
+        payload.item.price = price
+        payload.item.total = price
+        arrayProd[payload.item.no - 1] = payload.item
+
+        setServiceTrans(JSON.stringify(arrayProd))
+        yield put({
+          type: 'setCurTotal'
+        })
+      }
+    },
+
     * chooseProduct ({ payload }, { select, put }) {
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
+      const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
+      const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
+      if (currentReplaceBundle && currentReplaceBundle.no) {
+        yield put({
+          type: 'replaceProduct',
+          payload: {
+            item: payload.item,
+            currentReplaceBundle
+          }
+        })
+        return
+      }
       const modalMember = () => {
         return new Promise((resolve) => {
           Modal.info({
@@ -2044,9 +2323,14 @@ export default {
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleName : undefined,
+            hide: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.hide : undefined,
+            replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.replaceable : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            oldValue: item.oldValue,
+            newValue: item.newValue,
             retailPrice: item.sellPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -2064,6 +2348,12 @@ export default {
             disc2: 0,
             disc3: 0,
             total: selectedPrice * newQty
+          }
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            data.bundleId = currentBuildComponent.bundleId
+            data.bundleCode = currentBuildComponent.code
+            data.bundleName = currentBuildComponent.name
           }
 
           arrayProd[currentItem.no - 1] = data
@@ -2093,9 +2383,14 @@ export default {
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
             bundleId: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleId : undefined,
             bundleCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleCode : undefined,
+            bundleName: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.bundleName : undefined,
+            hide: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.hide : undefined,
+            replaceable: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.replaceable : undefined,
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            oldValue: item.oldValue,
+            newValue: item.newValue,
             retailPrice: item.sellPrice,
             distPrice01: item.distPrice01,
             distPrice02: item.distPrice02,
@@ -2113,6 +2408,12 @@ export default {
             disc2: 0,
             disc3: 0,
             total: selectedPrice * curQty
+          }
+
+          if (currentBuildComponent && currentBuildComponent.no) {
+            data.bundleId = currentBuildComponent.bundleId
+            data.bundleCode = currentBuildComponent.code
+            data.bundleName = currentBuildComponent.name
           }
 
           arrayProd.push(data)
@@ -2182,7 +2483,28 @@ export default {
       }
     },
 
-    // * getProductByBarcode ({ payload }, { select, call, put }) {
+    * setCurrentBuildComponent (payload, { put }) {
+      const bundle = getBundleTrans()
+      if (bundle && bundle.length > 0) {
+        const bundleWithBuildComponent = bundle.filter(filtered => filtered.buildComponent)
+        if (bundleWithBuildComponent && bundleWithBuildComponent[0]) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentBuildComponent: bundleWithBuildComponent[0]
+            }
+          })
+          return
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentBuildComponent: {}
+        }
+      })
+    },
+
     * getProductByBarcode ({ payload }, { call, put }) {
       // ONLINE
       let startOnline = window.performance.now()
@@ -2246,7 +2568,10 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
-          modalProductVisible: false, listProduct: [], tmpProductList: []
+          modalProductVisible: false,
+          listProduct: [],
+          tmpProductList: [],
+          currentReplaceBundle: {}
         }
       })
       yield put({
@@ -2521,6 +2846,8 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          currentBuildComponent: {},
+          currentReplaceBundle: {},
           mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
           lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
           memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
@@ -3015,6 +3342,8 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        currentReplaceBundle: {},
+        currentBuildComponent: {},
         curQty: 1,
         curRecord: 1,
         curTotal: 0,

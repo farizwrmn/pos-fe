@@ -78,7 +78,7 @@ export default modelExtend(pageModel, {
           })
         }
         const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
-        if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode !== 'C') {
+        if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
           if (listPayment && listPayment.length === 1) {
             yield put({
               type: 'paymentCost/updateState',

@@ -158,6 +158,10 @@ export default {
               transNo: trans,
               categoryCode: dataPos[key].categoryCode,
               bundleId: dataPos[key].bundleId,
+              bundleName: dataPos[key].bundleName,
+              bundleCode: dataPos[key].bundleCode,
+              hide: dataPos[key].hide,
+              replaceable: dataPos[key].replaceable,
               employeeId: dataPos[key].employeeId,
               employeeName: dataPos[key].employeeName,
               productId: dataPos[key].productId,
@@ -165,6 +169,8 @@ export default {
               productName: dataPos[key].name,
               qty: dataPos[key].qty,
               typeCode: dataPos[key].typeCode,
+              oldValue: dataPos[key].oldValue,
+              newValue: dataPos[key].newValue,
               retailPrice: dataPos[key].retailPrice,
               distPrice01: dataPos[key].distPrice01,
               distPrice02: dataPos[key].distPrice02,
@@ -193,11 +199,17 @@ export default {
               transNo: x.transNo,
               categoryCode: x.categoryCode,
               bundleId: x.bundleId,
+              bundleCode: x.bundleCode,
+              bundleName: x.bundleName,
+              hide: x.hide,
+              replaceable: x.replaceable,
               employeeId: x.employeeId,
               employeeName: x.employeeName,
               productId: x.productId,
               productCode: x.productCode,
               productName: x.productName,
+              oldValue: x.oldValue,
+              newValue: x.newValue,
               retailPrice: x.retailPrice,
               distPrice01: x.distPrice01,
               distPrice02: x.distPrice02,
@@ -272,6 +284,9 @@ export default {
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
                   type: 'pos/setAllNull'
+                })
+                yield put({
+                  type: 'pospromo/setAllNull'
                 })
                 yield put({
                   type: 'pos/setPaymentShortcut'

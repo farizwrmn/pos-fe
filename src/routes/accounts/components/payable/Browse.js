@@ -34,7 +34,7 @@ const BrowseGroup = ({
   const hdlSearch = (e) => {
     const reg = new RegExp(e, 'gi')
     let newData = tmpDataSource.map((record) => {
-      const match = (record.transNo || '').match(reg) || (record.invoiceNo || '').match(reg) || (record.supplierName || '').match(reg) || (record.supplierCode || '').match(reg)
+      const match = (record.transNo || '').match(reg) || (record.invoiceNo || '').match(reg) || (record.supplierName || '').match(reg) || (record.supplierCode || '').match(reg) || (record.reference || '').match(reg)
       if (!match) {
         return null
       }
@@ -51,6 +51,12 @@ const BrowseGroup = ({
       key: 'transNo',
       width: 120,
       render: (text, record) => (record.statusActive === '1' ? <Link to={`/accounts/payable/${encodeURIComponent(record.transNo)}`}>{text}</Link> : <p>{text}</p>)
+    },
+    {
+      title: 'Reference',
+      dataIndex: 'reference',
+      key: 'reference',
+      width: 120
     },
     {
       title: 'Supplier',

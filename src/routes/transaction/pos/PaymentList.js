@@ -21,6 +21,7 @@ const PaymentList = ({
   loading,
   item,
   listMechanic,
+  currentBuildComponent,
   form: {
     getFieldDecorator,
     validateFields,
@@ -29,7 +30,10 @@ const PaymentList = ({
   ...modalProps
 }) => {
   const handleTotalChange = () => {
-    const data = getFieldsValue()
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
     data.sellingPrice = data.price
     data.total = posTotal(data)
     data.productId = item.productId
@@ -94,7 +98,7 @@ const PaymentList = ({
     <Modal
       footer={[
         // (<Button type="danger" onClick={handleDelete} disabled={item.bundleId == null}>Void</Button>),
-        (<Button type="danger" onClick={handleDelete} disabled={item.bundleId != null}>Delete</Button>),
+        (<Button type="danger" onClick={handleDelete} disabled={(!item.bundleId && currentBuildComponent && !currentBuildComponent.buildComponent)}>Delete</Button>),
         (<Button type="primary" disabled={loading.effects['pos/checkQuantityEditProduct']} onClick={handleClick}>Submit</Button>)
       ]}
       {...modalProps}

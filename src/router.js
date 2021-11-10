@@ -775,6 +775,19 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-history')
           }
         }, {
+          path: 'transaction/pos/admin-invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/accounts/detail/paymentDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/transaction/invoice/'))
+            }, 'transaction-pos-invoice-admin-print')
+          }
+        }, {
           path: 'transaction/pos/invoice/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1071,6 +1084,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/return/returnPurchase'))
               cb(null, require('./routes/accounts/payableform'))
             }, 'accounts/payable-form')
@@ -1413,7 +1427,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/period'))
-              cb(null, require('./routes/setting/periode/'))
+              cb(null, require('./routes/setting/periode'))
             }, 'setting-misc')
           }
         }, {

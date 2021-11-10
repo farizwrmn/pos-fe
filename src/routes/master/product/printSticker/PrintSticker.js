@@ -10,27 +10,6 @@ const HEIGHT = 75.590551182
 const WIDTH = 151.181102364
 const MARGIN = 5.66929133865
 
-// const createBarcodeImage = (text, opt) => {
-//   opt = opt || {}
-//   const format = opt.format || 'code128'
-//   const height = opt.height || 5
-//   return new Promise((resolve, reject) => {
-//     try {
-//       bwipjs.toBuffer({
-//         bcid: format,
-//         text,
-//         height,
-//         parsefnc: true
-//       }, (err, img) => {
-//         if (err) { return reject(err) }
-//         return resolve(img)
-//       })
-//     } catch (errMessage) {
-//       return reject(errMessage)
-//     }
-//   })
-// }
-
 const createTableBody = async (tableBody) => {
   let body = []
   // function ToBase64 (u8) {

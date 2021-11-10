@@ -13,8 +13,8 @@ const Browse = ({
     },
     {
       title: 'Type',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      dataIndex: 'accountCode.label',
+      key: 'accountCode.label'
     },
     {
       title: 'Debit',

@@ -69,6 +69,7 @@ export default modelExtend(pageModel, {
             type: 'queryExpense',
             payload: {
               accountType: pathname === '/bank-entry' ? undefined : [
+                'COGS',
                 'EXPS',
                 'OEXP'
               ],

@@ -1,7 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { posTotal } from 'utils'
-import { setCashierTrans, setServiceTrans, setBundleTrans } from 'utils/lstorage'
+import {
+  getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
+  setCashierTrans, setServiceTrans, setBundleTrans
+} from 'utils/lstorage'
 import { query } from '../../services/marketing/bundling'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
@@ -88,6 +91,11 @@ export default modelExtend(pageModel, {
 
     * addPosPromo ({ payload = {} }, { call, select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
+      if (currentBuildComponent && currentBuildComponent.no) {
+        message.error('Only allow 1 bundle for custom')
+        return
+      }
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
         const modal = Modal.warning({
           title: 'Warning',
@@ -159,6 +167,28 @@ export default modelExtend(pageModel, {
           }
         })
         message.success('Success add bundle')
+      } else if (data.success && data.data[0]) {
+        const item = data.data[0]
+        const product = getCashierTrans()
+        const service = getServiceTrans()
+        const consignment = getConsignment()
+        const bundle = getBundleTrans()
+        if (product.length > 0 || service.length > 0 || consignment.length > 0 || bundle.length > 0) {
+          Modal.error({
+            title: 'Failed to add bundle',
+            content: 'Already Have other item in list'
+          })
+          return
+        }
+        if (item && item.buildComponent) {
+          yield put({
+            type: 'setBundleNeverExists',
+            payload: {
+              currentBundle,
+              item
+            }
+          })
+        }
       } else {
         if (dataReward.data && dataReward.data.length === 0) {
           Modal.error({
@@ -182,6 +212,7 @@ export default modelExtend(pageModel, {
         return data
       })
       setBundleTrans(JSON.stringify(arrayProd))
+      yield put({ type: 'pos/setCurrentBuildComponent' })
       yield put({
         type: 'updateState',
         payload: {}
@@ -198,13 +229,19 @@ export default modelExtend(pageModel, {
         type: item.type,
         code: item.code,
         name: item.name,
+        alwaysOn: item.alwaysOn,
+        haveTargetPrice: item.haveTargetPrice,
+        targetRetailPrice: item.targetRetailPrice,
+        targetCostPrice: item.targetCostPrice,
         startDate: item.startDate,
         endDate: item.endDate,
         startHour: item.startHour,
         endHour: item.endHour,
+        buildComponent: item.buildComponent,
         availableDate: item.availableDate,
         qty: 1
       })
+      yield put({ type: 'pos/setCurrentBuildComponent' })
       setBundleTrans(JSON.stringify(currentBundle))
       yield put({
         type: 'updateState',
@@ -238,6 +275,10 @@ export default modelExtend(pageModel, {
               code: reward.productCode,
               productId: reward.productId,
               name: reward.productName,
+              hide: reward.hide,
+              replaceable: reward.replaceable,
+              oldValue: reward.oldValue,
+              newValue: reward.newValue,
               retailPrice: reward.sellPrice,
               distPrice01: reward.distPrice01,
               distPrice02: reward.distPrice02,
@@ -283,6 +324,10 @@ export default modelExtend(pageModel, {
               bundleId: reward.bundleId,
               bundleCode: reward.bundleCode,
               bundleName: reward.bundleName,
+              hide: reward.hide,
+              replaceable: reward.replaceable,
+              oldValue: reward.oldValue,
+              newValue: reward.newValue,
               retailPrice: reward.sellPrice,
               distPrice01: reward.distPrice01,
               distPrice02: reward.distPrice02,
@@ -436,6 +481,17 @@ export default modelExtend(pageModel, {
   reducers: {
     updateState (state, { payload }) {
       return { ...state, ...payload }
+    },
+
+    setAllNull (state) {
+      return {
+        ...state,
+        currentReward: {},
+        bundleData: {},
+        listCategory: [],
+        productData: {},
+        serviceData: {}
+      }
     },
 
     changeTab (state, { payload }) {
