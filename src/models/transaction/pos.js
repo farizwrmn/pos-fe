@@ -378,6 +378,7 @@ export default {
 
     * changeDineIn ({ payload }, { select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
       const { typePembelian, selectedPaymentShortcut } = payload
       let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
@@ -421,6 +422,29 @@ export default {
       }
       setConsignment(JSON.stringify(dataConsignment))
       setCashierTrans(JSON.stringify(dataPos))
+
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        if (service && service.length > 0) {
+          const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+          if (serviceSelected && serviceSelected[0]) {
+            yield put({
+              type: 'setServiceDiff',
+              payload: {
+                item: serviceSelected[0]
+              }
+            })
+          } else {
+            yield put({
+              type: 'setNewServiceDiff'
+            })
+          }
+        } else {
+          yield put({
+            type: 'setNewServiceDiff'
+          })
+        }
+      }
       yield put({ type: 'hideConsignmentModal' })
       yield put({ type: 'setCurTotal' })
     },
