@@ -157,7 +157,7 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
   const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
 
   return (<div className="wrapper">
-    {(listDetail || []).length > 0 && <Row>
+    <Row>
       <Col lg={6}>
         <div className="content-inner-zero-min-height">
           <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
@@ -191,7 +191,7 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
           </Row>
         </div>
       </Col>
-    </Row>}
+    </Row>
     {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
     {modalVisible && <ModalPayment {...modalProps} />}
   </div>)
