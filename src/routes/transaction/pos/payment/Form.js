@@ -10,11 +10,14 @@ import {
   DatePicker,
   // Select,
   TreeSelect,
-  Select
+  Select,
+  message
 } from 'antd'
-import { arrayToTree } from 'utils'
+import { arrayToTree, lstorage } from 'utils'
 import moment from 'moment'
 import List from './List'
+
+const { setQrisImage, removeQrisImage } = lstorage
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -246,6 +249,7 @@ class FormPayment extends React.Component {
     }
 
     const onChangePaymentType = (value) => {
+      removeQrisImage()
       resetFields()
       setFieldsValue({
         printDate: moment(),
@@ -263,6 +267,15 @@ class FormPayment extends React.Component {
       })
       validateFields()
       onGetCost(machineId)
+      if (listEdc && listEdc.length > 0) {
+        const filteredMachine = listEdc.filter(filtered => filtered.id === machineId)
+        if (filteredMachine && filteredMachine[0] && filteredMachine[0].qrisImage) {
+          setQrisImage(filteredMachine[0].qrisImage)
+          message.info('Send Qris Image to Customer View')
+          return
+        }
+      }
+      removeQrisImage()
     }
 
     const onConfirm = () => {
