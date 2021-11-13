@@ -7,7 +7,7 @@ import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
 
-const { getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
+const { getQrisImage, getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -38,12 +38,14 @@ class Pos extends Component {
     bundle: [],
     service: [],
     consignment: [],
-    memberInformation: {}
+    memberInformation: {},
+    qrisImage: null
   }
 
   componentDidMount () {
     addHandler(window, 'storage', data => this.setListData(data))
     this.setListData({ key: 'cashier_trans' })
+    this.setListData({ key: 'qris_image' })
   }
 
   componentWillUnmount () {
@@ -51,6 +53,10 @@ class Pos extends Component {
   }
 
   setListData (data) {
+    if (data && data.key === 'qris_image') {
+      const qrisImage = getQrisImage()
+      this.setState({ qrisImage })
+    }
     if (data && (data.key === 'dineInTax' || data.key === 'member' || data.key === 'bundle_promo' || data.key === 'cashier_trans' || data.key === 'consignment' || data.key === 'service_detail')) {
       this.setState({ loading: true })
       const bundleItem = getBundleTrans()
@@ -80,9 +86,11 @@ class Pos extends Component {
       service,
       consignment,
       loading,
-      memberInformation
+      memberInformation,
+      qrisImage
     } = this.state
-    const { currentStore } = pos
+    console.log('qrisImage', qrisImage)
+    // const { currentStore } = pos
 
     // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
     let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
@@ -133,7 +141,9 @@ class Pos extends Component {
                   </div>
                 </Form>
               </Card>
-              <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" />
+              {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
+                : null}
+              {/* <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" /> */}
             </Col>
           </Row>
         </Card>
