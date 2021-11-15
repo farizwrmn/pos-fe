@@ -11,7 +11,7 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans, getConsignment } = lstorage
+const { getCashierTrans, getConsignment, removeQrisImage } = lstorage
 const { getSetting } = variables
 
 const terbilang = require('terbilang-spelling')
@@ -280,6 +280,7 @@ export default {
                 localStorage.removeItem('lastMeter')
                 localStorage.removeItem('workorder')
                 localStorage.removeItem('woNumber')
+                removeQrisImage()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({

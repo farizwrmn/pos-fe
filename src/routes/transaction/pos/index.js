@@ -46,7 +46,8 @@ const { prefix } = configMain
 const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
   // setCashierTrans, setBundleTrans,
-  setServiceTrans
+  setServiceTrans,
+  removeQrisImage
 } = lstorage
 // const FormItem = Form.Item
 
@@ -374,6 +375,7 @@ const Pos = ({
     footer: null,
     // onOk: null,
     onCancel () {
+      removeQrisImage()
       dispatch({
         type: 'payment/hidePaymentModal'
       })
