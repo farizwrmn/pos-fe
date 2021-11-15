@@ -683,7 +683,7 @@ const AdvancedForm = ({
                 ]
               })(<Input maxLength={85} />)}
             </FormItem>
-            <FormItem label="Inventory Type" hasFeedback {...formItemLayout}>
+            <FormItem label="Inventory Type" hasFeedback help={listInventory && listInventory.length > 1 ? `Required For: ${listInventory.slice(1, listInventory.length).map(item => item.type)}` : null} {...formItemLayout}>
               {getFieldDecorator('inventoryType', {
                 initialValue: modalType === 'add' && productInventory.length > 0 ? 'DEF' : item.inventoryType,
                 rules: [
