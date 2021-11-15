@@ -19,7 +19,7 @@ const ModalQuantity = ({ count, listStoreLov, ...props }) => {
         })}
         {count && count.length > 0 && (
           <div>
-            Total: {count.reduce((prev, next) => prev + next.count, 0)}
+            <strong>TOTAL: {count.reduce((prev, next) => prev + next.count, 0)}</strong>
           </div>
         )}
       </Modal>
