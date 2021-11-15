@@ -3,6 +3,7 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain } from 'utils'
 import { query as querySequence } from 'services/sequence'
+import { queryInventoryType } from 'services/transType'
 import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
@@ -37,6 +38,7 @@ export default modelExtend(pageModel, {
     showModalProduct: false,
     modalProductType: '',
     listPrintAllStock: [],
+    listInventory: [],
     filteredInfo: {},
     modalVariantVisible: false,
     modalSpecificationVisible: false,
@@ -83,6 +85,7 @@ export default modelExtend(pageModel, {
         }
         if (pathname === '/stock') {
           dispatch({ type: 'queryLastAdjust' })
+          dispatch({ type: 'loadDataValue' })
           if (!activeKey) dispatch({ type: 'refreshView' })
           if (activeKey === '1') {
             if (mode === 'inventory') {
@@ -121,6 +124,15 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * loadDataValue ({ payload = {} }, { call, put }) {
+      const dataType = yield call(queryInventoryType, payload)
+      if (dataType.success && dataType.data && dataType.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: { listInventory: dataType.data }
+        })
+      }
+    },
 
     * queryLastAdjust ({ payload = {} }, { call, put }) {
       const invoice = {
