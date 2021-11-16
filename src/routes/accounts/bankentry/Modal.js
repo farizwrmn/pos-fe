@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Select, Input, Form, InputNumber, message } from 'antd'
+import { Button, Modal, Select, Input, Form, InputNumber, message } from 'antd'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -32,6 +32,7 @@ class ModalList extends Component {
       item,
       modalItemType,
       form: { resetFields, getFieldDecorator, validateFields, getFieldsValue },
+      onCancel,
       ...modalProps
     } = this.props
 
@@ -67,7 +68,14 @@ class ModalList extends Component {
     }
 
     return (
-      <Modal {...modalOpts}>
+      <Modal
+        {...modalOpts}
+        footer={[
+          <Button key="danger" onClick={() => onDelete(item.no)} type="danger" >Delete</Button>,
+          <Button key="default" onClick={() => onCancel()} type="default" >Cancel</Button>,
+          <Button key="primary" onClick={() => handleClick()} type="primary" >OK</Button>
+        ]}
+      >
         <Form>
           <FormItem {...formItemLayout} label="Amount In">
             {getFieldDecorator('amountIn', {

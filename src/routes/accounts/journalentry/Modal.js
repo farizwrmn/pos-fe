@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Select, Input, Form, Radio, InputNumber, message } from 'antd'
+import { Modal, Button, Select, Input, Form, Radio, InputNumber, message } from 'antd'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -29,6 +29,8 @@ class ModalList extends Component {
       listAccountCode,
       listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
       item,
+      onDelete,
+      onCancel,
       modalItemType,
       form: { resetFields, getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
       ...modalProps
@@ -65,7 +67,14 @@ class ModalList extends Component {
     }
 
     return (
-      <Modal {...modalOpts}>
+      <Modal
+        {...modalOpts}
+        footer={[
+          <Button key="danger" onClick={() => onDelete(item.no)} type="danger" >Delete</Button>,
+          <Button key="default" onClick={() => onCancel()} type="default" >Cancel</Button>,
+          <Button key="primary" onClick={() => handleClick()} type="primary" >OK</Button>
+        ]}
+      >
         <Form>
           <FormItem {...formItemLayout} label="Entry Type">
             {getFieldDecorator('type', {

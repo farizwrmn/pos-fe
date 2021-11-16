@@ -140,6 +140,28 @@ const Cash = ({ bankentry, accountCode, customer, supplier, loading, dispatch, l
       })
       message.success('success add item')
     },
+    onDelete (no) {
+      let { listItem } = bankentry
+      Modal.confirm({
+        title: 'Delete This Item',
+        content: 'Are your sure to delete this item ?',
+        onOk () {
+          listItem = listItem
+            .filter(filtered => filtered.no !== no)
+            .map((item, index) => ({ ...item, no: index + 1 }))
+          dispatch({
+            type: 'bankentry/updateState',
+            payload: {
+              modalVisible: false,
+              modalItemType: 'add',
+              listItem,
+              currentItemList: {}
+            }
+          })
+          message.success('success delete item')
+        }
+      })
+    },
     editModalItem (data) {
       const { listItem } = bankentry
       listItem[data.no - 1] = data
