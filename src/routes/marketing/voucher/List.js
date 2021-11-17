@@ -11,7 +11,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
+        title: `Are you sure delete ${record.voucherName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -22,18 +22,38 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   const columns = [
     {
       title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      dataIndex: 'voucherCode',
+      key: 'voucherCode'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Voucher Name',
+      dataIndex: 'voucherName',
+      key: 'voucherName'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Count',
+      dataIndex: 'voucherCount',
+      key: 'voucherCount'
+    },
+    {
+      title: 'Expire Date',
+      dataIndex: 'expireDate',
+      key: 'expireDate'
+    },
+    {
+      title: 'Price',
+      dataIndex: 'voucherPrice',
+      key: 'voucherPrice'
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active'
+    },
+    {
+      title: 'Sold Out',
+      dataIndex: 'soldOut',
+      key: 'soldOut'
     },
     {
       title: 'Operation',

@@ -16,7 +16,7 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '3') {
       confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
+        title: `Are you sure delete ${record.name} ?`,
         onOk () {
           deleteItem(record.id)
         }

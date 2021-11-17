@@ -16,7 +16,7 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '3') {
       confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
+        title: `Are you sure delete ${record.typeName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -53,11 +53,11 @@ const List = ({ ...tableProps, dispatch, editItem, deleteItem }) => {
       dataIndex: 'status',
       key: 'status',
       render: text =>
-        (<span>
-          <Tag color={text === '1' ? 'blue' : 'red'}>
-            {text === '1' ? 'Active' : 'Disabled'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text === '1' ? 'blue' : 'red'}>
+          {text === '1' ? 'Active' : 'Disabled'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Operation',

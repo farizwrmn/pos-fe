@@ -1,10 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Checkbox, Upload, message, Icon, Row, Col, Modal } from 'antd'
-import { IMAGEURL, rest } from 'utils/config.company'
+import {
+  Form, Input, InputNumber, Button, Checkbox,
+  // Upload, message, Icon,
+  Row, Col, Modal
+} from 'antd'
+// import { IMAGEURL, rest } from 'utils/config.company'
 
+const { TextArea } = Input
 const FormItem = Form.Item
-const { apiCompanyURL } = rest
+// const { apiCompanyURL } = rest
 
 const formItemLayout = {
   labelCol: {
@@ -37,8 +42,8 @@ const FormCounter = ({
     validateFields,
     getFieldsValue,
     resetFields
-  },
-  ...props
+  }
+  // ...props
 }) => {
   const tailFormItemLayout = {
     wrapperCol: {
@@ -109,7 +114,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Voucher Quantity" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherCount', {
-              initialValue: item.voucherCount,
+              initialValue: modalType === 'add' ? 1 : item.voucherCount,
               rules: [
                 {
                   required: true
@@ -117,7 +122,7 @@ const FormCounter = ({
               ]
             })(<InputNumber min={1} max={9999} />)}
           </FormItem>
-          <FormItem label="Image" {...formItemLayout}>
+          {/* <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('productImage', {
               initialValue: item.productImage
                 && item.productImage != null
@@ -179,12 +184,22 @@ const FormCounter = ({
                 </Button>
               </Upload>
             )}
-          </FormItem>
+          </FormItem> */}
         </Col>
       </Row>
       <h1>Advanced Option</h1>
       <Row>
         <Col {...column}>
+          <FormItem label="Description" {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
+          </FormItem>
           <FormItem label="Status" {...formItemLayout}>
             {getFieldDecorator('active', {
               valuePropName: 'checked',
