@@ -19,8 +19,8 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app, load
 
   const { user, storeInfo } = app
   const browseProps = {
-    dataSource: listRekap,
     activeKey,
+    dataSource: activeKey === '1' ? listRekap.filter(filtered => filtered.count > 0) : listRekap,
     loading: loading.effects['fifoReport/queryCard']
   }
 
@@ -29,7 +29,7 @@ const Report = ({ dispatch, fifoReport, productcategory, productbrand, app, load
     // productCode,
     // productName,
     listProduct,
-    listRekap,
+    listRekap: activeKey === '1' ? listRekap.filter(filtered => filtered.count > 0) : listRekap,
     user,
     listCategory,
     listBrand,

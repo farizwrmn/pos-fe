@@ -7,7 +7,7 @@ import styles from '../../../../themes/index.less'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
+const ListVoid = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
   const handleMenuClick = (record) => {
     record.ket = 'edit'
     onRestoreVoid(record)
@@ -94,11 +94,11 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       key: 'ket',
       width: 100,
       render: ket =>
-        (<span>
-          <Tag color={ket === 'void' ? 'red' : 'green'}>
-            {ket === 'void' ? 'VOID' : 'ADD'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={ket === 'void' ? 'red' : 'green'}>
+          {ket === 'void' ? 'VOID' : 'ADD'}
+        </Tag>
+      </span>)
     }
   ]
 
@@ -118,11 +118,11 @@ const ListProduct = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
   )
 }
 
-ListProduct.propTypes = {
+ListVoid.propTypes = {
   onRestoreVoid: PropTypes.func.isRequired,
   location: PropTypes.isRequired,
   purchase: PropTypes.isRequired,
   dispatch: PropTypes.func.isRequired
 }
 
-export default connect(({ purchase }) => ({ purchase }))(ListProduct)
+export default connect(({ purchase }) => ({ purchase }))(ListVoid)
