@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, InputNumber, Button, Checkbox, Upload, message, Icon, Row, Col, Modal } from 'antd'
+import { IMAGEURL, rest } from 'utils/config.company'
 
 const FormItem = Form.Item
+const { apiCompanyURL } = rest
 
 const formItemLayout = {
   labelCol: {
@@ -35,7 +37,8 @@ const FormCounter = ({
     validateFields,
     getFieldsValue,
     resetFields
-  }
+  },
+  ...props
 }) => {
   const tailFormItemLayout = {
     wrapperCol: {
@@ -80,28 +83,113 @@ const FormCounter = ({
 
   return (
     <Form layout="horizontal">
+      <h1>General Info</h1>
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
+          <FormItem label="Voucher Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherCode', {
+              initialValue: item.voucherCode,
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  pattern: /^[a-z0-9-/]{3,50}$/i
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<Input disabled maxLength={50} />)}
           </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Voucher Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherName', {
+              initialValue: item.voucherName,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={50} autoFocus />)}
+          </FormItem>
+          <FormItem label="Voucher Quantity" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherCount', {
+              initialValue: item.voucherCount,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={1} max={9999} />)}
+          </FormItem>
+          <FormItem label="Image" {...formItemLayout}>
+            {getFieldDecorator('productImage', {
+              initialValue: item.productImage
+                && item.productImage != null
+                && item.productImage !== '["no_image.png"]'
+                && item.productImage !== '"no_image.png"'
+                && item.productImage !== 'no_image.png' ?
+                {
+                  fileList: JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                }
+                : []
+            })(
+              <Upload
+                {...props}
+                multiple
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                defaultFileList={item.productImage
+                  && item.productImage != null
+                  && item.productImage !== '["no_image.png"]'
+                  && item.productImage !== '"no_image.png"'
+                  && item.productImage !== 'no_image.png' ?
+                  JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                  : []}
+                listType="picture"
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
+          </FormItem>
+        </Col>
+      </Row>
+      <h1>Advanced Option</h1>
+      <Row>
+        <Col {...column}>
+          <FormItem label="Status" {...formItemLayout}>
+            {getFieldDecorator('active', {
+              valuePropName: 'checked',
+              initialValue: item.active === undefined ? true : item.active
+            })(<Checkbox>Active</Checkbox>)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -150,7 +150,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/loyaltySetting'))
-              cb(null, require('./routes/master/customer/loyaltySetting/'))
+              cb(null, require('./routes/master/customer/loyaltySetting'))
             }, 'marketing-loyalty-setting')
           }
         }, {
