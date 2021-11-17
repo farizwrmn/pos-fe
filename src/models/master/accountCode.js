@@ -96,7 +96,10 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/accounts/payable-form') {
+        if (
+          pathname === '/accounts/payable-form'
+          || pathname === '/marketing/voucher'
+        ) {
           dispatch({
             type: 'query',
             payload: {

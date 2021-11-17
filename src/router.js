@@ -1516,6 +1516,7 @@ const Routers = function ({ history, app }) {
           path: 'marketing/voucher',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/marketing/voucher'))
               cb(null, require('./routes/marketing/voucher'))
             }, 'marketing-voucher')

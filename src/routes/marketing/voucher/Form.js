@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Form, Input, InputNumber, Button, Checkbox,
+  Select,
   // Upload, message, Icon,
   Row, Col, Modal
 } from 'antd'
@@ -9,6 +10,7 @@ import {
 
 const { TextArea } = Input
 const FormItem = Form.Item
+const { Option } = Select
 // const { apiCompanyURL } = rest
 
 const formItemLayout = {
@@ -36,6 +38,7 @@ const FormCounter = ({
   onSubmit,
   onCancel,
   modalType,
+  listAccountCode,
   button,
   form: {
     getFieldDecorator,
@@ -45,6 +48,8 @@ const FormCounter = ({
   }
   // ...props
 }) => {
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -111,6 +116,26 @@ const FormCounter = ({
                 }
               ]
             })(<Input maxLength={50} autoFocus />)}
+          </FormItem>
+          <FormItem label="Voucher Value" help="Price charge when customer use the voucher" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherValue', {
+              initialValue: modalType === 'add' ? 10000 : item.voucherValue,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber style={{ width: '100%' }} min={10000} />)}
+          </FormItem>
+          <FormItem label="Voucher Price" help="Price charge when customer buy the voucher" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherPrice', {
+              initialValue: modalType === 'add' ? 0 : item.voucherPrice,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber style={{ width: '100%' }} min={0} max={9999} />)}
           </FormItem>
           <FormItem label="Voucher Quantity" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherCount', {
@@ -190,6 +215,25 @@ const FormCounter = ({
       <h1>Advanced Option</h1>
       <Row>
         <Col {...column}>
+          <FormItem {...formItemLayout} label="Account Code">
+            {getFieldDecorator('accountCode', {
+              initialValue: item && item.accountCode ? {
+                key: item.accountId,
+                label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
+              } : undefined,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              labelInValue
+              filterOption={filterOption}
+            >{listAccountOpt}
+            </Select>)}
+          </FormItem>
           <FormItem label="Description" {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: item.description,
