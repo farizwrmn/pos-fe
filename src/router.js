@@ -1522,6 +1522,14 @@ const Routers = function ({ history, app }) {
             }, 'marketing-voucher')
           }
         }, {
+          path: 'marketing/voucher/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/voucherdetail'))
+              cb(null, require('./routes/marketing/voucher/detail'))
+            }, 'marketing-voucher-detail')
+          }
+        }, {
           path: 'monitor/cashier/request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

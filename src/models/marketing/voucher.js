@@ -14,6 +14,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    newTransNo: '',
     modalType: 'add',
     activeKey: '0',
     list: [],
@@ -27,7 +28,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, modalType, ...other } = location.query
         const { pathname } = location
         if (pathname === '/marketing/voucher') {
           dispatch({
@@ -39,7 +40,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') {
             dispatch({ type: 'query', payload: other })
           } else {
-            dispatch({ type: 'queryLastAdjust' })
+            dispatch({ type: 'queryLastAdjust', payload: { modalType } })
           }
         }
       })
@@ -47,8 +48,7 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * queryLastAdjust ({ payload = {} }, { select, call, put }) {
-      const modalType = yield select(({ marketingVoucher }) => marketingVoucher.modalType)
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
       const invoice = {
         seqCode: 'VOU',
         type: 1,
@@ -56,16 +56,12 @@ export default modelExtend(pageModel, {
       }
       const data = yield call(querySequence, invoice)
       const transNo = data.data
-      if (modalType === 'add') {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: {
-              voucherCode: transNo
-            }
-          }
-        })
-      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          newTransNo: transNo
+        }
+      })
     },
 
     * query ({ payload = {} }, { call, put }) {

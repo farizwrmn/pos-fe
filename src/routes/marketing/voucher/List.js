@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
+import { numberFormatter } from 'utils/numberFormat'
 
 const confirm = Modal.confirm
 
@@ -23,7 +25,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Code',
       dataIndex: 'voucherCode',
-      key: 'voucherCode'
+      key: 'voucherCode',
+      render: (text, record) => <Link to={`/marketing/voucher/${encodeURIComponent(record.id)}`}>{text}</Link>
     },
     {
       title: 'Voucher Name',
@@ -33,7 +36,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Count',
       dataIndex: 'voucherCount',
-      key: 'voucherCount'
+      key: 'voucherCount',
+      render: text => numberFormatter(text)
     },
     {
       title: 'Expire Date',
@@ -41,9 +45,15 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'expireDate'
     },
     {
+      title: 'Value',
+      dataIndex: 'voucherValue',
+      key: 'voucherValue'
+    },
+    {
       title: 'Price',
       dataIndex: 'voucherPrice',
-      key: 'voucherPrice'
+      key: 'voucherPrice',
+      render: text => numberFormatter(text)
     },
     {
       title: 'Active',

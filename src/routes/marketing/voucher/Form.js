@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Form, Input, InputNumber, Button, Checkbox,
-  Select,
+  Select, DatePicker,
   // Upload, message, Icon,
   Row, Col, Modal
 } from 'antd'
+import moment from 'moment'
 // import { IMAGEURL, rest } from 'utils/config.company'
 
 const { TextArea } = Input
@@ -35,6 +36,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  newTransNo,
   onSubmit,
   onCancel,
   modalType,
@@ -91,6 +93,11 @@ const FormCounter = ({
     })
   }
 
+  function disabledDate (current) {
+    // Can not select days before today and today
+    return current && current.valueOf() < Date.now()
+  }
+
   return (
     <Form layout="horizontal">
       <h1>General Info</h1>
@@ -98,7 +105,7 @@ const FormCounter = ({
         <Col {...column}>
           <FormItem label="Voucher Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherCode', {
-              initialValue: item.voucherCode,
+              initialValue: modalType === 'edit' ? item.voucherCode : newTransNo,
               rules: [
                 {
                   required: true,
@@ -122,6 +129,7 @@ const FormCounter = ({
               initialValue: modalType === 'add' ? 10000 : item.voucherValue,
               rules: [
                 {
+                  pattern: /^[0-9/]{1,50}$/i,
                   required: true
                 }
               ]
@@ -132,16 +140,18 @@ const FormCounter = ({
               initialValue: modalType === 'add' ? 0 : item.voucherPrice,
               rules: [
                 {
+                  pattern: /^[0-9/]{1,50}$/i,
                   required: true
                 }
               ]
-            })(<InputNumber style={{ width: '100%' }} min={0} max={9999} />)}
+            })(<InputNumber style={{ width: '100%' }} min={0} />)}
           </FormItem>
           <FormItem label="Voucher Quantity" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherCount', {
               initialValue: modalType === 'add' ? 1 : item.voucherCount,
               rules: [
                 {
+                  pattern: /^[0-9/]{1,50}$/i,
                   required: true
                 }
               ]
@@ -216,11 +226,8 @@ const FormCounter = ({
       <Row>
         <Col {...column}>
           <FormItem {...formItemLayout} label="Account Code">
-            {getFieldDecorator('accountCode', {
-              initialValue: item && item.accountCode ? {
-                key: item.accountId,
-                label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-              } : undefined,
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId,
               rules: [{
                 required: true,
                 message: 'Required'
@@ -229,10 +236,19 @@ const FormCounter = ({
               showSearch
               allowClear
               optionFilterProp="children"
-              labelInValue
               filterOption={filterOption}
             >{listAccountOpt}
             </Select>)}
+          </FormItem>
+          <FormItem label="Expire Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('expireDate', {
+              initialValue: item.expireDate ? moment(item.expireDate) : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<DatePicker showToday={false} disabledDate={disabledDate} />)}
           </FormItem>
           <FormItem label="Description" {...formItemLayout}>
             {getFieldDecorator('description', {

@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = marketingVoucher
+  const { list, pagination, newTransNo, modalType, currentItem, activeKey } = marketingVoucher
   const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
@@ -47,12 +47,13 @@ const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, a
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          modalType: 'edit'
         }
       }))
       dispatch({
         type: 'marketingVoucher/editItem',
-        payload: { item }
+        payload: { item, modalType: 'edit' }
       })
     },
     deleteItem (id) {
@@ -89,6 +90,7 @@ const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, a
   }
 
   const formProps = {
+    newTransNo,
     listAccountCode,
     modalType,
     item: currentItem,
