@@ -13,8 +13,8 @@ import FormAccounting from './FormAccounting'
 import styles from './index.less'
 
 
-const Detail = ({ journalentry, dispatch }) => {
-  const { listDetail, listAccounting, data } = journalentry
+const Detail = ({ voucherdetail, dispatch }) => {
+  const { listDetail, listAccounting, data } = voucherdetail
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -30,7 +30,7 @@ const Detail = ({ journalentry, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/journal-entry?activeKey=1'))
+    dispatch(routerRedux.push('/marketing/voucher?activeKey=1'))
   }
 
   const formDetailProps = {
@@ -67,7 +67,7 @@ const Detail = ({ journalentry, dispatch }) => {
 }
 
 Detail.propTypes = {
-  journalentry: PropTypes.object
+  voucherdetail: PropTypes.object
 }
 
-export default connect(({ journalentry }) => ({ journalentry }))(Detail)
+export default connect(({ voucherdetail }) => ({ voucherdetail }))(Detail)

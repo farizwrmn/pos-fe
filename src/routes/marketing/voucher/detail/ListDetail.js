@@ -1,10 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import { numberFormat } from 'utils'
-import styles from '../../../../themes/index.less'
-
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
@@ -13,46 +9,47 @@ const List = ({ ...tableProps, editList }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 40
+      title: 'NO',
+      dataIndex: 'no',
+      key: 'no',
+      width: 70
     },
     {
-      title: 'Account Code',
-      dataIndex: 'accountCode.accountCode',
-      key: 'accountCode.accountCode',
-      width: 100
-    },
-    {
-      title: 'Account Name',
-      dataIndex: 'accountCode.accountName',
-      key: 'accountCode.accountName',
+      title: 'Voucher Code',
+      dataIndex: 'generatedCode',
+      key: 'generatedCode',
       width: 200
     },
     {
-      title: 'Debit',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
-      width: 120,
-      className: styles.alignRight,
-      render: text => formatNumberIndonesia(text || 0)
+      title: 'Payment Date',
+      dataIndex: 'paymentDate',
+      key: 'paymentDate',
+      width: 150
     },
     {
-      title: 'Credit',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
-      width: 120,
-      className: styles.alignRight,
-      render: text => formatNumberIndonesia(text || 0)
+      title: 'Payment Description',
+      dataIndex: 'paymentDescription',
+      key: 'paymentDescription',
+      width: 300
+    },
+    {
+      title: 'Usage Date',
+      dataIndex: 'usageDate',
+      key: 'usageDate',
+      width: 150
+    },
+    {
+      title: 'Usage Description',
+      dataIndex: 'usageDescription',
+      key: 'usageDescription',
+      width: 300
     }
   ]
 
   return (
     <div>
       <Table {...tableProps}
-        pagination={false}
-        bordered={false}
+        bordered
         scroll={{ x: 500, y: 270 }}
         columns={columns}
         simple

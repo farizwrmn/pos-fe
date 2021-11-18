@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import { numberFormatter } from 'utils/numberFormat'
@@ -47,7 +47,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Value',
       dataIndex: 'voucherValue',
-      key: 'voucherValue'
+      key: 'voucherValue',
+      render: text => numberFormatter(text)
     },
     {
       title: 'Price',
@@ -58,12 +59,40 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Active',
       dataIndex: 'active',
-      key: 'active'
+      key: 'active',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Active
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Non Active
+          </Tag>
+        )
+      }
     },
     {
       title: 'Sold Out',
       dataIndex: 'soldOut',
-      key: 'soldOut'
+      key: 'soldOut',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="red">
+              Sold Out
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="green">
+            Available
+          </Tag>
+        )
+      }
     },
     {
       title: 'Operation',

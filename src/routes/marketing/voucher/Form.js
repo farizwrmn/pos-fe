@@ -155,7 +155,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<InputNumber min={1} max={9999} />)}
+            })(<InputNumber disabled={modalType === 'edit'} min={1} max={9999} />)}
           </FormItem>
           {/* <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('productImage', {
@@ -235,6 +235,7 @@ const FormCounter = ({
             })(<Select
               showSearch
               allowClear
+              disabled={modalType === 'edit'}
               optionFilterProp="children"
               filterOption={filterOption}
             >{listAccountOpt}
@@ -248,7 +249,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<DatePicker showToday={false} disabledDate={disabledDate} />)}
+            })(<DatePicker disabled={modalType === 'edit'} showToday={false} disabledDate={disabledDate} />)}
           </FormItem>
           <FormItem label="Description" {...formItemLayout}>
             {getFieldDecorator('description', {

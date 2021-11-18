@@ -7,7 +7,7 @@ import { queryEntryList } from 'services/payment/bankentry'
 import {
   JOURNALENTRY
 } from 'utils/variable'
-import { queryById, query, queryId, add, edit, remove } from 'services/payment/journalentry'
+import { queryById, query, queryId, add, edit, remove } from 'services/marketing/voucher'
 import { pageModel } from 'common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -16,7 +16,7 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'journalentry',
+  namespace: 'voucherdetail',
 
   state: {
     data: {},
@@ -60,7 +60,7 @@ export default modelExtend(pageModel, {
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, journalEntryDetail, ...other } = data.data
+        const { purchase, voucherDetail, ...other } = data.data
         let listAccounting = []
         if (payload && payload.match && other && other.id) {
           const reconData = yield call(queryEntryList, {
@@ -76,7 +76,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: journalEntryDetail,
+            listDetail: voucherDetail.map((item, index) => ({ no: index + 1, ...item })),
             listAccounting
           }
         })
@@ -110,7 +110,7 @@ export default modelExtend(pageModel, {
         ...payload
       }
       const data = yield call(querySequence, invoice)
-      const currentItem = yield select(({ journalentry }) => journalentry.currentItem)
+      const currentItem = yield select(({ voucherdetail }) => voucherdetail.currentItem)
       const transNo = data.data
       yield put({
         type: 'updateState',
@@ -204,7 +204,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ journalentry }) => journalentry.currentItem.id)
+      const id = yield select(({ voucherdetail }) => voucherdetail.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
