@@ -37,6 +37,7 @@ const column = {
 const FormCounter = ({
   item = {},
   newTransNo,
+  disableButton,
   onSubmit,
   onCancel,
   modalType,
@@ -225,7 +226,17 @@ const FormCounter = ({
       <h1>Advanced Option</h1>
       <Row>
         <Col {...column}>
-          <FormItem {...formItemLayout} label="Account Code">
+          <FormItem label="Expire Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('expireDate', {
+              initialValue: item.expireDate ? moment(item.expireDate) : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<DatePicker disabled={modalType === 'edit'} showToday={false} disabledDate={disabledDate} />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="OverPay / Expired Revenue">
             {getFieldDecorator('accountId', {
               initialValue: item.accountId,
               rules: [{
@@ -240,16 +251,6 @@ const FormCounter = ({
               filterOption={filterOption}
             >{listAccountOpt}
             </Select>)}
-          </FormItem>
-          <FormItem label="Expire Date" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('expireDate', {
-              initialValue: item.expireDate ? moment(item.expireDate) : null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<DatePicker disabled={modalType === 'edit'} showToday={false} disabledDate={disabledDate} />)}
           </FormItem>
           <FormItem label="Description" {...formItemLayout}>
             {getFieldDecorator('description', {
@@ -269,7 +270,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" disabled={disableButton} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
       </Row>

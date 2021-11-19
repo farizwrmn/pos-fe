@@ -96,10 +96,18 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (
-          pathname === '/accounts/payable-form'
-          || pathname === '/marketing/voucher'
-        ) {
+        if (pathname === '/marketing/voucher') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: ['REVE', 'OINC'],
+              type: 'all',
+              field: 'id,accountCode,accountName,accountParentId',
+              order: 'accountCode'
+            }
+          })
+        }
+        if (pathname === '/accounts/payable-form') {
           dispatch({
             type: 'query',
             payload: {

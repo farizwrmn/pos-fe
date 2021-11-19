@@ -90,6 +90,7 @@ const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, a
   }
 
   const formProps = {
+    disableButton: loading.effects['marketingVoucher/add'] || loading.effects['marketingVoucher/edit'],
     newTransNo,
     listAccountCode,
     modalType,
