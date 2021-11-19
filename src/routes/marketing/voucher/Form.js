@@ -133,7 +133,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<InputNumber style={{ width: '100%' }} min={10000} />)}
+            })(<InputNumber disabled={modalType === 'edit' ? item.soldOne : false} style={{ width: '100%' }} min={10000} />)}
           </FormItem>
           <FormItem label="Voucher Price" help="Price charge when customer buy the voucher" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherPrice', {
@@ -144,7 +144,7 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<InputNumber style={{ width: '100%' }} min={0} />)}
+            })(<InputNumber disabled={modalType === 'edit' ? item.soldOne : false} style={{ width: '100%' }} min={0} />)}
           </FormItem>
           <FormItem label="Voucher Quantity" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherCount', {

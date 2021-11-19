@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
 import { queryEntryList } from 'services/payment/bankentry'
 import {
-  JOURNALENTRY
+  VOUCHER
 } from 'utils/variable'
 import { queryById, query, queryId, add, edit, remove } from 'services/marketing/voucher'
 import { pageModel } from 'common'
@@ -65,7 +65,7 @@ export default modelExtend(pageModel, {
         if (payload && payload.match && other && other.id) {
           const reconData = yield call(queryEntryList, {
             transactionId: other.id,
-            transactionType: JOURNALENTRY,
+            transactionType: VOUCHER,
             type: 'all'
           })
           if (reconData && reconData.data) {
