@@ -126,6 +126,18 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        const matchVoucher = pathToRegexp('/marketing/voucher/:id').exec(pathname)
+        if (matchVoucher) {
+          dispatch({
+            type: 'queryLov',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              field: 'id,accountCode,accountName,accountParentId',
+              order: 'accountCode'
+            }
+          })
+        }
         if (
           pathname === '/master/account'
           || pathname === '/journal-entry') {

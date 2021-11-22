@@ -7,7 +7,7 @@ import { queryEntryList } from 'services/payment/bankentry'
 import {
   VOUCHER
 } from 'utils/variable'
-import { queryById, query, queryId, add, edit, remove } from 'services/marketing/voucher'
+import { queryById, query, queryId, add, addPayment, edit, remove } from 'services/marketing/voucher'
 import { pageModel } from 'common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -22,13 +22,16 @@ export default modelExtend(pageModel, {
     data: {},
     listDetail: [],
     listAccounting: [],
+    selectedRowKeys: [],
     currentItem: {},
     currentItemList: {},
+    match: {},
     modalType: 'add',
     modalItemType: 'add',
     inputType: null,
     activeKey: '0',
     listCash: [],
+    visiblePayment: false,
     modalVisible: false,
     listItem: [],
     pagination: {
@@ -51,16 +54,65 @@ export default modelExtend(pageModel, {
               match
             }
           })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              match
+            }
+          })
         }
       })
     }
   },
 
   effects: {
+    * paymentVoucher ({ payload = {} }, { select, call, put }) {
+      const { data } = payload
+      const selectedRowKeys = yield select(({ voucherdetail }) => voucherdetail.selectedRowKeys)
+      const listDetail = yield select(({ voucherdetail }) => voucherdetail.listDetail)
+      const detailItem = yield select(({ voucherdetail }) => voucherdetail.data)
+      const match = yield select(({ voucherdetail }) => voucherdetail.match)
+      if (selectedRowKeys.length === 0) {
+        message.error('Select at least 1 row')
+        return
+      }
+      let listSelectedId = listDetail
+        .filter(filtered => selectedRowKeys.includes(filtered.no))
+        .map(detail => detail.id)
+      if (listSelectedId.length === 0) {
+        message.error('Select at least 1 row')
+        return
+      }
+      const response = yield call(addPayment, { item: { id: detailItem.id, description: data.description, accountId: data.accountId, storeId: 1 }, listSelectedId })
+      if (response && response.success) {
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            id: detailItem.id,
+            storeId: lstorage.getCurrentUserStore(),
+            match
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRowKeys: [],
+            visiblePayment: false
+          }
+        })
+        if (payload && payload.reset) {
+          payload.reset()
+        }
+      } else {
+        throw response
+      }
+    },
+
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, voucherDetail, ...other } = data.data
+        const { purchase, ...other } = data.data
+        const voucherDetail = data.detail
         let listAccounting = []
         if (payload && payload.match && other && other.id) {
           const reconData = yield call(queryEntryList, {

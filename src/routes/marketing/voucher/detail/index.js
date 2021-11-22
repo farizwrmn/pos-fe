@@ -11,10 +11,12 @@ import {
 import TransDetail from './TransDetail'
 import FormAccounting from './FormAccounting'
 import styles from './index.less'
+import ModalPayment from './ModalPayment'
 
 
-const Detail = ({ voucherdetail, dispatch }) => {
-  const { listDetail, listAccounting, data } = voucherdetail
+const Detail = ({ voucherdetail, accountCode, dispatch }) => {
+  const { listDetail, listAccounting, visiblePayment, data, selectedRowKeys } = voucherdetail
+  const { listAccountCodeLov } = accountCode
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -34,10 +36,74 @@ const Detail = ({ voucherdetail, dispatch }) => {
   }
 
   const formDetailProps = {
-    dataSource: listDetail
+    dataSource: listDetail,
+    rowSelection: {
+      selectedRowKeys,
+      getCheckboxProps: record => ({
+        disabled: record.voucherPayment // Column configuration not to be checked
+      }),
+      onChange: (keys) => {
+        dispatch({
+          type: 'voucherdetail/updateState',
+          payload: {
+            selectedRowKeys: keys
+          }
+        })
+      }
+    },
+    onSelectAll () {
+      if (selectedRowKeys.length === listDetail.filter(filtered => !filtered.voucherPayment).length) {
+        dispatch({
+          type: 'voucherdetail/updateState',
+          payload: {
+            selectedRowKeys: []
+          }
+        })
+      } else {
+        dispatch({
+          type: 'voucherdetail/updateState',
+          payload: {
+            selectedRowKeys: listDetail.filter(filtered => !filtered.voucherPayment)
+              .map(item => item.no)
+          }
+        })
+      }
+    },
+    onPayment () {
+      dispatch({
+        type: 'voucherdetail/updateState',
+        payload: {
+          visiblePayment: true
+        }
+      })
+    }
+  }
+
+  const modalPaymentProps = {
+    visible: selectedRowKeys.length > 0 && visiblePayment,
+    selectedRowKeysLen: selectedRowKeys.length,
+    listAccountCode: listAccountCodeLov,
+    onOk (data, reset) {
+      dispatch({
+        type: 'voucherdetail/paymentVoucher',
+        payload: {
+          data,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'voucherdetail/updateState',
+        payload: {
+          visiblePayment: false
+        }
+      })
+    }
   }
 
   return (<div className="wrapper">
+    <ModalPayment {...modalPaymentProps} />
     <Row>
       <Col lg={6}>
         <div className="content-inner-zero-min-height">
@@ -67,7 +133,8 @@ const Detail = ({ voucherdetail, dispatch }) => {
 }
 
 Detail.propTypes = {
+  accountCode: PropTypes.object,
   voucherdetail: PropTypes.object
 }
 
-export default connect(({ voucherdetail }) => ({ voucherdetail }))(Detail)
+export default connect(({ voucherdetail, accountCode }) => ({ voucherdetail, accountCode }))(Detail)

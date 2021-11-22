@@ -30,6 +30,16 @@ export async function add (params) {
   })
 }
 
+export async function addPayment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/marketing-voucher-payment',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({

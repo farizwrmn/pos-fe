@@ -10,9 +10,11 @@ const formPayment = ({
   dataSource,
   form: {
     resetFields
-  }
+  },
+  ...other
 }) => {
   const listProps = {
+    ...other,
     dataSource,
     editList () {
       resetFields()

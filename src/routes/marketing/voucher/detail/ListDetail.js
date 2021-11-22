@@ -1,11 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
-import { DropOption } from 'components'
+import { Table, Button, Tag } from 'antd'
 
-const List = ({ ...tableProps, editList }) => {
+const List = ({ onPayment, onSelectAll, ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
     editList(record)
+  }
+
+  let selectedRowKeysLen = 0
+  if (tableProps.rowSelection) {
+    selectedRowKeysLen = tableProps.rowSelection.selectedRowKeys.length
   }
 
   const columns = [
@@ -23,14 +27,14 @@ const List = ({ ...tableProps, editList }) => {
     },
     {
       title: 'Payment Date',
-      dataIndex: 'paymentDate',
-      key: 'paymentDate',
+      dataIndex: 'voucherPayment.paymentDate',
+      key: 'voucherPayment.paymentDate',
       width: 150
     },
     {
       title: 'Payment Description',
-      dataIndex: 'paymentDescription',
-      key: 'paymentDescription',
+      dataIndex: 'voucherPayment.paymentDescription',
+      key: 'voucherPayment.paymentDescription',
       width: 300
     },
     {
@@ -44,22 +48,20 @@ const List = ({ ...tableProps, editList }) => {
       dataIndex: 'usageDescription',
       key: 'usageDescription',
       width: 300
-    },
-    {
-      title: 'Operation',
-      key: 'operation',
-      width: 100,
-      fixed: 'right',
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Payment' }]} />
-      }
     }
   ]
 
   return (
     <div>
+      <span style={{ marginLeft: 8, marginBottom: '20px' }}>
+        {selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
+        {tableProps.dataSource.filter(filtered => !filtered.voucherPayment).length > 0 ? <Button style={{ float: 'right' }} type="default" onClick={() => onSelectAll()}>Select all</Button>
+          : <Tag style={{ float: 'right' }} color="red">Sold Out</Tag>}
+        {selectedRowKeysLen > 0 && <Button style={{ float: 'right', marginRight: '10px' }} type="primary" onClick={() => onPayment()}>Payment</Button>}
+      </span>
       <Table {...tableProps}
         bordered
+        style={{ marginTop: '20px' }}
         scroll={{ x: 500, y: 270 }}
         columns={columns}
         simple
