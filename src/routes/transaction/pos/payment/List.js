@@ -5,7 +5,9 @@ import moment from 'moment'
 
 const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
-    editList(record)
+    if (record.typeCode !== 'V') {
+      editList(record)
+    }
   }
 
   const columns = [

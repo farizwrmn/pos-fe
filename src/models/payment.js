@@ -1,6 +1,8 @@
 import { Modal } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables, alertModal } from 'utils'
+import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
+import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { routerRedux } from 'dva/router'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
@@ -280,6 +282,7 @@ export default {
                 localStorage.removeItem('lastMeter')
                 localStorage.removeItem('workorder')
                 localStorage.removeItem('woNumber')
+                localStorage.removeItem('voucher_list')
                 removeQrisImage()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
@@ -395,6 +398,72 @@ export default {
         Modal.error({
           title: 'Cannot get current time'
         })
+      }
+    },
+
+    * addMethodVoucher ({ payload }, { call, select, put }) {
+      const listAmount = yield select(({ payment }) => payment.listAmount)
+      const listVoucher = yield select(({ pos }) => pos.listVoucher)
+      const curTotal = yield select(({ pos }) => pos.curTotal)
+      const storeId = lstorage.getCurrentUserStore()
+      const data = yield call(queryEdc, {
+        paymentOption: 'V'
+      })
+      const { item } = payload
+      if (listAmount && listAmount.filter(filtered => filtered.typeCode === 'V').length !== listVoucher.length) {
+        if (data.success) {
+          let listPayment = data.data
+          if (storeId) {
+            listPayment = listPayment.filter((filtered) => {
+              if (filtered.storeHide) {
+                const hideFrom = filtered.storeHide.split(',')
+                let exists = true
+                for (let key in hideFrom) {
+                  const item = hideFrom[key]
+                  if (parseFloat(item) === parseFloat(storeId)) {
+                    exists = false
+                    break
+                  }
+                }
+                return exists
+              }
+              return true
+            })
+          }
+          if (listPayment && listPayment.length === 1) {
+            const responseCost = yield call(queryCost, {
+              machineId: listPayment[0].id,
+              relationship: 1
+            })
+            if (responseCost && responseCost.success) {
+              const listCost = responseCost.data
+              if (listCost && listCost[0]) {
+                yield put({
+                  type: 'addMethod',
+                  payload: {
+                    listAmount,
+                    data: {
+                      amount: item.voucherValue,
+                      bank: listCost[0].id,
+                      chargeNominal: 0,
+                      chargePercent: 0,
+                      chargeTotal: 0,
+                      description: item.voucherName,
+                      voucherCode: item.generatedCode,
+                      voucherId: item.voucherId,
+                      machine: listPayment[0].id,
+                      printDate: null,
+                      typeCode: 'V'
+                    }
+                  }
+                })
+                yield put({ type: 'pos/setCurTotal' })
+
+                yield put({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+              }
+            }
+          }
+        }
       }
     },
 
@@ -1042,14 +1111,17 @@ export default {
     },
 
     addMethod (state, action) {
-      let { listAmount } = state
-      const exists = listAmount.filter(x => x.typeCode === action.payload.data.typeCode)
-      if (exists.length > 0 && action.payload.data.typeCode === 'C') {
-        Modal.info({
-          title: 'Payment Already Exists and Added',
-          content: 'Please Check Payment'
-        })
-        return { ...state }
+      let { listAmount } = action.payload
+      console.log('action.payload.data', action.payload.data)
+      if (action.payload.data.typeCode !== 'V') {
+        const exists = listAmount.filter(x => x.typeCode === action.payload.data.typeCode)
+        if (exists.length > 0 && action.payload.data.typeCode === 'C') {
+          Modal.info({
+            title: 'Payment Already Exists and Added',
+            content: 'Please Check Payment'
+          })
+          return { ...state }
+        }
       }
       listAmount.push(action.payload.data)
       return { ...state, listAmount }

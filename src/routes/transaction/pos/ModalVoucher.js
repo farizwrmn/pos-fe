@@ -47,7 +47,7 @@ class ModalVoucher extends Component {
         ]}
       >
         <Form>
-          <FormItem label="Voucher Code" {...formItemLayout}>
+          <FormItem label="Voucher Code (Scan)" {...formItemLayout}>
             {getFieldDecorator('code', {
               rules: [
                 {

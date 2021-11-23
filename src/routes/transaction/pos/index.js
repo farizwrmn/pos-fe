@@ -1793,6 +1793,18 @@ const Pos = ({
 
       dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
+      if (listVoucher && listVoucher.length > 0) {
+        for (let key in listVoucher) {
+          const item = listVoucher[key]
+          dispatch({
+            type: 'payment/addMethodVoucher',
+            payload: {
+              item
+            }
+          })
+        }
+      }
+
       // Untuk tipe page
       // dispatch(routerRedux.push('/transaction/pos/payment'))
       dispatch({
@@ -2064,6 +2076,7 @@ const Pos = ({
           <span>
             <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
             <p>{(memberInformation.cashback || 0).toLocaleString()} Loyalty</p>
+            <p>Click to add Voucher</p>
           </span>
         </Button>
       </div>}

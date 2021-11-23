@@ -34,6 +34,7 @@ const Payment = ({
     paymentModalVisible,
     woNumber,
     companyInfo } = payment
+  console.log('listAmount', listAmount)
   const {
     listPayment: listEdc
   } = paymentEdc
@@ -288,6 +289,7 @@ const Payment = ({
       dispatch({
         type: 'payment/addMethod',
         payload: {
+          listAmount,
           data
         }
       })

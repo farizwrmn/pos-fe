@@ -3377,6 +3377,7 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        listVoucher: [],
         currentReplaceBundle: {},
         currentBuildComponent: {},
         curQty: 1,
