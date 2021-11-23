@@ -350,7 +350,7 @@ class FormPayment extends React.Component {
                 ) : item.machine,
                 rules: [
                   {
-                    required: getFieldValue('typeCode') !== 'C'
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
                   }
                 ]
               })(
@@ -366,7 +366,7 @@ class FormPayment extends React.Component {
                 ) : item.bank,
                 rules: [
                   {
-                    required: getFieldValue('typeCode') !== 'C'
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
                   }
                 ]
               })(

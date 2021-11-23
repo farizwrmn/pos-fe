@@ -113,19 +113,16 @@ const modal = ({
   }
 
   const onChangePaymentType = (value) => {
-    if (value === 'C') {
-      resetFields()
-      onResetMachine()
-    } else {
-      setFieldsValue({
-        printDate: moment(),
-        machine: undefined,
-        bank: undefined
-      })
-      validateFields()
-      onResetMachine()
-      onGetMachine(value)
-    }
+    resetFields()
+    onResetMachine()
+    setFieldsValue({
+      printDate: moment(),
+      machine: undefined,
+      bank: undefined
+    })
+    validateFields()
+    onResetMachine()
+    onGetMachine(value)
   }
 
   const onChangeMachine = (machineId) => {
@@ -191,38 +188,34 @@ const modal = ({
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
             </FormItem>
-            {getFieldValue('typeCode') !== 'C' && listEdc && (
-              <FormItem label="EDC" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('machine', {
-                  initialValue: item.machine,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') !== 'C'
-                    }
-                  ]
-                })(
-                  <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                    {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
-                  </Select>
-                )}
-              </FormItem>
-            )}
-            {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Card" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('bank', {
-                  initialValue: item.bank,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') !== 'C'
-                    }
-                  ]
-                })(
-                  <Select style={{ width: '100%' }} min={0} maxLength={10}>
-                    {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
-                  </Select>
-                )}
-              </FormItem>
-            )}
+            <FormItem label="EDC" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('machine', {
+                initialValue: item.machine,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
+                  }
+                ]
+              })(
+                <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem label="Card" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bank', {
+                initialValue: item.bank,
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
+                  }
+                ]
+              })(
+                <Select style={{ width: '100%' }} min={0} maxLength={10}>
+                  {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                </Select>
+              )}
+            </FormItem>
             <FormItem
               label="Print Date"
               hasFeedback
