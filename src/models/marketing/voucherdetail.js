@@ -5,7 +5,8 @@ import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
 import { queryEntryList } from 'services/payment/bankentry'
 import {
-  VOUCHER
+  VOUCHER,
+  VOUCHER_STORE_ID
 } from 'utils/variable'
 import { queryById, query, queryId, add, addPayment, edit, remove } from 'services/marketing/voucher'
 import { pageModel } from 'common'
@@ -83,7 +84,7 @@ export default modelExtend(pageModel, {
         message.error('Select at least 1 row')
         return
       }
-      const response = yield call(addPayment, { item: { id: detailItem.id, description: data.description, accountId: data.accountId, storeId: 1 }, listSelectedId })
+      const response = yield call(addPayment, { item: { id: detailItem.id, description: data.description, accountId: data.accountId, storeId: VOUCHER_STORE_ID }, listSelectedId })
       if (response && response.success) {
         yield put({
           type: 'queryDetail',
