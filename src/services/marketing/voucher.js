@@ -20,6 +20,15 @@ export async function query (params) {
   })
 }
 
+export async function validateVoucher (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/marketing-voucher-validate/${params.code}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

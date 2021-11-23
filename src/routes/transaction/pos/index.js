@@ -38,6 +38,7 @@ import Bookmark from './Bookmark'
 import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
+import ModalVoucher from './ModalVoucher'
 import { groupProduct } from './utils'
 
 const { reArrangeMember, reArrangeMemberId } = variables
@@ -47,6 +48,7 @@ const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
   // setCashierTrans, setBundleTrans,
   setServiceTrans,
+  getVoucherList, setVoucherList,
   removeQrisImage
 } = lstorage
 // const FormItem = Form.Item
@@ -128,7 +130,9 @@ const Pos = ({
     modalLoginType,
     listPaymentShortcut,
     selectedPaymentShortcut,
-    currentBuildComponent
+    currentBuildComponent,
+    listVoucher,
+    modalVoucherVisible
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible } = promo
@@ -1612,10 +1616,16 @@ const Pos = ({
   }
 
   const showModalCashback = () => {
+    // dispatch({
+    //   type: 'pos/updateState',
+    //   payload: {
+    //     modalCashbackVisible: true
+    //   }
+    // })
     dispatch({
       type: 'pos/updateState',
       payload: {
-        modalCashbackVisible: true
+        modalVoucherVisible: true
       }
     })
   }
@@ -1832,6 +1842,47 @@ const Pos = ({
     }
   }
 
+  const modalVoucherProps = {
+    visible: modalVoucherVisible,
+    onOk (data) {
+      dispatch({
+        type: 'pos/validateVoucher',
+        payload: {
+          code: data.code
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalVoucherVisible: false
+        }
+      })
+    }
+  }
+
+  const onDeleteVoucher = (event, generatedCode) => {
+    event.preventDefault()
+    Modal.confirm({
+      title: 'Delete Voucher',
+      content: 'Are your sure to delete this voucher ?',
+      onOk () {
+        const list = getVoucherList().filter(filtered => filtered.generatedCode !== generatedCode)
+        setVoucherList(JSON.stringify(list))
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            listVoucher: list
+          }
+        })
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1862,10 +1913,11 @@ const Pos = ({
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
               {currentBuildComponent && currentBuildComponent.no && (
-                <div style={{ marginBottom: '10px' }}>
-                  <Tag closable color="orange" onClose={handleCloseBuildComponent}>{currentBuildComponent.name}</Tag>
-                </div>
+                <Tag style={{ marginBottom: '10px' }} closable color="orange" onClose={handleCloseBuildComponent}>{currentBuildComponent.name}</Tag>
               )}
+              {listVoucher.map(item => (
+                <Tag style={{ marginBottom: '10px' }} key={item.generatedCode} closable color="green" onClose={e => onDeleteVoucher(e, item.generatedCode)}>{item.voucherName} - {item.generatedCode.substring(0, 6)}XXX{item.generatedCode.substring(item.generatedCode.length - 6, item.generatedCode.length)}</Tag>
+              ))}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
@@ -2005,6 +2057,8 @@ const Pos = ({
           <BottomButton {...buttomButtonProps} />
         </Col>
       </Row >
+      {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
+
       {memberInformation.memberTypeName && <div className="wrapper-switcher">
         <Button onClick={showModalCashback} className="btn-member">
           <span>

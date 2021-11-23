@@ -103,7 +103,7 @@ const Detail = ({ voucherdetail, accountCode, dispatch }) => {
   }
 
   return (<div className="wrapper">
-    <ModalPayment {...modalPaymentProps} />
+    {selectedRowKeys.length > 0 && visiblePayment && <ModalPayment {...modalPaymentProps} />}
     <Row>
       <Col lg={6}>
         <div className="content-inner-zero-min-height">
