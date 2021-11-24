@@ -138,7 +138,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Voucher Price" help="Price charge when customer buy the voucher" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherPrice', {
-              initialValue: modalType === 'add' ? 0 : item.voucherPrice,
+              initialValue: modalType === 'add' ? 10000 : item.voucherPrice,
               rules: [
                 {
                   pattern: /^[0-9/]{1,50}$/i,
