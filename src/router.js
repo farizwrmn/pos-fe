@@ -1377,7 +1377,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
-            }, 'inventory-transfer-out-detail')
+            }, 'inventory-transfer-out')
           }
         }, {
           path: 'inventory/transfer/out/:id',
@@ -1386,7 +1386,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/detail/out'))
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
-            }, 'inventory-transfer-out')
+            }, 'inventory-transfer-out-detail')
           }
         }, {
           path: 'transaction/return-sales',

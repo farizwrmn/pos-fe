@@ -28,7 +28,8 @@ const ProductStock = ({ specification, grabCategory, purchase, store, specificat
   const { list: listGrabCategory } = grabCategory
   const { listVariantStock } = variantStock
   const { listStoreLov } = store
-  const { list,
+  const {
+    list,
     changed,
     listPrintAllStock,
     showPDFModal,
@@ -49,7 +50,8 @@ const ProductStock = ({ specification, grabCategory, purchase, store, specificat
     countStoreList,
     modalQuantityVisible,
     inventoryMode,
-    lastTrans
+    lastTrans,
+    listInventory
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -261,6 +263,7 @@ const ProductStock = ({ specification, grabCategory, purchase, store, specificat
   }
 
   const formProps = {
+    listInventory,
     listGrabCategory,
     lastTrans,
     listSpecification,
