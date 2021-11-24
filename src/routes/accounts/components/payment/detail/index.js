@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import { Row, Col, Tag, Button } from 'antd'
 import ModalPayment from './Modal'
 import ModalCancel from './ModalCancel'
@@ -56,7 +57,8 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
       dispatch({
         type: 'paymentEdc/query',
         payload: {
-          paymentOption
+          paymentOption,
+          storeId: lstorage.getCurrentUserStore()
         }
       })
     },
@@ -137,6 +139,13 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
         type: 'paymentDetail/updateState',
         payload: {
           [e]: true
+        }
+      })
+      dispatch({
+        type: 'paymentEdc/query',
+        payload: {
+          paymentOption: 'C',
+          storeId: lstorage.getCurrentUserStore()
         }
       })
     },

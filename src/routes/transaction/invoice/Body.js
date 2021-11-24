@@ -1,9 +1,11 @@
 import React from 'react'
 import BodyItem from './BodyItem'
 import Group from './Group'
+import GroupShow from './GroupShow'
 import styles from './index.less'
 
 const Body = ({
+  standardInvoice,
   dataPos = [],
   dataService = [],
   dataGroup = [],
@@ -27,9 +29,14 @@ const Body = ({
             <BodyItem key={index} item={item} />
           )
         })}
-        {dataGroup && dataGroup.map((item, index) => {
+        {standardInvoice && dataGroup && dataGroup.map((item, index) => {
           return (
             <Group key={index} item={item} />
+          )
+        })}
+        {!standardInvoice && dataGroup && dataGroup.map((item, index) => {
+          return (
+            <GroupShow key={index} item={item} />
           )
         })}
       </div>
