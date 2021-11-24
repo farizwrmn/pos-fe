@@ -6,7 +6,8 @@ import { configMain, lstorage } from 'utils'
 import {
   Row,
   Col,
-  Modal
+  Modal,
+  message
 } from 'antd'
 import moment from 'moment'
 import FormPayment from './Form'
@@ -286,6 +287,10 @@ const Payment = ({
     onGetCost,
     onResetMachine,
     onSubmit (data) {
+      if (data.typeCode === 'V') {
+        message.error('Cannot add voucher from this form')
+        return
+      }
       dispatch({
         type: 'payment/addMethod',
         payload: {

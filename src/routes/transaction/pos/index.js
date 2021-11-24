@@ -1794,15 +1794,12 @@ const Pos = ({
       dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
       if (listVoucher && listVoucher.length > 0) {
-        for (let key in listVoucher) {
-          const item = listVoucher[key]
-          dispatch({
-            type: 'payment/addMethodVoucher',
-            payload: {
-              item
-            }
-          })
-        }
+        dispatch({
+          type: 'payment/addMethodVoucher',
+          payload: {
+            list: listVoucher
+          }
+        })
       }
 
       // Untuk tipe page
