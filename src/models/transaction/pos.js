@@ -313,7 +313,6 @@ export default {
       const response = yield call(validateVoucher, payload)
       if (response && response.success && response.data) {
         const listVoucher = getVoucherList()
-        console.log('listVoucher', listVoucher)
         const exists = listVoucher.length > 0 ? listVoucher.filter(filtered => filtered.generatedCode === payload.code).length > 0 : false
         if (exists) {
           message.error('Voucher already exists')
@@ -321,6 +320,7 @@ export default {
         }
         listVoucher.push({
           ...response.data.header,
+          voucherId: response.data.header.id,
           ...response.data.detail
         })
         setVoucherList(JSON.stringify(listVoucher))
@@ -2868,6 +2868,7 @@ export default {
       const { defaultValue } = payload
       localStorage.removeItem('service_detail')
       localStorage.removeItem('consignment')
+      localStorage.removeItem('voucher_list')
       localStorage.removeItem('cashier_trans')
       if (!defaultValue) {
         localStorage.removeItem('member')
@@ -2883,6 +2884,7 @@ export default {
         payload: {
           currentBuildComponent: {},
           currentReplaceBundle: {},
+          listVoucher: [],
           mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
           lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
           memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],

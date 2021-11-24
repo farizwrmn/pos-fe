@@ -35,7 +35,6 @@ const Payment = ({
     paymentModalVisible,
     woNumber,
     companyInfo } = payment
-  console.log('listAmount', listAmount)
   const {
     listPayment: listEdc
   } = paymentEdc
