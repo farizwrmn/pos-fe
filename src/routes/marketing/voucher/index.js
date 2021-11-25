@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ marketingVoucher, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = marketingVoucher
+const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, app }) => {
+  const { list, pagination, newTransNo, modalType, currentItem, activeKey } = marketingVoucher
+  const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -46,12 +47,13 @@ const Counter = ({ marketingVoucher, loading, dispatch, location, app }) => {
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          modalType: 'edit'
         }
       }))
       dispatch({
         type: 'marketingVoucher/editItem',
-        payload: { item }
+        payload: { item, modalType: 'edit' }
       })
     },
     deleteItem (id) {
@@ -88,6 +90,9 @@ const Counter = ({ marketingVoucher, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    disableButton: loading.effects['marketingVoucher/add'] || loading.effects['marketingVoucher/edit'],
+    newTransNo,
+    listAccountCode,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -141,7 +146,8 @@ const Counter = ({ marketingVoucher, loading, dispatch, location, app }) => {
   )
 }
 
-Counter.propTypes = {
+Voucher.propTypes = {
+  accountCode: PropTypes.object,
   marketingVoucher: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -149,4 +155,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ marketingVoucher, loading, app }) => ({ marketingVoucher, loading, app }))(Counter)
+export default connect(({ accountCode, marketingVoucher, loading, app }) => ({ accountCode, marketingVoucher, loading, app }))(Voucher)

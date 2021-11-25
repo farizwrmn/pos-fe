@@ -1,8 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import {
+  Form, Input, InputNumber, Button, Checkbox,
+  Select, DatePicker,
+  // Upload, message, Icon,
+  Row, Col, Modal
+} from 'antd'
+import moment from 'moment'
+// import { IMAGEURL, rest } from 'utils/config.company'
 
+const { TextArea } = Input
 const FormItem = Form.Item
+const { Option } = Select
+// const { apiCompanyURL } = rest
 
 const formItemLayout = {
   labelCol: {
@@ -26,9 +36,12 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  newTransNo,
+  disableButton,
   onSubmit,
   onCancel,
   modalType,
+  listAccountCode,
   button,
   form: {
     getFieldDecorator,
@@ -36,7 +49,10 @@ const FormCounter = ({
     getFieldsValue,
     resetFields
   }
+  // ...props
 }) => {
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -78,34 +94,183 @@ const FormCounter = ({
     })
   }
 
+  function disabledDate (current) {
+    // Can not select days before today and today
+    return current && current.valueOf() < Date.now()
+  }
+
   return (
     <Form layout="horizontal">
+      <h1>General Info</h1>
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
+          <FormItem label="Voucher Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherCode', {
+              initialValue: modalType === 'edit' ? item.voucherCode : newTransNo,
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  pattern: /^[a-z0-9-/]{3,50}$/i
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<Input disabled maxLength={50} />)}
           </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Voucher Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherName', {
+              initialValue: item.voucherName,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={50} autoFocus />)}
+          </FormItem>
+          <FormItem label="Voucher Value" help="Price charge when customer use the voucher" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherValue', {
+              initialValue: modalType === 'add' ? 10000 : item.voucherValue,
+              rules: [
+                {
+                  pattern: /^[0-9/]{1,50}$/i,
+                  required: true
+                }
+              ]
+            })(<InputNumber defaultValue={10000} disabled={modalType === 'edit' ? item.soldOne : false} style={{ width: '100%' }} min={10000} />)}
+          </FormItem>
+          <FormItem label="Voucher Price" help="Price charge when customer buy the voucher" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherPrice', {
+              initialValue: modalType === 'add' ? 10000 : item.voucherPrice,
+              rules: [
+                {
+                  pattern: /^[0-9/]{1,50}$/i,
+                  required: true
+                }
+              ]
+            })(<InputNumber defaultValue={10000} disabled={modalType === 'edit' ? item.soldOne : false} style={{ width: '100%' }} min={0} />)}
+          </FormItem>
+          <FormItem label="Voucher Quantity" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('voucherCount', {
+              initialValue: modalType === 'add' ? 1 : item.voucherCount,
+              rules: [
+                {
+                  pattern: /^[0-9/]{1,50}$/i,
+                  required: true
+                }
+              ]
+            })(<InputNumber disabled={modalType === 'edit'} min={1} max={9999} />)}
+          </FormItem>
+          {/* <FormItem label="Image" {...formItemLayout}>
+            {getFieldDecorator('productImage', {
+              initialValue: item.productImage
+                && item.productImage != null
+                && item.productImage !== '["no_image.png"]'
+                && item.productImage !== '"no_image.png"'
+                && item.productImage !== 'no_image.png' ?
+                {
+                  fileList: JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                }
+                : []
+            })(
+              <Upload
+                {...props}
+                multiple
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                defaultFileList={item.productImage
+                  && item.productImage != null
+                  && item.productImage !== '["no_image.png"]'
+                  && item.productImage !== '"no_image.png"'
+                  && item.productImage !== 'no_image.png' ?
+                  JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                  : []}
+                listType="picture"
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
+          </FormItem> */}
+        </Col>
+      </Row>
+      <h1>Advanced Option</h1>
+      <Row>
+        <Col {...column}>
+          <FormItem label="Expire Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('expireDate', {
+              initialValue: item.expireDate ? moment(item.expireDate) : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<DatePicker disabled={modalType === 'edit'} showToday={false} disabledDate={disabledDate} />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="OverPay / Expired Revenue">
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              disabled={modalType === 'edit'}
+              optionFilterProp="children"
+              filterOption={filterOption}
+            >{listAccountOpt}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Description" {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
+          </FormItem>
+          <FormItem label="Status" {...formItemLayout}>
+            {getFieldDecorator('active', {
+              valuePropName: 'checked',
+              initialValue: item.active === undefined ? true : item.active
+            })(<Checkbox>Active</Checkbox>)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" disabled={disableButton} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
       </Row>

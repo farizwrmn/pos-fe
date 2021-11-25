@@ -96,6 +96,17 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/marketing/voucher') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: ['REVE', 'OINC'],
+              type: 'all',
+              field: 'id,accountCode,accountName,accountParentId',
+              order: 'accountCode'
+            }
+          })
+        }
         if (pathname === '/accounts/payable-form') {
           dispatch({
             type: 'query',
@@ -105,6 +116,18 @@ export default modelExtend(pageModel, {
               order: 'accountCode'
             }
           })
+          dispatch({
+            type: 'queryLov',
+            payload: {
+              accountType: 'BANK',
+              type: 'all',
+              field: 'id,accountCode,accountName,accountParentId',
+              order: 'accountCode'
+            }
+          })
+        }
+        const matchVoucher = pathToRegexp('/marketing/voucher/:id').exec(pathname)
+        if (matchVoucher) {
           dispatch({
             type: 'queryLov',
             payload: {

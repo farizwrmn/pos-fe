@@ -12,7 +12,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
+        title: `Are you sure delete ${record.bankName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -51,11 +51,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'active',
       key: 'active',
       render: text =>
-        (<span>
-          <Tag color={text ? 'blue' : 'red'}>
-            {text ? 'Active' : 'Disabled'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text ? 'blue' : 'red'}>
+          {text ? 'Active' : 'Disabled'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Operation',

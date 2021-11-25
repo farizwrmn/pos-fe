@@ -110,6 +110,14 @@ const getBundleTrans = () => {
   return localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
 }
 
+const getVoucherList = () => {
+  return localStorage.getItem('voucher_list') ? JSON.parse(localStorage.getItem('voucher_list')) : []
+}
+
+const setVoucherList = (data) => {
+  return localStorage.setItem('voucher_list', data)
+}
+
 const getQrisImage = () => {
   return localStorage.getItem('qris_image') ? localStorage.getItem('qris_image') : null
 }
@@ -289,5 +297,7 @@ module.exports = {
   setPaymentShortcutSelected,
   getQrisImage,
   setQrisImage,
+  getVoucherList,
+  setVoucherList,
   removeQrisImage
 }

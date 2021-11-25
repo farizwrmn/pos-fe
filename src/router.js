@@ -150,7 +150,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/loyaltySetting'))
-              cb(null, require('./routes/master/customer/loyaltySetting/'))
+              cb(null, require('./routes/master/customer/loyaltySetting'))
             }, 'marketing-loyalty-setting')
           }
         }, {
@@ -1377,7 +1377,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
-            }, 'inventory-transfer-out-detail')
+            }, 'inventory-transfer-out')
           }
         }, {
           path: 'inventory/transfer/out/:id',
@@ -1386,7 +1386,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/detail/out'))
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
-            }, 'inventory-transfer-out')
+            }, 'inventory-transfer-out-detail')
           }
         }, {
           path: 'transaction/return-sales',
@@ -1516,9 +1516,19 @@ const Routers = function ({ history, app }) {
           path: 'marketing/voucher',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/marketing/voucher'))
               cb(null, require('./routes/marketing/voucher'))
             }, 'marketing-voucher')
+          }
+        }, {
+          path: 'marketing/voucher/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/voucherdetail'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/marketing/voucher/detail'))
+            }, 'marketing-voucher-detail')
           }
         }, {
           path: 'monitor/cashier/request',

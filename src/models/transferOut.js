@@ -18,7 +18,7 @@ const success = () => {
 const { prefix } = configMain
 
 const error = (err) => {
-  message.error(err.message)
+  message.error(typeof err.message === 'string' ? err.message : err.detail)
 }
 export default modelExtend(pageModel, {
   namespace: 'transferOut',
@@ -242,9 +242,12 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
+        console.log('data', data)
         error(data)
-        stockMinusAlert(data)
-        throw data
+        if (data && data.data && data.data[0]) {
+          stockMinusAlert(data)
+        }
+        // throw data
       }
     },
     * deleteListState ({ payload }, { put }) {
