@@ -12,9 +12,11 @@ import TransDetail from './TransDetail'
 import FormAccounting from './FormAccounting'
 import styles from './index.less'
 import ModalPayment from './ModalPayment'
+import PrintXLS from './PrintXLS'
 
 
-const Detail = ({ voucherdetail, accountCode, dispatch }) => {
+const Detail = ({ app, voucherdetail, accountCode, dispatch }) => {
+  const { user, storeInfo } = app
   const { listDetail, listAccounting, visiblePayment, data, selectedRowKeys } = voucherdetail
   const { listAccountCodeLov } = accountCode
   const content = []
@@ -102,6 +104,11 @@ const Detail = ({ voucherdetail, accountCode, dispatch }) => {
     }
   }
 
+  const printProps = {
+    user,
+    storeInfo
+  }
+
   return (<div className="wrapper">
     {selectedRowKeys.length > 0 && visiblePayment && <ModalPayment {...modalPaymentProps} />}
     <Row>
@@ -117,6 +124,7 @@ const Detail = ({ voucherdetail, accountCode, dispatch }) => {
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
+          {listDetail && listDetail.length > 0 && <PrintXLS header={data} data={listDetail} name="Export Code" {...printProps} />}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
@@ -133,8 +141,9 @@ const Detail = ({ voucherdetail, accountCode, dispatch }) => {
 }
 
 Detail.propTypes = {
+  app: PropTypes.object,
   accountCode: PropTypes.object,
   voucherdetail: PropTypes.object
 }
 
-export default connect(({ voucherdetail, accountCode }) => ({ voucherdetail, accountCode }))(Detail)
+export default connect(({ app, voucherdetail, accountCode }) => ({ app, voucherdetail, accountCode }))(Detail)
