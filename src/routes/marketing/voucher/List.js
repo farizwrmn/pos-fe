@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
+import { numberFormatter } from 'utils/numberFormat'
 
 const confirm = Modal.confirm
 
@@ -11,7 +13,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.counterName} ?`,
+        title: `Are you sure delete ${record.voucherName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -22,18 +24,75 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   const columns = [
     {
       title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      dataIndex: 'voucherCode',
+      key: 'voucherCode',
+      render: (text, record) => <Link to={`/marketing/voucher/${encodeURIComponent(record.id)}`}>{text}</Link>
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Voucher Name',
+      dataIndex: 'voucherName',
+      key: 'voucherName'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Count',
+      dataIndex: 'voucherCount',
+      key: 'voucherCount',
+      render: text => numberFormatter(text)
+    },
+    {
+      title: 'Expire Date',
+      dataIndex: 'expireDate',
+      key: 'expireDate'
+    },
+    {
+      title: 'Value',
+      dataIndex: 'voucherValue',
+      key: 'voucherValue',
+      render: text => numberFormatter(text)
+    },
+    {
+      title: 'Price',
+      dataIndex: 'voucherPrice',
+      key: 'voucherPrice',
+      render: text => numberFormatter(text)
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="green">
+              Active
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Non Active
+          </Tag>
+        )
+      }
+    },
+    {
+      title: 'Sold Out',
+      dataIndex: 'soldOut',
+      key: 'soldOut',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="red">
+              Sold Out
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="green">
+            Available
+          </Tag>
+        )
+      }
     },
     {
       title: 'Operation',

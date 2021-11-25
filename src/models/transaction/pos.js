@@ -12,6 +12,7 @@ import {
   queryPaymentSplit
 } from 'services/payment/payment'
 import { query as queryReward } from 'services/marketing/bundlingReward'
+import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
 import * as cashierService from '../../services/cashier'
@@ -59,7 +60,8 @@ const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
-  setCashierTrans, setServiceTrans, setConsignment
+  setCashierTrans, setServiceTrans, setConsignment,
+  getVoucherList, setVoucherList
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -69,6 +71,8 @@ export default {
   namespace: 'pos',
 
   state: {
+    listVoucher: getVoucherList(),
+    modalVoucherVisible: false,
     standardInvoice: true,
     currentReplaceBundle: {},
     currentBuildComponent: {},
@@ -301,6 +305,37 @@ export default {
   },
 
   effects: {
+    * validateVoucher ({ payload = {} }, { call, put }) {
+      if (!payload || (payload && !payload.code) || (payload && payload.code && payload.code.length < 5)) {
+        message.error('Code must provided')
+        return
+      }
+      const response = yield call(validateVoucher, payload)
+      if (response && response.success && response.data) {
+        const listVoucher = getVoucherList()
+        const exists = listVoucher.length > 0 ? listVoucher.filter(filtered => filtered.generatedCode === payload.code).length > 0 : false
+        if (exists) {
+          message.error('Voucher already exists')
+          return
+        }
+        listVoucher.push({
+          ...response.data.header,
+          voucherId: response.data.header.id,
+          ...response.data.detail
+        })
+        setVoucherList(JSON.stringify(listVoucher))
+        yield put({
+          type: 'updateState',
+          payload: {
+            listVoucher,
+            modalVoucherVisible: false
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * queryDashboard ({ payload = {} }, { call, put }) {
       const data = yield call(queryList, {
         ...payload,
@@ -2833,6 +2868,7 @@ export default {
       const { defaultValue } = payload
       localStorage.removeItem('service_detail')
       localStorage.removeItem('consignment')
+      localStorage.removeItem('voucher_list')
       localStorage.removeItem('cashier_trans')
       if (!defaultValue) {
         localStorage.removeItem('member')
@@ -2848,6 +2884,7 @@ export default {
         payload: {
           currentBuildComponent: {},
           currentReplaceBundle: {},
+          listVoucher: [],
           mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
           lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
           memberInformation: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0] : [],
@@ -3342,6 +3379,7 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        listVoucher: [],
         currentReplaceBundle: {},
         currentBuildComponent: {},
         curQty: 1,

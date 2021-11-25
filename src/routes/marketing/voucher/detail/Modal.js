@@ -4,32 +4,38 @@ import { arrayToTree, lstorage } from 'utils'
 import {
   Form,
   TreeSelect,
+  Select,
   DatePicker,
   Row,
   Col,
   Button,
   Input,
-  Modal,
-  Select
+  Modal
 } from 'antd'
 import moment from 'moment'
 
+const Option = Select.Option
 const FormItem = Form.Item
 const TreeNode = TreeSelect.TreeNode
-const Option = Select.Option
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 }
+  wrapperCol: { span: 16 }
 }
 
 const modal = ({
+  user,
   onOk,
   onCancel,
   item = {},
+  valueNumber,
   data,
   listAmount,
-  cashierInformation,
+  visibleTooltip,
+  changeVisibleTooltip,
+  changeValueNumber,
+  listSupplierBank,
+  showAddBank,
   listEdc,
   listCost,
   onResetMachine,
@@ -53,19 +59,30 @@ const modal = ({
         return
       }
       const item = {
-        reference: data[0].id,
-        transNo: data[0].transNo,
-        storeId: data[0].storeId,
+        reference: data.id,
+        transNo: data.transNo,
+        storeId: data.storeId,
         storeIdPayment: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
+      // console.log('item', item)
       onOk(item)
     })
+  }
+
+  const handleClickAddBank = () => {
+    showAddBank()
   }
 
   const handleCancel = () => {
     resetFields()
     onCancel()
+  }
+  const modalOpts = {
+    ...modalProps,
+    title: 'Add Payment',
+    onOk: handleOk,
+    onCancel: handleCancel
   }
 
   const useNetto = (e) => {
@@ -74,20 +91,22 @@ const modal = ({
     })
   }
 
-  const modalOpts = {
-    ...modalProps,
-    onOk: handleOk,
-    onCancel: handleCancel
+  const hdlChangeTooltip = () => {
+    const value = getFieldValue('amount')
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      changeValueNumber(value)
+    }
+    changeVisibleTooltip(true)
   }
 
-  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
-  const getMenus = (menuTreeN) => {
-    return menuTreeN.map((item) => {
-      if (item.children && item.children.length) {
-        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
-      }
-      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
-    })
+  const changeNumber = (e) => {
+    const { value } = e.target
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      valueNumber = value
+    }
+    changeValueNumber(value)
   }
 
   const changeSelectTypeCode = (value) => {
@@ -111,18 +130,30 @@ const modal = ({
       })
     }
   }
+  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children && item.children.length) {
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+      }
+      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+    })
+  }
 
   const onChangePaymentType = (value) => {
-    resetFields()
-    onResetMachine()
-    setFieldsValue({
-      printDate: moment(),
-      machine: undefined,
-      bank: undefined
-    })
-    validateFields()
-    onResetMachine()
-    onGetMachine(value)
+    if (value === 'C') {
+      resetFields()
+      onResetMachine()
+    } else {
+      setFieldsValue({
+        printDate: moment(),
+        machine: undefined,
+        bank: undefined
+      })
+      validateFields()
+      onResetMachine()
+      onGetMachine(value)
+    }
   }
 
   const onChangeMachine = (machineId) => {
@@ -135,9 +166,9 @@ const modal = ({
 
   return (
     <Modal {...modalOpts}>
-      <Form layout="horizontal">
+      <Form>
         <Row>
-          <Col md={12} sm={24}>
+          <Col lg={12} md={12} sm={24}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('typeCode', {
                 initialValue: item.typeCode ? item.typeCode : 'C',
@@ -164,7 +195,7 @@ const modal = ({
             </FormItem>
             <FormItem label="Amount" hasFeedback {...formItemLayout}>
               {getFieldDecorator('amount', {
-                initialValue: item.amount ? item.amount : parseFloat(data.length > 0 ? data[0].nettoTotal - curPayment : 0).toFixed(0),
+                initialValue: parseFloat(data.nettoTotal - curPayment) || item.amount,
                 rules: [
                   {
                     required: true,
@@ -172,10 +203,28 @@ const modal = ({
                     message: '0-9 please insert the value'
                   }
                 ]
-              })(<Input style={{ width: '100%', fontSize: '14pt' }} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(data[0].nettoTotal - curPayment))}>Netto</Button>)} autoFocus maxLength={10} />)}
+              })(
+                <Input onFocus={hdlChangeTooltip} onChange={changeNumber} style={{ width: '100%' }} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(data.nettoTotal - curPayment))}>Netto</Button>)} autoFocus maxLength={12} />
+              )}
+            </FormItem>
+            <FormItem label="Card" hasFeedback labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+              {getFieldDecorator('bankAccountId', {
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') === 'G',
+                    pattern: /^[a-z0-9 -.,_]+$/i,
+                    message: 'please insert the value'
+                  }
+                ]
+              })(
+                <Select style={{ width: '100%' }} min={0} disabled={getFieldValue('typeCode') !== 'G'} maxLength={10}>
+                  {listSupplierBank.map(list => <Option value={list.id}>{`${list.accountName} (${list.accountNo})`}</Option>)}
+                </Select>
+              )}
+              <Button disabled={getFieldValue('typeCode') === 'C'} type="primary" icon="plus" onClick={handleClickAddBank}>Add Bank</Button>
             </FormItem>
           </Col>
-          <Col md={12} sm={24}>
+          <Col lg={12} md={12} sm={24}>
             <FormItem label="Note" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description', {
                 initialValue: item.description,
@@ -188,32 +237,58 @@ const modal = ({
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
             </FormItem>
-            <FormItem label="EDC" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('machine', {
-                initialValue: item.machine,
+            {getFieldValue('typeCode') !== 'C' && listEdc && (
+              <FormItem label="EDC" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('machine', {
+                  initialValue: item.machine,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C'
+                    }
+                  ]
+                })(
+                  <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                    {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
+                  </Select>
+                )}
+              </FormItem>
+            )}
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Card" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bank', {
+                  initialValue: item.bank,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C'
+                    }
+                  ]
+                })(
+                  <Select style={{ width: '100%' }} min={0} maxLength={10}>
+                    {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                  </Select>
+                )}
+              </FormItem>
+            )}
+            <FormItem
+              label="Trans Date"
+              hasFeedback
+              {...formItemLayout}
+            >
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment.utc(item.transDate, 'YYYY-MM-DD') : moment(),
                 rules: [
                   {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
+                    required: getFieldValue('typeCode') !== 'C',
+                    message: 'please insert the value'
                   }
                 ]
               })(
-                <Select onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {listEdc.map(list => <Option value={list.id}>{list.name}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem label="Card" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('bank', {
-                initialValue: item.bank,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
-                  }
-                ]
-              })(
-                <Select style={{ width: '100%' }} min={0} maxLength={10}>
-                  {listCost.map(list => <Option value={list.id}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
-                </Select>
+                <DatePicker
+                  format="YYYY-MM-DD"
+                  placeholder="Select Date"
+                  disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
+                  style={{ width: '100%', fontSize: '14pt' }}
+                />
               )}
             </FormItem>
             <FormItem
@@ -273,7 +348,7 @@ const modal = ({
           </Col>
         </Row>
       </Form>
-    </Modal>
+    </Modal >
   )
 }
 

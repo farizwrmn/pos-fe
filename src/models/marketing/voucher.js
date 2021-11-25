@@ -2,10 +2,11 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/marketing/voucher'
+import { query as querySequence } from 'services/sequence'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Voucher has been saved')
 }
 
 export default modelExtend(pageModel, {
@@ -13,6 +14,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    newTransNo: '',
     modalType: 'add',
     activeKey: '0',
     list: [],
@@ -26,22 +28,41 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, modalType, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/marketing/voucher') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            dispatch({ type: 'query', payload: other })
+          } else {
+            dispatch({ type: 'queryLastAdjust', payload: { modalType } })
+          }
         }
       })
     }
   },
 
   effects: {
+    * queryLastAdjust ({ payload = {} }, { call, put }) {
+      const invoice = {
+        seqCode: 'VOU',
+        type: 1,
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const transNo = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          newTransNo: transNo
+        }
+      })
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)

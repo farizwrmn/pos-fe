@@ -34,3 +34,6 @@ export const AJIN = 'AJIN'
 export const AJOUT = 'AJOUT'
 export const RBB = 'RBB'
 export const RJJ = 'RJJ'
+export const VOUCHER = 'VOUC'
+
+export const VOUCHER_STORE_ID = 1

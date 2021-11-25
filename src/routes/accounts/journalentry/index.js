@@ -140,6 +140,28 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
       })
       message.success('success add item')
     },
+    onDelete (no) {
+      let { listItem } = journalentry
+      Modal.confirm({
+        title: 'Delete This Item',
+        content: 'Are your sure to delete this item ?',
+        onOk () {
+          listItem = listItem
+            .filter(filtered => filtered.no !== no)
+            .map((item, index) => ({ ...item, no: index + 1 }))
+          dispatch({
+            type: 'journalentry/updateState',
+            payload: {
+              modalVisible: false,
+              modalItemType: 'add',
+              listItem,
+              currentItemList: {}
+            }
+          })
+          message.success('success delete item')
+        }
+      })
+    },
     editModalItem (data) {
       const { listItem } = journalentry
       listItem[data.no - 1] = data
