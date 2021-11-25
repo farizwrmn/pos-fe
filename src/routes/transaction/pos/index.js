@@ -1925,7 +1925,7 @@ const Pos = ({
                 <Tag style={{ marginBottom: '10px' }} closable color="orange" onClose={handleCloseBuildComponent}>{currentBuildComponent.name}</Tag>
               )}
               {listVoucher.map(item => (
-                <Tag style={{ marginBottom: '10px' }} key={item.generatedCode} closable color="green" onClose={e => onDeleteVoucher(e, item.generatedCode)}>{item.voucherName} - {item.generatedCode.substring(0, 6)}XXX{item.generatedCode.substring(item.generatedCode.length - 6, item.generatedCode.length)}</Tag>
+                <Tag style={{ marginBottom: '10px' }} key={item.generatedCode} closable color="green" onClose={e => onDeleteVoucher(e, item.generatedCode)}>{item.voucherName} - {item.generatedCode}</Tag>
               ))}
               <Row>
                 <Col lg={10} md={24}>

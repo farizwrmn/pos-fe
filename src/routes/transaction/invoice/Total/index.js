@@ -18,12 +18,6 @@ const Total = ({
   let TotalQty = merge.reduce((cnt, o) => cnt + o.qty, 0)
   let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
   const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal), 0)
-  // const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
-  const curCashPayment = listAmount.filter(filtered => filtered.typeCode === 'C')
-    .reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
-  const curNotCashPayment = listAmount.filter(filtered => filtered.typeCode !== 'C')
-    .reduce((cnt, o) => cnt + parseFloat(o.paid), 0)
-  const curChange = curCashPayment > (Total - curNotCashPayment) ? curCashPayment > ((parseFloat(Total) + parseFloat(posData.dineInTax)) - curNotCashPayment) : 0
 
   return (
     <div className={styles.amountSection}>
@@ -84,7 +78,7 @@ const Total = ({
         </Col>
         <Col span={12} className={styles.right}>
           <strong className={styles.change}>
-            {numberFormatter(curChange)}
+            {numberFormatter(posData.change)}
           </strong>
         </Col>
       </Row>
