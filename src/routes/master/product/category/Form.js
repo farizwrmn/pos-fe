@@ -161,8 +161,8 @@ const formProductCategory = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^.{3,20}$/,
-                  message: 'Category Name must be between 3 and 20 characters'
+                  pattern: /^.{3,50}$/,
+                  message: 'Category Name must be between 3 and 50 characters'
                 }
               ]
             })(<Input />)}
