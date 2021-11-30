@@ -65,7 +65,7 @@ class TransactionDetail extends Component {
               {
                 title: 'Product',
                 dataIndex: 'code',
-                width: '300px',
+                width: '400px',
                 render: (text, record) => {
                   return (
                     <div>
@@ -84,7 +84,7 @@ class TransactionDetail extends Component {
               {
                 title: 'Price',
                 dataIndex: 'sellPrice',
-                width: '300px',
+                width: '120px',
                 className: styles.alignRight,
                 render: (text, record) => {
                   const total = record.total
