@@ -105,7 +105,7 @@ class Pos extends Component {
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
           <Row>
-            <Col span={16}>
+            <Col span={14}>
               <TransactionDetail
                 pos={pos}
                 dispatch={dispatch}
@@ -116,7 +116,7 @@ class Pos extends Component {
                 loading={loading}
               />
             </Col>
-            <Col span={8} style={{ alignItems: 'center', textAlign: 'center' }} >
+            <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
               <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>
                   <div style={{ float: 'right' }}>
