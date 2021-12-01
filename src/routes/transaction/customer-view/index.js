@@ -2,18 +2,24 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
-import { Form, Input, Row, Col, Card } from 'antd'
+import {
+  // Form,
+  // Input,
+  Row,
+  Col,
+  Card
+} from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
 
 const { getQrisImage, getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
-const FormItem = Form.Item
+// const FormItem = Form.Item
 
-const formItemLayout1 = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 11 }
-}
+// const formItemLayout1 = {
+//   labelCol: { span: 10 },
+//   wrapperCol: { span: 11 }
+// }
 
 function addHandler (ele, trigger, handler) {
   if (window.addEventListener) {
@@ -106,7 +112,23 @@ class Pos extends Component {
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
           <Row>
             <Col span={14}>
+              {/* <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+                <Form>
+                  <div style={{ float: 'right' }}>
+                    <Row>
+                      <FormItem label="Total Qty" {...formItemLayout1}>
+                        <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
+                      </FormItem>
+                      <FormItem label="Netto" {...formItemLayout1}>
+                        <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
+                      </FormItem>
+                    </Row>
+                  </div>
+                </Form>
+              </Card> */}
               <TransactionDetail
+                qty={totalQty || 0}
+                netto={parseFloat(curNetto) + parseFloat(dineIn)}
                 pos={pos}
                 dispatch={dispatch}
                 bundle={bundle}
@@ -117,30 +139,6 @@ class Pos extends Component {
               />
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
-              <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-                <Form>
-                  <div style={{ float: 'right' }}>
-                    <Row>
-                      <FormItem label="Total Qty" {...formItemLayout1}>
-                        <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                    </Row>
-                    <Row>
-                      <FormItem label="Total" {...formItemLayout1}>
-                        <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                    </Row>
-                    <Row>
-                      <FormItem label="Service Charge" {...formItemLayout1}>
-                        <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                      <FormItem label="Netto" {...formItemLayout1}>
-                        <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                    </Row>
-                  </div>
-                </Form>
-              </Card>
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
                 : null}
               {/* <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" /> */}
@@ -154,9 +152,9 @@ class Pos extends Component {
 
 Pos.propTypes = {
   pos: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  loading: PropTypes.object.isRequired
+  // location: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired
+  // loading: PropTypes.object.isRequired
 }
 
 export default connect(({
