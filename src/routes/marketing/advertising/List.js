@@ -38,15 +38,8 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'image',
       width: '100px',
       render: (text) => {
-        if (text
-          && text != null
-          && text !== '["no_image.png"]'
-          && text !== '"no_image.png"'
-          && text !== 'no_image.png') {
-          const item = JSON.parse(text)
-          if (item && item[0]) {
-            return <img height="70px" src={`${IMAGEURL}/${withoutFormat(item[0])}-main.jpg`} alt="no_image" />
-          }
+        if (text) {
+          return <img height="70px" src={`${IMAGEURL}/${withoutFormat(text)}-main.jpg`} alt="no_image" />
         }
         return null
       }
