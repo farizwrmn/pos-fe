@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Icon, message, Upload, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Select, InputNumber, Icon, message, Upload, Button, Row, Col, Modal } from 'antd'
 import { IMAGEURL, rest } from 'utils/config.company'
 
 const { apiCompanyURL } = rest
+const { Option } = Select
 
 const FormItem = Form.Item
 
@@ -103,7 +104,12 @@ const FormCounter = ({
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(
+              <Select>
+                <Option value="CUSTVIEW">Customer View</Option>
+                <Option value="CASHIER">Cashier View</Option>
+              </Select>
+            )}
           </FormItem>
           <FormItem label="Sort" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
