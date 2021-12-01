@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import FormData from 'form-data'
+import { uploadAdvertisingImage } from 'services/utils/imageUploader'
 import { query, add, edit, remove } from 'services/marketing/advertising'
 import { pageModel } from '../common'
 
@@ -70,6 +72,37 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
+          const formData = new FormData()
+          formData.append('file', item.originFileObj)
+          const responseUpload = yield call(uploadAdvertisingImage, formData)
+          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+            uploadedImage.push(responseUpload.data.filename)
+          }
+          break
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.productImage = uploadedImage[0]
+      } else {
+        payload.data.productImage = 'no_image.png'
+      }
+      // End - Upload Image
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
@@ -98,8 +131,49 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      const productImage = yield select(({ advertising }) => advertising.currentItem.image)
       const id = yield select(({ advertising }) => advertising.currentItem.id)
+      let uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
+          if (item && item.originFileObj) {
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadAdvertisingImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+          } else if (item && item.name) {
+            uploadedImage.push(item.name)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      } else if (productImage
+        && productImage != null
+        && productImage !== '["no_image.png"]'
+        && productImage !== '"no_image.png"'
+        && productImage !== 'no_image.png') {
+        uploadedImage = JSON.parse(productImage)
+      }
+      // End - Upload Image
       const newCounter = { ...payload.data, id }
+      if (uploadedImage && uploadedImage.length > 0) {
+        newCounter.productImage = uploadedImage
+      } else {
+        newCounter.productImage = 'no_image.png'
+      }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()

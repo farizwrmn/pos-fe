@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, InputNumber, Icon, message, Upload, Button, Row, Col, Modal } from 'antd'
+import { IMAGEURL, rest } from 'utils/config.company'
+
+const { apiCompanyURL } = rest
 
 const FormItem = Form.Item
 
@@ -82,26 +85,101 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Advertising Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('name', {
+              initialValue: item.name,
               rules: [
                 {
                   required: true
                 }
               ]
             })(<Input maxLength={50} />)}
+          </FormItem>
+          <FormItem label="Advertising Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('type', {
+              initialValue: item.type,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input maxLength={50} />)}
+          </FormItem>
+          <FormItem label="Sort" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('name', {
+              initialValue: item.sort == null ? item.sort : 10,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={1} max={10} />)}
+          </FormItem>
+          <FormItem help="Only 1 Image" label="Image" {...formItemLayout}>
+            {getFieldDecorator('productImage', {
+              initialValue: item.productImage
+                && item.productImage != null
+                && item.productImage !== '["no_image.png"]'
+                && item.productImage !== '"no_image.png"'
+                && item.productImage !== 'no_image.png' ?
+                {
+                  fileList: JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                }
+                : [],
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Upload
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                defaultFileList={item.productImage
+                  && item.productImage != null
+                  && item.productImage !== '["no_image.png"]'
+                  && item.productImage !== '"no_image.png"'
+                  && item.productImage !== 'no_image.png' ?
+                  JSON.parse(item.productImage).map((detail, index) => {
+                    return ({
+                      uid: index + 1,
+                      name: detail,
+                      status: 'done',
+                      url: `${IMAGEURL}/${detail}`,
+                      thumbUrl: `${IMAGEURL}/${detail}`
+                    })
+                  })
+                  : []}
+                listType="picture"
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { IMAGEURL } from 'utils/config.company'
+import { withoutFormat } from 'utils/string'
 
 const confirm = Modal.confirm
 
@@ -21,19 +23,38 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'advertising',
-      key: 'advertising'
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type'
     },
     {
       title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Image',
+      dataIndex: 'image',
+      key: 'image',
+      width: '100px',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '["no_image.png"]'
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          const item = JSON.parse(text)
+          if (item && item[0]) {
+            return <img height="70px" src={`${IMAGEURL}/${withoutFormat(item[0])}-main.jpg`} alt="no_image" />
+          }
+        }
+        return null
+      }
+    },
+    {
+      title: 'Sort',
+      dataIndex: 'sort',
+      key: 'sort'
     },
     {
       title: 'Operation',
@@ -41,7 +62,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', disabled: false, name: 'Delete' }]} />
       }
     }
   ]
