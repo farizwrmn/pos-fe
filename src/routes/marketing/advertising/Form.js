@@ -112,8 +112,8 @@ const FormCounter = ({
             )}
           </FormItem>
           <FormItem label="Sort" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('name', {
-              initialValue: item.sort == null ? item.sort : 10,
+            {getFieldDecorator('sort', {
+              initialValue: item.sort == null ? 10 : item.sort,
               rules: [
                 {
                   required: true
@@ -122,14 +122,14 @@ const FormCounter = ({
             })(<InputNumber min={1} max={10} />)}
           </FormItem>
           <FormItem help="Only 1 Image" label="Image" {...formItemLayout}>
-            {getFieldDecorator('productImage', {
-              initialValue: item.productImage
-                && item.productImage != null
-                && item.productImage !== '["no_image.png"]'
-                && item.productImage !== '"no_image.png"'
-                && item.productImage !== 'no_image.png' ?
+            {getFieldDecorator('image', {
+              initialValue: item.image
+                && item.image != null
+                && item.image !== '["no_image.png"]'
+                && item.image !== '"no_image.png"'
+                && item.image !== 'no_image.png' ?
                 {
-                  fileList: JSON.parse(item.productImage).map((detail, index) => {
+                  fileList: JSON.parse(item.image).map((detail, index) => {
                     return ({
                       uid: index + 1,
                       name: detail,
@@ -150,12 +150,11 @@ const FormCounter = ({
                 showUploadList={{
                   showPreviewIcon: true
                 }}
-                defaultFileList={item.productImage
-                  && item.productImage != null
-                  && item.productImage !== '["no_image.png"]'
-                  && item.productImage !== '"no_image.png"'
-                  && item.productImage !== 'no_image.png' ?
-                  JSON.parse(item.productImage).map((detail, index) => {
+                defaultFileList={item.image
+                  && item.image != null
+                  && item.image !== '["no_image.png"]'
+                  && item.image !== '"no_image.png"' ?
+                  JSON.parse(item.image).map((detail, index) => {
                     return ({
                       uid: index + 1,
                       name: detail,
