@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import {
   Tooltip,
   // Badge,
+  Icon,
   Button
 } from 'antd'
+import { lstorage } from 'utils'
+import styles from './LovButton.less'
 
 const ButtonGroup = Button.Group
 
@@ -87,6 +90,7 @@ const LovButton = ({
   const handleCustomerView = () => {
     window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
   }
+  const currentStoreName = lstorage.getCurrentUserStoreName()
 
   return (
     <div>
@@ -153,6 +157,9 @@ const LovButton = ({
       >
         Customer View
       </Button>
+      <span style={{ marginLeft: '30px' }} className={styles.currentStore}>{currentStoreName}
+        <Icon type="shop" />
+      </span>
     </div >
   )
 }
