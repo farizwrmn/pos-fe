@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {
   Tooltip,
   // Badge,
-  Icon,
   Button
 } from 'antd'
 import { lstorage } from 'utils'
@@ -90,6 +89,9 @@ const LovButton = ({
   const handleCustomerView = () => {
     window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
   }
+  const handleHome = () => {
+    window.open('/balance/current', '_blank')
+  }
   const currentStoreName = lstorage.getCurrentUserStoreName()
 
   return (
@@ -157,9 +159,16 @@ const LovButton = ({
       >
         Customer View
       </Button>
-      <span style={{ marginLeft: '30px' }} className={styles.currentStore}>{currentStoreName}
-        <Icon type="shop" />
+      <span style={{ marginLeft: '30px' }} className={styles.currentStore}>
+        {currentStoreName}
       </span>
+      <Button
+        type="primary"
+        size="large"
+        icon="home"
+        style={{ marginLeft: '30px' }}
+        onClick={() => handleHome()}
+      />
     </div >
   )
 }
