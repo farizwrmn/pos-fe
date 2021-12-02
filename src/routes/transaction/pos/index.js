@@ -40,6 +40,7 @@ import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
 import { groupProduct } from './utils'
+import Advertising from './Advertising'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -92,6 +93,7 @@ const Pos = ({
     modalProductVisible,
     modalConsignmentVisible,
     modalPaymentVisible,
+    listAdvertising,
     curQty,
     totalItem,
     curTotal,
@@ -1915,6 +1917,7 @@ const Pos = ({
               productBookmarkGroup={productBookmarkGroup}
               productBookmark={productBookmark}
             />
+            <Advertising list={listAdvertising} />
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>

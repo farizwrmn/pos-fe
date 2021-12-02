@@ -48,7 +48,7 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, {
         ...payload,
-        order: 'type,sort,id'
+        order: 'typeAds,sort,id'
       })
       if (data.success) {
         yield put({

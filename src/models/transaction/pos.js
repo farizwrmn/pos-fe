@@ -320,7 +320,8 @@ export default {
         }
       })
       const response = yield call(queryAdvertising, {
-        type: 'CASHIER',
+        type: 'all',
+        typeAds: 'CASHIER',
         order: 'sort'
       })
       if (response && response.success) {
@@ -343,7 +344,8 @@ export default {
         }
       })
       const response = yield call(queryAdvertising, {
-        type: 'CUSTVIEW',
+        type: 'all',
+        typeAds: 'CUSTVIEW',
         order: 'sort'
       })
       if (response && response.success) {

@@ -97,8 +97,8 @@ const FormCounter = ({
             })(<Input maxLength={50} />)}
           </FormItem>
           <FormItem label="Advertising Type" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('type', {
-              initialValue: item.type,
+            {getFieldDecorator('typeAds', {
+              initialValue: item.typeAds,
               rules: [
                 {
                   required: true
@@ -120,6 +120,26 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber min={1} max={10} />)}
+          </FormItem>
+          <FormItem label="Width" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('width', {
+              initialValue: modalType === 'add' ? 'auto' : item.width,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Height" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('height', {
+              initialValue: modalType === 'add' ? '100px' : item.height,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input />)}
           </FormItem>
           <FormItem help="Only 1 Image" label="Image" {...formItemLayout}>
             {getFieldDecorator('image', {

@@ -18,8 +18,8 @@ class TransactionDetail extends Component {
   render () {
     const {
       // dispatch,
-      qty,
-      netto,
+      // qty,
+      // netto,
       product,
       bundle,
       service,
@@ -46,12 +46,12 @@ class TransactionDetail extends Component {
     return (
       <div>
         <Table
-          title={() => (
-            <div style={{ textAlign: 'right' }}>
-              <div>Qty: {qty.toLocaleString()}</div>
-              <div><strong>Netto: {netto.toLocaleString()}</strong></div>
-            </div>
-          )}
+          // title={() => (
+          //   <div style={{ textAlign: 'right' }}>
+          //     <div>Qty: {qty.toLocaleString()}</div>
+          //     <div><strong>Netto: {netto.toLocaleString()}</strong></div>
+          //   </div>
+          // )}
           loading={loading}
           rowKey={(record, key) => key}
           bordered
