@@ -46,7 +46,10 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        ...payload,
+        order: 'type,sort,id'
+      })
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -110,12 +113,17 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
+            activeKey: '1',
             currentItem: {}
           }
         })
-        yield put({
-          type: 'query'
-        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
         if (payload.reset) {
           payload.reset()
         }
@@ -165,12 +173,12 @@ export default modelExtend(pageModel, {
         && image !== '["no_image.png"]'
         && image !== '"no_image.png"'
         && image !== 'no_image.png') {
-        uploadedImage = image
+        uploadedImage = [image]
       }
       // End - Upload Image
       const newCounter = { ...payload.data, id }
       if (uploadedImage && uploadedImage.length > 0) {
-        newCounter.image = uploadedImage
+        newCounter.image = uploadedImage && uploadedImage[0] ? uploadedImage[0] : null
       } else {
         newCounter.image = 'no_image.png'
       }

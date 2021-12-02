@@ -129,15 +129,15 @@ const FormCounter = ({
                 && item.image !== '"no_image.png"'
                 && item.image !== 'no_image.png' ?
                 {
-                  fileList: JSON.parse(item.image).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
+                  fileList: [
+                    {
+                      uid: 1,
+                      name: item.image,
                       status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
+                      url: `${IMAGEURL}/${item.image}`,
+                      thumbUrl: `${IMAGEURL}/${item.image}`
+                    }
+                  ]
                 }
                 : [],
               rules: [
@@ -154,15 +154,15 @@ const FormCounter = ({
                   && item.image != null
                   && item.image !== '["no_image.png"]'
                   && item.image !== '"no_image.png"' ?
-                  JSON.parse(item.image).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
+                  [
+                    {
+                      uid: 1,
+                      name: item.image,
                       status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
+                      url: `${IMAGEURL}/${item.image}`,
+                      thumbUrl: `${IMAGEURL}/${item.image}`
+                    }
+                  ]
                   : []}
                 listType="picture"
                 action={`${apiCompanyURL}/time/time`}
