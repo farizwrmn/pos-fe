@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import {
   currencyFormatter,
   numberFormatter
 } from 'utils/string'
-import { Table, Tabs } from 'antd'
+import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
-const TabPane = Tabs.TabPane
+// const TabPane = Tabs.TabPane
 
 class TransactionDetail extends Component {
   state = {
@@ -17,7 +17,9 @@ class TransactionDetail extends Component {
 
   render () {
     const {
-      dispatch,
+      // dispatch,
+      // qty,
+      // netto,
       product,
       bundle,
       service,
@@ -32,81 +34,85 @@ class TransactionDetail extends Component {
       loading
     } = this.props
 
-    const changePaymentListTab = (key) => {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          paymentListActiveKey: key
-        }
-      })
-    }
+    // const changePaymentListTab = (key) => {
+    //   dispatch({
+    //     type: 'pos/updateState',
+    //     payload: {
+    //       paymentListActiveKey: key
+    //     }
+    //   })
+    // }
 
     return (
-      <Tabs activeKey="1" onChange={key => changePaymentListTab(key)} >
-        <TabPane tab="Sales" key="1">
-          <Table
-            loading={loading}
-            rowKey={(record, key) => key}
-            bordered
-            pagination={false}
-            size="small"
-            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            locale={{
-              emptyText: 'Your Payment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '40px',
-                dataIndex: 'no',
-                sortOrder: 'descend',
-                sorter: (a, b) => a.no - b.no
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '400px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '120px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  const total = record.total
-                  return (
-                    <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
-                    </div>
-                  )
-                }
+      <div>
+        <Table
+          // title={() => (
+          //   <div style={{ textAlign: 'right' }}>
+          //     <div>Qty: {qty.toLocaleString()}</div>
+          //     <div><strong>Netto: {netto.toLocaleString()}</strong></div>
+          //   </div>
+          // )}
+          loading={loading}
+          rowKey={(record, key) => key}
+          bordered
+          pagination={false}
+          size="small"
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
+          locale={{
+            emptyText: 'Your Payment List'
+          }}
+          columns={[
+            {
+              title: 'No',
+              width: '60px',
+              dataIndex: 'no',
+              sortOrder: 'descend',
+              sorter: (a, b) => a.no - b.no
+            },
+            {
+              title: 'Product',
+              dataIndex: 'code',
+              width: '380px',
+              render: (text, record) => {
+                return (
+                  <div>
+                    <div><strong>{record.code}</strong>-{record.name}</div>
+                  </div>
+                )
               }
-            ]}
-            dataSource={listTrans}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-      </Tabs>
+            },
+            {
+              title: 'Qty',
+              dataIndex: 'qty',
+              width: '40px',
+              className: styles.alignCenter,
+              render: text => numberFormatter((text).toLocaleString())
+            },
+            {
+              title: 'Price',
+              dataIndex: 'sellPrice',
+              width: '120px',
+              className: styles.alignRight,
+              render: (text, record) => {
+                const total = record.total
+                return (
+                  <div>
+                    <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                  </div>
+                )
+              }
+            }
+          ]}
+          dataSource={listTrans}
+          style={{ marginBottom: 16 }}
+        />
+      </div>
     )
   }
 }
 
 TransactionDetail.propTypes = {
-  dispatch: PropTypes.func.isRequired
+  // dispatch: PropTypes.func.isRequired
 }
 
 export default TransactionDetail

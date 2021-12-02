@@ -84,9 +84,9 @@ const LovButton = ({
   // handleQueue,
   workOrderItem
 }) => {
-  // const handleCustomerView = () => {
-  //   window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
-  // }
+  const handleCustomerView = () => {
+    window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
+  }
 
   return (
     <div>
@@ -144,14 +144,15 @@ const LovButton = ({
           Queue
         </Button>
       </Badge> */}
-      {/* <Button
-        type="primary"
+      <Button
+        type="secondary"
         size="large"
-        icon="user"
+        icon="laptop"
+        style={{ backgroundColor: '#FFFF00', borderColor: '#FFFF00' }}
         onClick={() => handleCustomerView()}
       >
         Customer View
-      </Button> */}
+      </Button>
     </div >
   )
 }

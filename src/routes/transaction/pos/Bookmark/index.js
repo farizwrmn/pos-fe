@@ -28,7 +28,7 @@ const Bookmark = ({
   return (
     <div>
       {listBookmark && listBookmark.length > 0 ? (
-        <Card title="Bookmark">
+        <Card title={null}>
           <Tabs onChange={onChange}>
             {listBookmark.map((item => (
               <Tabs.TabPane tab={item.name} key={`${item.id}`}>
@@ -58,7 +58,7 @@ const Bookmark = ({
                               </div> */}
                               {/* <div>{item && item.product ? item.product.productCode : item.bundle.code}</div> */}
                               <div>
-                                <h3>{item && item.product ? item.product.productName : item.bundle.name}</h3>
+                                <h4>{item && item.product ? item.product.productName : item.bundle.name}</h4>
                               </div>
                               {/* <div>{item && item.product ? currencyFormatter(item.product.sellPrice) : null}</div> */}
                             </Card.Grid>

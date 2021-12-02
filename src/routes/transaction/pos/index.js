@@ -40,6 +40,7 @@ import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
 import { groupProduct } from './utils'
+import Advertising from './Advertising'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -92,6 +93,7 @@ const Pos = ({
     modalProductVisible,
     modalConsignmentVisible,
     modalPaymentVisible,
+    listAdvertising,
     curQty,
     totalItem,
     curTotal,
@@ -1915,6 +1917,7 @@ const Pos = ({
               productBookmarkGroup={productBookmarkGroup}
               productBookmark={productBookmark}
             />
+            <Advertising list={listAdvertising} />
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
@@ -2068,15 +2071,26 @@ const Pos = ({
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
 
-      {memberInformation.memberTypeName && <div className="wrapper-switcher">
-        <Button onClick={showModalCashback} className="btn-member">
+      {memberInformation.memberTypeName && (
+        <div className="wrapper-switcher">
+          <Button onClick={showModalCashback} className="btn-member">
+            <span>
+              <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
+              <p>{(memberInformation.cashback || 0).toLocaleString()} Loyalty</p>
+              <p>Click to add Voucher</p>
+            </span>
+          </Button>
+        </div>
+      )}
+
+      <div className="wrapper-switcher">
+        <Button onClick={() => window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)} className="btn-customer-view">
           <span>
-            <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
-            <p>{(memberInformation.cashback || 0).toLocaleString()} Loyalty</p>
-            <p>Click to add Voucher</p>
+            <h2><Icon type="laptop" style={{ color: '#charcoal' }} /></h2>
+            <p>Customer View</p>
           </span>
         </Button>
-      </div>}
+      </div>
       {
         (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>

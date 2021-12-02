@@ -328,15 +328,15 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={`logo-${APPNAME}.png`} type="image/x-icon" />
       </Helmet>
-      <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
-        {!isNavbar ? <aside style={{ backgroundColor: sidebarColor }} className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
+      <div className={pathname === '/transaction/pos' ? classnames(styles.layout, styles.fold) : classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
+        {pathname !== '/transaction/pos' && !isNavbar ? <aside style={{ backgroundColor: sidebarColor }} className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
           <Sider {...siderProps} />
         </aside> : null}
         <LocaleProvider locale={enUS}>
-          <div className={styles.main}>
-            <Header {...headerProps} />
-            <Bread {...breadProps} />
-            <div className={styles.container}>
+          <div className={pathname !== '/transaction/pos' ? styles.main : classnames(styles.main, styles.minormain)}>
+            {pathname !== '/transaction/pos' && <Header {...headerProps} />}
+            {pathname !== '/transaction/pos' && <Bread {...breadProps} />}
+            <div className={pathname !== '/transaction/pos' ? styles.container : styles.containerNoMargin}>
               <div className={styles.content}>
                 {loading.effects['app/query'] ? <Loader spinning={loading.effects['app/query']} /> :
                   hasPermission ? children : <Error />}
