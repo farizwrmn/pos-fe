@@ -138,6 +138,9 @@ export default {
         const misc = yield call(miscQuery, { code: 'company' })
         const { miscName: name, miscDesc: address01, miscVariable: address02 } = (misc.data[0])
         const storeInfo = { name, address01, address02, startPeriod, endPeriod }
+        if (storeInfoData && storeInfoData.label) {
+          storeInfo.storeName = storeInfoData.label.replace('* ', '')
+        }
 
         storeInfo.stackHeader01 = [
           { text: (name || '') },

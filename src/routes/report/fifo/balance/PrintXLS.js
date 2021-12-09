@@ -301,7 +301,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo, activeKey }) => {
         title = 'LAPORAN REKAP FIFO'
         break
       case '1':
-        title = 'LAPORAN SISA SALDO STOCK'
+        title = `${storeInfo.storeName} - LAPORAN SISA SALDO STOCK`
         break
       case '2':
         title = 'LAPORAN NILAI PERSEDIAAN'
