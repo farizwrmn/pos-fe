@@ -52,6 +52,7 @@ const Payment = ({
     curCashierNo,
     cashierInformation,
     selectedPaymentShortcut,
+    currentBundlePayment,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -221,6 +222,7 @@ const Payment = ({
         listPayment: []
       }
     })
+
     dispatch({
       type: 'paymentEdc/query',
       payload: {
@@ -262,6 +264,7 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    currentBundlePayment,
     selectedPaymentShortcut,
     confirmPayment,
     cancelPayment,

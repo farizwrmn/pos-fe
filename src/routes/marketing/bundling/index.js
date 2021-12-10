@@ -11,10 +11,12 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location, app }) => {
+const Master = ({ bundling, bank, paymentOpts, grabCategory, userStore, loading, dispatch, location, app }) => {
   const { typeModal, pagination, modalCancelVisible, invoiceCancel, listBundling, itemEditListRules, itemEditListReward, modalEditRulesVisible, modalEditRewardVisible, listRules, listReward, modalType, currentItem, activeKey, modalProductVisible } = bundling
   const { listAllStores } = userStore
   const { list: listGrabCategory } = grabCategory
+  const { listOpts } = paymentOpts
+  const { listBank } = bank
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -150,6 +152,8 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
   }
 
   const formProps = {
+    listPaymentOption: listOpts,
+    listBank,
     mode: '',
     modalType,
     typeModal,
@@ -423,6 +427,8 @@ const Master = ({ bundling, grabCategory, userStore, loading, dispatch, location
 
 Master.propTypes = {
   grabCategory: PropTypes.object,
+  paymentOpts: PropTypes.object,
+  bank: PropTypes.object,
   bundling: PropTypes.object,
   productstock: PropTypes.object,
   service: PropTypes.object,
@@ -433,4 +439,4 @@ Master.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ bundling, grabCategory, productstock, service, userStore, loading, app }) => ({ bundling, grabCategory, productstock, service, userStore, loading, app }))(Master)
+export default connect(({ bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }) => ({ bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }))(Master)

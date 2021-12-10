@@ -16,6 +16,7 @@ const Counter = ({ paymentOpts, paymentEdc, accountCode, loading, dispatch, loca
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
+      console.log('onFilterChange')
       dispatch({
         type: 'paymentEdc/query',
         payload: {

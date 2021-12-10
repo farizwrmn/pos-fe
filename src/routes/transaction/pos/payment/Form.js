@@ -61,12 +61,17 @@ class FormPayment extends React.Component {
   componentDidMount () {
     const {
       selectedPaymentShortcut,
+      currentBundlePayment,
       onGetMachine,
       onResetMachine
     } = this.props
     if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
       onResetMachine()
-      onGetMachine(selectedPaymentShortcut.typeCode)
+      if (currentBundlePayment && currentBundlePayment.paymentBankId) {
+        onGetMachine(currentBundlePayment.paymentOption)
+      } else {
+        onGetMachine(selectedPaymentShortcut.typeCode)
+      }
       // onGetCost(selectedPaymentShortcut.machine)
     }
     // eslint-disable-next-line react/no-did-mount-set-state
@@ -88,6 +93,7 @@ class FormPayment extends React.Component {
 
   render () {
     const {
+      currentBundlePayment,
       item = {},
       paymentModalVisible,
       onSubmit,
@@ -297,7 +303,10 @@ class FormPayment extends React.Component {
           <Col md={12} sm={24}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('typeCode', {
-                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? typeCode : (item.typeCode ? item.typeCode : 'C'),
+                initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
+                  currentBundlePayment.paymentOption
+                  : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+                    typeCode : (item.typeCode ? item.typeCode : 'C')),
                 rules: [
                   {
                     required: true
@@ -306,7 +315,7 @@ class FormPayment extends React.Component {
               })(
                 <TreeSelect
                   showSearch
-                  disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine}
+                  disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
                   dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   treeNodeFilterProp="title"
                   filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
@@ -360,7 +369,7 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(
-                <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.machine} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
                   {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
                 </Select>
               )}
@@ -376,7 +385,7 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(
-                <Select disabled={selectedPaymentShortcut && selectedPaymentShortcut.bank} style={{ width: '100%' }} min={0} maxLength={10}>
+                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank)} style={{ width: '100%' }} min={0} maxLength={10}>
                   {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
                 </Select>
               )}

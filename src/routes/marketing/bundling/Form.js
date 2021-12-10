@@ -62,6 +62,8 @@ const FormCounter = ({
   item = {},
   listGrabCategory = [],
   listAllStores = [],
+  listPaymentOption = [],
+  listBank = [],
   onSubmit,
   showModal,
   hideModal,
@@ -470,6 +472,11 @@ const FormCounter = ({
   }
 
   const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
+  const paymentOptionList = (listPaymentOption || []).length > 0 ? listPaymentOption.map(c => <Option value={c.typeCode} key={c.typeCode} title={c.typeName}>{`${c.typeName} (${c.typeCode})`}</Option>) : []
+  const paymentBankList = (listBank || []).length > 0 ? listBank.map(c => <Option value={c.id} key={c.id} title={c.bankName}>{c.bankName}</Option>) : []
+  const filterOption = (input, option) => {
+    return option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  }
 
   return (
     <Form layout="horizontal">
@@ -713,6 +720,53 @@ const FormCounter = ({
               ]
             })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
+          <FormItem {...formItemLayout} label="Minimum Payment" help="Usage in before payment Offering (ex. Promo DBS Kartu Kredit jika lebih dari 200 ribu maka mendapatkan 1 minuman gratis)">
+            {getFieldDecorator('minimumPayment', {
+              initialValue: modalType === 'add' ? 0 : item.minimumPayment,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^([0-9.]{0,11})$/i
+              }]
+            })(
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+              />
+            )}
+          </FormItem>
+          {getFieldValue('minimumPayment') > 0 && <FormItem label="Payment Option" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('paymentOption', {
+              initialValue: item.paymentOption,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              filterOption={filterOption}
+            >{paymentOptionList}
+            </Select>)}
+          </FormItem>}
+          {getFieldValue('minimumPayment') > 0 && <FormItem label="Payment Bank" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('paymentBankId', {
+              initialValue: item.paymentBankId,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              filterOption={filterOption}
+            >{paymentBankList}
+            </Select>)}
+          </FormItem>}
           <FormItem label="Publish on e-commerce" {...formItemLayout}>
             {getFieldDecorator('activeShop', {
               valuePropName: 'checked',
