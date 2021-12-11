@@ -399,7 +399,7 @@ class FormPayment extends React.Component {
               {...formItemLayout}
             >
               {getFieldDecorator('printDate', {
-                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.bank ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
+                initialValue: (currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank) ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
                   item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss')
                     : null),
                 rules: [
