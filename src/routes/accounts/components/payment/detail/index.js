@@ -54,6 +54,7 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
       })
     },
     onGetMachine (paymentOption) {
+      console.log('onGetMachine')
       dispatch({
         type: 'paymentEdc/query',
         payload: {
@@ -141,6 +142,7 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
           [e]: true
         }
       })
+      console.log('openModal')
       dispatch({
         type: 'paymentEdc/query',
         payload: {

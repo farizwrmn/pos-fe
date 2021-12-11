@@ -1515,6 +1515,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/service'))
               registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/specification'))
               cb(null, require('./routes/marketing/bundling'))

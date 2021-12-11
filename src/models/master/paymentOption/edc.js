@@ -78,6 +78,8 @@ export default modelExtend(pageModel, {
           })
         }
         const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
+        const currentBundlePayment = yield select(({ pos }) => (pos ? pos.currentBundlePayment : {}))
+        console.log('currentBundlePayment', currentBundlePayment)
         if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
           if (listPayment && listPayment.length === 1) {
             yield put({
@@ -86,13 +88,24 @@ export default modelExtend(pageModel, {
                 listPayment: []
               }
             })
-            yield put({
-              type: 'paymentCost/query',
-              payload: {
-                machineId: listPayment[0].id,
-                relationship: 1
-              }
-            })
+            if (currentBundlePayment && currentBundlePayment.paymentBankId) {
+              yield put({
+                type: 'paymentCost/query',
+                payload: {
+                  bankId: currentBundlePayment.paymentBankId,
+                  machineId: listPayment[0].id,
+                  relationship: 1
+                }
+              })
+            } else {
+              yield put({
+                type: 'paymentCost/query',
+                payload: {
+                  machineId: listPayment[0].id,
+                  relationship: 1
+                }
+              })
+            }
           } else {
             yield put({
               type: 'paymentCost/updateState',
@@ -100,13 +113,24 @@ export default modelExtend(pageModel, {
                 listPayment: []
               }
             })
-            yield put({
-              type: 'paymentCost/query',
-              payload: {
-                machineId: selectedPaymentShortcut.machine,
-                relationship: 1
-              }
-            })
+            if (currentBundlePayment && currentBundlePayment.paymentBankId) {
+              yield put({
+                type: 'paymentCost/query',
+                payload: {
+                  bankId: currentBundlePayment.paymentBankId,
+                  machineId: listPayment[0].id,
+                  relationship: 1
+                }
+              })
+            } else {
+              yield put({
+                type: 'paymentCost/query',
+                payload: {
+                  machineId: selectedPaymentShortcut.machine,
+                  relationship: 1
+                }
+              })
+            }
           }
         }
         yield put({

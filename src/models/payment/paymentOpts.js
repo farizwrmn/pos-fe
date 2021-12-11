@@ -37,6 +37,7 @@ export default {
           || location.pathname === '/transaction/pos'
           || location.pathname === '/transaction/pos/payment'
           || location.pathname === '/bank-entry'
+          || location.pathname === '/marketing/promo'
           || location.pathname === '/balance/current'
           || location.pathname === '/balance/dashboard'
           || location.pathname === '/balance/closing'

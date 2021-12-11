@@ -72,6 +72,7 @@ export default {
   namespace: 'pos',
 
   state: {
+    currentBundlePayment: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
     standardInvoice: true,
