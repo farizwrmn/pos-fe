@@ -240,11 +240,12 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
             </Row>
           }
         />
-        <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="shortcut" />
-        <HeaderMenu prompt="minimum stock" icon="minus-circle-o" clickRoute="/report/product/stock/quantity-alerts" addClass="minStock" />
+        <HeaderMenu prompt="shortcut key" icon="key" onClick={handleShortcutKeyShow} addClass="" />
+        {/* <HeaderMenu prompt="minimum stock" icon="minus-circle-o" clickRoute="/report/product/stock/quantity-alerts" addClass="minStock" /> */}
         <HeaderMenu prompt="notification"
           icon="bell"
           {...notificationPopContent}
+          addClass="minStock"
         />
         <HeaderMenu separator />
         <HeaderMenu prompt="pos" icon="barcode" clickRoute="/transaction/pos" />
@@ -266,6 +267,14 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
             <Menu.Item key="myProfile">
               My Profile
               <Link to="/user_profile" />
+            </Menu.Item>
+            <Menu.Item key="reqReturn">
+              Request Return
+              <Link to="/return-request" />
+            </Menu.Item>
+            <Menu.Item key="reqDiscount">
+              Request Discount
+              <Link to="/sales-discount" />
             </Menu.Item>
             {/* <Menu.Item key="password">
               Change Password
