@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Button, Row, Col, Modal, Select } from 'antd'
+import ModalItem from './ModalItem'
+import TransDetail from './TransDetail'
 
 const FormItem = Form.Item
+const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -25,11 +29,15 @@ const column = {
 }
 
 const FormCounter = ({
+  sequence,
   item = {},
+  listAccountCode,
   onSubmit,
   onCancel,
   modalType,
-  button,
+  onAddItem,
+  modalItemProps,
+  listItemProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -37,24 +45,7 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const handleCancel = () => {
     onCancel()
     resetFields()
@@ -78,37 +69,54 @@ const FormCounter = ({
     })
   }
 
+  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
+
   return (
     <Form layout="horizontal">
+      {modalItemProps.modalItemVisible && <ModalItem {...modalItemProps} />}
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('pettyCash', {
-              initialValue: item.pettyCash,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Trans No" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transNo', {
+              initialValue: item.transNo || sequence,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input disabled />)}
           </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          <FormItem {...formItemLayout} label="Bank">
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              filterOption={filterOption}
+            >{listAccountOpt}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Description" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<TextArea maxLength={255} autosize={{ minRows: 2, maxRows: 3 }} />)}
           </FormItem>
         </Col>
       </Row>
+      <Button type="primary" style={{ margin: '10px 0' }} onClick={onAddItem}>Add</Button>
+      <TransDetail {...listItemProps} />
+      {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+      <Button type="primary" style={{ margin: '10px 0', float: 'right' }} onClick={handleSubmit}>Save</Button>
     </Form>
   )
 }

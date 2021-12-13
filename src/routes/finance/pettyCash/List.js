@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import styles from '../../../themes/index.less'
 
 const confirm = Modal.confirm
 
@@ -21,19 +22,39 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'pettyCash',
-      key: 'pettyCash'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Start',
+      dataIndex: 'startDate',
+      key: 'startDate'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Closing',
+      dataIndex: 'closingDate',
+      key: 'closingDate'
+    },
+    {
+      title: 'Start Total',
+      dataIndex: 'startTotal',
+      key: 'startTotal',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{(text || '-').toLocaleString()}</div>
+        }
+      }
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     },
     {
       title: 'Operation',

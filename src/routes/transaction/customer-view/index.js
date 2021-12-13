@@ -112,7 +112,7 @@ class Pos extends Component {
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
           <Row>
             <Col span={14}>
-              {/* <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+              <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>
                   <div style={{ float: 'right' }}>
                     <Row>
@@ -125,7 +125,7 @@ class Pos extends Component {
                     </Row>
                   </div>
                 </Form>
-              </Card> */}
+              </Card>
               <TransactionDetail
                 qty={totalQty || 0}
                 netto={parseFloat(curNetto) + parseFloat(dineIn)}
@@ -144,7 +144,7 @@ class Pos extends Component {
                   <Advertising list={listAdvertisingCustomer} />
                 )}
               {/* <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" /> */}
-              <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+              {/* <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>
                   <div style={{ float: 'right' }}>
                     <Row>
@@ -157,7 +157,7 @@ class Pos extends Component {
                     </Row>
                   </div>
                 </Form>
-              </Card>
+              </Card> */}
             </Col>
           </Row>
         </Card>

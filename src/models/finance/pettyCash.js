@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/finance/pettyCash'
+import { query, queryOption, editOption, add, edit, remove } from 'services/finance/pettyCash'
+import { query as querySequence } from '../../services/sequence'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -14,8 +15,14 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     modalType: 'add',
+    sequence: '',
     activeKey: '0',
     list: [],
+    listItem: [],
+    listOption: [],
+    modalItemVisible: false,
+    currentListItem: [],
+    modalItemType: 'add',
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -28,12 +35,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/balance/finance/petty-cash') {
+          dispatch({ type: 'querySequence' })
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
+          })
+          dispatch({
+            type: 'queryOption'
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
@@ -42,6 +53,16 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * querySequence (payload, { call, put }) {
+      const seqDetail = {
+        seqCode: 'PTC',
+        type: 1
+      }
+      const sequence = yield call(querySequence, seqDetail)
+      if (sequence.success) {
+        yield put({ type: 'updateState', payload: { sequence: sequence.data } })
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
@@ -69,6 +90,32 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryOption (payload, { call, put }) {
+      const data = yield call(queryOption, { type: 'all' })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listOption: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * editOption ({ payload = {} }, { call, put }) {
+      const data = yield call(editOption, payload)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'queryOption'
+        })
+      } else {
+        throw data
+      }
+    },
+
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload.data)
       if (data.success) {
@@ -77,7 +124,9 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            listItem: [],
+            currentListItem: {}
           }
         })
         yield put({

@@ -10,10 +10,30 @@ export async function query (params) {
   })
 }
 
+export async function queryOption (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/petty-cash-option',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/petty-cash',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function editOption (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/petty-cash-option',
     method: 'post',
     data: params,
     headers: apiHeaderToken

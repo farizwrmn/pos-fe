@@ -1535,6 +1535,8 @@ const Routers = function ({ history, app }) {
           path: 'balance/finance/petty-cash',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/finance/pettyCash'))
               cb(null, require('./routes/finance/pettyCash'))
             }, 'finance-petty-cash')
