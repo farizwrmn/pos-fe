@@ -34,6 +34,12 @@ const List = ({ ...tableProps, dispatch, printInvoice }) => {
       key: 'transNo'
     },
     {
+      title: 'Ref',
+      dataIndex: 'reference',
+      sorter: () => { },
+      key: 'reference'
+    },
+    {
       title: 'Store',
       dataIndex: 'storeName',
       sorter: () => { },
