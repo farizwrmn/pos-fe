@@ -129,6 +129,7 @@ export default modelExtend(pageModel, {
             currentListItem: {}
           }
         })
+        yield put({ type: 'querySequence' })
         yield put({
           type: 'query'
         })
