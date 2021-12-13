@@ -34,12 +34,13 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: text =>
-      (<span>
-        <Tag color={text === '1' ? 'blue' : 'red'}>
-          {text === '1' ? 'Active' : 'Non-active'}
-        </Tag>
-      </span>)
+      render: text => (
+        <span>
+          <Tag color={text === '1' ? 'blue' : 'red'}>
+            {text === '1' ? 'Active' : 'Non-active'}
+          </Tag>
+        </span>
+      )
     },
     {
       title: 'Operation',
