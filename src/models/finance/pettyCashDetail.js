@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import { query, add, edit, remove } from 'services/finance/pettyCashDetail'
 import { pageModel } from '../common'
 
@@ -42,6 +43,27 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * insertExpense ({ payload = {} }, { call, put }) {
+      console.log('payload', payload)
+      const response = yield call(add, {
+        ...payload.item,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response.success) {
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalCashRegisterVisible: false
+          }
+        })
+        if (payload.reset) {
+          payload.reset()
+        }
+        message.success('Success insert expense')
+      } else {
+        throw response
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)

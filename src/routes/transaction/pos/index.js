@@ -39,6 +39,7 @@ import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
+import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
 import Advertising from './Advertising'
 
@@ -134,7 +135,8 @@ const Pos = ({
     selectedPaymentShortcut,
     currentBuildComponent,
     listVoucher,
-    modalVoucherVisible
+    modalVoucherVisible,
+    modalCashRegisterVisible
   } = pos
   const { modalLoginData } = login
   const { modalPromoVisible, listMinimumPayment } = promo
@@ -209,6 +211,15 @@ const Pos = ({
     memberInformation,
     memberUnitInfo,
     mechanicInformation,
+    onClickCash () {
+      console.log('Open Cash Register')
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCashRegisterVisible: true
+        }
+      })
+    },
     handleMemberBrowse () {
       resetSelectText()
       // get member data
@@ -767,6 +778,30 @@ const Pos = ({
         type: 'login/updateState',
         payload: {
           modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
+  const modalCashRegisterProps = {
+    modalCashRegisterVisible,
+    loading: loading.effects['pettyCashDetail/insertExpense'],
+    visible: modalCashRegisterVisible,
+    onOk (item, reset) {
+      console.log('item', item)
+      dispatch({
+        type: 'pettyCashDetail/insertExpense',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCashRegisterVisible: false
         }
       })
     }
@@ -2043,6 +2078,7 @@ const Pos = ({
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
             {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
+            {modalCashRegisterVisible && <ModalCashRegister {...modalCashRegisterProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} handleProductBrowse={handleProductBrowse} />
             <Row>

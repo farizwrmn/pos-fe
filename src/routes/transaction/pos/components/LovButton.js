@@ -74,6 +74,7 @@ window.leftScreenBoundry = FindLeftScreenBoundry
 // }
 
 const LovButton = ({
+  onClickCash,
   memberInformation,
   // memberUnitInfo,
   mechanicInformation,
@@ -170,6 +171,13 @@ const LovButton = ({
         icon="home"
         style={{ marginLeft: '30px' }}
         onClick={() => handleHome()}
+      />
+      <Button
+        type="primary"
+        size="large"
+        icon="wallet"
+        style={{ marginLeft: '10px' }}
+        onClick={() => onClickCash()}
       />
     </div >
   )

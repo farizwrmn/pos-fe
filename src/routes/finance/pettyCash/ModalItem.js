@@ -16,7 +16,7 @@ const ModalItem = ({
   item,
   modalType,
   listItem,
-  form: { getFieldDecorator, validateFields, getFieldsValue },
+  form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   onCancel,
   onAddItem,
   onEditItem,
@@ -33,13 +33,13 @@ const ModalItem = ({
         ...getFieldsValue()
       }
       if (modalType === 'add') {
-        onAddItem(data)
+        onAddItem(data, resetFields)
       } else {
         const exists = listItem.filter(filtered => parseFloat(filtered.storeId) === parseFloat(data.storeId) && parseFloat(filtered.no) !== parseFloat(item.no))
         if (exists && exists[0]) {
           message.error('Store already exists')
         } else {
-          onEditItem(data)
+          onEditItem(data, resetFields)
         }
       }
       // handleProductBrowse()
