@@ -20,6 +20,16 @@ export async function queryOption (params) {
   })
 }
 
+export async function queryActive (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/petty-cash-active',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

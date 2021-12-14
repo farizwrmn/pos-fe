@@ -71,6 +71,7 @@ const Pos = ({
   customer,
   loading,
   dispatch,
+  pettyCashDetail,
   pos,
   login,
   // shift,
@@ -138,6 +139,7 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible
   } = pos
+  const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
   const { modalPromoVisible, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
@@ -217,6 +219,12 @@ const Pos = ({
         type: 'pos/updateState',
         payload: {
           modalCashRegisterVisible: true
+        }
+      })
+      dispatch({
+        type: 'pettyCashDetail/queryEmployee',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
         }
       })
     },
@@ -785,6 +793,7 @@ const Pos = ({
 
   const modalCashRegisterProps = {
     modalCashRegisterVisible,
+    listEmployee,
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,
     onOk (item, reset) {
@@ -2193,7 +2202,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)

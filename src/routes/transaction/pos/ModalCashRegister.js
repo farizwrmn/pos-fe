@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Modal, InputNumber, Form, Input, Button } from 'antd'
+import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
 
 const FormItem = Form.Item
 const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -28,6 +29,7 @@ class ModalCashRegister extends Component {
         getFieldsValue,
         resetFields
       },
+      listEmployee,
       onOk,
       onCancel,
       ...modalProps
@@ -42,7 +44,13 @@ class ModalCashRegister extends Component {
         const data = {
           ...getFieldsValue()
         }
-        onOk(data, resetFields)
+        if (data && data.employeeId) {
+          const selectedEmployee = listEmployee.filter(filtered => filtered.employeeId === data.employeeId)
+          if (selectedEmployee && selectedEmployee[0]) {
+            data.employeeName = selectedEmployee[0].employeeName
+            onOk(data, resetFields)
+          }
+        }
       })
     }
 
@@ -50,6 +58,8 @@ class ModalCashRegister extends Component {
       ...modalProps,
       onOk: handleOk
     }
+
+    const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.employeeId} key={x.employeeId}>{x.employeeName}</Option>))
 
     return (
       <Modal
@@ -79,6 +89,29 @@ class ModalCashRegister extends Component {
                   }
                 }}
               />
+            )}
+          </FormItem>
+
+          <FormItem
+            label="Employee"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('employeeId', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                showSearch
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listEmployeeOpt}
+              </Select>
             )}
           </FormItem>
 

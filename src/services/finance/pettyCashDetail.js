@@ -20,6 +20,16 @@ export async function queryActive (params) {
   })
 }
 
+export async function queryEmployee (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/petty-cash-employee',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

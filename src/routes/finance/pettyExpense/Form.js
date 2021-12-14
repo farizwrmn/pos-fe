@@ -1,21 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
-
-const FormItem = Form.Item
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
-  },
-  wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
-  }
-}
+import { Modal, Card, Button, Row, Col } from 'antd'
+import { numberFormatter } from 'utils/string'
+import styles from './index.less'
+import ModalExpense from './ModalExpense'
 
 const column = {
   sm: { span: 24 },
@@ -25,91 +13,57 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
-  onSubmit,
-  onCancel,
-  modalType,
-  button,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
-  }
+  modalExpenseProps,
+  loading,
+  list,
+  handleClick,
+  onDelete
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
+  const handleDelete = (item) => {
+    Modal.confirm({
+      title: 'Delete this item ?',
+      content: 'This action cannot be undone. Are you sure ?',
+      onOk () {
+        onDelete(item)
       }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
     })
   }
-
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('pettyExpense', {
-              initialValue: item.pettyExpense,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <Row>
+      {modalExpenseProps.visible && <ModalExpense {...modalExpenseProps} />}
+      <Col {...column}>
+        <h1>Approval</h1>
+        <div className={styles.content} >
+          {list && list.length > 0 ? list.map((item) => {
+            return (
+              <Card
+                style={{ marginBottom: '10px' }}
+                title="Expense"
+                extra={(
+                  <div>
+                    <Button disabled={loading} shape="circle" type="danger" loading={loading} icon="close" onClick={() => handleDelete(item)} />
+                    <Button style={{ marginLeft: '15px' }} disabled={loading} shape="circle" type="primary" loading={loading} icon="check" onClick={() => handleClick(item)} />
+                  </div>
+                )}
+                bordered
+              >
+                <div>
+                  <div><h3>{`Store Name: ${item.storeName}`}</h3></div>
+                  <div><h3>{`Expense: ${numberFormatter(parseFloat(item.expenseTotal))}`}</h3></div>
+                  {item.description && <div>{`Cashier Notes: ${item.description}`}</div>}
+                  {item.pettyCash.description && <div>{`Finance Notes: ${item.pettyCash.description}`}</div>}
+                  <div>{`Employee: ${item.employeeName}`}</div>
+                  <div>{`Created By: ${item.userName}`}</div>
+                </div>
+              </Card>
+            )
+          })
+            : (
+              <div>{"Everything's done, have a nice day"} </div>
+            )}
+        </div>
+      </Col>
+    </Row>
   )
 }
 
@@ -120,4 +74,4 @@ FormCounter.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(FormCounter)
+export default FormCounter

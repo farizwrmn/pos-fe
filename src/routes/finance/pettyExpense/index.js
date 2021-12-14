@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ pettyExpense, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = pettyExpense
+const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }) => {
+  const { list, pagination, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
+  const { listAccountCodeExpense } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -87,31 +88,38 @@ const Counter = ({ pettyExpense, loading, dispatch, location, app }) => {
     })
   }
 
-  const formProps = {
-    modalType,
-    item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
+  const modalExpenseProps = {
+    item: currentItemExpense,
+    visible: modalExpenseVisible,
+    listAccountCode: listAccountCodeExpense,
+    loading: loading.effects['pettyExpense/generateExpense'] || loading.effects['pettyExpense/deleteExpense'],
+    onSubmit (item) {
       dispatch({
-        type: `pettyExpense/${modalType}`,
+        type: 'pettyExpense/generateExpense',
         payload: {
-          data,
-          reset
+          item
         }
       })
     },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
+    onCancel (item) {
+      dispatch({
+        type: 'pettyExpense/deleteExpense',
+        payload: {
+          item
         }
-      }))
+      })
+    }
+  }
+
+  const formProps = {
+    list,
+    loading: loading.effects['pettyExpense/generateExpense'],
+    modalExpenseProps,
+    handleClick () {
       dispatch({
         type: 'pettyExpense/updateState',
         payload: {
-          currentItem: {}
+          modalExpenseVisible: true
         }
       })
     }
@@ -142,6 +150,7 @@ const Counter = ({ pettyExpense, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
+  accountCode: PropTypes.object,
   pettyExpense: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -149,4 +158,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyExpense, loading, app }) => ({ pettyExpense, loading, app }))(Counter)
+export default connect(({ pettyExpense, accountCode, loading, app }) => ({ pettyExpense, accountCode, loading, app }))(Counter)

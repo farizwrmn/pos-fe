@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, add, edit, remove } from 'services/finance/pettyCashDetail'
+import { query, queryEmployee, add, edit, remove } from 'services/finance/pettyCashDetail'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -17,6 +17,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listEmployee: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -43,8 +44,21 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryEmployee ({ payload = {} }, { call, put }) {
+      const response = yield call(queryEmployee, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEmployee: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * insertExpense ({ payload = {} }, { call, put }) {
-      console.log('payload', payload)
       const response = yield call(add, {
         ...payload.item,
         storeId: lstorage.getCurrentUserStore()

@@ -491,7 +491,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
-              cb(null, require('./routes/notification/salesDiscount/'))
+              cb(null, require('./routes/notification/salesDiscount'))
             }, 'sales-discount')
           }
         }, {
@@ -1554,6 +1554,7 @@ const Routers = function ({ history, app }) {
           path: 'balance/finance/petty-expense',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/finance/pettyExpense'))
               cb(null, require('./routes/finance/pettyExpense'))
             }, 'finance-petty-expense')
