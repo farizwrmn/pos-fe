@@ -51,6 +51,11 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
       key: 'transNo'
     },
     {
+      title: 'Reference',
+      dataIndex: 'reference',
+      key: 'reference'
+    },
+    {
       title: 'Trans Date',
       dataIndex: 'transDate',
       key: 'transDate'
