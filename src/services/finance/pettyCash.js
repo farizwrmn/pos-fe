@@ -30,6 +30,16 @@ export async function add (params) {
   })
 }
 
+export async function addCashEntry (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/petty-cash-entry',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function editOption (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/finance/pettyExpense'
+import { queryActive, addCashEntry } from 'services/finance/pettyCash'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -28,14 +27,14 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/balance/finance/petty-expense') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') dispatch({ type: 'queryActive', payload: other })
         }
       })
     }
@@ -43,8 +42,8 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+    * queryActive ({ payload = {} }, { call, put }) {
+      const data = yield call(queryActive, payload)
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -60,17 +59,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
-    },
-
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
+      const data = yield call(addCashEntry, payload.data)
       if (data.success) {
         success()
         yield put({
@@ -81,44 +71,8 @@ export default modelExtend(pageModel, {
           }
         })
         yield put({
-          type: 'query'
+          type: 'queryActive'
         })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ pettyExpense }) => pettyExpense.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
         if (payload.reset) {
           payload.reset()
         }
