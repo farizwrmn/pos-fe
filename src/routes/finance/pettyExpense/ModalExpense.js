@@ -15,7 +15,8 @@ const ModalExpense = ({
   listAccountCode,
   item,
   onOk,
-  onCancel
+  onCancel,
+  ...modalProps
 }) => {
   const handleOk = () => {
     validateFields((errors) => {
@@ -26,7 +27,18 @@ const ModalExpense = ({
       const data = {
         ...getFieldsValue()
       }
-      onOk(data, resetFields)
+      Modal.confirm({
+        title: 'Approve this item',
+        content: 'Are you sure ?',
+        onOk () {
+          data.id = item.id
+          data.storeId = item.storeId
+          data.transId = item.transId
+          data.accountId = item.pettyCash.accountId
+          data.expenseTotal = item.expenseTotal
+          onOk(data, resetFields)
+        }
+      })
       // handleProductBrowse()
     })
   }
@@ -34,6 +46,7 @@ const ModalExpense = ({
   const listAccount = listAccountCode.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
 
   const modalOpts = {
+    ...modalProps,
     onOk: handleOk
   }
   return (
@@ -49,12 +62,11 @@ const ModalExpense = ({
     >
       <Form layout="horizontal">
         <FormItem
-          label="Store"
+          label="Account Code"
           hasFeedback
           {...formItemLayout}
         >
-          {getFieldDecorator('storeId', {
-            initialValue: item.storeId,
+          {getFieldDecorator('expenseAccountId', {
             rules: [{
               required: true
             }]
@@ -62,7 +74,7 @@ const ModalExpense = ({
             <Select
               size="large"
               style={{ width: '100%' }}
-              placeholder="Choose StoreId"
+              placeholder="Choose Account Code"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {listAccount}
@@ -71,8 +83,8 @@ const ModalExpense = ({
         </FormItem>
 
         <FormItem label="Deposit" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('depositTotal', {
-            initialValue: item.depositTotal,
+          {getFieldDecorator('expenseTotal', {
+            initialValue: item.expenseTotal,
             rules: [{
               required: true
             }]

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Card, Button, Row, Col } from 'antd'
+import { Card, Button, Row, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
 import styles from './index.less'
 import ModalExpense from './ModalExpense'
@@ -19,17 +19,8 @@ const FormCounter = ({
   loading,
   list,
   onDelete,
-  onSubmit
+  handleClick
 }) => {
-  const handleClick = (item) => {
-    Modal.confirm({
-      title: 'Approve this item',
-      content: 'Are you sure ?',
-      onOk () {
-        onSubmit(item)
-      }
-    })
-  }
   const handleDelete = (item) => {
     onDelete(item)
   }

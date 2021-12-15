@@ -16,9 +16,9 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     modalExpenseVisible: false,
     currentItemExpense: {},
-    list: [],
     currentItemCancel: {},
     modalCancelVisible: false,
+    list: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -78,17 +78,32 @@ export default modelExtend(pageModel, {
             currentItemCancel: {}
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         throw response
       }
     },
 
     * generateExpense ({ payload }, { call, put }) {
-      const response = yield call(generateExpense, payload)
+      const response = yield call(generateExpense, {
+        ...payload.item
+      })
       if (response.success) {
         yield put({
           type: 'queryActive'
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalExpenseVisible: false,
+            currentItemExpense: {}
+          }
+        })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         throw response
       }

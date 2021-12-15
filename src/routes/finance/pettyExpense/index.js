@@ -118,11 +118,12 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }
     visible: modalExpenseVisible,
     listAccountCode: listAccountCodeExpense,
     loading: loading.effects['pettyExpense/generateExpense'] || loading.effects['pettyExpense/deleteExpenseRequest'],
-    onSubmit (item) {
+    onOk (item, reset) {
       dispatch({
         type: 'pettyExpense/generateExpense',
         payload: {
-          item
+          item,
+          reset
         }
       })
     },
@@ -130,7 +131,8 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }
       dispatch({
         type: 'pettyExpense/updateState',
         payload: {
-          modalExpenseVisible: false
+          modalExpenseVisible: false,
+          currentItemExpense: {}
         }
       })
     }
@@ -141,11 +143,12 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }
     loading: loading.effects['pettyExpense/generateExpense'],
     modalExpenseProps,
     modalCancelProps,
-    handleClick () {
+    handleClick (item) {
       dispatch({
         type: 'pettyExpense/updateState',
         payload: {
-          modalExpenseVisible: true
+          modalExpenseVisible: true,
+          currentItemExpense: item
         }
       })
     },

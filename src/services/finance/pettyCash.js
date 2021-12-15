@@ -50,6 +50,16 @@ export async function add (params) {
   })
 }
 
+export async function generateExpense (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/petty-cash-expense/generateExpense',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function addCashEntry (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
