@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
+import { /* Button */ Tabs } from 'antd'
 import Form from './Form'
 // import List from './List'
 // import Filter from './Filter'
@@ -79,14 +79,14 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location }) => 
     dispatch({ type: 'pettyExpense/updateState', payload: { list: [] } })
   }
 
-  const clickBrowse = () => {
-    dispatch({
-      type: 'pettyExpense/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
+  // const clickBrowse = () => {
+  //   dispatch({
+  //     type: 'pettyExpense/updateState',
+  //     payload: {
+  //       activeKey: '1'
+  //     }
+  //   })
+  // }
 
   const modalCancelProps = {
     title: 'Cancel Expense',
@@ -163,14 +163,19 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location }) => 
     }
   }
 
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
+  // let moreButtonTab
+  // if (activeKey === '0') {
+  //   moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
+  // }
 
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
+      <Tabs
+        activeKey={activeKey}
+        onChange={key => changeTab(key)}
+        // tabBarExtraContent={moreButtonTab}
+        type="card"
+      >
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>

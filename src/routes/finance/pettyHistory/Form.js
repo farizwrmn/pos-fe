@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Select, DatePicker, Button, Row, Col } from 'antd'
+import moment from 'moment'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
+const { RangePicker } = DatePicker
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -26,15 +30,13 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  listAllStores,
   onSubmit,
-  onCancel,
   modalType,
-  button,
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue,
-    resetFields
+    getFieldsValue
   }
 }) => {
   const tailFormItemLayout = {
@@ -55,11 +57,6 @@ const FormCounter = ({
     }
   }
 
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -68,44 +65,55 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
+      if (data && data.transDate) {
+        data.transDate = [data.transDate[0], data.transDate[1]]
+      } else {
+        data.transDate = undefined
+      }
+      onSubmit(data)
     })
   }
+
+  const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
 
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('pettyHistory', {
-              initialValue: item.pettyHistory,
+          <FormItem label="Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transDate', {
+              initialValue: item.from && item.to ? [moment.utc(item.from, 'YYYY-MM-DD'), moment.utc(item.to, 'YYYY-MM-DD')] : null,
               rules: [
                 {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  required: false
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<RangePicker allowClear size="large" format="DD-MMM-YYYY" />)}
           </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
+          <FormItem
+            label="Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('storeId', {
+              initialValue: item.storeId ? item.storeId : lstorage.getCurrentUserStore(),
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
+              </Select>
+            )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" onClick={handleSubmit}>Filter</Button>
           </FormItem>
         </Col>
       </Row>

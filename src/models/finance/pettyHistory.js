@@ -1,12 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
-import { message } from 'antd'
-import { query, add, edit, remove } from 'services/finance/pettyHistory'
+import { query } from 'services/finance/pettyHistory'
 import { pageModel } from '../common'
-
-const success = () => {
-  message.success('Petty history has been saved')
-}
 
 export default modelExtend(pageModel, {
   namespace: 'pettyHistory',
@@ -28,22 +22,30 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/balance/finance/history') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          dispatch({ type: 'query', payload: other })
         }
       })
     }
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
+      if (!payload.storeId) {
+        return
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -57,78 +59,13 @@ export default modelExtend(pageModel, {
             }
           }
         })
-      }
-    },
-
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
-    },
-
-    * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
         yield put({
           type: 'updateState',
           payload: {
             currentItem: payload
           }
         })
-        throw data
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ pettyHistory }) => pettyHistory.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     }

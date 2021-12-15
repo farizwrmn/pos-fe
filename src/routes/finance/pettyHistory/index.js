@@ -2,65 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
+import { Tabs } from 'antd'
 import Form from './Form'
-import List from './List'
-import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ pettyHistory, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = pettyHistory
-  const { user, storeInfo } = app
-  const filterProps = {
-    onFilterChange (value) {
-      dispatch({
-        type: 'pettyHistory/query',
-        payload: {
-          ...value
-        }
-      })
-    }
-  }
-
-  const listProps = {
-    dataSource: list,
-    user,
-    storeInfo,
-    pagination,
-    loading: loading.effects['pettyHistory/query'],
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
-      dispatch({
-        type: 'pettyHistory/editItem',
-        payload: { item }
-      })
-    },
-    deleteItem (id) {
-      dispatch({
-        type: 'pettyHistory/delete',
-        payload: id
-      })
-    }
-  }
+const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
+  const { list, modalType, currentItem, activeKey } = pettyHistory
+  const { listAllStores } = userStore
 
   const changeTab = (key) => {
     dispatch({
@@ -78,27 +27,28 @@ const Counter = ({ pettyHistory, loading, dispatch, location, app }) => {
     dispatch({ type: 'pettyHistory/updateState', payload: { list: [] } })
   }
 
-  const clickBrowse = () => {
-    dispatch({
-      type: 'pettyHistory/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
   const formProps = {
+    list,
+    listAllStores,
     modalType,
+    loading,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
+    onSubmit (data) {
       dispatch({
-        type: `pettyHistory/${modalType}`,
+        type: 'pettyHistory/query',
         payload: {
-          data,
-          reset
+          ...data
         }
       })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...data
+        }
+      }))
     },
     onCancel () {
       const { pathname } = location
@@ -117,24 +67,15 @@ const Counter = ({ pettyHistory, loading, dispatch, location, app }) => {
     }
   }
 
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
-
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
+      <Tabs
+        activeKey={activeKey}
+        onChange={key => changeTab(key)}
+        type="card"
+      >
+        <TabPane tab="History" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
-        </TabPane>
-        <TabPane tab="Browse" key="1" >
-          {activeKey === '1' &&
-            <div>
-              <Filter {...filterProps} />
-              <List {...listProps} />
-            </div>
-          }
         </TabPane>
       </Tabs>
     </div>
@@ -143,10 +84,11 @@ const Counter = ({ pettyHistory, loading, dispatch, location, app }) => {
 
 Counter.propTypes = {
   pettyHistory: PropTypes.object,
+  userStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyHistory, loading, app }) => ({ pettyHistory, loading, app }))(Counter)
+export default connect(({ pettyHistory, userStore, loading, app }) => ({ pettyHistory, userStore, loading, app }))(Counter)
