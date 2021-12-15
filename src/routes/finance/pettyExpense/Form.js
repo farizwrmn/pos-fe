@@ -4,6 +4,7 @@ import { Modal, Card, Button, Row, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
 import styles from './index.less'
 import ModalExpense from './ModalExpense'
+import ModalCancel from './ModalCancel'
 
 const column = {
   sm: { span: 24 },
@@ -14,22 +15,28 @@ const column = {
 
 const FormCounter = ({
   modalExpenseProps,
+  modalCancelProps,
   loading,
   list,
-  handleClick,
-  onDelete
+  onDelete,
+  onSubmit
 }) => {
-  const handleDelete = (item) => {
+  const handleClick = (item) => {
     Modal.confirm({
-      title: 'Delete this item ?',
-      content: 'This action cannot be undone. Are you sure ?',
+      title: 'Approve this item',
+      content: 'Are you sure ?',
       onOk () {
-        onDelete(item)
+        onSubmit(item)
       }
     })
   }
+  const handleDelete = (item) => {
+    onDelete(item)
+  }
+
   return (
     <Row>
+      {modalCancelProps.visible && <ModalCancel {...modalCancelProps} />}
       {modalExpenseProps.visible && <ModalExpense {...modalExpenseProps} />}
       <Col {...column}>
         <h1>Approval</h1>

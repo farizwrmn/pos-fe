@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { queryActive, addCashEntry } from 'services/finance/pettyCash'
+import { generateExpense, deleteExpenseRequest, queryActive, addCashEntry } from 'services/finance/pettyCash'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -17,6 +17,8 @@ export default modelExtend(pageModel, {
     modalExpenseVisible: false,
     currentItemExpense: {},
     list: [],
+    currentItemCancel: {},
+    modalCancelVisible: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -27,7 +29,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey } = location.query
         const { pathname } = location
         if (pathname === '/balance/finance/petty-expense') {
           dispatch({
@@ -36,7 +38,7 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          dispatch({ type: 'queryActive', payload: other })
+          dispatch({ type: 'queryActive' })
         }
       })
     }
@@ -58,6 +60,37 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * deleteExpenseRequest ({ payload = {} }, { call, put }) {
+      const response = yield call(deleteExpenseRequest, {
+        ...payload.item
+      })
+      if (response.success) {
+        yield put({
+          type: 'queryActive'
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalCancelVisible: false,
+            currentItemCancel: {}
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * generateExpense ({ payload }, { call, put }) {
+      const response = yield call(generateExpense, payload)
+      if (response.success) {
+        yield put({
+          type: 'queryActive'
+        })
+      } else {
+        throw response
       }
     },
 

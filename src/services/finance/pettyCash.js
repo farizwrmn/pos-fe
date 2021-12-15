@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function deleteExpenseRequest (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/petty-cash-expense/deleteExpense/${params.id}`,
+    data: params,
+    method: 'delete',
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryOption (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

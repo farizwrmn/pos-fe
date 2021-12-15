@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }) => {
-  const { list, pagination, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
+  const { list, pagination, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
   const { listAccountCodeExpense } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
@@ -88,11 +88,36 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }
     })
   }
 
+  const modalCancelProps = {
+    title: 'Cancel Expense',
+    item: currentItemCancel,
+    visible: modalCancelVisible,
+    loading: loading.effects['pettyExpense/deleteExpenseRequest'],
+    onOk (item, reset) {
+      dispatch({
+        type: 'pettyExpense/deleteExpenseRequest',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pettyExpense/updateState',
+        payload: {
+          currentItemCancel: {},
+          modalCancelVisible: false
+        }
+      })
+    }
+  }
+
   const modalExpenseProps = {
     item: currentItemExpense,
     visible: modalExpenseVisible,
     listAccountCode: listAccountCodeExpense,
-    loading: loading.effects['pettyExpense/generateExpense'] || loading.effects['pettyExpense/deleteExpense'],
+    loading: loading.effects['pettyExpense/generateExpense'] || loading.effects['pettyExpense/deleteExpenseRequest'],
     onSubmit (item) {
       dispatch({
         type: 'pettyExpense/generateExpense',
@@ -101,11 +126,11 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }
         }
       })
     },
-    onCancel (item) {
+    onCancel () {
       dispatch({
-        type: 'pettyExpense/deleteExpense',
+        type: 'pettyExpense/updateState',
         payload: {
-          item
+          modalExpenseVisible: false
         }
       })
     }
@@ -115,11 +140,21 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location, app }
     list,
     loading: loading.effects['pettyExpense/generateExpense'],
     modalExpenseProps,
+    modalCancelProps,
     handleClick () {
       dispatch({
         type: 'pettyExpense/updateState',
         payload: {
           modalExpenseVisible: true
+        }
+      })
+    },
+    onDelete (item) {
+      dispatch({
+        type: 'pettyExpense/updateState',
+        payload: {
+          currentItemCancel: item,
+          modalCancelVisible: true
         }
       })
     }
