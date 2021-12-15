@@ -27,9 +27,14 @@ const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
     dispatch({ type: 'pettyHistory/updateState', payload: { list: [] } })
   }
 
+  const listProps = {
+    dataSource: list
+  }
+
   const formProps = {
     list,
     listAllStores,
+    listProps,
     modalType,
     loading,
     item: currentItem,

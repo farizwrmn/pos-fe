@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Select, DatePicker, Button, Row, Col } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
+import List from './List'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -30,6 +31,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  listProps,
   listAllStores,
   onSubmit,
   modalType,
@@ -96,7 +98,7 @@ const FormCounter = ({
             {...formItemLayout}
           >
             {getFieldDecorator('storeId', {
-              initialValue: item.storeId ? item.storeId : lstorage.getCurrentUserStore(),
+              initialValue: item.storeId ? parseFloat(item.storeId) : lstorage.getCurrentUserStore(),
               rules: [{
                 required: true
               }]
@@ -117,6 +119,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
+      <List {...listProps} />
     </Form>
   )
 }
