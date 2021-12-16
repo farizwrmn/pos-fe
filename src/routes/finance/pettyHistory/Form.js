@@ -89,6 +89,7 @@ const FormCounter = ({
         title: 'Store Not Found',
         content: 'Press filter button'
       })
+      return
     }
     Modal.confirm({
       title: 'Closing this store',
