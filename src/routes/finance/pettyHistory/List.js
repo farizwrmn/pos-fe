@@ -8,18 +8,33 @@ const List = ({ ...tableProps }) => {
     {
       title: 'Code',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render (text, record) {
+        if (!record.active) {
+          return <div style={{ color: 'red' }}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'Date',
       dataIndex: 'transDate',
-      key: 'transDate'
+      key: 'transDate',
+      render (text, record) {
+        if (!record.active) {
+          return <div style={{ color: 'red' }}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'In',
       dataIndex: 'depositTotal',
       key: 'depositTotal',
       render (text, record) {
+        if (!record.active) {
+          return <div style={{ color: 'red' }}>{(text || '-').toLocaleString()}</div>
+        }
         return {
           props: {
             style: { background: record.color }
@@ -33,6 +48,9 @@ const List = ({ ...tableProps }) => {
       dataIndex: 'expenseTotal',
       key: 'expenseTotal',
       render (text, record) {
+        if (!record.active) {
+          return <div style={{ color: 'red' }}>{(text || '-').toLocaleString()}</div>
+        }
         return {
           props: {
             style: { background: record.color }
@@ -42,20 +60,31 @@ const List = ({ ...tableProps }) => {
       }
     },
     {
-      title: 'PIC',
+      title: 'Approval',
       dataIndex: 'cashEntryId',
       key: 'cashEntryId',
-      render (text) {
-        if (text) {
-          return <Tag color="green">Finance</Tag>
+      render (text, record) {
+        if (record.cashEntryId > 0) {
+          return <Tag color="green">Approved</Tag>
         }
-        return <Tag color="yellow">Cashier</Tag>
+        if (record.journalEntryId > 0) {
+          return <Tag color="green">Approved</Tag>
+        }
+        if (record.entryType === 'D' && record.cashEntryId === null && record.journalEntryId === null) {
+          return <Tag color="green">Approved</Tag>
+        }
       }
     },
     {
       title: 'Description',
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      render (text, record) {
+        if (!record.active) {
+          return <div style={{ color: 'red' }}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'Status',
