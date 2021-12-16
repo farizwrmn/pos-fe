@@ -72,6 +72,7 @@ const ModalExpense = ({
             }]
           })(
             <Select
+              showSearch
               size="large"
               style={{ width: '100%' }}
               placeholder="Choose Account Code"

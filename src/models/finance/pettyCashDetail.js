@@ -70,6 +70,12 @@ export default modelExtend(pageModel, {
             modalCashRegisterVisible: false
           }
         })
+        yield put({
+          type: 'pettyExpense/updateState',
+          payload: {
+            modalCashRegisterVisible: false
+          }
+        })
         if (payload.reset) {
           payload.reset()
         }

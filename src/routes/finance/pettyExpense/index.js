@@ -3,14 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { /* Button */ Tabs } from 'antd'
+import { lstorage } from 'utils'
 import Form from './Form'
 // import List from './List'
 // import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ pettyExpense, accountCode, loading, dispatch, location }) => {
-  const { list, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
+const Counter = ({ pettyExpense, pettyCashDetail, accountCode, loading, dispatch, location }) => {
+  const { list, modalCashRegisterVisible, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
+  const { listEmployee } = pettyCashDetail
   const { listAccountCodeExpense } = accountCode
   // const { user, storeInfo } = app
   // const filterProps = {
@@ -113,6 +115,32 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location }) => 
     }
   }
 
+  const modalCashRegisterProps = {
+    modalCashRegisterVisible,
+    listAccountCode: listAccountCodeExpense,
+    listEmployee,
+    loading: loading.effects['pettyCashDetail/insertExpense'],
+    visible: modalCashRegisterVisible,
+    dispatch,
+    onOk (item, reset) {
+      dispatch({
+        type: 'pettyCashDetail/insertExpense',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pettyExpense/updateState',
+        payload: {
+          modalCashRegisterVisible: false
+        }
+      })
+    }
+  }
+
   const modalExpenseProps = {
     item: currentItemExpense,
     visible: modalExpenseVisible,
@@ -143,6 +171,21 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location }) => 
     loading: loading.effects['pettyExpense/generateExpense'],
     modalExpenseProps,
     modalCancelProps,
+    modalCashRegisterProps,
+    addNewBalance () {
+      dispatch({
+        type: 'pettyExpense/updateState',
+        payload: {
+          modalCashRegisterVisible: true
+        }
+      })
+      dispatch({
+        type: 'pettyCashDetail/queryEmployee',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
     handleClick (item) {
       dispatch({
         type: 'pettyExpense/updateState',
@@ -195,10 +238,11 @@ const Counter = ({ pettyExpense, accountCode, loading, dispatch, location }) => 
 Counter.propTypes = {
   accountCode: PropTypes.object,
   pettyExpense: PropTypes.object,
+  pettyCashDetail: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyExpense, accountCode, loading, app }) => ({ pettyExpense, accountCode, loading, app }))(Counter)
+export default connect(({ pettyExpense, pettyCashDetail, accountCode, loading, app }) => ({ pettyExpense, pettyCashDetail, accountCode, loading, app }))(Counter)
