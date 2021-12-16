@@ -104,6 +104,7 @@ const List = ({ ...tableProps }) => {
       <Table {...tableProps}
         bordered
         columns={columns}
+        pagination={false}
         simple
         scroll={{ x: 1000 }}
         rowKey={record => record.id}

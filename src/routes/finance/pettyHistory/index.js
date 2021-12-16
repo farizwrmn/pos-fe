@@ -55,6 +55,17 @@ const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
         }
       }))
     },
+    onClosing (storeId) {
+      dispatch({
+        type: 'pettyHistory/updateState',
+        payload: {
+          modalClosingVisible: true,
+          currentItemClosing: {
+            storeId
+          }
+        }
+      })
+    },
     onCancel () {
       const { pathname } = location
       dispatch(routerRedux.push({

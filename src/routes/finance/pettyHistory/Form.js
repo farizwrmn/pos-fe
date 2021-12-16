@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Select, DatePicker, Button, Row, Col } from 'antd'
+import { Form, Select, Modal, DatePicker, Button, Row, Col } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
 import List from './List'
@@ -33,6 +33,7 @@ const FormCounter = ({
   item = {},
   listProps,
   listAllStores,
+  onClosing,
   onSubmit,
   modalType,
   form: {
@@ -72,7 +73,29 @@ const FormCounter = ({
       } else {
         data.transDate = undefined
       }
+      if (data.storeId) {
+        const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
+        if (filteredStore && filteredStore.length > 0) {
+          data.storeName = filteredStore[0].storeName
+        }
+      }
       onSubmit(data)
+    })
+  }
+
+  const handleClose = () => {
+    if (!item.storeId) {
+      Modal.error({
+        title: 'Store Not Found',
+        content: 'Press filter button'
+      })
+    }
+    Modal.confirm({
+      title: 'Closing this store',
+      content: 'Are you sure ?',
+      onOk () {
+        onClosing(item.storeId)
+      }
     })
   }
 
@@ -120,6 +143,7 @@ const FormCounter = ({
         </Col>
       </Row>
       <List {...listProps} />
+      <Button style={{ float: 'right', marginTop: '20px' }} type="primary" onClick={handleClose}>Close</Button>
     </Form>
   )
 }

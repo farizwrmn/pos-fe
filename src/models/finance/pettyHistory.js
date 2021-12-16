@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query } from 'services/finance/pettyHistory'
+import { query, closing } from 'services/finance/pettyHistory'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -10,6 +10,8 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    modalClosingVisible: true,
+    currentItemClosing: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -37,6 +39,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
+      const { storeName, ...other } = payload
       if (!payload.storeId) {
         return
       }
@@ -46,7 +49,7 @@ export default modelExtend(pageModel, {
           currentItem: {}
         }
       })
-      const data = yield call(query, payload)
+      const data = yield call(query, { ...other })
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -67,6 +70,21 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw data
+      }
+    },
+
+    * closingPeriod ({ payload = {} }, { call, put }) {
+      const response = yield call(closing, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalClosingVisible: false,
+            currentItemClosing: {}
+          }
+        })
+      } else {
+        throw response
       }
     }
   },
