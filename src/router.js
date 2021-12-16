@@ -491,7 +491,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
-              cb(null, require('./routes/notification/salesDiscount/'))
+              cb(null, require('./routes/notification/salesDiscount'))
             }, 'sales-discount')
           }
         }, {
@@ -508,6 +508,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/transaction/pospromo'))
               registerModel(app, require('./models/master/shift'))
@@ -1530,6 +1531,42 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/marketing/voucher'))
               cb(null, require('./routes/marketing/voucher'))
             }, 'marketing-voucher')
+          }
+        }, {
+          path: 'balance/finance/petty-cash',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/finance/pettyCash'))
+              cb(null, require('./routes/finance/pettyCash'))
+            }, 'finance-petty-cash')
+          }
+        }, {
+          path: 'balance/finance/petty-cash/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/finance/pettyCash'))
+              cb(null, require('./routes/finance/pettyCash/detail'))
+            }, 'finance-petty-cash-detail')
+          }
+        }, {
+          path: 'balance/finance/petty-expense',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/finance/pettyExpense'))
+              cb(null, require('./routes/finance/pettyExpense'))
+            }, 'finance-petty-expense')
+          }
+        }, {
+          path: 'balance/finance/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/finance/pettyHistory'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/finance/pettyHistory'))
+            }, 'finance-history')
           }
         }, {
           path: 'marketing/voucher/:id',

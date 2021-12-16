@@ -39,6 +39,7 @@ import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
+import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
 import Advertising from './Advertising'
 
@@ -70,6 +71,7 @@ const Pos = ({
   customer,
   loading,
   dispatch,
+  pettyCashDetail,
   pos,
   login,
   // shift,
@@ -134,8 +136,10 @@ const Pos = ({
     selectedPaymentShortcut,
     currentBuildComponent,
     listVoucher,
-    modalVoucherVisible
+    modalVoucherVisible,
+    modalCashRegisterVisible
   } = pos
+  const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
   const { modalPromoVisible, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
@@ -209,6 +213,21 @@ const Pos = ({
     memberInformation,
     memberUnitInfo,
     mechanicInformation,
+    onClickCash () {
+      console.log('Open Cash Register')
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCashRegisterVisible: true
+        }
+      })
+      dispatch({
+        type: 'pettyCashDetail/queryEmployee',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
     handleMemberBrowse () {
       resetSelectText()
       // get member data
@@ -767,6 +786,31 @@ const Pos = ({
         type: 'login/updateState',
         payload: {
           modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
+  const modalCashRegisterProps = {
+    modalCashRegisterVisible,
+    listEmployee,
+    loading: loading.effects['pettyCashDetail/insertExpense'],
+    visible: modalCashRegisterVisible,
+    onOk (item, reset) {
+      console.log('item', item)
+      dispatch({
+        type: 'pettyCashDetail/insertExpense',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCashRegisterVisible: false
         }
       })
     }
@@ -2043,6 +2087,7 @@ const Pos = ({
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
             {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
+            {modalCashRegisterVisible && <ModalCashRegister {...modalCashRegisterProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} handleProductBrowse={handleProductBrowse} />
             <Row>
@@ -2157,7 +2202,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)

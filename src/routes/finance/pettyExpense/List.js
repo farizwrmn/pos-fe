@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -11,7 +11,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.bankName} ?`,
+        title: `Are you sure delete ${record.accountName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -22,25 +22,18 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   const columns = [
     {
       title: 'Code',
-      dataIndex: 'bankCode',
-      key: 'bankCode'
+      dataIndex: 'pettyExpense',
+      key: 'pettyExpense'
     },
     {
       title: 'Name',
-      dataIndex: 'bankName',
-      key: 'bankName'
+      dataIndex: 'accountName',
+      key: 'accountName'
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: text => (
-        <span>
-          <Tag color={text === '1' ? 'blue' : 'red'}>
-            {text === '1' ? 'Active' : 'Non-active'}
-          </Tag>
-        </span>
-      )
+      title: 'Parent',
+      dataIndex: 'accountParentId',
+      key: 'accountParentId'
     },
     {
       title: 'Operation',

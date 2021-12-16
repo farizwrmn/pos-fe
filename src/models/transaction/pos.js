@@ -108,6 +108,7 @@ export default {
     currentItem: {},
     typePembelian: localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 1,
     dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
+    modalCashRegisterVisible: false,
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,

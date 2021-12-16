@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import styles from '../../../themes/index.less'
 
 const confirm = Modal.confirm
 
@@ -11,7 +12,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.bankName} ?`,
+        title: `Are you sure delete ${record.accountName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -21,26 +22,39 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'bankCode',
-      key: 'bankCode'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Name',
-      dataIndex: 'bankName',
-      key: 'bankName'
+      title: 'Start',
+      dataIndex: 'startDate',
+      key: 'startDate'
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: text => (
-        <span>
-          <Tag color={text === '1' ? 'blue' : 'red'}>
-            {text === '1' ? 'Active' : 'Non-active'}
-          </Tag>
-        </span>
-      )
+      title: 'Closing',
+      dataIndex: 'closingDate',
+      key: 'closingDate'
+    },
+    {
+      title: 'Start Total',
+      dataIndex: 'startTotal',
+      key: 'startTotal',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{(text || '-').toLocaleString()}</div>
+        }
+      }
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     },
     {
       title: 'Operation',
