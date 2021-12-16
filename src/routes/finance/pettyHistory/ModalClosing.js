@@ -31,11 +31,7 @@ const ModalExpense = ({
         title: 'Approve this item',
         content: 'Are you sure ?',
         onOk () {
-          data.id = item.id
           data.storeId = item.storeId
-          data.transId = item.transId
-          data.accountId = item.pettyCash.accountId
-          data.expenseTotal = item.expenseTotal
           onOk(data, resetFields)
         }
       })

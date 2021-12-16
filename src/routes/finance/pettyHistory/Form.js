@@ -4,6 +4,7 @@ import { Form, Select, Modal, DatePicker, Button, Row, Col } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
 import List from './List'
+import ModalClosing from './ModalClosing'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -33,6 +34,7 @@ const FormCounter = ({
   item = {},
   listProps,
   listAllStores,
+  modalClosingProps,
   onClosing,
   onSubmit,
   modalType,
@@ -91,13 +93,7 @@ const FormCounter = ({
       })
       return
     }
-    Modal.confirm({
-      title: 'Closing this store',
-      content: 'Are you sure ?',
-      onOk () {
-        onClosing(item.storeId)
-      }
-    })
+    onClosing(item.storeId)
   }
 
   const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
@@ -145,6 +141,7 @@ const FormCounter = ({
       </Row>
       <List {...listProps} />
       <Button style={{ float: 'right', marginTop: '20px' }} type="primary" onClick={handleClose}>Close</Button>
+      {modalClosingProps.visible && <ModalClosing {...modalClosingProps} />}
     </Form>
   )
 }
