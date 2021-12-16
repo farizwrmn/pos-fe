@@ -77,6 +77,13 @@ const List = ({ ...tableProps }) => {
         simple
         scroll={{ x: 1000 }}
         rowKey={record => record.id}
+        footer={() => (
+          <div>
+            {`Remain: ${tableProps.dataSource ? tableProps.dataSource
+              .filter(filtered => filtered.active)
+              .reduce((prev, next) => (prev - (next.depositTotal || 0)) + (next.expenseTotal || 0), 0) : 0}`}
+          </div>
+        )}
       />
     </div>
   )
