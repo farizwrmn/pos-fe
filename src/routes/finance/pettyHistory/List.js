@@ -81,7 +81,7 @@ const List = ({ ...tableProps }) => {
           <div>
             {`Remain: ${tableProps.dataSource ? tableProps.dataSource
               .filter(filtered => filtered.active)
-              .reduce((prev, next) => (prev - (next.depositTotal || 0)) + (next.expenseTotal || 0), 0) : 0}`}
+              .reduce((prev, next) => (prev + (next.depositTotal || 0)) - (next.expenseTotal || 0), 0) : 0}`}
           </div>
         )}
       />
