@@ -1566,6 +1566,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/finance/pettyHistory'))
               registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/finance/pettyHistory'))
             }, 'finance-history')
           }
