@@ -10,10 +10,11 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ pettyExpense, pettyCashDetail, accountCode, loading, dispatch, location }) => {
+const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountCode, loading, dispatch, location }) => {
   const { list, modalCashRegisterVisible, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
   const { listEmployee } = pettyCashDetail
-  const { listAccountCodeExpense } = accountCode
+  const { listAccountCode, listAccountCodeExpense } = accountCode
+  const { listAllStores } = userStore
   // const { user, storeInfo } = app
   // const filterProps = {
   //   onFilterChange (value) {
@@ -117,7 +118,8 @@ const Counter = ({ pettyExpense, pettyCashDetail, accountCode, loading, dispatch
 
   const modalCashRegisterProps = {
     modalCashRegisterVisible,
-    listAccountCode: listAccountCodeExpense,
+    listAccountCode,
+    listAllStores,
     listEmployee,
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,
@@ -245,4 +247,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyExpense, pettyCashDetail, accountCode, loading, app }) => ({ pettyExpense, pettyCashDetail, accountCode, loading, app }))(Counter)
+export default connect(({ pettyExpense, pettyCashDetail, userStore, accountCode, loading, app }) => ({ pettyExpense, pettyCashDetail, userStore, accountCode, loading, app }))(Counter)

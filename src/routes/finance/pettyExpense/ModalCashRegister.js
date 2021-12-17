@@ -26,6 +26,7 @@ class ModalCashRegister extends Component {
     const {
       loading,
       listAccountCode,
+      listAllStores,
       form: {
         getFieldDecorator,
         validateFields,
@@ -65,6 +66,7 @@ class ModalCashRegister extends Component {
 
     const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.employeeId} key={x.employeeId}>{x.employeeName}</Option>))
     const listAccount = listAccountCode.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
+    const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
 
     return (
       <Modal
@@ -77,7 +79,28 @@ class ModalCashRegister extends Component {
       >
         <Form layout="horizontal">
           <FormItem
-            label="Account Code"
+            label="From Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('fromStore', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
+              </Select>
+            )}
+          </FormItem>
+          <FormItem
+            label="Bank"
             hasFeedback
             {...formItemLayout}
           >
@@ -90,10 +113,31 @@ class ModalCashRegister extends Component {
                 showSearch
                 size="large"
                 style={{ width: '100%' }}
-                placeholder="Choose Account Code"
+                placeholder="Choose Bank"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {listAccount}
+              </Select>
+            )}
+          </FormItem>
+          <FormItem
+            label="To Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('toStore', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
               </Select>
             )}
           </FormItem>

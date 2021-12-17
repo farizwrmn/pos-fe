@@ -15,6 +15,7 @@ const ModalExpense = ({
   listAccountCode,
   item,
   onOk,
+  listAllStores,
   onCancel,
   ...modalProps
 }) => {
@@ -45,6 +46,9 @@ const ModalExpense = ({
     ...modalProps,
     onOk: handleOk
   }
+
+  const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+
   return (
     <Modal
       {...modalOpts}
@@ -57,6 +61,27 @@ const ModalExpense = ({
       ]}
     >
       <Form layout="horizontal">
+        <FormItem
+          label="To Store"
+          hasFeedback
+          {...formItemLayout}
+        >
+          {getFieldDecorator('toStore', {
+            rules: [{
+              required: true
+            }]
+          })(
+            <Select
+              mode="default"
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose StoreId"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {listStore}
+            </Select>
+          )}
+        </FormItem>
         <FormItem
           label="Account Code"
           hasFeedback
@@ -79,8 +104,8 @@ const ModalExpense = ({
           )}
         </FormItem>
 
-        <FormItem label="Deposit" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('expenseTotal', {
+        <FormItem label="Adjustment In" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('adjust', {
             initialValue: item.expenseTotal,
             rules: [{
               required: true

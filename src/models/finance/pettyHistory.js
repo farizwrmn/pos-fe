@@ -10,7 +10,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
-    modalClosingVisible: true,
+    modalClosingVisible: false,
     currentItemClosing: {},
     pagination: {
       showSizeChanger: true,
@@ -41,6 +41,13 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const { storeName, ...other } = payload
       if (!payload.storeId) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: [],
+            currentItemClosing: {}
+          }
+        })
         return
       }
       yield put({

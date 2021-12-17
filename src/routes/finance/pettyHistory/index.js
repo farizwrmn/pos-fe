@@ -9,7 +9,7 @@ const TabPane = Tabs.TabPane
 
 const Counter = ({ pettyHistory, accountCode, userStore, loading, dispatch, location }) => {
   const { list, modalClosingVisible, currentItemClosing, modalType, currentItem, activeKey } = pettyHistory
-  const { listAccountCodeExpense } = accountCode
+  const { listAccountCode } = accountCode
   const { listAllStores } = userStore
 
   const changeTab = (key) => {
@@ -33,9 +33,10 @@ const Counter = ({ pettyHistory, accountCode, userStore, loading, dispatch, loca
   }
 
   const modalClosingProps = {
+    listAllStores,
     visible: modalClosingVisible,
     item: currentItemClosing,
-    listAccountCode: listAccountCodeExpense,
+    listAccountCode,
     loading: loading.effects['pettyExpense/generateExpense'] || loading.effects['pettyExpense/deleteExpenseRequest'],
     onOk (item, reset) {
       dispatch({
