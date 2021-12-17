@@ -1090,6 +1090,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/finance/pettyExpense'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))

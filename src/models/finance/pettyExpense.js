@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { generateExpense, deleteExpenseRequest, queryActive, addCashEntry } from 'services/finance/pettyCash'
+import { lstorage } from 'utils'
+import { generateExpense, deleteExpenseRequest, queryPurchase, queryActive, addCashEntry } from 'services/finance/pettyCash'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -14,6 +15,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    listPurchaseExpense: [],
     modalExpenseVisible: false,
     modalCashRegisterVisible: false,
     currentItemExpense: {},
@@ -41,6 +43,14 @@ export default modelExtend(pageModel, {
           })
           dispatch({ type: 'queryActive' })
         }
+        if (pathname === '/accounts/payable-form') {
+          dispatch({
+            type: 'queryPurchase',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
       })
     }
   },
@@ -59,6 +69,18 @@ export default modelExtend(pageModel, {
               pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+      }
+    },
+
+    * queryPurchase ({ payload = {} }, { call, put }) {
+      const data = yield call(queryPurchase, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseExpense: data.data
           }
         })
       }

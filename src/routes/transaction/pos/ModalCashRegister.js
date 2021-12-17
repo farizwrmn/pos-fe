@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
+import { Modal, Select, Checkbox, InputNumber, Form, Input, Button } from 'antd'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -72,6 +72,12 @@ class ModalCashRegister extends Component {
         ]}
       >
         <Form layout="horizontal">
+          <FormItem label="Is Purchase" {...formItemLayout}>
+            {getFieldDecorator('isPurchase', {
+              valuePropName: 'checked',
+              initialValue: false
+            })(<Checkbox>Is Purchase</Checkbox>)}
+          </FormItem>
           <FormItem label="Expense" hasFeedback {...formItemLayout}>
             {getFieldDecorator('expenseTotal', {
               initialValue: 0,
