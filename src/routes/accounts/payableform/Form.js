@@ -40,6 +40,7 @@ const FormCounter = ({
   dispatch,
   // modalShow,
   modalShowList,
+  loadingPettyCash,
   modalType,
   // onCancel,
   listItem,
@@ -48,7 +49,10 @@ const FormCounter = ({
   modalVisible,
   listAccountCode,
   listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
+  listPurchaseExpense,
+  listPurchaseOpt = (listPurchaseExpense || []).length > 0 ? listPurchaseExpense.map(c => <Option value={c.id} key={c.id} title={`${c.expenseTotal} (${c.description})`}>{`${c.expenseTotal} (${c.description})`}</Option>) : [],
   listAccountCodeAll,
+  onRefreshPettyCash,
   modalProps,
   // listPayment,
   listDetailProps,
@@ -330,6 +334,21 @@ const FormCounter = ({
                 labelInValue
                 filterOption={filterOption}
               >{listAccountOpt}
+              </Select>)}
+            </FormItem>
+            <FormItem label="Petty Cash" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('pettyCashId', {
+                rules: [{
+                  required: false
+                }]
+              })(<Select
+                onFocus={onRefreshPettyCash}
+                showSearch
+                allowClear
+                notFoundContent={loadingPettyCash ? <Spin size="small" /> : null}
+                optionFilterProp="children"
+                filterOption={filterOption}
+              >{listPurchaseOpt}
               </Select>)}
             </FormItem>
             {/* <FormItem label="Disc Invoice(N)" hasFeedback {...formItemLayout}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Button, Row, Col } from 'antd'
+import { Card, Button, Row, Spin, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
 import styles from './index.less'
 import ModalExpense from './ModalExpense'
@@ -18,6 +18,8 @@ const FormCounter = ({
   modalExpenseProps,
   modalCancelProps,
   modalCashRegisterProps,
+  onRefresh,
+  loadingExpense,
   loading,
   list,
   onDelete,
@@ -26,6 +28,10 @@ const FormCounter = ({
 }) => {
   const handleDelete = (item) => {
     onDelete(item)
+  }
+
+  if (loadingExpense) {
+    return (<Spin size="large" />)
   }
 
   return (
@@ -39,19 +45,19 @@ const FormCounter = ({
           {list && list.length > 0 ? list.map((item) => {
             return (
               <Card
-                style={{ marginBottom: '10px' }}
-                title="Expense"
+                style={{ marginBottom: '10px', color: item.isPurchase ? '#324aa8' : 'black' }}
+                title={item.isPurchase ? (<div style={{ color: item.isPurchase ? '#324aa8' : 'black' }}><strong>Purchase</strong></div>) : 'Expense'}
                 extra={(
                   <div>
                     <Button disabled={loading} shape="circle" type="danger" loading={loading} icon="close" onClick={() => handleDelete(item)} />
-                    <Button style={{ marginLeft: '15px' }} disabled={loading} shape="circle" type="primary" loading={loading} icon="check" onClick={() => handleClick(item)} />
+                    {!item.isPurchase && <Button style={{ marginLeft: '15px' }} disabled={loading} shape="circle" type="primary" loading={loading} icon="check" onClick={() => handleClick(item)} />}
                   </div>
                 )}
                 bordered
               >
                 <div>
-                  <div><h3>{`Store Name: ${item.storeName}`}</h3></div>
-                  <div><h3>{`Expense: ${numberFormatter(parseFloat(item.expenseTotal))}`}</h3></div>
+                  <div>{`Store Name: ${item.storeName}`}</div>
+                  <div>{`Expense: ${numberFormatter(parseFloat(item.expenseTotal))}`}</div>
                   {item.description && <div>{`Cashier Notes: ${item.description}`}</div>}
                   {item.pettyCash.description && <div>{`Finance Notes: ${item.pettyCash.description}`}</div>}
                   <div>{`Employee: ${item.employeeName}`}</div>
@@ -67,6 +73,7 @@ const FormCounter = ({
       </Col>
       <Col {...column}>
         <Button style={{ float: 'right' }} type="primary" onClick={addNewBalance}>Add New</Button>
+        <Button style={{ float: 'right', marginRight: '10px' }} type="default" icon onClick={onRefresh}>Refresh</Button>
       </Col>
     </Row>
   )

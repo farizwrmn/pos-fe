@@ -171,9 +171,15 @@ const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountCode, loadin
   const formProps = {
     list,
     loading: loading.effects['pettyExpense/generateExpense'],
+    loadingExpense: loading.effects['pettyExpense/queryActive'],
     modalExpenseProps,
     modalCancelProps,
     modalCashRegisterProps,
+    onRefresh () {
+      dispatch({
+        type: 'pettyExpense/queryActive'
+      })
+    },
     addNewBalance () {
       dispatch({
         type: 'pettyExpense/updateState',
