@@ -81,6 +81,12 @@ const FormCounter = ({
           data.storeName = filteredStore[0].storeName
         }
       }
+      if (data.toStore) {
+        const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.toStore))
+        if (filteredStore && filteredStore.length > 0) {
+          data.storeName = filteredStore[0].storeName
+        }
+      }
       onSubmit(data)
     })
   }
