@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tag, Table } from 'antd'
 import { numberFormatter } from 'utils/string'
+import { getTotal } from './utils'
 
 const List = ({ ...tableProps }) => {
   const columns = [
@@ -110,9 +111,7 @@ const List = ({ ...tableProps }) => {
         rowKey={record => record.id}
         footer={() => (
           <div>
-            {`Remain: ${tableProps.dataSource ? numberFormatter(tableProps.dataSource
-              .filter(filtered => filtered.active)
-              .reduce((prev, next) => (prev + (next.depositTotal || 0)) - (next.expenseTotal || 0), 0)) : 0}`}
+            {`Remain: ${tableProps.dataSource ? numberFormatter(getTotal(tableProps.dataSource)) : 0}`}
           </div>
         )}
       />

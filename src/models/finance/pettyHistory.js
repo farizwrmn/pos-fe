@@ -45,6 +45,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             list: [],
+            currentItem: {},
             currentItemClosing: {}
           }
         })
@@ -56,7 +57,7 @@ export default modelExtend(pageModel, {
           currentItem: {}
         }
       })
-      const data = yield call(query, { ...other })
+      const data = yield call(query, other)
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -86,6 +87,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            list: [],
             modalClosingVisible: false,
             currentItemClosing: {}
           }

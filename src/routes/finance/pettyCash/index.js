@@ -198,6 +198,7 @@ const PettyCash = ({ pettyCash, accountCode, userStore, loading, dispatch, locat
   const formProps = {
     listItemProps,
     listAccountCode,
+    listAllStores,
     modalItemProps,
     modalType,
     sequence,

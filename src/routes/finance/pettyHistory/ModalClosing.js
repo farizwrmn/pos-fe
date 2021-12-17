@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, Select, InputNumber, Button, Input, Form } from 'antd'
+import { getTotal } from './utils'
 
 const { TextArea } = Input
 const { Option } = Select
@@ -13,9 +14,11 @@ const formItemLayout = {
 const ModalExpense = ({
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   listAccountCode,
+  listAccountCodeExpense,
   item,
   onOk,
   listAllStores,
+  list,
   onCancel,
   ...modalProps
 }) => {
@@ -33,6 +36,8 @@ const ModalExpense = ({
         content: 'Are you sure ?',
         onOk () {
           data.storeId = item.storeId
+          data.storeName = item.storeName
+          data.remain = getTotal(list)
           onOk(data, resetFields)
         }
       })
@@ -41,6 +46,7 @@ const ModalExpense = ({
   }
 
   const listAccount = listAccountCode.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
+  const listAccountExpense = listAccountCodeExpense.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
 
   const modalOpts = {
     ...modalProps,
@@ -83,7 +89,7 @@ const ModalExpense = ({
           )}
         </FormItem>
         <FormItem
-          label="Account Code"
+          label="Bank"
           hasFeedback
           {...formItemLayout}
         >
@@ -105,8 +111,8 @@ const ModalExpense = ({
         </FormItem>
 
         <FormItem label="Adjustment In" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('adjust', {
-            initialValue: item.expenseTotal,
+          {getFieldDecorator('expenseTotal', {
+            initialValue: 0,
             rules: [{
               required: true
             }]
@@ -121,6 +127,28 @@ const ModalExpense = ({
                 }
               }}
             />
+          )}
+        </FormItem>
+
+        <FormItem
+          label="Adjustment Account"
+          hasFeedback
+          {...formItemLayout}
+        >
+          {getFieldDecorator('adjustmentAccountId', {
+            rules: [{
+              required: true
+            }]
+          })(
+            <Select
+              showSearch
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose Account Code"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {listAccountExpense}
+            </Select>
           )}
         </FormItem>
 

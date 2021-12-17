@@ -14,7 +14,7 @@ export async function closing (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/petty-cash-closing',
-    method: 'get',
+    method: 'post',
     data: params,
     headers: apiHeaderToken
   })

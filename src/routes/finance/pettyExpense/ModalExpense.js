@@ -110,7 +110,7 @@ const ModalExpense = ({
             rules: [{
               required: false
             }]
-          })(<TextArea disabled maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
+          })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
         </FormItem>
       </Form>
     </Modal>

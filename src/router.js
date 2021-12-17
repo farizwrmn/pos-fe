@@ -1543,14 +1543,6 @@ const Routers = function ({ history, app }) {
             }, 'finance-petty-cash')
           }
         }, {
-          path: 'balance/finance/petty-cash/:id',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/finance/pettyCash'))
-              cb(null, require('./routes/finance/pettyCash/detail'))
-            }, 'finance-petty-cash-detail')
-          }
-        }, {
           path: 'balance/finance/petty-expense',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
