@@ -36,7 +36,12 @@ const ModalExpense = ({
         content: 'Are you sure ?',
         onOk () {
           data.storeId = item.storeId
-          data.storeName = item.storeName
+          if (data.storeId) {
+            const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
+            if (filteredStore && filteredStore.length > 0) {
+              data.storeName = filteredStore[0].storeName
+            }
+          }
           data.remain = getTotal(list)
           onOk(data, resetFields)
         }

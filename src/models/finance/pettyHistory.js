@@ -1,4 +1,5 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import { query, closing } from 'services/finance/pettyHistory'
 import { pageModel } from '../common'
 
@@ -92,6 +93,7 @@ export default modelExtend(pageModel, {
             currentItemClosing: {}
           }
         })
+        message.success('Success closing period')
       } else {
         throw response
       }
