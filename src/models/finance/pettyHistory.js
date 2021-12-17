@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { query } from 'services/finance/pettyHistory'
+import { message } from 'antd'
+import { query, closing } from 'services/finance/pettyHistory'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -10,6 +11,8 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    modalClosingVisible: false,
+    currentItemClosing: {},
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -37,7 +40,16 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
+      const { storeName, ...other } = payload
       if (!payload.storeId) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: [],
+            currentItem: {},
+            currentItemClosing: {}
+          }
+        })
         return
       }
       yield put({
@@ -46,7 +58,7 @@ export default modelExtend(pageModel, {
           currentItem: {}
         }
       })
-      const data = yield call(query, payload)
+      const data = yield call(query, other)
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -67,6 +79,23 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw data
+      }
+    },
+
+    * closingPeriod ({ payload = {} }, { call, put }) {
+      const response = yield call(closing, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: [],
+            modalClosingVisible: false,
+            currentItemClosing: {}
+          }
+        })
+        message.success('Success closing period')
+      } else {
+        throw response
       }
     }
   },

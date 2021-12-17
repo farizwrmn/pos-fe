@@ -65,7 +65,7 @@ const FormItemComponent = ({
           placeholder="Choose Account Code"
           style={{ width: '300px' }}
           // filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-          filterOption={(input, option) => (option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 || option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0)}
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >{selectList}
         </Select>
       )}
@@ -136,7 +136,7 @@ const Setting = ({
             })
           )}
           <FormItem {...tailFormItemLayout}>
-            <Button type="primary" onClick={handleSubmit}>Save</Button>
+            <Button style={{ float: 'right' }} type="primary" onClick={handleSubmit}>Save</Button>
           </FormItem>
         </Col>
       </Row>

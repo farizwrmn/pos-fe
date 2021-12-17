@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, Select, InputNumber, Button, Input, Form } from 'antd'
+import { getTotal } from './utils'
 
 const { TextArea } = Input
 const { Option } = Select
@@ -13,8 +14,11 @@ const formItemLayout = {
 const ModalExpense = ({
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   listAccountCode,
+  listAccountCodeExpense,
   item,
   onOk,
+  listAllStores,
+  list,
   onCancel,
   ...modalProps
 }) => {
@@ -31,11 +35,14 @@ const ModalExpense = ({
         title: 'Approve this item',
         content: 'Are you sure ?',
         onOk () {
-          data.id = item.id
           data.storeId = item.storeId
-          data.transId = item.transId
-          data.accountId = item.pettyCash.accountId
-          data.expenseTotal = item.expenseTotal
+          if (data.storeId) {
+            const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
+            if (filteredStore && filteredStore.length > 0) {
+              data.storeName = filteredStore[0].storeName
+            }
+          }
+          data.remain = getTotal(list)
           onOk(data, resetFields)
         }
       })
@@ -44,11 +51,15 @@ const ModalExpense = ({
   }
 
   const listAccount = listAccountCode.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
+  const listAccountExpense = listAccountCodeExpense.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
 
   const modalOpts = {
     ...modalProps,
     onOk: handleOk
   }
+
+  const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+
   return (
     <Modal
       {...modalOpts}
@@ -62,7 +73,28 @@ const ModalExpense = ({
     >
       <Form layout="horizontal">
         <FormItem
-          label="Account Code"
+          label="To Store"
+          hasFeedback
+          {...formItemLayout}
+        >
+          {getFieldDecorator('toStore', {
+            rules: [{
+              required: true
+            }]
+          })(
+            <Select
+              mode="default"
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose StoreId"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {listStore}
+            </Select>
+          )}
+        </FormItem>
+        <FormItem
+          label="Bank"
           hasFeedback
           {...formItemLayout}
         >
@@ -83,9 +115,9 @@ const ModalExpense = ({
           )}
         </FormItem>
 
-        <FormItem label="Deposit" hasFeedback {...formItemLayout}>
+        <FormItem label="Adjustment In" hasFeedback {...formItemLayout}>
           {getFieldDecorator('expenseTotal', {
-            initialValue: item.expenseTotal,
+            initialValue: 0,
             rules: [{
               required: true
             }]
@@ -99,8 +131,29 @@ const ModalExpense = ({
                   handleOk()
                 }
               }}
-              disabled
             />
+          )}
+        </FormItem>
+
+        <FormItem
+          label="Adjustment Account"
+          hasFeedback
+          {...formItemLayout}
+        >
+          {getFieldDecorator('adjustmentAccountId', {
+            rules: [{
+              required: true
+            }]
+          })(
+            <Select
+              showSearch
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose Account Code"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {listAccountExpense}
+            </Select>
           )}
         </FormItem>
 

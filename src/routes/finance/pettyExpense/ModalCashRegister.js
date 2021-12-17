@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -13,7 +14,7 @@ const formItemLayout = {
 class ModalCashRegister extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('expenseTotal')
+      const selector = document.getElementById('depositTotal')
       if (selector) {
         selector.focus()
         selector.select()
@@ -23,13 +24,15 @@ class ModalCashRegister extends Component {
 
   render () {
     const {
+      loading,
+      listAccountCode,
+      listAllStores,
       form: {
         getFieldDecorator,
         validateFields,
         getFieldsValue,
         resetFields
       },
-      loading,
       listEmployee,
       onOk,
       onCancel,
@@ -46,6 +49,7 @@ class ModalCashRegister extends Component {
           ...getFieldsValue()
         }
         if (data && data.employeeId) {
+          data.storeId = lstorage.getCurrentUserStore()
           const selectedEmployee = listEmployee.filter(filtered => filtered.employeeId === data.employeeId)
           if (selectedEmployee && selectedEmployee[0]) {
             data.employeeName = selectedEmployee[0].employeeName
@@ -61,6 +65,8 @@ class ModalCashRegister extends Component {
     }
 
     const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.employeeId} key={x.employeeId}>{x.employeeName}</Option>))
+    const listAccount = listAccountCode.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
+    const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
 
     return (
       <Modal
@@ -72,8 +78,71 @@ class ModalCashRegister extends Component {
         ]}
       >
         <Form layout="horizontal">
-          <FormItem label="Expense" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('expenseTotal', {
+          <FormItem
+            label="From Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('fromStore', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
+              </Select>
+            )}
+          </FormItem>
+          <FormItem
+            label="Bank"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('depositAccountId', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                showSearch
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose Bank"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listAccount}
+              </Select>
+            )}
+          </FormItem>
+          <FormItem
+            label="To Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('toStore', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
+              </Select>
+            )}
+          </FormItem>
+          <FormItem label="Debit" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('depositTotal', {
               initialValue: 0,
               rules: [{
                 required: true

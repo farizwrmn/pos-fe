@@ -5,6 +5,7 @@ import { numberFormatter } from 'utils/string'
 import styles from './index.less'
 import ModalExpense from './ModalExpense'
 import ModalCancel from './ModalCancel'
+import ModalCashRegister from './ModalCashRegister'
 
 const column = {
   sm: { span: 24 },
@@ -16,9 +17,11 @@ const column = {
 const FormCounter = ({
   modalExpenseProps,
   modalCancelProps,
+  modalCashRegisterProps,
   loading,
   list,
   onDelete,
+  addNewBalance,
   handleClick
 }) => {
   const handleDelete = (item) => {
@@ -29,6 +32,7 @@ const FormCounter = ({
     <Row>
       {modalCancelProps.visible && <ModalCancel {...modalCancelProps} />}
       {modalExpenseProps.visible && <ModalExpense {...modalExpenseProps} />}
+      {modalCashRegisterProps.visible && <ModalCashRegister {...modalCashRegisterProps} />}
       <Col {...column}>
         <h1>Approval</h1>
         <div className={styles.content} >
@@ -60,6 +64,9 @@ const FormCounter = ({
               <div>{"Everything's done, have a nice day"} </div>
             )}
         </div>
+      </Col>
+      <Col {...column}>
+        <Button style={{ float: 'right' }} type="primary" onClick={addNewBalance}>Add New</Button>
       </Col>
     </Row>
   )

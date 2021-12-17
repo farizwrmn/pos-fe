@@ -7,8 +7,9 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
-  const { list, modalType, currentItem, activeKey } = pettyHistory
+const Counter = ({ pettyHistory, accountCode, userStore, loading, dispatch, location }) => {
+  const { list, modalClosingVisible, currentItemClosing, modalType, currentItem, activeKey } = pettyHistory
+  const { listAccountCode, listAccountCodeExpense } = accountCode
   const { listAllStores } = userStore
 
   const changeTab = (key) => {
@@ -31,7 +32,36 @@ const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
     dataSource: list
   }
 
+  const modalClosingProps = {
+    listAllStores,
+    list,
+    visible: modalClosingVisible,
+    item: currentItemClosing,
+    listAccountCode,
+    listAccountCodeExpense,
+    loading: loading.effects['pettyExpense/generateExpense'] || loading.effects['pettyExpense/deleteExpenseRequest'],
+    onOk (item, reset) {
+      dispatch({
+        type: 'pettyHistory/closingPeriod',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pettyHistory/updateState',
+        payload: {
+          modalClosingVisible: false,
+          currentItemClosing: {}
+        }
+      })
+    }
+  }
+
   const formProps = {
+    modalClosingProps,
     list,
     listAllStores,
     listProps,
@@ -54,6 +84,17 @@ const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
           ...data
         }
       }))
+    },
+    onClosing (storeId) {
+      dispatch({
+        type: 'pettyHistory/updateState',
+        payload: {
+          modalClosingVisible: true,
+          currentItemClosing: {
+            storeId
+          }
+        }
+      })
     },
     onCancel () {
       const { pathname } = location
@@ -89,6 +130,7 @@ const Counter = ({ pettyHistory, userStore, loading, dispatch, location }) => {
 
 Counter.propTypes = {
   pettyHistory: PropTypes.object,
+  accountCode: PropTypes.object,
   userStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -96,4 +138,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyHistory, userStore, loading, app }) => ({ pettyHistory, userStore, loading, app }))(Counter)
+export default connect(({ pettyHistory, accountCode, userStore, loading, app }) => ({ pettyHistory, accountCode, userStore, loading, app }))(Counter)

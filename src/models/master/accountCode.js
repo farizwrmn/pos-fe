@@ -63,6 +63,7 @@ export default modelExtend(pageModel, {
           || pathname === '/balance/finance/petty-expense'
           || pathname === '/bank-recon'
           || pathname === '/balance/finance/petty-cash'
+          || pathname === '/balance/finance/history'
           || pathname === '/bank-history'
           || pathname === '/master/paymentoption'
           || pathname === '/bank-entry'

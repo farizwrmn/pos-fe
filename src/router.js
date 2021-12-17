@@ -1543,18 +1543,12 @@ const Routers = function ({ history, app }) {
             }, 'finance-petty-cash')
           }
         }, {
-          path: 'balance/finance/petty-cash/:id',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/finance/pettyCash'))
-              cb(null, require('./routes/finance/pettyCash/detail'))
-            }, 'finance-petty-cash-detail')
-          }
-        }, {
           path: 'balance/finance/petty-expense',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/finance/pettyExpense'))
               cb(null, require('./routes/finance/pettyExpense'))
             }, 'finance-petty-expense')
@@ -1565,6 +1559,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/finance/pettyHistory'))
               registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/finance/pettyHistory'))
             }, 'finance-history')
           }

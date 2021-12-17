@@ -32,6 +32,7 @@ const FormCounter = ({
   sequence,
   item = {},
   listAccountCode,
+  listAllStores,
   onSubmit,
   onCancel,
   modalType,
@@ -70,6 +71,7 @@ const FormCounter = ({
   }
 
   const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
+  const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
 
   return (
     <Form layout="horizontal">
@@ -85,6 +87,27 @@ const FormCounter = ({
                 }
               ]
             })(<Input disabled />)}
+          </FormItem>
+          <FormItem
+            label="From Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('fromStore', {
+              rules: [{
+                required: true
+              }]
+            })(
+              <Select
+                mode="default"
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose StoreId"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
+              </Select>
+            )}
           </FormItem>
           <FormItem {...formItemLayout} label="Bank">
             {getFieldDecorator('accountId', {

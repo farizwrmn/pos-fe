@@ -15,6 +15,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     modalExpenseVisible: false,
+    modalCashRegisterVisible: false,
     currentItemExpense: {},
     currentItemCancel: {},
     modalCancelVisible: false,

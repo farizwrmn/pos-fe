@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Select, DatePicker, Button, Row, Col } from 'antd'
+import { Form, Select, Modal, DatePicker, Button, Row, Col } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
 import List from './List'
+import ModalClosing from './ModalClosing'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -33,6 +34,8 @@ const FormCounter = ({
   item = {},
   listProps,
   listAllStores,
+  modalClosingProps,
+  onClosing,
   onSubmit,
   modalType,
   form: {
@@ -72,8 +75,25 @@ const FormCounter = ({
       } else {
         data.transDate = undefined
       }
+      if (data.storeId) {
+        const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
+        if (filteredStore && filteredStore.length > 0) {
+          data.storeName = filteredStore[0].storeName
+        }
+      }
       onSubmit(data)
     })
+  }
+
+  const handleClose = () => {
+    if (!item.storeId) {
+      Modal.error({
+        title: 'Store Not Found',
+        content: 'Press filter button'
+      })
+      return
+    }
+    onClosing(item.storeId)
   }
 
   const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
@@ -120,6 +140,8 @@ const FormCounter = ({
         </Col>
       </Row>
       <List {...listProps} />
+      <Button style={{ float: 'right', marginTop: '20px' }} type="primary" onClick={handleClose}>Close</Button>
+      {modalClosingProps.visible && <ModalClosing {...modalClosingProps} />}
     </Form>
   )
 }
