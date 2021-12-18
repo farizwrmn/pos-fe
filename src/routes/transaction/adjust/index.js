@@ -230,7 +230,7 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
           productName: e.productName,
           In: 0,
           Out: 0,
-          price: e.sellPrice
+          price: e.costPrice
         })
         localStorage.setItem('adjust', JSON.stringify(arrayProd))
         dispatch({
