@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tag, Table } from 'antd'
 import { numberFormatter } from 'utils/string'
+import styles from '../../../themes/index.less'
 import { getTotal } from './utils'
 
 const List = ({ ...tableProps }) => {
@@ -10,6 +11,7 @@ const List = ({ ...tableProps }) => {
       title: 'Code',
       dataIndex: 'transNo',
       key: 'transNo',
+      width: '140px',
       render (text, record) {
         if (!record.active) {
           return <div style={{ color: 'red' }}>{text}</div>
@@ -21,6 +23,7 @@ const List = ({ ...tableProps }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
+      width: '100px',
       render (text, record) {
         if (!record.active) {
           return <div style={{ color: 'red' }}>{text}</div>
@@ -32,6 +35,8 @@ const List = ({ ...tableProps }) => {
       title: 'In',
       dataIndex: 'depositTotal',
       key: 'depositTotal',
+      width: '100px',
+      className: styles.alignRight,
       render (text, record) {
         if (!record.active) {
           return <div style={{ color: 'red' }}>{(text || '-').toLocaleString()}</div>
@@ -48,6 +53,8 @@ const List = ({ ...tableProps }) => {
       title: 'Out',
       dataIndex: 'expenseTotal',
       key: 'expenseTotal',
+      width: '100px',
+      className: styles.alignRight,
       render (text, record) {
         if (!record.active) {
           return <div style={{ color: 'red' }}>{(text || '-').toLocaleString()}</div>
@@ -64,6 +71,7 @@ const List = ({ ...tableProps }) => {
       title: 'Approval',
       dataIndex: 'cashEntryId',
       key: 'cashEntryId',
+      width: '100px',
       render (text, record) {
         if (record.cashEntryId > 0) {
           return <Tag color="green">Approved</Tag>
@@ -71,7 +79,10 @@ const List = ({ ...tableProps }) => {
         if (record.journalEntryId > 0) {
           return <Tag color="green">Approved</Tag>
         }
-        if (record.entryType === 'D' && record.cashEntryId === null && record.journalEntryId === null) {
+        if (record.purchaseId > 0) {
+          return <Tag color="green">Approved</Tag>
+        }
+        if (record.entryType === 'D' && record.cashEntryId === null) {
           return <Tag color="green">Approved</Tag>
         }
       }
@@ -80,6 +91,7 @@ const List = ({ ...tableProps }) => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      width: '360px',
       render (text, record) {
         if (!record.active) {
           return <div style={{ color: 'red' }}>{text}</div>
@@ -91,6 +103,7 @@ const List = ({ ...tableProps }) => {
       title: 'Status',
       dataIndex: 'active',
       key: 'active',
+      width: '100px',
       render (text, record) {
         if (text) {
           return <Tag color="green">Active</Tag>

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, Button, Row, Spin, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
+import moment from 'moment'
 import styles from './index.less'
 import ModalExpense from './ModalExpense'
 import ModalCancel from './ModalCancel'
@@ -62,6 +63,7 @@ const FormCounter = ({
                   {item.pettyCash.description && <div>{`Finance Notes: ${item.pettyCash.description}`}</div>}
                   <div>{`Employee: ${item.employeeName}`}</div>
                   <div>{`Created By: ${item.userName}`}</div>
+                  <div>{`Created At: ${moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}`}</div>
                 </div>
               </Card>
             )
