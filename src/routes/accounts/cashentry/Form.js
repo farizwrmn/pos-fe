@@ -150,8 +150,8 @@ const FormCounter = ({
             <FormItem {...formItemLayout} label="Account Code">
               {getFieldDecorator('accountCode', {
                 initialValue: item.accountCode ? {
-                  key: item.accountCode.key,
-                  label: item.accountCode.label
+                  key: item.accountCode.key || item.accountId,
+                  label: item.accountCode.label || `${item.accountCode.accountName} (${item.accountCode.accountCode})`
                 } : { label: 'Choose Account Code' },
                 rules: [{
                   required: true,

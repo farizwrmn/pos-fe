@@ -175,7 +175,7 @@ class TransactionDetail extends Component {
             columns={[
               {
                 title: 'No',
-                width: '40px',
+                width: '50px',
                 dataIndex: 'no',
                 sortOrder: 'descend',
                 sorter: (a, b) => a.no - b.no
@@ -183,7 +183,7 @@ class TransactionDetail extends Component {
               {
                 title: 'Product',
                 dataIndex: 'code',
-                width: '300px',
+                width: '290px',
                 render: (text, record) => {
                   if (record && record.bundleId) {
                     return (
@@ -451,7 +451,7 @@ class TransactionDetail extends Component {
             columns={[
               {
                 title: 'No',
-                width: '40px',
+                width: '60px',
                 dataIndex: 'no',
                 sortOrder: 'descend',
                 sorter: (a, b) => a.no - b.no
@@ -459,7 +459,7 @@ class TransactionDetail extends Component {
               {
                 title: 'Type',
                 dataIndex: 'typeTrans',
-                width: '150px'
+                width: '130px'
               },
               {
                 title: 'Product',

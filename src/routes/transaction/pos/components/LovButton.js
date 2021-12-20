@@ -5,6 +5,8 @@ import {
   // Badge,
   Button
 } from 'antd'
+import { lstorage } from 'utils'
+import styles from './LovButton.less'
 
 const ButtonGroup = Button.Group
 
@@ -72,6 +74,7 @@ window.leftScreenBoundry = FindLeftScreenBoundry
 // }
 
 const LovButton = ({
+  onClickCash,
   memberInformation,
   // memberUnitInfo,
   mechanicInformation,
@@ -84,9 +87,15 @@ const LovButton = ({
   // handleQueue,
   workOrderItem
 }) => {
-  // const handleCustomerView = () => {
-  //   window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)
-  // }
+  const handleCustomerView = () => {
+    let iframe = `<html><head><style>body, html {width: 100%; height: 100%; margin: 0; padding: 0}</style></head><body><iframe src="${window.location.origin}/transaction/pos/customer-view" style="height:calc(100% - 4px);width:calc(100% - 4px)"></iframe></html></body>`
+    const win = window.open('', '_blank', `resizable=1,location=no,status=no,height=${screen.height},width=${screen.width},scrollbars=1,fullscreen=1,screenX=${window.leftScreenBoundry()},left=${window.leftScreenBoundry()},toolbar=0,menubar=0,status=1`)
+    win.document.write(iframe)
+  }
+  const handleHome = () => {
+    window.open('/balance/current', '_blank')
+  }
+  const currentStoreName = lstorage.getCurrentUserStoreName()
 
   return (
     <div>
@@ -144,14 +153,32 @@ const LovButton = ({
           Queue
         </Button>
       </Badge> */}
-      {/* <Button
-        type="primary"
+      <Button
+        type="secondary"
         size="large"
-        icon="user"
+        icon="laptop"
+        style={{ backgroundColor: '#FFFF00', borderColor: '#FFFF00' }}
         onClick={() => handleCustomerView()}
       >
         Customer View
-      </Button> */}
+      </Button>
+      <span style={{ marginLeft: '30px' }} className={styles.currentStore}>
+        {currentStoreName}
+      </span>
+      <Button
+        type="primary"
+        size="large"
+        icon="home"
+        style={{ marginLeft: '30px' }}
+        onClick={() => handleHome()}
+      />
+      <Button
+        type="primary"
+        size="large"
+        icon="wallet"
+        style={{ marginLeft: '10px' }}
+        onClick={() => onClickCash()}
+      />
     </div >
   )
 }

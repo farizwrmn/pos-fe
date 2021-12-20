@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
+import { lstorage } from 'utils'
 import { queryActive } from '../../services/marketing/promo'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
@@ -15,6 +16,7 @@ export default modelExtend(pageModel, {
     searchText: null,
     typeModal: null,
     list: [],
+    listMinimumPayment: [],
     modalPromoVisible: false,
     pagination: {
       showSizeChanger: true,
@@ -24,14 +26,14 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    // setup ({ dispatch, history }) {
-    //   history.listen((location) => {
-    //     const { pathname } = location
-    //     if (pathname === '/transaction/pos') {
-    //       dispatch({ type: 'query', payload: { storeId: lstorage.getCurrentUserStore() } })
-    //     }
-    //   })
-    // }
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        const { pathname } = location
+        if (pathname === '/transaction/pos') {
+          dispatch({ type: 'queryMinimumPayment', payload: { storeId: lstorage.getCurrentUserStore() } })
+        }
+      })
+    }
   },
 
   effects: {
@@ -54,6 +56,28 @@ export default modelExtend(pageModel, {
               pageSize: Number(payload.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+    * queryMinimumPayment ({ payload = {} }, { call, put }) {
+      const date = yield call(getDateTime, {
+        id: 'date'
+      })
+      if (!date.success) {
+        throw date
+      }
+      payload.day = moment(date.data, 'YYYY-MM-DD').isoWeekday()
+      payload.type = 'all'
+      payload.minimumPayment = '1'
+      const data = yield call(queryActive, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listMinimumPayment: data.data
           }
         })
       } else {

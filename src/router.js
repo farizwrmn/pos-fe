@@ -491,7 +491,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
-              cb(null, require('./routes/notification/salesDiscount/'))
+              cb(null, require('./routes/notification/salesDiscount'))
             }, 'sales-discount')
           }
         }, {
@@ -508,6 +508,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/transaction/pospromo'))
               registerModel(app, require('./models/master/shift'))
@@ -607,12 +608,21 @@ const Routers = function ({ history, app }) {
           path: 'transaction/adjust',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/adjust'))
+              registerModel(app, require('./models/inventory/adjustNew'))
+              registerModel(app, require('./models/inventory/adjust'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/accountCode'))
-              cb(null, require('./routes/transaction/adjust/'))
+              cb(null, require('./routes/transaction/adjust'))
             }, 'transaction-adjust')
+          }
+        }, {
+          path: 'transaction/adjust/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/adjustDetail'))
+              cb(null, require('./routes/transaction/adjust/detail'))
+            }, 'transaction-adjust-detail')
           }
         }, {
           path: 'transaction/booking',
@@ -1031,6 +1041,14 @@ const Routers = function ({ history, app }) {
             }, 'report-marketing-followup')
           }
         }, {
+          path: 'marketing/advertising',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/advertising'))
+              cb(null, require('./routes/marketing/advertising'))
+            }, 'marketing-advertising')
+          }
+        }, {
           path: 'report/marketing/target',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1081,13 +1099,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/finance/pettyExpense'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/return/returnPurchase'))
               cb(null, require('./routes/accounts/payableform'))
-            }, 'accounts/payable-form')
+            }, 'accounts-payable-form')
           }
         }, {
           path: 'accounts/payable-form/:id',
@@ -1507,6 +1526,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/service'))
               registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/specification'))
               cb(null, require('./routes/marketing/bundling'))
@@ -1520,6 +1541,37 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/marketing/voucher'))
               cb(null, require('./routes/marketing/voucher'))
             }, 'marketing-voucher')
+          }
+        }, {
+          path: 'balance/finance/petty-cash',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/finance/pettyCash'))
+              cb(null, require('./routes/finance/pettyCash'))
+            }, 'finance-petty-cash')
+          }
+        }, {
+          path: 'balance/finance/petty-expense',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/finance/pettyCashDetail'))
+              registerModel(app, require('./models/finance/pettyExpense'))
+              cb(null, require('./routes/finance/pettyExpense'))
+            }, 'finance-petty-expense')
+          }
+        }, {
+          path: 'balance/finance/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/finance/pettyHistory'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/finance/pettyHistory'))
+            }, 'finance-history')
           }
         }, {
           path: 'marketing/voucher/:id',

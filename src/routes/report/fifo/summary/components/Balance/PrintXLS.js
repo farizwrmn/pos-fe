@@ -114,7 +114,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     tableHeader,
     tableBody,
     tableFooter,
-    fileName: 'LAPORAN SISA SALDO STOCK'
+    fileName: `${storeInfo.storeName} - LAPORAN SISA SALDO STOCK`
   }
 
   return (

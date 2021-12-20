@@ -78,7 +78,9 @@ class TransferModal extends Component {
       onOk: handleOk
     }
     return (
-      <Modal title={`${currentItemList.productCode} - ${currentItemList.productName}`}
+      <Modal
+        onCancel={onCancelList}
+        title={`${currentItemList.productCode} - ${currentItemList.productName}`}
         {...modalOpts}
         footer={[
           <Button size="large" key="delete" type="danger" onClick={handleDelete}>Delete</Button>,

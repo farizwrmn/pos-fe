@@ -3,15 +3,17 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Modal, Tabs } from 'antd'
+import { lstorage } from 'utils'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ payableForm, userStore, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
   const { query } = location
   const { listAllStores } = userStore
+  const { listPurchaseExpense } = pettyExpense
   const {
     modalVisible,
     currentItem,
@@ -211,6 +213,7 @@ const Cash = ({ payableForm, userStore, returnPurchase, accountCode, paymentEdc,
   const formProps = {
     listAccountCodeAll: listAccountCode,
     listPayment,
+    listPurchaseExpense,
     purchaseProps,
     dispatch,
     loading,
@@ -222,9 +225,18 @@ const Cash = ({ payableForm, userStore, returnPurchase, accountCode, paymentEdc,
     listItem,
     listOpts,
     listBank,
+    loadingPettyCash: loading.effects['pettyExpense/queryPurchase'],
     listSupplier,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onRefreshPettyCash () {
+      dispatch({
+        type: 'pettyExpense/queryPurchase',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
     onSubmit (data, detail, oldValue, reset) {
       dispatch({
         type: `payableForm/${modalType}`,
@@ -349,6 +361,7 @@ Cash.propTypes = {
 
 export default connect(({
   returnPurchase,
+  pettyExpense,
   payableForm,
   accountCode,
   userStore,
@@ -359,16 +372,17 @@ export default connect(({
   loading,
   purchase,
   app }) => (
-  {
-    returnPurchase,
-    payableForm,
-    accountCode,
-    userStore,
-    paymentOpts,
-    paymentEdc,
-    bank,
-    supplier,
-    loading,
-    purchase,
-    app
-  }))(Cash)
+    {
+      returnPurchase,
+      pettyExpense,
+      payableForm,
+      accountCode,
+      userStore,
+      paymentOpts,
+      paymentEdc,
+      bank,
+      supplier,
+      loading,
+      purchase,
+      app
+    }))(Cash)

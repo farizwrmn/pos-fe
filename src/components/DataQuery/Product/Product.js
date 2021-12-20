@@ -31,53 +31,53 @@ const Product = ({
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: '5%'
+      width: '90px'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '10%'
+      width: '100px'
     }, {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '15%'
+      width: '200px'
     }, {
       title: getDistPriceName('sellPrice'),
       dataIndex: 'sellPrice',
       key: 'sellPrice',
-      width: '15%',
+      width: '120px',
       render: text => formatNumberIndonesia(text)
     }, {
       title: getDistPriceName('distPrice01'),
       dataIndex: 'distPrice01',
       key: 'distPrice01',
-      width: '15%',
+      width: '120px',
       render: text => formatNumberIndonesia(text)
     }, {
       title: getDistPriceName('distPrice02'),
       dataIndex: 'distPrice02',
       key: 'distPrice02',
-      width: '15%',
+      width: '120px',
       render: text => formatNumberIndonesia(text)
     }, {
       title: getDistPriceName('distPrice03'),
       dataIndex: 'distPrice03',
       key: 'distPrice03',
-      width: '15%',
+      width: '120px',
       render: text => formatNumberIndonesia(text)
     }, {
       title: getDistPriceName('distPrice04'),
       dataIndex: 'distPrice04',
       key: 'distPrice04',
-      width: '15%',
+      width: '120px',
       render: text => formatNumberIndonesia(text)
     }, {
       title: getDistPriceName('distPrice05'),
       dataIndex: 'distPrice05',
       key: 'distPrice05',
-      width: '15%',
+      width: '120px',
       render: text => formatNumberIndonesia(text)
     }
   ]
@@ -169,7 +169,7 @@ const Product = ({
           pagination={showPagination ? pagination : false}
           dataSource={list}
           bordered
-          scroll={{ x: 500, y: 388 }}
+          scroll={{ x: 500, y: 1200 }}
           columns={columns}
           simple
           onChange={changeProduct}

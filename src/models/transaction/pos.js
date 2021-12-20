@@ -11,6 +11,7 @@ import {
 import {
   queryPaymentSplit
 } from 'services/payment/payment'
+import { query as queryAdvertising } from 'services/marketing/advertising'
 import { query as queryReward } from 'services/marketing/bundlingReward'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
@@ -71,6 +72,7 @@ export default {
   namespace: 'pos',
 
   state: {
+    currentBundlePayment: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
     standardInvoice: true,
@@ -80,6 +82,8 @@ export default {
     dataReward: [],
     currentCategory: [],
     tmpList: [],
+    listAdvertising: [],
+    listAdvertisingCustomer: [],
     listCashier: [],
     listPayment: [],
     listPaymentDetail: [],
@@ -104,6 +108,7 @@ export default {
     currentItem: {},
     typePembelian: localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 1,
     dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
+    modalCashRegisterVisible: false,
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
@@ -220,8 +225,12 @@ export default {
           dispatch({
             type: 'getStore'
           })
+          dispatch({
+            type: 'getAdvertisingCustomer'
+          })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
           dispatch({
@@ -305,6 +314,54 @@ export default {
   },
 
   effects: {
+    * getAdvertising (payload, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listAdvertising: []
+        }
+      })
+      const response = yield call(queryAdvertising, {
+        type: 'all',
+        typeAds: 'CASHIER',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAdvertising: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * getAdvertisingCustomer (payload, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listAdvertisingCustomer: []
+        }
+      })
+      const response = yield call(queryAdvertising, {
+        type: 'all',
+        typeAds: 'CUSTVIEW',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAdvertisingCustomer: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * validateVoucher ({ payload = {} }, { call, put }) {
       if (!payload || (payload && !payload.code) || (payload && payload.code && payload.code.length < 5)) {
         message.error('Code must provided')

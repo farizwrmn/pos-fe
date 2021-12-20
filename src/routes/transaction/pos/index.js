@@ -39,7 +39,9 @@ import PaymentModal from './paymentModal'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
+import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
+import Advertising from './Advertising'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -69,6 +71,7 @@ const Pos = ({
   customer,
   loading,
   dispatch,
+  pettyCashDetail,
   pos,
   login,
   // shift,
@@ -92,6 +95,7 @@ const Pos = ({
     modalProductVisible,
     modalConsignmentVisible,
     modalPaymentVisible,
+    listAdvertising,
     curQty,
     totalItem,
     curTotal,
@@ -132,10 +136,12 @@ const Pos = ({
     selectedPaymentShortcut,
     currentBuildComponent,
     listVoucher,
-    modalVoucherVisible
+    modalVoucherVisible,
+    modalCashRegisterVisible
   } = pos
+  const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
-  const { modalPromoVisible } = promo
+  const { modalPromoVisible, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -207,6 +213,21 @@ const Pos = ({
     memberInformation,
     memberUnitInfo,
     mechanicInformation,
+    onClickCash () {
+      console.log('Open Cash Register')
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCashRegisterVisible: true
+        }
+      })
+      dispatch({
+        type: 'pettyCashDetail/queryEmployee',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
     handleMemberBrowse () {
       resetSelectText()
       // get member data
@@ -765,6 +786,31 @@ const Pos = ({
         type: 'login/updateState',
         payload: {
           modalFingerprintVisible: false
+        }
+      })
+    }
+  }
+
+  const modalCashRegisterProps = {
+    modalCashRegisterVisible,
+    listEmployee,
+    loading: loading.effects['pettyCashDetail/insertExpense'],
+    visible: modalCashRegisterVisible,
+    onOk (item, reset) {
+      console.log('item', item)
+      dispatch({
+        type: 'pettyCashDetail/insertExpense',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCashRegisterVisible: false
         }
       })
     }
@@ -1714,6 +1760,80 @@ const Pos = ({
     })
   }
 
+  const onPayment = () => {
+    let defaultRole = ''
+    const localId = localStorage.getItem(`${prefix}udi`)
+    if (localId && localId.indexOf('#') > -1) {
+      defaultRole = localId.split(/[# ]+/).pop()
+    }
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+    const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'Member Unit is not Defined '
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are inserting Member Unit without Work Order'
+      })
+    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are Work Order without Member Unit'
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
+    }
+    dispatch({ type: 'pos/setCurTotal' })
+
+    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+    if (listVoucher && listVoucher.length > 0) {
+      dispatch({
+        type: 'payment/addMethodVoucher',
+        payload: {
+          list: listVoucher
+        }
+      })
+    }
+
+    // Untuk tipe page
+    // dispatch(routerRedux.push('/transaction/pos/payment'))
+    dispatch({
+      type: 'payment/showPaymentModal'
+    })
+    if (bundleItem && bundleItem.length > 0) {
+      const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
+      if (filteredBundlePayment && filteredBundlePayment[0]) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            currentBundlePayment: {
+              paymentOption: filteredBundlePayment[0].paymentOption,
+              paymentBankId: filteredBundlePayment[0].paymentBankId
+            }
+          }
+        })
+      }
+    }
+  }
+
   const buttomButtonProps = {
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
@@ -1750,63 +1870,7 @@ const Pos = ({
           return
         }
       }
-      let defaultRole = ''
-      const localId = localStorage.getItem(`${prefix}udi`)
-      if (localId && localId.indexOf('#') > -1) {
-        defaultRole = localId.split(/[# ]+/).pop()
-      }
-      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
-      const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-      const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
-      if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'Member Unit is not Defined '
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
-      if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'You are inserting Member Unit without Work Order'
-        })
-      } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-        Modal.warning({
-          title: 'Unit Validation',
-          content: 'You are Work Order without Member Unit'
-        })
-        if (defaultRole !== 'OWN') {
-          return
-        }
-      }
-      if (memberData === null) {
-        Modal.warning({
-          title: 'Member Validation',
-          content: 'Member Data Cannot be Null'
-        })
-        return
-      }
-      dispatch({ type: 'pos/setCurTotal' })
-
-      dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
-
-      if (listVoucher && listVoucher.length > 0) {
-        dispatch({
-          type: 'payment/addMethodVoucher',
-          payload: {
-            list: listVoucher
-          }
-        })
-      }
-
-      // Untuk tipe page
-      // dispatch(routerRedux.push('/transaction/pos/payment'))
-      dispatch({
-        type: 'payment/showPaymentModal'
-      })
+      onPayment()
     },
     handleSuspend () {
       if (document.getElementById('KM')) document.getElementById('KM').value = 0
@@ -1892,6 +1956,18 @@ const Pos = ({
     })
   }
 
+  const onChooseOffering = (item) => {
+    dispatch({
+      type: 'pospromo/addPosPromo',
+      payload: {
+        bundleId: item.id,
+        currentBundle: getBundleTrans(),
+        currentProduct: getCashierTrans(),
+        currentService: getServiceTrans()
+      }
+    })
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -1915,6 +1991,7 @@ const Pos = ({
               productBookmarkGroup={productBookmarkGroup}
               productBookmark={productBookmark}
             />
+            <Advertising list={listAdvertising} />
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
@@ -1927,6 +2004,12 @@ const Pos = ({
               {listVoucher.map(item => (
                 <Tag style={{ marginBottom: '10px' }} key={item.generatedCode} closable color="green" onClose={e => onDeleteVoucher(e, item.generatedCode)}>{item.voucherName} - {item.generatedCode}</Tag>
               ))}
+              {listMinimumPayment
+                && listMinimumPayment.length > 0
+                && (curNetto + dineIn) >= listMinimumPayment[0].minimumPayment
+                && (
+                  <Tag style={{ marginBottom: '10px' }} key={listMinimumPayment[0].id} closable={false} color="green" onClick={() => onChooseOffering(listMinimumPayment[0])}>{listMinimumPayment[0] && listMinimumPayment[0].description ? listMinimumPayment[0].description : listMinimumPayment[0].name}</Tag>
+                )}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
@@ -2004,6 +2087,7 @@ const Pos = ({
             {modalServiceListVisible && <ModalEditBrowse {...ModalServiceListProps} />}
             {modalConsignmentListVisible && <ModalEditBrowse {...ModalConsignmentListProps} />}
             {modalLoginVisible && <ModalLogin {...modalLoginProps} />}
+            {modalCashRegisterVisible && <ModalCashRegister {...modalCashRegisterProps} />}
 
             <TransactionDetail pos={pos} dispatch={dispatch} handleProductBrowse={handleProductBrowse} />
             <Row>
@@ -2068,15 +2152,26 @@ const Pos = ({
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
 
-      {memberInformation.memberTypeName && <div className="wrapper-switcher">
-        <Button onClick={showModalCashback} className="btn-member">
+      {memberInformation.memberTypeName && (
+        <div className="wrapper-switcher">
+          <Button onClick={showModalCashback} className="btn-member">
+            <span>
+              <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
+              <p>{(memberInformation.cashback || 0).toLocaleString()} Loyalty</p>
+              <p>Click to add Voucher</p>
+            </span>
+          </Button>
+        </div>
+      )}
+
+      <div className="wrapper-switcher">
+        <Button onClick={() => window.open('/transaction/pos/customer-view', '_blank', `resizable=1, height=${screen.height}, width=${screen.width}, scrollbars=1, fullscreen=yes, screenX=${window.leftScreenBoundry()}, left=${window.leftScreenBoundry()}, toolbar=0, menubar=0, status=1`)} className="btn-customer-view">
           <span>
-            <h2><Icon type="heart" />{`   ${memberInformation.memberTypeName || ''}`}</h2>
-            <p>{(memberInformation.cashback || 0).toLocaleString()} Loyalty</p>
-            <p>Click to add Voucher</p>
+            <h2><Icon type="laptop" style={{ color: '#charcoal' }} /></h2>
+            <p>Customer View</p>
           </span>
         </Button>
-      </div>}
+      </div>
       {
         (localStorage.getItem('lastMeter') || showAlert) &&
         <div className={`wrapper-switcher ${showListReminder ? 'active' : ''}`}>
@@ -2107,7 +2202,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }) => ({
-  pospromo, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
 }))(Pos)

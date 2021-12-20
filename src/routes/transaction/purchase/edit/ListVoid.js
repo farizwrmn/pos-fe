@@ -93,12 +93,13 @@ const ListVoid = ({ onRestoreVoid, purchase, dispatch, ...tableProps }) => {
       dataIndex: 'ket',
       key: 'ket',
       width: 100,
-      render: ket =>
-      (<span>
-        <Tag color={ket === 'void' ? 'red' : 'green'}>
-          {ket === 'void' ? 'VOID' : 'ADD'}
-        </Tag>
-      </span>)
+      render: ket => (
+        <span>
+          <Tag color={ket === 'void' ? 'red' : 'green'}>
+            {ket === 'void' ? 'VOID' : 'ADD'}
+          </Tag>
+        </span>
+      )
     }
   ]
 

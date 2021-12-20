@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
-import { posTotal } from 'utils'
+import { posTotal, numberFormat } from 'utils'
 import {
   getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
   setCashierTrans, setServiceTrans, setBundleTrans
@@ -8,6 +8,42 @@ import {
 import { query } from '../../services/marketing/bundling'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
+
+
+const numberFormatter = numberFormat.numberFormatter
+
+const group = (data, key) => {
+  return _.reduce(data, (group, item) => {
+    (group[`${item[key]}`] = group[`${item[key]}`] || []).push(item)
+    return group
+  }, [])
+}
+
+const groupProduct = (list, dataBundle = []) => {
+  const listGroup = group(list.filter(filtered => filtered.bundleId), 'bundleCode')
+  let newList = []
+  for (let key in listGroup) {
+    if (key === 'remove') {
+      // eslint-disable-next-line no-continue
+      continue
+    }
+    const price = listGroup[key].reduce((prev, next) => prev + next.total, 0)
+    // eslint-disable-next-line no-loop-func
+    const filteredBundle = dataBundle && dataBundle[0] ? dataBundle.filter(filtered => parseFloat(filtered.bundleId) === parseFloat(listGroup[key][0].bundleId)) : []
+    newList.push({
+      key,
+      code: filteredBundle && filteredBundle[0] ? filteredBundle[0].code : key,
+      name: filteredBundle && filteredBundle[0] ? filteredBundle[0].name : key,
+      detail: listGroup[key],
+      price,
+      sellPrice: price,
+      type: 'Bundle',
+      qty: filteredBundle && filteredBundle[0] ? filteredBundle[0].qty : 1,
+      total: price
+    })
+  }
+  return newList
+}
 
 export default modelExtend(pageModel, {
   namespace: 'pospromo',
@@ -92,6 +128,22 @@ export default modelExtend(pageModel, {
     * addPosPromo ({ payload = {} }, { call, select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
+      // * POS Total
+      const dineInTax = yield select(({ pos }) => pos.dineInTax)
+      let product = getCashierTrans()
+      let consignment = getConsignment()
+      let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      const bundleItem = getBundleTrans()
+      let bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
+      let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
+      let a = dataPos
+      let usageLoyalty = memberInformation.useLoyalty || 0
+      const totalDiscount = usageLoyalty
+      let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
+
+      const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+      const dineIn = curNetto * (dineInTax / 100)
+      // * POS Total
       if (currentBuildComponent && currentBuildComponent.no) {
         message.error('Only allow 1 bundle for custom')
         return
@@ -110,6 +162,14 @@ export default modelExtend(pageModel, {
       const dataReward = yield call(queryReward, { bundleId, type: 'all' })
       if (data.success && dataReward.success && dataReward.data && dataReward.data.length > 0) {
         const item = data.data[0]
+        const total = (parseFloat(curNetto) + parseFloat(dineIn))
+        if (item && item.minimumPayment > 0 && item.minimumPayment > total) {
+          Modal.error({
+            title: `Payment must ${numberFormatter(item.minimumPayment)} or more`,
+            content: 'Please add more Item to purchase'
+          })
+          return
+        }
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
         const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
@@ -229,6 +289,9 @@ export default modelExtend(pageModel, {
         type: item.type,
         code: item.code,
         name: item.name,
+        minimumPayment: item.minimumPayment,
+        paymentOption: item.paymentOption,
+        paymentBankId: item.paymentBankId,
         alwaysOn: item.alwaysOn,
         haveTargetPrice: item.haveTargetPrice,
         targetRetailPrice: item.targetRetailPrice,

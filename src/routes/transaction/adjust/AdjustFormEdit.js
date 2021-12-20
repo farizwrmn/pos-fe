@@ -26,7 +26,7 @@ const formItemLayout = {
 }
 
 const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, onGetEmployee, itemEmployee, listType, listEmployee, onSearchProduct, onGetProduct, item,
-  popoverVisible, dataBrowse, onHidePopover, onEdit, onChangeSearch, dataSource, form: { getFieldDecorator, getFieldsValue, validateFields }, ...adjustProps }) => {
+  popoverVisible, dataBrowse, onHidePopover, onEdit, onChangeSearch, dataSource, form: { getFieldDecorator, resetFields, getFieldsValue, validateFields }, ...adjustProps }) => {
   if (item) {
     itemEmployee.employeeId = item.picId
     itemEmployee.employeeName = item.pic
@@ -53,7 +53,7 @@ const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, on
             return
           }
           data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
-          onEdit(data)
+          onEdit(data, resetFields)
         })
       },
       onCancel () {

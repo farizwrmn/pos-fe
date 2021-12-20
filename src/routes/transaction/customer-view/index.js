@@ -2,10 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
-import { Form, Input, Row, Col, Card } from 'antd'
+import {
+  Form,
+  Input,
+  Row,
+  Col,
+  Card
+} from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
+import Advertising from '../pos/Advertising'
 
 const { getQrisImage, getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
 const FormItem = Form.Item
@@ -89,8 +96,7 @@ class Pos extends Component {
       memberInformation,
       qrisImage
     } = this.state
-    console.log('qrisImage', qrisImage)
-    // const { currentStore } = pos
+    const { listAdvertisingCustomer } = pos
 
     // Tambah Kode Ascii untuk shortcut baru di bawah (hanya untuk yang menggunakan kombinasi seperti Ctrl + M)
     let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
@@ -105,8 +111,24 @@ class Pos extends Component {
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
           <Row>
-            <Col span={16}>
+            <Col span={14}>
+              <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+                <Form>
+                  <div style={{ float: 'right' }}>
+                    <Row>
+                      <FormItem label="Total Qty" {...formItemLayout1}>
+                        <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
+                      </FormItem>
+                      <FormItem label="Netto" {...formItemLayout1}>
+                        <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
+                      </FormItem>
+                    </Row>
+                  </div>
+                </Form>
+              </Card>
               <TransactionDetail
+                qty={totalQty || 0}
+                netto={parseFloat(curNetto) + parseFloat(dineIn)}
                 pos={pos}
                 dispatch={dispatch}
                 bundle={bundle}
@@ -116,23 +138,18 @@ class Pos extends Component {
                 loading={loading}
               />
             </Col>
-            <Col span={8} style={{ alignItems: 'center', textAlign: 'center' }} >
-              <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+            <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
+              {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
+                : (
+                  <Advertising list={listAdvertisingCustomer} />
+                )}
+              {/* <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" /> */}
+              {/* <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>
                   <div style={{ float: 'right' }}>
                     <Row>
                       <FormItem label="Total Qty" {...formItemLayout1}>
                         <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                    </Row>
-                    <Row>
-                      <FormItem label="Total" {...formItemLayout1}>
-                        <Input value={totalPayment.toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                    </Row>
-                    <Row>
-                      <FormItem label="Service Charge" {...formItemLayout1}>
-                        <Input value={dineIn.toLocaleString()} style={{ fontSize: 20 }} />
                       </FormItem>
                       <FormItem label="Netto" {...formItemLayout1}>
                         <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
@@ -140,10 +157,7 @@ class Pos extends Component {
                     </Row>
                   </div>
                 </Form>
-              </Card>
-              {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
-                : null}
-              {/* <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" /> */}
+              </Card> */}
             </Col>
           </Row>
         </Card>
@@ -155,8 +169,8 @@ class Pos extends Component {
 Pos.propTypes = {
   pos: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  loading: PropTypes.object.isRequired
+  dispatch: PropTypes.func.isRequired
+  // loading: PropTypes.object.isRequired
 }
 
 export default connect(({
