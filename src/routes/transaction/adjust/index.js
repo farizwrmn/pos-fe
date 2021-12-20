@@ -1,19 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Tabs, Modal, Row, Col } from 'antd'
+import {
+  Tabs, Modal,
+  Row, Col
+} from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import AdjustForm from './AdjustForm'
-import History from './History'
+// import History from './History'
 import AdjustList from './AdjustList'
 import AdjustFormEdit from './AdjustFormEdit'
+import Filter from './Filter'
+import List from './List'
 
 const TabPane = Tabs.TabPane
 
-const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, loading }) => {
+const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, productstock, loading }) => {
+  const { user, storeInfo } = app
   const {
-    activeKey, lastTrans, templistType, pagination, currentItem, searchText, disabledItemOut, disabledItemIn, listAdjust, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee, modalVisible, modalType
+    activeKey, lastTrans, templistType, pagination, currentItem, searchText, disabledItemOut, disabledItemIn, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee,
+    modalVisible, modalType
   } = adjust
+  const { list, pagination: paginationNew } = adjustNew
   const { listAccountCode } = accountCode
   const {
     tmpProductList
@@ -55,7 +63,7 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
     templistType,
     disabledItemIn,
     disabledItemOut,
-    async onOk (data) {
+    onOk (data) {
       data.qty = data.OutQty
       // checkQuantityBeforeEdit
       dispatch({
@@ -120,17 +128,21 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
     modalProductVisible,
     visible: modalProductVisible,
     maskClosable: false,
-    onOk (data) {
+    onOk (data, reset) {
       dispatch({
         type: 'adjust/add',
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
-    onEdit (data) {
+    onEdit (data, reset) {
       dispatch({
         type: 'adjust/edit',
         payload: {
-          data
+          data,
+          reset
         }
       })
     },
@@ -250,51 +262,55 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
     }
   }
 
-  const historyProps = {
-    dataSource: listAdjust,
-    onGetAdjust () {
-      dispatch({
-        type: 'adjust/queryAdjust'
-      })
-    },
-    onEditItem (e) {
-      const value = e.transType
-      const variable = templistType.filter(x => x.code === value)
-      const { miscVariable } = variable[0]
-      let disabledItem = {}
-      let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
-      if (miscVariable === 'IN') {
-        disabledItem.disabledItemOut = true
-        disabledItem.disabledItemIn = false
-        if (Object.keys(adjust).length > 0) {
-          for (let n = 0; n < adjust.length; n += 1) {
-            adjust[n].Out = 0
-          }
-          localStorage.setItem('adjust', JSON.stringify(adjust))
+  const onEditItem = (e) => {
+    const value = e.transType
+    const variable = templistType.filter(x => x.code === value)
+    const { miscVariable } = variable[0]
+    let disabledItem = {}
+    let adjust = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
+    if (miscVariable === 'IN') {
+      disabledItem.disabledItemOut = true
+      disabledItem.disabledItemIn = false
+      if (Object.keys(adjust).length > 0) {
+        for (let n = 0; n < adjust.length; n += 1) {
+          adjust[n].Out = 0
         }
-      } else if (miscVariable === 'OUT') {
-        disabledItem.disabledItemOut = false
-        disabledItem.disabledItemIn = true
-        if (Object.keys(adjust).length > 0) {
-          for (let n = 0; n < adjust.length; n += 1) {
-            adjust[n].In = 0
-          }
-          localStorage.setItem('adjust', JSON.stringify(adjust))
-        }
+        localStorage.setItem('adjust', JSON.stringify(adjust))
       }
-      dispatch({
-        type: 'adjust/onChangeDisabledItem',
-        payload: disabledItem
-      })
-      dispatch({
-        type: 'adjust/modalShow',
-        payload: {
-          modalType: 'edit',
-          currentItem: e
+    } else if (miscVariable === 'OUT') {
+      disabledItem.disabledItemOut = false
+      disabledItem.disabledItemIn = true
+      if (Object.keys(adjust).length > 0) {
+        for (let n = 0; n < adjust.length; n += 1) {
+          adjust[n].In = 0
         }
-      })
+        localStorage.setItem('adjust', JSON.stringify(adjust))
+      }
     }
+    dispatch({
+      type: 'adjust/onChangeDisabledItem',
+      payload: disabledItem
+    })
+    dispatch({
+      type: 'adjust/modalShow',
+      payload: {
+        modalType: 'edit',
+        currentItem: e
+      }
+    })
   }
+
+  // const historyProps = {
+  //   dataSource: listAdjust,
+  //   onGetAdjust () {
+  //     dispatch({
+  //       type: 'adjust/queryAdjust'
+  //     })
+  //   },
+  //   onEditItem (e) {
+  //     onEditItem(e)
+  //   }
+  // }
 
   const changeTab = (activeKey) => {
     localStorage.removeItem('adjust')
@@ -306,13 +322,81 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
     }))
   }
 
+  const filterProps = {
+    onFilterChange (value) {
+      dispatch({
+        type: 'accountCode/query',
+        payload: {
+          ...value
+        }
+      })
+    }
+  }
+
+  const listProps = {
+    dataSource: list,
+    user,
+    storeInfo,
+    pagination: paginationNew,
+    loading: loading.effects['accountCode/query'],
+    location,
+    onEditItem (e) {
+      onEditItem(e)
+    },
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
+    editItem (item) {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+      dispatch({
+        type: 'accountCode/editItem',
+        payload: { item }
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'accountCode/delete',
+        payload: id
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Tabs defaultActiveKey={activeKey} onChange={activeKey => changeTab(activeKey)}>
-        <TabPane tab="Adjustment" key="1">
-          {activeKey === '1' && <AdjustForm {...adjustProps} />}
+        <TabPane tab="Adjustment" key="0">
+          {activeKey === '0' && <AdjustForm {...adjustProps} />}
         </TabPane>
-        <TabPane tab="Archive" key="2">
+        <TabPane tab="Browse" key="1" >
+          {activeKey === '1' &&
+            <div>
+              <Filter {...filterProps} />
+              <List {...listProps} />
+              <Row>
+                <Col xs={8} sm={8} md={18} lg={18} xl={18}>
+                  <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
+                    <AdjustFormEdit {...adjustProps} />
+                  </Modal>
+                </Col>
+              </Row>
+            </div>
+          }
+        </TabPane>
+        {/* <TabPane tab="Archive" key="2">
           {activeKey === '2' && (
             <div>
               <History {...historyProps} />
@@ -325,7 +409,7 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
               </Row>
             </div>
           )}
-        </TabPane>
+        </TabPane> */}
       </Tabs>
       {modalEditVisible && <AdjustList {...editProps} />}
     </div>
@@ -333,6 +417,8 @@ const Adjust = ({ location, pos, dispatch, accountCode, adjust, productstock, lo
 }
 
 Adjust.propTypes = {
+  app: PropTypes.object.isRequired,
+  adjustNew: PropTypes.object.isRequired,
   adjust: PropTypes.object.isRequired,
   accountCode: PropTypes.object.isRequired,
   productstock: PropTypes.object.isRequired,
@@ -342,4 +428,4 @@ Adjust.propTypes = {
 }
 
 
-export default connect(({ pos, adjust, productstock, accountCode, loading }) => ({ pos, adjust, productstock, accountCode, loading }))(Adjust)
+export default connect(({ pos, app, adjustNew, adjust, productstock, accountCode, loading }) => ({ pos, app, adjustNew, adjust, productstock, accountCode, loading }))(Adjust)
