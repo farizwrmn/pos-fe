@@ -39,8 +39,6 @@ const Detail = ({ adjustDetail, app, dispatch }) => {
     dataSource: listDetail
   }
 
-  console.log('user', user, storeInfo)
-
   const printProps = {
     listItem: listDetail,
     itemPrint: data,
