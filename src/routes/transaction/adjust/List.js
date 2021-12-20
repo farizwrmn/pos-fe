@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 import { Link } from 'dva/router'
-import { numberFormatter } from 'utils/string'
+// import { numberFormatter } from 'utils/string'
 
 const List = ({ ...tableProps, onEditItem }) => {
   const handleMenuClick = (record, e) => {
@@ -52,23 +52,23 @@ const List = ({ ...tableProps, onEditItem }) => {
       width: '100px',
       render: text => moment(text).format('YYYY-MM-DD')
     },
-    {
-      title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
-      width: '100px',
-      render: (text) => {
-        if (text) {
-          return numberFormatter(text)
-        }
-        return text
-      }
-    },
+    // {
+    //   title: 'Total',
+    //   dataIndex: 'total',
+    //   key: 'total',
+    //   width: '100px',
+    //   render: (text) => {
+    //     if (text) {
+    //       return numberFormatter(text)
+    //     }
+    //     return text
+    //   }
+    // },
     {
       title: 'Memo',
       dataIndex: 'memo',
       key: 'memo',
-      width: '200px'
+      width: '300px'
     },
     {
       title: 'Operation',
