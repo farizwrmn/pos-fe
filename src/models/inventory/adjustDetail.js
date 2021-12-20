@@ -1,10 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { lstorage } from 'utils'
 import { queryEntryList } from 'services/payment/bankentry'
-import {
-  JOURNALENTRY
-} from 'utils/variable'
-import { queryById } from 'services/payment/journalentry'
+import { queryById } from 'services/inventory/adjustNew'
 import { pageModel } from 'common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -51,14 +48,13 @@ export default modelExtend(pageModel, {
 
   effects: {
     * queryDetail ({ payload = {} }, { call, put }) {
-      const data = yield call(queryById, payload)
-      if (data.success && data.data) {
-        const { purchase, journalEntryDetail, ...other } = data.data
+      const response = yield call(queryById, payload)
+      if (response.success && response.data) {
         let listAccounting = []
-        if (payload && payload.match && other && other.id) {
+        if (payload && payload.match && response.success && response.data && response.data.id) {
           const reconData = yield call(queryEntryList, {
-            transactionId: other.id,
-            transactionType: JOURNALENTRY,
+            transactionId: response.data.id,
+            transactionType: response.data.transType,
             type: 'all'
           })
           if (reconData && reconData.data) {
@@ -68,13 +64,13 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            data: other,
-            listDetail: journalEntryDetail,
+            data: response.data,
+            listDetail: response.detail,
             listAccounting
           }
         })
       } else {
-        throw data
+        throw response
       }
     }
   },

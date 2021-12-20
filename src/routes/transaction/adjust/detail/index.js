@@ -11,10 +11,12 @@ import {
 import TransDetail from './TransDetail'
 import FormAccounting from './FormAccounting'
 import styles from './index.less'
+import PrintPDF from './PrintPDF'
 
 
-const Detail = ({ adjustDetail, dispatch }) => {
+const Detail = ({ adjustDetail, app, dispatch }) => {
   const { listDetail, listAccounting, data } = adjustDetail
+  const { user, storeInfo } = app
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -30,11 +32,22 @@ const Detail = ({ adjustDetail, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/journal-entry?activeKey=1'))
+    dispatch(routerRedux.push('/transaction/adjust?activeKey=1'))
   }
 
   const formDetailProps = {
     dataSource: listDetail
+  }
+
+  console.log('user', user, storeInfo)
+
+  const printProps = {
+    listItem: listDetail,
+    itemPrint: data,
+    itemHeader: data,
+    storeInfo,
+    user,
+    printNo: 1
   }
 
   return (<div className="wrapper">
@@ -51,6 +64,7 @@ const Detail = ({ adjustDetail, dispatch }) => {
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
+          <PrintPDF {...printProps} />
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
@@ -70,4 +84,4 @@ Detail.propTypes = {
   adjustDetail: PropTypes.object
 }
 
-export default connect(({ adjustDetail }) => ({ adjustDetail }))(Detail)
+export default connect(({ app, adjustDetail }) => ({ app, adjustDetail }))(Detail)
