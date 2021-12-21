@@ -3,14 +3,14 @@ import { Modal, message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { configMain, lstorage, alertModal } from 'utils'
 import moment from 'moment'
-import { query, queryDetail, create, edit, remove } from '../services/adjust'
-import { pageModel } from './common'
-import { query as queryProducts, queryPOSproduct } from '../services/master/productstock'
-import { query as queryTransType } from '../services/transType'
-import { query as queryEmployee, queryByCode as queryEmployeeId } from '../services/master/employee'
-import { query as querySequence } from '../services/sequence'
-import { getDateTime } from '../services/setting/time'
-import { queryLastActive } from '../services/period'
+import { query, queryDetail, create, edit, remove } from 'services/adjust'
+import { query as queryProducts, queryPOSproduct } from 'services/master/productstock'
+import { query as queryTransType } from 'services/transType'
+import { query as queryEmployee, queryByCode as queryEmployeeId } from 'services/master/employee'
+import { query as querySequence } from 'services/sequence'
+import { getDateTime } from 'services/setting/time'
+import { queryLastActive } from 'services/period'
+import { pageModel } from '../common'
 
 const { stockMinusAlert } = alertModal
 const { prefix } = configMain
@@ -26,7 +26,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     addItem: {},
-    activeKey: '1',
+    activeKey: '0',
     itemEmployee: {},
     dataBrowse: [],
     listType: [],
@@ -183,7 +183,7 @@ export default modelExtend(pageModel, {
         for (let n = 0; n < dataAdj.length; n += 1) {
           arrayProd.push({
             storeId,
-            transType: payload.transType,
+            transType: payload.data.transType,
             productId: dataAdj[n].productId,
             productCode: dataAdj[n].code,
             productName: dataAdj[n].name,
@@ -192,7 +192,7 @@ export default modelExtend(pageModel, {
             sellingPrice: dataAdj[n].price
           })
         }
-        payload.storeId = lstorage.getCurrentUserStore()
+        payload.data.storeId = lstorage.getCurrentUserStore()
         const period = yield call(queryLastActive)
         let startPeriod
         if (period.data[0]) {
@@ -202,8 +202,11 @@ export default modelExtend(pageModel, {
           id: 'date'
         })
         if (moment(time.data).format('YYYY-MM-DD') >= startPeriod) {
-          const data = yield call(create, { id: transNo, data: payload, detail: arrayProd })
+          const data = yield call(create, { id: transNo, data: payload.data, detail: arrayProd })
           if (data.success) {
+            if (payload.reset) {
+              payload.reset()
+            }
             Modal.info({
               title: 'Success',
               content: 'Data has been saved...!'
@@ -255,6 +258,9 @@ export default modelExtend(pageModel, {
       }
       const data = yield call(edit, editBody)
       if (data.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
         success()
         yield put({ type: 'modalHide' })
         yield put({ type: 'query' })
@@ -322,7 +328,7 @@ export default modelExtend(pageModel, {
       const check = {
         data: payload
       }
-      if (activeKey === '1') {
+      if (activeKey === '0') {
         const checkQuantity = checkQuantityNewProduct(check)
         if (!checkQuantity) {
           return
