@@ -1,49 +1,152 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryEmployee, add, edit, remove } from 'services/finance/pettyCashDetail'
+import { queryById, queryEmployee, add } from 'services/finance/pettyCashDetail'
+import { queryEntryList } from 'services/payment/bankentry'
+import pathToRegexp from 'path-to-regexp'
+import {
+  JOURNALENTRY,
+  EXPENSE,
+  PPAYHEADER
+} from 'utils/variable'
 import { pageModel } from '../common'
-
-const success = () => {
-  message.success('Petty cash detail has been saved')
-}
 
 export default modelExtend(pageModel, {
   namespace: 'pettyCashDetail',
 
   state: {
+    data: {},
+    listDetail: [],
+    listDetailTrans: [],
+    listAccounting: [],
     currentItem: {},
+    currentItemList: {},
     modalType: 'add',
+    modalItemType: 'add',
+    inputType: null,
     activeKey: '0',
-    list: [],
-    listEmployee: [],
+    listCash: [],
+    modalVisible: false,
+    listItem: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
-    }
+    },
+    list: [],
+    listEmployee: []
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
-        const { pathname } = location
-        if (pathname === '/master/account') {
+        const match = pathToRegexp('/balance/finance/petty-cash/:id').exec(location.pathname)
+        if (match) {
           dispatch({
-            type: 'updateState',
+            type: 'queryDetail',
             payload: {
-              activeKey: activeKey || '0'
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore(),
+              match
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryById, payload)
+      if (response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: response.data,
+            listDetail: response.detailOpen,
+            listDetailTrans: response.detail,
+            listAccounting: []
+          }
+        })
+        yield put({
+          type: 'queryAccounting',
+          payload: {
+            response
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * queryAccounting ({ payload = {} }, { call, put }) {
+      const { response } = payload
+      let listAccounting = []
+      if (response.success && response.data && response.data.id) {
+        if (response.data.journalEntryId) {
+          const reconData = yield call(queryEntryList, {
+            transactionId: response.data.journalEntryId,
+            transactionType: JOURNALENTRY,
+            type: 'all'
+          })
+          if (reconData && reconData.data) {
+            listAccounting = listAccounting.concat(reconData.data)
+          }
+        }
+        if (response.detail && response.detail.length > 0) {
+          for (let key in response.detail) {
+            const item = response.detail[key]
+            if (item.transactionType === 'OUT' && item.cashEntryId) {
+              const reconData = yield call(queryEntryList, {
+                transactionId: item.cashEntryId,
+                transactionType: EXPENSE,
+                type: 'all'
+              })
+              if (reconData && reconData.data) {
+                listAccounting = listAccounting.concat(reconData.data)
+              }
+            }
+            if (item.transactionType === 'IN' && item.journalEntryId) {
+              const reconData = yield call(queryEntryList, {
+                transactionId: item.journalEntryId,
+                transactionType: JOURNALENTRY,
+                type: 'all'
+              })
+              if (reconData && reconData.data) {
+                listAccounting = listAccounting.concat(reconData.data)
+              }
+            }
+            if (item.transactionType === 'CLOSE' && item.journalEntryId) {
+              const reconData = yield call(queryEntryList, {
+                transactionId: item.journalEntryId,
+                transactionType: JOURNALENTRY,
+                type: 'all'
+              })
+              if (reconData && reconData.data) {
+                listAccounting = listAccounting.concat(reconData.data)
+              }
+            }
+            if (item.transactionType === 'PRC' && item.purchaseId) {
+              const reconData = yield call(queryEntryList, {
+                parentTransactionId: item.purchaseId,
+                parentTransactionType: PPAYHEADER,
+                type: 'all'
+              })
+              if (reconData && reconData.data) {
+                listAccounting = listAccounting.concat(reconData.data)
+              }
+            }
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAccounting
+          }
+        })
+      }
+    },
+
     * queryEmployee ({ payload = {} }, { call, put }) {
       const response = yield call(queryEmployee, payload)
       if (response.success) {
@@ -82,96 +185,6 @@ export default modelExtend(pageModel, {
         message.success('Success insert expense')
       } else {
         throw response
-      }
-    },
-
-    * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: data.data,
-            pagination: {
-              current: Number(data.page) || 1,
-              pageSize: Number(data.pageSize) || 10,
-              total: data.total
-            }
-          }
-        })
-      }
-    },
-
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
-    },
-
-    * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ pettyCashDetail }) => pettyCashDetail.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
       }
     }
   },

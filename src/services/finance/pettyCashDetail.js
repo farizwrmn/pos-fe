@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/petty-cash/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryActive (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
