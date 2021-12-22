@@ -65,6 +65,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
+      payload.order = '-id'
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
