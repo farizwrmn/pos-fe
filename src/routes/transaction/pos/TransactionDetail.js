@@ -128,7 +128,7 @@ class TransactionDetail extends Component {
 
     const modalEditBundle = (item) => {
       dispatch({
-        type: 'pos/openVoidSuspend',
+        type: 'pos/openBundleCategory',
         payload: {
           bundleId: item.bundleId,
           mode: 'edit',

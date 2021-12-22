@@ -1592,21 +1592,24 @@ const Pos = ({
         }
       }
 
-      if (currentReward && currentReward.type === 'P') {
+      const hasProduct = listProductQty.filter(filtered => filtered.reward.item.type === 'P')
+
+      if (hasProduct && hasProduct.length > 0) {
         dispatch({
           type: 'pos/chooseProductPromo',
           payload: {
-            data: listProductQty,
+            listProductQty: hasProduct,
             reset
           }
         })
       }
 
-      if (currentReward && currentReward.type === 'S') {
+      const hasService = listProductQty.filter(filtered => filtered.reward.item.type === 'S')
+      if (hasService && hasService.length > 0) {
         dispatch({
           type: 'pos/chooseServicePromo',
           payload: {
-            data: listProductQty,
+            listProductQty: hasService,
             reset
           }
         })

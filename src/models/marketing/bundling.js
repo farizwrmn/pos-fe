@@ -226,14 +226,6 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload = {} }, { call, put }) {
-      const { listReward } = payload
-      if (listReward && listReward.length > 0) {
-        const rewardCategory = listReward.filter(filtered => filtered.categoryCode)
-        if (rewardCategory && rewardCategory.length > 1) {
-          message.error('Cannot add more than 1 P/S Category')
-          return
-        }
-      }
       const checkExists = payload.data.buildComponent ? [] : payload.listReward.filter(el => el.total < 0)
       if ((checkExists || []).length === 0) {
         // Start - Upload Image
@@ -304,13 +296,6 @@ export default modelExtend(pageModel, {
       const productImage = yield select(({ bundling }) => bundling.currentItem.productImage)
       const id = yield select(({ bundling }) => bundling.currentItem.id)
       const listReward = yield select(({ bundling }) => bundling.listReward)
-      if (listReward && listReward.length > 0) {
-        const rewardCategory = listReward.filter(filtered => filtered.categoryCode)
-        if (rewardCategory && rewardCategory.length > 1) {
-          message.error('Cannot add more than 1 P/S Category')
-          return
-        }
-      }
       // Start - Upload Image
       let uploadedImage = []
       if (payload

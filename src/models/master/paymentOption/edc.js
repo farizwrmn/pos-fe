@@ -79,7 +79,6 @@ export default modelExtend(pageModel, {
         }
         const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
         const currentBundlePayment = yield select(({ pos }) => (pos ? pos.currentBundlePayment : {}))
-        console.log('currentBundlePayment', currentBundlePayment)
         if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
           if (listPayment && listPayment.length === 1) {
             yield put({

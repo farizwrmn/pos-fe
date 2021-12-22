@@ -94,7 +94,7 @@ const ModalExpense = ({
           )}
         </FormItem>
         <FormItem
-          label="Bank"
+          label="Bank (Debit)"
           hasFeedback
           {...formItemLayout}
         >
@@ -136,7 +136,7 @@ const ModalExpense = ({
         </FormItem>
 
         <FormItem
-          label="Adjustment Account"
+          label="Adjustment Account (Credit)"
           hasFeedback
           {...formItemLayout}
         >
