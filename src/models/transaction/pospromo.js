@@ -212,6 +212,8 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        currentBundle.rewardCategory = itemRewardCategory
+        item.rewardCategory = itemRewardCategory
         yield put({
           type: 'addPosPromoItem',
           payload: {
@@ -283,6 +285,7 @@ export default modelExtend(pageModel, {
       const item = payload.item
       currentBundle.push({
         no: (currentBundle || []).length + 1,
+        rewardCategory: payload.item.rewardCategory || [],
         applyMultiple: item.applyMultiple,
         bundleId: item.id,
         categoryCode: item.categoryCode,
@@ -433,33 +436,22 @@ export default modelExtend(pageModel, {
           }
         })
         if (currentReward[0].type === 'P') {
-          // yield put({
-          //   type: 'pos/showProductModal',
-          //   payload: {
-          //     modalType: 'browseProductLock'
-          //   }
-          // })
+          console.log('setCategoryPos', payload)
           yield put({
-            type: 'pos/openVoidSuspend',
+            type: 'pos/openBundleCategory',
             payload: {
               bundleId: bundleData.item.id,
-              mode: 'add'
+              mode: 'add',
+              currentBundle: bundleData.item
             }
           })
-        }
-        if (currentReward[0].type === 'S') {
-          // yield put({
-          //   type: 'pos/showServiceModal',
-          //   payload: {
-          //     modalType: 'browseService'
-          //   }
-          // })
-
+        } else if (currentReward[0].type === 'S') {
           yield put({
-            type: 'pos/openVoidSuspend',
+            type: 'pos/openBundleCategory',
             payload: {
               bundleId: bundleData.item.id,
-              mode: 'add'
+              mode: 'add',
+              currentBundle: bundleData.item
             }
           })
         }

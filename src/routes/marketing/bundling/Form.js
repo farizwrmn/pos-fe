@@ -152,11 +152,11 @@ const FormCounter = ({
         let arrayProd = []
         const listByCode = listReward
         const checkExists = listByCode.filter(el => el.productCode === item.productCode || el.productCode === item.serviceCode)
-        const checkExistsCategory = listByCode.filter(filtered => filtered.categoryCode)
+        const checkExistsCategory = listByCode.filter(filtered => filtered.categoryCode === item.categoryCode)
         if (checkExistsCategory && checkExistsCategory.length > 0) {
           Modal.warning({
-            title: 'Cannot add category',
-            content: 'Only one in a promo'
+            title: 'Already exists',
+            content: 'Category already exists in list'
           })
           return
         }

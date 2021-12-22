@@ -10,13 +10,10 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
-  listProduct,
+const ModalBundleCategory = ({
   onCancel,
   onOk,
   dataReward,
-  currentCategory,
-  currentReward,
   loading,
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...formEditProps
@@ -34,16 +31,17 @@ const modal = ({
         ...getFieldsValue()
       }
       if (data && data.bundle) {
-        data.bundle = data.bundle.map((item) => {
-          const filteredProduct = listProduct.filter(filtered => filtered.id === item.key)
+        data.bundle = data.bundle.map((item, index) => {
+          const filteredProduct = dataReward[index].listItem.filter(filtered => filtered.id === item.key)
           if (filteredProduct && filteredProduct[0]) {
             return ({
               ...item,
+              reward: dataReward[index],
               item: filteredProduct[0]
             })
           }
           return null
-        })
+        }).filter(filtered => filtered)
       }
       onOk(data, resetFields)
     })
@@ -63,66 +61,68 @@ const modal = ({
       ]}
     >
       <Form layout="vertical">
-        {currentReward === 'P' && dataReward && dataReward.map((data) => {
-          return (
-            <FormItem label={data.label.productName} hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`bundle[${data.key}]`, {
-                initialValue: data.initialValue && data.initialValue.key ? {
-                  key: data.initialValue.key,
-                  label: data.initialValue.label
-                } : undefined,
-                rules: [{
-                  required: true
-                }]
-              })(<Select
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                labelInValue
-                disabled={loading}
-                filterOption={filterOption}
-              >{
-                  listProduct && listProduct
-                    .filter(filtered => filtered.count > 0)
-                    .map(c => <Option value={c.id} key={c.id} title={`${c.productCode} - ${c.productName}`}>{c.productName}</Option>)
-                }
-              </Select>)}
-            </FormItem>
-          )
-        })}
-
-        {currentReward === 'S' && dataReward && dataReward.map((data) => {
-          return (
-            <FormItem label={data.label.productName} hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`bundle[${data.key}]`, {
-                initialValue: data.initialValue && data.initialValue.key ? {
-                  key: data.initialValue.key,
-                  label: data.initialValue.label
-                } : undefined,
-                rules: [{
-                  required: true
-                }]
-              })(<Select
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                labelInValue
-                disabled={loading}
-                filterOption={filterOption}
-              >{
-                  listProduct && listProduct
-                    .map(c => <Option value={c.id} key={c.id} title={`${c.serviceCode} - ${c.serviceName}`}>{`${c.serviceName} (${c.serviceCode})`}</Option>)
-                }
-              </Select>)}
-            </FormItem>
-          )
-        })}
+        {dataReward && dataReward.map((data) => {
+          if (data.item.type === 'P') {
+            return (
+              <FormItem label={data.label.productName} hasFeedback {...formItemLayout}>
+                {getFieldDecorator(`bundle[${data.key}]`, {
+                  initialValue: data.initialValue && data.initialValue.key ? {
+                    key: data.initialValue.key,
+                    label: data.initialValue.label
+                  } : undefined,
+                  rules: [{
+                    required: true
+                  }]
+                })(<Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  labelInValue
+                  disabled={loading}
+                  filterOption={filterOption}
+                >{
+                    data.listItem && data.listItem
+                      .filter(filtered => filtered.count > 0)
+                      .map(c => <Option value={c.id} key={c.id} title={`${c.productCode} - ${c.productName}`}>{c.productName}</Option>)
+                  }
+                </Select>)}
+              </FormItem>
+            )
+          }
+          if (data.item.type === 'S') {
+            return (
+              <FormItem label={data.label.productName} hasFeedback {...formItemLayout}>
+                {getFieldDecorator(`bundle[${data.key}]`, {
+                  initialValue: data.initialValue && data.initialValue.key ? {
+                    key: data.initialValue.key,
+                    label: data.initialValue.label
+                  } : undefined,
+                  rules: [{
+                    required: true
+                  }]
+                })(<Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  labelInValue
+                  disabled={loading}
+                  filterOption={filterOption}
+                >{
+                    data.listItem && data.listItem
+                      .map(c => <Option value={c.id} key={c.id} title={`${c.serviceCode} - ${c.serviceName}`}>{`${c.serviceName} (${c.serviceCode})`}</Option>)
+                  }
+                </Select>)}
+              </FormItem>
+            )
+          }
+          return null
+        }).filter(filtered => filtered)}
       </Form>
     </Modal>
   )
 }
 
-modal.propTypes = {
+ModalBundleCategory.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -130,4 +130,4 @@ modal.propTypes = {
   onVoid: PropTypes.func.isRequired
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalBundleCategory)
