@@ -69,6 +69,7 @@ const List = (tableProps) => {
     <div>
       <Table {...tableProps}
         bordered={false}
+        pagination={false}
         scroll={{ x: 700, y: 700 }}
         columns={columns}
         simple
