@@ -148,13 +148,18 @@ const AdjustForm = ({
   }
 
   const handleShowProduct = () => {
-    dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        page: 1
+    validateFields((errors) => {
+      if (errors) {
+        return
       }
+      dispatch({
+        type: 'pos/getProducts',
+        payload: {
+          page: 1
+        }
+      })
+      showProductModal()
     })
-    showProductModal()
   }
 
   const modalProductProps = {

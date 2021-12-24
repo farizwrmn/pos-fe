@@ -46,7 +46,8 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
     }
   ]
 
-  const hdlModalShow = (record) => {
+  const hdlModalShow = (rec) => {
+    console.log('record', rec)
     if (modalProductVisible) {
       const value = item.transType
       const variable = templistType.filter(x => x.code === value)
@@ -74,7 +75,7 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
       }
       changeDisabledItem(disabledItem)
     }
-    modalShow(record)
+    modalShow(rec)
   }
 
   return (
@@ -82,8 +83,8 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
       columns={columns}
       simple
       bordered
-      pagination={{ pageSize: 5 }}
       size="small"
+      pagination={false}
       dataSource={dataBrowse}
       onRowClick={record => hdlModalShow(record)}
     />
