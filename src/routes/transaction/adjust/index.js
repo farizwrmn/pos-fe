@@ -234,7 +234,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, 
       const checkExists = listByCode.filter(el => el.code === e.productCode)
       if (checkExists.length === 0) {
         let arrayProd = listByCode
-        arrayProd.push({
+        const product = {
           no: arrayProd.length + 1,
           code: e.productCode,
           name: e.productName,
@@ -243,7 +243,8 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, 
           In: 0,
           Out: 0,
           price: e.costPrice
-        })
+        }
+        arrayProd.push(product)
         localStorage.setItem('adjust', JSON.stringify(arrayProd))
         dispatch({
           type: 'productstock/updateState',
@@ -253,6 +254,22 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, 
         })
         const data = localStorage.getItem('adjust') ? JSON.parse(localStorage.getItem('adjust')) : []
         dispatch({ type: 'adjust/setDataBrowse', payload: data })
+        console.log('e', e)
+        dispatch({
+          type: 'adjust/modalEditShow',
+          payload: {
+            data: {
+              In: 0,
+              Out: 0,
+              code: e.productCode,
+              name: e.productName,
+              no: product.no,
+              price: product.price,
+              productId: product.productId,
+              productName: product.productName
+            }
+          }
+        })
       } else {
         Modal.warning({
           title: 'Cannot add product',
