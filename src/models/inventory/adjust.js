@@ -271,6 +271,8 @@ export default modelExtend(pageModel, {
     },
 
     * adjustEdit ({ payload }, { call, put, select }) {
+      console.log('payload', payload)
+      const disabledItemIn = yield select(({ adjust }) => adjust.disabledItemIn)
       const dataBrowse = yield select(({ adjust }) => adjust.dataBrowse)
       const activeKey = yield select(({ adjust }) => adjust.activeKey)
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -328,12 +330,15 @@ export default modelExtend(pageModel, {
       const check = {
         data: payload
       }
-      if (activeKey === '0') {
-        const checkQuantity = checkQuantityNewProduct(check)
-        if (!checkQuantity) {
-          return
+      if (disabledItemIn) {
+        if (activeKey === '0') {
+          const checkQuantity = checkQuantityNewProduct(check)
+          if (!checkQuantity) {
+            return
+          }
         }
       }
+
 
       yield put({
         type: 'pos/showProductQtyByProductId',
