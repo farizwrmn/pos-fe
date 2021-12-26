@@ -2090,31 +2090,41 @@ export default {
             })
           }
 
-          yield put({
-            type: 'setCurTotal'
-          })
+          if (payload.hasService) {
+            yield put({
+              type: 'pos/chooseServicePromo',
+              payload: {
+                listProductQty: payload.listServiceQty,
+                reset: payload.reset
+              }
+            })
+          } else {
+            yield put({
+              type: 'setCurTotal'
+            })
 
-          yield put({
-            type: 'pospromo/updateState',
-            payload: {
-              currentReward: {},
-              bundleData: {},
-              listCategory: [],
-              productData: {},
-              serviceData: {}
-            }
-          })
+            yield put({
+              type: 'pospromo/updateState',
+              payload: {
+                currentReward: {},
+                bundleData: {},
+                listCategory: [],
+                productData: {},
+                serviceData: {}
+              }
+            })
 
-          yield put({
-            type: 'pos/updateState',
-            payload: {
-              bundleData: {},
-              listCategory: [],
-              dataReward: [],
-              currentCategory: [],
-              modalBundleCategoryVisible: false
-            }
-          })
+            yield put({
+              type: 'pos/updateState',
+              payload: {
+                bundleData: {},
+                listCategory: [],
+                dataReward: [],
+                currentCategory: [],
+                modalBundleCategoryVisible: false
+              }
+            })
+          }
         }
       }
     },

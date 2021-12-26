@@ -152,7 +152,12 @@ const FormCounter = ({
         let arrayProd = []
         const listByCode = listReward
         const checkExists = listByCode.filter(el => el.productCode === item.productCode || el.productCode === item.serviceCode)
-        const checkExistsCategory = listByCode.filter(filtered => filtered.categoryCode === item.categoryCode)
+        let checkExistsCategory = []
+        if (item.categoryCode) {
+          checkExistsCategory = listByCode.filter(filtered => filtered.categoryCode === item.categoryCode)
+        } else if (item.miscCode) {
+          checkExistsCategory = listByCode.filter(filtered => filtered.categoryCode === item.miscCode)
+        }
         if (checkExistsCategory && checkExistsCategory.length > 0) {
           Modal.warning({
             title: 'Already exists',

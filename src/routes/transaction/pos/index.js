@@ -1594,22 +1594,27 @@ const Pos = ({
 
       const hasProduct = listProductQty.filter(filtered => filtered.reward.item.type === 'P')
 
-      if (hasProduct && hasProduct.length > 0) {
+      const hasService = listProductQty.filter(filtered => filtered.reward.item.type === 'S')
+      const isProduct = hasProduct && hasProduct.length > 0
+      const isService = hasService && hasService.length > 0
+      if (isProduct) {
         dispatch({
           type: 'pos/chooseProductPromo',
           payload: {
             listProductQty: hasProduct,
+            listServiceQty: hasService,
+            hasService: isService,
             reset
           }
         })
       }
 
-      const hasService = listProductQty.filter(filtered => filtered.reward.item.type === 'S')
-      if (hasService && hasService.length > 0) {
+      if (!isProduct && isService) {
         dispatch({
           type: 'pos/chooseServicePromo',
           payload: {
             listProductQty: hasService,
+            hasProduct: isProduct,
             reset
           }
         })
