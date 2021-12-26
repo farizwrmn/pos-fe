@@ -27,6 +27,7 @@ const BrowseTotal = ({ listOpts, ...browseProps }) => {
   return (
     <Table
       {...browseProps}
+      scroll={{ x: '2000px', y: 350 }}
       bordered
       columns={columns}
       simple

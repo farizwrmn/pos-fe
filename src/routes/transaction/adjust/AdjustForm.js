@@ -6,6 +6,7 @@ import {
   Input,
   Button,
   Select,
+  Modal,
   // Popover, Table, Icon,
   Row,
   Col,
@@ -89,8 +90,13 @@ const AdjustForm = ({
 
       data.transType = data.transType[0]
       data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
-      onOk(data)
-      resetFields()
+      Modal.confirm({
+        title: 'Save Adjustment',
+        content: 'Are you sure ?',
+        onOk () {
+          onOk(data, resetFields)
+        }
+      })
     })
   }
 
@@ -98,22 +104,6 @@ const AdjustForm = ({
     onGetEmployee(e)
   }
 
-  // const hdlSearch = (e) => {
-  //   onSearchProduct(e, tmpProductList)
-  // }
-
-  // const hidePopover = () => {
-  //   onHidePopover()
-  // }
-
-  // const handleChangeSearch = (e) => {
-  //   const { value } = e.target
-  //   onChangeSearch(value)
-  // }
-
-  // const handleMenuClick = (e) => {
-  //   onChooseItem(e)
-  // }
   const changeCascader = (e) => {
     const value = e[0]
     const variable = templistType.filter(x => x.code === value)
@@ -146,57 +136,30 @@ const AdjustForm = ({
     loadData()
   }
   const handleButtonDeleteClick = () => {
-    localStorage.removeItem('adjust')
-    message.warning('Transaction has been canceled and reset')
-    onResetAll()
-  }
-  // const columns = [
-  //   {
-  //     title: 'code',
-  //     dataIndex: 'productCode',
-  //     key: 'productCode',
-  //     width: '25%'
-  //   },
-  //   {
-  //     title: 'Product',
-  //     dataIndex: 'productName',
-  //     key: 'productName',
-  //     width: '55%'
-  //   },
-  //   {
-  //     title: 'Cost',
-  //     dataIndex: 'costPrice',
-  //     key: 'costPrice',
-  //     width: '20%',
-  //     className: styles.alignRight,
-  //     render: text => (text || '-').toLocaleString()
-  //   }
-  // ]
-  // const contentPopover = (
-  //   <Table
-  //     pagination={pagination}
-  //     scroll={{ x: 600, y: 150 }}
-  //     columns={columns}
-  //     dataSource={dataSource}
-  //     simple
-  //     // locale={{
-  //     //   emptyText: <Button type="primary" onClick={() => hdlGetProduct()}>Reset</Button>
-  //     // }}
-  //     size="small"
-  //     rowKey={record => record.productCode}
-  //     onRowClick={record => handleMenuClick(record)}
-  //     {...adjustProps}
-  //   />
-  // )
-
-  const handleShowProduct = () => {
-    dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        page: 1
+    Modal.confirm({
+      title: 'Delete All Item ?',
+      content: 'Are you sure ?',
+      onOk () {
+        localStorage.removeItem('adjust')
+        message.warning('Transaction has been canceled and reset')
+        onResetAll()
       }
     })
-    showProductModal()
+  }
+
+  const handleShowProduct = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      dispatch({
+        type: 'pos/getProducts',
+        payload: {
+          page: 1
+        }
+      })
+      showProductModal()
+    })
   }
 
   const modalProductProps = {
@@ -343,8 +306,8 @@ const AdjustForm = ({
           </Row>
         </div>
       </Form>
-      <Button type="primary" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
-      <Button type="danger" style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button>
+      <Button type="primary" disabled={loadingButton.effects['adjust/add']} style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonSaveClick()}>PROCESS</Button>
+      <Button type="danger" disabled={loadingButton.effects['adjust/add']} style={{ height: 50, width: 200, visibility: 'visible' }} onClick={() => handleButtonDeleteClick()}>Delete All</Button>
     </Form>
   )
 }

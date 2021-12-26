@@ -608,12 +608,21 @@ const Routers = function ({ history, app }) {
           path: 'transaction/adjust',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/adjust'))
+              registerModel(app, require('./models/inventory/adjustNew'))
+              registerModel(app, require('./models/inventory/adjust'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/accountCode'))
-              cb(null, require('./routes/transaction/adjust/'))
+              cb(null, require('./routes/transaction/adjust'))
             }, 'transaction-adjust')
+          }
+        }, {
+          path: 'transaction/adjust/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/adjustDetail'))
+              cb(null, require('./routes/transaction/adjust/detail'))
+            }, 'transaction-adjust-detail')
           }
         }, {
           path: 'transaction/booking',
@@ -1542,6 +1551,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/finance/pettyCash'))
               cb(null, require('./routes/finance/pettyCash'))
             }, 'finance-petty-cash')
+          }
+        }, {
+          path: 'balance/finance/petty-cash/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/finance/pettyCashDetail'))
+              cb(null, require('./routes/finance/pettyCash/detail'))
+            }, 'finance-petty-cash-detail')
           }
         }, {
           path: 'balance/finance/petty-expense',

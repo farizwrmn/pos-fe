@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
 import styles from '../../../themes/index.less'
 
 const confirm = Modal.confirm
@@ -24,7 +25,14 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     {
       title: 'Trans No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => {
+        return (
+          <Link to={`/balance/finance/petty-cash/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
       title: 'Start',
@@ -62,7 +70,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: 'Delete' }]} />
       }
     }
   ]
