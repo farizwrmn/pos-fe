@@ -1610,11 +1610,11 @@ const Pos = ({
       }
 
       if (!isProduct && isService) {
+        console.log('hasService', hasService)
         dispatch({
           type: 'pos/chooseServicePromo',
           payload: {
             listProductQty: hasService,
-            hasProduct: isProduct,
             reset
           }
         })

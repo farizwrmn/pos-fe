@@ -101,6 +101,7 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
+        console.log('addPosPromoItem', currentService)
         yield put({
           type: 'updateState',
           payload: {
@@ -417,6 +418,7 @@ export default modelExtend(pageModel, {
             arrayProd.push(data)
           }
         }
+        console.log('setProductPos', arrayProd)
         setCashierTrans(JSON.stringify(arrayProd))
       }
       yield put({
