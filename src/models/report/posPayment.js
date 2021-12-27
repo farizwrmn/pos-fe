@@ -1,4 +1,4 @@
-import moment from 'moment'
+// import moment from 'moment'
 /**
  * Created by Veirry on 07/07/2020.
  */
@@ -41,13 +41,13 @@ export default {
             type: 'query',
             payload: location.query
           })
-          dispatch({
-            type: 'dashboard/querySalesCategory',
-            payload: {
-              from: location.query.from || moment().format('YYYY-MM-DD'),
-              to: location.query.to || moment().format('YYYY-MM-DD')
-            }
-          })
+          // dispatch({
+          //   type: 'dashboard/querySalesCategory',
+          //   payload: {
+          //     from: location.query.from || moment().format('YYYY-MM-DD'),
+          //     to: location.query.to || moment().format('YYYY-MM-DD')
+          //   }
+          // })
         }
       })
     }

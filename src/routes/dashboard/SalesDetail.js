@@ -5,13 +5,13 @@ import { numberFormatter } from 'utils/numberFormat'
 
 const SalesDetail = ({ dispatch, ...other }) => {
   const onClickCopy = () => {
-    dispatch({
-      type: 'dashboard/querySalesCategory',
-      payload: {
-        from: moment().format('YYYY-MM-DD'),
-        to: moment().format('YYYY-MM-DD')
-      }
-    })
+    // dispatch({
+    //   type: 'dashboard/querySalesCategory',
+    //   payload: {
+    //     from: moment().format('YYYY-MM-DD'),
+    //     to: moment().format('YYYY-MM-DD')
+    //   }
+    // })
   }
 
   const columns = [
