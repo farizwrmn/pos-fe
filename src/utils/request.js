@@ -5,7 +5,7 @@ import pathToRegexp from 'path-to-regexp'
 import lodash from 'lodash'
 import { message } from 'antd'
 // import { YQL, CORS } from './config'
-import { apiPrefix } from '../utils/config.rest'
+import { apiPrefix } from './config.rest'
 // import crypt from './crypt'
 import { getAPIURL } from './variables'
 
