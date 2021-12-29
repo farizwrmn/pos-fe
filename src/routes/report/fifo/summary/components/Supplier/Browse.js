@@ -23,6 +23,16 @@ const Browse = ({ listStoreLov, ...browseProps }) => {
       key: 'productName'
     },
     {
+      title: 'Category',
+      dataIndex: 'categoryName',
+      key: 'categoryName'
+    },
+    {
+      title: 'Brand',
+      dataIndex: 'brandName',
+      key: 'brandName'
+    },
+    {
       title: 'Cost',
       dataIndex: 'costPrice',
       key: 'costPrice',
