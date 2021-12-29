@@ -71,6 +71,8 @@ const PrintXLS = ({ listRekap, listStoreLov, supplierName, storeInfo }) => {
         row.push({ value: (data.supplierName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.categoryName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.brandName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.costPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.sellPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
 
@@ -99,12 +101,16 @@ const PrintXLS = ({ listRekap, listStoreLov, supplierName, storeInfo }) => {
       { value: 'SUPPLIER', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'KODE PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'NAMA PRODUK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'CATEGORY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'BRAND', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'COST', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'PRICE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'MARGIN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
     ])
     tableHeader.push(header)
     const header1 = ([
+      { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+      { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
