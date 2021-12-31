@@ -116,6 +116,7 @@ const Pos = ({
     // curCashierNo,
     modalQueueVisible,
     // modalVoidSuspendVisible,
+    currentBundlePayment,
     modalBundleCategoryVisible,
     tmpProductList,
     tmpServiceList,
@@ -1965,6 +1966,10 @@ const Pos = ({
   }
 
   const onChooseOffering = (item) => {
+    if (currentBundlePayment && currentBundlePayment.paymentOption) {
+      message.error('Already choose offering, please cancel this transaction.')
+      return
+    }
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
@@ -2015,9 +2020,9 @@ const Pos = ({
               {listMinimumPayment
                 && listMinimumPayment.length > 0
                 && (curNetto + dineIn) >= listMinimumPayment[0].minimumPayment
-                && (
-                  <Tag style={{ marginBottom: '10px' }} key={listMinimumPayment[0].id} closable={false} color="green" onClick={() => onChooseOffering(listMinimumPayment[0])}>{listMinimumPayment[0] && listMinimumPayment[0].description ? listMinimumPayment[0].description : listMinimumPayment[0].name}</Tag>
-                )}
+                && listMinimumPayment.map(item => (
+                  <Tag style={{ marginBottom: '10px' }} key={item.id} closable={false} color="green" onClick={() => onChooseOffering(item)}>{item && item.description ? item.description : item.name}</Tag>
+                ))}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
