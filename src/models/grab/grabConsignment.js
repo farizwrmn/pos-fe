@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/integration/grabmart-compliance') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -44,7 +44,10 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        ...payload,
+        valid: 0
+      })
       if (data.success) {
         yield put({
           type: 'querySuccess',

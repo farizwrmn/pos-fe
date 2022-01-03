@@ -1,48 +1,50 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
-import { DropOption } from 'components'
+import { Table } from 'antd'
 
-const confirm = Modal.confirm
-
-const List = ({ ...tableProps, editItem, deleteItem }) => {
-  const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
-      editItem(record)
-    } else if (e.key === '2') {
-      confirm({
-        title: `Are you sure delete ${record.accountName} ?`,
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
-    }
-  }
-
+const List = ({ ...tableProps }) => {
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'grabConsignment',
-      key: 'grabConsignment'
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      width: 100
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: 150
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Category',
+      dataIndex: 'grabCategoryName',
+      key: 'grabCategoryName',
+      width: 100
     },
     {
-      title: 'Operation',
-      key: 'operation',
-      width: 100,
-      fixed: 'right',
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      }
+      title: 'Barcode',
+      dataIndex: 'barcode',
+      key: 'barcode',
+      width: 100
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      width: 100
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+      width: 100
+    },
+    {
+      title: 'Commission',
+      dataIndex: 'commission',
+      key: 'commission',
+      width: 100
     }
   ]
 
@@ -50,9 +52,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
     <div>
       <Table {...tableProps}
         bordered
+        size="small"
         columns={columns}
         simple
         scroll={{ x: 1000 }}
+        pagination={false}
         rowKey={record => record.id}
       />
     </div>
