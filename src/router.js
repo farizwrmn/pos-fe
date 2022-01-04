@@ -1412,6 +1412,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/grab/grabConsignment'))
+              registerModel(app, require('./models/grab/grabCategory'))
               cb(null, require('./routes/integration/grabConsignment'))
             }, 'consignment-compliance')
           }

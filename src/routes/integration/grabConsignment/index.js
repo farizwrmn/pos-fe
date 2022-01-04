@@ -2,34 +2,87 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
-import Form from './Form'
+import { Tabs, Modal } from 'antd'
 import List from './List'
-import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ grabConsignment, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = grabConsignment
+const GrabConsignment = ({ grabConsignment, grabCategory, loading, dispatch, location, app }) => {
+  const { list, pagination, activeKey, selectedRowKeys, currentItemCategory, modalCategoryVisible } = grabConsignment
+  const { list: listGrabCategory } = grabCategory
   const { user, storeInfo } = app
-  const filterProps = {
-    onFilterChange (value) {
+
+  const rowSelection = {
+    onChange: (selectedRowKeys) => {
       dispatch({
-        type: 'grabConsignment/query',
+        type: 'grabConsignment/updateState',
         payload: {
-          ...value
+          selectedRowKeys
+        }
+      })
+    }
+  }
+
+  const modalCategoryProps = {
+    item: currentItemCategory,
+    visible: modalCategoryVisible,
+    selectedRowKeys,
+    listGrabCategory,
+    onOk (data, reset) {
+      dispatch({
+        type: 'grabConsignment/updateCategory',
+        payload: {
+          data, reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'grabConsignment/updateState',
+        payload: {
+          modalCategoryVisible: false,
+          currentItemCategory: {}
         }
       })
     }
   }
 
   const listProps = {
+    modalCategoryVisible,
+    modalCategoryProps,
+    rowSelection,
+    listGrabCategory,
+    selectedRowKeys,
     dataSource: list,
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['grabConsignment/query'],
+    loading: loading.effects['grabConsignment/query'] || loading.effects['grabConsignment/updateValidate'] || loading.effects['grabConsignment/updateCategory'],
     location,
+    onSave () {
+      Modal.confirm({
+        title: 'Approve this selected items',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'grabConsignment/updateValidate',
+            payload: {
+              data: {
+                productId: selectedRowKeys
+              }
+            }
+          })
+        }
+      })
+    },
+    onClicGrabCategory () {
+      dispatch({
+        type: 'grabConsignment/updateState',
+        payload: {
+          modalCategoryVisible: true
+        }
+      })
+    },
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -78,60 +131,12 @@ const Counter = ({ grabConsignment, loading, dispatch, location, app }) => {
     dispatch({ type: 'grabConsignment/updateState', payload: { list: [] } })
   }
 
-  const clickBrowse = () => {
-    dispatch({
-      type: 'grabConsignment/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
-  const formProps = {
-    modalType,
-    item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
-      dispatch({
-        type: `grabConsignment/${modalType}`,
-        payload: {
-          data,
-          reset
-        }
-      })
-    },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'grabConsignment/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    }
-  }
-
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
-
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
-          {activeKey === '0' && <Form {...formProps} />}
-        </TabPane>
-        <TabPane tab="Browse" key="1" >
-          {activeKey === '1' &&
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
+        <TabPane tab="Browse" key="0" >
+          {activeKey === '0' &&
             <div>
-              <Filter {...filterProps} />
               <List {...listProps} />
             </div>
           }
@@ -141,7 +146,8 @@ const Counter = ({ grabConsignment, loading, dispatch, location, app }) => {
   )
 }
 
-Counter.propTypes = {
+GrabConsignment.propTypes = {
+  grabCategory: PropTypes.object,
   grabConsignment: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -149,4 +155,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ grabConsignment, loading, app }) => ({ grabConsignment, loading, app }))(Counter)
+export default connect(({ grabCategory, grabConsignment, loading, app }) => ({ grabCategory, grabConsignment, loading, app }))(GrabConsignment)

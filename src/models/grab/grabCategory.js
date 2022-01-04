@@ -22,7 +22,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/stock'
-          || pathname === '/marketing/promo') {
+          || pathname === '/marketing/promo'
+          || pathname === '/integration/grabmart-compliance') {
           dispatch({
             type: 'query',
             payload: {

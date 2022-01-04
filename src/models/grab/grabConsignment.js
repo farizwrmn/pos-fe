@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/grab/grabConsignment'
+import { query, add, edit, remove, updateCategory, updateValidate } from 'services/grab/grabConsignment'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -13,9 +12,12 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    currentItemCategory: {},
+    modalCategoryVisible: false,
     modalType: 'add',
-    activeKey: '0',
     list: [],
+    activeKey: '0',
+    selectedRowKeys: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -29,13 +31,7 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/integration/grabmart-compliance') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -60,6 +56,46 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * updateCategory ({ payload }, { call, put }) {
+      const response = yield call(updateCategory, payload.data)
+      if (response.success) {
+        yield put({
+          type: 'query'
+        })
+        success()
+        if (payload.reset) {
+          payload.reset()
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalCategoryVisible: false,
+            currentItemCategory: {}
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * updateValidate ({ payload }, { call, put }) {
+      const response = yield call(updateValidate, payload.data)
+      if (response.success) {
+        yield put({
+          type: 'query'
+        })
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRowKeys: []
+          }
+        })
+      } else {
+        throw response
       }
     },
 
@@ -110,17 +146,9 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
+            currentItem: {}
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
         yield put({ type: 'query' })
         if (payload.reset) {
           payload.reset()
@@ -169,7 +197,6 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         modalType: 'edit',
-        activeKey: '0',
         currentItem: item
       }
     }
