@@ -1705,7 +1705,7 @@ export default {
         qty: 1,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
-        martSellPrice: item.price_grabmart,
+        martSellPrice: item.price * (1 + 0.08),
         originalSellPrice: item.price,
         price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
