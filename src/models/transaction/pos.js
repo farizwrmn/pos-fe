@@ -4,13 +4,13 @@ import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
 import { allowPrint } from 'utils/validation'
+import { numberFormatter } from 'utils/string'
 import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
-import {
-  queryPaymentSplit
-} from 'services/payment/payment'
+import { queryPaymentSplit } from 'services/payment/payment'
+import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
@@ -1609,7 +1609,7 @@ export default {
       })
     },
 
-    * chooseConsignment ({ payload }, { select, put }) {
+    * chooseConsignment ({ payload }, { select, put, call }) {
       const modalMember = () => {
         return new Promise((resolve) => {
           Modal.info({
@@ -1688,6 +1688,28 @@ export default {
         typePrice = 'price_grabmart'
       }
 
+      const productInfo = yield call(queryProduct, {
+        storeId: lstorage.getCurrentUserStore(),
+        productId: item.product_id
+      })
+
+      if (productInfo && productInfo.success && productInfo.data) {
+        if (productInfo.data && productInfo.data.price !== item.price) {
+          Modal.error({
+            title: 'Price from server and local is different, Call your admin/vendor',
+            content: `Local Price: ${numberFormatter(productInfo.data.price)}, Server Price: ${numberFormatter(item.price)}`
+          })
+          return
+        }
+        if (productInfo.data && productInfo.data.price) {
+          item.price_grabmart = productInfo && productInfo.success && productInfo.data ? item.price + productInfo.data.commission : item.price_grabmart
+          item.commission = productInfo && productInfo.success && productInfo.data ? productInfo.data.commission : 0
+        }
+      } else {
+        item.commission = 0
+      }
+
+
       const data = {
         no: arrayProd.length + 1,
         code: item.product.product_code,
@@ -1705,8 +1727,9 @@ export default {
         qty: 1,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
-        martSellPrice: item.price * (1 + 0.08),
+        martSellPrice: item.price_grabmart,
         originalSellPrice: item.price,
+        commission: item.commission,
         price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
         disc1: 0,

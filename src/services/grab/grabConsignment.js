@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function queryProduct (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/grab-consignment-find',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
