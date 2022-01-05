@@ -3052,6 +3052,7 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          currentBundlePayment: {},
           currentBuildComponent: {},
           currentReplaceBundle: {},
           listVoucher: [],
