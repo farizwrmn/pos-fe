@@ -3,11 +3,14 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/master/paymentOption/paymentMachineService'
 import { pageModel } from 'common'
+import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
   message.success('Payment method has been saved')
 }
+
+const { setQrisImage } = lstorage
 
 export default modelExtend(pageModel, {
   namespace: 'paymentEdc',
@@ -96,6 +99,10 @@ export default modelExtend(pageModel, {
                   relationship: 1
                 }
               })
+              if (listPayment && listPayment[0] && listPayment[0].qrisImage) {
+                setQrisImage(listPayment[0].qrisImage)
+                message.info('Send Qris Image to Customer View')
+              }
             } else {
               yield put({
                 type: 'paymentCost/query',
@@ -104,6 +111,10 @@ export default modelExtend(pageModel, {
                   relationship: 1
                 }
               })
+              if (listPayment && listPayment[0] && listPayment[0].qrisImage) {
+                setQrisImage(listPayment[0].qrisImage)
+                message.info('Send Qris Image to Customer View')
+              }
             }
           } else {
             yield put({
@@ -121,6 +132,10 @@ export default modelExtend(pageModel, {
                   relationship: 1
                 }
               })
+              if (listPayment && listPayment[0] && listPayment[0].qrisImage) {
+                setQrisImage(listPayment[0].qrisImage)
+                message.info('Send Qris Image to Customer View')
+              }
             } else {
               yield put({
                 type: 'paymentCost/query',
