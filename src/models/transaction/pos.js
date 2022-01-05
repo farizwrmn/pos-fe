@@ -2001,17 +2001,19 @@ export default {
           if (payload.reset) {
             payload.reset()
           }
-          if (bundleData.mode !== 'edit') {
-            if (exists) {
-              yield put({
-                type: 'pospromo/setBundleAlreadyExists',
-                payload: bundleData
-              })
-            } else {
-              yield put({
-                type: 'pospromo/setBundleNeverExists',
-                payload: bundleData
-              })
+          if (!payload.hasService) {
+            if (bundleData.mode !== 'edit') {
+              if (exists) {
+                yield put({
+                  type: 'pospromo/setBundleAlreadyExists',
+                  payload: bundleData
+                })
+              } else {
+                yield put({
+                  type: 'pospromo/setBundleNeverExists',
+                  payload: bundleData
+                })
+              }
             }
           }
 
@@ -2102,7 +2104,6 @@ export default {
               }
             })
           }
-
           if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
             yield put({
               type: 'pospromo/setServicePos',
@@ -2113,31 +2114,42 @@ export default {
             })
           }
 
-          yield put({
-            type: 'setCurTotal'
-          })
+          if (payload.hasService) {
+            yield put({
+              type: 'pos/chooseServicePromo',
+              payload: {
+                hasProduct: true,
+                listProductQty: payload.listServiceQty,
+                reset: payload.reset
+              }
+            })
+          } else {
+            yield put({
+              type: 'setCurTotal'
+            })
 
-          yield put({
-            type: 'pospromo/updateState',
-            payload: {
-              currentReward: {},
-              bundleData: {},
-              listCategory: [],
-              productData: {},
-              serviceData: {}
-            }
-          })
+            yield put({
+              type: 'pospromo/updateState',
+              payload: {
+                currentReward: {},
+                bundleData: {},
+                listCategory: [],
+                productData: {},
+                serviceData: {}
+              }
+            })
 
-          yield put({
-            type: 'pos/updateState',
-            payload: {
-              bundleData: {},
-              listCategory: [],
-              dataReward: [],
-              currentCategory: [],
-              modalBundleCategoryVisible: false
-            }
-          })
+            yield put({
+              type: 'pos/updateState',
+              payload: {
+                bundleData: {},
+                listCategory: [],
+                dataReward: [],
+                currentCategory: [],
+                modalBundleCategoryVisible: false
+              }
+            })
+          }
         }
       }
     },
@@ -2254,29 +2266,33 @@ export default {
           arrayProd.push(dataService)
         }
 
+        console.log('chooseServicePromo', arrayProd)
+
         setServiceTrans(JSON.stringify(arrayProd))
 
         const productData = yield select(({ pospromo }) => pospromo.productData)
         const serviceData = yield select(({ pospromo }) => pospromo.serviceData)
 
-        if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
-          yield put({
-            type: 'pospromo/setProductPos',
-            payload: {
-              currentProduct: getCashierTrans(),
-              currentReward: productData.currentReward
-            }
-          })
-        }
+        if (!payload.hasProduct) {
+          if (productData && productData.currentProduct && bundleData.mode !== 'edit') {
+            yield put({
+              type: 'pospromo/setProductPos',
+              payload: {
+                currentProduct: getCashierTrans(),
+                currentReward: productData.currentReward
+              }
+            })
+          }
 
-        if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
-          yield put({
-            type: 'pospromo/setServicePos',
-            payload: {
-              currentProduct: serviceData.currentProduct,
-              currentReward: serviceData.currentReward
-            }
-          })
+          if (serviceData && serviceData.currentProduct && bundleData.mode !== 'edit') {
+            yield put({
+              type: 'pospromo/setServicePos',
+              payload: {
+                currentProduct: arrayProd,
+                currentReward: serviceData.currentReward
+              }
+            })
+          }
         }
 
         yield put({
@@ -3557,6 +3573,7 @@ export default {
       return {
         ...state,
         listVoucher: [],
+        currentBundlePayment: {},
         currentReplaceBundle: {},
         currentBuildComponent: {},
         curQty: 1,
