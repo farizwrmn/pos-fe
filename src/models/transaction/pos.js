@@ -508,6 +508,7 @@ export default {
         for (let key in dataConsignment) {
           const item = dataConsignment[key]
           dataConsignment[key].sellPrice = item[typePrice] == null ? item.price : item[typePrice]
+          dataConsignment[key].price = item[typePrice] == null ? item.price : item[typePrice]
           dataConsignment[key].total = dataConsignment[key].sellPrice * item.qty
         }
       }
@@ -1703,10 +1704,10 @@ export default {
         }
         if (productInfo.data && productInfo.data.price) {
           item.price_grabmart = productInfo && productInfo.success && productInfo.data ? item.price + productInfo.data.commission : item.price_grabmart
-          item.commission = productInfo && productInfo.success && productInfo.data ? productInfo.data.commission : 0
+          item.commissionGrab = productInfo && productInfo.success && productInfo.data ? productInfo.data.commission : 0
         }
       } else {
-        item.commission = 0
+        item.commissionGrab = 0
       }
 
 
@@ -1729,7 +1730,7 @@ export default {
         otherSellPrice: item.price_grabfood_gofood,
         martSellPrice: item.price_grabmart,
         originalSellPrice: item.price,
-        commission: item.commission,
+        commissionGrab: item.commissionGrab,
         price: item[typePrice] == null ? item.price : item[typePrice],
         discount: 0,
         disc1: 0,
