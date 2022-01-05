@@ -3550,6 +3550,7 @@ export default {
       return {
         ...state,
         listVoucher: [],
+        currentBundlePayment: {},
         currentReplaceBundle: {},
         currentBuildComponent: {},
         curQty: 1,
