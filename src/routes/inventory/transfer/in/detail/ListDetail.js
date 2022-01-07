@@ -12,18 +12,23 @@ const List = ({ ...tableProps, editList }) => {
     {
       title: 'No',
       dataIndex: 'no',
+      width: 50,
+      className: styles.alignCenter,
       key: 'no'
     },
     {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
+      width: 175,
+      className: styles.alignCenter,
       render: (text, record) => (record.productCode || record.serviceCode)
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
+      width: 200,
       render: (text, record) => (record.productName || record.serviceName)
     },
     {
@@ -31,6 +36,7 @@ const List = ({ ...tableProps, editList }) => {
       dataIndex: 'qty',
       key: 'qty',
       className: styles.alignRight,
+      width: 60,
       render: text => (text || '-').toLocaleString()
     }
   ]
@@ -39,6 +45,7 @@ const List = ({ ...tableProps, editList }) => {
     <div>
       <Table {...tableProps}
         bordered={false}
+        pagination={false}
         scroll={{ x: 500, y: 700 }}
         columns={columns}
         simple

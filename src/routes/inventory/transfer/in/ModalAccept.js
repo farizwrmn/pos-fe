@@ -3,6 +3,7 @@ import { Form, Modal, Button, DatePicker, Select, Input, Row, Col } from 'antd'
 import moment from 'moment'
 import List from './ListItem'
 import ModalConfirm from './ModalConfirm'
+import PrintShelf from '../../../master/product/printSticker/PrintShelf'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -22,7 +23,7 @@ const formItemLayout = {
     xl: { span: 12 }
   }
 }
-class modal extends Component {
+class ModalAccept extends Component {
   componentDidMount () {
     setTimeout(() => {
       const selector = document.getElementById('Product')
@@ -54,9 +55,22 @@ class modal extends Component {
         validateFields,
         getFieldsValue
       },
+      printMode,
+      selectedRowKeys,
+      onPrintBarcode,
+      rowSelection,
       ...formConfirmProps
     } = this.props
-    const { ...modalAcceptProps } = this.props
+    const modalAcceptProps = this.props
+
+    const listDetailProps = {
+      dataSource: listTransDetail
+    }
+
+    if (printMode === 'select') {
+      listDetailProps.selectedRowKeys = selectedRowKeys
+      listDetailProps.rowSelection = rowSelection
+    }
 
     const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
     const formConfirmOpts = {
@@ -144,6 +158,32 @@ class modal extends Component {
         }
       }
     }
+
+    let listSticker = []
+
+    const printStickerProps = {
+      aliases: {
+        check1: true,
+        alias1: 'RETAIL PRICE',
+        price1: 'sellPrice'
+      },
+      user,
+      storeInfo
+    }
+
+    console.log('listTransDetail', listTransDetail)
+
+    if (listTransDetail && listTransDetail.length > 0 && selectedRowKeys && selectedRowKeys.length > 0) {
+      listSticker = listTransDetail.filter(filtered => selectedRowKeys.includes(filtered.no)).map((item) => {
+        return ({
+          info: item,
+          name: item.productName,
+          qty: 1
+        })
+      })
+    }
+
+    console.log('listSticker', selectedRowKeys, listSticker)
 
     return (
       <div>
@@ -273,34 +313,44 @@ class modal extends Component {
               </Col>
             </Row>
             <Row>
-              <FormItem label="Product" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('Product', {
-                  rules: [
-                    {
-                      required: false
-                    }
-                  ]
-                })(
-                  <Input
-                    id="input-product"
-                    size="medium"
-                    autoFocus
-                    style={{ fontSize: 24, marginBottom: 8 }}
-                    placeholder="Product"
-                    onPressEnter={(event) => {
-                      onEnterProduct(event, 'barcode')
-                    }}
-                  />
+              <Col lg={16} md={24}>
+                <FormItem label="Scanner" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('Product', {
+                    rules: [
+                      {
+                        required: false
+                      }
+                    ]
+                  })(
+                    <Input
+                      id="input-product"
+                      size="medium"
+                      autoFocus
+                      style={{ fontSize: 24, marginBottom: 8 }}
+                      placeholder="Scanner"
+                      onPressEnter={(event) => {
+                        onEnterProduct(event, 'barcode')
+                      }}
+                    />
+                  )}
+                </FormItem>
+              </Col>
+              <Col lg={8} md={24}>
+                {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" onClick={() => onPrintBarcode()}>Print Barcode</Button>}
+                {selectedRowKeys && selectedRowKeys.length > 0 && (
+                  <span style={{ marginLeft: '10px' }}>
+                    <PrintShelf stickers={listSticker} user={user} {...printStickerProps} />
+                  </span>
                 )}
-              </FormItem>
+              </Col>
             </Row>
           </Form>
-          <List dataSource={listTransDetail} />
+          <List dataSource={listTransDetail} {...listDetailProps} />
           {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
         </Modal>
-      </div>
+      </div >
     )
   }
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalAccept)

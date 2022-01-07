@@ -43,7 +43,7 @@ const ProductStock = ({ productstock, dispatch, location, app }) => {
     storeInfo
   }
 
-
+  console.log('listSticker', listSticker)
   let moreButtonTab
   switch (activeKey) {
     case '0':
