@@ -171,8 +171,6 @@ class ModalAccept extends Component {
       storeInfo
     }
 
-    console.log('listTransDetail', listTransDetail)
-
     if (listTransDetail && listTransDetail.length > 0 && selectedRowKeys && selectedRowKeys.length > 0) {
       listSticker = listTransDetail.filter(filtered => selectedRowKeys.includes(filtered.no)).map((item) => {
         return ({
@@ -183,11 +181,10 @@ class ModalAccept extends Component {
       })
     }
 
-    console.log('listSticker', selectedRowKeys, listSticker)
-
     return (
       <div>
         <Modal
+          onCancel={modalAcceptProps.onCancel}
           footer={[
             <Button disabled={disableButton} key="submit" type="primary" onClick={() => handleOk()} >Process</Button>
           ]}
