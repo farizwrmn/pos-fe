@@ -1409,6 +1409,15 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-out-detail')
           }
         }, {
+          path: 'integration/grabmart-compliance',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/grab/grabConsignment'))
+              registerModel(app, require('./models/grab/grabCategory'))
+              cb(null, require('./routes/integration/grabConsignment'))
+            }, 'consignment-compliance')
+          }
+        }, {
           path: 'transaction/return-sales',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
