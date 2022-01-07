@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Row, Col, Button, Tabs } from 'antd'
+import { Row, Col, Button, Tabs, message } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
 import CardIn from './CardIn'
@@ -16,7 +16,8 @@ const TabPane = Tabs.TabPane
 moment.locale('id')
 
 const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
-  const { listTrans,
+  const {
+    listTrans,
     listTransIn,
     listProducts,
     listTransferIn,
@@ -34,7 +35,10 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     sort,
     disableButton,
     showPrintModal,
-    modalConfirmVisible } = transferIn
+    modalConfirmVisible,
+    printMode,
+    selectedRowKeys
+  } = transferIn
   const { list } = employee
   const { user, storeInfo } = app
   let listEmployee = list
@@ -200,6 +204,8 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
   }
   const modalAcceptProps = {
     ...formConfirmProps,
+    printMode,
+    selectedRowKeys,
     modalConfirmVisible,
     disableButton,
     item: transHeader,
@@ -212,6 +218,16 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     width: '700px',
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
+    rowSelection: {
+      onChange: (selectedRowKeys) => {
+        dispatch({
+          type: 'transferIn/updateState',
+          payload: {
+            selectedRowKeys
+          }
+        })
+      }
+    },
     onEnter (data) {
       dispatch({
         type: 'transferIn/acceptTransOut',
@@ -220,11 +236,22 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         }
       })
     },
+    onPrintBarcode () {
+      message.info('Choose product to print barcode')
+      dispatch({
+        type: 'transferIn/updateState',
+        payload: {
+          printMode: 'select'
+        }
+      })
+    },
     onOk (data, list, storeId) {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
-          disableButton: true
+          disableButton: true,
+          selectedRowKeys: [],
+          printMode: 'default'
         }
       })
       dispatch({
@@ -241,6 +268,8 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         type: 'transferIn/updateState',
         payload: {
           modalAcceptVisible: false,
+          selectedRowKeys: [],
+          printMode: 'default',
           listTransDetail: [],
           transHeader: {}
         }

@@ -31,6 +31,13 @@ export default {
         const match = pathToRegexp('/inventory/transfer/in/:id').exec(location.pathname)
         if (match) {
           dispatch({
+            type: 'transferIn/updateState',
+            payload: {
+              printMode: 'default',
+              selectedRowKeys: []
+            }
+          })
+          dispatch({
             type: 'queryDetail',
             payload: {
               transNo: decodeURIComponent(match[1]),
@@ -57,6 +64,8 @@ export default {
             id: data.mutasi[n].id,
             productCode: data.mutasi[n].productCode,
             productName: data.mutasi[n].productName,
+            sellPrice: data.mutasi[n].sellPrice,
+            categoryColor: data.mutasi[n].categoryColor,
             qty: data.mutasi[n].qty
           })
         }

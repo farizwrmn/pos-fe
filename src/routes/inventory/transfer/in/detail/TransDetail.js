@@ -8,6 +8,8 @@ import List from './ListDetail'
 
 const formPayment = ({
   dataSource,
+  rowSelection,
+  selectedRowKeys,
   form: {
     // getFieldDecorator,
     resetFields
@@ -15,6 +17,8 @@ const formPayment = ({
 }) => {
   const listProps = {
     dataSource,
+    rowSelection,
+    selectedRowKeys,
     editList () {
       // editItem(data)
       resetFields()
