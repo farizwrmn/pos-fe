@@ -6,6 +6,7 @@ import { configMain, lstorage, variables } from 'utils'
 import { allowPrint } from 'utils/validation'
 // import { numberFormatter } from 'utils/string'
 import {
+  TYPE_PEMBELIAN_UMUM,
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
@@ -1703,7 +1704,7 @@ export default {
         //   return
         // }
         if (productInfo.data && productInfo.data.price) {
-          item.price_grabmart = productInfo && productInfo.success && productInfo.data ? item.price + productInfo.data.commission : item.price_grabmart
+          item.price_grabmart = productInfo && productInfo.success && productInfo.data ? productInfo.data.price + productInfo.data.commission : item.price_grabmart
           item.commissionGrab = productInfo && productInfo.success && productInfo.data ? productInfo.data.commission : 0
         }
       } else {
@@ -3064,6 +3065,7 @@ export default {
       localStorage.removeItem('consignment')
       localStorage.removeItem('voucher_list')
       localStorage.removeItem('cashier_trans')
+      localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
       if (!defaultValue) {
         localStorage.removeItem('member')
         localStorage.removeItem('mechanic')
@@ -3079,6 +3081,7 @@ export default {
           currentBundlePayment: {},
           currentBuildComponent: {},
           currentReplaceBundle: {},
+          typePembelian: TYPE_PEMBELIAN_UMUM,
           listVoucher: [],
           mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : [],
           lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
