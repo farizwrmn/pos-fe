@@ -23,6 +23,8 @@ export default modelExtend(pageModel, {
   namespace: 'transferIn',
   state: {
     period: moment(localDate.startPeriod).format('YYYY-MM'),
+    printMode: 'default', // default,select
+    selectedRowKeys: [],
     transNo: [],
     storeId: [],
     listTrans: [],
@@ -61,6 +63,13 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/inventory/transfer/in') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              printMode: 'default',
+              selectedRowKeys: []
+            }
+          })
           // dispatch({
           //   type: 'queryCode',
           //   payload: {
@@ -210,7 +219,7 @@ export default modelExtend(pageModel, {
           payload: {
             sequenceNumber: sequence.data,
             transHeader: data.mutasi,
-            listTransDetail: dataDetail.mutasi,
+            listTransDetail: dataDetail.mutasi.map((item, index) => ({ ...item, no: index + 1 })),
             modalAcceptVisible: true
           }
         })

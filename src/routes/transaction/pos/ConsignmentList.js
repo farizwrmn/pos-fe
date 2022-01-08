@@ -54,6 +54,7 @@ const PaymentList = ({
       data.productId = itemConsignment.productId
       data.otherSellPrice = itemConsignment.otherSellPrice
       data.martSellPrice = itemConsignment.martSellPrice
+      data.commissionGrab = itemConsignment.commissionGrab
       data.originalSellPrice = itemConsignment.originalSellPrice
       data.code = itemConsignment.code
       data.name = itemConsignment.name

@@ -13,7 +13,8 @@ import FormAccounting from './FormAccounting'
 import styles from './index.less'
 
 
-const Detail = ({ journalentry, dispatch }) => {
+const Detail = ({ app, journalentry, dispatch }) => {
+  const { user } = app
   const { listDetail, listAccounting, data } = journalentry
   const content = []
   for (let key in data) {
@@ -55,19 +56,23 @@ const Detail = ({ journalentry, dispatch }) => {
             <TransDetail {...formDetailProps} />
           </Row>
         </div>
-        <div className="content-inner-zero-min-height">
-          <h1>Accounting Journal</h1>
-          <Row style={{ padding: '10px', margin: '4px' }}>
-            <FormAccounting listAccounting={listAccounting} />
-          </Row>
-        </div>
+
+        {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
+          <div className="content-inner-zero-min-height">
+            <h1>Accounting Journal</h1>
+            <Row style={{ padding: '10px', margin: '4px' }}>
+              <FormAccounting listAccounting={listAccounting} />
+            </Row>
+          </div>
+        )}
       </Col>
     </Row>
   </div>)
 }
 
 Detail.propTypes = {
+  app: PropTypes.object,
   journalentry: PropTypes.object
 }
 
-export default connect(({ journalentry }) => ({ journalentry }))(Detail)
+export default connect(({ app, journalentry }) => ({ app, journalentry }))(Detail)

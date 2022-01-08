@@ -1376,6 +1376,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transferIn'))
               registerModel(app, require('./models/master/employee'))
+              registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/inventory/transfer/in'))
             }, 'inventory-transfer')
           }
@@ -1406,6 +1407,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
             }, 'inventory-transfer-out-detail')
+          }
+        }, {
+          path: 'integration/grabmart-compliance',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/grab/grabConsignment'))
+              registerModel(app, require('./models/grab/grabCategory'))
+              cb(null, require('./routes/integration/grabConsignment'))
+            }, 'consignment-compliance')
           }
         }, {
           path: 'transaction/return-sales',

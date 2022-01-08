@@ -11,7 +11,8 @@ import FormAccounting from './FormAccounting'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
-const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
+const Detail = ({ app, paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
+  const { user } = app
   const { listDetail, listAccounting, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
   const {
     listPayment: listEdc
@@ -195,12 +196,14 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
             <FormPayment {...formProps} />
           </Row>
         </div>
-        <div className="content-inner-zero-min-height">
-          <h1>Accounting Journal</h1>
-          <Row style={{ padding: '10px', margin: '4px' }}>
-            <FormAccounting {...formProps} />
-          </Row>
-        </div>
+        {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
+          <div className="content-inner-zero-min-height">
+            <h1>Accounting Journal</h1>
+            <Row style={{ padding: '10px', margin: '4px' }}>
+              <FormAccounting {...formProps} />
+            </Row>
+          </div>
+        )}
       </Col>
     </Row>
     {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
@@ -209,9 +212,10 @@ const Detail = ({ paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, disp
 }
 
 Detail.propTypes = {
+  app: PropTypes.object.isRequired,
   paymentDetail: PropTypes.object.isRequired,
   paymentOpts: PropTypes.object.isRequired,
   pos: PropTypes.object.isRequired
 }
 
-export default connect(({ paymentDetail, paymentEdc, paymentCost, pos, paymentOpts, dispatch, loading }) => ({ paymentDetail, paymentEdc, paymentCost, pos, paymentOpts, dispatch, loading }))(Detail)
+export default connect(({ app, paymentDetail, paymentEdc, paymentCost, pos, paymentOpts, dispatch, loading }) => ({ app, paymentDetail, paymentEdc, paymentCost, pos, paymentOpts, dispatch, loading }))(Detail)
