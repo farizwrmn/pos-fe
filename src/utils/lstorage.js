@@ -4,6 +4,7 @@
 import moment from 'moment'
 import { prefix } from './config.main'
 import { encrypt, decrypt } from './crypt'
+import { TYPE_PEMBELIAN_UMUM } from './variable'
 
 const putStorageKey = (key, value, norandom) => {
   // 'udi' { 1: userid, 2: role, 3: store, 4: usercompany, 5: userlogintime, 6: difftime_be-fe, 7: sessionid }
@@ -169,6 +170,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('member')
   localStorage.removeItem('mechanic')
   localStorage.removeItem('memberUnit')
+  localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
   localStorage.removeItem('lastMeter')
   localStorage.removeItem('woNumber')
   localStorage.removeItem('bundle_promo')
