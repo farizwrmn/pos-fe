@@ -4,7 +4,7 @@ import { Modal, message } from 'antd'
 import moment from 'moment'
 import { configMain, lstorage, variables } from 'utils'
 import { allowPrint } from 'utils/validation'
-import { numberFormatter } from 'utils/string'
+// import { numberFormatter } from 'utils/string'
 import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
@@ -1695,13 +1695,13 @@ export default {
       })
 
       if (productInfo && productInfo.success && productInfo.data) {
-        if (productInfo.data && productInfo.data.price !== item.price) {
-          Modal.error({
-            title: 'Price from server and local is different, Call your admin/vendor',
-            content: `Local Price: ${numberFormatter(productInfo.data.price)}, Server Price: ${numberFormatter(item.price)}`
-          })
-          return
-        }
+        // if (productInfo.data && productInfo.data.price !== item.price) {
+        //   Modal.error({
+        //     title: 'Price from server and local is different, Call your admin/vendor',
+        //     content: `Local Price: ${numberFormatter(productInfo.data.price)}, Server Price: ${numberFormatter(item.price)}`
+        //   })
+        //   return
+        // }
         if (productInfo.data && productInfo.data.price) {
           item.price_grabmart = productInfo && productInfo.success && productInfo.data ? item.price + productInfo.data.commission : item.price_grabmart
           item.commissionGrab = productInfo && productInfo.success && productInfo.data ? productInfo.data.commission : 0
