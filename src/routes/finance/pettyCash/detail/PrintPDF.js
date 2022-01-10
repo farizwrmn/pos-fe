@@ -20,7 +20,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.transactionType).toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.description).toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: numberFormatter(data.depositTotal || 0), alignment: 'left', fontSize: 11 })
         row.push({ text: numberFormatter(data.expenseTotal || 0), alignment: 'right', fontSize: 11 })
         body.push(row)
