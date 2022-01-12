@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { query } from 'services/utils/parameter'
+import { setCode } from 'services/shopee/shopeeApi'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
-  namespace: 'parameter',
+  namespace: 'shopeeIntegration',
 
   state: {
     currentItem: {},
@@ -22,14 +22,14 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/integration/shopee/set-code') {
           dispatch({
-            type: 'updateState',
+            type: 'setCode',
             payload: {
-              activeKey: activeKey || '0'
+              code: other.code,
+              shop_id: other.shop_id
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -37,24 +37,17 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, {
+    * setCode ({ payload = {} }, { call, put }) {
+      const data = yield call(setCode, {
         ...payload,
         type: 'all'
       })
-      if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: data.data,
-            pagination: {
-              current: Number(data.page) || 1,
-              pageSize: Number(data.pageSize) || 10,
-              total: data.total
-            }
-          }
-        })
-      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          setCodeMessage: data.message
+        }
+      })
     }
   },
 

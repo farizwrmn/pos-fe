@@ -209,7 +209,7 @@ const Header = ({ user, logout, dispatch, switchSider, siderFold, isNavbar,
         {/* <HeaderMenu prompt="home" clickRoute="/dashboard" /> */}
         {/* <HeaderMenu prompt="setting" /> */}
         {/* <HeaderMenu prompt="calculator" /> */}
-        {shopeeLogin && (
+        {shopeeLogin && user && user.permissions && user.permissions.role && user.permissions.role === 'SPR' && (
           <HeaderMenu
             prompt="Require Login"
             title="Require Login"

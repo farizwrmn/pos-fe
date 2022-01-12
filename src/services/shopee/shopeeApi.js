@@ -9,3 +9,13 @@ export async function login (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function setCode (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/shopee-api/set-code',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

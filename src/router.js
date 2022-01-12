@@ -1452,6 +1452,14 @@ const Routers = function ({ history, app }) {
             }, 'setting-misc')
           }
         }, {
+          path: 'integration/shopee/set-code',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/shopee/shopeeIntegration'))
+              cb(null, require('./routes/integration/setCode'))
+            }, 'integration-shopee-setCode')
+          }
+        }, {
           path: 'setting/periods',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
