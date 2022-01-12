@@ -213,7 +213,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
           icon="laptop"
           onClick={() => {
             let iframe = `<html><head><style>body, html {width: 100%; height: 100%; margin: 0; padding: 0}</style></head><body><iframe src="${window.location.origin}/transaction/pos/customer-view" style="height:calc(100% - 4px);width:calc(100% - 4px)"></iframe></html></body>`
-            const win = window.open('', '_blank', `resizable=1,location=no,status=no,height=${screen.height},width=${screen.width},scrollbars=1,fullscreen=1,screenX=${window.leftScreenBoundry()},left=${window.leftScreenBoundry()},toolbar=0,menubar=0,status=1`)
+            const win = window.open('', '_blank', `resizable=1,location=no,status=no,height=${screen.height},width=${screen.width},scrollbars=1,fullscreen=1,toolbar=0,menubar=0,status=1`)
             win.document.write(iframe)
           }}
           addClass="customer"
