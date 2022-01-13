@@ -1,5 +1,7 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import { setCode } from 'services/shopee/shopeeApi'
+import { routerRedux } from 'dva/router'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -48,6 +50,13 @@ export default modelExtend(pageModel, {
           setCodeMessage: data.message
         }
       })
+      message.info('Success login shopee')
+      yield put(routerRedux.push({
+        pathname: '/integration/shopee/set-code'
+      }))
+      yield put(routerRedux.push({
+        pathname: '/dashboard'
+      }))
     }
   },
 

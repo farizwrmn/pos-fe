@@ -9,7 +9,7 @@ const ShopeeIntegration = ({ shopeeIntegration, dispatch, loading }) => {
   const { setCodeMessage } = shopeeIntegration
   const onClickHome = () => {
     dispatch(routerRedux.push({
-      pathname: '/balance/current'
+      pathname: '/dashboard'
     }))
   }
 
