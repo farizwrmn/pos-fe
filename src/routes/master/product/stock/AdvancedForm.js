@@ -127,14 +127,19 @@ const column = {
   lg: { span: 12 }
 }
 
-const parentRight = {
-  md: { span: 24 },
-  lg: { span: 14 }
-}
+// const parentRight = {
+//   md: { span: 24 },
+//   lg: { span: 14 }
+// }
 
-const parentLeft = {
+// const parentLeft = {
+//   md: { span: 24 },
+//   lg: { span: 10 }
+// }
+
+const parentThreeDivision = {
   md: { span: 24 },
-  lg: { span: 10 }
+  lg: { span: 8 }
 }
 
 const AdvancedForm = ({
@@ -819,7 +824,7 @@ const AdvancedForm = ({
         </Row>
       </Card>
       <Row>
-        <Col {...parentLeft}>
+        <Col {...parentThreeDivision}>
           <Card {...cardProps} title={<h3>Pricing</h3>}>
             <Row>
               <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
@@ -908,8 +913,61 @@ const AdvancedForm = ({
             </Row>
           </Card>
         </Col>
-        <Col {...parentRight}>
+        <Col {...parentThreeDivision}>
           <Card {...cardProps} title={<h3>Shopee</h3>}>
+            <FormItem label="Enable Shopee" {...formItemLayout}>
+              {getFieldDecorator('enableShopee', {
+                valuePropName: 'checked',
+                initialValue: item.enableShopee === undefined
+                  ? false
+                  : item.enableShopee
+              })(<Checkbox>Publish</Checkbox>)}
+            </FormItem>
+            {getFieldValue('enableShopee') && <FormItem label="Shopee Category" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('shopeeCategoryId', {
+                initialValue: item.shopeeCategoryId ? {
+                  key: item.shopeeCategoryId,
+                  label: item.shopeeCategoryName
+                } : {},
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >{grabCategory}
+              </Select>)}
+            </FormItem>}
+
+            {getFieldValue('enableShopee') && getFieldValue('shopeeCategoryId') && getFieldValue('shopeeCategoryId').key && (
+              <FormItem label="Shopee Brand" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('shopeeBrandId', {
+                  initialValue: item.shopeeBrandId ? {
+                    key: item.shopeeBrandId,
+                    label: item.shopeeBrandName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{grabCategory}
+                </Select>)}
+              </FormItem>
+            )}
+          </Card>
+          <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
             <FormItem label="Publish on e-commerce" {...formItemLayout}>
               {getFieldDecorator('activeShop', {
                 valuePropName: 'checked',
@@ -918,11 +976,39 @@ const AdvancedForm = ({
                   : item.activeShop
               })(<Checkbox>Publish</Checkbox>)}
             </FormItem>
+            <FormItem label="Track Qty" {...formItemLayout}>
+              {getFieldDecorator('trackQty', {
+                valuePropName: 'checked',
+                initialValue: item.trackQty == null ? true : !!item.trackQty
+              })(<Checkbox>Track</Checkbox>)}
+            </FormItem>
+            <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('alertQty', {
+                initialValue: item.alertQty == null ? 1 : item.alertQty,
+                rules: [
+                  {
+                    required: getFieldValue('trackQty'),
+                    pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                    message: '0-9'
+                  }
+                ]
+              })(<InputNumber {...InputNumberProps} />)}
+            </FormItem>
+            <FormItem label="Status" {...formItemLayout}>
+              {getFieldDecorator('active', {
+                valuePropName: 'checked',
+                initialValue: item.active === undefined ? true : item.active
+              })(<Checkbox>Active</Checkbox>)}
+            </FormItem>
+            <FormItem label="Under Cost" {...formItemLayout}>
+              {getFieldDecorator('exception01', {
+                valuePropName: 'checked',
+                initialValue: !!item.exception01
+              })(<Checkbox>Allow</Checkbox>)}
+            </FormItem>
           </Card>
         </Col>
-      </Row>
-      <Row>
-        <Col {...parentLeft}>
+        <Col {...parentThreeDivision}>
           <Card {...cardProps} title={<h3>Grabmart</h3>}>
             <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
               {getFieldDecorator('grabCategoryId', {
@@ -1034,46 +1120,6 @@ const AdvancedForm = ({
                 ]
               })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
             </FormItem>
-          </Card>
-        </Col>
-        <Col {...parentRight}>
-          <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
-            <Row>
-              <Col {...column}>
-                <FormItem label="Track Qty" {...formItemLayout}>
-                  {getFieldDecorator('trackQty', {
-                    valuePropName: 'checked',
-                    initialValue: item.trackQty == null ? true : !!item.trackQty
-                  })(<Checkbox>Track</Checkbox>)}
-                </FormItem>
-                <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('alertQty', {
-                    initialValue: item.alertQty == null ? 1 : item.alertQty,
-                    rules: [
-                      {
-                        required: getFieldValue('trackQty'),
-                        pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                        message: '0-9'
-                      }
-                    ]
-                  })(<InputNumber {...InputNumberProps} />)}
-                </FormItem>
-              </Col>
-              <Col {...column}>
-                <FormItem label="Status" {...formItemLayout}>
-                  {getFieldDecorator('active', {
-                    valuePropName: 'checked',
-                    initialValue: item.active === undefined ? true : item.active
-                  })(<Checkbox>Active</Checkbox>)}
-                </FormItem>
-                <FormItem label="Under Cost" {...formItemLayout}>
-                  {getFieldDecorator('exception01', {
-                    valuePropName: 'checked',
-                    initialValue: !!item.exception01
-                  })(<Checkbox>Allow</Checkbox>)}
-                </FormItem>
-              </Col>
-            </Row>
           </Card>
         </Col>
       </Row>
