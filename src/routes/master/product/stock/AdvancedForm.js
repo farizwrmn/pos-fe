@@ -145,6 +145,8 @@ const parentThreeDivision = {
 const AdvancedForm = ({
   lastTrans,
   listShopeeCategory,
+  listShopeeBrand,
+  getShopeeBrand,
   item = {},
   onSubmit,
   onCancel,
@@ -275,6 +277,13 @@ const AdvancedForm = ({
         title: 'Do you want to save this item?',
         onOk () {
           const data = getFieldsValue()
+
+          data.shopeeCategoryname = data.shopeeCategoryname ? data.shopeeCategoryname.label : null
+          data.shopeeCategoryId = data.shopeeCategoryId ? data.shopeeCategoryId.key : null
+
+          data.shopeeBrandName = data.shopeeBrandName ? data.shopeeBrandName.label : null
+          data.shopeeBrandId = data.shopeeBrandId ? data.shopeeBrandId.key : null
+
           data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
           data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
           data.categoryName = data.categoryId ? data.categoryId.label : null
@@ -353,6 +362,7 @@ const AdvancedForm = ({
   //   showVariantId()
   // }
   const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
+  const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
   const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
   const productInventory = (listInventory || []).length > 0 ? listInventory.map(c => <Option value={c.code} key={c.code}>{c.type}</Option>) : []
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -615,10 +625,14 @@ const AdvancedForm = ({
     }
   }
 
-  const onChangeShopeeCategory = () => {
+  const onChangeShopeeCategory = (event) => {
+    console.log('event', event)
     setFieldsValue({
       shopeeBrandId: {}
     })
+    if (event && event.key) {
+      getShopeeBrand(event.key)
+    }
   }
 
   const handleMenuClick = (record) => {
@@ -946,9 +960,7 @@ const AdvancedForm = ({
                 allowClear
                 optionFilterProp="children"
                 labelInValue
-                onChange={() => {
-                  onChangeShopeeCategory()
-                }}
+                onChange={onChangeShopeeCategory}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >{shopeeCategory}
               </Select>)}
@@ -972,8 +984,18 @@ const AdvancedForm = ({
                   optionFilterProp="children"
                   labelInValue
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{grabCategory}
+                >{shopeeBrand}
                 </Select>)}
+              </FormItem>
+            )}
+            {getFieldValue('enableShopee') && (
+              <FormItem label="Dangerous Item" help="won't appear on the Android/IOS" {...formItemLayout}>
+                {getFieldDecorator('shopeeItemDangerous', {
+                  valuePropName: 'checked',
+                  initialValue: item.shopeeItemDangerous === undefined
+                    ? false
+                    : item.shopeeItemDangerous
+                })(<Checkbox>Dangerous</Checkbox>)}
               </FormItem>
             )}
           </Card>

@@ -17,7 +17,7 @@ import ModalQuantity from './ModalQuantity'
 const TabPane = Tabs.TabPane
 
 const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list: listShopeeCategory } = shopeeCategory
+  const { list: listShopeeCategory, listBrand: listShopeeBrand } = shopeeCategory
   const {
     modalSupplierVisible,
     paginationSupplier,
@@ -265,6 +265,7 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
 
   const formProps = {
     listShopeeCategory,
+    listShopeeBrand,
     listInventory,
     listGrabCategory,
     lastTrans,
@@ -313,6 +314,14 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
       dispatch({
         type: 'purchase/onChooseSupplier',
         payload: data
+      })
+    },
+    getShopeeBrand (category_id) {
+      dispatch({
+        type: 'shopeeCategory/queryBrand',
+        payload: {
+          category_id
+        }
       })
     },
     onSearchSupplierData (data) {

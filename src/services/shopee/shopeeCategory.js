@@ -9,3 +9,13 @@ export async function query (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryBrand (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/shopee/brand',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

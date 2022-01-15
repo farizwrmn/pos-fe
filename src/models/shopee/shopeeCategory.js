@@ -1,5 +1,6 @@
+import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
-import { query } from 'services/shopee/shopeeCategory'
+import { query, queryBrand } from 'services/shopee/shopeeCategory'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -10,6 +11,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listBrand: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -49,6 +51,37 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryBrand ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listBrand: []
+        }
+      })
+      const data = yield call(queryBrand, {
+        type: 'all',
+        ...payload
+      })
+      if (data.success
+        && data.response
+        && data.response.brand_list
+        && data.response.brand_list.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBrand: data.response.brand_list
+          }
+        })
+      } else if (data.success
+        && data.response
+        && data.response.brand_list
+        && data.response.brand_list.length === 0) {
+        message.error('Brand not found')
+      } else {
+        throw data
       }
     }
   },
