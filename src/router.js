@@ -222,6 +222,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/shopee/shopeeCategory'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
           }

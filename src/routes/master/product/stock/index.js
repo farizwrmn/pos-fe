@@ -16,7 +16,8 @@ import ModalQuantity from './ModalQuantity'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+  const { list: listShopeeCategory } = shopeeCategory
   const {
     modalSupplierVisible,
     paginationSupplier,
@@ -263,6 +264,7 @@ const ProductStock = ({ specification, grabCategory, purchase, store, specificat
   }
 
   const formProps = {
+    listShopeeCategory,
     listInventory,
     listGrabCategory,
     lastTrans,
@@ -592,5 +594,5 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchase, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
-  ({ purchase, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
+  ({ purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

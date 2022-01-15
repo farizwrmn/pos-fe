@@ -144,6 +144,7 @@ const parentThreeDivision = {
 
 const AdvancedForm = ({
   lastTrans,
+  listShopeeCategory,
   item = {},
   onSubmit,
   onCancel,
@@ -351,7 +352,7 @@ const AdvancedForm = ({
   // const variant = () => {
   //   showVariantId()
   // }
-
+  const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
   const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
   const productInventory = (listInventory || []).length > 0 ? listInventory.map(c => <Option value={c.code} key={c.code}>{c.type}</Option>) : []
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -612,6 +613,12 @@ const AdvancedForm = ({
         }
       })
     }
+  }
+
+  const onChangeShopeeCategory = () => {
+    setFieldsValue({
+      shopeeBrandId: {}
+    })
   }
 
   const handleMenuClick = (record) => {
@@ -939,8 +946,11 @@ const AdvancedForm = ({
                 allowClear
                 optionFilterProp="children"
                 labelInValue
+                onChange={() => {
+                  onChangeShopeeCategory()
+                }}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-              >{grabCategory}
+              >{shopeeCategory}
               </Select>)}
             </FormItem>}
 
