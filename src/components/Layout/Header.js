@@ -14,7 +14,7 @@ import BirthdayList from './BirthdayList'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, switchSider, siderFold, isNavbar,
+const Header = ({ user, logout, dispatch, switchSider, siderFold, isNavbar,
   menuPopoverVisible, visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow,
   handleShortcutKeyHide, handleMyProfileShow, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
   handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
@@ -184,6 +184,8 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
     changeSiderColor(color)
   }
 
+  const shopeeLogin = lstorage.getShopeeRequireLogin()
+
   return (
     <div className={classnames(styles.header, styles.store1)}>
       {isNavbar
@@ -207,13 +209,26 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
         {/* <HeaderMenu prompt="home" clickRoute="/dashboard" /> */}
         {/* <HeaderMenu prompt="setting" /> */}
         {/* <HeaderMenu prompt="calculator" /> */}
+        {shopeeLogin && user && user.permissions && user.permissions.role && (user.permissions.role === 'SPR' || user.permissions.role === 'OWN') ? (
+          <HeaderMenu
+            prompt="Require Login"
+            title="Require Login"
+            logo="/logo-shopee.jpg"
+            onClick={() => {
+              dispatch({
+                type: 'app/loginShopee'
+              })
+            }}
+            addClass="shopee"
+          />
+        ) : null}
         <HeaderMenu
           prompt="Customer View"
           title="Customer View"
           icon="laptop"
           onClick={() => {
             let iframe = `<html><head><style>body, html {width: 100%; height: 100%; margin: 0; padding: 0}</style></head><body><iframe src="${window.location.origin}/transaction/pos/customer-view" style="height:calc(100% - 4px);width:calc(100% - 4px)"></iframe></html></body>`
-            const win = window.open('', '_blank', `resizable=1,location=no,status=no,height=${screen.height},width=${screen.width},scrollbars=1,fullscreen=1,screenX=${window.leftScreenBoundry()},left=${window.leftScreenBoundry()},toolbar=0,menubar=0,status=1`)
+            const win = window.open('', '_blank', `resizable=1,location=no,status=no,height=${screen.height},width=${screen.width},scrollbars=1,fullscreen=1,toolbar=0,menubar=0,status=1`)
             win.document.write(iframe)
           }}
           addClass="customer"

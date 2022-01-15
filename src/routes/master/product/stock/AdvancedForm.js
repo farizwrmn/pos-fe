@@ -34,48 +34,48 @@ const formatWeight = (dimension) => {
   }
 }
 
-const formatBox = (dimension) => {
-  try {
-    if (dimension && dimension.includes('X')) {
-      let newDimension
-      const splitted = dimension.split('X')
-      if (splitted && splitted.length === 3) {
-        newDimension = splitted[0]
-      }
-      return newDimension
-    }
-    if (dimension === '') {
-      return '1'
-    }
-    return '1'
-  } catch (error) {
-    console.log('formatBox', error)
-    return '1'
-  }
-}
+// const formatBox = (dimension) => {
+//   try {
+//     if (dimension && dimension.includes('X')) {
+//       let newDimension
+//       const splitted = dimension.split('X')
+//       if (splitted && splitted.length === 3) {
+//         newDimension = splitted[0]
+//       }
+//       return newDimension
+//     }
+//     if (dimension === '') {
+//       return '1'
+//     }
+//     return '1'
+//   } catch (error) {
+//     console.log('formatBox', error)
+//     return '1'
+//   }
+// }
 
-const formatPack = (dimension) => {
-  try {
-    if (dimension) {
-      let newDimension
-      const splitted = dimension.split('X')
-      if (splitted && splitted.length === 3) {
-        newDimension = splitted[1]
-      }
-      if (splitted && splitted.length === 2) {
-        newDimension = splitted[0]
-      }
-      return newDimension
-    }
-    if (dimension === '') {
-      return '1'
-    }
-    return dimension
-  } catch (error) {
-    console.log('formatPack', error)
-    return '1'
-  }
-}
+// const formatPack = (dimension) => {
+//   try {
+//     if (dimension) {
+//       let newDimension
+//       const splitted = dimension.split('X')
+//       if (splitted && splitted.length === 3) {
+//         newDimension = splitted[1]
+//       }
+//       if (splitted && splitted.length === 2) {
+//         newDimension = splitted[0]
+//       }
+//       return newDimension
+//     }
+//     if (dimension === '') {
+//       return '1'
+//     }
+//     return dimension
+//   } catch (error) {
+//     console.log('formatPack', error)
+//     return '1'
+//   }
+// }
 
 const formatDimension = (productName) => {
   try {
@@ -127,18 +127,24 @@ const column = {
   lg: { span: 12 }
 }
 
-const parentRight = {
-  md: { span: 24 },
-  lg: { span: 14 }
-}
+// const parentRight = {
+//   md: { span: 24 },
+//   lg: { span: 14 }
+// }
 
-const parentLeft = {
+// const parentLeft = {
+//   md: { span: 24 },
+//   lg: { span: 10 }
+// }
+
+const parentThreeDivision = {
   md: { span: 24 },
-  lg: { span: 10 }
+  lg: { span: 8 }
 }
 
 const AdvancedForm = ({
   lastTrans,
+  listShopeeCategory,
   item = {},
   onSubmit,
   onCancel,
@@ -204,18 +210,18 @@ const AdvancedForm = ({
     }
   }
 
-  const onChangeCheckBox = (e) => {
-    if (e.target.checked) {
-      dispatch({
-        type: 'variantStock/updateState',
-        payload: {
-          listVariantStock: []
-        }
-      })
-    } else {
-      resetFields(['variantId'])
-    }
-  }
+  // const onChangeCheckBox = (e) => {
+  //   if (e.target.checked) {
+  //     dispatch({
+  //       type: 'variantStock/updateState',
+  //       payload: {
+  //         listVariantStock: []
+  //       }
+  //     })
+  //   } else {
+  //     resetFields(['variantId'])
+  //   }
+  // }
 
   const handleCancel = () => {
     onCancel()
@@ -240,14 +246,14 @@ const AdvancedForm = ({
     })
     resetFields()
   }
-  const existVariant = listVariantStock.map(x => x.variantId)
+  // const existVariant = listVariantStock.map(x => x.variantId)
 
-  const availableVariant = listVariant.map((x) => {
-    if (existVariant.indexOf(x.id) > -1) {
-      return {}
-    }
-    return x
-  }).filter(x => !!x.id)
+  // const availableVariant = listVariant.map((x) => {
+  //   if (existVariant.indexOf(x.id) > -1) {
+  //     return {}
+  //   }
+  //   return x
+  // }).filter(x => !!x.id)
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -300,9 +306,9 @@ const AdvancedForm = ({
     showBrands()
   }
 
-  const handleShowSpecification = () => {
-    showSpecification()
-  }
+  // const handleShowSpecification = () => {
+  //   showSpecification()
+  // }
 
   const category = () => {
     // dispatch({
@@ -343,15 +349,15 @@ const AdvancedForm = ({
     }
   }
 
-  const variant = () => {
-    showVariantId()
-  }
-
+  // const variant = () => {
+  //   showVariantId()
+  // }
+  const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
   const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
   const productInventory = (listInventory || []).length > 0 ? listInventory.map(c => <Option value={c.code} key={c.code}>{c.type}</Option>) : []
   const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
   const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
-  const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
+  // const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
   const changeProductCode = (e) => {
     const { value } = e.target
@@ -554,32 +560,32 @@ const AdvancedForm = ({
     }
   }
 
-  const handleShowVariant = () => {
-    if (item.variantId) {
-      dispatch({
-        type: 'variantStock/query',
-        payload: {
-          type: 'all',
-          productParentId: item.productParentId
-        }
-      })
-      showVariant(item)
-    } else {
-      message.info("this product doensn't have variant")
-    }
-  }
+  // const handleShowVariant = () => {
+  //   if (item.variantId) {
+  //     dispatch({
+  //       type: 'variantStock/query',
+  //       payload: {
+  //         type: 'all',
+  //         productParentId: item.productParentId
+  //       }
+  //     })
+  //     showVariant(item)
+  //   } else {
+  //     message.info("this product doensn't have variant")
+  //   }
+  // }
 
-  const handleShowProduct = () => {
-    dispatch({
-      type: 'pos/getProducts',
-      payload: {
-        page: 1,
-        lov: 'variant'
-      }
-    })
-    showProductModal()
-  }
-  const variantIdFromItem = modalType === 'edit' && !!item.variantId
+  // const handleShowProduct = () => {
+  //   dispatch({
+  //     type: 'pos/getProducts',
+  //     payload: {
+  //       page: 1,
+  //       lov: 'variant'
+  //     }
+  //   })
+  //   showProductModal()
+  // }
+  // const variantIdFromItem = modalType === 'edit' && !!item.variantId
 
   const hdlSearchPagination = (page) => {
     const query = {
@@ -607,6 +613,12 @@ const AdvancedForm = ({
         }
       })
     }
+  }
+
+  const onChangeShopeeCategory = () => {
+    setFieldsValue({
+      shopeeBrandId: {}
+    })
   }
 
   const handleMenuClick = (record) => {
@@ -720,26 +732,6 @@ const AdvancedForm = ({
               >{productCategory}
               </Select>)}
             </FormItem>
-            <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('grabCategoryId', {
-                initialValue: item.grabCategoryId ? {
-                  key: item.grabCategoryId,
-                  label: item.grabCategoryName
-                } : {},
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(<Select
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                labelInValue
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-              >{grabCategory}
-              </Select>)}
-            </FormItem>
             <FormItem label="Brand" hasFeedback {...formItemLayout}>
               {getFieldDecorator('brandId', {
                 initialValue: item.brandId ? {
@@ -761,15 +753,12 @@ const AdvancedForm = ({
               >{productBrand}
               </Select>)}
             </FormItem>
-            <FormItem label="Supplier" {...formItemLayout}>
-              <Button {...buttonSupplierProps} size="default">{item.supplierId && item.supplierName ? `${item.supplierName.substring(0, 12)} (${item.supplierCode})` : 'Search Supplier'}</Button>
-            </FormItem>
-            <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
+            {/* <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
               <Button.Group>
                 {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
                 <Button disabled={getFieldValue('categoryId') ? !getFieldValue('categoryId').key : null} onClick={handleShowSpecification}>Specification</Button>
               </Button.Group>
-            </FormItem>
+            </FormItem> */}
           </Col>
           <Col {...column}>
             <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
@@ -783,7 +772,11 @@ const AdvancedForm = ({
               })(<Input />)}
             </FormItem>
 
-            {(modalType === 'add' || !variantIdFromItem) &&
+            <FormItem label="Supplier" {...formItemLayout}>
+              <Button {...buttonSupplierProps} size="default">{item.supplierId && item.supplierName ? `${item.supplierName.substring(0, 12)} (${item.supplierCode})` : 'Search Supplier'}</Button>
+            </FormItem>
+
+            {/* {(modalType === 'add' || !variantIdFromItem) &&
               <FormItem
                 label="Use Variant"
                 {...formItemLayout}
@@ -792,9 +785,9 @@ const AdvancedForm = ({
                   valuePropName: 'checked',
                   initialValue: !!item.useVariant || !!item.variantId
                 })(<Checkbox>Use Variant</Checkbox>)}
-              </FormItem>}
+              </FormItem>} */}
 
-            {(modalType === 'add' || !variantIdFromItem) && getFieldValue('useVariant') &&
+            {/* {(modalType === 'add' || !variantIdFromItem) && getFieldValue('useVariant') &&
               (
                 <div>
                   <FormItem
@@ -833,12 +826,12 @@ const AdvancedForm = ({
                     </Select>)}
                   </FormItem>
                 </div>
-              )}
+              )} */}
           </Col>
         </Row>
       </Card>
       <Row>
-        <Col {...parentLeft}>
+        <Col {...parentThreeDivision}>
           <Card {...cardProps} title={<h3>Pricing</h3>}>
             <Row>
               <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
@@ -927,229 +920,216 @@ const AdvancedForm = ({
             </Row>
           </Card>
         </Col>
-        <Col {...parentRight}>
+        <Col {...parentThreeDivision}>
+          <Card {...cardProps} title={<h3>Shopee</h3>}>
+            <FormItem label="Enable Shopee" {...formItemLayout}>
+              {getFieldDecorator('enableShopee', {
+                valuePropName: 'checked',
+                initialValue: item.enableShopee === undefined
+                  ? false
+                  : item.enableShopee
+              })(<Checkbox>Publish</Checkbox>)}
+            </FormItem>
+            {getFieldValue('enableShopee') && <FormItem label="Shopee Category" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('shopeeCategoryId', {
+                initialValue: item.shopeeCategoryId ? {
+                  key: item.shopeeCategoryId,
+                  label: item.shopeeCategoryName
+                } : {},
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                onChange={() => {
+                  onChangeShopeeCategory()
+                }}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >{shopeeCategory}
+              </Select>)}
+            </FormItem>}
+
+            {getFieldValue('enableShopee') && getFieldValue('shopeeCategoryId') && getFieldValue('shopeeCategoryId').key && (
+              <FormItem label="Shopee Brand" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('shopeeBrandId', {
+                  initialValue: item.shopeeBrandId ? {
+                    key: item.shopeeBrandId,
+                    label: item.shopeeBrandName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{grabCategory}
+                </Select>)}
+              </FormItem>
+            )}
+          </Card>
           <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
-            <Row>
-              <Col {...column}>
-                <FormItem label="Track Qty" {...formItemLayout}>
-                  {getFieldDecorator('trackQty', {
-                    valuePropName: 'checked',
-                    initialValue: item.trackQty == null ? true : !!item.trackQty
-                  })(<Checkbox>Track</Checkbox>)}
-                </FormItem>
-                <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('alertQty', {
-                    initialValue: item.alertQty == null ? 1 : item.alertQty,
-                    rules: [
-                      {
-                        required: getFieldValue('trackQty'),
-                        pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                        message: '0-9'
-                      }
-                    ]
-                  })(<InputNumber {...InputNumberProps} />)}
-                </FormItem>
-                {/* <FormItem label="Location 1" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('location01', {
-                    initialValue: item.location01
-                  })(<Input />)}
-                </FormItem>
-                <FormItem label="Location 2" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('location02', {
-                    initialValue: item.location02
-                  })(<Input />)}
-                </FormItem> */}
-              </Col>
-              <Col {...column}>
-                <FormItem label="Status" {...formItemLayout}>
-                  {getFieldDecorator('active', {
-                    valuePropName: 'checked',
-                    initialValue: item.active === undefined ? true : item.active
-                  })(<Checkbox>Active</Checkbox>)}
-                </FormItem>
-                <FormItem label="Under Cost" {...formItemLayout}>
-                  {getFieldDecorator('exception01', {
-                    valuePropName: 'checked',
-                    initialValue: !!item.exception01
-                  })(<Checkbox>Allow</Checkbox>)}
-                </FormItem>
-                {/* <FormItem label="Usage Period" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('usageTimePeriod', {
-                    initialValue: item.usageTimePeriod,
-                    rules: [
-                      {
-                        pattern: /^(?:0|[1-9][0-9]{0,10})$/,
-                        message: '0-9'
-                      }
-                    ]
-                  })(<InputNumber {...InputNumberProps} min={0} maxLength={10} placeholder="day(s)" style={{ width: '36%' }} />)}
-                  {getFieldDecorator('usageMileage', {
-                    initialValue: item.usageMileage,
-                    rules: [
-                      {
-                        pattern: /^(?:0|[1-9][0-9]{0,15})$/,
-                        message: '0-9'
-                      }
-                    ]
-                  })(<InputNumber min={0} maxLength={15} placeholder="km" style={{ width: '60%', marginRight: 0 }} />)}
-                </FormItem> */}
-                {/* <FormItem label="Aspect Ratio" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('aspectRatio', {
-                    initialValue: item.aspectRatio
-                  })(<Input />)}
-                </FormItem>
-                <FormItem label="Rim Diameter" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('rimDiameter', {
-                    initialValue: item.rimDiameter
-                  })(<Input />)}
-                </FormItem>
-                <FormItem label="Section Width" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('sectionWidth', {
-                    initialValue: item.sectionWidth
-                  })(<Input />)}
-                </FormItem> */}
-              </Col>
-            </Row>
-            <Row>
-              <Col {...column}>
-                <FormItem label="Publish on e-commerce" {...formItemLayout}>
-                  {getFieldDecorator('activeShop', {
-                    valuePropName: 'checked',
-                    initialValue: item.activeShop === undefined
-                      ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
-                      : item.activeShop
-                  })(<Checkbox>Publish</Checkbox>)}
-                </FormItem>
-                <FormItem label="Image" {...formItemLayout}>
-                  {getFieldDecorator('productImage', {
-                    initialValue: item.productImage
-                      && item.productImage != null
-                      && item.productImage !== '["no_image.png"]'
-                      && item.productImage !== '"no_image.png"'
-                      && item.productImage !== 'no_image.png' ?
-                      {
-                        fileList: JSON.parse(item.productImage).map((detail, index) => {
-                          return ({
-                            uid: index + 1,
-                            name: detail,
-                            status: 'done',
-                            url: `${IMAGEURL}/${detail}`,
-                            thumbUrl: `${IMAGEURL}/${detail}`
-                          })
-                        })
-                      }
-                      : []
-                  })(
-                    <Upload
-                      {...props}
-                      multiple
-                      showUploadList={{
-                        showPreviewIcon: true
-                      }}
-                      defaultFileList={item.productImage
-                        && item.productImage != null
-                        && item.productImage !== '["no_image.png"]'
-                        && item.productImage !== '"no_image.png"'
-                        && item.productImage !== 'no_image.png' ?
-                        JSON.parse(item.productImage).map((detail, index) => {
-                          return ({
-                            uid: index + 1,
-                            name: detail,
-                            status: 'done',
-                            url: `${IMAGEURL}/${detail}`,
-                            thumbUrl: `${IMAGEURL}/${detail}`
-                          })
-                        })
-                        : []}
-                      listType="picture"
-                      action={`${apiCompanyURL}/time/time`}
-                      onPreview={file => console.log('file', file)}
-                      onChange={(info) => {
-                        if (info.file.status !== 'uploading') {
-                          console.log('pending', info.fileList)
-                        }
-                        if (info.file.status === 'done') {
-                          console.log('success', info)
-                          message.success(`${info.file.name} file staged success`)
-                        } else if (info.file.status === 'error') {
-                          console.log('error', info)
-                          message.error(`${info.file.name} file staged failed.`)
-                        }
-                      }}
-                    >
-                      <Button>
-                        <Icon type="upload" /> Click to Upload
-                      </Button>
-                    </Upload>
-                  )}
-                </FormItem>
-                <FormItem label="Dimension" {...formItemLayout}>
-                  {getFieldDecorator('dimension', {
-                    initialValue: modalType === 'add' ?
-                      formatDimension(getFieldValue('productName')) : item.dimension,
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Required when product image is filled'
-                      }
-                    ]
-                  })(<Input maxLength={30} />)}
-                </FormItem>
-                <FormItem label="Description" {...formItemLayout}>
-                  {getFieldDecorator('description', {
-                    initialValue: item.description,
-                    rules: [
-                      {
-                        required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
-                        message: 'Required when product image is filled'
-                      }
-                    ]
-                  })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
-                </FormItem>
-              </Col>
-              <Col {...column}>
-                <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
-                  {getFieldDecorator('dimensionBox', {
-                    initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
-                    rules: [
-                      {
-                        required: true,
-                        pattern: /^([0-9]{1,5})$/,
-                        message: 'Required when product image is filled'
-                      }
-                    ]
-                  })(<Input maxLength={25} />)}
-                </FormItem>
-                <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
-                  {getFieldDecorator('dimensionPack', {
-                    initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
-                    rules: [
-                      {
-                        required: true,
-                        pattern: /^([0-9]{1,5})$/,
-                        message: 'Required when product image is filled'
-                      }
-                    ]
-                  })(<Input maxLength={25} />)}
-                </FormItem>
-                <FormItem
-                  label="Weight"
-                  help="Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L"
-                  {...formItemLayout}
+            <FormItem label="Publish on e-commerce" {...formItemLayout}>
+              {getFieldDecorator('activeShop', {
+                valuePropName: 'checked',
+                initialValue: item.activeShop === undefined
+                  ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
+                  : item.activeShop
+              })(<Checkbox>Publish</Checkbox>)}
+            </FormItem>
+            <FormItem label="Track Qty" {...formItemLayout}>
+              {getFieldDecorator('trackQty', {
+                valuePropName: 'checked',
+                initialValue: item.trackQty == null ? true : !!item.trackQty
+              })(<Checkbox>Track</Checkbox>)}
+            </FormItem>
+            <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('alertQty', {
+                initialValue: item.alertQty == null ? 1 : item.alertQty,
+                rules: [
+                  {
+                    required: getFieldValue('trackQty'),
+                    pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                    message: '0-9'
+                  }
+                ]
+              })(<InputNumber {...InputNumberProps} />)}
+            </FormItem>
+            <FormItem label="Status" {...formItemLayout}>
+              {getFieldDecorator('active', {
+                valuePropName: 'checked',
+                initialValue: item.active === undefined ? true : item.active
+              })(<Checkbox>Active</Checkbox>)}
+            </FormItem>
+            <FormItem label="Under Cost" {...formItemLayout}>
+              {getFieldDecorator('exception01', {
+                valuePropName: 'checked',
+                initialValue: !!item.exception01
+              })(<Checkbox>Allow</Checkbox>)}
+            </FormItem>
+          </Card>
+        </Col>
+        <Col {...parentThreeDivision}>
+          <Card {...cardProps} title={<h3>Grabmart</h3>}>
+            <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('grabCategoryId', {
+                initialValue: item.grabCategoryId ? {
+                  key: item.grabCategoryId,
+                  label: item.grabCategoryName
+                } : {},
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                labelInValue
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >{grabCategory}
+              </Select>)}
+            </FormItem>
+            <FormItem
+              label="Weight"
+              help="Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('weight', {
+                initialValue: modalType === 'edit' ? item.weight : formatWeight(formatDimension(getFieldValue('productName'))),
+                rules: [
+                  {
+                    required: true,
+                    message: 'Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L',
+                    pattern: /^([0-9]{1,5})[ ](g|kg|per pack|ml|L)$/
+                  }
+                ]
+              })(<Input maxLength={20} />)}
+            </FormItem>
+            <FormItem label="Image" {...formItemLayout}>
+              {getFieldDecorator('productImage', {
+                initialValue: item.productImage
+                  && item.productImage != null
+                  && item.productImage !== '["no_image.png"]'
+                  && item.productImage !== '"no_image.png"'
+                  && item.productImage !== 'no_image.png' ?
+                  {
+                    fileList: JSON.parse(item.productImage).map((detail, index) => {
+                      return ({
+                        uid: index + 1,
+                        name: detail,
+                        status: 'done',
+                        url: `${IMAGEURL}/${detail}`,
+                        thumbUrl: `${IMAGEURL}/${detail}`
+                      })
+                    })
+                  }
+                  : []
+              })(
+                <Upload
+                  {...props}
+                  multiple
+                  showUploadList={{
+                    showPreviewIcon: true
+                  }}
+                  defaultFileList={item.productImage
+                    && item.productImage != null
+                    && item.productImage !== '["no_image.png"]'
+                    && item.productImage !== '"no_image.png"'
+                    && item.productImage !== 'no_image.png' ?
+                    JSON.parse(item.productImage).map((detail, index) => {
+                      return ({
+                        uid: index + 1,
+                        name: detail,
+                        status: 'done',
+                        url: `${IMAGEURL}/${detail}`,
+                        thumbUrl: `${IMAGEURL}/${detail}`
+                      })
+                    })
+                    : []}
+                  listType="picture"
+                  action={`${apiCompanyURL}/time/time`}
+                  onPreview={file => console.log('file', file)}
+                  onChange={(info) => {
+                    if (info.file.status !== 'uploading') {
+                      console.log('pending', info.fileList)
+                    }
+                    if (info.file.status === 'done') {
+                      console.log('success', info)
+                      message.success(`${info.file.name} file staged success`)
+                    } else if (info.file.status === 'error') {
+                      console.log('error', info)
+                      message.error(`${info.file.name} file staged failed.`)
+                    }
+                  }}
                 >
-                  {getFieldDecorator('weight', {
-                    initialValue: modalType === 'edit' ? item.weight : formatWeight(formatDimension(getFieldValue('productName'))),
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L',
-                        pattern: /^([0-9]{1,5})[ ](g|kg|per pack|ml|L)$/
-                      }
-                    ]
-                  })(<Input maxLength={20} />)}
-                </FormItem>
-              </Col>
-            </Row>
+                  <Button>
+                    <Icon type="upload" /> Click to Upload
+                  </Button>
+                </Upload>
+              )}
+            </FormItem>
+            <FormItem label="Description" {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: item.description,
+                rules: [
+                  {
+                    required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                    message: 'Required when product image is filled'
+                  }
+                ]
+              })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
+            </FormItem>
           </Card>
         </Col>
       </Row>
