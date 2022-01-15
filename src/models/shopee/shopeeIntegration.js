@@ -52,9 +52,6 @@ export default modelExtend(pageModel, {
       })
       message.info('Success login shopee')
       yield put(routerRedux.push({
-        pathname: '/integration/shopee/set-code'
-      }))
-      yield put(routerRedux.push({
         pathname: '/dashboard'
       }))
     }
