@@ -1461,6 +1461,54 @@ const Routers = function ({ history, app }) {
             }, 'integration-shopee-setCode')
           }
         }, {
+          path: 'integration/shopee/product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/shopeeProduct'))
+              cb(null, require('./routes/integration/shopee/shopeeProduct'))
+            }, 'integration-shopee-product')
+          }
+        }, {
+          path: 'integration/shopee/image-lookup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/shopeeImage'))
+              cb(null, require('./routes/integration/shopee/shopeeImage'))
+            }, 'integration-shopee-image')
+          }
+        }, {
+          path: 'integration/shopee/logistic-lookup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/shopeeLogistic'))
+              cb(null, require('./routes/integration/shopee/shopeeLogistic'))
+            }, 'integration-shopee-logistic')
+          }
+        }, {
+          path: 'integration/shopee/category-lookup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/shopeeCategory'))
+              cb(null, require('./routes/integration/shopee/shopeeCategory'))
+            }, 'integration-shopee-category')
+          }
+        }, {
+          path: 'integration/shopee/brand-lookup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/shopeeBrand'))
+              cb(null, require('./routes/integration/shopee/shopeeBrand'))
+            }, 'integration-shopee-brand')
+          }
+        }, {
+          path: 'integration/shopee/queue-lookup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/shopeeQueue'))
+              cb(null, require('./routes/integration/shopee/shopeeQueue'))
+            }, 'integration-shopee-queue')
+          }
+        }, {
           path: 'setting/periods',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
