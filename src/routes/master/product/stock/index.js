@@ -17,7 +17,7 @@ import ModalQuantity from './ModalQuantity'
 const TabPane = Tabs.TabPane
 
 const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list: listShopeeCategory, listBrand: listShopeeBrand } = shopeeCategory
+  const { list: listShopeeCategory, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
   const {
     modalSupplierVisible,
     paginationSupplier,
@@ -225,6 +225,13 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
       }
     })
     const { query, pathname } = location
+    dispatch({
+      type: 'shopeeCategory/updateState',
+      payload: {
+        listRecommend: [],
+        lastProductName: undefined
+      }
+    })
     switch (key) {
       case 1:
         dispatch(routerRedux.push({
@@ -264,6 +271,8 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
   }
 
   const formProps = {
+    listShopeeCategoryRecommend,
+    listShopeeLogistic,
     listShopeeCategory,
     listShopeeBrand,
     listInventory,
@@ -304,6 +313,14 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
           data,
           location,
           reset
+        }
+      })
+    },
+    onGetShopeeCategory (productName) {
+      dispatch({
+        type: 'shopeeCategory/queryRecommend',
+        payload: {
+          productName
         }
       })
     },
@@ -427,6 +444,13 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
         type: 'productbrand/updateState',
         payload: {
           currentItem: {}
+        }
+      })
+      dispatch({
+        type: 'shopeeCategory/updateState',
+        payload: {
+          listRecommend: [],
+          lastProductName: undefined
         }
       })
     },

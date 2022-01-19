@@ -379,6 +379,12 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined
+          }
+        })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -461,6 +467,12 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined
+          }
+        })
         yield put({ type: 'query', payload: { stockQuery: true } })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
@@ -468,6 +480,12 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             currentItem: current
+          }
+        })
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined
           }
         })
         throw data

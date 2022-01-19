@@ -1,6 +1,6 @@
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
-import { query, queryBrand } from 'services/shopee/shopeeCategory'
+import { query, queryBrand, queryLogistic, queryRecommend } from 'services/shopee/shopeeCategory'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -11,6 +11,9 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listRecommend: [],
+    listLogistic: [],
+    lastProductName: undefined,
     listBrand: [],
     pagination: {
       showSizeChanger: true,
@@ -26,6 +29,12 @@ export default modelExtend(pageModel, {
         if (pathname === '/stock') {
           dispatch({
             type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
+          dispatch({
+            type: 'queryLogistic',
             payload: {
               type: 'all'
             }
@@ -82,6 +91,40 @@ export default modelExtend(pageModel, {
         message.error('Brand not found')
       } else {
         throw data
+      }
+    },
+
+    * queryLogistic ({ payload = {} }, { call, put }) {
+      const data = yield call(queryLogistic, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listLogistic: data.data
+          }
+        })
+      }
+    },
+
+    * queryRecommend ({ payload = {} }, { select, call, put }) {
+      const lastProductName = yield select(({ productstock }) => productstock.lastProductName)
+      if (lastProductName !== payload.productName) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listRecommend: []
+          }
+        })
+        const data = yield call(queryRecommend, payload)
+        if (data.success && data.response && data.response.category_id) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listRecommend: data.response.category_id,
+              lastProductName: payload.productName
+            }
+          })
+        }
       }
     }
   },

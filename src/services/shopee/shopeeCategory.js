@@ -10,6 +10,26 @@ export async function query (params) {
   })
 }
 
+export async function queryLogistic (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/shopee/logistic',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryRecommend (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/shopee/category-recommend',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryBrand (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
