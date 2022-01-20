@@ -180,12 +180,9 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
       })
 
       dispatch({
-        type: 'productstock/updateState',
+        type: 'productstock/editItem',
         payload: {
-          modalType: 'edit',
-          activeKey: '0',
-          currentItem: item,
-          disable: 'disabled'
+          item
         }
       })
 

@@ -8,6 +8,7 @@ import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
+import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -397,6 +398,20 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * editItem ({ payload }, { call, put }) {
+      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, type: 'all' })
+      console.log('logisticList', logisticList)
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalType: 'edit',
+          activeKey: '0',
+          currentItem: payload.item,
+          disable: 'disabled'
+        }
+      })
+    },
+
     * edit ({ payload }, { select, call, put }) {
       // Start - Upload Image
       const productImage = yield select(({ productstock }) => productstock.currentItem.productImage)
@@ -475,19 +490,6 @@ export default modelExtend(pageModel, {
         })
         yield put({ type: 'query', payload: { stockQuery: true } })
       } else {
-        let current = Object.assign({}, payload.id, payload.data)
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: current
-          }
-        })
-        yield put({
-          type: 'shopeeCategory/updateState',
-          payload: {
-            lastProductName: undefined
-          }
-        })
         throw data
       }
     }

@@ -20,6 +20,16 @@ export async function queryLogistic (params) {
   })
 }
 
+export async function queryLogisticProduct (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/shopee/logistic-product',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryRecommend (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

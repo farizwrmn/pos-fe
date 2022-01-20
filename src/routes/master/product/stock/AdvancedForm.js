@@ -320,11 +320,11 @@ class AdvancedForm extends Component {
           onOk () {
             const data = getFieldsValue()
 
-            data.shopeeCategoryname = data.shopeeCategoryname ? data.shopeeCategoryname.label : null
-            data.shopeeCategoryId = data.shopeeCategoryId ? data.shopeeCategoryId.key : null
+            data.shopeeCategoryname = data.shopeeCategoryId && data.shopeeCategoryId.label ? data.shopeeCategoryId.label : null
+            data.shopeeCategoryId = data.shopeeCategoryId && data.shopeeCategoryId.key ? data.shopeeCategoryId.key : null
 
-            data.shopeeBrandName = data.shopeeBrandName ? data.shopeeBrandName.label : null
-            data.shopeeBrandId = data.shopeeBrandId ? data.shopeeBrandId.key : null
+            data.shopeeBrandName = data.shopeeBrandId && data.shopeeBrandId.label ? data.shopeeBrandId.label : null
+            data.shopeeBrandId = data.shopeeBrandId && data.shopeeBrandId.key ? data.shopeeBrandId.key : null
 
             data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
             data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
@@ -1011,7 +1011,7 @@ class AdvancedForm extends Component {
                   }}
                 >Publish</Checkbox>)}
               </FormItem>
-              {getFieldValue('enableShopee') && (<div>
+              {getFieldValue('enableShopee') ? (<div>
                 <FormItem label="Shopee Category" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('shopeeCategoryId', {
                     initialValue: item.shopeeCategoryId ? {
@@ -1034,7 +1034,7 @@ class AdvancedForm extends Component {
                   </Select>)}
                 </FormItem>
 
-                {listShopeeCategoryRecommend && listShopeeCategoryRecommend.length > 0 && (
+                {listShopeeCategoryRecommend && listShopeeCategoryRecommend.length > 0 ? (
                   <div>
                     {'Recommend Category: '}
                     {listShopeeCategoryRecommend.map((item) => {
@@ -1048,9 +1048,9 @@ class AdvancedForm extends Component {
                         <div><a onClick={() => onSetCategoryShopee(item, categoryName)}>{categoryName}</a></div>
                       )
                     })}
-                  </div>)}
+                  </div>) : null}
 
-                {getFieldValue('shopeeCategoryId') && getFieldValue('shopeeCategoryId').key && (
+                {getFieldValue('shopeeCategoryId') && getFieldValue('shopeeCategoryId').key ? (
                   <FormItem label="Shopee Brand" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('shopeeBrandId', {
                       initialValue: item.shopeeBrandId ? {
@@ -1071,7 +1071,7 @@ class AdvancedForm extends Component {
                     >{shopeeBrand}
                     </Select>)}
                   </FormItem>
-                )}
+                ) : null}
                 <FormItem label="Shopee Logistic" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('shopeeLogistic', {
                     initialValue: item.shopeeLogistic || [],
@@ -1097,7 +1097,7 @@ class AdvancedForm extends Component {
                       : item.shopeeItemDangerous
                   })(<Checkbox>Dangerous</Checkbox>)}
                 </FormItem>
-              </div>)}
+              </div>) : null}
             </Card>
             <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
               <FormItem label="Publish on e-commerce" {...formItemLayout}>
