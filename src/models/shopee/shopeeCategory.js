@@ -114,12 +114,33 @@ export default modelExtend(pageModel, {
           listAttribute: []
         }
       })
+      const { shopeeAttribute } = payload
       const data = yield call(queryAttribute, payload)
       if (data.success && data.response && data.response.attribute_list) {
         yield put({
           type: 'updateState',
           payload: {
-            listAttribute: data.response.attribute_list.filter(filtered => filtered.is_mandatory)
+            listAttribute: data.response.attribute_list
+              .filter(filtered => filtered.is_mandatory)
+              .map((attribute) => {
+                let initialValue = null
+                if (shopeeAttribute && shopeeAttribute !== '' && shopeeAttribute.includes('[') && shopeeAttribute.includes(']')) {
+                  const listAttribute = JSON.parse(shopeeAttribute)
+                  if (listAttribute && listAttribute.length > 0) {
+                    const filteredAttribute = listAttribute.filter(filtered => parseFloat(filtered.attribute_id) === attribute.attribute_id)
+                    if (filteredAttribute && filteredAttribute.length === 0) {
+                      initialValue = parseFloat(filteredAttribute[0].value_id)
+                    }
+                  }
+                }
+                if (initialValue) {
+                  return ({
+                    ...attribute,
+                    initialValue
+                  })
+                }
+                return attribute
+              })
           }
         })
       } else if (data.success

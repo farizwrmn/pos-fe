@@ -399,11 +399,13 @@ export default modelExtend(pageModel, {
     },
 
     * editItem ({ payload }, { call, put }) {
+      console.log('payload', payload)
       const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, type: 'all' })
       if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
         yield put({
           type: 'shopeeCategory/queryAttribute',
           payload: {
+            shopeeAttribute: payload.item.shopeeAttribute,
             category_id: payload.item.shopeeCategoryId
           }
         })

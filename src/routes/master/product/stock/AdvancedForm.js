@@ -1080,6 +1080,7 @@ class AdvancedForm extends Component {
                     if (attribute.input_type === 'COMBO_BOX') {
                       return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
                         {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
+                          initialValue: attribute.initialValue,
                           rules: [
                             {
                               required: attribute.is_mandatory
