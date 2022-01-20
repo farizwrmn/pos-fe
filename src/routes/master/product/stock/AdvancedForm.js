@@ -1072,7 +1072,7 @@ class AdvancedForm extends Component {
                     </Select>)}
                   </FormItem>
                 ) : null}
-                <FormItem label="Shopee Logistic" hasFeedback {...formItemLayout}>
+                <FormItem label="Shopee Logistic" help={`${getFieldValue('shopeeLogistic') && getFieldValue('shopeeLogistic').length ? getFieldValue('shopeeLogistic').length : 0} Logistics Selected`} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('shopeeLogistic', {
                     initialValue: item.shopeeLogistic || [],
                     rules: [

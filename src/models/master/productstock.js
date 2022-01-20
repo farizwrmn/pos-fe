@@ -400,7 +400,11 @@ export default modelExtend(pageModel, {
 
     * editItem ({ payload }, { call, put }) {
       const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, type: 'all' })
-      console.log('logisticList', logisticList)
+      if (payload && payload.item) {
+        if (logisticList.success && logisticList.data && logisticList.data.length > 0) {
+          payload.item.shopeeLogistic = logisticList.data.map(item => item.logistic_id)
+        }
+      }
       yield put({
         type: 'updateState',
         payload: {
