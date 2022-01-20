@@ -400,6 +400,14 @@ export default modelExtend(pageModel, {
 
     * editItem ({ payload }, { call, put }) {
       const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, type: 'all' })
+      if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
+        yield put({
+          type: 'shopeeCategory/queryAttribute',
+          payload: {
+            category_id: payload.item.shopeeCategoryId
+          }
+        })
+      }
       if (payload && payload.item) {
         if (logisticList.success && logisticList.data && logisticList.data.length > 0) {
           payload.item.shopeeLogistic = logisticList.data.map(item => item.logistic_id)
@@ -408,10 +416,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          modalType: 'edit',
-          activeKey: '0',
-          currentItem: payload.item,
-          disable: 'disabled'
+          currentItem: payload.item
         }
       })
     },
@@ -457,7 +462,7 @@ export default modelExtend(pageModel, {
 
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const { location } = payload
-      const newProductStock = { ...payload, id }
+      const newProductStock = { data: payload.data, id }
       if (uploadedImage && uploadedImage.length > 0) {
         newProductStock.data.productImage = uploadedImage
       } else {

@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function queryAttribute (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/shopee/attribute',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryLogistic (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

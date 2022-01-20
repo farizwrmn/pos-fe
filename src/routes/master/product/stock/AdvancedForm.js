@@ -185,6 +185,8 @@ class AdvancedForm extends Component {
       listShopeeCategory,
       listShopeeBrand,
       getShopeeBrand,
+      getShopeeAttribute,
+      listShopeeAttribute,
       item = {},
       onSubmit,
       onCancel,
@@ -404,7 +406,7 @@ class AdvancedForm extends Component {
     //   showVariantId()
     // }
     const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
-    const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
+    const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
     const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productInventory = (listInventory || []).length > 0 ? listInventory.map(c => <Option value={c.code} key={c.code}>{c.type}</Option>) : []
@@ -674,6 +676,7 @@ class AdvancedForm extends Component {
       })
       if (event && event.key) {
         getShopeeBrand(event.key)
+        getShopeeAttribute(event.key)
       }
     }
 
@@ -1072,6 +1075,29 @@ class AdvancedForm extends Component {
                     </Select>)}
                   </FormItem>
                 ) : null}
+                {getFieldValue('shopeeCategoryId')
+                  && getFieldValue('shopeeCategoryId').key ? listShopeeAttribute.map((attribute) => {
+                    if (attribute.input_type === 'COMBO_BOX') {
+                      return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
+                        {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
+                          rules: [
+                            {
+                              required: attribute.is_mandatory
+                            }
+                          ]
+                        })(<Select
+                          showSearch
+                          allowClear
+                          optionFilterProp="children"
+                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                        >{
+                            (attribute.attribute_value_list || []).length > 0
+                              ? attribute.attribute_value_list.map(c => <Option value={c.value_id} key={c.value_id} title={`${c.display_value_name}`}>{`${c.display_value_name}`}</Option>) : []}
+                        </Select>)}
+                      </FormItem>)
+                    }
+                    return null
+                  }) : null}
                 <FormItem label="Shopee Logistic" help={`${getFieldValue('shopeeLogistic') && getFieldValue('shopeeLogistic').length ? getFieldValue('shopeeLogistic').length : 0} Logistics Selected`} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('shopeeLogistic', {
                     initialValue: item.shopeeLogistic || [],

@@ -1,6 +1,6 @@
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
-import { query, queryBrand, queryLogistic, queryRecommend } from 'services/shopee/shopeeCategory'
+import { query, queryBrand, queryLogistic, queryAttribute, queryRecommend } from 'services/shopee/shopeeCategory'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -12,6 +12,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listRecommend: [],
+    listAttribute: [],
     listLogistic: [],
     lastProductName: undefined,
     listBrand: [],
@@ -103,6 +104,31 @@ export default modelExtend(pageModel, {
             listLogistic: data.data
           }
         })
+      }
+    },
+
+    * queryAttribute ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listAttribute: []
+        }
+      })
+      const data = yield call(queryAttribute, payload)
+      if (data.success && data.response && data.response.attribute_list) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAttribute: data.response.attribute_list.filter(filtered => filtered.is_mandatory)
+          }
+        })
+      } else if (data.success
+        && data.response
+        && data.response.attribute_list
+        && data.response.attribute_list.length === 0) {
+        message.error('Attribute not found')
+      } else {
+        throw data
       }
     },
 
