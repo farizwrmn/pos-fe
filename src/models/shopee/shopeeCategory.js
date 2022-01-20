@@ -127,8 +127,8 @@ export default modelExtend(pageModel, {
                 if (shopeeAttribute && shopeeAttribute !== '' && shopeeAttribute.includes('[') && shopeeAttribute.includes(']')) {
                   const listAttribute = JSON.parse(shopeeAttribute)
                   if (listAttribute && listAttribute.length > 0) {
-                    const filteredAttribute = listAttribute.filter(filtered => parseFloat(filtered.attribute_id) === attribute.attribute_id)
-                    if (filteredAttribute && filteredAttribute.length === 0) {
+                    const filteredAttribute = listAttribute.filter(filtered => parseFloat(filtered.attribute_id) === parseFloat(attribute.attribute_id))
+                    if (filteredAttribute && filteredAttribute.length > 0) {
                       initialValue = parseFloat(filteredAttribute[0].value_id)
                     }
                   }
