@@ -27,7 +27,8 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/stock') {
+        if (pathname === '/stock'
+          || pathname === '/marketing/promo') {
           dispatch({
             type: 'query',
             payload: {

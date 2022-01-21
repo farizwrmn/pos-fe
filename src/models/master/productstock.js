@@ -387,7 +387,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'shopeeCategory/updateState',
           payload: {
-            lastProductName: undefined
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
           }
         })
       } else {
@@ -500,7 +504,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'shopeeCategory/updateState',
           payload: {
-            lastProductName: undefined
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
           }
         })
         yield put({ type: 'query', payload: { stockQuery: true } })

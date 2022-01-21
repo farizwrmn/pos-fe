@@ -236,6 +236,9 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
       type: 'shopeeCategory/updateState',
       payload: {
         listRecommend: [],
+        listAttribute: [],
+        listLogistic: [],
+        listBrand: [],
         lastProductName: undefined
       }
     })
@@ -466,6 +469,9 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
         type: 'shopeeCategory/updateState',
         payload: {
           listRecommend: [],
+          listAttribute: [],
+          listLogistic: [],
+          listBrand: [],
           lastProductName: undefined
         }
       })

@@ -275,6 +275,16 @@ export default modelExtend(pageModel, {
             }
           })
           yield put({
+            type: 'shopeeCategory/updateState',
+            payload: {
+              lastProductName: undefined,
+              listRecommend: [],
+              listAttribute: [],
+              listLogistic: [],
+              listBrand: []
+            }
+          })
+          yield put({
             type: 'query',
             payload: {
               type: 'all'
@@ -358,6 +368,16 @@ export default modelExtend(pageModel, {
         if (payload && payload.reset) {
           payload.reset()
         }
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
+          }
+        })
         const { pathname } = location
         yield put(routerRedux.push({
           pathname,
@@ -377,6 +397,15 @@ export default modelExtend(pageModel, {
       }
     },
     * editItem ({ payload = {} }, { call, put }) {
+      if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
+        yield put({
+          type: 'shopeeCategory/queryAttribute',
+          payload: {
+            shopeeAttribute: payload.item.shopeeAttribute,
+            category_id: payload.item.shopeeCategoryId
+          }
+        })
+      }
       const dataRules = yield call(queryRules, { type: 'all', bundleId: payload.item.id })
       const dataReward = yield call(queryReward, { type: 'all', bundleId: payload.item.id })
       if (!dataRules.success) {
