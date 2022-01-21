@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import AdjustForm from './AdjustForm'
 // import History from './History'
 import AdjustList from './AdjustList'
@@ -342,9 +343,10 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, 
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'accountCode/query',
+        type: 'adjustNew/query',
         payload: {
-          ...value
+          ...value,
+          storeId: lstorage.getCurrentUserStore()
         }
       })
     }
@@ -355,7 +357,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, 
     user,
     storeInfo,
     pagination: paginationNew,
-    loading: loading.effects['accountCode/query'],
+    loading: loading.effects['adjustNew/query'],
     location,
     onEditItem (e) {
       onEditItem(e)
@@ -371,24 +373,24 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, 
         }
       }))
     },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
-      dispatch({
-        type: 'accountCode/editItem',
-        payload: { item }
-      })
+    editItem () {
+      // const { pathname } = location
+      // dispatch(routerRedux.push({
+      //   pathname,
+      //   query: {
+      //     activeKey: 0
+      //   }
+      // }))
+      // dispatch({
+      //   type: 'adjustNew/editItem',
+      //   payload: { item }
+      // })
     },
-    deleteItem (id) {
-      dispatch({
-        type: 'accountCode/delete',
-        payload: id
-      })
+    deleteItem () {
+      // dispatch({
+      //   type: 'adjustNew/delete',
+      //   payload: id
+      // })
     }
   }
 
