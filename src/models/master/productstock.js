@@ -355,6 +355,10 @@ export default modelExtend(pageModel, {
       } else {
         payload.data.productImage = '["no_image.png"]'
       }
+      if (payload.data.productImage.enableShopee && payload.data.productImage === '["no_image.png"]') {
+        message.error('Shopee: Image is Required')
+        return
+      }
       // End - Upload Image
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
@@ -400,7 +404,7 @@ export default modelExtend(pageModel, {
 
     * editItem ({ payload }, { call, put }) {
       console.log('payload', payload)
-      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, type: 'all' })
+      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, productType: 'PRODUCT', type: 'all' })
       if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
         yield put({
           type: 'shopeeCategory/queryAttribute',

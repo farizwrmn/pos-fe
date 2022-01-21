@@ -1223,7 +1223,12 @@ class AdvancedForm extends Component {
                         })
                       })
                     }
-                    : []
+                    : [],
+                  rules: [
+                    {
+                      required: getFieldValue('enableShopee')
+                    }
+                  ]
                 })(
                   <Upload
                     {...props}
@@ -1273,7 +1278,7 @@ class AdvancedForm extends Component {
                   initialValue: item.description,
                   rules: [
                     {
-                      required: getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0,
+                      required: getFieldValue('enableShopee') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
                       message: 'Required when product image is filled'
                     }
                   ]
