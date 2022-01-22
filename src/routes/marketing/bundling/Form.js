@@ -331,6 +331,12 @@ class FormCounter extends Component {
         const data = {
           ...getFieldsValue()
         }
+        data.shopeeCategoryname = data.shopeeCategoryId && data.shopeeCategoryId.label ? data.shopeeCategoryId.label : null
+        data.shopeeCategoryId = data.shopeeCategoryId && data.shopeeCategoryId.key ? data.shopeeCategoryId.key : null
+
+        data.shopeeBrandName = data.shopeeBrandId && data.shopeeBrandId.label ? data.shopeeBrandId.label : null
+        data.shopeeBrandId = data.shopeeBrandId && data.shopeeBrandId.key ? data.shopeeBrandId.key : null
+
         data.type = '1'
         data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
         data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
