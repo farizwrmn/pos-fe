@@ -2,8 +2,10 @@ import React from 'react'
 import { Button, Icon, Modal } from 'antd'
 import pdfMake from 'pdfmake/build/pdfmake.min.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+import defaultFont from 'utils/defaultFont'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.fonts = defaultFont
 const BasicReport = ({
   name,
   buttonSize = 'large',
