@@ -150,6 +150,50 @@ export default modelExtend(pageModel, {
         })
       }
     },
+
+    * editSelected ({ payload = {} }, { select, put }) {
+      const { selectedRowKeys, source, resetChild } = payload
+      console.log('editSelected', selectedRowKeys)
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          selectedRowKeys
+        }
+      })
+      if (source === 'transferInDetail') {
+        const listDetail = yield select(({ transferInDetail }) => transferInDetail.listDetail)
+        let listSticker = []
+        if (listDetail && listDetail.length > 0 && selectedRowKeys && selectedRowKeys.length > 0) {
+          listSticker = listDetail.filter(filtered => selectedRowKeys.includes(filtered.no)).map((item) => {
+            return ({
+              info: item,
+              name: item.productName,
+              qty: 1
+            })
+          })
+        }
+        if (resetChild) {
+          resetChild(listSticker)
+        }
+      } else {
+        let listSticker = []
+        const listTransDetail = yield select(({ transferIn }) => transferIn.listTransDetail)
+        if (listTransDetail && listTransDetail.length > 0 && selectedRowKeys && selectedRowKeys.length > 0) {
+          listSticker = listTransDetail.filter(filtered => selectedRowKeys.includes(filtered.no)).map((item) => {
+            return ({
+              info: item,
+              name: item.productName,
+              qty: 1
+            })
+          })
+        }
+        if (resetChild) {
+          resetChild(listSticker)
+        }
+      }
+    },
+
     * queryMutasiOut ({ payload = {} }, { call, put }) {
       yield put({ type: 'setPeriod', payload })
       let data = yield call(queryOut, payload)

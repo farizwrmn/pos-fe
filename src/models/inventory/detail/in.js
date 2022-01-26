@@ -64,6 +64,7 @@ export default {
             id: data.mutasi[n].id,
             productCode: data.mutasi[n].productCode,
             productName: data.mutasi[n].productName,
+            productImage: data.mutasi[n].productImage,
             sellPrice: data.mutasi[n].sellPrice,
             categoryColor: data.mutasi[n].categoryColor,
             qty: data.mutasi[n].qty

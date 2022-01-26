@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { query } from 'services/inventory/adjustNew'
+import { lstorage } from 'utils'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -29,7 +30,15 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          }
         }
       })
     }

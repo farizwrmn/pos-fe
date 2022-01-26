@@ -58,9 +58,23 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/balance/finance/petty-expense') {
+          dispatch({
+            type: 'query',
+            payload: {
+              accountType: [
+                'BANK',
+                'COGS',
+                'EXPS',
+                'OEXP'
+              ],
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
+        }
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
-          || pathname === '/balance/finance/petty-expense'
           || pathname === '/bank-recon'
           || pathname === '/balance/finance/petty-cash'
           || pathname === '/balance/finance/history'
