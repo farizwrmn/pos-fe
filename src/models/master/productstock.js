@@ -571,6 +571,53 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
+    },
+
+    * addSticker ({ payload }, { select, put }) {
+      let listSticker = yield select(({ productstock }) => productstock.listSticker)
+      const { sticker, resetChild } = payload
+      listSticker.push(sticker)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSticker
+        }
+      })
+      if (resetChild) {
+        resetChild(listSticker)
+      }
+    },
+
+    * deleteSticker ({ payload }, { select, put }) {
+      let listSticker = yield select(({ productstock }) => productstock.listSticker)
+      const { sticker, resetChild } = payload
+      listSticker = listSticker.filter(x => x.name !== sticker.name)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSticker
+        }
+      })
+      if (resetChild) {
+        resetChild(listSticker)
+      }
+    },
+
+    * updateSticker ({ payload }, { select, put }) {
+      let listSticker = yield select(({ productstock }) => productstock.listSticker)
+      const { selectedRecord, changedRecord, resetChild } = payload
+      let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
+      listSticker[selected] = changedRecord
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSticker
+        }
+      })
+      if (resetChild) {
+        resetChild(listSticker)
+      }
     }
   },
 
@@ -617,25 +664,6 @@ export default modelExtend(pageModel, {
 
     updateState (state, { payload }) {
       return { ...state, ...payload }
-    },
-
-    addSticker (state, { payload }) {
-      const { sticker } = payload
-      state.listSticker.push(sticker)
-      return { ...state }
-    },
-
-    deleteSticker (state, { payload }) {
-      const { sticker } = payload
-      state.listSticker = state.listSticker.filter(x => x.name !== sticker.name)
-      return { ...state }
-    },
-
-    updateSticker (state, { payload }) {
-      const { selectedRecord, changedRecord } = payload
-      let selected = state.listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
-      state.listSticker[selected] = changedRecord
-      return { ...state }
     },
 
     resetProductStockList (state) {
