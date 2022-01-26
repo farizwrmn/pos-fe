@@ -16,11 +16,11 @@ const WIDTH_TABLE_IN_CENTI = 8
 const HEIGHT_TABLE_IN_CENTI = 5
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
-// const WIDTH_LOGO_IMAGE_IN_CENTI = 2
-const HEIGHT_LOGO_IMAGE_IN_CENTI = 1.2
+const WIDTH_LOGO_IMAGE_IN_CENTI = 5
+const HEIGHT_LOGO_IMAGE_IN_CENTI = 1
 const WIDTH_IMAGE_IN_CENTI = 2
 const HEIGHT_IMAGE_IN_CENTI = 2
-// const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
+const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
@@ -105,7 +105,7 @@ const createTableBody = async (tableBody, aliases) => {
         let row = [
           {
             image: 'AppLogo',
-            width: WIDTH_TABLE / 2,
+            width: WIDTH_LOGO_IMAGE,
             height: HEIGHT_LOGO_IMAGE,
 
             fontSize: 30,
