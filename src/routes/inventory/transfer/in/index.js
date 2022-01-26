@@ -212,22 +212,13 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     listTransDetail,
     user,
     storeInfo,
+    dispatch,
     listItem: listTransDetail,
     listEmployee,
     sequenceNumber,
     width: '700px',
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
-    rowSelection: {
-      onChange: (selectedRowKeys) => {
-        dispatch({
-          type: 'transferIn/updateState',
-          payload: {
-            selectedRowKeys
-          }
-        })
-      }
-    },
     onEnter (data) {
       dispatch({
         type: 'transferIn/acceptTransOut',
