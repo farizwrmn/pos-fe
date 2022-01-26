@@ -122,6 +122,8 @@
     "Element": true,
     "Image": true,
     "FileReader": true,
+    "XMLHttpRequest": true,
+    "fetch": true,
     "Event": true,
     "_": true
   },
