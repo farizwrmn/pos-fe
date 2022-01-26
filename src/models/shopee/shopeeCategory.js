@@ -1,6 +1,6 @@
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
-import { query, queryBrand } from 'services/shopee/shopeeCategory'
+import { query, queryBrand, queryLogistic, queryAttribute, queryRecommend } from 'services/shopee/shopeeCategory'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -11,6 +11,10 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listRecommend: [],
+    listAttribute: [],
+    listLogistic: [],
+    lastProductName: undefined,
     listBrand: [],
     pagination: {
       showSizeChanger: true,
@@ -23,9 +27,16 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/stock') {
+        if (pathname === '/stock'
+          || pathname === '/marketing/promo') {
           dispatch({
             type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
+          dispatch({
+            type: 'queryLogistic',
             payload: {
               type: 'all'
             }
@@ -82,6 +93,86 @@ export default modelExtend(pageModel, {
         message.error('Brand not found')
       } else {
         throw data
+      }
+    },
+
+    * queryLogistic ({ payload = {} }, { call, put }) {
+      const data = yield call(queryLogistic, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listLogistic: data.data
+          }
+        })
+      }
+    },
+
+    * queryAttribute ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listAttribute: []
+        }
+      })
+      const { shopeeAttribute } = payload
+      const data = yield call(queryAttribute, payload)
+      if (data.success && data.response && data.response.attribute_list) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAttribute: data.response.attribute_list
+              .filter(filtered => filtered.is_mandatory)
+              .map((attribute) => {
+                let initialValue = null
+                if (shopeeAttribute && shopeeAttribute !== '' && shopeeAttribute.includes('[') && shopeeAttribute.includes(']')) {
+                  const listAttribute = JSON.parse(shopeeAttribute)
+                  if (listAttribute && listAttribute.length > 0) {
+                    const filteredAttribute = listAttribute.filter(filtered => parseFloat(filtered.attribute_id) === parseFloat(attribute.attribute_id))
+                    if (filteredAttribute && filteredAttribute.length > 0) {
+                      initialValue = parseFloat(filteredAttribute[0].value_id)
+                    }
+                  }
+                }
+                if (initialValue) {
+                  return ({
+                    ...attribute,
+                    initialValue
+                  })
+                }
+                return attribute
+              })
+          }
+        })
+      } else if (data.success
+        && data.response
+        && data.response.attribute_list
+        && data.response.attribute_list.length === 0) {
+        message.error('Attribute not found')
+      } else {
+        throw data
+      }
+    },
+
+    * queryRecommend ({ payload = {} }, { select, call, put }) {
+      const lastProductName = yield select(({ productstock }) => productstock.lastProductName)
+      if (lastProductName !== payload.productName) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listRecommend: []
+          }
+        })
+        const data = yield call(queryRecommend, payload)
+        if (data.success && data.response && data.response.category_id) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listRecommend: data.response.category_id,
+              lastProductName: payload.productName
+            }
+          })
+        }
       }
     }
   },

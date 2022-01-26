@@ -8,6 +8,7 @@ import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
+import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -354,6 +355,10 @@ export default modelExtend(pageModel, {
       } else {
         payload.data.productImage = '["no_image.png"]'
       }
+      if (payload.data.productImage.enableShopee && payload.data.productImage === '["no_image.png"]') {
+        message.error('Shopee: Image is Required')
+        return
+      }
       // End - Upload Image
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
@@ -379,6 +384,16 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
+          }
+        })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -389,6 +404,30 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
+    },
+
+    * editItem ({ payload }, { call, put }) {
+      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, productType: 'PRODUCT', type: 'all' })
+      if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
+        yield put({
+          type: 'shopeeCategory/queryAttribute',
+          payload: {
+            shopeeAttribute: payload.item.shopeeAttribute,
+            category_id: payload.item.shopeeCategoryId
+          }
+        })
+      }
+      if (payload && payload.item) {
+        if (logisticList.success && logisticList.data && logisticList.data.length > 0) {
+          payload.item.shopeeLogistic = logisticList.data.map(item => item.logistic_id)
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: payload.item
+        }
+      })
     },
 
     * edit ({ payload }, { select, call, put }) {
@@ -432,7 +471,7 @@ export default modelExtend(pageModel, {
 
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
       const { location } = payload
-      const newProductStock = { ...payload, id }
+      const newProductStock = { data: payload.data, id }
       if (uploadedImage && uploadedImage.length > 0) {
         newProductStock.data.productImage = uploadedImage
       } else {
@@ -461,15 +500,18 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({ type: 'query', payload: { stockQuery: true } })
-      } else {
-        let current = Object.assign({}, payload.id, payload.data)
         yield put({
-          type: 'updateState',
+          type: 'shopeeCategory/updateState',
           payload: {
-            currentItem: current
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
           }
         })
+        yield put({ type: 'query', payload: { stockQuery: true } })
+      } else {
         throw data
       }
     }

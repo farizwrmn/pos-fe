@@ -17,7 +17,7 @@ import ModalQuantity from './ModalQuantity'
 const TabPane = Tabs.TabPane
 
 const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list: listShopeeCategory, listBrand: listShopeeBrand } = shopeeCategory
+  const { list: listShopeeCategory, listAttribute: listShopeeAttribute, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
   const {
     modalSupplierVisible,
     paginationSupplier,
@@ -190,6 +190,13 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
       })
 
       dispatch({
+        type: 'productstock/editItem',
+        payload: {
+          item
+        }
+      })
+
+      dispatch({
         type: 'purchase/updateState',
         payload: {
           supplierInformation: {}
@@ -225,6 +232,16 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
       }
     })
     const { query, pathname } = location
+    dispatch({
+      type: 'shopeeCategory/updateState',
+      payload: {
+        listRecommend: [],
+        listAttribute: [],
+        listLogistic: [],
+        listBrand: [],
+        lastProductName: undefined
+      }
+    })
     switch (key) {
       case 1:
         dispatch(routerRedux.push({
@@ -264,7 +281,10 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
   }
 
   const formProps = {
+    listShopeeCategoryRecommend,
+    listShopeeLogistic,
     listShopeeCategory,
+    listShopeeAttribute,
     listShopeeBrand,
     listInventory,
     listGrabCategory,
@@ -307,6 +327,14 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
         }
       })
     },
+    onGetShopeeCategory (productName) {
+      dispatch({
+        type: 'shopeeCategory/queryRecommend',
+        payload: {
+          productName
+        }
+      })
+    },
     onGetSupplier () {
       dispatch({ type: 'purchase/querySupplier' })
     },
@@ -319,6 +347,14 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
     getShopeeBrand (category_id) {
       dispatch({
         type: 'shopeeCategory/queryBrand',
+        payload: {
+          category_id
+        }
+      })
+    },
+    getShopeeAttribute (category_id) {
+      dispatch({
+        type: 'shopeeCategory/queryAttribute',
         payload: {
           category_id
         }
@@ -427,6 +463,16 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
         type: 'productbrand/updateState',
         payload: {
           currentItem: {}
+        }
+      })
+      dispatch({
+        type: 'shopeeCategory/updateState',
+        payload: {
+          listRecommend: [],
+          listAttribute: [],
+          listLogistic: [],
+          listBrand: [],
+          lastProductName: undefined
         }
       })
     },

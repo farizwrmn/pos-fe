@@ -1588,6 +1588,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/shopee/shopeeCategory'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
