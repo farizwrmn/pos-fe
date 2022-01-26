@@ -8,7 +8,7 @@ import { IMAGEURL, APPNAME } from 'utils/config.company'
 
 const NUMBER_OF_COLUMN = 3
 const PRODUCT_NAME_SIZE_IN_POINT = 8
-const PRICE_SIZE_IN_POINT = 26
+const PRICE_SIZE_IN_POINT = 20
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const NUMBER_OF_PRODUCT_NAME = 28
@@ -36,7 +36,7 @@ const styles = {
     alignment: 'right',
     fontSize: PRICE_SIZE,
     width: '100%',
-    margin: [0, 5]
+    margin: [0, 12, 0, 0]
   },
   productName1: {
     alignment: 'center',
@@ -46,7 +46,7 @@ const styles = {
   productName2: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 0, 0, 9]
+    margin: [0, 0, 0, 4]
   },
   others: {
     fontSize: PRICE_SIZE,
@@ -57,6 +57,11 @@ const styles = {
     fontSize: PRODUCT_NAME_SIZE,
     margin: [10, 0],
     alignment: 'left'
+  },
+  printDate: {
+    fontSize: PRODUCT_NAME_SIZE,
+    margin: [10, 0],
+    alignment: 'right'
   }
 }
 
@@ -131,7 +136,7 @@ const createTableBody = async (tableBody, aliases) => {
 
         row.push({
           text: moment().format('YYYY-MM-DD'),
-          style: 'productCode',
+          style: 'printDate',
           alignment: 'right'
         })
         let background = '#ffffff'
