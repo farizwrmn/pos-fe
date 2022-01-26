@@ -128,7 +128,7 @@ const BasicReportCard = ({
         styles: tableStyle
       }
       try {
-        pdfMake.createPdf(docDefinition).open()
+        pdfMake.createPdf(docDefinition).print()
       } catch (e) {
         pdfMake.createPdf(docDefinition).download()
       }

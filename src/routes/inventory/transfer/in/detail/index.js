@@ -8,6 +8,7 @@ import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import FormAccounting from 'components/accounting/FormAccounting'
 import PrintShelf from '../../../../master/product/printSticker/PrintShelf'
+import PrintAvancedShelf from '../../../../master/product/printSticker/PrintAvancedShelf'
 import ModalCancel from './ModalCancel'
 import PrintPDF from './PrintPDF'
 import TransDetail from './TransDetail'
@@ -236,7 +237,8 @@ class Detail extends Component {
             {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" disabled={data.length > 0 ? !data[0].active : 1} onClick={() => onPrintBarcode()}>Print Barcode</Button>}
             {selectedRowKeys && selectedRowKeys.length > 0 && (
               <span style={{ marginLeft: '10px' }}>
-                <PrintShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
+                <PrintShelf stickers={listSticker} user={user} {...printStickerProps} />
+                <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
               </span>
             )}
             <Row style={{ padding: '10px', margin: '4px' }}>

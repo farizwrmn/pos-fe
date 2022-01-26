@@ -5,6 +5,7 @@ import moment from 'moment'
 import List from './ListItem'
 import ModalConfirm from './ModalConfirm'
 import PrintShelf from '../../../master/product/printSticker/PrintShelf'
+import PrintAvancedShelf from '../../../master/product/printSticker/PrintAvancedShelf'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -350,7 +351,8 @@ class ModalAccept extends Component {
                 {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" onClick={() => onPrintBarcode()}>Print Barcode</Button>}
                 {selectedRowKeys && selectedRowKeys.length > 0 && (
                   <span style={{ marginLeft: '10px' }}>
-                    <PrintShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
+                    <PrintShelf stickers={listSticker} user={user} {...printStickerProps} />
+                    <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
                   </span>
                 )}
               </Col>

@@ -144,46 +144,58 @@ const createTableBody = async (tableBody, aliases) => {
         // })
 
         let imageBase = null
-        if (item
-          && item.productImage != null
-          && item.productImage !== '["no_image.png"]'
-          && item.productImage !== '"no_image.png"'
-          && item.productImage !== 'no_image.png') {
-          const image = JSON.parse(item.productImage)
-          if (image && image[0]) {
-            // eslint-disable-next-line no-await-in-loop
-            imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+        if (!images[`${item.productCode}`]) {
+          if (item
+            && item.productImage != null
+            && item.productImage !== '["no_image.png"]'
+            && item.productImage !== '"no_image.png"'
+            && item.productImage !== 'no_image.png') {
+            const image = JSON.parse(item.productImage)
+            if (image && image[0]) {
+              // eslint-disable-next-line no-await-in-loop
+              imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+            }
           }
+        } else {
+          imageBase = images[`${item.productCode}`]
         }
         if (imageBase && item.productCode) {
           images[`${item.productCode}`] = imageBase
-          row.push({
-
-          })
         }
         if (aliases.check1) {
-          row.push({
-            columns: [
-              {
-                image: `${item.productCode}`,
-                width: WIDTH_IMAGE,
-                height: HEIGHT_IMAGE,
-                margin: [10, 0],
-                fillColor: background,
-                background
-              },
-              {
-                text: numberFormatter(tableBody[key].info[aliases.price1]),
-                width: '70%',
-                fillColor: background,
-                background,
-                color,
-                style: 'sellPrice'
-              }
-            ],
-            fillColor: background,
-            background
-          })
+          if (imageBase && item.productCode) {
+            row.push({
+              columns: [
+                {
+                  image: `${item.productCode}`,
+                  width: WIDTH_IMAGE,
+                  height: HEIGHT_IMAGE,
+                  margin: [10, 0],
+                  fillColor: background,
+                  background
+                },
+                {
+                  text: numberFormatter(tableBody[key].info[aliases.price1]),
+                  width: '70%',
+                  fillColor: background,
+                  background,
+                  color,
+                  style: 'sellPrice'
+                }
+              ],
+              fillColor: background,
+              background
+            })
+          } else {
+            row.push({
+              text: numberFormatter(tableBody[key].info[aliases.price1]),
+              width: '100%',
+              fillColor: background,
+              background,
+              color,
+              style: 'sellPrice'
+            })
+          }
         }
         if (aliases.check2) {
           row.push({
@@ -217,7 +229,7 @@ class PrintShelf extends Component {
 
   state = {
     pdfProps: {
-      name: 'Print',
+      name: 'Advanced Print',
       width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
       height: HEIGHT_TABLE,
       pageSize: 'A4',
@@ -276,7 +288,7 @@ class PrintShelf extends Component {
       return this.setState({
         pdfProps: {
           images,
-          name: 'Print',
+          name: 'Advanced Print',
           width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
           height: HEIGHT_TABLE,
           pageSize: 'A4',
