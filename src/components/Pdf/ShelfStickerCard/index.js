@@ -4,6 +4,14 @@ import pdfMake from 'pdfmake/build/pdfmake.min.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.fonts = {
+  BouyguesRead: {
+    normal: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-Regular.ttf',
+    bold: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-Bold.ttf',
+    italics: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-Italic.ttf',
+    bolditalics: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-BoldItalic.ttf'
+  }
+}
 const BasicReportCard = ({
   name,
   width = 'auto',
@@ -118,6 +126,9 @@ const BasicReportCard = ({
         }
       ]
       let docDefinition = {
+        defaultStyle: {
+          font: 'BouyguesRead'
+        },
         pageSize,
         pageOrientation,
         pageMargins,
