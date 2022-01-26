@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import React, { Component } from 'react'
 import { Form, Modal, Button, DatePicker, Select, Input, Row, Col } from 'antd'
 import moment from 'moment'
@@ -33,6 +34,7 @@ class ModalAccept extends Component {
       }
     }, 300)
   }
+
   render () {
     const {
       item,
@@ -58,9 +60,21 @@ class ModalAccept extends Component {
       printMode,
       selectedRowKeys,
       onPrintBarcode,
-      rowSelection,
+      dispatch,
       ...formConfirmProps
     } = this.props
+    const rowSelection = {
+      onChange: (selectedRowKeys) => {
+        dispatch({
+          type: 'transferIn/editSelected',
+          payload: {
+            selectedRowKeys,
+            resetChild: this.clickChild
+          }
+        })
+      }
+    }
+
     const modalAcceptProps = this.props
 
     const listDetailProps = {
@@ -159,7 +173,7 @@ class ModalAccept extends Component {
       }
     }
 
-    let listSticker = []
+    let listSticker
 
     const printStickerProps = {
       aliases: {
@@ -336,7 +350,7 @@ class ModalAccept extends Component {
                 {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" onClick={() => onPrintBarcode()}>Print Barcode</Button>}
                 {selectedRowKeys && selectedRowKeys.length > 0 && (
                   <span style={{ marginLeft: '10px' }}>
-                    <PrintShelf stickers={listSticker} user={user} {...printStickerProps} />
+                    <PrintShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
                   </span>
                 )}
               </Col>

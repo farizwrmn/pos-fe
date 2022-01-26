@@ -34,27 +34,27 @@ const BasicReportCard = ({
                   writable: true,
                   heights: 'auto',
                   widths: [width[0]],
-                  body: (tabledata[x][y]).map(item => (item ? [item] : [{}])),
-                  bodyWorks: [
-                    [
-                      tabledata[x][y][0] || []
-                    ],
-                    [
-                      tabledata[x][y][1] || []
-                    ],
-                    [
-                      tabledata[x][y][2] || []
-                    ],
-                    [
-                      tabledata[x][y][3] || []
-                    ],
-                    [
-                      tabledata[x][y][4] || []
-                    ],
-                    [
-                      tabledata[x][y][5] || []
-                    ]
-                  ]
+                  body: (tabledata[x][y]).map(item => (item ? [item] : [{}]))
+                  // bodyWorks: [
+                  //   [
+                  //     tabledata[x][y][0] || []
+                  //   ],
+                  //   [
+                  //     tabledata[x][y][1] || []
+                  //   ],
+                  //   [
+                  //     tabledata[x][y][2] || []
+                  //   ],
+                  //   [
+                  //     tabledata[x][y][3] || []
+                  //   ],
+                  //   [
+                  //     tabledata[x][y][4] || []
+                  //   ],
+                  //   [
+                  //     tabledata[x][y][5] || []
+                  //   ]
+                  // ]
                 }
               })
             } else {
@@ -90,7 +90,6 @@ const BasicReportCard = ({
             }
           }
         }
-        console.log('stack', stack)
         body.push(stack)
       }
     }
@@ -118,7 +117,6 @@ const BasicReportCard = ({
           layout
         }
       ]
-      console.log('contentItem', contentItem)
       let docDefinition = {
         pageSize,
         pageOrientation,

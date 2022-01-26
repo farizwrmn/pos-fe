@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import ShelfStickerCard from 'components/Pdf/ShelfStickerCard'
-import { numberFormatter } from 'utils/string'
+import { numberFormatter, withoutFormat } from 'utils/string'
 import { lstorage } from 'utils'
-import { APPNAME } from 'utils/config.company'
+import { IMAGEURL, APPNAME } from 'utils/config.company'
 
 const NUMBER_OF_COLUMN = 3
 const PRODUCT_NAME_SIZE_IN_POINT = 8
-const PRICE_SIZE_IN_POINT = 28
+const PRICE_SIZE_IN_POINT = 26
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const NUMBER_OF_PRODUCT_NAME = 28
@@ -16,7 +16,7 @@ const WIDTH_TABLE_IN_CENTI = 8
 const HEIGHT_TABLE_IN_CENTI = 5
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
-const WIDTH_LOGO_IMAGE_IN_CENTI = 2
+// const WIDTH_LOGO_IMAGE_IN_CENTI = 2
 const HEIGHT_LOGO_IMAGE_IN_CENTI = 1.2
 const WIDTH_IMAGE_IN_CENTI = 2
 const HEIGHT_IMAGE_IN_CENTI = 2
@@ -55,7 +55,7 @@ const styles = {
   },
   productCode: {
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 0],
+    margin: [10, 0],
     alignment: 'left'
   }
 }
@@ -81,6 +81,7 @@ const createTableBody = async (tableBody, aliases) => {
   images = {
     AppLogo: base
   }
+  console.log('tableBody', tableBody)
   for (let key in tableBody) {
     if (tableBody.hasOwnProperty(key)) {
       for (let i = 0; i < tableBody[key].qty; i += 1) {
@@ -142,15 +143,56 @@ const createTableBody = async (tableBody, aliases) => {
         // row.push({
         //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
         // })
+
+        let imageBase = null
+        if (item
+          && item.productImage != null
+          && item.productImage !== '["no_image.png"]'
+          && item.productImage !== '"no_image.png"'
+          && item.productImage !== 'no_image.png') {
+          const image = JSON.parse(item.productImage)
+          if (image && image[0]) {
+            // eslint-disable-next-line no-await-in-loop
+            imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+          }
+        }
+        if (imageBase && item.productCode) {
+          images[`${item.productCode}`] = imageBase
+        }
         if (aliases.check1) {
-          row.push({
-            text: numberFormatter(tableBody[key].info[aliases.price1]),
-            width: '100%',
-            fillColor: background,
-            background,
-            color,
-            style: 'sellPrice'
-          })
+          if (imageBase && item.productCode) {
+            row.push({
+              columns: [
+                {
+                  image: `${item.productCode}`,
+                  width: WIDTH_IMAGE,
+                  height: HEIGHT_IMAGE,
+                  margin: [10, 0],
+                  fillColor: background,
+                  background
+                },
+                {
+                  text: numberFormatter(tableBody[key].info[aliases.price1]),
+                  width: '70%',
+                  fillColor: background,
+                  background,
+                  color,
+                  style: 'sellPrice'
+                }
+              ],
+              fillColor: background,
+              background
+            })
+          } else {
+            row.push({
+              text: numberFormatter(tableBody[key].info[aliases.price1]),
+              width: '100%',
+              fillColor: background,
+              background,
+              color,
+              style: 'sellPrice'
+            })
+          }
         }
         if (aliases.check2) {
           row.push({
@@ -166,6 +208,7 @@ const createTableBody = async (tableBody, aliases) => {
         row.push({
           text: (tableBody[key].info.productCode || '').toString(),
           style: 'productCode',
+          margin: [10, 0],
           alignment: 'right'
         })
         body.push(row)
@@ -176,6 +219,11 @@ const createTableBody = async (tableBody, aliases) => {
 }
 
 class PrintShelf extends Component {
+  constructor (props) {
+    super(props)
+    this.generateSticker = this.generateSticker.bind(this)
+  }
+
   state = {
     pdfProps: {
       name: 'Print',
@@ -204,7 +252,14 @@ class PrintShelf extends Component {
   }
 
   componentDidMount () {
-    const { stickers, aliases } = this.props
+    this.props.setClick(this.generateSticker)
+    const { stickers } = this.props
+
+    this.generateSticker(stickers)
+  }
+
+  generateSticker (stickers) {
+    const { aliases } = this.props
     createTableBody(stickers, aliases).then((result) => {
       const { tableBody, images } = result
       let getList = []
@@ -243,6 +298,18 @@ class PrintShelf extends Component {
             },
             vLineStyle () {
               return { dash: { length: 4 } }
+            },
+            hLineColor () {
+              return '#c4c4c4'
+            },
+            vLineColor () {
+              return '#c4c4c4'
+            },
+            hLineWidth () {
+              return 0.5
+            },
+            vLineWidth () {
+              return 0.5
             }
           },
           tableBody: getList,
