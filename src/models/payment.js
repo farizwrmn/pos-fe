@@ -3,6 +3,7 @@ import moment from 'moment'
 import { configMain, lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
+import defaultFont from 'utils/defaultFont'
 import { routerRedux } from 'dva/router'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
@@ -21,6 +22,7 @@ const pdfMake = require('pdfmake/build/pdfmake.min.js')
 const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.fonts = defaultFont
 
 const { prefix } = configMain
 const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader03 : []
