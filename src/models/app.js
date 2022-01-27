@@ -1,10 +1,13 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import moment from 'moment'
+import { message } from 'antd'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 // import { APPNAME, couchdb } from 'utils/config.company'
 import { APPNAME } from 'utils/config.company'
+import { query as queryParameter } from 'services/utils/parameter'
+import { login as loginShopee } from 'services/shopee/shopeeApi'
 import { query as queryCustomerType } from '../services/master/customertype'
 import { query as queryPaymentShortcut } from '../services/payment/paymentShortcut'
 import { query, logout, changePw } from '../services/app'
@@ -90,6 +93,15 @@ export default {
       if (success && user) {
         yield put({ type: 'app/queryRefreshNotifications' })
         const notifications = yield call(getNotifications, payload)
+        const parameter = yield call(queryParameter, {
+          type: 'all',
+          paramCode: 'shopeeRequireLogin'
+        })
+        if (parameter.success && parameter.data.length > 0) {
+          lstorage.setShopeeRequireLogin(parseFloat(parameter.data[0].paramValue))
+        } else {
+          lstorage.setShopeeRequireLogin(1)
+        }
         const { permissions } = user
 
         let menu
@@ -197,6 +209,15 @@ export default {
       } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
+      }
+    },
+
+    * loginShopee ({ payload = {} }, { call }) {
+      const loginUrl = yield call(loginShopee, payload)
+      if (loginUrl.success) {
+        window.open(loginUrl.url, '_self')
+      } else {
+        message.error(loginUrl.message ? `Login shopee failed, message: ${loginUrl.message}` : 'Login shopee failed')
       }
     },
 

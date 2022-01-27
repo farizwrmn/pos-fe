@@ -50,6 +50,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
   const sidebarColor = localStorage.getItem('sidebarColor')
 
   const headerProps = {
+    dispatch,
     menu,
     user,
     siderFold,

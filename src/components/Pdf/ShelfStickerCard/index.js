@@ -2,8 +2,10 @@ import React from 'react'
 import { Icon, Modal, Button } from 'antd'
 import pdfMake from 'pdfmake/build/pdfmake.min.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+import defaultFont from 'utils/defaultFont'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.fonts = defaultFont
 const BasicReportCard = ({
   name,
   width = 'auto',
@@ -118,6 +120,9 @@ const BasicReportCard = ({
         }
       ]
       let docDefinition = {
+        defaultStyle: {
+          font: 'BouyguesRead'
+        },
         pageSize,
         pageOrientation,
         pageMargins,
