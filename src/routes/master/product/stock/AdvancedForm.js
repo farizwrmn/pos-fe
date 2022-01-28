@@ -1109,6 +1109,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<Select
                     showSearch
+                    size="large"
                     multiple
                     allowClear
                     optionFilterProp="children"
