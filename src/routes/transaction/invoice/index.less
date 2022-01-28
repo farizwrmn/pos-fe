@@ -1,3 +1,22 @@
+@font-face {
+  font-family: 'BouyguesRead';
+  font-weight: normal;
+  src: local('BouyguesRead-Regular'), url('../../../../public/fonts/BouyguesRead-Regular.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: 'BouyguesRead';
+  font-weight: normal;
+  font-style: italic;
+  src: local('BouyguesRead-Italic'), url('../../../../public/fonts/BouyguesRead-Italic.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: 'BouyguesRead';
+  font-weight: bold;
+  src: local('BouyguesRead-Bold'), url('../../../../public/fonts/BouyguesRead-Bold.ttf') format('truetype')
+}
+
 .buttonPrint {
   @media print {
     display: none;
@@ -9,8 +28,9 @@
   width: 264px;
   margin: auto;
   padding: 0 4px;
-  color: #000;
-  font-family: 'fonta11', Calibri, sans-serif !important;
+  color: #000000;
+  font-size: 10px;
+  font-family: 'BouyguesRead', 'fonta11', Calibri, sans-serif !important;
   text-align: center;
   margin-top: 0.3em;
   margin-bottom: 1em;
@@ -19,7 +39,7 @@
 .title {
   font-weight: bold;
   font-style: italic;
-  font-size: 3rem;
+  font-size: 2.7rem;
   margin: 0;
 }
 
@@ -54,7 +74,7 @@
 .initialContent {
   width: fit-content;
   text-align: left;
-  font-size: 1em;
+  font-size: 0.9em;
   border-bottom: 1px solid;  
 }
 
@@ -71,7 +91,7 @@
 }
 
 .separator {
-  margin-top: 1em;
+  margin-top: 0.9em;
 }
 
 .borderedSection {
@@ -94,14 +114,14 @@
 }
 
 .reward {
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-align: center;
 }
 
 .total {
-  font-size: 1.4em;
+  font-size: 1.3em;
 }
 
 .change {
-  font-size: 1.2em;
+  font-size: 1.1em;
 }

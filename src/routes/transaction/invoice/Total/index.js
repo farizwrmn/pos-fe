@@ -21,19 +21,21 @@ const Total = ({
 
   return (
     <div className={styles.amountSection}>
-      <Row>
-        <Col span={12} className={styles.right}>
-          <span>
-            <strong>
-              Service Charge
-            </strong>
-            :Rp
-          </span>
-        </Col>
-        <Col span={12} className={styles.right}>
-          {numberFormatter(posData.dineInTax)}
-        </Col>
-      </Row>
+      {posData.dineInTax && posData.dineInTax > 0 && (
+        <Row>
+          <Col span={12} className={styles.right}>
+            <span>
+              <strong>
+                Service Charge
+              </strong>
+              :Rp
+            </span>
+          </Col>
+          <Col span={12} className={styles.right}>
+            {numberFormatter(posData.dineInTax)}
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col span={12} className={styles.right}>
           <span>
