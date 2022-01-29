@@ -21,7 +21,7 @@ const Total = ({
 
   return (
     <div className={styles.amountSection}>
-      {posData.dineInTax && posData.dineInTax > 0 && (
+      {posData.dineInTax && posData.dineInTax > 0 ? (
         <Row>
           <Col span={12} className={styles.right}>
             <span>
@@ -35,7 +35,7 @@ const Total = ({
             {numberFormatter(posData.dineInTax)}
           </Col>
         </Row>
-      )}
+      ) : null}
       <Row>
         <Col span={12} className={styles.right}>
           <span>
