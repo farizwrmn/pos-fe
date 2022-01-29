@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
+import { Form, Input, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
@@ -11,6 +11,7 @@ import ModalSupplier from './ModalSupplier'
 const { apiCompanyURL } = rest
 const { Variant, Specification, Stock } = DataQuery
 const { TextArea } = Input
+const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -1077,7 +1078,7 @@ class AdvancedForm extends Component {
                 ) : null}
                 {getFieldValue('shopeeCategoryId')
                   && getFieldValue('shopeeCategoryId').key ? listShopeeAttribute.map((attribute) => {
-                    if (attribute.input_type === 'COMBO_BOX') {
+                    if (attribute.input_type === 'COMBO_BOX' || attribute.input_type === 'DROP_DOWN' || attribute.input_type === 'MULTIPLE_SELECT_COMBO_BOX' || attribute.input_type === 'MULTIPLE_SELECT') {
                       return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
                         {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
                           initialValue: attribute.initialValue,
@@ -1096,6 +1097,47 @@ class AdvancedForm extends Component {
                               ? attribute.attribute_value_list.map(c => <Option value={c.value_id} key={c.value_id} title={`${c.display_value_name}`}>{`${c.display_value_name}`}</Option>) : []}
                         </Select>)}
                       </FormItem>)
+                    }
+
+                    if (attribute.input_type === 'TEXT_FILED') {
+                      if (attribute.input_validation_type === 'STRING_TYPE') {
+                        return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
+                          {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
+                            initialValue: attribute.initialValue,
+                            rules: [
+                              {
+                                required: attribute.is_mandatory
+                              }
+                            ]
+                          })(<Input maxLength={100} />)}
+                        </FormItem>)
+                      }
+                      if (attribute.input_validation_type === 'DATE_TYPE') {
+                        if (attribute.date_format_type === 'YEAR_MONTH') {
+                          return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
+                            {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
+                              initialValue: attribute.initialValue,
+                              rules: [
+                                {
+                                  required: attribute.is_mandatory
+                                }
+                              ]
+                            })(<MonthPicker placeholder="Select month" />)}
+                          </FormItem>)
+                        }
+                        if (attribute.date_format_type === 'YEAR_MONTH_DATE') {
+                          return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
+                            {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
+                              initialValue: attribute.initialValue,
+                              rules: [
+                                {
+                                  required: attribute.is_mandatory
+                                }
+                              ]
+                            })(<DatePicker placeholder="Select date" />)}
+                          </FormItem>)
+                        }
+                      }
                     }
                     return null
                   }) : null}
