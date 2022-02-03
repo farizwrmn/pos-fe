@@ -1010,6 +1010,7 @@ class AdvancedForm extends Component {
                     ? false
                     : item.enableShopee
                 })(<Checkbox
+                  disabled={modalType === 'edit' && item.enableShopee}
                   onFocus={() => {
                     getShopeeCategoryRecommendation()
                   }}
