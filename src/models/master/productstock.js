@@ -367,6 +367,9 @@ export default modelExtend(pageModel, {
         }
         // yield put({ type: 'query' })
         success('Stock Product has been saved')
+        if (payload.data.enableShopee) {
+          success('Shopee Price and Data will be update on every 1 minute')
+        }
         yield put({
           type: 'updateState',
           payload: {
@@ -483,6 +486,9 @@ export default modelExtend(pageModel, {
           payload.reset()
         }
         success('Stock Product has been saved')
+        if (newProductStock.data.enableShopee) {
+          success('Shopee Price and Data will be update on every 1 minute')
+        }
         yield put({
           type: 'updateState',
           payload: {
