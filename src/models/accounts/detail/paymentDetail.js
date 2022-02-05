@@ -76,7 +76,9 @@ export default {
       const { id, ...other } = payload
       const invoiceInfo = yield call(query, payload)
       const payment = yield call(queryPaymentSplit, other)
-      const data = yield call(queryDetail, payload)
+      const data = yield call(queryDetail, {
+        id
+      })
       let dataPos = []
       let dataPayment = []
       let dataPaymentInvoice = []

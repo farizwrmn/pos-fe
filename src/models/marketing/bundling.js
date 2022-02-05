@@ -4,6 +4,7 @@ import { message, Modal } from 'antd'
 import FormData from 'form-data'
 import { posTotal } from 'utils'
 import { uploadBundleImage } from 'services/utils/imageUploader'
+import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { query as querySequence } from '../../services/sequence'
 import { query as queryStock } from '../../services/master/productstock'
 import { query, add, edit, remove, cancel } from '../../services/marketing/bundling'
@@ -275,6 +276,16 @@ export default modelExtend(pageModel, {
             }
           })
           yield put({
+            type: 'shopeeCategory/updateState',
+            payload: {
+              lastProductName: undefined,
+              listRecommend: [],
+              listAttribute: [],
+              listLogistic: [],
+              listBrand: []
+            }
+          })
+          yield put({
             type: 'query',
             payload: {
               type: 'all'
@@ -358,6 +369,16 @@ export default modelExtend(pageModel, {
         if (payload && payload.reset) {
           payload.reset()
         }
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
+          }
+        })
         const { pathname } = location
         yield put(routerRedux.push({
           pathname,
@@ -367,16 +388,25 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     },
     * editItem ({ payload = {} }, { call, put }) {
+      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, productType: 'BUNDLE', type: 'all' })
+      if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
+        yield put({
+          type: 'shopeeCategory/queryAttribute',
+          payload: {
+            shopeeAttribute: payload.item.shopeeAttribute,
+            category_id: payload.item.shopeeCategoryId
+          }
+        })
+      }
+      if (payload && payload.item) {
+        if (logisticList.success && logisticList.data && logisticList.data.length > 0) {
+          payload.item.shopeeLogistic = logisticList.data.map(item => item.logistic_id)
+        }
+      }
       const dataRules = yield call(queryRules, { type: 'all', bundleId: payload.item.id })
       const dataReward = yield call(queryReward, { type: 'all', bundleId: payload.item.id })
       if (!dataRules.success) {
