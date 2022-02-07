@@ -18,7 +18,7 @@
     "moment": "2.18.1",
     "nprogress": "^0.2.0",
     "path-to-regexp": "^1.7.0",
-    "pdfmake": "0.1.68",
+    "pdfmake": "0.2.4",
     "prop-types": "^15.6.0",
     "rc-tween-one": "^1.0.0",
     "qs": "^6.5.0",
