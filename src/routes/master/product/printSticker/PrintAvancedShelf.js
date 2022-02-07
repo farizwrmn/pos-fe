@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import ShelfStickerCard from 'components/Pdf/ShelfStickerCard'
 import { numberFormatter, withoutFormat } from 'utils/string'
 import { lstorage } from 'utils'
 import { IMAGEURL, APPNAME } from 'utils/config.company'
+import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 3
 const PRODUCT_NAME_SIZE_IN_POINT = 8
@@ -114,6 +114,7 @@ const createTableBody = async (tableBody, aliases) => {
             alignment: 'center'
           }
         ]
+        console.log('row', row)
         const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
         let maxStringPerRow2 = ' '
         if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
@@ -333,6 +334,7 @@ class PrintShelf extends Component {
   }
 
   render () {
+    console.log('this.state.pdfProps', this.state.pdfProps)
     return (
       <ShelfStickerCard {...this.state.pdfProps} />
     )
