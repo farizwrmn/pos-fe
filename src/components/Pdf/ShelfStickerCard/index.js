@@ -2,16 +2,10 @@ import React from 'react'
 import { Icon, Modal, Button } from 'antd'
 import pdfMake from 'pdfmake/build/pdfmake.min.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+import defaultFont from 'utils/defaultFont'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
-pdfMake.fonts = {
-  BouyguesRead: {
-    normal: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-Regular.ttf',
-    bold: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-Bold.ttf',
-    italics: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-Italic.ttf',
-    bolditalics: 'https://graph.k3mart.id/image/uploads/font/bouyguesread/BouyguesRead-BoldItalic.ttf'
-  }
-}
+pdfMake.fonts = defaultFont
 const ShelfStickerCard = ({
   name,
   width = 'auto',
