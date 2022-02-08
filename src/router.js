@@ -226,6 +226,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'master/product/promo',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/promo'))
+              cb(null, require('./routes/master/product/promo'))
+            }, 'suba-promo')
+          }
+        }, {
           path: 'master/store-price',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
