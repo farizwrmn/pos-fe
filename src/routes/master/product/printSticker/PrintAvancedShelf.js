@@ -7,13 +7,13 @@ import { IMAGEURL, APPNAME } from 'utils/config.company'
 import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 3
-const PRODUCT_NAME_SIZE_IN_POINT = 8
-const PRICE_SIZE_IN_POINT = 20
+const PRODUCT_NAME_SIZE_IN_POINT = 7
+const PRICE_SIZE_IN_POINT = 18
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
-const NUMBER_OF_PRODUCT_NAME = 28
+const NUMBER_OF_PRODUCT_NAME = 32
 const WIDTH_TABLE_IN_CENTI = 8
-const HEIGHT_TABLE_IN_CENTI = 5
+const HEIGHT_TABLE_IN_CENTI = 4.5
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
 const WIDTH_LOGO_IMAGE_IN_CENTI = 5
@@ -41,12 +41,12 @@ const styles = {
   productName1: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 5, 0, 0]
+    margin: [0, 1, 0, 0]
   },
   productName2: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 0, 0, 4]
+    margin: [0, 0, 0, 0]
   },
   others: {
     fontSize: PRICE_SIZE,
@@ -114,11 +114,10 @@ const createTableBody = async (tableBody, aliases) => {
             alignment: 'center'
           }
         ]
-        console.log('row', row)
         const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
         let maxStringPerRow2 = ' '
         if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
-          maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 60).toString()
+          maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 68).toString()
         }
 
         row.push(
@@ -136,9 +135,20 @@ const createTableBody = async (tableBody, aliases) => {
         })
 
         row.push({
-          text: moment().format('YYYY-MM-DD'),
-          style: 'printDate',
-          alignment: 'right'
+          columns: [
+            {
+              text: (tableBody[key].info.productCode || '').toString(),
+              style: 'productCode',
+              margin: [10, 0],
+              alignment: 'left'
+            },
+            {
+              text: moment().format('YYYY-MM-DD'),
+              style: 'printDate',
+              alignment: 'right'
+            }
+          ]
+
         })
         let background = '#ffffff'
         if (tableBody[key].info.categoryColor) {
@@ -215,12 +225,6 @@ const createTableBody = async (tableBody, aliases) => {
             ]
           })
         }
-        row.push({
-          text: (tableBody[key].info.productCode || '').toString(),
-          style: 'productCode',
-          margin: [10, 0],
-          alignment: 'right'
-        })
         body.push(row)
       }
     }
@@ -335,7 +339,6 @@ class PrintShelf extends Component {
   }
 
   render () {
-    console.log('this.state.pdfProps', this.state.pdfProps)
     return (
       <ShelfStickerCard {...this.state.pdfProps} />
     )
