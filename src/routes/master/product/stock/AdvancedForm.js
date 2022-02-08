@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
+import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
@@ -147,12 +147,34 @@ class AdvancedForm extends Component {
   constructor (props) {
     super(props)
     this.changeName = this.changeName.bind(this)
+    this.changeBrand = this.changeBrand.bind(this)
   }
 
   state = {
     name: '',
     typing: false,
-    typingTimeout: 0
+    typingTimeout: 0,
+
+    brandName: '',
+    brandTyping: false,
+    brandTypingTimeout: 0
+  }
+
+  changeBrand = (value) => {
+    const self = this
+    console.log('changeBrand', value)
+
+    if (self.state.brandTypingTimeout) {
+      clearTimeout(self.state.brandTypingTimeout)
+    }
+
+    self.setState({
+      brandName: value,
+      brandTyping: false,
+      brandTypingTimeout: setTimeout(() => {
+        self.searchShopeeBrand(self.state.brandName)
+      }, 1000)
+    })
   }
 
   changeName = (event) => {
@@ -177,6 +199,20 @@ class AdvancedForm extends Component {
     } = this.props
     if (productName && productName !== '') {
       onGetShopeeCategory(productName)
+    }
+  }
+
+  searchShopeeBrand = (q) => {
+    const {
+      form: {
+        getFieldValue
+      },
+      onGetShopeeBrand
+    } = this.props
+    const categoryId = getFieldValue('shopeeCategoryId')
+    const category_id = categoryId && categoryId.key ? categoryId.key : null
+    if (q && q !== '' && category_id) {
+      onGetShopeeBrand(q, category_id)
     }
   }
 
@@ -1070,8 +1106,10 @@ class AdvancedForm extends Component {
                     })(<Select
                       showSearch
                       allowClear
+                      onSearch={this.changeBrand}
                       optionFilterProp="children"
                       labelInValue
+                      notFoundContent={loadingButton.effects['shopeeCategory/queryBrand'] ? <Spin size="small" /> : null}
                       filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                     >{shopeeBrand}
                     </Select>)}

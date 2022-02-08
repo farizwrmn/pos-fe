@@ -335,6 +335,14 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
         }
       })
     },
+    onGetShopeeBrand (q, category_id) {
+      dispatch({
+        type: 'shopeeCategory/queryBrand',
+        payload: {
+          q, category_id
+        }
+      })
+    },
     onGetSupplier () {
       dispatch({ type: 'purchase/querySupplier' })
     },
