@@ -73,23 +73,20 @@ export default modelExtend(pageModel, {
         }
       })
       const data = yield call(queryBrand, {
-        type: 'all',
         ...payload
       })
       if (data.success
-        && data.response
-        && data.response.brand_list
-        && data.response.brand_list.length > 0) {
+        && data.data
+        && data.data.length > 0) {
         yield put({
           type: 'updateState',
           payload: {
-            listBrand: data.response.brand_list
+            listBrand: data.data
           }
         })
       } else if (data.success
-        && data.response
-        && data.response.brand_list
-        && data.response.brand_list.length === 0) {
+        && data.data
+        && data.data.length === 0) {
         message.error('Brand not found')
       } else {
         throw data
