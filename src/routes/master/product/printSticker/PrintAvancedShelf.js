@@ -180,6 +180,7 @@ const createTableBody = async (tableBody, aliases) => {
                   fillColor: background,
                   background
                 },
+
                 {
                   text: numberFormatter(tableBody[key].info[aliases.price1]),
                   width: '70%',
