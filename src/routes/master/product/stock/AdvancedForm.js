@@ -35,48 +35,48 @@ const formatWeight = (dimension) => {
   }
 }
 
-// const formatBox = (dimension) => {
-//   try {
-//     if (dimension && dimension.includes('X')) {
-//       let newDimension
-//       const splitted = dimension.split('X')
-//       if (splitted && splitted.length === 3) {
-//         newDimension = splitted[0]
-//       }
-//       return newDimension
-//     }
-//     if (dimension === '') {
-//       return '1'
-//     }
-//     return '1'
-//   } catch (error) {
-//     console.log('formatBox', error)
-//     return '1'
-//   }
-// }
+const formatBox = (dimension) => {
+  try {
+    if (dimension && dimension.includes('X')) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length === 3) {
+        newDimension = splitted[0]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '1'
+    }
+    return '1'
+  } catch (error) {
+    console.log('formatBox', error)
+    return '1'
+  }
+}
 
-// const formatPack = (dimension) => {
-//   try {
-//     if (dimension) {
-//       let newDimension
-//       const splitted = dimension.split('X')
-//       if (splitted && splitted.length === 3) {
-//         newDimension = splitted[1]
-//       }
-//       if (splitted && splitted.length === 2) {
-//         newDimension = splitted[0]
-//       }
-//       return newDimension
-//     }
-//     if (dimension === '') {
-//       return '1'
-//     }
-//     return dimension
-//   } catch (error) {
-//     console.log('formatPack', error)
-//     return '1'
-//   }
-// }
+const formatPack = (dimension) => {
+  try {
+    if (dimension) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length === 3) {
+        newDimension = splitted[1]
+      }
+      if (splitted && splitted.length === 2) {
+        newDimension = splitted[0]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '1'
+    }
+    return dimension
+  } catch (error) {
+    console.log('formatPack', error)
+    return '1'
+  }
+}
 
 const formatDimension = (productName) => {
   try {
@@ -1366,6 +1366,30 @@ class AdvancedForm extends Component {
                     }
                   ]
                 })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
+                {getFieldDecorator('dimensionBox', {
+                  initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^([0-9]{1,5})$/,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={25} />)}
+              </FormItem>
+              <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
+                {getFieldDecorator('dimensionPack', {
+                  initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^([0-9]{1,5})$/,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={25} />)}
               </FormItem>
               <FormItem label="Description" {...formItemLayout}>
                 {getFieldDecorator('description', {
