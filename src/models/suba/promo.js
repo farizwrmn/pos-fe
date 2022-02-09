@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { query, add, edit, remove } from '../../services/menu'
+import { query, add, edit, remove } from '../../services/suba/promo'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
-  namespace: 'suba-promo',
+  namespace: 'subaPromo',
 
   state: {
     currentItem: {},
