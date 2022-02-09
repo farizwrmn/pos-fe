@@ -1355,6 +1355,18 @@ class AdvancedForm extends Component {
                   </Upload>
                 )}
               </FormItem>
+              <FormItem label="Dimension" {...formItemLayout}>
+                {getFieldDecorator('dimension', {
+                  initialValue: modalType === 'add' ?
+                    formatDimension(getFieldValue('productName')) : item.dimension,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
               <FormItem label="Description" {...formItemLayout}>
                 {getFieldDecorator('description', {
                   initialValue: item.description,
