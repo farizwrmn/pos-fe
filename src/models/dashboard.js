@@ -105,7 +105,8 @@ export default {
       const listUserStores = lstorage.getListUserStores()
       const responseStock = yield call(queryFifoCategory, {
         from: storeInfo.startPeriod,
-        to: payload.to
+        to: payload.to,
+        category: '117,118,121,122,125,128,192'
       })
       const responseSales = yield call(queryByDate, {
         from: payload.from,
