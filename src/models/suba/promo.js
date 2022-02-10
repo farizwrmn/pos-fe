@@ -8,6 +8,8 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     list: [],
+    activeKey: '0',
+    advancedForm: true,
     modalType: 'add',
     modalEdit: { visible: false, item: {} }
   },
@@ -15,8 +17,16 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/master/product/promo') {
-          dispatch({ type: 'query' })
+        const { activeKey, ...other } = location.query
+        const { pathname } = location
+        if (pathname === '/master/product/promo') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
+          })
+          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
