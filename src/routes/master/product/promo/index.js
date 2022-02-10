@@ -4,15 +4,15 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 // import { Link, routerRedux } from 'dva/router'
 import { Button, Tabs } from 'antd'
-// import List from './List'
+import List from './List'
 // import Filter from './Filter'
 import AdvancedForm from './AdvancedForm'
 
 const TabPane = Tabs.TabPane
 
 
-const SubaPromo = ({ subaPromo, dispatch, productstock }) => {
-  // const { listVariantStock } = variantStock
+const SubaPromo = ({ subaPromo, dispatch, productstock, app }) => {
+  const { user, storeInfo } = app
   const {
     modalProductVisible,
     pagination: paginationProduct,
@@ -21,18 +21,17 @@ const SubaPromo = ({ subaPromo, dispatch, productstock }) => {
     tmpProductData,
     productInformation
   } = productstock
-  const { list, modalType, currentItem, activeKey, advancedForm } = subaPromo
-  // pagination
-  console.log('list', list)
+  const { list, pagination, modalType, currentItem, activeKey, advancedForm } = subaPromo
 
-  // const listProps = {
-  //   dataSource: list,
-  //   pagination
-  // }
+  const listProps = {
+    user,
+    storeInfo,
+    dataSource: list,
+    pagination
+  }
 
   const formProps = {
     modalType,
-    listVariantStock: [],
     modalProductVisible,
     paginationProduct,
     searchTextProduct,
@@ -103,8 +102,7 @@ const SubaPromo = ({ subaPromo, dispatch, productstock }) => {
         modalType: 'add',
         currentItem: {},
         disable: '',
-        listSticker: [],
-        listItem: []
+        list: []
       }
     })
     const { query, pathname } = location
@@ -146,13 +144,12 @@ const SubaPromo = ({ subaPromo, dispatch, productstock }) => {
     <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'}>
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
-          {/* Form */}
           {activeKey === '0' && <AdvancedForm {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
           Browse
           {/* <Filter {...filterProps} /> */}
-          {/* <List {...listProps} /> */}
+          <List {...listProps} />
         </TabPane>
       </Tabs>
     </div>
@@ -168,5 +165,4 @@ SubaPromo.defaultProps = {
   // addNew: true
 }
 
-export default connect(({ subaPromo, productstock }) => ({ subaPromo, productstock }))(SubaPromo)
-
+export default connect(({ productstock, subaPromo, app }) => ({ productstock, subaPromo, app }))(SubaPromo)

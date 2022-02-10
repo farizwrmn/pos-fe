@@ -229,7 +229,9 @@ const Routers = function ({ history, app }) {
           path: 'master/product/promo',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/suba/promo'))
+              registerModel(app, require('./models/app'))
               cb(null, require('./routes/master/product/promo'))
             }, 'suba-promo')
           }

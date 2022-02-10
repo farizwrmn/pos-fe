@@ -9,6 +9,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     list: [],
     activeKey: '0',
+    disable: '',
     advancedForm: true,
     modalType: 'add',
     modalEdit: { visible: false, item: {} }
@@ -122,5 +123,9 @@ export default modelExtend(pageModel, {
     }
   },
 
-  reducers: {}
+  reducers: {
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
+    }
+  }
 })

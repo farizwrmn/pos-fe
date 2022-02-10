@@ -164,6 +164,8 @@ const AdvancedForm = ({
   productInformation,
   onSearchProductData,
   onSearchProduct,
+  item: currentItem,
+  //
   onChangeDate,
   listVariant,
   showBrands,
@@ -173,14 +175,14 @@ const AdvancedForm = ({
   listSpecification,
   listSpecificationCode,
   showProductModal,
-  form: {
-    getFieldDecorator
-    // validateFields,
-    // getFieldsValue,
-    // getFieldValue,
-    // resetFields,
-    // setFieldsValue
-  },
+  // form: {
+  // getFieldDecorator
+  // validateFields,
+  // getFieldsValue,
+  // getFieldValue,
+  // resetFields,
+  // setFieldsValue
+  // },
   ...props
 }) => {
   // const onChangeCheckBox = (e) => {
@@ -484,7 +486,7 @@ const AdvancedForm = ({
         <Row>
           <Col {...column}>
             <FormItem label="Program" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('program', {
+              {/* {getFieldDecorator('program', {
                 rules: [
                   {
                     required: true,
@@ -492,10 +494,11 @@ const AdvancedForm = ({
                     message: 'At least 20 character'
                   }
                 ]
-              })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)}
+              })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)} */}
+              <TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />
             </FormItem>
             <FormItem label="Level" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('level', {
+              {/* {getFieldDecorator('level', {
                 // initialValue: item.productName,
                 rules: [
                   {
@@ -503,7 +506,8 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input maxLength={3} />)} */}
+              <Input maxLength={3} />
             </FormItem>
             {/* cari product promo */}
             <FormItem label="Product Code" hasFeedback {...formItemLayout}>
