@@ -38,9 +38,12 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     listItem,
     tmpProductData,
     loadingButton: loading,
-    productInformation,
     dispatch,
-    item: currentItem,
+    item: {
+      ...currentItem,
+      productCode: productInformation && productInformation.productCode ? productInformation.productCode : currentItem.productCode,
+      productName: productInformation && productInformation.productName ? productInformation.productName : currentItem.productName
+    },
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
@@ -67,7 +70,15 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
       })
     },
     onGetProduct () {
-      dispatch({ type: 'productstock/query' })
+      dispatch({ type: 'productstock/queryItem' })
+    },
+    onChooseProduct (data) {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          productInformation: data
+        }
+      })
     },
     onSearchProductData (data) {
       dispatch({

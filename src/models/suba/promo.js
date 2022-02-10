@@ -1,6 +1,5 @@
 import modelExtend from 'dva-model-extend'
 import { query, add, edit, remove } from '../../services/suba/promo'
-import { query as queryProducts } from '../../services/master/productstock'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -8,19 +7,12 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
-    productInformation: {},
-    tmpProductData: [],
     list: [],
-    listProduct: [],
     activeKey: '0',
     disable: '',
-    modalProductVisible: true,
     advancedForm: true,
     modalType: 'add',
     modalEdit: { visible: false, item: {} },
-    paginationProduct: {
-      current: 1
-    },
     pagination: {
       current: 1
     }
@@ -56,25 +48,7 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * queryProduct ({ payload = {} }, { call, put }) {
-      const data = yield call(queryProducts, payload)
-      if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            listProduct: data.data,
-            tmpProductData: data.data,
-            paginationProduct: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.total
-            }
-          }
-        })
-      } else {
-        throw data
-      }
-    },
+
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
@@ -155,21 +129,6 @@ export default modelExtend(pageModel, {
   reducers: {
     updateState (state, { payload }) {
       return { ...state, ...payload }
-    },
-    onChooseProduct (state, action) {
-      return { ...state, productInformation: action.payload }
-    },
-    querySuccess (state, action) {
-      const { listProduct, tmpProductData, paginationProduct } = action.payload
-      return {
-        ...state,
-        listProduct,
-        tmpProductData,
-        paginationProduct: {
-          ...state.pagination,
-          ...paginationProduct
-        }
-      }
     }
   }
 })
