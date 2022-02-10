@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
-import { Form, Input, Button, Row, Col, Upload, Icon, Card, message } from 'antd'
-// InputNumber, Checkbox, Select, Modal,Table, BackTop
-import { DataQuery } from 'components'
-// import moment from 'moment'
+// import { routerRedux } from 'dva/router'
+import { Form, Input, Button, Row, Col, Upload, Card, Table, Tag, Icon, message } from 'antd'
+// InputNumber, Checkbox, Select, Modal, BackTop
+// import { DataQuery } from 'components'
+import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
 // import { getDistPriceName } from 'utils/string'
-// import ModalProduct from './ModalProduct'
+import ModalProduct from './ModalProduct'
+import styles from '../../../../themes/index.less'
 
 const { apiCompanyURL } = rest
-const { Stock } = DataQuery
+// const { Stock } = DataQuery
 const { TextArea } = Input
 const FormItem = Form.Item
 
@@ -158,6 +159,8 @@ const AdvancedForm = ({
   onSearchSupplierData,
   onSearchSupplier,
   // product
+  searchText,
+  onGetProduct,
   tmpProductData,
   searchTextProduct,
   listItem,
@@ -175,14 +178,14 @@ const AdvancedForm = ({
   listSpecification,
   listSpecificationCode,
   showProductModal,
-  // form: {
-  // getFieldDecorator
-  // validateFields,
-  // getFieldsValue,
-  // getFieldValue,
-  // resetFields,
-  // setFieldsValue
-  // },
+  form: {
+    // getFieldDecorator,
+    // validateFields,
+    // getFieldsValue,
+    getFieldValue,
+    // resetFields,
+    setFieldsValue
+  },
   ...props
 }) => {
   // const onChangeCheckBox = (e) => {
@@ -379,14 +382,14 @@ const AdvancedForm = ({
   // }
   // const variantIdFromItem = modalType === 'edit' && !!item.variantId
 
-  // const hdlSearchPagination = (page) => {
-  //   const query = {
-  //     q: searchTextProduct,
-  //     page: page.current,
-  //     pageSize: page.pageSize
-  //   }
-  //   onSearchProductData(query)
-  // }
+  const hdlSearchPagination = (page) => {
+    const query = {
+      q: searchTextProduct,
+      page: page.current,
+      pageSize: page.pageSize
+    }
+    onSearchProductData(query)
+  }
 
   const hdlSearch = (e) => {
     onSearchProduct(e, tmpProductData)
@@ -397,33 +400,34 @@ const AdvancedForm = ({
     visible: modalProductVisible,
     footer: null,
     hdlSearch,
+    searchText,
     onCancel () {
       dispatch({
         type: 'productstock/updateState',
         payload: {
-          modalSupplierVisible: false
+          modalProductVisible: false
         }
       })
     }
   }
 
-  // const handleMenuClick = (record) => {
-  //   let a = getFieldValue('transDate')
-  //   onChooseSupplier(record)
-  //   dispatch({
-  //     type: 'productStock/updateState',
-  //     payload: {
-  //       modalSupplierVisible: false
-  //     }
-  //   })
-  //   if (record.paymentTempo) {
-  //     message.success(`Product ${record.productName}  ${record.paymentTempo ? `has ${record.paymentTempo} ${parseFloat(record.paymentTempo) > 1 ? 'days' : 'day'}` : ''} tempo`)
-  //     setFieldsValue({ tempo: record.paymentTempo })
-  //     if (a) {
-  //       onChangeDate(moment(a).add(record.paymentTempo, 'days').format('YYYY-MM-DD'))
-  //     }
-  //   }
-  // }
+  const handleMenuClick = (record) => {
+    let a = getFieldValue('transDate')
+    onChooseSupplier(record)
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        modalSupplierVisible: false
+      }
+    })
+    if (record.paymentTempo) {
+      message.success(`Product ${record.productName}  ${record.paymentTempo ? `has ${record.paymentTempo} ${parseFloat(record.paymentTempo) > 1 ? 'days' : 'day'}` : ''} tempo`)
+      setFieldsValue({ tempo: record.paymentTempo })
+      if (a) {
+        onChangeDate(moment(a).add(record.paymentTempo, 'days').format('YYYY-MM-DD'))
+      }
+    }
+  }
 
   // const tailFormItemLayout = {
   //   wrapperCol: {
@@ -443,10 +447,61 @@ const AdvancedForm = ({
   //   }
   // }
 
-  const handleImportStock = () => {
-    dispatch(routerRedux.push({
-      pathname: '/master/product/stock/import'
-    }))
+
+  const hdlGetProduct = () => {
+    onGetProduct()
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        modalProductVisible: true
+      }
+    })
+  }
+
+  const columns = [
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: (text) => {
+        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
+      }
+    },
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id'
+    },
+    {
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode'
+    },
+    {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'count',
+      key: 'count',
+      width: '50px',
+      className: styles.alignRight,
+      render: (text) => {
+        if (!loadingButton.effects['pos/showProductQty']) {
+          return text || 0
+        }
+        return <Icon type="loading" />
+      }
+    }
+  ]
+
+  const buttonProductProps = {
+    type: 'primary',
+    onClick () {
+      hdlGetProduct()
+    }
   }
 
   const cardProps = {
@@ -460,14 +515,6 @@ const AdvancedForm = ({
       <Row>
         <Col md={12} lg={3}>
           <h3>Suba Promo</h3>
-        </Col>
-        <Col md={12} lg={9}>
-          <Button
-            type="default"
-            onClick={handleImportStock}
-          >
-            Import
-          </Button>
         </Col>
       </Row>
     )
@@ -495,7 +542,7 @@ const AdvancedForm = ({
                   }
                 ]
               })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)} */}
-              <TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />
+              <TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />
             </FormItem>
             <FormItem label="Level" hasFeedback {...formItemLayout}>
               {/* {getFieldDecorator('level', {
@@ -510,53 +557,62 @@ const AdvancedForm = ({
               <Input maxLength={3} />
             </FormItem>
             {/* cari product promo */}
-            <FormItem label="Product Code" hasFeedback {...formItemLayout}>
-              <Input maxLength={30} />
-              {/* {getFieldDecorator('productCode', {
-                initialValue: modalType === 'add' && typeof lastTrans === 'string' ? lastTrans : item.productCode,
-                rules: [
-                  {
-                    required: true,
-                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input disabled={modalType === 'add' && typeof lastTrans === 'string' ? true : disabled} maxLength={30} onChange={e => changeProductCode(e)} autoFocus />)} */}
+            <FormItem label="Search Product" {...formItemLayout}>
+              <Button {...buttonProductProps} size="default">{item.productCode && item.productName ? `${item.productName.substring(0, 12)} (${item.productCode})` : 'Search Product'}</Button>
             </FormItem>
-            <FormItem label="Product Name" hasFeedback {...formItemLayout}>
-              {/* {getFieldDecorator('productName', {
-                initialValue: item.productName,
-                rules: [
-                  {
-                    required: true,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input maxLength={85} />)} */}
-              <Input maxLength={85} />
+            <FormItem label="Product Code" {...formItemLayout}>
+              <p>{item.productCode}</p>
             </FormItem>
-            <FormItem label="Image" {...formItemLayout}>
+            <FormItem label="Product Name" {...formItemLayout}>
+              <p>{item.productName}</p>
+            </FormItem>
+            <FormItem label="Product Image" {...formItemLayout}>
               <Upload
                 {...props}
                 multiple
                 showUploadList={{
                   showPreviewIcon: true
                 }}
-                defaultFileList={item.productImage
-                  && item.productImage != null
-                  && item.productImage !== '["no_image.png"]'
-                  && item.productImage !== '"no_image.png"'
-                  && item.productImage !== 'no_image.png' ?
-                  JSON.parse(item.productImage).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
+                defaultFileList={
+                  [
+                    {
+                      uid: 1,
+                      name: 'image1',
                       status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
-                  : []}
+                      url: `${IMAGEURL}/uploads/products/Nov2021/5d6b852886529f886a9a7b87258b6256.jpg`,
+                      thumbUrl: `${IMAGEURL}/uploads/products/Nov2021/5d6b852886529f886a9a7b87258b6256.jpg`
+                    },
+                    {
+                      uid: 2,
+                      name: 'image2',
+                      status: 'done',
+                      url: `${IMAGEURL}/uploads/products/Nov2021/5d6b852886529f886a9a7b87258b6256.jpg`,
+                      thumbUrl: `${IMAGEURL}/uploads/products/Nov2021/5d6b852886529f886a9a7b87258b6256.jpg`
+                    },
+                    {
+                      uid: 3,
+                      name: 'image3',
+                      status: 'done',
+                      url: `${IMAGEURL}/uploads/products/Nov2021/5d6b852886529f886a9a7b87258b6256.jpg`,
+                      thumbUrl: `${IMAGEURL}/uploads/products/Nov2021/5d6b852886529f886a9a7b87258b6256.jpg`
+                    }
+                  ]
+                }
+                // defaultFileList={item.productImage
+                //   && item.productImage != null
+                //   && item.productImage !== '["no_image.png"]'
+                //   && item.productImage !== '"no_image.png"'
+                //   && item.productImage !== 'no_image.png' ?
+                //   JSON.parse(item.productImage).map((detail, index) => {
+                //     return ({
+                //       uid: index + 1,
+                //       name: detail,
+                //       status: 'done',
+                //       url: `${IMAGEURL}/${detail}`,
+                //       thumbUrl: `${IMAGEURL}/${detail}`
+                //     })
+                //   })
+                //   : []}
                 listType="picture"
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}
@@ -572,16 +628,12 @@ const AdvancedForm = ({
                     message.error(`${info.file.name} file staged failed.`)
                   }
                 }}
-              >
-                <Button>
-                  <Icon type="upload" /> Click to Upload
-                </Button>
-              </Upload>
+              />
             </FormItem>
           </Col>
         </Row>
       </Card>
-      {/* {modalProductVisible && (
+      {modalProductVisible && (
         <ModalProduct {...modalProductProps}>
           <Table
             bordered
@@ -589,7 +641,7 @@ const AdvancedForm = ({
             scroll={{ x: 500 }}
             columns={columns}
             simple
-            loading={loadingButton.effects['productstock/queryItem']}
+            loading={loadingButton.effects['productstock/query']}
             dataSource={listItem}
             size="small"
             pageSize={10}
@@ -597,8 +649,8 @@ const AdvancedForm = ({
             onRowClick={_record => handleMenuClick(_record)}
           />
         </ModalProduct>
-      )} */}
-      {modalProductVisible && <Stock {...modalProductProps} />}
+      )}
+      {/* {modalProductVisible && <Stock {...modalProductProps} />} */}
     </Form>
   )
 }

@@ -11,13 +11,13 @@ import AdvancedForm from './AdvancedForm'
 const TabPane = Tabs.TabPane
 
 
-const SubaPromo = ({ subaPromo, dispatch, productstock, app }) => {
+const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
   const { user, storeInfo } = app
   const {
     modalProductVisible,
     pagination: paginationProduct,
     listItem,
-    searchText: searchTextProduct,
+    searchText,
     tmpProductData,
     productInformation
   } = productstock
@@ -34,10 +34,12 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, app }) => {
     modalType,
     modalProductVisible,
     paginationProduct,
-    searchTextProduct,
+    searchText,
     listItem,
     tmpProductData,
+    loadingButton: loading,
     productInformation,
+    dispatch,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
@@ -58,11 +60,14 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, app }) => {
         }
       }))
       dispatch({
-        type: 'subaPromo/updateState',
+        type: 'productstock/updateState',
         payload: {
           currentItem: {}
         }
       })
+    },
+    onGetProduct () {
+      dispatch({ type: 'productstock/query' })
     },
     onSearchProductData (data) {
       dispatch({
@@ -165,4 +170,4 @@ SubaPromo.defaultProps = {
   // addNew: true
 }
 
-export default connect(({ productstock, subaPromo, app }) => ({ productstock, subaPromo, app }))(SubaPromo)
+export default connect(({ productstock, subaPromo, loading, app }) => ({ productstock, subaPromo, loading, app }))(SubaPromo)
