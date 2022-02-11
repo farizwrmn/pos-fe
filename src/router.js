@@ -236,6 +236,26 @@ const Routers = function ({ history, app }) {
             }, 'suba-promo')
           }
         }, {
+          path: 'master/product/targetSales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/suba/promo'))
+              registerModel(app, require('./models/app'))
+              cb(null, require('./routes/master/product/targetSales'))
+            }, 'suba-promo')
+          }
+        }, {
+          path: 'master/product/piutangMarketing',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/suba/promo'))
+              registerModel(app, require('./models/app'))
+              cb(null, require('./routes/master/product/piutangMarketing'))
+            }, 'suba-promo')
+          }
+        }, {
           path: 'master/store-price',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
