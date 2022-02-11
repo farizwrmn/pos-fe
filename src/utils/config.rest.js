@@ -114,7 +114,7 @@ module.exports = {
     maintenance: '/maintenance',
     marketing: '/marketing',
     subaPromo: '/suba/promo',
-    subaPiutangMarketing: '/suba/putang-marketing',
+    subaPiutangMarketing: '/suba/piutang-marketing',
     subaTargetSales: '/suba/target-sales'
   }
 }

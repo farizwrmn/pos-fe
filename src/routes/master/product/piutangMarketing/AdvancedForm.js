@@ -230,7 +230,7 @@ const AdvancedForm = ({
                 ]
               })(<InputNumber {...InputNumberProps} />)}
             </FormItem>
-            <FormItem label="Umur Hutang" hasFeedback {...formItemLayout}>
+            <FormItem label="Umur Hutang (Hari)" hasFeedback {...formItemLayout}>
               {getFieldDecorator('umurHutang', {
                 initialValue: item.umurHutang,
                 rules: [
