@@ -80,7 +80,7 @@ const List = ({ ...tableProps,
       render: (text, record) => {
         return (
           <div>
-            <div>{record.tglFaktur}</div>
+            <div>{record.tglFaktur ? moment(record.tglFaktur).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
           </div>
         )
       }
@@ -92,7 +92,7 @@ const List = ({ ...tableProps,
       render: (text, record) => {
         return (
           <div>
-            <div>{record.jatuhTempo}</div>
+            <div>{record.jatuhTempo ? moment(record.jatuhTempo).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
           </div>
         )
       }

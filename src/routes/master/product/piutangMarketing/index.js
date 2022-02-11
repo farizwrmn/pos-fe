@@ -13,6 +13,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
   const { list, pagination, modalType, currentItem, activeKey, advancedForm } = piutangMarketing
 
   const listProps = {
+    user,
     dataSource: list,
     pagination,
     editItem (item) {
@@ -43,7 +44,6 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
   }
 
   const formProps = {
-    user,
     modalType,
     loadingButton: loading,
     dispatch,

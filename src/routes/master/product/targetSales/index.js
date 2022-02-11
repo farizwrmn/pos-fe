@@ -13,6 +13,7 @@ const TargetSales = ({ dispatch, targetSales, app, loading }) => {
   const { list, pagination, modalType, currentItem, activeKey, advancedForm } = targetSales
 
   const listProps = {
+    user,
     dataSource: list,
     pagination,
     editItem (item) {
@@ -43,7 +44,6 @@ const TargetSales = ({ dispatch, targetSales, app, loading }) => {
   }
 
   const formProps = {
-    user,
     modalType,
     loadingButton: loading,
     dispatch,

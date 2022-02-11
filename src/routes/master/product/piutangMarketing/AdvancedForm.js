@@ -100,7 +100,7 @@ const AdvancedForm = ({
           data.jatuhTempo = moment(data.jatuhTempo).format('YYYY-MM-DD')
           data.nilaiFaktur = data.nilaiFaktur
           data.hutang = data.hutang
-          data.umurHutang = moment(data.umurHutang).format('YYYY-MM-DD')
+          data.umurHutang = data.umurHutang
           onSubmit(item.id, data, resetFields)
         },
         onCancel () { }
