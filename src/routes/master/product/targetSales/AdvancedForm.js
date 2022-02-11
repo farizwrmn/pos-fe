@@ -144,7 +144,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
+              })(<TextArea maxLength={50} autosize={{ minRows: 2, maxRows: 6 }} />)}
             </FormItem>
             <FormItem label="product 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product1', {
