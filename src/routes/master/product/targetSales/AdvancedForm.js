@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Card, Table, Tag, Icon, Modal, message } from 'antd'
+import { Form, Input, Button, Row, DatePicker, Col, Card, Table, Tag, Icon, Modal, message } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import { FooterToolbar } from 'components'
 import ModalProduct from './ModalProduct'
 import styles from '../../../../themes/index.less'
@@ -98,6 +99,15 @@ const AdvancedForm = ({
         title: 'Do you want to save this item?',
         onOk () {
           const data = getFieldsValue()
+          data.namaTarget = data.namaTarget
+          data.product1 = data.product1
+          data.product2 = data.product2
+          data.product3 = data.product3
+          data.product4 = data.product4
+          data.product5 = data.product5
+          data.validFrom = moment(data.validFrom).format('YYYY-MM-DD')
+          data.validTo = moment(data.validTo).format('YYYY-MM-DD')
+
           data.storeId = lstorage.getCurrentUserStore()
           data.productId = data.productId ? Number(data.productId) : null
           data.program = data.program ? data.program : null
@@ -231,18 +241,92 @@ const AdvancedForm = ({
       <Card {...cardProps}>
         <Row>
           <Col {...column}>
-            <FormItem label="Program" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('program', {
+            <FormItem label="Nama Target" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('namaTarget', {
                 initialValue: item.program,
                 rules: [
                   {
                     required: true,
-                    pattern: /^[a-z0-9/\n _-]{20,100}$/i,
-                    message: 'At least 20 character'
+                    message: 'a-Z & 0-9'
                   }
                 ]
               })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
             </FormItem>
+            <FormItem label="product 1" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('product1', {
+                initialValue: item.level,
+                rules: [
+                  {
+                    required: true,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input maxLength={3} />)}
+            </FormItem>
+
+            <FormItem label="product 2" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('product2', {
+                initialValue: item.level,
+                rules: [
+                  {
+                    required: false,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input maxLength={3} />)}
+            </FormItem>
+            <FormItem label="product 3" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('product3', {
+                initialValue: item.level,
+                rules: [
+                  {
+                    required: false,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input maxLength={3} />)}
+            </FormItem>
+            <FormItem label="product 4" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('product4', {
+                initialValue: item.level,
+                rules: [
+                  {
+                    required: false,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input maxLength={3} />)}
+            </FormItem>
+            <FormItem label="product 5" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('product5', {
+                initialValue: item.level,
+                rules: [
+                  {
+                    required: false,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input maxLength={3} />)}
+            </FormItem>
+            <FormItem label="Valid From" {...formItemLayout}>
+              {getFieldDecorator('validFrom', {
+                initialValue: item.transDate ? moment(item.transDate) : moment(),
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
+            </FormItem>
+            <FormItem label="Valid To" {...formItemLayout}>
+              {getFieldDecorator('validTo', {
+                initialValue: item.transDate ? moment(item.transDate) : moment(),
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
+            </FormItem>
+
             <FormItem label="Level" hasFeedback {...formItemLayout}>
               {getFieldDecorator('level', {
                 initialValue: item.level,
