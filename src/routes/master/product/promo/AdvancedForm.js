@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, Row, Col, Card, Table, Tag, Icon, Modal, message } from 'antd'
+import { lstorage } from 'utils'
 import { FooterToolbar } from 'components'
 import ModalProduct from './ModalProduct'
 import styles from '../../../../themes/index.less'
@@ -85,26 +86,23 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      const data = {
-        ...getFieldsValue()
-      }
-      if (!getFieldValue('variant') && getFieldValue('useVariant') && !item.productParentId) {
-        message.warning('Must Choose Product')
+      if (!getFieldValue('program')) {
+        message.warning('Must Choose program')
         return
       }
-      if (getFieldValue('useVariant') && !data.variantId.key) {
-        message.warning('Must Choose Variant')
+      if (!getFieldValue('level')) {
+        message.warning('Must Choose level')
         return
       }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
           const data = getFieldsValue()
-          data.productName = data.productName ? data.productName.label : null
-          data.productCode = data.productCode ? data.productCode.label : null
-          data.program = data.program ? data.program.label : null
-          data.level = data.level ? data.level.label : null
-          onSubmit(data.productCode, data, resetFields)
+          data.storeId = lstorage.getCurrentUserStore()
+          data.productId = data.productId ? Number(data.productId) : null
+          data.program = data.program ? data.program : null
+          data.level = data.level ? data.level : null
+          onSubmit(item.id, data, resetFields)
         },
         onCancel () { }
       })
@@ -226,8 +224,8 @@ const AdvancedForm = ({
     <Form layout="horizontal">
       <FooterToolbar>
         <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['productstock/add'] || loadingButton.effects['productstock/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" disabled={loadingButton && (loadingButton.effects['productstock/add'] || loadingButton.effects['productstock/edit'])} onClick={handleSubmit}>{button}</Button>
+          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['subaPromo/add'] || loadingButton.effects['subaPromo/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" disabled={loadingButton && (loadingButton.effects['subaPromo/add'] || loadingButton.effects['subaPromo/edit'])} onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
       <Card {...cardProps}>
@@ -235,6 +233,7 @@ const AdvancedForm = ({
           <Col {...column}>
             <FormItem label="Program" hasFeedback {...formItemLayout}>
               {getFieldDecorator('program', {
+                initialValue: item.program,
                 rules: [
                   {
                     required: true,
@@ -246,7 +245,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="Level" hasFeedback {...formItemLayout}>
               {getFieldDecorator('level', {
-                // initialValue: item.productName,
+                initialValue: item.level,
                 rules: [
                   {
                     required: true,
@@ -259,11 +258,40 @@ const AdvancedForm = ({
             <FormItem label="Search Product" {...formItemLayout}>
               <Button {...buttonProductProps} size="default">{item.productCode && item.productName ? `${item.productName.substring(0, 12)} (${item.productCode})` : 'Search Product'}</Button>
             </FormItem>
+            <FormItem label="Product Identity" {...formItemLayout}>
+              {getFieldDecorator('productId', {
+                initialValue: item.productId,
+                rules: [
+                  {
+                    required: true,
+                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input disabled maxLength={30} value={item.productId} />)}
+            </FormItem>
             <FormItem label="Product Code" {...formItemLayout}>
-              <p>{item.productCode}</p>
+              {getFieldDecorator('productCode', {
+                initialValue: item.productCode,
+                rules: [
+                  {
+                    required: true,
+                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input disabled maxLength={30} value={item.productCode} />)}
             </FormItem>
             <FormItem label="Product Name" {...formItemLayout}>
-              <p>{item.productName}</p>
+              {getFieldDecorator('productName', {
+                initialValue: item.productName,
+                rules: [
+                  {
+                    required: true,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input disabled maxLength={30} value={item.productName} />)}
             </FormItem>
           </Col>
         </Row>

@@ -1,8 +1,6 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-// import { Link, routerRedux } from 'dva/router'
 import { Button, Tabs } from 'antd'
 import List from './List'
 // import Filter from './Filter'
@@ -41,14 +39,16 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     dispatch,
     item: {
       ...currentItem,
+      productId: productInformation && productInformation.id ? productInformation.id : currentItem.id,
       productCode: productInformation && productInformation.productCode ? productInformation.productCode : currentItem.productCode,
       productName: productInformation && productInformation.productName ? productInformation.productName : currentItem.productName
     },
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
+    onSubmit (id, data, reset) {
       dispatch({
         type: `subaPromo/${modalType}`,
         payload: {
+          id,
           data,
           reset
         }
@@ -163,7 +163,6 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
           {activeKey === '0' && <AdvancedForm {...formProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >
-          Browse
           {/* <Filter {...filterProps} /> */}
           <List {...listProps} />
         </TabPane>
@@ -172,13 +171,9 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
   )
 }
 
-SubaPromo.propTypes = {
-  // form: PropTypes.object.isRequired,
-}
 
 SubaPromo.defaultProps = {
   subaPromo: {}
-  // addNew: true
 }
 
 export default connect(({ productstock, subaPromo, loading, app }) => ({ productstock, subaPromo, loading, app }))(SubaPromo)

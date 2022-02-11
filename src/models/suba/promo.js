@@ -1,6 +1,12 @@
 import modelExtend from 'dva-model-extend'
+import { routerRedux } from 'dva/router'
+import { message } from 'antd'
 import { query, add, edit, remove } from '../../services/suba/promo'
 import { pageModel } from '../common'
+
+const success = (messages) => {
+  message.success(messages)
+}
 
 export default modelExtend(pageModel, {
   namespace: 'subaPromo',
@@ -52,18 +58,22 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
-        yield put({
-          type: 'query'
-        })
-        yield put({
-          type: 'app/query'
-        })
+        success('Stock Product has been saved')
+        const { pathname, query } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: 1,
+            activeKey: '1'
+          }
+        }))
       } else {
         const current = Object.assign({}, payload.id, payload.data)
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: { ...current, menuId: null }
+            currentItem: current
           }
         })
         throw data
