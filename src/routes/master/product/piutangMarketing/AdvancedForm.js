@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, DatePicker, Col, Card, Modal, message } from 'antd'
+import { Form, Button, Input, InputNumber, Row, DatePicker, Col, Card, Modal, message } from 'antd'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
 
-const { TextArea } = Input
 const FormItem = Form.Item
 
 const formItemLayout = {
@@ -73,22 +72,35 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      if (!getFieldValue('namaTarget')) {
-        message.warning('Must be filled Nama Target')
+      if (!getFieldValue('salesName')) {
+        message.warning('Must be filled Sales Name')
         return
       }
-      if (!getFieldValue('product1')) {
-        message.warning('Must be filled Product 1')
+      if (!getFieldValue('customer')) {
+        message.warning('Must be filled Customer')
         return
       }
-      if (!getFieldValue('validFrom')) {
-        message.warning('Must be filled Valid From')
+      if (!getFieldValue('noFaktur')) {
+        message.warning('Must be filled No Faktur')
         return
       }
-      if (!getFieldValue('validTo')) {
-        message.warning('Must be filled Valid To')
+      if (!getFieldValue('tglFaktur')) {
+        message.warning('Must be filled Tgl Faktur')
         return
       }
+      if (!getFieldValue('jatuhTempo')) {
+        message.warning('Must be filled Jatuh Tempo')
+        return
+      }
+      if (!getFieldValue('nilaiFaktur')) {
+        message.warning('Must be filled Nilai Faktur')
+        return
+      }
+      if (!getFieldValue('hutang')) {
+        message.warning('Must be filled Hutang')
+        return
+      }
+
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -124,6 +136,11 @@ const AdvancedForm = ({
     )
   }
 
+  const InputNumberProps = {
+    placeholder: '0',
+    style: { width: '100%' }
+  }
+
   return (
     <Form layout="horizontal">
       <FooterToolbar>
@@ -144,7 +161,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
+              })(<Input />)}
             </FormItem>
             <FormItem label="customer" hasFeedback {...formItemLayout}>
               {getFieldDecorator('customer', {
@@ -155,7 +172,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
 
             <FormItem label="No Faktur" hasFeedback {...formItemLayout}>
@@ -167,7 +184,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
             <FormItem label="Tgl Faktur" hasFeedback {...formItemLayout}>
               {getFieldDecorator('tglFaktur', {
@@ -200,7 +217,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<InputNumber {...InputNumberProps} />)}
             </FormItem>
             <FormItem label="Hutang" hasFeedback {...formItemLayout}>
               {getFieldDecorator('hutang', {
@@ -211,7 +228,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<InputNumber {...InputNumberProps} />)}
             </FormItem>
             <FormItem label="Umur Hutang" hasFeedback {...formItemLayout}>
               {getFieldDecorator('umurHutang', {
@@ -219,10 +236,10 @@ const AdvancedForm = ({
                 rules: [
                   {
                     required: false,
-                    message: 'required'
+                    message: 'a-Z & 0-9'
                   }
                 ]
-              })(<DatePicker />)}
+              })(<InputNumber {...InputNumberProps} />)}
             </FormItem>
           </Col>
         </Row>

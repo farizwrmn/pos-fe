@@ -144,7 +144,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
+              })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
             </FormItem>
             <FormItem label="product 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product1', {
@@ -155,7 +155,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
 
             <FormItem label="product 2" hasFeedback {...formItemLayout}>
@@ -167,7 +167,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
             <FormItem label="product 3" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product3', {
@@ -178,7 +178,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
             <FormItem label="product 4" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product4', {
@@ -189,7 +189,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
             <FormItem label="product 5" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product5', {
@@ -200,7 +200,7 @@ const AdvancedForm = ({
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input maxLength={3} />)}
+              })(<Input />)}
             </FormItem>
             <FormItem label="Valid From" {...formItemLayout}>
               {getFieldDecorator('validFrom', {
