@@ -28,6 +28,12 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     pagination,
     editItem (item) {
       dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          productInformation: {}
+        }
+      })
+      dispatch({
         type: 'subaPromo/updateState',
         payload: {
           modalType: 'edit',
@@ -64,9 +70,9 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     dispatch,
     item: {
       ...currentItem,
-      productId: productInformation && productInformation.id ? productInformation.id : currentItem.product && currentItem.product.id ? currentItem.product.id : currentItem.id,
-      productCode: productInformation && productInformation.productCode ? productInformation.productCode : currentItem.product && currentItem.product.productCode ? currentItem.product.productCode : currentItem.productCode,
-      productName: productInformation && productInformation.productName ? productInformation.productName : currentItem.product && currentItem.product.productName ? currentItem.product.productName : currentItem.productName
+      productId: Boolean(productInformation && productInformation.id) === true ? productInformation.id : currentItem.product && currentItem.product.id ? currentItem.product.id : currentItem.id,
+      productCode: Boolean(productInformation && productInformation.productCode) === true ? productInformation.productCode : currentItem.product && currentItem.product.productCode ? currentItem.product.productCode : currentItem.productCode,
+      productName: Boolean(productInformation && productInformation.productName) === true ? productInformation.productName : currentItem.product && currentItem.product.productName ? currentItem.product.productName : currentItem.productName
     },
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data, reset) {
@@ -136,6 +142,12 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
   }
 
   const changeTab = (key) => {
+    dispatch({
+      type: 'productstock/updateState',
+      payload: {
+        productInformation: {}
+      }
+    })
     dispatch({
       type: 'subaPromo/updateState',
       payload: {

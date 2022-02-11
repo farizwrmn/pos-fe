@@ -92,9 +92,15 @@ export default modelExtend(pageModel, {
             disable: 'disabled'
           }
         })
-        yield put({
-          type: 'query'
-        })
+        const { pathname, query } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: 1,
+            activeKey: '1'
+          }
+        }))
       } else {
         throw data
       }
