@@ -8,9 +8,6 @@ import AdvancedForm from './AdvancedForm'
 
 const TabPane = Tabs.TabPane
 
-// registerModel(app, require('./models/suba/targetSales'))
-// registerModel(app, require('./models/app'))
-
 const TargetSales = ({ dispatch, targetSales, app, loading }) => {
   const { user } = app
   const { list, pagination, modalType, currentItem, activeKey, advancedForm } = targetSales
