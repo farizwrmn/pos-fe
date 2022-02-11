@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Card, Table, Tag, Icon, Modal, message } from 'antd'
-import { lstorage } from 'utils'
+import { Form, Input, Button, Row, DatePicker, Col, Card, Modal, message } from 'antd'
+import moment from 'moment'
 import { FooterToolbar } from 'components'
-import ModalProduct from './ModalProduct'
-import styles from '../../../../themes/index.less'
 
 const { TextArea } = Input
 const FormItem = Form.Item
@@ -37,19 +35,8 @@ const AdvancedForm = ({
   onSubmit,
   onCancel,
   loadingButton,
-  modalProductVisible,
-  dispatch,
-  paginationProduct,
-  searchText,
-  onGetProduct,
-  tmpProductData,
-  searchTextProduct,
   button,
-  listItem,
   modalType,
-  onSearchProductData,
-  onSearchProduct,
-  onChooseProduct,
   form: {
     getFieldDecorator,
     validateFields,
@@ -86,122 +73,39 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      if (!getFieldValue('program')) {
-        message.warning('Must Choose program')
+      if (!getFieldValue('namaTarget')) {
+        message.warning('Must be filled Nama Target')
         return
       }
-      if (!getFieldValue('level')) {
-        message.warning('Must Choose level')
+      if (!getFieldValue('product1')) {
+        message.warning('Must be filled Product 1')
+        return
+      }
+      if (!getFieldValue('validFrom')) {
+        message.warning('Must be filled Valid From')
+        return
+      }
+      if (!getFieldValue('validTo')) {
+        message.warning('Must be filled Valid To')
         return
       }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
           const data = getFieldsValue()
-          data.storeId = lstorage.getCurrentUserStore()
-          data.productId = data.productId ? Number(data.productId) : null
-          data.program = data.program ? data.program : null
-          data.level = data.level ? data.level : null
+          data.salesName = data.salesName
+          data.customer = data.customer
+          data.noFaktur = data.noFaktur
+          data.tglFaktur = moment(data.tglFaktur).format('YYYY-MM-DD')
+          data.jatuhTempo = moment(data.jatuhTempo).format('YYYY-MM-DD')
+          data.nilaiFaktur = data.nilaiFaktur
+          data.hutang = data.hutang
+          data.umurHutang = moment(data.umurHutang).format('YYYY-MM-DD')
           onSubmit(item.id, data, resetFields)
         },
         onCancel () { }
       })
     })
-  }
-
-  const hdlSearchPagination = (page) => {
-    const query = {
-      q: searchTextProduct,
-      page: page.current,
-      pageSize: page.pageSize
-    }
-    onSearchProductData(query)
-  }
-
-  const hdlSearch = (e) => {
-    onSearchProduct(e, tmpProductData)
-  }
-
-  const modalProductProps = {
-    title: 'Product',
-    visible: modalProductVisible,
-    footer: null,
-    hdlSearch,
-    searchText,
-    onCancel () {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          modalProductVisible: false
-        }
-      })
-    }
-  }
-
-  const handleMenuClick = (record) => {
-    onChooseProduct(record)
-    dispatch({
-      type: 'productstock/updateState',
-      payload: {
-        modalProductVisible: false
-      }
-    })
-  }
-
-  const hdlGetProduct = () => {
-    onGetProduct()
-    dispatch({
-      type: 'productstock/updateState',
-      payload: {
-        modalProductVisible: true
-      }
-    })
-  }
-
-  const columns = [
-    {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
-      }
-    },
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode'
-    },
-    {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName'
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'count',
-      key: 'count',
-      width: '50px',
-      className: styles.alignRight,
-      render: (text) => {
-        if (!loadingButton.effects['pos/showProductQty']) {
-          return text || 0
-        }
-        return <Icon type="loading" />
-      }
-    }
-  ]
-
-  const buttonProductProps = {
-    type: 'primary',
-    onClick () {
-      hdlGetProduct()
-    }
   }
 
   const cardProps = {
@@ -214,7 +118,7 @@ const AdvancedForm = ({
     title: (
       <Row>
         <Col md={12} lg={3}>
-          <h3>Suba Promo</h3>
+          <h3>Piutang Marketing</h3>
         </Col>
       </Row>
     )
@@ -224,28 +128,27 @@ const AdvancedForm = ({
     <Form layout="horizontal">
       <FooterToolbar>
         <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['subaPromo/add'] || loadingButton.effects['subaPromo/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" disabled={loadingButton && (loadingButton.effects['subaPromo/add'] || loadingButton.effects['subaPromo/edit'])} onClick={handleSubmit}>{button}</Button>
+          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['piutangMarketing/add'] || loadingButton.effects['piutangMarketing/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" disabled={loadingButton && (loadingButton.effects['piutangMarketing/add'] || loadingButton.effects['piutangMarketing/edit'])} onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
       <Card {...cardProps}>
         <Row>
           <Col {...column}>
-            <FormItem label="Program" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('program', {
-                initialValue: item.program,
+            <FormItem label="Sales Name" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('salesName', {
+                initialValue: item.salesName,
                 rules: [
                   {
                     required: true,
-                    pattern: /^[a-z0-9/\n _-]{20,100}$/i,
-                    message: 'At least 20 character'
+                    message: 'a-Z & 0-9'
                   }
                 ]
               })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 6 }} />)}
             </FormItem>
-            <FormItem label="Level" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('level', {
-                initialValue: item.level,
+            <FormItem label="customer" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('customer', {
+                initialValue: item.customer,
                 rules: [
                   {
                     required: true,
@@ -254,82 +157,86 @@ const AdvancedForm = ({
                 ]
               })(<Input maxLength={3} />)}
             </FormItem>
-            {/* cari product promo */}
-            <FormItem label="Search Product" {...formItemLayout}>
-              <Button {...buttonProductProps} size="default">{item.productCode && item.productName ? `${item.productName.substring(0, 12)} (${item.productCode})` : 'Search Product'}</Button>
-            </FormItem>
-            <FormItem label="Product Identity" {...formItemLayout}>
-              {getFieldDecorator('productId', {
-                initialValue: item.productId,
+
+            <FormItem label="No Faktur" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('noFaktur', {
+                initialValue: item.noFaktur,
                 rules: [
                   {
-                    required: true,
-                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
+                    required: false,
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input disabled maxLength={30} value={item.productId} />)}
+              })(<Input maxLength={3} />)}
             </FormItem>
-            <FormItem label="Product Code" {...formItemLayout}>
-              {getFieldDecorator('productCode', {
-                initialValue: item.productCode,
+            <FormItem label="Tgl Faktur" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('tglFaktur', {
+                initialValue: item.tglFaktur,
                 rules: [
                   {
-                    required: true,
-                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
+                    required: false,
+                    message: 'required'
+                  }
+                ]
+              })(<DatePicker />)}
+            </FormItem>
+            <FormItem label="Jatuh Tempo" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('jatuhTempo', {
+                initialValue: item.jatuhTempo,
+                rules: [
+                  {
+                    required: false,
+                    message: 'required'
+                  }
+                ]
+              })(<DatePicker />)}
+            </FormItem>
+            <FormItem label="Nilai Faktur" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('nilaiFaktur', {
+                initialValue: item.nilaiFaktur,
+                rules: [
+                  {
+                    required: false,
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input disabled maxLength={30} value={item.productCode} />)}
+              })(<Input maxLength={3} />)}
             </FormItem>
-            <FormItem label="Product Name" {...formItemLayout}>
-              {getFieldDecorator('productName', {
-                initialValue: item.productName,
+            <FormItem label="Hutang" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('hutang', {
+                initialValue: item.hutang,
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: 'a-Z & 0-9'
                   }
                 ]
-              })(<Input disabled maxLength={30} value={item.productName} />)}
+              })(<Input maxLength={3} />)}
+            </FormItem>
+            <FormItem label="Umur Hutang" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('umurHutang', {
+                initialValue: item.umurHutang,
+                rules: [
+                  {
+                    required: false,
+                    message: 'required'
+                  }
+                ]
+              })(<DatePicker />)}
             </FormItem>
           </Col>
         </Row>
       </Card>
-      {modalProductVisible && (
-        <ModalProduct {...modalProductProps}>
-          <Table
-            bordered
-            pagination={paginationProduct}
-            scroll={{ x: 500 }}
-            columns={columns}
-            simple
-            loading={loadingButton.effects['productstock/query']}
-            dataSource={listItem}
-            size="small"
-            pageSize={10}
-            onChange={hdlSearchPagination}
-            onRowClick={_record => handleMenuClick(_record)}
-          />
-        </ModalProduct>
-      )}
     </Form>
   )
 }
 
 AdvancedForm.propTypes = {
   form: PropTypes.object.isRequired,
-  disabled: PropTypes.string,
   modalType: PropTypes.string,
   item: PropTypes.object,
-  listCategory: PropTypes.object,
-  listBrand: PropTypes.object,
+  onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
-  showBrands: PropTypes.func,
-  showCategories: PropTypes.func,
-  changeTab: PropTypes.func,
-  clickBrowse: PropTypes.func,
-  activeKey: PropTypes.string,
   button: PropTypes.string
 }
 

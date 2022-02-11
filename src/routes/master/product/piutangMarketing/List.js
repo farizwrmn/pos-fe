@@ -16,7 +16,7 @@ const List = ({ ...tableProps,
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.program} ?`,
+        title: `Are you sure delete ${record.namaTarget} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -38,121 +38,97 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Level',
-      dataIndex: 'level',
-      key: 'level',
+      title: 'Sales Name',
+      dataIndex: 'salesName',
+      key: 'salesName',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.level}</div>
+            <div>{record.salesName}</div>
           </div>
         )
       }
     },
     {
-      title: 'Program',
-      dataIndex: 'program',
-      key: 'program',
+      title: 'customer',
+      dataIndex: 'customer',
+      key: 'customer',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.program}</div>
+            <div>{record.customer}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
+      title: 'No Faktur',
+      dataIndex: 'noFaktur',
+      key: 'noFaktur',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.productCode}</div>
+            <div>{record.noFaktur}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
+      title: 'Tgl Faktur',
+      dataIndex: 'tglFaktur',
+      key: 'tglFaktur',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.productName}</div>
+            <div>{record.tglFaktur}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Id',
-      dataIndex: 'productId',
-      key: 'productId',
+      title: 'Jatuh Tempo',
+      dataIndex: 'jatuhTempo',
+      key: 'jatuhTempo',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.productId || record.product.id}</div>
+            <div>{record.jatuhTempo}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Dimension',
-      dataIndex: 'dimension',
-      key: 'dimension',
+      title: 'Nilai Faktur',
+      dataIndex: 'nilaiFaktur',
+      key: 'nilaiFaktur',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.dimension}</div>
+            <div>{record.nilaiFaktur}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product per Box',
-      dataIndex: 'dimensionBox',
-      key: 'dimensionBox',
+      title: 'Hutang',
+      dataIndex: 'hutang',
+      key: 'hutang',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.dimensionBox}</div>
+            <div>{record.hutang}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product per Pack',
-      dataIndex: 'dimensionPack',
-      key: 'dimensionPack',
+      title: 'Umur Hutang',
+      dataIndex: 'umurHutang',
+      key: 'umurHutang',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.dimensionPack}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product weight',
-      dataIndex: 'weight',
-      key: 'weight',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.weight}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Sell Price',
-      dataIndex: 'sellPrice',
-      key: 'sellPrice',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.sellPrice}</div>
+            <div>{record.umurHutang}</div>
           </div>
         )
       }

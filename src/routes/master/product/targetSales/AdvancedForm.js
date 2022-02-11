@@ -1,11 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, DatePicker, Col, Card, Table, Tag, Icon, Modal, message } from 'antd'
-import { lstorage } from 'utils'
+import { Form, Input, Button, Row, DatePicker, Col, Card, Modal, message } from 'antd'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
-import ModalProduct from './ModalProduct'
-import styles from '../../../../themes/index.less'
 
 const { TextArea } = Input
 const FormItem = Form.Item
@@ -38,19 +35,8 @@ const AdvancedForm = ({
   onSubmit,
   onCancel,
   loadingButton,
-  modalProductVisible,
-  dispatch,
-  paginationProduct,
-  searchText,
-  onGetProduct,
-  tmpProductData,
-  searchTextProduct,
   button,
-  listItem,
   modalType,
-  onSearchProductData,
-  onSearchProduct,
-  onChooseProduct,
   form: {
     getFieldDecorator,
     validateFields,
@@ -87,12 +73,20 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      if (!getFieldValue('program')) {
-        message.warning('Must Choose program')
+      if (!getFieldValue('namaTarget')) {
+        message.warning('Must be filled Nama Target')
         return
       }
-      if (!getFieldValue('level')) {
-        message.warning('Must Choose level')
+      if (!getFieldValue('product1')) {
+        message.warning('Must be filled Product 1')
+        return
+      }
+      if (!getFieldValue('validFrom')) {
+        message.warning('Must be filled Valid From')
+        return
+      }
+      if (!getFieldValue('validTo')) {
+        message.warning('Must be filled Valid To')
         return
       }
       Modal.confirm({
@@ -107,111 +101,11 @@ const AdvancedForm = ({
           data.product5 = data.product5
           data.validFrom = moment(data.validFrom).format('YYYY-MM-DD')
           data.validTo = moment(data.validTo).format('YYYY-MM-DD')
-
-          data.storeId = lstorage.getCurrentUserStore()
-          data.productId = data.productId ? Number(data.productId) : null
-          data.program = data.program ? data.program : null
-          data.level = data.level ? data.level : null
           onSubmit(item.id, data, resetFields)
         },
         onCancel () { }
       })
     })
-  }
-
-  const hdlSearchPagination = (page) => {
-    const query = {
-      q: searchTextProduct,
-      page: page.current,
-      pageSize: page.pageSize
-    }
-    onSearchProductData(query)
-  }
-
-  const hdlSearch = (e) => {
-    onSearchProduct(e, tmpProductData)
-  }
-
-  const modalProductProps = {
-    title: 'Product',
-    visible: modalProductVisible,
-    footer: null,
-    hdlSearch,
-    searchText,
-    onCancel () {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          modalProductVisible: false
-        }
-      })
-    }
-  }
-
-  const handleMenuClick = (record) => {
-    onChooseProduct(record)
-    dispatch({
-      type: 'productstock/updateState',
-      payload: {
-        modalProductVisible: false
-      }
-    })
-  }
-
-  const hdlGetProduct = () => {
-    onGetProduct()
-    dispatch({
-      type: 'productstock/updateState',
-      payload: {
-        modalProductVisible: true
-      }
-    })
-  }
-
-  const columns = [
-    {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      render: (text) => {
-        return <Tag color={text ? 'blue' : 'red'}>{text ? 'Active' : 'Non-Active'}</Tag>
-      }
-    },
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode'
-    },
-    {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName'
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'count',
-      key: 'count',
-      width: '50px',
-      className: styles.alignRight,
-      render: (text) => {
-        if (!loadingButton.effects['pos/showProductQty']) {
-          return text || 0
-        }
-        return <Icon type="loading" />
-      }
-    }
-  ]
-
-  const buttonProductProps = {
-    type: 'primary',
-    onClick () {
-      hdlGetProduct()
-    }
   }
 
   const cardProps = {
@@ -224,7 +118,7 @@ const AdvancedForm = ({
     title: (
       <Row>
         <Col md={12} lg={3}>
-          <h3>Suba Promo</h3>
+          <h3>Target Sales</h3>
         </Col>
       </Row>
     )
@@ -243,7 +137,7 @@ const AdvancedForm = ({
           <Col {...column}>
             <FormItem label="Nama Target" hasFeedback {...formItemLayout}>
               {getFieldDecorator('namaTarget', {
-                initialValue: item.program,
+                initialValue: item.namaTarget,
                 rules: [
                   {
                     required: true,
@@ -254,7 +148,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="product 1" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product1', {
-                initialValue: item.level,
+                initialValue: item.product1,
                 rules: [
                   {
                     required: true,
@@ -266,7 +160,7 @@ const AdvancedForm = ({
 
             <FormItem label="product 2" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product2', {
-                initialValue: item.level,
+                initialValue: item.product2,
                 rules: [
                   {
                     required: false,
@@ -277,7 +171,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="product 3" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product3', {
-                initialValue: item.level,
+                initialValue: item.product3,
                 rules: [
                   {
                     required: false,
@@ -288,7 +182,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="product 4" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product4', {
-                initialValue: item.level,
+                initialValue: item.product4,
                 rules: [
                   {
                     required: false,
@@ -299,7 +193,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="product 5" hasFeedback {...formItemLayout}>
               {getFieldDecorator('product5', {
-                initialValue: item.level,
+                initialValue: item.product5,
                 rules: [
                   {
                     required: false,
@@ -310,7 +204,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="Valid From" {...formItemLayout}>
               {getFieldDecorator('validFrom', {
-                initialValue: item.transDate ? moment(item.transDate) : moment(),
+                initialValue: item.validFrom ? moment(item.validFrom) : moment(),
                 rules: [{
                   required: true,
                   message: 'Required'
@@ -319,101 +213,26 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="Valid To" {...formItemLayout}>
               {getFieldDecorator('validTo', {
-                initialValue: item.transDate ? moment(item.transDate) : moment(),
+                initialValue: item.validTo ? moment(item.validTo) : moment(),
                 rules: [{
                   required: true,
                   message: 'Required'
                 }]
               })(<DatePicker />)}
             </FormItem>
-
-            <FormItem label="Level" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('level', {
-                initialValue: item.level,
-                rules: [
-                  {
-                    required: true,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input maxLength={3} />)}
-            </FormItem>
-            {/* cari product promo */}
-            <FormItem label="Search Product" {...formItemLayout}>
-              <Button {...buttonProductProps} size="default">{item.productCode && item.productName ? `${item.productName.substring(0, 12)} (${item.productCode})` : 'Search Product'}</Button>
-            </FormItem>
-            <FormItem label="Product Identity" {...formItemLayout}>
-              {getFieldDecorator('productId', {
-                initialValue: item.productId,
-                rules: [
-                  {
-                    required: true,
-                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input disabled maxLength={30} value={item.productId} />)}
-            </FormItem>
-            <FormItem label="Product Code" {...formItemLayout}>
-              {getFieldDecorator('productCode', {
-                initialValue: item.productCode,
-                rules: [
-                  {
-                    required: true,
-                    pattern: modalType === 'add' ? /^[a-z0-9/-]{3,30}$/i : /^[A-Za-z0-9-.,() _/]{3,30}$/i,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input disabled maxLength={30} value={item.productCode} />)}
-            </FormItem>
-            <FormItem label="Product Name" {...formItemLayout}>
-              {getFieldDecorator('productName', {
-                initialValue: item.productName,
-                rules: [
-                  {
-                    required: true,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<Input disabled maxLength={30} value={item.productName} />)}
-            </FormItem>
           </Col>
         </Row>
       </Card>
-      {modalProductVisible && (
-        <ModalProduct {...modalProductProps}>
-          <Table
-            bordered
-            pagination={paginationProduct}
-            scroll={{ x: 500 }}
-            columns={columns}
-            simple
-            loading={loadingButton.effects['productstock/query']}
-            dataSource={listItem}
-            size="small"
-            pageSize={10}
-            onChange={hdlSearchPagination}
-            onRowClick={_record => handleMenuClick(_record)}
-          />
-        </ModalProduct>
-      )}
     </Form>
   )
 }
 
 AdvancedForm.propTypes = {
   form: PropTypes.object.isRequired,
-  disabled: PropTypes.string,
   modalType: PropTypes.string,
   item: PropTypes.object,
-  listCategory: PropTypes.object,
-  listBrand: PropTypes.object,
+  onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
-  showBrands: PropTypes.func,
-  showCategories: PropTypes.func,
-  changeTab: PropTypes.func,
-  clickBrowse: PropTypes.func,
-  activeKey: PropTypes.string,
   button: PropTypes.string
 }
 

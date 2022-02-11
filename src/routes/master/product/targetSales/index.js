@@ -8,27 +8,19 @@ import AdvancedForm from './AdvancedForm'
 
 const TabPane = Tabs.TabPane
 
+// registerModel(app, require('./models/suba/targetSales'))
+// registerModel(app, require('./models/app'))
 
-const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
-  const { user, storeInfo } = app
-  const {
-    modalProductVisible,
-    pagination: paginationProduct,
-    listItem,
-    searchText,
-    tmpProductData,
-    productInformation
-  } = productstock
-  const { list, pagination, modalType, currentItem, activeKey, advancedForm } = subaPromo
+const TargetSales = ({ dispatch, targetSales, app, loading }) => {
+  const { user } = app
+  const { list, pagination, modalType, currentItem, activeKey, advancedForm } = targetSales
 
   const listProps = {
-    user,
-    storeInfo,
     dataSource: list,
     pagination,
     editItem (item) {
       dispatch({
-        type: 'subaPromo/updateState',
+        type: 'targetSales/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -47,31 +39,24 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     },
     deleteItem (id) {
       dispatch({
-        type: 'subaPromo/delete',
+        type: 'targetSales/delete',
         payload: id
       })
     }
   }
 
   const formProps = {
+    user,
     modalType,
-    modalProductVisible,
-    paginationProduct,
-    searchText,
-    listItem,
-    tmpProductData,
     loadingButton: loading,
     dispatch,
     item: {
-      ...currentItem,
-      productId: productInformation && productInformation.id ? productInformation.id : currentItem.product && currentItem.product.id ? currentItem.product.id : currentItem.id,
-      productCode: productInformation && productInformation.productCode ? productInformation.productCode : currentItem.product && currentItem.product.productCode ? currentItem.product.productCode : currentItem.productCode,
-      productName: productInformation && productInformation.productName ? productInformation.productName : currentItem.product && currentItem.product.productName ? currentItem.product.productName : currentItem.productName
+      ...currentItem
     },
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data, reset) {
       dispatch({
-        type: `subaPromo/${modalType}`,
+        type: `targetSales/${modalType}`,
         payload: {
           id,
           data,
@@ -88,32 +73,24 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
         }
       }))
       dispatch({
-        type: 'productstock/updateState',
+        type: 'targetSales/updateState',
         payload: {
           currentItem: {}
         }
       })
     },
     onGetProduct () {
-      dispatch({ type: 'productstock/queryItem' })
-    },
-    onChooseProduct (data) {
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          productInformation: data
-        }
-      })
+      dispatch({ type: 'targetSales/query' })
     },
     onSearchProductData (data) {
       dispatch({
-        type: 'productstock/updateState',
+        type: 'targetSales/updateState',
         payload: {
           searchText: data.q
         }
       })
       dispatch({
-        type: 'productstock/queryItem',
+        type: 'targetSales/query',
         payload: {
           ...data
         }
@@ -121,13 +98,13 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     },
     onSearchProduct (data) {
       dispatch({
-        type: 'productstock/updateState',
+        type: 'targetSales/updateState',
         payload: {
           searchText: data
         }
       })
       dispatch({
-        type: 'productstock/queryItem',
+        type: 'targetSales/query',
         payload: {
           q: data
         }
@@ -137,7 +114,7 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'subaPromo/updateState',
+      type: 'targetSales/updateState',
       payload: {
         activeKey: key,
         modalType: 'add',
@@ -169,7 +146,7 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
 
   const clickBrowse = () => {
     dispatch({
-      type: 'subaPromo/updateState',
+      type: 'targetSales/updateState',
       payload: {
         activeKey: '1'
       }
@@ -197,8 +174,8 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
 }
 
 
-SubaPromo.defaultProps = {
-  subaPromo: {}
+TargetSales.defaultProps = {
+  targetSales: {}
 }
 
-export default connect(({ productstock, subaPromo, loading, app }) => ({ productstock, subaPromo, loading, app }))(SubaPromo)
+export default connect(({ targetSales, loading, app }) => ({ targetSales, loading, app }))(TargetSales)

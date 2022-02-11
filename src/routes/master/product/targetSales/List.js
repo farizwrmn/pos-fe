@@ -16,7 +16,7 @@ const List = ({ ...tableProps,
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.program} ?`,
+        title: `Are you sure delete ${record.namaTarget} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -38,121 +38,98 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Level',
-      dataIndex: 'level',
-      key: 'level',
+      title: 'Nama Target',
+      dataIndex: 'namaTarget',
+      key: 'namaTarget',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.level}</div>
+            <div>{record.namaTarget}</div>
           </div>
         )
       }
     },
     {
-      title: 'Program',
-      dataIndex: 'program',
-      key: 'program',
+      title: 'Product 1',
+      dataIndex: 'product1',
+      key: 'product1',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.program}</div>
+            <div>{record.product1}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
+      title: 'Product 2',
+      dataIndex: 'product2',
+      key: 'product2',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.productCode}</div>
+            <div>{record.product2}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
+      title: 'Product 3',
+      dataIndex: 'product3',
+      key: 'product3',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.productName}</div>
+            <div>{record.product3}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Id',
-      dataIndex: 'productId',
-      key: 'productId',
+      title: 'Product 4',
+      dataIndex: 'product4',
+      key: 'product4',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.productId || record.product.id}</div>
+            <div>{record.product4}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product Dimension',
-      dataIndex: 'dimension',
-      key: 'dimension',
+      title: 'Product 5',
+      dataIndex: 'product5',
+      key: 'product5',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.dimension}</div>
+            <div>{record.product5}</div>
+          </div>
+        )
+      }
+    },
+
+    {
+      title: 'Valid From',
+      dataIndex: 'validFrom',
+      key: 'validFrom',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.validFrom}</div>
           </div>
         )
       }
     },
     {
-      title: 'Product per Box',
-      dataIndex: 'dimensionBox',
-      key: 'dimensionBox',
+      title: 'Valid To',
+      dataIndex: 'validTo',
+      key: 'validTo',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.dimensionBox}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product per Pack',
-      dataIndex: 'dimensionPack',
-      key: 'dimensionPack',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.dimensionPack}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product weight',
-      dataIndex: 'weight',
-      key: 'weight',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.weight}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Sell Price',
-      dataIndex: 'sellPrice',
-      key: 'sellPrice',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.sellPrice}</div>
+            <div>{record.validTo}</div>
           </div>
         )
       }
