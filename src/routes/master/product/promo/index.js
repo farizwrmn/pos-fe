@@ -52,7 +52,6 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
       })
     }
   }
-  console.log('currentItem', currentItem)
 
   const formProps = {
     modalType,
