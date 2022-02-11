@@ -5,6 +5,7 @@ import moment from 'moment'
 import { FooterToolbar } from 'components'
 
 const FormItem = Form.Item
+const dateFormat = 'YYYY-MM-DD'
 
 const formItemLayout = {
   style: {
@@ -188,7 +189,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="Tgl Faktur" hasFeedback {...formItemLayout}>
               {getFieldDecorator('tglFaktur', {
-                initialValue: item.tglFaktur,
+                initialValue: moment.utc(moment(item.tglFaktur).format('YYYY-MM-DD'), dateFormat),
                 rules: [
                   {
                     required: false,
@@ -199,7 +200,7 @@ const AdvancedForm = ({
             </FormItem>
             <FormItem label="Jatuh Tempo" hasFeedback {...formItemLayout}>
               {getFieldDecorator('jatuhTempo', {
-                initialValue: item.jatuhTempo,
+                initialValue: moment.utc(moment(item.jatuhTempo).format('YYYY-MM-DD'), dateFormat),
                 rules: [
                   {
                     required: false,
