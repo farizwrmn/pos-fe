@@ -25,8 +25,34 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     user,
     storeInfo,
     dataSource: list,
-    pagination
+    pagination,
+    editItem (item) {
+      dispatch({
+        type: 'subaPromo/updateState',
+        payload: {
+          modalType: 'edit',
+          activeKey: '0',
+          currentItem: item,
+          disable: 'disabled'
+        }
+      })
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          activeKey: 0
+        }
+      }))
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'subaPromo/delete',
+        payload: id
+      })
+    }
   }
+  console.log('currentItem', currentItem)
 
   const formProps = {
     modalType,
@@ -39,9 +65,9 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
     dispatch,
     item: {
       ...currentItem,
-      productId: productInformation && productInformation.id ? productInformation.id : currentItem.id,
-      productCode: productInformation && productInformation.productCode ? productInformation.productCode : currentItem.productCode,
-      productName: productInformation && productInformation.productName ? productInformation.productName : currentItem.productName
+      productId: productInformation && productInformation.id ? productInformation.id : currentItem.product && currentItem.product.id ? currentItem.product.id : currentItem.id,
+      productCode: productInformation && productInformation.productCode ? productInformation.productCode : currentItem.product && currentItem.product.productCode ? currentItem.product.productCode : currentItem.productCode,
+      productName: productInformation && productInformation.productName ? productInformation.productName : currentItem.product && currentItem.product.productName ? currentItem.product.productName : currentItem.productName
     },
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data, reset) {

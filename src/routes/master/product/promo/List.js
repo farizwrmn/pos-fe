@@ -1,32 +1,42 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
-// import { Table, Modal} from 'antd'
+import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 
-
-// const confirm = Modal.confirm
+const confirm = Modal.confirm
 
 const List = ({ ...tableProps,
-  user
-  // editItem,
-  // deleteItem,
+  user,
+  editItem,
+  deleteItem
 }) => {
   const handleMenuClick = (record, e) => {
-    // if (e.key === '1') {
-    //   editItem(record)
-    // } else if (e.key === '2') {
-    //   confirm({
-    //     title: `Are you sure delete ${record.productName} ?`,
-    //     onOk () {
-    //       deleteItem(record.productCode)
-    //     }
-    //   })
-    // }
+    if (e.key === '1') {
+      editItem(record)
+    } else if (e.key === '2') {
+      confirm({
+        title: `Are you sure delete ${record.program} ?`,
+        onOk () {
+          deleteItem(record.id)
+        }
+      })
+    }
   }
 
   const columns = [
+    {
+      title: 'id',
+      dataIndex: 'id',
+      key: 'id',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.id}</div>
+          </div>
+        )
+      }
+    },
     {
       title: 'Level',
       dataIndex: 'level',
@@ -47,6 +57,102 @@ const List = ({ ...tableProps,
         return (
           <div>
             <div>{record.program}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.productCode}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.productName}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product Id',
+      dataIndex: 'productId',
+      key: 'productId',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.productId || record.product.id}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product Dimension',
+      dataIndex: 'dimension',
+      key: 'dimension',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.dimension}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product per Box',
+      dataIndex: 'dimensionBox',
+      key: 'dimensionBox',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.dimensionBox}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product per Pack',
+      dataIndex: 'dimensionPack',
+      key: 'dimensionPack',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.dimensionPack}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Product weight',
+      dataIndex: 'weight',
+      key: 'weight',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.weight}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Sell Price',
+      dataIndex: 'sellPrice',
+      key: 'sellPrice',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.product.sellPrice}</div>
           </div>
         )
       }
@@ -82,7 +188,7 @@ const List = ({ ...tableProps,
         bordered
         columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
           ? columns
-          : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'supplierId' && filtered.key !== 'margin')}
+          : []}
         simple
         scroll={{ x: 2000 }}
         rowKey={record => record.id}

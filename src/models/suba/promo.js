@@ -44,7 +44,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, { ...payload, relationship: 1 })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -84,17 +84,16 @@ export default modelExtend(pageModel, {
       const data = yield call(edit, payload)
       if (data.success) {
         yield put({
-          type: 'query'
-        })
-        yield put({
-          type: 'updateState',
+          type: 'subaPromo/updateState',
           payload: {
+            modalType: 'add',
+            activeKey: '0',
             currentItem: {},
-            modalType: 'add'
+            disable: 'disabled'
           }
         })
         yield put({
-          type: 'app/query'
+          type: 'query'
         })
       } else {
         throw data
