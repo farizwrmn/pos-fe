@@ -70,7 +70,6 @@ class ModalList extends Component {
 
     const listStoreId = getListUserStores()
     const Options = (listStoreId || []).length > 0 ? listStoreId.map(data => <Option value={data.value} key={data.value}>{data.label}</Option>) : []
-    console.log('item.accountId', item.accountId)
 
     return (
       <Modal
