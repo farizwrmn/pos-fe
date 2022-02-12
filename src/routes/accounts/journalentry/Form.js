@@ -99,10 +99,6 @@ const FormCounter = ({
   }
 
   const handleModalShowList = (record) => {
-    record.accountId = {
-      key: record.accountId,
-      label: record.accountName
-    }
     modalShowList(record)
   }
 

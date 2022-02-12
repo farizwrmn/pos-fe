@@ -56,7 +56,7 @@ const FormCounter = ({
   }
 }) => {
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
+  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -68,13 +68,6 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       data.memberId = data.memberId ? data.memberId.key : null
       data.supplierId = data.supplierId ? data.supplierId.key : null
-      if (data.accountCode && data.accountCode.key) {
-        data.accountCode = data.accountCode && data.accountCode.key ? data.accountCode : undefined
-        data.accountId = data.accountCode && data.accountCode.key ? data.accountCode.key : undefined
-      } else {
-        message.error('Choose Account Code')
-        return
-      }
       data.transType = data.transType ? data.transType.key : null
       const transDate = moment(data.transDate).format('YYYY-MM-DD')
       data.transDate = transDate
@@ -102,10 +95,6 @@ const FormCounter = ({
   }
 
   const handleModalShowList = (record) => {
-    record.accountId = {
-      key: record.accountId,
-      label: record.accountName
-    }
     modalShowList(record)
   }
 
@@ -148,11 +137,8 @@ const FormCounter = ({
           </Col>
           <Col {...column}>
             <FormItem {...formItemLayout} label="Account Code">
-              {getFieldDecorator('accountCode', {
-                initialValue: item && item.accountCode ? {
-                  key: item.accountCode.key || item.accountId,
-                  label: item.accountCode.label || `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-                } : undefined,
+              {getFieldDecorator('accountId', {
+                initialValue: item.accountId,
                 rules: [{
                   required: true,
                   message: 'Required'
@@ -161,7 +147,6 @@ const FormCounter = ({
                 showSearch
                 allowClear
                 optionFilterProp="children"
-                labelInValue
                 filterOption={filterOption}
               >{listAccountOpt}
               </Select>)}
