@@ -182,6 +182,7 @@ const Cash = ({ journalentry, accountCode, customer, supplier, loading, dispatch
   }
   let timeout
   const formProps = {
+    listAccountCode: listAccountCodeLov,
     dispatch,
     modalType,
     modalVisible,
