@@ -48,6 +48,7 @@ const FormCounter = ({
   onCancel,
   button,
   listAccountCode,
+  listAccountCodeExpense,
   form: {
     getFieldDecorator,
     validateFields,
@@ -100,8 +101,8 @@ const FormCounter = ({
 
   const listDetailOpts = {
     handleModalShowList,
+    listAccountCode: listAccountCodeExpense,
     listItem,
-    listAccountCode,
     ...listDetailProps
   }
 

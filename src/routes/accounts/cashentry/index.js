@@ -184,6 +184,7 @@ const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, l
   const formProps = {
     dispatch,
     listAccountCode,
+    listAccountCodeExpense,
     modalType,
     modalItemType,
     modalVisible,
