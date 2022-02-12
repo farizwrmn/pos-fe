@@ -100,6 +100,7 @@ const FormCounter = ({
   const listDetailOpts = {
     handleModalShowList,
     listItem,
+    listAccountCode,
     ...listDetailProps
   }
 

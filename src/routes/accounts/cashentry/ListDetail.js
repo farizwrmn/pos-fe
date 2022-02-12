@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
 const Browse = ({
-  handleModalShowList, listItem, ...purchaseProps }) => {
+  handleModalShowList, listAccountCode, listItem, ...purchaseProps }) => {
   const columns = [
     {
       title: 'No',
@@ -13,8 +13,17 @@ const Browse = ({
     },
     {
       title: 'Type',
-      dataIndex: 'accountCode.label',
-      key: 'accountCode.label'
+      dataIndex: 'accountId',
+      key: 'accountId',
+      render: (text) => {
+        if (text) {
+          const filteredOption = listAccountCode.filter(filtered => filtered.id === text)
+          if (filteredOption && filteredOption[0]) {
+            return `${filteredOption[0].accountName} (${filteredOption[0].accountCode})`
+          }
+        }
+        return null
+      }
     },
     {
       title: 'Debit',
