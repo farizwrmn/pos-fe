@@ -351,7 +351,7 @@ class ModalAccept extends Component {
                 {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" onClick={() => onPrintBarcode()}>Print Barcode</Button>}
                 {selectedRowKeys && selectedRowKeys.length > 0 && (
                   <span style={{ marginLeft: '10px' }}>
-                    <PrintShelf stickers={listSticker} user={user} {...printStickerProps} />
+                    <PrintShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
                     <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
                   </span>
                 )}

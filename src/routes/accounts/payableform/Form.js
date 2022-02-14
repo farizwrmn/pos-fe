@@ -100,6 +100,7 @@ const FormCounter = ({
         return
       }
       let total = 0
+      let notRetur = true
       for (let key in listItem) {
         const item = listItem[key]
         let totalDiscount = 0
@@ -108,7 +109,7 @@ const FormCounter = ({
         }
         total += item.amount - totalDiscount
       }
-      if (total <= 0) {
+      if (notRetur && total <= 0) {
         message.error('Total payment cannot under zero')
         return
       }

@@ -237,7 +237,7 @@ class Detail extends Component {
             {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" disabled={data.length > 0 ? !data[0].active : 1} onClick={() => onPrintBarcode()}>Print Barcode</Button>}
             {selectedRowKeys && selectedRowKeys.length > 0 && (
               <span style={{ marginLeft: '10px' }}>
-                <PrintShelf stickers={listSticker} user={user} {...printStickerProps} />
+                <PrintShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
                 <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printStickerProps} />
               </span>
             )}
