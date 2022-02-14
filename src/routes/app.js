@@ -20,7 +20,7 @@ const { prefix, openPages } = configMain
 const {
   Header,
   Bread,
-  // Footer,
+  Footer,
   Sider,
   styles
 } = Layout
@@ -343,7 +343,7 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
                   hasPermission ? children : <Error />}
               </div>
             </div>
-            {/* <Footer /> */}
+            <Footer />
           </div>
         </LocaleProvider>
         <Notification {...notificationProps} />

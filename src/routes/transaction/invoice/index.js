@@ -8,7 +8,7 @@ import styles from './index.less'
 import Header from './Header'
 import Body from './Body'
 import Total from './Total'
-// import Footer from './Footer'
+import Footer from './Footer'
 import MerchantCopy from './MerchantCopy'
 import Member from './Member'
 import { groupProduct } from './utils'
@@ -216,7 +216,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
         />
         <Member invoiceInfo={invoiceInfo} />
         {/* <div className={styles.separator} /> */}
-        {/* <Footer /> */}
+        <Footer />
         <MerchantCopy
           posData={posData}
           dataPos={invoiceInfo.dataPos || []}

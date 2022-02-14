@@ -5,6 +5,7 @@ import { message } from 'antd'
 import { configMain, lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 // import { APPNAME, couchdb } from 'utils/config.company'
+import { VERSION, getVersionInfo } from 'utils/config.main'
 import { APPNAME } from 'utils/config.company'
 import { query as queryParameter } from 'services/utils/parameter'
 import { login as loginShopee } from 'services/shopee/shopeeApi'
@@ -97,6 +98,7 @@ export default {
           type: 'all',
           paramCode: 'shopeeRequireLogin'
         })
+        getVersionInfo(VERSION)
         if (parameter.success && parameter.data.length > 0) {
           lstorage.setShopeeRequireLogin(parseFloat(parameter.data[0].paramValue))
         } else {

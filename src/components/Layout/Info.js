@@ -38,13 +38,13 @@ const Info = ({ ipAddress, dispatch, app }) => {
       title: 'value',
       dataIndex: 'value',
       className: styles.value,
-      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color} style={{ fontSize: 8 }}>{text}</Tag></div>
+      render: (text, it) => <div className={styles.truncate} title={it.title || text}><Tag color={status[it.status].color} style={{ fontSize: 8 }}>{text}</Tag></div>
     }
   ]
 
   const data = [
     { name: 'IP Address', value: `${ipAddress}`, status: 1 },
-    { name: 'Version', value: `${configMain.version}`, status: 2 },
+    { name: 'Version', value: `${configMain.version}`, title: `${configMain.versionInfo}`, status: 2 },
     { name: 'Session', value: `${sessionId}`, status: 3 },
     { name: 'Service', value: `${config.apiHost}`, status: 4 }
   ]

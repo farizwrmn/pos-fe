@@ -1,22 +1,42 @@
-module.exports = [
-  { version: '2018.01.004',
-    info: 'update feature multi-store and add booking service and history',
-    date: '2018-01-23'
+export const listVersion = [
+
+  {
+    version: '2022.03.001',
+    info: `
+    Update Info:
+    1. Grabfood Integration
+    2. Cancel POS akan auto Retur Barang Consignment
+    `,
+    date: '2022-03-15'
   },
-  { version: '2018.01.005',
-    info: 'fix menu pos, add info version and ip address on login',
-    date: '2018-01-26'
+  {
+    version: '2022.02.003',
+    info: `
+    Update Info:
+    1. VB App For Order Integration with Transfer Out
+    2. Penagihan Voucher Wajib Member
+    `,
+    date: '2022-02-27'
   },
-  { version: '2018.01.006',
-    info: 'fix menu pos, add info version and ip address on login',
-    date: '2018-01-31'
+  {
+    version: '2022.02.002',
+    info: `
+    Update Info:
+    1. Delivery Order App Integration
+    2. Register Member Website Ada Approval dari Kasir
+    `,
+    date: '2022-02-23'
   },
-  { version: '2018.03.001',
-    info: 'add notification of stock below minimum level',
-    date: '2018-03-06'
-  },
-  { version: '2018.03.001-rev1',
-    info: 'fix login without api request for member-bday, pos_detail, purchase',
-    date: '2018-03-08'
+  {
+    version: '2022.02.001',
+    info: `
+    Update Info:
+    1. Upload Product Shopee
+    2. Show Dimension in Stock Report and Master Product
+    3. Inventory Age in FIFO Inventory Value
+    4. Price Tag Regular
+    5. Country Product
+    `,
+    date: '2022-02-16'
   }
 ]
