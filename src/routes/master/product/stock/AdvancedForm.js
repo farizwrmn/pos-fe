@@ -774,6 +774,7 @@ class AdvancedForm extends Component {
       message.success(`Success set category shopee to ${name}`)
       if (id) {
         getShopeeBrand(id)
+        getShopeeAttribute(id)
       }
     }
 
