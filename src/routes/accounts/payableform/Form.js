@@ -108,7 +108,7 @@ const FormCounter = ({
         }
         total += item.amount - totalDiscount
       }
-      if (total <= 0) {
+      if (total < 0) {
         message.error('Total payment cannot under zero')
         return
       }
