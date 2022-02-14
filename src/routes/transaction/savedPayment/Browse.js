@@ -4,14 +4,14 @@ import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd
 import { DropOption } from 'components'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
-import { configMain, alertModal } from 'utils'
+import { alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
 import styles from 'themes/index.less'
 
 const { checkPermissionMonthTransaction } = alertModal
 const { RangePicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
-const { prefix } = configMain
 
 const filterItemLayout = {
   xs: { span: 12 },

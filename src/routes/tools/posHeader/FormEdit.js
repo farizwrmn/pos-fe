@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { configMain, lstorage } from 'utils'
+import { lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
 import { Modal, Button, Input, Form, Row, Col, DatePicker, Select } from 'antd'
 import moment from 'moment'
 import ModalBrowse from './ModalBrowse'
 
 const FormItem = Form.Item
-const { prefix } = configMain
 const { MonthPicker } = DatePicker
 const formItemLayout = {
   labelCol: { span: 8 },

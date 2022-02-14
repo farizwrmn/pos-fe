@@ -1,10 +1,10 @@
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
-import { configMain, configCompany, queryURL, lstorage, messageInfo } from 'utils'
+import { configCompany, queryURL, lstorage, messageInfo } from 'utils'
 import { APPNAME } from 'utils/config.company'
+import { prefix } from 'utils/config.main'
 import { login, getUserRole, getUserStore } from '../services/login'
 
-const { prefix } = configMain
 const { apiCompanyProtocol, apiCompanyHost, apiCompanyPort } = configCompany.rest
 
 

@@ -2,7 +2,8 @@ import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal, message } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage, variables } from 'utils'
+import { lstorage, variables } from 'utils'
+import { prefix } from 'utils/config.main'
 import { allowPrint } from 'utils/validation'
 // import { numberFormatter } from 'utils/string'
 import {
@@ -56,7 +57,6 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 
-const { prefix } = configMain
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {

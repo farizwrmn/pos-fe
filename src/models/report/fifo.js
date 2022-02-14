@@ -3,10 +3,8 @@
  */
 import { Modal, message } from 'antd'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoValueAll, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
-
-const { prefix } = configMain
 
 export default {
   namespace: 'fifoReport',

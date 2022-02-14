@@ -1,11 +1,11 @@
 import { Modal, message } from 'antd'
-import { configMain, configCompany, lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
+import { configCompany, lstorage } from 'utils'
 import { getNPS, postNPS, getTempToken } from '../services/nps'
 import { queryByCode, querySearchByPlat } from '../services/master/customer'
 // import { getUserCompany } from '../services/login'
 
 const { apiCompanyHost, apiCompanyPort } = configCompany.rest
-const { prefix } = configMain
 
 export default {
   namespace: 'nps',

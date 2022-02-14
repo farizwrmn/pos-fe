@@ -136,14 +136,6 @@ const setShopeeRequireLogin = (data) => {
   return localStorage.setItem('requireLoginShopee', parseFloat(data))
 }
 
-const getVersionInfoCache = () => {
-  return localStorage.getItem('versionInfo') ? localStorage.getItem('versionInfo') : null
-}
-
-const setVersionInfo = (data) => {
-  return localStorage.setItem('versionInfo', data)
-}
-
 const removeQrisImage = () => {
   return localStorage.removeItem('qris_image')
 }
@@ -320,7 +312,5 @@ module.exports = {
   setVoucherList,
   removeQrisImage,
   getShopeeRequireLogin,
-  setShopeeRequireLogin,
-  getVersionInfoCache,
-  setVersionInfo
+  setShopeeRequireLogin
 }

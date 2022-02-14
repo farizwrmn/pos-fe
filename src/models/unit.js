@@ -1,10 +1,8 @@
 import modelExtend from 'dva-model-extend'
-import { configMain } from 'utils'
+import { disableMultiSelect } from 'utils/config.main'
 import { Modal } from 'antd'
 import { query, queryField, add, edit, remove } from '../services/units'
 import { pageModel } from './common'
-
-const { disableMultiSelect } = configMain
 
 export default modelExtend(pageModel, {
   namespace: 'unit',

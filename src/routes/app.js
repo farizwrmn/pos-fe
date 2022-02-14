@@ -3,19 +3,19 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { Layout, Loader, Notification } from 'components'
-import { classnames, configMain } from 'utils'
+import { classnames } from 'utils'
 import { Helmet } from 'react-helmet'
 import NProgress from 'nprogress'
 import { LocaleProvider } from 'antd'
 import moment from 'moment'
 import enUS from 'antd/lib/locale-provider/en_US'
 import { APPNAME } from 'utils/config.company'
+import { prefix, openPages } from 'utils/config.main'
 import '../themes/index.less'
 import './app.less'
 import Error from './error'
 import ButtonIcon from '../../public/icons/Notifications_button_24.svg'
 
-const { prefix, openPages } = configMain
 
 const {
   Header,
@@ -35,8 +35,8 @@ const App = ({ children, dispatch, app = {}, loading, location }) => {
     listCustomerBirthday, listNotification, listNotificationDetail, ignore, title } = app
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
-  const current = pathname === '/' ? menu && menu.filter(item => item.route === '/') : menu && menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
-  const hasPermission = current.length ? permissions.visit.includes(current[0].menuId) : false
+  const current = pathname === '/' ? (menu && menu.filter(item => item.route === '/')) : (menu && menu.filter(item => pathToRegexp(item.route || '').exec(pathname)))
+  const hasPermission = current && current.length ? permissions.visit.includes(current[0].menuId) : false
   const href = window.location.href
   if (lastHref !== href) {
     NProgress.start()

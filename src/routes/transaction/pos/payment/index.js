@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 // import { routerRedux } from 'dva/router'
-import { configMain, lstorage } from 'utils'
+import { lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
 import {
   Row,
   Col,
@@ -13,7 +14,6 @@ import moment from 'moment'
 import FormPayment from './Form'
 
 const { getCashierTrans } = lstorage
-const { prefix } = configMain
 
 const Payment = ({
   paymentOpts,

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 // import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain, variables, isEmptyObject, lstorage, color } from 'utils'
+import { prefix } from 'utils/config.main'
+import { variables, isEmptyObject, lstorage, color } from 'utils'
 // import {
 //   TYPE_PEMBELIAN_UMUM,
 //   TYPE_PEMBELIAN_GRABFOOD,
@@ -45,7 +46,6 @@ import Advertising from './Advertising'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
-const { prefix } = configMain
 const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
   // setCashierTrans, setBundleTrans,
