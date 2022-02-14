@@ -7,7 +7,7 @@ import { APPNAME, MAIN_WEBSITE } from 'utils/config.company'
 import QRCode from 'qrcode'
 import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
-const NUMBER_OF_COLUMN = 4
+const NUMBER_OF_COLUMN = 5
 const BRAND_NAME_SIZE_IN_POINT = 6
 const BRAND_NAME_SIZE = BRAND_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRODUCT_NAME_SIZE_IN_POINT = 5
@@ -23,12 +23,12 @@ const WIDTH_TABLE_IN_CENTI = 5
 const HEIGHT_TABLE_IN_CENTI = 3.8
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
-const WIDTH_LOGO_IMAGE_IN_CENTI = 3
+const WIDTH_LOGO_IMAGE_IN_CENTI = 2.6
 const HEIGHT_LOGO_IMAGE_IN_CENTI = 0.5
 const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
-const WIDTH_IMAGE_IN_CENTI = 1.2
-const HEIGHT_IMAGE_IN_CENTI = 1.2
+const WIDTH_IMAGE_IN_CENTI = 1
+const HEIGHT_IMAGE_IN_CENTI = 1
 const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
 
@@ -43,7 +43,7 @@ const styles = {
     alignment: 'right',
     fontSize: PRICE_SIZE,
     width: '100%',
-    margin: [0, 0, 0, 0]
+    margin: [3, 0]
   },
   brandName: {
     alignment: 'left',
@@ -73,7 +73,8 @@ const styles = {
   },
   printDate: {
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 0],
+    margin: [3, 0],
+    italics: true,
     alignment: 'right'
   }
 }
@@ -127,25 +128,49 @@ const createTableBody = async (tableBody, aliases) => {
             item.distPrice05 = price[0].distPrice05
           }
         }
+        let background = '#ffffff'
+        if (tableBody[key].info.categoryColor) {
+          background = tableBody[key].info.categoryColor
+        }
+        const color = '#000000'
+        const imageBase = getQRCode(tableBody[key].info.productCode)
+        images[`${item.productCode}`] = imageBase
+        const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
         // eslint-disable-next-line no-await-in-loop
         let row = [
           {
-            image: 'AppLogo',
-            width: WIDTH_LOGO_IMAGE,
-            height: HEIGHT_LOGO_IMAGE,
+            columns: [
+              {
+                stack: [
+                  {
+                    image: 'AppLogo',
+                    width: WIDTH_LOGO_IMAGE,
+                    height: HEIGHT_LOGO_IMAGE,
 
-            fontSize: 30,
-            alignment: 'left'
+                    alignment: 'left'
+                  },
+                  {
+                    text: tableBody[key].info.brandName.slice(0, NUMBER_OF_PRODUCT_NAME).toString(),
+                    style: 'brandName',
+                    alignment: 'left',
+                    width: WIDTH_TABLE
+                  }
+                ]
+              },
+              {
+                image: `${item.productCode}`,
+                width: WIDTH_IMAGE,
+                alignment: 'left',
+                height: HEIGHT_IMAGE,
+                margin: [0, 0],
+                fillColor: background,
+                background
+              }
+            ]
           }
         ]
-        const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
         row.push(
-          {
-            text: tableBody[key].info.brandName.slice(0, NUMBER_OF_PRODUCT_NAME).toString(),
-            style: 'brandName',
-            alignment: 'left',
-            width: WIDTH_TABLE
-          }
+
         )
         let maxStringPerRow2 = ' '
         if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
@@ -165,45 +190,19 @@ const createTableBody = async (tableBody, aliases) => {
           style: 'productName2',
           alignment: 'left'
         })
-
-        row.push(
-          {
-            text: moment().format('YYYY-MM-DD'),
-            style: 'printDate',
-            alignment: 'right'
-          })
-        let background = '#ffffff'
-        if (tableBody[key].info.categoryColor) {
-          background = tableBody[key].info.categoryColor
-        }
-        const color = '#000000'
         // row.push({
         //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
         // })
         // eslint-disable-next-line no-await-in-loop
-        const imageBase = getQRCode(tableBody[key].info.productCode)
-        images[`${item.productCode}`] = imageBase
+
 
         if (aliases.check1) {
           row.push({
-            columns: [
-              {
-                image: `${item.productCode}`,
-                width: WIDTH_IMAGE,
-                height: HEIGHT_IMAGE,
-                margin: [10, 0],
-                fillColor: background,
-                background
-              },
-              {
-                text: numberFormatter(tableBody[key].info[aliases.price1]),
-                width: '80%',
-                fillColor: background,
-                background,
-                color,
-                style: 'sellPrice'
-              }
-            ]
+            text: numberFormatter(tableBody[key].info[aliases.price1]),
+            fillColor: background,
+            background,
+            color,
+            style: 'sellPrice'
           })
         }
         if (aliases.check2) {
@@ -218,10 +217,21 @@ const createTableBody = async (tableBody, aliases) => {
           })
         }
         row.push({
-          text: (tableBody[key].info.productCode || '').toString(),
-          style: 'productCode',
-          margin: [0, 0],
-          alignment: 'left'
+          columns: [
+            {
+              text: (tableBody[key].info.productCode || '').toString(),
+              style: 'productCode',
+              margin: [0, 0],
+              alignment: 'left',
+              width: '60%'
+            },
+            {
+              text: moment().format('YYYY-MM-DD'),
+              style: 'printDate',
+              alignment: 'right',
+              width: '40%'
+            }
+          ]
         })
         body.push(row)
       }
@@ -239,7 +249,7 @@ class PrintShelf extends Component {
   state = {
     pdfProps: {
       name: 'Print',
-      width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
+      width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
       height: HEIGHT_TABLE,
       pageSize: 'A4',
       pageOrientation: 'landscape',
@@ -298,7 +308,7 @@ class PrintShelf extends Component {
         pdfProps: {
           images,
           name: 'Print',
-          width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
+          width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
           height: HEIGHT_TABLE,
           pageSize: 'A4',
           pageOrientation: 'landscape',
