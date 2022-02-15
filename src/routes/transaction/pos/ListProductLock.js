@@ -168,6 +168,54 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
       }
     },
     {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'distPrice06',
+      key: 'distPrice06',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice06
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
+      title: getDistPriceName('distPrice07'),
+      dataIndex: 'distPrice07',
+      key: 'distPrice07',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice07
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
+      title: getDistPriceName('distPrice08'),
+      dataIndex: 'distPrice08',
+      key: 'distPrice08',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice08
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',

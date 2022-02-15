@@ -130,6 +130,30 @@ const modal = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
+        <FormItem label={getDistPriceName('distPrice06')} hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice06', {
+            initialValue: item.distPrice06,
+            rules: [{
+              required: true
+            }]
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+        </FormItem>
+        <FormItem label={getDistPriceName('distPrice07')} hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice07', {
+            initialValue: item.distPrice07,
+            rules: [{
+              required: true
+            }]
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+        </FormItem>
+        <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice08', {
+            initialValue: item.distPrice08,
+            rules: [{
+              required: true
+            }]
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+        </FormItem>
         <FormItem label="Can Be Replace" {...formItemLayout}>
           {getFieldDecorator('replaceable', {
             valuePropName: 'checked',

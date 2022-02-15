@@ -1144,6 +1144,9 @@ const Pos = ({
             item.distPrice03 = currentReward.distPrice03
             item.distPrice04 = currentReward.distPrice04
             item.distPrice05 = currentReward.distPrice05
+            item.distPrice06 = currentReward.distPrice06
+            item.distPrice07 = currentReward.distPrice07
+            item.distPrice08 = currentReward.distPrice08
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
@@ -1151,6 +1154,9 @@ const Pos = ({
             item.distPrice03 = item.serviceCost
             item.distPrice04 = item.serviceCost
             item.distPrice05 = item.serviceCost
+            item.distPrice06 = item.serviceCost
+            item.distPrice07 = item.serviceCost
+            item.distPrice08 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
           let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
@@ -1182,6 +1188,9 @@ const Pos = ({
             distPrice03: item.distPrice03,
             distPrice04: item.distPrice04,
             distPrice05: item.distPrice05,
+            distPrice06: item.distPrice06,
+            distPrice07: item.distPrice07,
+            distPrice08: item.distPrice08,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
             sellPrice: showDiscountPrice,
@@ -1259,6 +1268,9 @@ const Pos = ({
             item.distPrice03 = currentReward.distPrice03
             item.distPrice04 = currentReward.distPrice04
             item.distPrice05 = currentReward.distPrice05
+            item.distPrice06 = currentReward.distPrice06
+            item.distPrice07 = currentReward.distPrice07
+            item.distPrice08 = currentReward.distPrice08
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
@@ -1266,6 +1278,9 @@ const Pos = ({
             item.distPrice03 = item.serviceCost
             item.distPrice04 = item.serviceCost
             item.distPrice05 = item.serviceCost
+            item.distPrice06 = item.serviceCost
+            item.distPrice07 = item.serviceCost
+            item.distPrice08 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
           let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
@@ -1297,6 +1312,9 @@ const Pos = ({
             distPrice03: item.distPrice03,
             distPrice04: item.distPrice04,
             distPrice05: item.distPrice05,
+            distPrice06: item.distPrice06,
+            distPrice07: item.distPrice07,
+            distPrice08: item.distPrice08,
             qty,
             typeCode: 'S',
             sellPrice: showDiscountPrice,

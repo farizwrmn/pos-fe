@@ -1730,6 +1730,9 @@ export default {
         distPrice03: item.distPrice03,
         distPrice04: item.distPrice04,
         distPrice05: item.distPrice05,
+        distPrice06: item.distPrice06,
+        distPrice07: item.distPrice07,
+        distPrice08: item.distPrice08,
         qty: 1,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
@@ -2052,6 +2055,9 @@ export default {
               item.item.distPrice03 = currentReward.distPrice03
               item.item.distPrice04 = currentReward.distPrice04
               item.item.distPrice05 = currentReward.distPrice05
+              item.item.distPrice06 = currentReward.distPrice06
+              item.item.distPrice07 = currentReward.distPrice07
+              item.item.distPrice08 = currentReward.distPrice08
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
             let showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[memberInformation.memberSellPrice.toString()]
@@ -2081,6 +2087,9 @@ export default {
               distPrice03: item.item.distPrice03,
               distPrice04: item.item.distPrice04,
               distPrice05: item.item.distPrice05,
+              distPrice06: item.item.distPrice06,
+              distPrice07: item.item.distPrice07,
+              distPrice08: item.item.distPrice08,
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
@@ -2220,6 +2229,9 @@ export default {
             item.item.distPrice03 = currentReward.distPrice03
             item.item.distPrice04 = currentReward.distPrice04
             item.item.distPrice05 = currentReward.distPrice05
+            item.item.distPrice06 = currentReward.distPrice06
+            item.item.distPrice07 = currentReward.distPrice07
+            item.item.distPrice08 = currentReward.distPrice08
           } else {
             item.item.sellPrice = item.item.serviceCost
             item.item.distPrice01 = item.item.serviceCost
@@ -2227,6 +2239,9 @@ export default {
             item.item.distPrice03 = item.item.serviceCost
             item.item.distPrice04 = item.item.serviceCost
             item.item.distPrice05 = item.item.serviceCost
+            item.item.distPrice06 = item.item.serviceCost
+            item.item.distPrice07 = item.item.serviceCost
+            item.item.distPrice08 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
           let showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[memberInformation.memberSellPrice.toString()]
@@ -2257,6 +2272,9 @@ export default {
             distPrice03: item.item.distPrice03,
             distPrice04: item.item.distPrice04,
             distPrice05: item.item.distPrice05,
+            distPrice06: item.item.distPrice06,
+            distPrice07: item.item.distPrice07,
+            distPrice08: item.item.distPrice08,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'S',
@@ -2350,7 +2368,10 @@ export default {
           distPrice02: item.distPrice02,
           distPrice03: item.distPrice03,
           distPrice04: item.distPrice04,
-          distPrice05: item.distPrice05
+          distPrice05: item.distPrice05,
+          distPrice06: item.distPrice06,
+          distPrice07: item.distPrice07,
+          distPrice08: item.distPrice08
         },
         code: item.productCode,
         productId: item.id,
@@ -2411,6 +2432,9 @@ export default {
             distPrice03: price,
             distPrice04: price,
             distPrice05: price,
+            distPrice06: price,
+            distPrice07: price,
+            distPrice08: price,
             qty: 1,
             typeCode: 'S',
             sellPrice: price,
@@ -2457,6 +2481,9 @@ export default {
         payload.item.distPrice03 = price
         payload.item.distPrice04 = price
         payload.item.distPrice05 = price
+        payload.item.distPrice06 = price
+        payload.item.distPrice07 = price
+        payload.item.distPrice08 = price
         payload.item.sellPrice = price
         payload.item.price = price
         payload.item.total = price
@@ -2516,6 +2543,9 @@ export default {
           item.distPrice03 = price[0].distPrice03
           item.distPrice04 = price[0].distPrice04
           item.distPrice05 = price[0].distPrice05
+          item.distPrice06 = price[0].distPrice06
+          item.distPrice07 = price[0].distPrice07
+          item.distPrice08 = price[0].distPrice08
         }
       }
 
@@ -2531,6 +2561,9 @@ export default {
         item.distPrice03 = currentReward.distPrice03
         item.distPrice04 = currentReward.distPrice04
         item.distPrice05 = currentReward.distPrice05
+        item.distPrice06 = currentReward.distPrice06
+        item.distPrice07 = currentReward.distPrice07
+        item.distPrice08 = currentReward.distPrice08
         qty = currentReward.qty
       }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -2571,6 +2604,9 @@ export default {
             distPrice03: item.distPrice03,
             distPrice04: item.distPrice04,
             distPrice05: item.distPrice05,
+            distPrice06: item.distPrice06,
+            distPrice07: item.distPrice07,
+            distPrice08: item.distPrice08,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
@@ -2631,6 +2667,9 @@ export default {
             distPrice03: item.distPrice03,
             distPrice04: item.distPrice04,
             distPrice05: item.distPrice05,
+            distPrice06: item.distPrice06,
+            distPrice07: item.distPrice07,
+            distPrice08: item.distPrice08,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',

@@ -99,6 +99,9 @@ const createTableBody = async (tableBody, aliases) => {
             item.distPrice03 = price[0].distPrice03
             item.distPrice04 = price[0].distPrice04
             item.distPrice05 = price[0].distPrice05
+            item.distPrice06 = price[0].distPrice06
+            item.distPrice07 = price[0].distPrice07
+            item.distPrice08 = price[0].distPrice08
           }
         }
         // eslint-disable-next-line no-await-in-loop

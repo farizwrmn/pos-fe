@@ -82,6 +82,9 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
                 <div>{`distPrice03: ${formatNumberIndonesia(record.distPrice03)}`}</div>
                 <div>{`distPrice04: ${formatNumberIndonesia(record.distPrice04)}`}</div>
                 <div>{`distPrice05: ${formatNumberIndonesia(record.distPrice05)}`}</div>
+                <div>{`distPrice06: ${formatNumberIndonesia(record.distPrice06)}`}</div>
+                <div>{`distPrice07: ${formatNumberIndonesia(record.distPrice07)}`}</div>
+                <div>{`distPrice08: ${formatNumberIndonesia(record.distPrice08)}`}</div>
               </div>
             )
           }
