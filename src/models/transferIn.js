@@ -153,7 +153,6 @@ export default modelExtend(pageModel, {
 
     * editSelected ({ payload = {} }, { select, put }) {
       const { selectedRowKeys, source, resetChild, resetChildShelf } = payload
-      console.log('editSelected', selectedRowKeys)
 
       yield put({
         type: 'updateState',

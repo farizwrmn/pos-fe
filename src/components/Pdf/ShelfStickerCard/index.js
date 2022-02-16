@@ -98,12 +98,9 @@ const ShelfStickerCard = ({
     return body
   }
 
-  const printPdf = (params) => {
-    console.log('params', params)
+  const printPdf = () => {
     const data = tableBody
-    console.log('data', data)
     if (data.length === 0) {
-      console.log('Empty', data)
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'
@@ -144,7 +141,7 @@ const ShelfStickerCard = ({
       }
     }
   }
-  console.log('Tag', tableBody)
+
   return (
 
     <Button onClick={() => printPdf(tableBody)}>
