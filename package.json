@@ -19,7 +19,7 @@
     "path-to-regexp": "^1.7.0",
     "pdfmake": "0.1.68",
     "prop-types": "^15.6.0",
-    "qrcode": "^1.5.0",
+    "qrcode": "0.8.2",
     "qs": "^6.5.0",
     "rc-tween-one": "^1.0.0",
     "react": "^15.6.1",
