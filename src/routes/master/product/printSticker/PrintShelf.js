@@ -97,7 +97,7 @@ const getQRCode = (productCode) => {
     const canvasId = document.createElement('canvas')
 
     // The return value is the canvas element
-    QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product-preview/${productCode}`)
+    QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product/${productCode}`)
     return canvasId.toDataURL('image/png')
   } catch (e) {
     console.log('Error Canvas', e)
