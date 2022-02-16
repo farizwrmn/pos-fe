@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import { query as querySequence } from 'services/sequence'
 import { queryInventoryType } from 'services/transType'
 import moment from 'moment'
@@ -12,7 +12,6 @@ import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
-const { prefix } = configMain
 
 const success = (messages) => {
   message.success(messages)

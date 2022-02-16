@@ -86,6 +86,27 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'distPrice06',
+      key: 'distPrice06',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: getDistPriceName('distPrice07'),
+      dataIndex: 'distPrice07',
+      key: 'distPrice07',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: getDistPriceName('distPrice08'),
+      dataIndex: 'distPrice08',
+      key: 'distPrice08',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Updated By',
       dataIndex: 'updatedBy',
       key: 'updatedBy'

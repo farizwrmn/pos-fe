@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Tag } from 'antd'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import styles from '../../../../themes/index.less'
 
-const { prefix } = configMain
 const Warning = Modal.warning
 
 const Browse = ({

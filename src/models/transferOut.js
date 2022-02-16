@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { Modal, message } from 'antd'
-import { configMain, lstorage, color, alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
+import { lstorage, color, alertModal } from 'utils'
 import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
@@ -15,7 +16,6 @@ const { stockMinusAlert } = alertModal
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
-const { prefix } = configMain
 
 const error = (err) => {
   message.error(typeof err.message === 'string' ? err.message : err.detail)

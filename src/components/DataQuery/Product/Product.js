@@ -79,6 +79,24 @@ const Product = ({
       key: 'distPrice05',
       width: '120px',
       render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'distPrice06',
+      key: 'distPrice06',
+      width: '120px',
+      render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice07'),
+      dataIndex: 'distPrice07',
+      key: 'distPrice07',
+      width: '120px',
+      render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice08'),
+      dataIndex: 'distPrice08',
+      key: 'distPrice08',
+      width: '120px',
+      render: text => formatNumberIndonesia(text)
     }
   ]
 
@@ -169,7 +187,7 @@ const Product = ({
           pagination={showPagination ? pagination : false}
           dataSource={list}
           bordered
-          scroll={{ x: 500, y: 1200 }}
+          scroll={{ x: 500, y: 1290 }}
           columns={columns}
           simple
           onChange={changeProduct}
@@ -228,8 +246,8 @@ export default connect(
     productstock,
     productcategory,
     productbrand }) =>
-    ({
-      productstock,
-      productcategory,
-      productbrand
-    }))(Product)
+  ({
+    productstock,
+    productcategory,
+    productbrand
+  }))(Product)

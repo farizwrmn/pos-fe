@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import { Table, Button, Input, Form, Modal, Row, Col, DatePicker } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 
 const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 const Warning = Modal.confirm
-const { prefix } = configMain
 
 const ListInvoice = ({ onInvoiceHeader, loading, onChooseInvoice, dispatch, ...tableProps }) => {
   const handleMenuClick = (record) => {

@@ -3,7 +3,6 @@
   "dependencies": {
     "antd": "^2.13.2",
     "axios": "^0.21.1",
-    "bwip-js": "^2.0.10",
     "classnames": "^2.2.5",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^1.8.0",
@@ -20,8 +19,9 @@
     "path-to-regexp": "^1.7.0",
     "pdfmake": "0.1.68",
     "prop-types": "^15.6.0",
-    "rc-tween-one": "^1.0.0",
+    "qrcode": "^1.5.0",
     "qs": "^6.5.0",
+    "rc-tween-one": "^1.0.0",
     "react": "^15.6.1",
     "react-countup": "^2.1.1",
     "react-dom": "^15.6.1",
@@ -84,7 +84,6 @@
     "test": "set NODE_ENV=test && jest --coverage",
     "test:watch": "NODE_ENV=test jest --watchAll",
     "serve": "serve -s dist",
-    "start": "node ./build/runServer.js",
-    "postinstall": "cp lib/package.json node_modules/bwip-js/package.json"
+    "start": "node ./build/runServer.js"
   }
 }

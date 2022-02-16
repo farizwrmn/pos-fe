@@ -86,6 +86,27 @@ const List = ({ ...tableProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'product.distPrice06',
+      key: 'product.distPrice06',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'product.distPrice06',
+      key: 'product.distPrice06',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: getDistPriceName('distPrice07'),
+      dataIndex: 'product.distPrice07',
+      key: 'product.distPrice07',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Created',
       dataIndex: 'createdBy',
       key: 'createdBy'

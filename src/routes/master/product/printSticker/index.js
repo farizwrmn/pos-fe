@@ -59,7 +59,7 @@ class ProductStock extends Component {
       case '1':
         moreButtonTab = (
           <span>
-            <PrintShelf stickers={listSticker} user={user} {...printProps} />
+            <PrintShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printProps} />
             <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printProps} />
           </span>
         )

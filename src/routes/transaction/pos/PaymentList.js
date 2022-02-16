@@ -46,6 +46,9 @@ const PaymentList = ({
     data.distPrice03 = item.distPrice03
     data.distPrice04 = item.distPrice04
     data.distPrice05 = item.distPrice05
+    data.distPrice06 = item.distPrice06
+    data.distPrice07 = item.distPrice07
+    data.distPrice08 = item.distPrice08
     data.sellPrice = item.sellPrice
     data.typeCode = item.typeCode
     if (data.employee) {

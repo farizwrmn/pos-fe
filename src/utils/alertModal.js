@@ -2,9 +2,7 @@ import { Modal } from 'antd'
 import moment from 'moment'
 import styles from './styles.less'
 import variables from './variables'
-// import configMain from './config.main'
-
-// const { prefix } = configMain
+// import { prefix } from './config.main'
 
 const { getSetting } = variables
 // const { getPermission } = variables

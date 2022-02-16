@@ -1,11 +1,9 @@
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { query } from '../../services/marketing/bundlingReward'
 import { queryPOSproduct } from '../../services/master/productstock'
 import { pageModel } from './../common'
-
-const { prefix } = configMain
 
 export default modelExtend(pageModel, {
   namespace: 'bundlingReward',

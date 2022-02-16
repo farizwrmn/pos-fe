@@ -2,7 +2,8 @@ import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { message, Modal } from 'antd'
-import { configMain, lstorage } from 'utils'
+import { lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
 import moment from 'moment'
 import { query, queryById, add, edit, approve, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
@@ -13,7 +14,6 @@ import {
 } from 'services/master/productstock'
 import { pageModel } from './../common'
 
-const { prefix } = configMain
 
 const success = () => {
   message.success('Return Purchase has been saved')

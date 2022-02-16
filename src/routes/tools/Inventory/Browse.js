@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd'
 import moment from 'moment'
 import { DropOption } from 'components'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import styles from '../../../themes/index.less'
 
 const { MonthPicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
-const { prefix } = configMain
 
 const BrowseGroup = ({
   dataSource, tmpDataSource, onGetDetail, onShowCancelModal, onSearchChange, onChangePeriod,

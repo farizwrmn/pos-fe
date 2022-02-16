@@ -2,9 +2,10 @@ import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import moment from 'moment'
 import { message } from 'antd'
-import { configMain, lstorage, messageInfo } from 'utils'
+import { lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 // import { APPNAME, couchdb } from 'utils/config.company'
+import { VERSION, getVersionInfo, prefix, openPages } from 'utils/config.main'
 import { APPNAME } from 'utils/config.company'
 import { query as queryParameter } from 'services/utils/parameter'
 import { login as loginShopee } from 'services/shopee/shopeeApi'
@@ -45,10 +46,10 @@ export default {
     menuPopoverVisible: false,
     visibleItem: { shortcutKey: false, changePw: false, changeTotp: false, showPopOverCalendar: false, showPopOverNotification: false },
     visiblePw: false,
-    siderFold: localStorage.getItem(`${configMain.prefix}siderFold`) === 'true',
-    darkTheme: localStorage.getItem(`${configMain.prefix}darkTheme`) === 'true',
+    siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
+    darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
-    navOpenKeys: JSON.parse(localStorage.getItem(`${configMain.prefix}navOpenKeys`)) || [],
+    navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
     ipAddr: '',
     selectedDate: moment().format('MMMM, Do YYYY'),
     calendarMode: 'month',
@@ -97,6 +98,7 @@ export default {
           type: 'all',
           paramCode: 'shopeeRequireLogin'
         })
+        getVersionInfo(VERSION)
         if (parameter.success && parameter.data.length > 0) {
           lstorage.setShopeeRequireLogin(parseFloat(parameter.data[0].paramValue))
         } else {
@@ -175,7 +177,7 @@ export default {
         storeInfo.stackHeader02 = storeInfo.stackHeader03
 
         if (storeInfo !== []) {
-          localStorage.setItem(`${configMain.prefix}store`, JSON.stringify(storeInfo))
+          localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
         } else {
           console.log('unexpected error misc')
         }
@@ -206,7 +208,7 @@ export default {
         }
         if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
         yield put({ type: 'queryListNotifications' })
-      } else if (configMain.openPages && configMain.openPages.indexOf(location.pathname) < 0) {
+      } else if (openPages && openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
       }
@@ -421,7 +423,7 @@ export default {
     },
 
     sendNotification (state) {
-      localStorage.setItem(`${configMain.prefix}subscribe`, state.notification)
+      localStorage.setItem(`${prefix}subscribe`, state.notification)
       return { ...state, notification: { subscribe: true, sendNotification: true } }
     },
 
@@ -433,7 +435,7 @@ export default {
     },
 
     foldSider (state) {
-      localStorage.setItem(`${configMain.prefix}siderFold`, true)
+      localStorage.setItem(`${prefix}siderFold`, true)
       return {
         ...state,
         siderFold: true
@@ -447,7 +449,7 @@ export default {
       }
     },
     switchSider (state) {
-      localStorage.setItem(`${configMain.prefix}siderFold`, !state.siderFold)
+      localStorage.setItem(`${prefix}siderFold`, !state.siderFold)
       return {
         ...state,
         siderFold: !state.siderFold
@@ -475,7 +477,7 @@ export default {
       return { ...state, visibleItem: { changeTotp: false } }
     },
     switchTheme (state) {
-      localStorage.setItem(`${configMain.prefix}darkTheme`, !state.darkTheme)
+      localStorage.setItem(`${prefix}darkTheme`, !state.darkTheme)
       return {
         ...state,
         darkTheme: !state.darkTheme

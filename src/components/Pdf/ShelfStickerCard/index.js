@@ -21,7 +21,6 @@ const ShelfStickerCard = ({
   images
   // companyLogo
 }) => {
-  console.log('ShelfStickerCard')
   const createPdfLineItems = (tabledata) => {
     let body = []
     if (tabledata.length > 0) {
@@ -100,7 +99,6 @@ const ShelfStickerCard = ({
   }
 
   const printPdf = (data) => {
-    console.log('print shelf')
     if (data.length === 0) {
       Modal.warning({
         title: 'Empty Data',
