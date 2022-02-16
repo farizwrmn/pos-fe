@@ -92,17 +92,16 @@ const getBase64FromUrl = async (url) => {
   })
 }
 
-const getQRCode = (productCode) => {
-  try {
-    const canvasId = document.createElement('canvas')
-
-    // The return value is the canvas element
-    QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product/${productCode}`)
-    return canvasId.toDataURL('image/png')
-  } catch (e) {
-    console.log('Error Canvas', e)
-    // `e` may be a string or Error object
-  }
+const getQRCode = async (productCode) => {
+  const canvasId = document.createElement('canvas')
+  return new Promise(
+    (resolve, reject) => {
+      QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product/${productCode}`, (error) => {
+        if (error) reject(error)
+        resolve(canvasId.toDataURL('image/png'))
+      })
+    }
+  )
 }
 
 const createTableBody = async (tableBody, aliases) => {
@@ -136,7 +135,8 @@ const createTableBody = async (tableBody, aliases) => {
           background = tableBody[key].info.categoryColor
         }
         const color = '#000000'
-        const imageBase = getQRCode(tableBody[key].info.productCode)
+        // eslint-disable-next-line no-await-in-loop
+        const imageBase = await getQRCode(tableBody[key].info.productCode)
         images[`${item.productCode}`] = imageBase
         const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
         // eslint-disable-next-line no-await-in-loop
