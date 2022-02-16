@@ -523,7 +523,7 @@ export default modelExtend(pageModel, {
 
     * addSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild } = payload
+      const { sticker, resetChild, resetChildShelf } = payload
       listSticker.push(sticker)
       yield put({
         type: 'updateState',
@@ -534,11 +534,14 @@ export default modelExtend(pageModel, {
       if (resetChild) {
         resetChild(listSticker)
       }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
     },
 
     * deleteSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild } = payload
+      const { sticker, resetChild, resetChildShelf } = payload
       listSticker = listSticker.filter(x => x.name !== sticker.name)
       yield put({
         type: 'updateState',
@@ -549,11 +552,14 @@ export default modelExtend(pageModel, {
       if (resetChild) {
         resetChild(listSticker)
       }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
     },
 
     * updateSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { selectedRecord, changedRecord, resetChild } = payload
+      const { selectedRecord, changedRecord, resetChild, resetChildShelf } = payload
       let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
       listSticker[selected] = changedRecord
 
@@ -565,6 +571,9 @@ export default modelExtend(pageModel, {
       })
       if (resetChild) {
         resetChild(listSticker)
+      }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
       }
     }
   },

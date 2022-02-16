@@ -152,7 +152,7 @@ export default modelExtend(pageModel, {
     },
 
     * editSelected ({ payload = {} }, { select, put }) {
-      const { selectedRowKeys, source, resetChild } = payload
+      const { selectedRowKeys, source, resetChild, resetChildShelf } = payload
       console.log('editSelected', selectedRowKeys)
 
       yield put({
@@ -176,6 +176,9 @@ export default modelExtend(pageModel, {
         if (resetChild) {
           resetChild(listSticker)
         }
+        if (resetChildShelf) {
+          resetChildShelf(listSticker)
+        }
       } else {
         let listSticker = []
         const listTransDetail = yield select(({ transferIn }) => transferIn.listTransDetail)
@@ -190,6 +193,9 @@ export default modelExtend(pageModel, {
         }
         if (resetChild) {
           resetChild(listSticker)
+        }
+        if (resetChildShelf) {
+          resetChildShelf(listSticker)
         }
       }
     },

@@ -346,7 +346,7 @@ class PrintShelf extends Component {
           }
         }
       })
-    })
+    }).catch(error => console.log('error: ', error))
   }
 
   render () {
