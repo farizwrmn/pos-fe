@@ -36,7 +36,8 @@ export const listVersion = [
     2. Show Dimension in Stock Report and Master Product
     3. New Price Type
     4. Price Tag Regular
-    5. Harga Shopee Food, Blibli, Shopee
+    5. Harga Shopee Food
+    6. Shopee Exclude Category
     `,
     date: '2022-02-17'
   }
