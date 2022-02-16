@@ -98,7 +98,8 @@ const ShelfStickerCard = ({
     return body
   }
 
-  const printPdf = (data) => {
+  const printPdf = () => {
+    const data = tableBody
     if (data.length === 0) {
       Modal.warning({
         title: 'Empty Data',
@@ -135,11 +136,14 @@ const ShelfStickerCard = ({
       try {
         pdfMake.createPdf(docDefinition).print()
       } catch (e) {
+        console.log('e', e)
         pdfMake.createPdf(docDefinition).download()
       }
     }
   }
+
   return (
+
     <Button onClick={() => printPdf(tableBody)}>
       <Icon type="file-pdf" />
       {name}

@@ -171,8 +171,12 @@ const createTableBody = async (tableBody, aliases) => {
             && item.productImage !== 'no_image.png') {
             const image = JSON.parse(item.productImage)
             if (image && image[0]) {
-              // eslint-disable-next-line no-await-in-loop
-              imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+              } catch (error) {
+                console.log('Error QR', imageBase)
+              }
             }
           }
         } else {
@@ -338,10 +342,11 @@ class PrintShelf extends Component {
           }
         }
       })
-    })
+    }).catch(error => console.log('error: ', error))
   }
 
   render () {
+    console.log('tableBody', this.state.pdfProps.tableBody)
     return (
       <ShelfStickerCard {...this.state.pdfProps} />
     )

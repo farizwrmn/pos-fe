@@ -101,7 +101,6 @@ const Setting = ({
               accountId: data[`store-${item.id}`].accountId
             })
           })
-          console.log('params', params)
           onSubmit(params)
         },
         onCancel () { }
