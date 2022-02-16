@@ -34,8 +34,9 @@ export const listVersion = [
     Update Info:
     1. Upload Product Shopee
     2. Show Dimension in Stock Report and Master Product
-    3. Inventory Age in FIFO Inventory Value
+    3. New Price Type
     4. Price Tag Regular
+    5. Harga Shopee Food, Blibli, Shopee
     `,
     date: '2022-02-17'
   }
