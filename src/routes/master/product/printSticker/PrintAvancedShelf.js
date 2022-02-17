@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { numberFormatter, withoutFormat } from 'utils/string'
 import { lstorage } from 'utils'
-import { IMAGEURL, APPNAME } from 'utils/config.company'
+import QRCode from 'qrcode'
+import { MAIN_WEBSITE, IMAGEURL, APPNAME } from 'utils/config.company'
 import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 3
@@ -11,7 +12,7 @@ const PRODUCT_NAME_SIZE_IN_POINT = 7
 const PRICE_SIZE_IN_POINT = 18
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
-const NUMBER_OF_PRODUCT_NAME = 32
+const NUMBER_OF_PRODUCT_NAME = 27
 const WIDTH_TABLE_IN_CENTI = 8
 const HEIGHT_TABLE_IN_CENTI = 4.5
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
@@ -25,6 +26,12 @@ const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
 
+const WIDTH_IMAGE_IN_CENTI_BARCODE = 1
+const HEIGHT_IMAGE_IN_CENTI_BARCODE = 1
+
+const WIDTH_IMAGE_BARCODE = (WIDTH_IMAGE_IN_CENTI_BARCODE / 2.54) * 72
+const HEIGHT_IMAGE_BARCODE = (HEIGHT_IMAGE_IN_CENTI_BARCODE / 2.54) * 72
+
 const styles = {
   info: {
     alignment: 'left',
@@ -36,17 +43,17 @@ const styles = {
     alignment: 'right',
     fontSize: PRICE_SIZE,
     width: '100%',
-    margin: [0, 12, 0, 0]
+    margin: [0, 10, 0, 0]
   },
   productName1: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 1, 0, 0]
+    margin: [10, 0]
   },
   productName2: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 0, 0, 0]
+    margin: [10, 0]
   },
   others: {
     fontSize: PRICE_SIZE,
@@ -76,6 +83,18 @@ const getBase64FromUrl = async (url) => {
       resolve(base64data)
     }
   })
+}
+
+const getQRCode = async (productCode) => {
+  const canvasId = document.createElement('canvas')
+  return new Promise(
+    (resolve, reject) => {
+      QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product/${productCode}`, (error) => {
+        if (error) reject(error)
+        resolve(canvasId.toDataURL('image/png'))
+      })
+    }
+  )
 }
 
 const createTableBody = async (tableBody, aliases) => {
@@ -123,18 +142,31 @@ const createTableBody = async (tableBody, aliases) => {
           maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 68).toString()
         }
 
-        row.push(
-          {
-            text: maxStringPerRow1,
-            style: 'productName1',
-            alignment: 'center',
-            width: WIDTH_TABLE
-          }
-        )
         row.push({
-          text: maxStringPerRow2,
-          style: 'productName2',
-          alignment: 'center'
+          columns: [
+            {
+              width: '80%',
+              stack: [
+                {
+                  text: maxStringPerRow1,
+                  style: 'productName1',
+                  alignment: 'left',
+                  width: WIDTH_TABLE
+                },
+                {
+                  text: maxStringPerRow2,
+                  style: 'productName2',
+                  alignment: 'left'
+                }
+              ]
+            },
+            {
+              image: `barcode-${item.productCode}`,
+              width: WIDTH_IMAGE_BARCODE,
+              height: HEIGHT_IMAGE_BARCODE,
+              margin: [10, 0]
+            }
+          ]
         })
 
         row.push({
@@ -161,6 +193,10 @@ const createTableBody = async (tableBody, aliases) => {
         // row.push({
         //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
         // })
+
+        // eslint-disable-next-line no-await-in-loop
+        const imageBarcode = await getQRCode(tableBody[key].info.productCode)
+        images[`barcode-${item.productCode}`] = imageBarcode
 
         let imageBase = null
         if (!images[`${item.productCode}`]) {
@@ -346,7 +382,6 @@ class PrintShelf extends Component {
   }
 
   render () {
-    console.log('tableBody', this.state.pdfProps.tableBody)
     return (
       <ShelfStickerCard {...this.state.pdfProps} />
     )
