@@ -70,7 +70,7 @@ const PrintXLS = ({ listRekap, listStoreLov, supplierName, storeInfo }) => {
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.supplierName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.productCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.productName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (`${data.productName || ''}  D: ${data.dimension || ''} P: ${data.dimensionPack || ''} B: ${data.dimensionBox || ''}` || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.categoryName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.brandName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.costPrice || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })

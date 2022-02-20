@@ -27,12 +27,12 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
         </Row>
         {invoiceInfo && invoiceInfo.lastTransNo && (
           <div>
-            <strong>#{invoiceInfo.lastTransNo}</strong>
+            <strong>{invoiceInfo.lastTransNo}</strong>
           </div>
         )}
         {invoiceInfo && invoiceInfo.consignmentNo && (
           <div>
-            #{invoiceInfo.consignmentNo}
+            {invoiceInfo.consignmentNo}
           </div>
         )}
       </div>

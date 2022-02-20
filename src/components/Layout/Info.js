@@ -1,8 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Table, Tag } from 'antd'
-import { color, configMain, config, ip, lstorage } from 'utils'
+import { color, config, lstorage } from 'utils'
+import { version, versionInfo } from 'utils/config.main'
 import styles from './Info.less'
 
 
@@ -17,17 +17,8 @@ const status = {
   8: { color: color.wisteria }
 }
 
-const Info = ({ ipAddress, dispatch, app }) => {
-  const { ipAddr } = app
-  ipAddress = ip.getIpAddress() || '127.0.0.1'
+const Info = () => {
   const sessionId = lstorage.getSessionId()
-
-  if (!ipAddr) {
-    dispatch({
-      type: 'app/saveIPClient',
-      payload: { ipAddr: ipAddress }
-    })
-  }
 
   const columns = [
     {
@@ -38,13 +29,12 @@ const Info = ({ ipAddress, dispatch, app }) => {
       title: 'value',
       dataIndex: 'value',
       className: styles.value,
-      render: (text, it) => <div className={styles.truncate} title={text}><Tag color={status[it.status].color} style={{ fontSize: 8 }}>{text}</Tag></div>
+      render: (text, it) => <div className={styles.truncate} title={it.title || text}><Tag color={status[it.status].color} style={{ fontSize: 8 }}>{text}</Tag></div>
     }
   ]
 
   const data = [
-    { name: 'IP Address', value: `${ipAddress}`, status: 1 },
-    { name: 'Version', value: `${configMain.version}`, status: 2 },
+    { name: 'Version', value: `${version}`, title: `${versionInfo()}`, status: 2 },
     { name: 'Session', value: `${sessionId}`, status: 3 },
     { name: 'Service', value: `${config.apiHost}`, status: 4 }
   ]
@@ -60,9 +50,4 @@ const Info = ({ ipAddress, dispatch, app }) => {
   />)
 }
 
-Info.propTypes = {
-  ipAddress: PropTypes.array.isRequired,
-  dispatch: PropTypes.func.isRequired
-}
-
-export default connect(({ ipAddress, app }) => ({ ipAddress, app }))(Info)
+export default connect(({ app }) => ({ app }))(Info)

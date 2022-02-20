@@ -6,7 +6,7 @@ import defaultFont from 'utils/defaultFont'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 pdfMake.fonts = defaultFont
-const BasicReportCard = ({
+const ShelfStickerCard = ({
   name,
   width = 'auto',
   pageMargins = [0, 0, 0, 0],
@@ -98,7 +98,8 @@ const BasicReportCard = ({
     return body
   }
 
-  const printPdf = (data) => {
+  const printPdf = () => {
+    const data = tableBody
     if (data.length === 0) {
       Modal.warning({
         title: 'Empty Data',
@@ -135,11 +136,14 @@ const BasicReportCard = ({
       try {
         pdfMake.createPdf(docDefinition).print()
       } catch (e) {
+        console.log('e', e)
         pdfMake.createPdf(docDefinition).download()
       }
     }
   }
+
   return (
+
     <Button onClick={() => printPdf(tableBody)}>
       <Icon type="file-pdf" />
       {name}
@@ -147,4 +151,4 @@ const BasicReportCard = ({
   )
 }
 
-export default BasicReportCard
+export default ShelfStickerCard

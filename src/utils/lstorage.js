@@ -4,6 +4,7 @@
 import moment from 'moment'
 import { prefix } from './config.main'
 import { encrypt, decrypt } from './crypt'
+import { TYPE_PEMBELIAN_UMUM } from './variable'
 
 const putStorageKey = (key, value, norandom) => {
   // 'udi' { 1: userid, 2: role, 3: store, 4: usercompany, 5: userlogintime, 6: difftime_be-fe, 7: sessionid }
@@ -75,11 +76,11 @@ const getCashierTrans = () => {
 }
 
 const getPriceName = () => {
-  return localStorage.getItem('disPrece') ? JSON.parse(localStorage.getItem('disPrece')) : []
+  return localStorage.getItem('disPrece2') ? JSON.parse(localStorage.getItem('disPrece2')) : []
 }
 
 const setPriceName = (priceList) => {
-  return localStorage.setItem('disPrece', JSON.stringify(priceList || '[]'))
+  return localStorage.setItem('disPrece2', JSON.stringify(priceList || '[]'))
 }
 
 const getPaymentShortcut = () => {
@@ -126,6 +127,15 @@ const setQrisImage = (data) => {
   return localStorage.setItem('qris_image', data)
 }
 
+
+const getShopeeRequireLogin = () => {
+  return localStorage.getItem('requireLoginShopee') ? parseFloat(localStorage.getItem('requireLoginShopee')) : 1
+}
+
+const setShopeeRequireLogin = (data) => {
+  return localStorage.setItem('requireLoginShopee', parseFloat(data))
+}
+
 const removeQrisImage = () => {
   return localStorage.removeItem('qris_image')
 }
@@ -163,12 +173,13 @@ const removeItemKeys = () => {
   localStorage.removeItem('isInit')
   localStorage.removeItem('service_detail')
   localStorage.removeItem('cashier_trans')
-  localStorage.removeItem('disPrece')
+  localStorage.removeItem('disPrece2')
   localStorage.removeItem('payShortcut')
   localStorage.removeItem('consignment')
   localStorage.removeItem('member')
   localStorage.removeItem('mechanic')
   localStorage.removeItem('memberUnit')
+  localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
   localStorage.removeItem('lastMeter')
   localStorage.removeItem('woNumber')
   localStorage.removeItem('bundle_promo')
@@ -299,5 +310,7 @@ module.exports = {
   setQrisImage,
   getVoucherList,
   setVoucherList,
-  removeQrisImage
+  removeQrisImage,
+  getShopeeRequireLogin,
+  setShopeeRequireLogin
 }

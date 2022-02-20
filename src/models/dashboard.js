@@ -1,6 +1,7 @@
 import { message } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage } from 'utils'
+import { lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
 import {
   queryByDate
 } from 'services/report/pos'
@@ -9,8 +10,6 @@ import {
   queryFifoCategory
 } from '../services/report/fifo'
 import { numberFormatter } from '../utils/numberFormat'
-
-const { prefix } = configMain
 
 const onCopy = (endpoint) => {
   let textarea = document.createElement('textarea')

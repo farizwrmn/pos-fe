@@ -1,19 +1,17 @@
 import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import { query as querySequence } from 'services/sequence'
 import { queryInventoryType } from 'services/transType'
 import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
+import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
-import { add as addVariantStock } from '../../services/master/variantStock'
-import { addSome as addSomeSpecificationStock, edit as editSpecificationStock } from '../../services/master/specificationStock'
 import { pageModel } from './../common'
 
-const { prefix } = configMain
 
 const success = (messages) => {
   message.success(messages)
@@ -327,10 +325,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put, select }) {
-      const modalType = yield select(({ productstock }) => productstock.modalType)
-      const listSpecification = yield select(({ specification }) => specification.listSpecification)
-
+    * add ({ payload }, { call, put }) {
       // Start - Upload Image
       const uploadedImage = []
       if (payload
@@ -361,37 +356,21 @@ export default modelExtend(pageModel, {
       } else {
         payload.data.productImage = '["no_image.png"]'
       }
+      if (payload.data.productImage.enableShopee && payload.data.productImage === '["no_image.png"]') {
+        message.error('Shopee: Image is Required')
+        return
+      }
       // End - Upload Image
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
         if (payload.reset) {
           payload.reset()
         }
-        let loadData = {}
-        if (payload.data.useVariant) {
-          loadData = {
-            productParentId: !payload.data.variant && payload.data.productParentId ? payload.data.productParentId : data.stock.id,
-            productId: data.stock.id,
-            variantId: payload.data.variantId
-          }
-          yield call(addVariantStock, loadData)
-        }
-        let listSpecificationCode = []
-        if (modalType === 'add') {
-          listSpecificationCode = listSpecification.map((x) => {
-            return {
-              productId: data.stock.id,
-              specificationId: x.id,
-              name: x.name,
-              value: x.value
-            }
-          })
-        }
-        if ((listSpecificationCode || []).length > 0) {
-          yield call(addSomeSpecificationStock, { data: listSpecificationCode })
-        }
         // yield put({ type: 'query' })
         success('Stock Product has been saved')
+        if (payload.data.enableShopee) {
+          success('Shopee Price and Data will be update on every 1 minute')
+        }
         yield put({
           type: 'updateState',
           payload: {
@@ -409,6 +388,16 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
+          }
+        })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -419,6 +408,30 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
+    },
+
+    * editItem ({ payload }, { call, put }) {
+      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, productType: 'PRODUCT', type: 'all' })
+      if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
+        yield put({
+          type: 'shopeeCategory/queryAttribute',
+          payload: {
+            shopeeAttribute: payload.item.shopeeAttribute,
+            category_id: payload.item.shopeeCategoryId
+          }
+        })
+      }
+      if (payload && payload.item) {
+        if (logisticList.success && logisticList.data && logisticList.data.length > 0) {
+          payload.item.shopeeLogistic = logisticList.data.map(item => item.logistic_id)
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: payload.item
+        }
+      })
     },
 
     * edit ({ payload }, { select, call, put }) {
@@ -461,123 +474,58 @@ export default modelExtend(pageModel, {
       // End - Upload Image
 
       const id = yield select(({ productstock }) => productstock.currentItem.productCode)
-      const productId = yield select(({ productstock }) => productstock.currentItem.id)
       const { location } = payload
-      const newProductStock = { ...payload, id }
+      const newProductStock = { data: payload.data, id }
       if (uploadedImage && uploadedImage.length > 0) {
         newProductStock.data.productImage = uploadedImage
       } else {
         newProductStock.data.productImage = '["no_image.png"]'
       }
       const data = yield call(edit, newProductStock)
-      let listSpecificationCode = yield select(({ specificationStock }) => specificationStock.listSpecificationCode)
-      const typeInput = yield select(({ specificationStock }) => specificationStock.typeInput)
-      let loadData = {}
       if (data.success) {
         if (payload.reset) {
           payload.reset()
         }
-        if ((listSpecificationCode || []).length > 0) {
-          if (typeInput === 'edit') {
-            for (let n = 0; n < listSpecificationCode.length; n += 1) {
-              yield call(editSpecificationStock, {
-                id: listSpecificationCode[n].id,
-                productId: listSpecificationCode[n].productId,
-                specificationId: listSpecificationCode[n].specificationId,
-                value: listSpecificationCode[n].value
-              })
-            }
-          } else if (typeInput === 'add') {
-            listSpecificationCode = listSpecificationCode.map((x) => {
-              return {
-                productId,
-                specificationId: x.id,
-                name: x.name,
-                value: x.value
-              }
-            })
-            yield call(addSomeSpecificationStock, { data: listSpecificationCode })
-          }
+        success('Stock Product has been saved')
+        if (newProductStock.data.enableShopee) {
+          success('Shopee Price and Data will be update on every 1 minute')
         }
-        if (payload.data.useVariant) {
-          loadData = {
-            productParentId: !payload.data.variant && payload.data.productParentId ? payload.data.productParentId : data.stock.id,
-            productParentName: payload.data.productParentName,
-            productId: data.stock.id,
-            productName: payload.data.productName,
-            variantId: payload.data.variantId,
-            variantName: payload.data.variantName
-          }
-          const dataVariant = yield call(addVariantStock, loadData)
-          if (dataVariant.success) {
-            success('Stock Product has been saved')
-            success('Variant Product has been saved')
-            yield put({
-              type: 'updateState',
-              payload: {
-                modalType: 'add',
-                currentItem: {},
-                activeKey: '1'
-              }
-            })
-            const { pathname, query } = location
-            yield put(routerRedux.push({
-              pathname,
-              query: {
-                ...query,
-                page: 1,
-                activeKey: '1'
-              }
-            }))
-          } else {
-            yield put({
-              type: 'updateState',
-              payload: {
-                currentItem: {
-                  ...payload.data,
-                  variantId: null,
-                  variantName: null
-                }
-              }
-            })
-            throw dataVariant
-          }
-        } else {
-          success('Stock Product has been saved')
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalType: 'add',
-              currentItem: {},
-              activeKey: '1'
-            }
-          })
-          const { pathname, query } = location
-          yield put(routerRedux.push({
-            pathname,
-            query: {
-              ...query,
-              page: 1,
-              activeKey: '1'
-            }
-          }))
-          yield put({ type: 'query', payload: { stockQuery: true } })
-        }
-      } else {
-        let current = Object.assign({}, payload.id, payload.data)
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: current
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
           }
         })
+        const { pathname, query } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: 1,
+            activeKey: '1'
+          }
+        }))
+        yield put({
+          type: 'shopeeCategory/updateState',
+          payload: {
+            lastProductName: undefined,
+            listRecommend: [],
+            listAttribute: [],
+            listLogistic: [],
+            listBrand: []
+          }
+        })
+        yield put({ type: 'query', payload: { stockQuery: true } })
+      } else {
         throw data
       }
     },
 
     * addSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild } = payload
+      const { sticker, resetChild, resetChildShelf } = payload
       listSticker.push(sticker)
       yield put({
         type: 'updateState',
@@ -588,11 +536,14 @@ export default modelExtend(pageModel, {
       if (resetChild) {
         resetChild(listSticker)
       }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
     },
 
     * deleteSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild } = payload
+      const { sticker, resetChild, resetChildShelf } = payload
       listSticker = listSticker.filter(x => x.name !== sticker.name)
       yield put({
         type: 'updateState',
@@ -603,11 +554,14 @@ export default modelExtend(pageModel, {
       if (resetChild) {
         resetChild(listSticker)
       }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
     },
 
     * updateSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { selectedRecord, changedRecord, resetChild } = payload
+      const { selectedRecord, changedRecord, resetChild, resetChildShelf } = payload
       let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
       listSticker[selected] = changedRecord
 
@@ -619,6 +573,9 @@ export default modelExtend(pageModel, {
       })
       if (resetChild) {
         resetChild(listSticker)
+      }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
       }
     }
   },

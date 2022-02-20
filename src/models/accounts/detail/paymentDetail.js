@@ -76,7 +76,9 @@ export default {
       const { id, ...other } = payload
       const invoiceInfo = yield call(query, payload)
       const payment = yield call(queryPaymentSplit, other)
-      const data = yield call(queryDetail, payload)
+      const data = yield call(queryDetail, {
+        id
+      })
       let dataPos = []
       let dataPayment = []
       let dataPaymentInvoice = []
@@ -103,6 +105,9 @@ export default {
           distPrice03: data.pos[n].distPrice03 || 0,
           distPrice04: data.pos[n].distPrice04 || 0,
           distPrice05: data.pos[n].distPrice05 || 0,
+          distPrice06: data.pos[n].distPrice06 || 0,
+          distPrice07: data.pos[n].distPrice07 || 0,
+          distPrice08: data.pos[n].distPrice08 || 0,
           sellingPrice: data.pos[n].sellingPrice || 0,
           discountLoyalty: data.pos[n].discountLoyalty || 0,
           discount: data.pos[n].discount || 0,

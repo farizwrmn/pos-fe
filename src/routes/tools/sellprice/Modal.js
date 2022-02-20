@@ -116,6 +116,30 @@ const modal = ({
           }]
         })(<InputNumber min={0} style={{ width: '100%' }} />)}
       </FormItem>
+      <FormItem label={getDistPriceName('distPrice06')} hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice06', {
+          initialValue: currentItemList.distPrice06,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label={getDistPriceName('distPrice07')} hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice07', {
+          initialValue: currentItemList.distPrice07,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
+      <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice08', {
+          initialValue: currentItemList.distPrice08,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
     </Modal>
   )
 }

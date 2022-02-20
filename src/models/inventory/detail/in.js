@@ -67,6 +67,7 @@ export default {
             productImage: data.mutasi[n].productImage,
             sellPrice: data.mutasi[n].sellPrice,
             categoryColor: data.mutasi[n].categoryColor,
+            brandName: data.mutasi[n].brandName,
             qty: data.mutasi[n].qty
           })
         }

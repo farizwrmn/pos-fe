@@ -29,7 +29,7 @@ class ModalList extends Component {
       addModalItem,
       editModalItem,
       listAccountCode,
-      listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
+      listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
       onDelete,
       showLov,
       item,
@@ -38,8 +38,6 @@ class ModalList extends Component {
       onCancel,
       ...modalProps
     } = this.props
-
-    const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
     const handleClick = () => {
       validateFields((errors) => {
         if (errors) {
@@ -50,9 +48,7 @@ class ModalList extends Component {
           ...getFieldsValue()
         }
         data.no = item.no
-        if (data.accountCode && data.accountCode.key) {
-          data.accountCode = data.accountCode && data.accountCode.key ? data.accountCode : undefined
-          data.accountId = data.accountCode && data.accountCode.key ? data.accountCode.key : undefined
+        if (data.accountId) {
           if (modalItemType === 'add') {
             addModalItem(data)
           } else if (modalItemType === 'edit') {
@@ -112,11 +108,8 @@ class ModalList extends Component {
             />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Account Code">
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode ? {
-                key: item.accountCode.key,
-                label: item.accountCode.label || `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-              } : { label: 'Choose Account Code' },
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId,
               rules: [{
                 required: true,
                 message: 'Required'
@@ -124,9 +117,8 @@ class ModalList extends Component {
             })(<Select
               showSearch
               allowClear
-              optionFilterProp="children"
-              labelInValue
-              filterOption={filterOption}
+              placeholder="Choose Account Code"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >{listAccountOpt}
             </Select>)}
           </FormItem>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Button, Select, Input, Form, Radio, InputNumber, message } from 'antd'
+import { Modal, Button, Select, Input, Form, Radio, InputNumber } from 'antd'
 import { lstorage } from 'utils'
 
 const { getListUserStores } = lstorage
@@ -30,7 +30,6 @@ class ModalList extends Component {
       addModalItem,
       editModalItem,
       listAccountCode,
-      listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : [],
       item,
       onDelete,
       onCancel,
@@ -38,7 +37,7 @@ class ModalList extends Component {
       form: { resetFields, getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
       ...modalProps
     } = this.props
-    const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+    const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
     const handleClick = () => {
       validateFields((errors) => {
         if (errors) {
@@ -49,18 +48,12 @@ class ModalList extends Component {
           ...getFieldsValue()
         }
         data.no = item.no
-        if (data.accountCode && data.accountCode.key) {
-          data.accountCode = data.accountCode && data.accountCode.key ? data.accountCode : undefined
-          data.accountId = data.accountCode && data.accountCode.key ? data.accountCode.key : undefined
-          if (modalItemType === 'add') {
-            addModalItem(data)
-          } else if (modalItemType === 'edit') {
-            editModalItem(data)
-          }
-          resetFields()
-        } else {
-          message.error('Choose Account Code')
+        if (modalItemType === 'add') {
+          addModalItem(data)
+        } else if (modalItemType === 'edit') {
+          editModalItem(data)
         }
+        resetFields()
       })
     }
 
@@ -140,11 +133,8 @@ class ModalList extends Component {
             />)}
           </FormItem>}
           <FormItem {...formItemLayout} label="Account Code">
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode ? {
-                key: item.accountCode.key,
-                label: item.accountCode.label
-              } : { label: 'Choose Account Code' },
+            {getFieldDecorator('accountId', {
+              initialValue: item.accountId,
               rules: [{
                 required: true,
                 message: 'Required'
@@ -152,9 +142,8 @@ class ModalList extends Component {
             })(<Select
               showSearch
               allowClear
-              optionFilterProp="children"
-              labelInValue
-              filterOption={filterOption}
+              placeholder="Choose Account Code"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >{listAccountOpt}
             </Select>)}
           </FormItem>

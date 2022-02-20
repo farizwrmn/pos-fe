@@ -32,6 +32,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  listAccountCode,
   storeInfo,
   showLov,
   onSubmit,
@@ -99,16 +100,13 @@ const FormCounter = ({
   }
 
   const handleModalShowList = (record) => {
-    record.accountId = {
-      key: record.accountId,
-      label: record.accountName
-    }
     modalShowList(record)
   }
 
   const listDetailOpts = {
     handleModalShowList,
     listItem,
+    listAccountCode,
     ...listDetailProps
   }
 

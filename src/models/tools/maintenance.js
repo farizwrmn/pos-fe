@@ -1,12 +1,11 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import { Modal, Select, message } from 'antd'
 import { query as queryPos, updatePosHeader } from '../../services/payment'
 import { add as addUnitLog } from '../../services/maintenance/customerunit'
 import { pageModel } from '../common'
 
-const { prefix } = configMain
 const Option = Select.Option
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 

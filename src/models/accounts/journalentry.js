@@ -160,11 +160,7 @@ export default modelExtend(pageModel, {
               journalEntryDetail.map((item, index) => ({
                 no: index + 1,
                 ...item,
-                accountId: item.accountId,
-                accountCode: {
-                  key: item.accountId,
-                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-                }
+                accountId: item.accountId
               }))
               : []
           }

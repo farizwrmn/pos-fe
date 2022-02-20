@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Table, Col, Row, Button } from 'antd'
 import moment from 'moment'
-import { configMain, numberFormat, alertModal } from 'utils'
+import { numberFormat, alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import ModalSupplier from './ModalSupplier'
@@ -12,7 +13,6 @@ const { checkPermissionMonthTransaction } = alertModal
 const { formatNumberIndonesia } = numberFormat
 
 const Panel = Collapse.Panel
-const { prefix } = configMain
 const FormItem = Form.Item
 const Option = Select.Option
 const ButtonGroup = Button.Group

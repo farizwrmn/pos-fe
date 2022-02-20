@@ -1,9 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { configMain } from 'utils'
+import { disableMultiSelect } from 'utils/config.main'
 import { query } from '../services/sellprice'
 import { pageModel } from './common'
-
-const { disableMultiSelect } = configMain
 
 export default modelExtend(pageModel, {
   namespace: 'sellprice',
@@ -64,12 +62,14 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { listSellPrice, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listSellPrice,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     updateState (state, { payload }) {
       return {

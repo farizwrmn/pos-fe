@@ -120,7 +120,10 @@ const FormCounter = ({
           distPrice02: item.distPrice02,
           distPrice03: item.distPrice03,
           distPrice04: item.distPrice04,
-          distPrice05: item.distPrice05
+          distPrice05: item.distPrice05,
+          distPrice06: item.distPrice06,
+          distPrice07: item.distPrice07,
+          distPrice08: item.distPrice08
         })
       }
     }
@@ -253,6 +256,42 @@ const FormCounter = ({
           <FormItem label={getDistPriceName('distPrice05')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice05', {
               initialValue: item.distPrice05,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice06')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice06', {
+              initialValue: item.distPrice06,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice07')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice07', {
+              initialValue: item.distPrice07,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice08', {
+              initialValue: item.distPrice08,
               rules: [
                 {
                   required: true,

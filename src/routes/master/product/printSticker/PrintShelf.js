@@ -1,196 +1,361 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { BasicReportCard } from 'components'
-import { currencyFormatter } from 'utils/string'
-import { rest } from 'utils/config.company'
+import { numberFormatter } from 'utils/string'
 import { lstorage } from 'utils'
+import { APPNAME, MAIN_WEBSITE } from 'utils/config.company'
+import QRCode from 'qrcode'
+import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 5
-const NUMBER_OF_PRODUCT_NAME = 28
-const WIDTH_TABLE = (5 / 2.54) * 72
-const HEIGHT_TABLE = (3.8 / 2.54) * 72
+const BRAND_NAME_SIZE_IN_POINT = 6
+const BRAND_NAME_SIZE = BRAND_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
+const PRODUCT_NAME_SIZE_IN_POINT = 5
+const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 
-const PrintShelf = ({ stickers, user, aliases }) => {
-  const createTableBody = (tableBody) => {
-    let body = []
-    const storeId = lstorage.getCurrentUserStore()
-    for (let key in tableBody) {
-      if (tableBody.hasOwnProperty(key)) {
-        for (let i = 0; i < tableBody[key].qty; i += 1) {
-          const { info: item } = tableBody[key]
-          if (item && item.storePrice && item.storePrice[0]) {
-            const price = item.storePrice.filter(filtered => filtered.storeId === storeId)
-            if (price && price[0]) {
-              item.sellPrice = price[0].sellPrice
-              item.distPrice01 = price[0].distPrice01
-              item.distPrice02 = price[0].distPrice02
-              item.distPrice03 = price[0].distPrice03
-              item.distPrice04 = price[0].distPrice04
-              item.distPrice05 = price[0].distPrice05
-            }
+const PRODUCT_CODE_SIZE_IN_POINT = 4
+const PRODUCT_CODE_SIZE = PRODUCT_CODE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
+
+const PRICE_SIZE_IN_POINT = 14
+const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
+const NUMBER_OF_PRODUCT_NAME = 32
+const WIDTH_TABLE_IN_CENTI = 5
+const HEIGHT_TABLE_IN_CENTI = 3.8
+const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
+const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
+const WIDTH_LOGO_IMAGE_IN_CENTI = 2.6
+const HEIGHT_LOGO_IMAGE_IN_CENTI = 0.5
+const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
+const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
+const WIDTH_IMAGE_IN_CENTI = 1
+const HEIGHT_IMAGE_IN_CENTI = 1
+const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
+const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
+
+const styles = {
+  info: {
+    alignment: 'left',
+    fontSize: PRODUCT_NAME_SIZE,
+    bold: true
+  },
+  sellPrice: {
+    bold: true,
+    alignment: 'right',
+    fontSize: PRICE_SIZE,
+    width: '100%',
+    margin: [3, 0]
+  },
+  brandName: {
+    alignment: 'left',
+    bold: true,
+    fontSize: BRAND_NAME_SIZE,
+    margin: [0, 0, 0, 0]
+  },
+  productName1: {
+    alignment: 'left',
+    fontSize: PRODUCT_NAME_SIZE,
+    margin: [0, 0, 0, 0]
+  },
+  productName2: {
+    alignment: 'left',
+    fontSize: PRODUCT_NAME_SIZE,
+    margin: [0, 0, 0, 0]
+  },
+  others: {
+    fontSize: PRICE_SIZE,
+    margin: [5],
+    alignment: 'left'
+  },
+  productCode: {
+    fontSize: PRODUCT_CODE_SIZE,
+    margin: [5, 0],
+    alignment: 'left'
+  },
+  printDate: {
+    fontSize: PRODUCT_NAME_SIZE,
+    margin: [3, 0],
+    italics: true,
+    alignment: 'right'
+  }
+}
+
+const getBase64FromUrl = async (url) => {
+  const data = await fetch(url)
+  const blob = await data.blob()
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(blob)
+    reader.onloadend = () => {
+      const base64data = reader.result
+      resolve(base64data)
+    }
+  })
+}
+
+const getQRCode = async (productCode) => {
+  const canvasId = document.createElement('canvas')
+  return new Promise(
+    (resolve, reject) => {
+      QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product/${productCode}`, (error) => {
+        if (error) reject(error)
+        resolve(canvasId.toDataURL('image/png'))
+      })
+    }
+  )
+}
+
+const createTableBody = async (tableBody, aliases) => {
+  let body = []
+  let images
+  const storeId = lstorage.getCurrentUserStore()
+  const base = await getBase64FromUrl(`/invoice-logo-${APPNAME}.png`)
+  images = {
+    AppLogo: base
+  }
+  for (let key in tableBody) {
+    if (tableBody.hasOwnProperty(key)) {
+      for (let i = 0; i < tableBody[key].qty; i += 1) {
+        const { info: item } = tableBody[key]
+        if (item && item.storePrice && item.storePrice[0]) {
+          const price = item.storePrice.filter(filtered => filtered.storeId === storeId)
+          if (price && price[0]) {
+            item.sellPrice = price[0].sellPrice
+            item.distPrice01 = price[0].distPrice01
+            item.distPrice02 = price[0].distPrice02
+            item.distPrice03 = price[0].distPrice03
+            item.distPrice04 = price[0].distPrice04
+            item.distPrice05 = price[0].distPrice05
+            item.distPrice06 = price[0].distPrice06
+            item.distPrice07 = price[0].distPrice07
+            item.distPrice08 = price[0].distPrice08
           }
-          const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
-          let maxStringPerRow2 = ' '
-          if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
-            maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 60).toString()
+        }
+        let background = '#ffffff'
+        if (tableBody[key].info.categoryColor) {
+          background = tableBody[key].info.categoryColor
+        }
+        const color = '#000000'
+        // eslint-disable-next-line no-await-in-loop
+        const imageBase = await getQRCode(tableBody[key].info.productCode)
+        images[`${item.productCode}`] = imageBase
+        const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
+        // eslint-disable-next-line no-await-in-loop
+        let row = [
+          {
+            columns: [
+              {
+                stack: [
+                  {
+                    image: 'AppLogo',
+                    width: WIDTH_LOGO_IMAGE,
+                    height: HEIGHT_LOGO_IMAGE,
+
+                    alignment: 'left'
+                  },
+                  {
+                    text: tableBody[key].info.brandName.slice(0, NUMBER_OF_PRODUCT_NAME).toString(),
+                    style: 'brandName',
+                    alignment: 'left',
+                    width: WIDTH_TABLE
+                  }
+                ]
+              },
+              {
+                image: `${item.productCode}`,
+                width: WIDTH_IMAGE,
+                alignment: 'left',
+                height: HEIGHT_IMAGE,
+                margin: [0, 0],
+                fillColor: background,
+                background
+              }
+            ]
           }
-          let row = [
-            { text: maxStringPerRow1, style: 'productName1', alignment: 'center' },
-            { text: maxStringPerRow2, style: 'productName2', alignment: 'center' }
-          ]
-          const background = tableBody[key].info.categoryColor
-          const color = '#000'
-          // row.push({
-          //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
-          // })
-          if (aliases.check1) {
-            row.push({ text: aliases.alias1, style: 'info', margin: [0, 5, 0, 0] })
-            row.push({ text: currencyFormatter(tableBody[key].info[aliases.price1]), width: '100%', fillColor: background, background, color, style: 'sellPrice' })
+        ]
+        row.push(
+
+        )
+        let maxStringPerRow2 = ' '
+        if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
+          maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 68).toString()
+        }
+
+        row.push(
+          {
+            text: maxStringPerRow1,
+            style: 'productName1',
+            alignment: 'left',
+            width: WIDTH_TABLE
           }
-          if (aliases.check2) {
-            // row.push({ text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0] })
-            // row.push({ text: currencyFormatter(tableBody[key].info[aliases.price2]), style: 'others' })
-            row.push({
-              columns: [
-                { text: aliases.alias2, style: 'info', margin: [0, 5, 0, 0], alignment: 'left' },
-                { text: `Rp ${(tableBody[key].info[aliases.price2] || 0).toLocaleString()}`, style: 'others', alignment: 'right' }
-              ]
-            })
-          }
+        )
+        row.push({
+          text: maxStringPerRow2,
+          style: 'productName2',
+          alignment: 'left'
+        })
+        // row.push({
+        //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
+        // })
+        // eslint-disable-next-line no-await-in-loop
+
+
+        if (aliases.check1) {
+          row.push({
+            text: numberFormatter(tableBody[key].info[aliases.price1]),
+            fillColor: background,
+            background,
+            color,
+            style: 'sellPrice'
+          })
+        }
+        if (aliases.check2) {
           row.push({
             columns: [
-              { text: (tableBody[key].info.productCode || '').toString(), style: 'productCode', alignment: 'left' },
-              { text: moment().format('DD/MMM/YYYY'), style: 'productCode', alignment: 'right' }
+              {
+                text: `Rp ${(tableBody[key].info[aliases.price2] || 0).toLocaleString()}`,
+                style: 'others',
+                alignment: 'right'
+              }
             ]
           })
-          row.push({ text: rest.apiCompanyHost.replace('pos', 'www'), style: 'productCode', margin: [0, 5], alignment: 'center' })
-          body.push(row)
         }
-      }
-    }
-    return body
-  }
-  const styles = {
-    info: {
-      alignment: 'left',
-      fontSize: 7,
-      bold: true
-    },
-    sellPrice: {
-      bold: true,
-      alignment: 'center',
-      fontSize: 17,
-      width: '100%',
-      margin: [0, 5]
-    },
-    productName1: {
-      alignment: 'center',
-      fontSize: 7,
-      margin: [0, 5, 0, 0]
-    },
-    productName2: {
-      alignment: 'center',
-      fontSize: 7,
-      margin: [0, 0, 0, 9]
-    },
-    others: {
-      fontSize: 12,
-      margin: [5],
-      alignment: 'left'
-    },
-    productCode: {
-      fontSize: 9,
-      margin: [0, 0],
-      alignment: 'left'
-    }
-  }
-
-  const footer = (currentPage, pageCount) => {
-    return {
-      margin: [40, 30, 40, 0],
-
-      stack: [
-        {
-          canvas: [{ type: 'line', x1: 2, y1: -5, x2: 760, y2: -5, lineWidth: 0.1, margin: [0, 0, 0, 120] }]
-        },
-        {
+        row.push({
           columns: [
             {
-              text: `Tanggal Cetak: ${moment().format('DD-MM-YYYY HH:mm:ss')}`,
-              margin: [0, 0, 0, 0],
-              fontSize: 9,
-              alignment: 'left'
+              text: (tableBody[key].info.productCode || '').toString(),
+              style: 'productCode',
+              margin: [0, 0],
+              alignment: 'left',
+              width: '60%'
             },
             {
-              text: `Dicetak Oleh: ${user.userid}`,
-              fontSize: 9,
-              margin: [0, 0, 0, 0],
-              alignment: 'center'
-            },
-            {
-              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
-              fontSize: 9,
-              margin: [0, 0, 0, 0],
-              alignment: 'right'
+              text: moment().format('YYYY-MM-DD'),
+              style: 'printDate',
+              alignment: 'right',
+              width: '40%'
             }
           ]
+        })
+        body.push(row)
+      }
+    }
+  }
+  return { tableBody: body, images }
+}
+
+class PrintShelf extends Component {
+  constructor (props) {
+    super(props)
+    this.generateSticker = this.generateSticker.bind(this)
+  }
+
+  state = {
+    pdfProps: {
+      name: 'Print',
+      width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
+      height: HEIGHT_TABLE,
+      pageSize: 'A4',
+      pageOrientation: 'landscape',
+      pageMargins: [17, 70, 17, 70],
+      tableStyle: styles,
+      layout: {
+        hLineStyle () {
+          return { dash: { length: 10, space: 4 } }
+        },
+        vLineStyle () {
+          return { dash: { length: 4 } }
         }
-      ]
-    }
-  }
-
-  let tableBody = []
-  try {
-    tableBody = createTableBody(stickers)
-  } catch (e) {
-    console.log(e)
-  }
-
-  let getList = []
-  const getThree = (x, y) => {
-    if (tableBody.slice(x, y).length < NUMBER_OF_COLUMN) {
-      for (let i = x; i < y; i += 1) {
-        tableBody[i] = tableBody[i] || []
-      }
-      getList.push(tableBody.slice(x, y))
-    } else {
-      getList.push(tableBody.slice(x, y))
-    }
-    return getList
-  }
-
-  let x = 0
-  let y = NUMBER_OF_COLUMN
-  for (let i = 0; i < Math.ceil(tableBody.length / NUMBER_OF_COLUMN); i += 1) {
-    getThree(x, y)
-    x += NUMBER_OF_COLUMN
-    y += NUMBER_OF_COLUMN
-  }
-
-  const pdfProps = {
-    name: 'Print',
-    width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
-    height: HEIGHT_TABLE,
-    pageSize: 'A4',
-    pageOrientation: 'landscape',
-    pageMargins: [17, 70, 17, 70],
-    tableStyle: styles,
-    layout: {
-      hLineStyle () {
-        return { dash: { length: 10, space: 4 } }
       },
-      vLineStyle () {
-        return { dash: { length: 4 } }
+      tableBody: [],
+      footer: () => {
+        return ({
+          margin: [],
+          stack: []
+        })
       }
-    },
-    tableBody: getList,
-    footer
+    }
   }
 
-  return (
-    <BasicReportCard {...pdfProps} />
-  )
+  componentDidMount () {
+    this.props.setClick(this.generateSticker)
+    const { stickers } = this.props
+
+    this.generateSticker(stickers)
+  }
+
+  generateSticker (stickers) {
+    const { aliases } = this.props
+    createTableBody(stickers, aliases).then((result) => {
+      const { tableBody, images } = result
+      let getList = []
+      const getThree = (x, y) => {
+        if (tableBody.slice(x, y).length < NUMBER_OF_COLUMN) {
+          for (let i = x; i < y; i += 1) {
+            tableBody[i] = tableBody[i] || []
+          }
+          getList.push(tableBody.slice(x, y))
+        } else {
+          getList.push(tableBody.slice(x, y))
+        }
+        return getList
+      }
+
+      let x = 0
+      let y = NUMBER_OF_COLUMN
+      for (let i = 0; i < Math.ceil(tableBody.length / NUMBER_OF_COLUMN); i += 1) {
+        getThree(x, y)
+        x += NUMBER_OF_COLUMN
+        y += NUMBER_OF_COLUMN
+      }
+      return this.setState({
+        pdfProps: {
+          images,
+          name: 'Print',
+          width: [WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE, WIDTH_TABLE],
+          height: HEIGHT_TABLE,
+          pageSize: 'A4',
+          pageOrientation: 'landscape',
+          pageMargins: [17, 30, 17, 30],
+          tableStyle: styles,
+          layout: {
+            hLineStyle () {
+              return { dash: { length: 10, space: 4 } }
+            },
+            vLineStyle () {
+              return { dash: { length: 4 } }
+            },
+            hLineColor () {
+              return '#c4c4c4'
+            },
+            vLineColor () {
+              return '#c4c4c4'
+            },
+            hLineWidth () {
+              return 0.5
+            },
+            vLineWidth () {
+              return 0.5
+            }
+          },
+          tableBody: getList,
+          footer: () => {
+            return ({
+              margin: [],
+              stack: []
+            })
+          }
+        }
+      })
+    }).catch(error => console.log('error: ', error))
+  }
+
+  render () {
+    return (
+      <div>
+        <ShelfStickerCard {...this.state.pdfProps} />
+      </div>
+    )
+  }
 }
 
 PrintShelf.propTypes = {
