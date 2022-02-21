@@ -4,7 +4,7 @@ import { Form, Input, Button, Row, Col, Card, Table, Tag, Icon, Modal, message }
 import { lstorage } from 'utils'
 import { FooterToolbar } from 'components'
 import ModalProduct from './ModalProduct'
-import styles from '../../../../themes/index.less'
+import styles from '../../../themes/index.less'
 
 const { TextArea } = Input
 const FormItem = Form.Item

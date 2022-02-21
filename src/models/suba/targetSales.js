@@ -29,7 +29,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/product/targetSales') {
+        if (pathname === '/integration/subagro/target-sales') {
           dispatch({
             type: 'updateState',
             payload: {
