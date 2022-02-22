@@ -234,13 +234,29 @@ export default modelExtend(pageModel, {
       payload.transNo = sequence.data
       let data = yield call(add, payload)
       if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalConfirmVisible: true
+        if (payload && payload.data && payload.data.deliveryOrder) {
+          if (payload && payload.reset) {
+            payload.reset()
+            yield put({
+              type: 'updateState',
+              payload: {
+                listItem: []
+              }
+            })
           }
-        })
+          Modal.info({
+            title: 'Delivery order saved',
+            content: 'Delivery order saved, and forward to warehouse'
+          })
+        } else {
+          success()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalConfirmVisible: true
+            }
+          })
+        }
       } else {
         console.log('data', data)
         error(data)

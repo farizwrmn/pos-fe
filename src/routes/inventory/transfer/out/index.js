@@ -411,13 +411,14 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     loading: loading.effects['transferOut/querySequence'],
     disabled: `${formType === 'edit' ? disable : ''}`,
     button: `${formType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, list) {
+    onSubmit (data, list, reset) {
       dispatch({
         type: `transferOut/${formType}`,
         payload: {
           storeId: data.storeId,
           data,
-          detail: list
+          detail: list,
+          reset
         }
       })
     },

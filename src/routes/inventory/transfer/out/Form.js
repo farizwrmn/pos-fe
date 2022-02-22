@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd'
+import { Form, Input, InputNumber, Button, Checkbox, Row, Col, Select } from 'antd'
 import { lstorage } from 'utils'
 import ListItem from './ListItem'
 import Browse from './Browse'
@@ -48,6 +48,7 @@ const FormAdd = ({
   modalConfirmVisible,
   modalProductProps,
   form: {
+    resetFields,
     getFieldDecorator,
     validateFields,
     getFieldsValue
@@ -68,7 +69,7 @@ const FormAdd = ({
       data.storeId = item.storeId
       data.storeIdReceiver = data.storeIdReceiver.key
       data.reference = item.reference
-      onSubmit(data, listItem)
+      onSubmit(data, listItem, resetFields)
       // handleReset()
     })
   }
@@ -123,6 +124,14 @@ const FormAdd = ({
                   }
                 ]
               })(<Input disabled maxLength={20} />)}
+            </FormItem>
+            <FormItem label="Delivery Order" {...formItemLayout}>
+              {getFieldDecorator('deliveryOrder', {
+                valuePropName: 'checked',
+                initialValue: item.enableShopee === undefined
+                  ? false
+                  : item.enableShopee
+              })(<Checkbox>Delivery Order</Checkbox>)}
             </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
