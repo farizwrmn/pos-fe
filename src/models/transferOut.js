@@ -279,7 +279,7 @@ export default modelExtend(pageModel, {
           productName: arrayProd[n].productName,
           transType: arrayProd[n].transType,
           qty: arrayProd[n].qty,
-          dscription: arrayProd[n].dscription
+          description: arrayProd[n].description
         })
       }
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })
