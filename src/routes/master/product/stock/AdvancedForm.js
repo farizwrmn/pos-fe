@@ -1435,7 +1435,7 @@ class AdvancedForm extends Component {
                     {
                       pattern: getFieldValue('enableShopee') ? /^.{20,65535}$/ : undefined,
                       required: getFieldValue('enableShopee') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
-                      message: getFieldValue('enableShopee') ? 'Required when product image is filled' : 'Min 20 Character'
+                      message: getFieldValue('enableShopee') ? 'Min 20 Character' : 'Required when product image is filled'
                     }
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
