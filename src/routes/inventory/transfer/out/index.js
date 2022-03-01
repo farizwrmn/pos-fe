@@ -224,6 +224,9 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         arrayProd = listByCode
         const data = {
           no: arrayProd.length + 1,
+          brandName: item.brandName,
+          categoryName: item.categoryName,
+          productImage: item.productImage,
           productCode: item.productCode,
           productId: item.id,
           transType: 'MUOUT',
