@@ -1433,7 +1433,7 @@ class AdvancedForm extends Component {
                   initialValue: item.description,
                   rules: [
                     {
-                      pattern: getFieldValue('enableShopee') ? /^.{20,65535}$/ : undefined,
+                      pattern: getFieldValue('enableShopee') ? /^[\s\S]{20,65535}$/ : undefined,
                       required: getFieldValue('enableShopee') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
                       message: getFieldValue('enableShopee') ? 'Min 20 Character' : 'Required when product image is filled'
                     }
