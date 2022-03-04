@@ -197,6 +197,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: totalQty, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
@@ -217,6 +218,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'ID ANGGOTA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
@@ -245,6 +247,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
     ]
   ]
@@ -257,6 +260,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (master.memberCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+        { value: (item.transDate || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (parseFloat(item.qty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
