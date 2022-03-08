@@ -1159,13 +1159,11 @@ const Pos = ({
             item.distPrice08 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
-          let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
-            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           arrayProd[checkExists[0].no - 1] = {
             no: checkExists[0].no,
@@ -1193,7 +1191,7 @@ const Pos = ({
             distPrice08: item.distPrice08,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
-            sellPrice: showDiscountPrice,
+            sellPrice: selectedPrice,
             price: selectedPrice,
             discount: 0,
             disc1: 0,
@@ -1283,13 +1281,11 @@ const Pos = ({
             item.distPrice08 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
-          let showDiscountPrice = memberInformation.showAsDiscount ? item.serviceCost : item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
-            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           arrayProd.push({
             no: arrayProd.length + 1,
@@ -1317,7 +1313,7 @@ const Pos = ({
             distPrice08: item.distPrice08,
             qty,
             typeCode: 'S',
-            sellPrice: showDiscountPrice,
+            sellPrice: selectedPrice,
             price: selectedPrice,
             discount: 0,
             disc1: 0,
