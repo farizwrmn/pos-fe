@@ -2060,13 +2060,11 @@ export default {
               item.item.distPrice08 = currentReward.distPrice08
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
-            let showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[memberInformation.memberSellPrice.toString()]
             if (selectedPaymentShortcut
               && selectedPaymentShortcut.sellPrice
               // eslint-disable-next-line eqeqeq
               && selectedPaymentShortcut.memberId == 0) {
               selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
-              showDiscountPrice = memberInformation.showAsDiscount ? item.item.sellPrice : item.item[selectedPaymentShortcut.sellPrice]
             }
             const dataProduct = {
               no: arrayProd.length + 1,
@@ -2094,7 +2092,7 @@ export default {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
               qty: item.qty,
-              sellPrice: showDiscountPrice,
+              sellPrice: selectedPrice,
               price: selectedPrice,
               discount: 0,
               disc1: 0,
@@ -2244,13 +2242,11 @@ export default {
             item.item.distPrice08 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
-          let showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
-            showDiscountPrice = memberInformation.showAsDiscount ? item.item.serviceCost : item.item[selectedPaymentShortcut.sellPrice]
           }
 
           const dataService = {
@@ -2279,7 +2275,7 @@ export default {
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'S',
             qty: item.qty,
-            sellPrice: showDiscountPrice,
+            sellPrice: selectedPrice,
             price: selectedPrice,
             discount: 0,
             disc1: 0,
@@ -2364,6 +2360,7 @@ export default {
           productName: item.productName,
           productId: item.id,
           sellPrice: item.sellPrice,
+          retailPrice: item.retailPrice,
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02,
           distPrice03: item.distPrice03,
@@ -2577,13 +2574,11 @@ export default {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          let showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
-            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           const data = {
             no: currentItem.no,
@@ -2611,7 +2606,7 @@ export default {
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty: newQty,
-            sellPrice: showDiscountPrice,
+            sellPrice: selectedPrice,
             price: selectedPrice,
             discount: 0,
             disc1: 0,
@@ -2640,13 +2635,11 @@ export default {
           ((checkExists || []).length === 0)
           || ((checkExists || []).length > 0 && type === 'barcode')) {
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          let showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[memberInformation.memberSellPrice.toString()]
           if (selectedPaymentShortcut
             && selectedPaymentShortcut.sellPrice
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
-            showDiscountPrice = memberInformation.showAsDiscount ? item.sellPrice : item[selectedPaymentShortcut.sellPrice]
           }
           const data = {
             no: arrayProd.length + 1,
@@ -2674,7 +2667,7 @@ export default {
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
             qty,
-            sellPrice: showDiscountPrice,
+            sellPrice: selectedPrice,
             price: selectedPrice,
             discount: 0,
             disc1: 0,
