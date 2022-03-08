@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { Modal, message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { configMain, lstorage, alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
+import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import { query, queryDetail, create, edit, remove } from 'services/adjust'
 import { query as queryProducts, queryPOSproduct } from 'services/master/productstock'
@@ -13,7 +14,6 @@ import { queryLastActive } from 'services/period'
 import { pageModel } from '../common'
 
 const { stockMinusAlert } = alertModal
-const { prefix } = configMain
 const { getCashierTrans } = lstorage
 
 const success = () => {

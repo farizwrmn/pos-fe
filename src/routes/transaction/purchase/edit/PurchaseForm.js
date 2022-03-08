@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage, numberFormat, alertModal } from 'utils'
+import { lstorage, numberFormat, alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
 import PurchaseList from './PurchaseList'
@@ -12,7 +13,6 @@ const { formatNumberIndonesia } = numberFormat
 
 const FormItem = Form.Item
 const Option = Select.Option
-const { prefix } = configMain
 const formItemLayout = {
   labelCol: {
     xs: { span: 9 },

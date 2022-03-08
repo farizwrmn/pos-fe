@@ -62,7 +62,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'active',
             payload: {
-              countClosing: 0
+              countClosing: 1
             }
           })
         }

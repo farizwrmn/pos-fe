@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
+import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
@@ -35,48 +35,48 @@ const formatWeight = (dimension) => {
   }
 }
 
-// const formatBox = (dimension) => {
-//   try {
-//     if (dimension && dimension.includes('X')) {
-//       let newDimension
-//       const splitted = dimension.split('X')
-//       if (splitted && splitted.length === 3) {
-//         newDimension = splitted[0]
-//       }
-//       return newDimension
-//     }
-//     if (dimension === '') {
-//       return '1'
-//     }
-//     return '1'
-//   } catch (error) {
-//     console.log('formatBox', error)
-//     return '1'
-//   }
-// }
+const formatBox = (dimension) => {
+  try {
+    if (dimension && dimension.includes('X')) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length === 3) {
+        newDimension = splitted[0]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '1'
+    }
+    return '1'
+  } catch (error) {
+    console.log('formatBox', error)
+    return '1'
+  }
+}
 
-// const formatPack = (dimension) => {
-//   try {
-//     if (dimension) {
-//       let newDimension
-//       const splitted = dimension.split('X')
-//       if (splitted && splitted.length === 3) {
-//         newDimension = splitted[1]
-//       }
-//       if (splitted && splitted.length === 2) {
-//         newDimension = splitted[0]
-//       }
-//       return newDimension
-//     }
-//     if (dimension === '') {
-//       return '1'
-//     }
-//     return dimension
-//   } catch (error) {
-//     console.log('formatPack', error)
-//     return '1'
-//   }
-// }
+const formatPack = (dimension) => {
+  try {
+    if (dimension) {
+      let newDimension
+      const splitted = dimension.split('X')
+      if (splitted && splitted.length === 3) {
+        newDimension = splitted[1]
+      }
+      if (splitted && splitted.length === 2) {
+        newDimension = splitted[0]
+      }
+      return newDimension
+    }
+    if (dimension === '') {
+      return '1'
+    }
+    return dimension
+  } catch (error) {
+    console.log('formatPack', error)
+    return '1'
+  }
+}
 
 const formatDimension = (productName) => {
   try {
@@ -147,12 +147,34 @@ class AdvancedForm extends Component {
   constructor (props) {
     super(props)
     this.changeName = this.changeName.bind(this)
+    this.changeBrand = this.changeBrand.bind(this)
   }
 
   state = {
     name: '',
     typing: false,
-    typingTimeout: 0
+    typingTimeout: 0,
+
+    brandName: '',
+    brandTyping: false,
+    brandTypingTimeout: 0
+  }
+
+  changeBrand = (value) => {
+    const self = this
+    console.log('changeBrand', value)
+
+    if (self.state.brandTypingTimeout) {
+      clearTimeout(self.state.brandTypingTimeout)
+    }
+
+    self.setState({
+      brandName: value,
+      brandTyping: false,
+      brandTypingTimeout: setTimeout(() => {
+        self.searchShopeeBrand(self.state.brandName)
+      }, 1000)
+    })
   }
 
   changeName = (event) => {
@@ -177,6 +199,20 @@ class AdvancedForm extends Component {
     } = this.props
     if (productName && productName !== '') {
       onGetShopeeCategory(productName)
+    }
+  }
+
+  searchShopeeBrand = (q) => {
+    const {
+      form: {
+        getFieldValue
+      },
+      onGetShopeeBrand
+    } = this.props
+    const categoryId = getFieldValue('shopeeCategoryId')
+    const category_id = categoryId && categoryId.key ? categoryId.key : null
+    if (q && q !== '' && category_id) {
+      onGetShopeeBrand(q, category_id)
     }
   }
 
@@ -738,6 +774,7 @@ class AdvancedForm extends Component {
       message.success(`Success set category shopee to ${name}`)
       if (id) {
         getShopeeBrand(id)
+        getShopeeAttribute(id)
       }
     }
 
@@ -987,6 +1024,42 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
+                <FormItem label={getDistPriceName('distPrice06')} hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('distPrice06', {
+                    initialValue: item.distPrice06,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber {...InputNumberProps} />)}
+                </FormItem>
+                <FormItem label={getDistPriceName('distPrice07')} hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('distPrice07', {
+                    initialValue: item.distPrice07,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber {...InputNumberProps} />)}
+                </FormItem>
+                <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('distPrice08', {
+                    initialValue: item.distPrice08,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber {...InputNumberProps} />)}
+                </FormItem>
                 <FormItem label="Cost Price" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('costPrice', {
                     initialValue: item.costPrice,
@@ -1070,8 +1143,10 @@ class AdvancedForm extends Component {
                     })(<Select
                       showSearch
                       allowClear
+                      onSearch={this.changeBrand}
                       optionFilterProp="children"
                       labelInValue
+                      notFoundContent={loadingButton.effects['shopeeCategory/queryBrand'] ? <Spin size="small" /> : null}
                       filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                     >{shopeeBrand}
                     </Select>)}
@@ -1317,13 +1392,50 @@ class AdvancedForm extends Component {
                   </Upload>
                 )}
               </FormItem>
+              <FormItem label="Dimension" {...formItemLayout}>
+                {getFieldDecorator('dimension', {
+                  initialValue: modalType === 'add' ?
+                    formatDimension(getFieldValue('productName')) : item.dimension,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
+                {getFieldDecorator('dimensionBox', {
+                  initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^([0-9]{1,5})$/,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={25} />)}
+              </FormItem>
+              <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
+                {getFieldDecorator('dimensionPack', {
+                  initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^([0-9]{1,5})$/,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={25} />)}
+              </FormItem>
               <FormItem label="Description" {...formItemLayout}>
                 {getFieldDecorator('description', {
                   initialValue: item.description,
                   rules: [
                     {
+                      pattern: getFieldValue('enableShopee') ? /^[\s\S]{20,65535}$/ : undefined,
                       required: getFieldValue('enableShopee') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
-                      message: 'Required when product image is filled'
+                      message: getFieldValue('enableShopee') ? 'Min 20 Character' : 'Required when product image is filled'
                     }
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}

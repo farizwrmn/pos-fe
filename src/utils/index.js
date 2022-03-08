@@ -3,7 +3,6 @@ import lodash from 'lodash'
 import { message } from 'antd'
 import moment from 'moment'
 import configCompany from './config.company'
-import configMain from './config.main'
 import config from './config.rest'
 import request from './request'
 import { color } from './theme'
@@ -141,7 +140,6 @@ const isEmptyObject = (obj) => {
 
 
 module.exports = {
-  configMain,
   configCompany,
   config,
   request,

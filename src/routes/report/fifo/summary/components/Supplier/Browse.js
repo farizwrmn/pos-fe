@@ -20,7 +20,14 @@ const Browse = ({ listStoreLov, ...browseProps }) => {
     {
       title: 'Product Name',
       dataIndex: 'productName',
-      key: 'productName'
+      key: 'productName',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.productName} D: {record.dimension} P: {record.dimensionPack} B: {record.dimensionBox}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Category',

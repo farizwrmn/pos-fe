@@ -3,10 +3,8 @@
  */
 import { Modal, message } from 'antd'
 import moment from 'moment'
-import { configMain } from 'utils'
+import { prefix } from 'utils/config.main'
 import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoValueAll, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
-
-const { prefix } = configMain
 
 export default {
   namespace: 'fifoReport',
@@ -189,7 +187,12 @@ export default {
       if (data.success) {
         const listRekap = data.listProduct.map((item) => {
           const filtered = data.data.filter(filtered => filtered.id === item.id)
-          if (filtered && filtered[0]) return filtered[0]
+          if (filtered && filtered[0]) {
+            return ({
+              ...filtered[0],
+              ...item
+            })
+          }
           return ({
             ...item,
             adjInPrice: 0,
@@ -202,16 +205,16 @@ export default {
             inTransferQty: 0,
             inTransitPrice: 0,
             inTransitQty: 0,
-            period: 7,
-            posPrice: 48000,
-            posQty: 6,
+            period: moment().format('M'),
+            posPrice: 0,
+            posQty: 0,
             purchasePrice: 0,
             purchaseQty: 0,
-            transferInPrice: 48000,
-            transferInQty: 6,
+            transferInPrice: 0,
+            transferInQty: 0,
             transferOutPrice: 0,
             transferOutQty: 0,
-            year: 2021
+            year: moment().format('YYYY')
           })
         })
         console.log('listRekap', listRekap)

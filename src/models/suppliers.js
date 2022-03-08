@@ -1,9 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { configMain } from 'utils'
+import { disableMultiSelect } from 'utils/config.main'
 import { query, add, edit, remove } from '../services/suppliers'
 import { pageModel } from './common'
-
-const { disableMultiSelect } = configMain
 
 export default modelExtend(pageModel, {
   namespace: 'suppliers',

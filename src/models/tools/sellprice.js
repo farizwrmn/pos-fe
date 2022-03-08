@@ -208,11 +208,17 @@ export default {
           prevDistPrice03: arrayProd[n].distPrice03,
           prevDistPrice04: arrayProd[n].distPrice04,
           prevDistPrice05: arrayProd[n].distPrice05,
+          prevDistPrice06: arrayProd[n].distPrice06,
+          prevDistPrice07: arrayProd[n].distPrice07,
+          prevDistPrice08: arrayProd[n].distPrice08,
           distPrice01: arrayProd[n].distPrice01,
           distPrice02: arrayProd[n].distPrice02,
           distPrice03: arrayProd[n].distPrice03,
           distPrice04: arrayProd[n].distPrice04,
           distPrice05: arrayProd[n].distPrice05,
+          distPrice06: arrayProd[n].distPrice06,
+          distPrice07: arrayProd[n].distPrice07,
+          distPrice08: arrayProd[n].distPrice08,
           sellPrice: arrayProd[n].sellPrice
         })
       }

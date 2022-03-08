@@ -56,14 +56,15 @@ class ProductStock extends Component {
           </span>
         )
         break
-      case '1':
+      case '1': {
         moreButtonTab = (
           <span>
-            <PrintShelf stickers={listSticker} user={user} {...printProps} />
+            <PrintShelf setClick={click => this.clickChildShelf = click} stickers={listSticker} user={user} {...printProps} />
             <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printProps} />
           </span>
         )
         break
+      }
       default:
         break
     }
@@ -132,7 +133,8 @@ class ProductStock extends Component {
             type: 'productstock/addSticker',
             payload: {
               sticker,
-              resetChild: parentProps.clickChild
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf
             }
           })
         },
@@ -141,7 +143,8 @@ class ProductStock extends Component {
             type: 'productstock/deleteSticker',
             payload: {
               sticker,
-              resetChild: parentProps.clickChild
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf
             }
           })
         },
@@ -151,7 +154,8 @@ class ProductStock extends Component {
             payload: {
               selectedRecord,
               changedRecord,
-              resetChild: parentProps.clickChild
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf
             }
           })
         },

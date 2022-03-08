@@ -43,7 +43,7 @@ const Member = ({
 
       <Row>
         <Col span={24} className={styles.center}>
-          <div style={{ fontSize: '16px' }}>
+          <div>
             <strong>
               Gratis Delivery
             </strong>
@@ -54,7 +54,7 @@ const Member = ({
             </strong>
           </div>
           <div>
-            <strong style={{ fontSize: '16px' }}>
+            <strong>
               {rest.apiCompanyHost.replace('pos', 'www')}
             </strong>
           </div>

@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { Modal } from 'antd'
-import { lstorage, configMain, alertModal } from 'utils'
+import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
+import { prefix } from 'utils/config.main'
 import moment from 'moment'
 import { query as querySequence } from '../services/sequence'
 import {
@@ -22,7 +23,6 @@ import { query as queryProducts, queryPOSproduct } from '../services/master/prod
 import { query as querySupplier } from '../services/master/supplier'
 
 const { stockMinusAlert } = alertModal
-const { prefix } = configMain
 const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
 
 export default modelExtend(pageModel, {

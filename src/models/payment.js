@@ -1,6 +1,7 @@
 import { Modal } from 'antd'
 import moment from 'moment'
-import { configMain, lstorage, variables, alertModal } from 'utils'
+import { lstorage, variables, alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import defaultFont from 'utils/defaultFont'
@@ -24,7 +25,6 @@ const pdfFonts = require('pdfmake/build/vfs_fonts.js')
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 pdfMake.fonts = defaultFont
 
-const { prefix } = configMain
 const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).stackHeader03 : []
 
 const { create } = cashierService
@@ -181,6 +181,9 @@ export default {
               distPrice03: dataPos[key].distPrice03,
               distPrice04: dataPos[key].distPrice04,
               distPrice05: dataPos[key].distPrice05,
+              distPrice06: dataPos[key].distPrice06,
+              distPrice07: dataPos[key].distPrice07,
+              distPrice08: dataPos[key].distPrice08,
               sellingPrice: dataPos[key].price,
               DPP: dpp,
               PPN: ppn,
@@ -220,6 +223,9 @@ export default {
               distPrice03: x.distPrice03,
               distPrice04: x.distPrice04,
               distPrice05: x.distPrice05,
+              distPrice06: x.distPrice06,
+              distPrice07: x.distPrice07,
+              distPrice08: x.distPrice08,
               qty: x.qty,
               typeCode: x.typeCode,
               sellPrice: x.sellPrice,

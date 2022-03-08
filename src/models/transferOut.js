@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { Modal, message } from 'antd'
-import { configMain, lstorage, color, alertModal } from 'utils'
+import { prefix } from 'utils/config.main'
+import { lstorage, color, alertModal } from 'utils'
 import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
@@ -15,7 +16,6 @@ const { stockMinusAlert } = alertModal
 const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
-const { prefix } = configMain
 
 const error = (err) => {
   message.error(typeof err.message === 'string' ? err.message : err.detail)
@@ -234,13 +234,29 @@ export default modelExtend(pageModel, {
       payload.transNo = sequence.data
       let data = yield call(add, payload)
       if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalConfirmVisible: true
+        if (payload && payload.data && payload.data.deliveryOrder) {
+          if (payload && payload.reset) {
+            payload.reset()
+            yield put({
+              type: 'updateState',
+              payload: {
+                listItem: []
+              }
+            })
           }
-        })
+          Modal.info({
+            title: 'Delivery order saved',
+            content: 'Delivery order saved, and forward to warehouse'
+          })
+        } else {
+          success()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalConfirmVisible: true
+            }
+          })
+        }
       } else {
         console.log('data', data)
         error(data)
@@ -263,7 +279,7 @@ export default modelExtend(pageModel, {
           productName: arrayProd[n].productName,
           transType: arrayProd[n].transType,
           qty: arrayProd[n].qty,
-          dscription: arrayProd[n].dscription
+          description: arrayProd[n].description
         })
       }
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })

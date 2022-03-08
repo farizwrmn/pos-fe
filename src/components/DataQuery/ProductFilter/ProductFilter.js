@@ -102,6 +102,24 @@ const ProductFilter = ({
       key: 'distPrice05',
       width: '100px',
       render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'distPrice06',
+      key: 'distPrice06',
+      width: '100px',
+      render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice07'),
+      dataIndex: 'distPrice07',
+      key: 'distPrice07',
+      width: '100px',
+      render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice08'),
+      dataIndex: 'distPrice08',
+      key: 'distPrice08',
+      width: '100px',
+      render: text => formatNumberIndonesia(text)
     }
   ]
 
@@ -315,7 +333,7 @@ const ProductFilter = ({
             pagination={showPagination ? pagination : false}
             dataSource={list}
             bordered
-            scroll={{ x: 500, y: 388 }}
+            scroll={{ x: 1620, y: 388 }}
             rowSelection={rowSelection}
             selectedRowKeys={selectedRowKeys}
             columns={columns}
@@ -350,12 +368,12 @@ export default connect(
     variant,
     specification
   }) =>
-    ({
-      productstock,
-      bundling,
-      productcategory,
-      productbrand,
-      variant,
-      specification
-    })
+  ({
+    productstock,
+    bundling,
+    productcategory,
+    productbrand,
+    variant,
+    specification
+  })
 )(Form.create()(ProductFilter))

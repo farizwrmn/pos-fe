@@ -187,7 +187,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     [
       { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'KODE PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'NAMA PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
@@ -220,7 +220,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       tableFilters.push([
         { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (master.supplierCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
-        { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+        { value: (master.supplierName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: item.qty, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },

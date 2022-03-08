@@ -1,29 +1,36 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import ShelfStickerCard from 'components/Pdf/ShelfStickerCard'
 import { numberFormatter, withoutFormat } from 'utils/string'
 import { lstorage } from 'utils'
-import { IMAGEURL, APPNAME } from 'utils/config.company'
+import QRCode from 'qrcode'
+import { MAIN_WEBSITE, IMAGEURL, APPNAME } from 'utils/config.company'
+import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 3
-const PRODUCT_NAME_SIZE_IN_POINT = 8
-const PRICE_SIZE_IN_POINT = 20
+const PRODUCT_NAME_SIZE_IN_POINT = 7
+const PRICE_SIZE_IN_POINT = 18
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
-const NUMBER_OF_PRODUCT_NAME = 28
+const NUMBER_OF_PRODUCT_NAME = 27
 const WIDTH_TABLE_IN_CENTI = 8
-const HEIGHT_TABLE_IN_CENTI = 5
+const HEIGHT_TABLE_IN_CENTI = 4.5
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
 const WIDTH_LOGO_IMAGE_IN_CENTI = 5
-const HEIGHT_LOGO_IMAGE_IN_CENTI = 1
+const HEIGHT_LOGO_IMAGE_IN_CENTI = 0.8
 const WIDTH_IMAGE_IN_CENTI = 2
 const HEIGHT_IMAGE_IN_CENTI = 2
 const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
+
+const WIDTH_IMAGE_IN_CENTI_BARCODE = 1
+const HEIGHT_IMAGE_IN_CENTI_BARCODE = 1
+
+const WIDTH_IMAGE_BARCODE = (WIDTH_IMAGE_IN_CENTI_BARCODE / 2.54) * 72
+const HEIGHT_IMAGE_BARCODE = (HEIGHT_IMAGE_IN_CENTI_BARCODE / 2.54) * 72
 
 const styles = {
   info: {
@@ -36,17 +43,17 @@ const styles = {
     alignment: 'right',
     fontSize: PRICE_SIZE,
     width: '100%',
-    margin: [0, 12, 0, 0]
+    margin: [0, 10, 0, 0]
   },
   productName1: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 5, 0, 0]
+    margin: [10, 0]
   },
   productName2: {
     alignment: 'center',
     fontSize: PRODUCT_NAME_SIZE,
-    margin: [0, 0, 0, 4]
+    margin: [10, 0]
   },
   others: {
     fontSize: PRICE_SIZE,
@@ -78,6 +85,18 @@ const getBase64FromUrl = async (url) => {
   })
 }
 
+const getQRCode = async (productCode) => {
+  const canvasId = document.createElement('canvas')
+  return new Promise(
+    (resolve, reject) => {
+      QRCode.toCanvas(canvasId, `${MAIN_WEBSITE}/product/${productCode}`, (error) => {
+        if (error) reject(error)
+        resolve(canvasId.toDataURL('image/png'))
+      })
+    }
+  )
+}
+
 const createTableBody = async (tableBody, aliases) => {
   let body = []
   let images
@@ -99,6 +118,9 @@ const createTableBody = async (tableBody, aliases) => {
             item.distPrice03 = price[0].distPrice03
             item.distPrice04 = price[0].distPrice04
             item.distPrice05 = price[0].distPrice05
+            item.distPrice06 = price[0].distPrice06
+            item.distPrice07 = price[0].distPrice07
+            item.distPrice08 = price[0].distPrice08
           }
         }
         // eslint-disable-next-line no-await-in-loop
@@ -117,27 +139,51 @@ const createTableBody = async (tableBody, aliases) => {
         const maxStringPerRow1 = tableBody[key].info.productName.slice(0, NUMBER_OF_PRODUCT_NAME).toString()
         let maxStringPerRow2 = ' '
         if (tableBody[key].info.productName.toString().length > NUMBER_OF_PRODUCT_NAME) {
-          maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 60).toString()
+          maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 68).toString()
         }
 
-        row.push(
-          {
-            text: maxStringPerRow1,
-            style: 'productName1',
-            alignment: 'center',
-            width: WIDTH_TABLE
-          }
-        )
         row.push({
-          text: maxStringPerRow2,
-          style: 'productName2',
-          alignment: 'center'
+          columns: [
+            {
+              width: '80%',
+              stack: [
+                {
+                  text: maxStringPerRow1,
+                  style: 'productName1',
+                  alignment: 'left',
+                  width: WIDTH_TABLE
+                },
+                {
+                  text: maxStringPerRow2,
+                  style: 'productName2',
+                  alignment: 'left'
+                }
+              ]
+            },
+            {
+              image: `barcode-${item.productCode}`,
+              width: WIDTH_IMAGE_BARCODE,
+              height: HEIGHT_IMAGE_BARCODE,
+              margin: [10, 0]
+            }
+          ]
         })
 
         row.push({
-          text: moment().format('YYYY-MM-DD'),
-          style: 'printDate',
-          alignment: 'right'
+          columns: [
+            {
+              text: (tableBody[key].info.productCode || '').toString(),
+              style: 'productCode',
+              margin: [10, 0],
+              alignment: 'left'
+            },
+            {
+              text: moment().format('YYYY-MM-DD'),
+              style: 'printDate',
+              alignment: 'right'
+            }
+          ]
+
         })
         let background = '#ffffff'
         if (tableBody[key].info.categoryColor) {
@@ -148,6 +194,10 @@ const createTableBody = async (tableBody, aliases) => {
         //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
         // })
 
+        // eslint-disable-next-line no-await-in-loop
+        const imageBarcode = await getQRCode(tableBody[key].info.productCode)
+        images[`barcode-${item.productCode}`] = imageBarcode
+
         let imageBase = null
         if (!images[`${item.productCode}`]) {
           if (item
@@ -157,8 +207,12 @@ const createTableBody = async (tableBody, aliases) => {
             && item.productImage !== 'no_image.png') {
             const image = JSON.parse(item.productImage)
             if (image && image[0]) {
-              // eslint-disable-next-line no-await-in-loop
-              imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                imageBase = await getBase64FromUrl(`${IMAGEURL}/${withoutFormat(image[0])}-small.jpg`)
+              } catch (error) {
+                console.log('Error QR', imageBase)
+              }
             }
           }
         } else {
@@ -179,6 +233,7 @@ const createTableBody = async (tableBody, aliases) => {
                   fillColor: background,
                   background
                 },
+
                 {
                   text: numberFormatter(tableBody[key].info[aliases.price1]),
                   width: '70%',
@@ -213,12 +268,6 @@ const createTableBody = async (tableBody, aliases) => {
             ]
           })
         }
-        row.push({
-          text: (tableBody[key].info.productCode || '').toString(),
-          style: 'productCode',
-          margin: [10, 0],
-          alignment: 'right'
-        })
         body.push(row)
       }
     }
@@ -329,7 +378,7 @@ class PrintShelf extends Component {
           }
         }
       })
-    })
+    }).catch(error => console.log('error: ', error))
   }
 
   render () {

@@ -35,6 +35,7 @@ const BasicReportCard = ({
   }
 
   const printPdf = (data) => {
+    console.log('print basic card')
     if (data.length === 0) {
       Modal.warning({
         title: 'Empty Data',

@@ -141,6 +141,57 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
           </div>
         }
       }
+    },
+    {
+      title: getDistPriceName('distPrice06'),
+      dataIndex: 'distPrice06',
+      key: 'distPrice06',
+      render (text, record) {
+        const oldPriceHandler = (record.prevDistPrice06 === 0 ? (text === 0 ? 1 : text) : record.prevDistPrice06 || 0)
+        const oldPrice = (record.prevDistPrice06 || 0)
+        const diffPrice = ((text || 0) - oldPrice)
+        return {
+          children: <div style={{ textAlign: 'right' }}>
+            {`${(record.prevDistPrice06 || 0).toLocaleString()} to `}
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
+            ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
+          </div>
+        }
+      }
+    },
+    {
+      title: getDistPriceName('distPrice07'),
+      dataIndex: 'distPrice07',
+      key: 'distPrice07',
+      render (text, record) {
+        const oldPriceHandler = (record.prevDistPrice07 === 0 ? (text === 0 ? 1 : text) : record.prevDistPrice07 || 0)
+        const oldPrice = (record.prevDistPrice07 || 0)
+        const diffPrice = ((text || 0) - oldPrice)
+        return {
+          children: <div style={{ textAlign: 'right' }}>
+            {`${(record.prevDistPrice07 || 0).toLocaleString()} to `}
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
+            ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
+          </div>
+        }
+      }
+    },
+    {
+      title: getDistPriceName('distPrice08'),
+      dataIndex: 'distPrice08',
+      key: 'distPrice08',
+      render (text, record) {
+        const oldPriceHandler = (record.prevDistPrice08 === 0 ? (text === 0 ? 1 : text) : record.prevDistPrice08 || 0)
+        const oldPrice = (record.prevDistPrice08 || 0)
+        const diffPrice = ((text || 0) - oldPrice)
+        return {
+          children: <div style={{ textAlign: 'right' }}>
+            {`${(record.prevDistPrice08 || 0).toLocaleString()} to `}
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
+            ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
+          </div>
+        }
+      }
     }
   ]
 

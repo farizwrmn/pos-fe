@@ -76,11 +76,11 @@ const getCashierTrans = () => {
 }
 
 const getPriceName = () => {
-  return localStorage.getItem('disPrece') ? JSON.parse(localStorage.getItem('disPrece')) : []
+  return localStorage.getItem('disPrece2') ? JSON.parse(localStorage.getItem('disPrece2')) : []
 }
 
 const setPriceName = (priceList) => {
-  return localStorage.setItem('disPrece', JSON.stringify(priceList || '[]'))
+  return localStorage.setItem('disPrece2', JSON.stringify(priceList || '[]'))
 }
 
 const getPaymentShortcut = () => {
@@ -173,7 +173,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('isInit')
   localStorage.removeItem('service_detail')
   localStorage.removeItem('cashier_trans')
-  localStorage.removeItem('disPrece')
+  localStorage.removeItem('disPrece2')
   localStorage.removeItem('payShortcut')
   localStorage.removeItem('consignment')
   localStorage.removeItem('member')

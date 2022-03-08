@@ -1,6 +1,7 @@
 const production = process.env.NODE_ENV === 'production'
 const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart' // 'localhost'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
+const MAIN_WEBSITE = production ? (process.env.MAIN_WEBSITE || 'k3mart.id') : 'k3mart.id'
 const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'localhost' // 'localhost'
 const COUCH_NAME = production ? (process.env.CLOUDANT_NAME || 'k3mart') : 'k3mart' // 'localhost'
 const COUCH_URL = production ? (process.env.CLOUDANT_URL || 'http://k3mart:123456@localhost:5984/k3mart') : 'http://k3mart:123456@localhost:5984/k3mart' // 'localhost'
@@ -23,6 +24,7 @@ module.exports = {
   companyName: 'Smartech Indo',
   APISOCKET,
   IMAGEURL,
+  MAIN_WEBSITE,
   APIIMAGEURL,
   couchdb: {
     COUCH_URL,
