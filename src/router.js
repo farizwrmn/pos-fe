@@ -244,11 +244,11 @@ const Routers = function ({ history, app }) {
             }, 'suba-promo')
           }
         }, {
-          path: 'integration/subagro/piutang-marketing',
+          path: 'integration/subagro/sales-receivable',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/suba/piutangMarketing'))
-              cb(null, require('./routes/integration/piutangMarketing'))
+              registerModel(app, require('./models/suba/salesReceivable'))
+              cb(null, require('./routes/integration/salesReceivable'))
             }, 'suba-promo')
           }
         }, {

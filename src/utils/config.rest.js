@@ -112,9 +112,6 @@ module.exports = {
     paymentCost: '/payment-cost',
     workOrder: '/wo',
     maintenance: '/maintenance',
-    marketing: '/marketing',
-    subaPromo: '/suba/promo',
-    subaPiutangMarketing: '/suba/piutang-marketing',
-    subaTargetSales: '/suba/target-sales'
+    marketing: '/marketing'
   }
 }

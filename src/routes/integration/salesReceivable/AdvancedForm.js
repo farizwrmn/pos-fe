@@ -5,7 +5,6 @@ import moment from 'moment'
 import { FooterToolbar } from 'components'
 
 const FormItem = Form.Item
-const dateFormat = 'YYYY-MM-DD'
 
 const formItemLayout = {
   style: {
@@ -146,8 +145,8 @@ const AdvancedForm = ({
     <Form layout="horizontal">
       <FooterToolbar>
         <FormItem {...tailFormItemLayout}>
-          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['piutangMarketing/add'] || loadingButton.effects['piutangMarketing/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" disabled={loadingButton && (loadingButton.effects['piutangMarketing/add'] || loadingButton.effects['piutangMarketing/edit'])} onClick={handleSubmit}>{button}</Button>
+          {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['salesReceivable/add'] || loadingButton.effects['salesReceivable/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+          <Button type="primary" disabled={loadingButton && (loadingButton.effects['salesReceivable/add'] || loadingButton.effects['salesReceivable/edit'])} onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </FooterToolbar>
       <Card {...cardProps}>
@@ -176,9 +175,9 @@ const AdvancedForm = ({
               })(<Input />)}
             </FormItem>
 
-            <FormItem label="No Faktur" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('noFaktur', {
-                initialValue: item.noFaktur,
+            <FormItem label="Transaction No" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transNo', {
+                initialValue: item.transNo,
                 rules: [
                   {
                     required: false,
@@ -187,9 +186,9 @@ const AdvancedForm = ({
                 ]
               })(<Input />)}
             </FormItem>
-            <FormItem label="Tgl Faktur" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('tglFaktur', {
-                initialValue: moment.utc(moment(item.tglFaktur).format('YYYY-MM-DD'), dateFormat),
+            <FormItem label="Transaction Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transDate', {
+                initialValue: item.transDate ? moment(item.transDate) : null,
                 rules: [
                   {
                     required: false,
@@ -198,9 +197,9 @@ const AdvancedForm = ({
                 ]
               })(<DatePicker />)}
             </FormItem>
-            <FormItem label="Jatuh Tempo" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('jatuhTempo', {
-                initialValue: moment.utc(moment(item.jatuhTempo).format('YYYY-MM-DD'), dateFormat),
+            <FormItem label="Due Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('dueDate', {
+                initialValue: item.dueDate ? moment(item.dueDate) : null,
                 rules: [
                   {
                     required: false,
@@ -209,9 +208,9 @@ const AdvancedForm = ({
                 ]
               })(<DatePicker />)}
             </FormItem>
-            <FormItem label="Nilai Faktur" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('nilaiFaktur', {
-                initialValue: item.nilaiFaktur,
+            <FormItem label="Netto" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('netto', {
+                initialValue: item.netto,
                 rules: [
                   {
                     required: false,
@@ -220,20 +219,9 @@ const AdvancedForm = ({
                 ]
               })(<InputNumber {...InputNumberProps} />)}
             </FormItem>
-            <FormItem label="Hutang" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('hutang', {
-                initialValue: item.hutang,
-                rules: [
-                  {
-                    required: false,
-                    message: 'a-Z & 0-9'
-                  }
-                ]
-              })(<InputNumber {...InputNumberProps} />)}
-            </FormItem>
-            <FormItem label="Umur Hutang (Hari)" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('umurHutang', {
-                initialValue: item.umurHutang,
+            <FormItem label="Receivable" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('receivable', {
+                initialValue: item.receivable,
                 rules: [
                   {
                     required: false,

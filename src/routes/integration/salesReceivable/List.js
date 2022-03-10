@@ -2,12 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { numberFormat } from 'utils'
 import moment from 'moment'
+
+const numberFormatter = numberFormat.numberFormatter
 
 const confirm = Modal.confirm
 
 const List = ({ ...tableProps,
-  user,
   editItem,
   deleteItem
 }) => {
@@ -40,95 +42,62 @@ const List = ({ ...tableProps,
     {
       title: 'Sales Name',
       dataIndex: 'salesName',
-      key: 'salesName',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.salesName}</div>
-          </div>
-        )
-      }
+      key: 'salesName'
     },
     {
       title: 'customer',
       dataIndex: 'customer',
-      key: 'customer',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.customer}</div>
-          </div>
-        )
-      }
+      key: 'customer'
     },
     {
-      title: 'No Faktur',
-      dataIndex: 'noFaktur',
-      key: 'noFaktur',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.noFaktur}</div>
-          </div>
-        )
-      }
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Tgl Faktur',
-      dataIndex: 'tglFaktur',
-      key: 'tglFaktur',
+      title: 'Transaction Date',
+      dataIndex: 'Transaction Date',
+      key: 'Transaction Date',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.tglFaktur ? moment(record.tglFaktur).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
+            <div>{record.transDate ? moment(record.transDate).format('DD-MMM-YYYY') : ''}</div>
           </div>
         )
       }
     },
     {
       title: 'Jatuh Tempo',
-      dataIndex: 'jatuhTempo',
-      key: 'jatuhTempo',
+      dataIndex: 'dueDate',
+      key: 'dueDate',
       render: (text, record) => {
         return (
           <div>
-            <div>{record.jatuhTempo ? moment(record.jatuhTempo).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
+            <div>{record.dueDate ? moment(record.dueDate).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
           </div>
         )
       }
     },
     {
-      title: 'Nilai Faktur',
-      dataIndex: 'nilaiFaktur',
-      key: 'nilaiFaktur',
-      render: (text, record) => {
+      title: 'Netto',
+      dataIndex: 'netto',
+      key: 'netto',
+      render: (text) => {
         return (
           <div>
-            <div>{record.nilaiFaktur}</div>
+            <div>{numberFormatter(text)}</div>
           </div>
         )
       }
     },
     {
-      title: 'Hutang',
-      dataIndex: 'hutang',
-      key: 'hutang',
-      render: (text, record) => {
+      title: 'Receivable',
+      dataIndex: 'receivable',
+      key: 'receivable',
+      render: (text) => {
         return (
           <div>
-            <div>{record.hutang}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Umur Hutang',
-      dataIndex: 'umurHutang',
-      key: 'umurHutang',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.umurHutang}</div>
+            <div>{numberFormatter(text)}</div>
           </div>
         )
       }
@@ -162,9 +131,7 @@ const List = ({ ...tableProps,
     <div>
       <Table {...tableProps}
         bordered
-        columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
-          ? columns
-          : []}
+        columns={columns}
         simple
         scroll={{ x: 2000 }}
         rowKey={record => record.id}

@@ -7,7 +7,6 @@ import moment from 'moment'
 const confirm = Modal.confirm
 
 const List = ({ ...tableProps,
-  user,
   editItem,
   deleteItem
 }) => {
@@ -163,9 +162,7 @@ const List = ({ ...tableProps,
     <div>
       <Table {...tableProps}
         bordered
-        columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
-          ? columns
-          : []}
+        columns={columns}
         simple
         scroll={{ x: 2000 }}
         rowKey={record => record.id}

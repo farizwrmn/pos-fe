@@ -8,9 +8,9 @@ import AdvancedForm from './AdvancedForm'
 
 const TabPane = Tabs.TabPane
 
-const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
+const PiutangMarketing = ({ dispatch, salesReceivable, app, loading }) => {
   const { user } = app
-  const { list, pagination, modalType, currentItem, activeKey, advancedForm } = piutangMarketing
+  const { list, pagination, modalType, currentItem, activeKey, advancedForm } = salesReceivable
 
   const listProps = {
     user,
@@ -18,7 +18,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
     pagination,
     editItem (item) {
       dispatch({
-        type: 'piutangMarketing/updateState',
+        type: 'salesReceivable/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -37,7 +37,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
     },
     deleteItem (id) {
       dispatch({
-        type: 'piutangMarketing/delete',
+        type: 'salesReceivable/delete',
         payload: id
       })
     }
@@ -53,7 +53,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data, reset) {
       dispatch({
-        type: `piutangMarketing/${modalType}`,
+        type: `salesReceivable/${modalType}`,
         payload: {
           id,
           data,
@@ -70,24 +70,24 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
         }
       }))
       dispatch({
-        type: 'piutangMarketing/updateState',
+        type: 'salesReceivable/updateState',
         payload: {
           currentItem: {}
         }
       })
     },
     onGetProduct () {
-      dispatch({ type: 'piutangMarketing/query' })
+      dispatch({ type: 'salesReceivable/query' })
     },
     onSearchProductData (data) {
       dispatch({
-        type: 'piutangMarketing/updateState',
+        type: 'salesReceivable/updateState',
         payload: {
           searchText: data.q
         }
       })
       dispatch({
-        type: 'piutangMarketing/query',
+        type: 'salesReceivable/query',
         payload: {
           ...data
         }
@@ -95,13 +95,13 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
     },
     onSearchProduct (data) {
       dispatch({
-        type: 'piutangMarketing/updateState',
+        type: 'salesReceivable/updateState',
         payload: {
           searchText: data
         }
       })
       dispatch({
-        type: 'piutangMarketing/query',
+        type: 'salesReceivable/query',
         payload: {
           q: data
         }
@@ -111,7 +111,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'piutangMarketing/updateState',
+      type: 'salesReceivable/updateState',
       payload: {
         activeKey: key,
         modalType: 'add',
@@ -143,7 +143,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
 
   const clickBrowse = () => {
     dispatch({
-      type: 'piutangMarketing/updateState',
+      type: 'salesReceivable/updateState',
       payload: {
         activeKey: '1'
       }
@@ -172,7 +172,7 @@ const PiutangMarketing = ({ dispatch, piutangMarketing, app, loading }) => {
 
 
 PiutangMarketing.defaultProps = {
-  piutangMarketing: {}
+  salesReceivable: {}
 }
 
-export default connect(({ piutangMarketing, loading, app }) => ({ piutangMarketing, loading, app }))(PiutangMarketing)
+export default connect(({ salesReceivable, loading, app }) => ({ salesReceivable, loading, app }))(PiutangMarketing)
