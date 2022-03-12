@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Input, InputNumber, Row, DatePicker, Col, Card, Modal, message } from 'antd'
+import { Form, Button, Input, InputNumber, Row, DatePicker, Col, Card, Modal } from 'antd'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
 
@@ -40,7 +40,6 @@ const AdvancedForm = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    getFieldValue,
     resetFields
   }
 }) => {
@@ -72,35 +71,6 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      if (!getFieldValue('salesName')) {
-        message.warning('Must be filled Sales Name')
-        return
-      }
-      if (!getFieldValue('customer')) {
-        message.warning('Must be filled Customer')
-        return
-      }
-      if (!getFieldValue('noFaktur')) {
-        message.warning('Must be filled No Faktur')
-        return
-      }
-      if (!getFieldValue('tglFaktur')) {
-        message.warning('Must be filled Tgl Faktur')
-        return
-      }
-      if (!getFieldValue('jatuhTempo')) {
-        message.warning('Must be filled Jatuh Tempo')
-        return
-      }
-      if (!getFieldValue('nilaiFaktur')) {
-        message.warning('Must be filled Nilai Faktur')
-        return
-      }
-      if (!getFieldValue('hutang')) {
-        message.warning('Must be filled Hutang')
-        return
-      }
-
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -180,7 +150,7 @@ const AdvancedForm = ({
                 initialValue: item.transNo,
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'a-Z & 0-9'
                   }
                 ]
@@ -191,7 +161,7 @@ const AdvancedForm = ({
                 initialValue: item.transDate ? moment(item.transDate) : null,
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'required'
                   }
                 ]
@@ -202,7 +172,7 @@ const AdvancedForm = ({
                 initialValue: item.dueDate ? moment(item.dueDate) : null,
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'required'
                   }
                 ]
@@ -213,7 +183,7 @@ const AdvancedForm = ({
                 initialValue: item.netto,
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'a-Z & 0-9'
                   }
                 ]
@@ -224,7 +194,7 @@ const AdvancedForm = ({
                 initialValue: item.receivable,
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'a-Z & 0-9'
                   }
                 ]

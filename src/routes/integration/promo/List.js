@@ -25,21 +25,10 @@ const List = ({ ...tableProps,
 
   const columns = [
     {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.id}</div>
-          </div>
-        )
-      }
-    },
-    {
       title: 'Level',
       dataIndex: 'level',
       key: 'level',
+      width: 60,
       render: (text, record) => {
         return (
           <div>
@@ -52,6 +41,7 @@ const List = ({ ...tableProps,
       title: 'Program',
       dataIndex: 'program',
       key: 'program',
+      width: 150,
       render: (text, record) => {
         return (
           <div>
@@ -61,85 +51,15 @@ const List = ({ ...tableProps,
       }
     },
     {
-      title: 'Product Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: 250,
       render: (text, record) => {
         return (
           <div>
             <div>{record.product.productCode}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
-      render: (text, record) => {
-        return (
-          <div>
             <div>{record.product.productName}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product Id',
-      dataIndex: 'productId',
-      key: 'productId',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.productId || record.product.id}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product Dimension',
-      dataIndex: 'dimension',
-      key: 'dimension',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.dimension}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product per Box',
-      dataIndex: 'dimensionBox',
-      key: 'dimensionBox',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.dimensionBox}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product per Pack',
-      dataIndex: 'dimensionPack',
-      key: 'dimensionPack',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.dimensionPack}</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Product weight',
-      dataIndex: 'weight',
-      key: 'weight',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product.weight}</div>
           </div>
         )
       }
@@ -148,10 +68,11 @@ const List = ({ ...tableProps,
       title: 'Sell Price',
       dataIndex: 'sellPrice',
       key: 'sellPrice',
+      width: 120,
       render: (text, record) => {
         return (
           <div>
-            <div>{record.product.sellPrice}</div>
+            <div>{record.product && record.product.sellPrice ? (record.product.sellPrice).toLocaleString() : 0}</div>
           </div>
         )
       }
@@ -160,6 +81,7 @@ const List = ({ ...tableProps,
       title: 'Updated',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      width: 150,
       render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
     },
     {
@@ -187,7 +109,7 @@ const List = ({ ...tableProps,
         bordered
         columns={columns}
         simple
-        scroll={{ x: 2000 }}
+        scroll={{ x: 1000 }}
         rowKey={record => record.id}
       />
     </div>

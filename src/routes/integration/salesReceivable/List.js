@@ -85,7 +85,7 @@ const List = ({ ...tableProps,
       render: (text) => {
         return (
           <div>
-            <div>{numberFormatter(text)}</div>
+            <div>{(text || '-').toLocaleString()}</div>
           </div>
         )
       }
@@ -133,7 +133,7 @@ const List = ({ ...tableProps,
         bordered
         columns={columns}
         simple
-        scroll={{ x: 2000 }}
+        scroll={{ x: 1000 }}
         rowKey={record => record.id}
       />
     </div>
