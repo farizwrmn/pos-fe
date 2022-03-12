@@ -173,7 +173,7 @@ const List = ({ ...tableProps,
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
               { key: '1', name: 'Edit' },
-              { key: '2', name: 'Delete' }
+              { key: '2', name: 'Delete', disabled: false }
             ]}
           />
         )
