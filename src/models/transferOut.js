@@ -31,6 +31,7 @@ export default modelExtend(pageModel, {
     listChangeTransferIn: [],
     currentItem: {},
     currentItemList: {},
+    currentItemPrint: {},
     filterSearch: {},
     modalVisible: false,
     modalConfirmVisible: false,
@@ -232,36 +233,36 @@ export default modelExtend(pageModel, {
       }
       const sequence = yield call(querySequence, sequenceData)
       payload.transNo = sequence.data
-      let data = yield call(add, payload)
-      if (data.success) {
-        if (payload && payload.data && payload.data.deliveryOrder) {
+      let response = yield call(add, payload)
+      if (response.success) {
+        if (response.data && response.data.id) {
           if (payload && payload.reset) {
             payload.reset()
-            yield put({
-              type: 'updateState',
-              payload: {
-                listItem: []
-              }
-            })
           }
-          Modal.info({
-            title: 'Delivery order saved',
-            content: 'Delivery order saved, and forward to warehouse'
-          })
-        } else {
-          success()
           yield put({
             type: 'updateState',
             payload: {
-              modalConfirmVisible: true
+              modalConfirmVisible: true,
+              currentItemPrint: response.data
+            }
+          })
+        } else {
+          success()
+          if (payload && payload.reset) {
+            payload.reset()
+          }
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalConfirmVisible: true,
+              currentItemPrint: response.data
             }
           })
         }
       } else {
-        console.log('data', data)
-        error(data)
-        if (data && data.data && data.data[0]) {
-          stockMinusAlert(data)
+        error(response)
+        if (response && response.data && response.data[0]) {
+          stockMinusAlert(response)
         }
         // throw data
       }

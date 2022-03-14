@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Button, Checkbox, Row, Col, Select } from 'antd'
-import { lstorage } from 'utils'
 import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
@@ -75,12 +74,7 @@ const FormAdd = ({
   }
   const formConfirmOpts = {
     listItem,
-    itemHeader: {
-      storeId: {
-        label: lstorage.getCurrentUserStoreName()
-      },
-      ...getFieldsValue()
-    },
+    itemHeader: formConfirmProps.itemPrint,
     ...formConfirmProps
   }
   const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
