@@ -113,8 +113,7 @@ const formService = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-zA-Z0-9 _-]+$/,
-                  message: 'a-Z & 0-9'
+                  message: 'Required'
                 }
               ]
             })(<Input maxLength={50} />)}
