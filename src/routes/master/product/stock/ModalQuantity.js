@@ -1,27 +1,45 @@
 import React from 'react'
-import { Modal } from 'antd'
+import { Modal, Row, Col } from 'antd'
 
-const ModalQuantity = ({ count, listStoreLov, ...props }) => {
+const ModalQuantity = ({ count, listPrice, listStoreLov, ...props }) => {
   return (
     <div>
       <Modal {...props}>
-        {count && count.map((item) => {
-          const store = listStoreLov.filter(filtered => filtered.id === item.storeId)
-          if (store && store[0]) {
-            const storeItem = store[0]
-            return (
+        <Row>
+          <Col span={12}>
+            {count && count.map((item) => {
+              const store = listStoreLov.filter(filtered => filtered.id === item.storeId)
+              if (store && store[0]) {
+                const storeItem = store[0]
+                return (
+                  <div>
+                    {`${storeItem.storeName}: ${item.count}`}
+                  </div>
+                )
+              }
+              return null
+            })}
+            {count && count.length > 0 && (
               <div>
-                {`${storeItem.storeName}: ${item.count}`}
+                <strong>TOTAL: {count.reduce((prev, next) => prev + next.count, 0)}</strong>
               </div>
-            )
-          }
-          return null
-        })}
-        {count && count.length > 0 && (
-          <div>
-            <strong>TOTAL: {count.reduce((prev, next) => prev + next.count, 0)}</strong>
-          </div>
-        )}
+            )}
+          </Col>
+          <Col span={12}>
+            {listPrice && listPrice.map((item) => {
+              const store = listStoreLov.filter(filtered => filtered.id === item.storeId)
+              if (store && store[0]) {
+                const storeItem = store[0]
+                return (
+                  <div>
+                    {`${storeItem.storeName}: ${(item.sellPrice).toLocaleString()}`}
+                  </div>
+                )
+              }
+              return null
+            })}
+          </Col>
+        </Row>
       </Modal>
     </div>
   )
