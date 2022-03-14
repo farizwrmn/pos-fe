@@ -16,8 +16,9 @@ import ModalQuantity from './ModalQuantity'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ stockExtraPriceStore, shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list: listShopeeCategory, listAttribute: listShopeeAttribute, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
+  const { list: listStoreQuantity } = stockExtraPriceStore
   const {
     modalSupplierVisible,
     paginationSupplier,
@@ -126,6 +127,7 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
 
   const modalQuantityProps = {
     count: countStoreList,
+    listPrice: listStoreQuantity,
     listStoreLov,
     title: 'Other Store Qty',
     loading: loading.effects['productstock/showProductStoreQty'],
@@ -643,6 +645,7 @@ const ProductStock = ({ shopeeCategory, specification, grabCategory, purchase, s
 
 ProductStock.propTypes = {
   grabCategory: PropTypes.object,
+  stockExtraPriceStore: PropTypes.object,
   purchase: PropTypes.object,
   specification: PropTypes.object,
   specificationStock: PropTypes.object,
@@ -657,5 +660,5 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
-  ({ purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
+  ({ stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

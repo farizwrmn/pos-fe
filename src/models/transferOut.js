@@ -235,7 +235,7 @@ export default modelExtend(pageModel, {
       payload.transNo = sequence.data
       let response = yield call(add, payload)
       if (response.success) {
-        if (response.data && response.data.id) {
+        if (response.data && response.data.id && payload.data.deliveryOrder) {
           if (payload && payload.reset) {
             payload.reset()
           }

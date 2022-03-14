@@ -210,6 +210,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
