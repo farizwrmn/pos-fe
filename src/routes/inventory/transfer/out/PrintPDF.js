@@ -9,7 +9,7 @@ import { BasicInvoice } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
+const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -85,7 +85,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
               {},
               { text: 'PIC', fontSize: 9 },
               ':',
-              { text: (itemHeader.employeeId ? itemHeader.employeeId.label : '').toString(), fontSize: 9 }
+              { text: (itemPrint.employeeName || '').toString(), fontSize: 9 }
             ],
             [
               { text: 'TANGGAL', fontSize: 9 },
@@ -94,24 +94,24 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
               {},
               { text: 'NO POLISI', fontSize: 9 },
               ':',
-              { text: (itemHeader.carNumber || '').toString(), fontSize: 9 }
+              { text: (itemPrint.carNumber || '').toString(), fontSize: 9 }
             ],
             [
               { text: 'DARI', fontSize: 9 },
               ':',
-              { text: (itemHeader.storeId ? itemHeader.storeId.label : '').toString(), fontSize: 9 },
+              { text: (itemPrint.storeName).toString(), fontSize: 9 },
               {},
               { text: 'TOTAL PACK', fontSize: 9 },
               ':',
-              { text: (itemHeader.totalColly || ''), fontSize: 9 }
+              { text: (itemPrint.totalColly || ''), fontSize: 9 }
             ],
             [
               { text: 'KEPADA', fontSize: 9 },
               ':',
-              { text: (itemHeader.storeIdReceiver ? itemHeader.storeIdReceiver.label : '').toString(), fontSize: 9 },
+              { text: (itemPrint.storeNameReceiver || '').toString(), fontSize: 9 },
               {}, { text: 'DESKRIPSI', fontSize: 9 },
               ':',
-              { text: `KELUAR${`${itemHeader.description ? '/' : ''}`}${(itemHeader.description || '').toString()}`, fontSize: 9 }
+              { text: `KELUAR${`${itemPrint.description ? '/' : ''}`}${(itemPrint.description || '').toString()}`, fontSize: 9 }
             ]
           ]
         },
@@ -141,7 +141,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           {
             columns: [
               { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeId ? itemHeader.employeeId.label : '').toString()}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemPrint.employeeName || '').toString()}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
               { text: 'Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n', fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] }
             ]
           },
