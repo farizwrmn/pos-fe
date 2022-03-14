@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, DatePicker, Col, Card, Modal, message } from 'antd'
+import { Form, Input, Button, Row, DatePicker, Col, Card, Modal } from 'antd'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
 
@@ -41,7 +41,6 @@ const AdvancedForm = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    getFieldValue,
     resetFields
   }
 }) => {
@@ -73,27 +72,11 @@ const AdvancedForm = ({
       if (errors) {
         return
       }
-      if (!getFieldValue('namaTarget')) {
-        message.warning('Must be filled Nama Target')
-        return
-      }
-      if (!getFieldValue('product1')) {
-        message.warning('Must be filled Product 1')
-        return
-      }
-      if (!getFieldValue('validFrom')) {
-        message.warning('Must be filled Valid From')
-        return
-      }
-      if (!getFieldValue('validTo')) {
-        message.warning('Must be filled Valid To')
-        return
-      }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
           const data = getFieldsValue()
-          data.namaTarget = data.namaTarget
+          data.targetName = data.targetName
           data.product1 = data.product1
           data.product2 = data.product2
           data.product3 = data.product3
@@ -135,9 +118,9 @@ const AdvancedForm = ({
       <Card {...cardProps}>
         <Row>
           <Col {...column}>
-            <FormItem label="Nama Target" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('namaTarget', {
-                initialValue: item.namaTarget,
+            <FormItem label="Target Name" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('targetName', {
+                initialValue: item.targetName,
                 rules: [
                   {
                     required: true,

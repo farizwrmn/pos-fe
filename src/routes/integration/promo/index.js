@@ -22,6 +22,7 @@ const SubaPromo = ({ subaPromo, dispatch, productstock, loading, app }) => {
   const { list, pagination, modalType, currentItem, activeKey, advancedForm } = subaPromo
 
   const listProps = {
+    loading: loading.effects['subaPromo/query'],
     user,
     storeInfo,
     dataSource: list,

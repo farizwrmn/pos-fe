@@ -13,6 +13,7 @@ const PiutangMarketing = ({ dispatch, salesReceivable, app, loading }) => {
   const { list, pagination, modalType, currentItem, activeKey, advancedForm } = salesReceivable
 
   const listProps = {
+    loading: loading.effects['salesReceivable/query'],
     user,
     dataSource: list,
     pagination,

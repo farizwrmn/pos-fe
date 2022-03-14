@@ -15,7 +15,7 @@ const List = ({ ...tableProps,
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.namaTarget} ?`,
+        title: `Are you sure delete ${record.targetName} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -26,13 +26,13 @@ const List = ({ ...tableProps,
   const columns = [
     {
       title: 'Nama Target',
-      dataIndex: 'namaTarget',
-      key: 'namaTarget',
+      dataIndex: 'targetName',
+      key: 'targetName',
       width: 100,
       render: (text, record) => {
         return (
           <div>
-            <div>{record.namaTarget}</div>
+            <div>{record.targetName}</div>
           </div>
         )
       }
@@ -147,7 +147,7 @@ const List = ({ ...tableProps,
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
               { key: '1', name: 'Edit' },
-              { key: '2', name: 'Delete' }
+              { key: '2', name: 'Delete', disabled: false }
             ]}
           />
         )

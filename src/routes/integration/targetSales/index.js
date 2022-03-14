@@ -13,6 +13,7 @@ const TargetSales = ({ dispatch, targetSales, app, loading }) => {
   const { list, pagination, modalType, currentItem, activeKey, advancedForm } = targetSales
 
   const listProps = {
+    loading: loading.effects['targetSales/query'],
     user,
     dataSource: list,
     pagination,
