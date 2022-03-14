@@ -13,7 +13,7 @@ const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
-  const { listTransferOut, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+  const { listTransferOut, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { modalProductVisible, listProductData, searchText } = pos
   const { list } = employee
   let listEmployee = list
@@ -342,7 +342,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
   const formConfirmProps = {
     visible: modalConfirmVisible,
     modalConfirmVisible,
-    itemPrint: currentItem,
+    itemPrint: currentItemPrint,
     user,
     storeInfo,
     onShowModal () {
