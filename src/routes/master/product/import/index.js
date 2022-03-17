@@ -2,7 +2,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, Row, message, Modal, Col
+  Button, Icon, message, Modal
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
@@ -62,8 +62,8 @@ const ImportStock = ({
 
 
   let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS data={listPrintAllStock} name="Export Opname Template" {...printProps} />)
-    : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Data</Button>)
+    ? (<PrintXLS data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
+    : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   const handleChangeFile = (event) => {
     let uploadData = []
@@ -78,9 +78,9 @@ const ImportStock = ({
           const sheet = workbook.getWorksheet('POS 1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productId = row.values[3]
-              const qty = row.values[12]
-              const price = row.values[13]
+              const productId = row.values[4]
+              const qty = row.values[18]
+              const price = row.values[19]
               if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(qty) > 0 && Number(price) > 0) {
                 const data = {
                   productId: Number(productId),
@@ -184,46 +184,48 @@ const ImportStock = ({
 
   return (
     <div className="content-inner">
-      <Row>
-        <Col span={12}>
-          {buttonClickXLS}
-          <div>
-            <label htmlFor="opname" className="ant-btn ant-btn-default ant-btn-lg" style={{ padding: '0.5em' }}>Select File</label>
-            <input
-              id="opname"
-              type="file"
-              className="ant-btn ant-btn-default ant-btn-lg"
-              style={{ visibility: 'hidden' }}
-              {...uploadProps}
-              onChange={handleChangeFile}
-            />
-          </div>
-        </Col>
-        <Col span={12} style={{ textAlign: 'right' }}>
-          <ProductXLS data={[]} name="Export Product Template" {...printProps} />
-          <div>
-            <label
-              htmlFor="uploadProduct"
-              className="ant-btn ant-btn-default ant-btn-lg"
-              style={{
-                padding: '0.5em'
-              }}
-            >
-              Select File
-            </label>
-            <input
-              id="uploadProduct"
-              type="file"
-              style={{
-                visibility: 'hidden'
-              }}
-              className="ant-btn ant-btn-default ant-btn-lg"
-              {...uploadProps}
-              onChange={handleImportProduct}
-            />
-          </div>
-        </Col>
-      </Row>
+      <div>
+        <span>
+          {'Product: '}
+          <ProductXLS data={[]} name="Export Template Product" {...printProps} />
+          <label
+            htmlFor="uploadProduct"
+            className="ant-btn ant-btn-primary ant-btn-lg"
+            style={{
+              padding: '0.5em',
+              marginLeft: '15px'
+            }}
+          >
+            Select File
+          </label>
+          <input
+            id="uploadProduct"
+            type="file"
+            style={{
+              visibility: 'hidden'
+            }}
+            className="ant-btn ant-btn-default ant-btn-lg"
+            {...uploadProps}
+            onChange={handleImportProduct}
+          />
+        </span>
+      </div>
+
+      <div>
+        {'Stock: '}
+        {buttonClickXLS}
+        <span>
+          <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+          <input
+            id="opname"
+            type="file"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            style={{ visibility: 'hidden' }}
+            {...uploadProps}
+            onChange={handleChangeFile}
+          />
+        </span>
+      </div>
       <List {...listProps} />
       <div
         style={{ textAlign: 'right' }}
