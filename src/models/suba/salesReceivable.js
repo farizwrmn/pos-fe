@@ -58,7 +58,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const data = yield call(add, payload)
       if (data.success) {
-        success('Piutang Marketing has been saved')
+        success('Piutang has been saved')
         const { pathname, query } = location
         yield put(routerRedux.push({
           pathname,

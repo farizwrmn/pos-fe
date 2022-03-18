@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerRedux } from 'dva/router'
 import { Form, Button, Input, InputNumber, Row, DatePicker, Col, Card, Modal } from 'antd'
 import moment from 'moment'
 import { FooterToolbar } from 'components'
@@ -36,6 +37,7 @@ const AdvancedForm = ({
   loadingButton,
   button,
   modalType,
+  dispatch,
   form: {
     getFieldDecorator,
     validateFields,
@@ -90,6 +92,12 @@ const AdvancedForm = ({
     })
   }
 
+  const handleImport = () => {
+    dispatch(routerRedux.push({
+      pathname: '/integration/subagro/sales-receivable/import'
+    }))
+  }
+
   const cardProps = {
     bordered: true,
     style: {
@@ -100,7 +108,15 @@ const AdvancedForm = ({
     title: (
       <Row>
         <Col md={12} lg={3}>
-          <h3>Piutang Marketing</h3>
+          <h3>Piutang</h3>
+        </Col>
+        <Col md={12} lg={9}>
+          <Button
+            type="default"
+            onClick={handleImport}
+          >
+            Import
+          </Button>
         </Col>
       </Row>
     )

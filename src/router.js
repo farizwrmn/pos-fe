@@ -241,7 +241,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/suba/targetSales'))
               cb(null, require('./routes/integration/targetSales'))
-            }, 'suba-promo')
+            }, 'suba-target-sales')
           }
         }, {
           path: 'integration/subagro/sales-receivable',
@@ -249,7 +249,15 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/suba/salesReceivable'))
               cb(null, require('./routes/integration/salesReceivable'))
-            }, 'suba-promo')
+            }, 'suba-sales-receivable')
+          }
+        }, {
+          path: 'integration/subagro/sales-receivable/import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/importSalesReceivable'))
+              cb(null, require('./routes/integration/importSalesReceivable'))
+            }, 'suba-sales-receivable-import')
           }
         }, {
           path: 'master/store-price',
