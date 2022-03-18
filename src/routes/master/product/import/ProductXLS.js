@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import { getDistPriceName } from 'utils/string'
 
-const PrintXLS = ({ data, storeInfo, name }) => {
+const PrintXLS = ({ data, storeInfo, name, listBrand, listCategory }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -41,6 +41,17 @@ const PrintXLS = ({ data, storeInfo, name }) => {
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: 'LAPORAN DAFTAR STOK BARANG', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
+
+  const category = listCategory.map((item) => {
+    let name = [`"${item.categoryName}"`].join(' ')
+    return name
+  })
+
+  const brand = listBrand.map((item) => {
+    let name = [`"${item.brandName}"`].join(' ')
+    return name
+  })
+
   const tableHeader = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -62,9 +73,15 @@ const PrintXLS = ({ data, storeInfo, name }) => {
         alignment: { vertical: 'middle', horizontal: 'center' },
         font: styles.tableHeader,
         border: styles.tableBorder,
-        validation: ['"male,female,other"']
+        validation: listBrand && listBrand.length > 0 ? [brand] : undefined
       },
-      { value: 'KATEGORI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      {
+        value: 'KATEGORI',
+        alignment: { vertical: 'middle', horizontal: 'center' },
+        font: styles.tableHeader,
+        border: styles.tableBorder,
+        validation: listCategory && listCategory.length > 0 ? [category] : undefined
+      },
       { value: 'TRACK QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'ALERT QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]

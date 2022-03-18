@@ -14,9 +14,13 @@ const ImportStock = ({
   loading,
   dispatch,
   importstock,
+  productbrand,
+  productcategory,
   productstock,
   app
 }) => {
+  const { listBrand } = productbrand
+  const { listCategory } = productcategory
   const { list, pagination } = importstock
   const { user, storeInfo } = app
   const {
@@ -43,7 +47,9 @@ const ImportStock = ({
 
   const printProps = {
     user,
-    storeInfo
+    storeInfo,
+    listBrand,
+    listCategory
   }
 
   const uploadProps = {
@@ -274,11 +280,15 @@ export default connect(
     loading,
     importstock,
     productstock,
+    productbrand,
+    productcategory,
     app
   }) => ({
     loading,
     importstock,
     productstock,
+    productbrand,
+    productcategory,
     app
   })
 )(ImportStock)
