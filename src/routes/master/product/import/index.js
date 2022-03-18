@@ -27,7 +27,7 @@ const ImportStock = ({
   const listProps = {
     dataSource: list,
     pagination,
-    loading: loading.effects['importstock/query'],
+    loading: loading.effects['importstock/query'] || loading.effects['importstock/execute'] || loading.effects['importstock/add'] || loading.effects['importstock/bulkInsert'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -66,6 +66,7 @@ const ImportStock = ({
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   const handleChangeFile = (event) => {
+    console.log('onchange')
     let uploadData = []
     const fileName = event.target.files[0]
     const workbook = new Excel.Workbook()
@@ -81,7 +82,7 @@ const ImportStock = ({
               const productId = row.values[4]
               const qty = row.values[18]
               const price = row.values[19]
-              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(qty) > 0 && Number(price) > 0) {
+              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(price) > 0) {
                 const data = {
                   productId: Number(productId),
                   qty: Number(qty),
@@ -92,6 +93,7 @@ const ImportStock = ({
             })
         })
         .then(() => {
+          console.log('uploadData', uploadData)
           if (uploadData && uploadData.length > 0) {
             dispatch({
               type: 'importstock/add',
@@ -182,6 +184,17 @@ const ImportStock = ({
     })
   }
 
+  const handleCancel = () => {
+    Modal.confirm({
+      title: 'Do you want to cancel this list ?',
+      onOk () {
+        dispatch({
+          type: 'importstock/cancel'
+        })
+      }
+    })
+  }
+
   return (
     <div className="content-inner">
       <div>
@@ -219,24 +232,39 @@ const ImportStock = ({
           <input
             id="opname"
             type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             className="ant-btn ant-btn-default ant-btn-lg"
             style={{ visibility: 'hidden' }}
             {...uploadProps}
-            onChange={handleChangeFile}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleChangeFile(event)
+            }}
           />
         </span>
       </div>
       <List {...listProps} />
-      <div
-        style={{ textAlign: 'right' }}
+      <span
+        style={{ textAlign: 'right', marginTop: '15px' }}
       >
+        <Button
+          style={{ marginRight: '15px' }}
+          type="danger"
+          onClick={handleCancel}
+          disabled={loading.effects['importstock/execute'] || loading.effects['importstock/cancel'] || loading.effects['importstock/add'] || loading.effects['importstock/bulkInsert']}
+        >
+          Cancel
+        </Button>
         <Button
           type="primary"
           onClick={handleExecute}
+          disabled={loading.effects['importstock/execute'] || loading.effects['importstock/cancel'] || loading.effects['importstock/add'] || loading.effects['importstock/bulkInsert']}
         >
           Execute
         </Button>
-      </div>
+      </span>
     </div>
   )
 }

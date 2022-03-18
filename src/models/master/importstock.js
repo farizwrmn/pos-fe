@@ -4,6 +4,7 @@ import {
   query,
   add,
   opnameStock,
+  cancelOpname,
   edit,
   remove
 } from 'services/master/importstock'
@@ -134,6 +135,20 @@ export default modelExtend(pageModel, {
           title: 'Period Has been closed',
           content: 'can`t insert new transaction'
         })
+      }
+    },
+
+    * cancel (payload, { call, put }) {
+      const response = yield call(cancelOpname, {
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'query'
+        })
+        message.success('Success cancel opname')
+      } else {
+        throw response
       }
     },
 
