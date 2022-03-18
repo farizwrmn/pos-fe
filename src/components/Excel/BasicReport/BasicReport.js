@@ -63,7 +63,6 @@ const BasicReport = ({
         let line = title.length + (4 + i)
         for (let j = 0; j < tableHeader[i].length; j += 1) {
           if (tableHeader[i][j].validation) {
-            console.log(`${numberToLetters(j + 1)}${line + 1}:${numberToLetters(j + 1)}${line + 500}`)
             sheet.dataValidations.add(`${numberToLetters(j + 1)}${line + 1}:${numberToLetters(j + 1)}${line + 500}`, {
               type: 'list',
               allowBlank: false,
