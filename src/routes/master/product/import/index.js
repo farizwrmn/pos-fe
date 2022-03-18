@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable jsx-a11y/label-has-for */
 import React from 'react'
 import { connect } from 'dva'
@@ -72,7 +73,6 @@ const ImportStock = ({
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   const handleChangeFile = (event) => {
-    console.log('onchange')
     let uploadData = []
     const fileName = event.target.files[0]
     const workbook = new Excel.Workbook()
@@ -99,7 +99,6 @@ const ImportStock = ({
             })
         })
         .then(() => {
-          console.log('uploadData', uploadData)
           if (uploadData && uploadData.length > 0) {
             dispatch({
               type: 'importstock/add',
@@ -127,22 +126,23 @@ const ImportStock = ({
           const sheet = workbook.getWorksheet('POS 1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productCode = row.values[3]
-              const productName = row.values[4]
-              const barCode01 = row.values[5]
-              const sellPrice = row.values[6]
-              const distPrice01 = row.values[7]
-              const distPrice02 = row.values[8]
-              const distPrice03 = row.values[9]
-              const distPrice04 = row.values[10]
-              const distPrice05 = row.values[11]
-              const distPrice06 = row.values[12]
-              const distPrice07 = row.values[13]
-              const distPrice08 = row.values[14]
-              const brandId = row.values[15]
-              const categoryId = row.values[16]
-              const trackQty = row.values[17]
-              const alertQty = row.values[18]
+              let startPoint = 3
+              const productCode = row.values[++startPoint]
+              const productName = row.values[++startPoint]
+              const barCode01 = row.values[++startPoint]
+              const sellPrice = row.values[++startPoint]
+              const distPrice01 = row.values[++startPoint]
+              const distPrice02 = row.values[++startPoint]
+              const distPrice03 = row.values[++startPoint]
+              const distPrice04 = row.values[++startPoint]
+              const distPrice05 = row.values[++startPoint]
+              const distPrice06 = row.values[++startPoint]
+              const distPrice07 = row.values[++startPoint]
+              const distPrice08 = row.values[++startPoint]
+              const brandId = row.values[++startPoint]
+              const categoryId = row.values[++startPoint]
+              const trackQty = row.values[++startPoint]
+              const alertQty = row.values[++startPoint]
               if (rowIndex >= 7) {
                 const data = {
                   productCode,
@@ -157,8 +157,8 @@ const ImportStock = ({
                   distPrice06,
                   distPrice07,
                   distPrice08,
-                  brandId: Number(brandId),
-                  categoryId: Number(categoryId),
+                  brandName: brandId,
+                  categoryName: categoryId,
                   trackQty,
                   alertQty
                 }
@@ -218,14 +218,21 @@ const ImportStock = ({
             Select File
           </label>
           <input
-            id="uploadProduct"
             type="file"
             style={{
               visibility: 'hidden'
             }}
             className="ant-btn ant-btn-default ant-btn-lg"
             {...uploadProps}
-            onChange={handleImportProduct}
+            id="uploadProduct"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            {...uploadProps}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleImportProduct(event)
+            }}
           />
         </span>
       </div>
