@@ -62,6 +62,17 @@ const BasicReport = ({
       for (let i = 0; i < tableHeader.length; i += 1) {
         let line = title.length + (4 + i)
         for (let j = 0; j < tableHeader[i].length; j += 1) {
+          if (tableHeader[i][j].validation) {
+            console.log(`${numberToLetters(j + 1)}${line + 1}:${numberToLetters(j + 1)}${line + 500}`)
+            sheet.dataValidations.add(`${numberToLetters(j + 1)}${line + 1}:${numberToLetters(j + 1)}${line + 500}`, {
+              type: 'list',
+              allowBlank: false,
+              formulae: tableHeader[i][j].validation,
+              showErrorMessage: true,
+              errorStyle: 'error',
+              error: 'The value Valid'
+            })
+          }
           get.push({
             value: sheet.getCell(`${numberToLetters(j + 1)}${line}`).value = tableHeader[i][j].value,
             alignment: sheet.getCell(`${numberToLetters(j + 1)}${line}`).alignment = tableHeader[i][j].alignment,
