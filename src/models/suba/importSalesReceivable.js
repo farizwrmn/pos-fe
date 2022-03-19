@@ -3,12 +3,9 @@ import { message, Modal } from 'antd'
 import {
   query,
   add,
-  opnameStock,
-  cancelOpname,
-  edit,
-  remove
-} from 'services/master/importstock'
-import { bulkInsert } from 'services/master/productstock'
+  executeList,
+  cancelOpname
+} from 'services/suba/importSalesReceivable'
 import { queryLastActive } from 'services/period'
 import { getDateTime } from 'services/setting/time'
 import { pageModel } from 'common'
@@ -16,11 +13,11 @@ import { lstorage } from 'utils'
 import moment from 'moment'
 
 const success = () => {
-  message.success('Stock has been saved')
+  message.success('Import Sales Receivable has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'importstock',
+  namespace: 'importSalesReceivable',
 
   state: {
     currentItem: {},
@@ -36,10 +33,16 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/product/stock/import') {
-          dispatch({ type: 'query', payload: other })
+        const { ...other } = location.query
+        if (pathname === '/integration/subagro/sales-receivable/import') {
+          dispatch({
+            type: 'query',
+            payload: {
+              ...other,
+              updated: 0
+            }
+          })
         }
       })
     }
@@ -62,15 +65,6 @@ export default modelExtend(pageModel, {
             }
           }
         })
-      }
-    },
-
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
       }
     },
 
@@ -120,7 +114,7 @@ export default modelExtend(pageModel, {
           },
           store
         }
-        const response = yield call(opnameStock, {
+        const response = yield call(executeList, {
           stock
         })
         if (response && response.success) {
@@ -149,47 +143,6 @@ export default modelExtend(pageModel, {
         message.success('Success cancel opname')
       } else {
         throw response
-      }
-    },
-
-    * bulkInsert ({ payload }, { call, put }) {
-      const data = yield call(bulkInsert, payload)
-      if (data.success) {
-        success()
-        yield put({ type: 'query' })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ importstock }) => importstock.currentItem.id)
-      const newCounter = { ...payload, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({ type: 'query' })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
       }
     }
   },

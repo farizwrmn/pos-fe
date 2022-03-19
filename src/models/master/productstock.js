@@ -37,6 +37,8 @@ export default modelExtend(pageModel, {
     modalProductType: '',
     listPrintAllStock: [],
     listInventory: [],
+    tmpProductData: [],
+    productInformation: {},
     filteredInfo: {},
     modalVariantVisible: false,
     modalSpecificationVisible: false,

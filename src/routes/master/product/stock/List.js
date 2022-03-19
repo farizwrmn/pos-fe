@@ -85,6 +85,12 @@ const List = ({ ...tableProps,
             data: [record]
           }
         })
+        dispatch({
+          type: 'stockExtraPriceStore/query',
+          payload: {
+            productId: record.id
+          }
+        })
       },
       render: (text) => {
         if (!loadingModel.effects['productstock/showProductQty']) {

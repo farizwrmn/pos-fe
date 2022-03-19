@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { lstorage, calendar } from 'utils'
-import {
-  currencyFormatter,
-  numberFormatter
-} from 'utils/string'
 import { Badge, Table, Tabs, Tag } from 'antd'
 import styles from '../../../themes/index.less'
 import {
@@ -204,7 +200,7 @@ class TransactionDetail extends Component {
                 dataIndex: 'qty',
                 width: '40px',
                 className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
+                render: text => (text || 0).toLocaleString()
               },
               {
                 title: 'Price',
@@ -220,7 +216,7 @@ class TransactionDetail extends Component {
                   const total = record.total
                   return (
                     <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                      <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
                     </div>
                   )
                 }
@@ -273,7 +269,7 @@ class TransactionDetail extends Component {
                 dataIndex: 'qty',
                 width: '40px',
                 className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
+                render: text => (text || 0).toLocaleString()
               },
               {
                 title: 'Price',
@@ -284,7 +280,7 @@ class TransactionDetail extends Component {
                   const total = record.total
                   return (
                     <div>
-                      <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                      <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
                     </div>
                   )
                 }
@@ -330,7 +326,7 @@ class TransactionDetail extends Component {
                 dataIndex: 'qty',
                 width: '40px',
                 className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
+                render: text => (text || 0).toLocaleString()
               },
               {
                 title: 'Price',
@@ -347,7 +343,7 @@ class TransactionDetail extends Component {
                   return (
                     <div>
                       <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                        <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
                       </div>
                     </div>
                   )
@@ -478,7 +474,7 @@ class TransactionDetail extends Component {
                 dataIndex: 'qty',
                 width: '40px',
                 className: styles.alignCenter,
-                render: text => numberFormatter((text).toLocaleString())
+                render: text => (text).toLocaleString()
               },
               {
                 title: 'Price',
@@ -495,7 +491,7 @@ class TransactionDetail extends Component {
                   return (
                     <div>
                       <div>
-                        <strong>{`Total: ${currencyFormatter(total)}`}</strong>
+                        <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
                       </div>
                     </div>
                   )
