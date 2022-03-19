@@ -34,8 +34,15 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        const { ...other } = location.query
         if (pathname === '/integration/subagro/sales-receivable/import') {
-          dispatch({ type: 'query', payload: {} })
+          dispatch({
+            type: 'query',
+            payload: {
+              ...other,
+              updated: 0
+            }
+          })
         }
       })
     }

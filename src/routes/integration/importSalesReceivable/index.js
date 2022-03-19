@@ -90,10 +90,12 @@ const ImportSalesReceivable = ({
         .then(() => {
           if (uploadData && uploadData.length > 0) {
             console.log('uploadData', uploadData)
-            // dispatch({
-            //   type: 'importSalesReceivable/bulkInsert',
-            //   payload: uploadData
-            // })
+            dispatch({
+              type: 'importSalesReceivable/add',
+              payload: {
+                data: uploadData
+              }
+            })
           } else {
             message.error('No Data to Upload')
           }

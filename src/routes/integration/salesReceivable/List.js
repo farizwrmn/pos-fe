@@ -56,8 +56,8 @@ const List = ({ ...tableProps,
     },
     {
       title: 'Transaction Date',
-      dataIndex: 'Transaction Date',
-      key: 'Transaction Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
       render: (text, record) => {
         return (
           <div>
@@ -73,7 +73,7 @@ const List = ({ ...tableProps,
       render: (text, record) => {
         return (
           <div>
-            <div>{record.dueDate ? moment(record.dueDate).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
+            <div>{record.dueDate ? moment(record.dueDate).format('DD-MM-YYYY') : ''}</div>
           </div>
         )
       }

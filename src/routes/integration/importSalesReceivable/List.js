@@ -47,7 +47,7 @@ const List = ({ ...tableProps }) => {
       render: (text, record) => {
         return (
           <div>
-            <div>{record.dueDate ? moment(record.dueDate).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
+            <div>{record.dueDate ? moment(record.dueDate).format('DD-MM-YYYY') : ''}</div>
           </div>
         )
       }
