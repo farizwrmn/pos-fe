@@ -1,115 +1,82 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Table } from 'antd'
-import { getDistPriceName } from 'utils/string'
-import styles from '../../../themes/index.less'
+import { numberFormat } from 'utils'
+
+const numberFormatter = numberFormat.numberFormatter
 
 const List = ({ ...tableProps }) => {
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'productId',
-      key: 'productId'
+      title: 'Sales Name',
+      dataIndex: 'salesName',
+      key: 'salesName',
+      width: '150px'
     },
     {
-      title: 'Code',
-      dataIndex: 'product.productCode',
-      key: 'product.productCode'
+      title: 'customer',
+      dataIndex: 'customer',
+      key: 'customer',
+      width: '200px'
     },
     {
-      title: 'Name',
-      dataIndex: 'product.productName',
-      key: 'product.productName'
+      title: 'Transaction No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: '100px'
     },
     {
-      title: 'Brand',
-      dataIndex: 'product.brandName',
-      key: 'product.brandName'
+      title: 'Transaction Date',
+      dataIndex: 'Transaction Date',
+      key: 'Transaction Date',
+      width: '120px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.transDate ? moment(record.transDate).format('DD-MMM-YYYY') : ''}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Category',
-      dataIndex: 'product.categoryName',
-      key: 'product.categoryName'
+      title: 'Jatuh Tempo',
+      dataIndex: 'dueDate',
+      key: 'dueDate',
+      width: '120px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.dueDate ? moment(record.dueDate).format('DD-MM-YYYY HH:mm:ss') : ''}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
-      className: styles.alignRight
+      title: 'Netto',
+      dataIndex: 'netto',
+      key: 'netto',
+      width: '120px',
+      render: (text) => {
+        return (
+          <div>
+            <div>{(text || '-').toLocaleString()}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Cost',
-      dataIndex: 'price',
-      key: 'price',
-      className: styles.alignRight
-    },
-    {
-      title: getDistPriceName('sellPrice'),
-      dataIndex: 'product.sellPrice',
-      key: 'product.sellPrice',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice01'),
-      dataIndex: 'product.distPrice01',
-      key: 'product.distPrice01',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice02'),
-      dataIndex: 'product.distPrice02',
-      key: 'product.distPrice02',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice03'),
-      dataIndex: 'product.distPrice03',
-      key: 'product.distPrice03',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice04'),
-      dataIndex: 'product.distPrice04',
-      key: 'product.distPrice04',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice05'),
-      dataIndex: 'product.distPrice05',
-      key: 'product.distPrice05',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice06'),
-      dataIndex: 'product.distPrice06',
-      key: 'product.distPrice06',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice06'),
-      dataIndex: 'product.distPrice06',
-      key: 'product.distPrice06',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: getDistPriceName('distPrice07'),
-      dataIndex: 'product.distPrice07',
-      key: 'product.distPrice07',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Created',
-      dataIndex: 'createdBy',
-      key: 'createdBy'
+      title: 'Receivable',
+      dataIndex: 'receivable',
+      key: 'receivable',
+      width: '120px',
+      render: (text) => {
+        return (
+          <div>
+            <div>{numberFormatter(text)}</div>
+          </div>
+        )
+      }
     }
   ]
 
@@ -119,7 +86,7 @@ const List = ({ ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1000 }}
         rowKey={record => record.id}
       />
     </div>

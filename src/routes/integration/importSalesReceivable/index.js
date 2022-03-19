@@ -38,6 +38,7 @@ const ImportSalesReceivable = ({
   }
 
   const handleImportProduct = (event) => {
+    console.log('handleImportProduct')
     let uploadData = []
     const fileName = event.target.files[0]
     const workbook = new Excel.Workbook()
@@ -47,55 +48,52 @@ const ImportSalesReceivable = ({
       const buffer = reader.result
       workbook.xlsx.load(buffer)
         .then(async (workbook) => {
-          const sheet = workbook.getWorksheet('POS 1')
+          const sheet = workbook.getWorksheet('Sheet1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              let startPoint = 3
-              const productCode = row.values[++startPoint]
-              const productName = row.values[++startPoint]
-              const barCode01 = row.values[++startPoint]
-              const sellPrice = row.values[++startPoint]
-              const distPrice01 = row.values[++startPoint]
-              const distPrice02 = row.values[++startPoint]
-              const distPrice03 = row.values[++startPoint]
-              const distPrice04 = row.values[++startPoint]
-              const distPrice05 = row.values[++startPoint]
-              const distPrice06 = row.values[++startPoint]
-              const distPrice07 = row.values[++startPoint]
-              const distPrice08 = row.values[++startPoint]
-              const brandId = row.values[++startPoint]
-              const categoryId = row.values[++startPoint]
-              const trackQty = row.values[++startPoint]
-              const alertQty = row.values[++startPoint]
               if (rowIndex >= 7) {
-                const data = {
-                  productCode,
-                  productName,
-                  barCode01,
-                  sellPrice,
-                  distPrice01,
-                  distPrice02,
-                  distPrice03,
-                  distPrice04,
-                  distPrice05,
-                  distPrice06,
-                  distPrice07,
-                  distPrice08,
-                  brandName: brandId,
-                  categoryName: categoryId,
-                  trackQty,
-                  alertQty
+                const salesName = row.values[2] // B7
+                if (salesName != null) {
+                  const transNo = row.values[5] // E7
+                  let customer = null // D6
+                  const transDate = row.values[6] // F7
+                  const dueDate = row.values[7] // G7
+                  const netto = row.values[8] // H7
+                  const receivable = row.values[9] // I7
+                  let temporaryCustomer = sheet.getCell(`D${rowIndex - 1}`).value
+                  if (temporaryCustomer != null) {
+                    customer = temporaryCustomer
+                  } else if (temporaryCustomer == null
+                    && uploadData.length > 0
+                    && uploadData[uploadData.length - 1].customer) {
+                    customer = uploadData[uploadData.length - 1].customer
+                  } else {
+                    customer = null
+                  }
+
+                  if (customer) {
+                    const data = {
+                      transNo,
+                      customer,
+                      salesName,
+                      transDate,
+                      dueDate,
+                      netto,
+                      receivable
+                    }
+                    uploadData.push(data)
+                  }
                 }
-                uploadData.push(data)
               }
             })
         })
         .then(() => {
           if (uploadData && uploadData.length > 0) {
-            dispatch({
-              type: 'importSalesReceivable/bulkInsert',
-              payload: uploadData
-            })
+            console.log('uploadData', uploadData)
+            // dispatch({
+            //   type: 'importSalesReceivable/bulkInsert',
+            //   payload: uploadData
+            // })
           } else {
             message.error('No Data to Upload')
           }
