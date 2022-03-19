@@ -121,10 +121,7 @@ const FormAdd = ({
             </FormItem>
             <FormItem label="Delivery Order" {...formItemLayout}>
               {getFieldDecorator('deliveryOrder', {
-                valuePropName: 'checked',
-                initialValue: item.enableShopee === undefined
-                  ? false
-                  : item.enableShopee
+                valuePropName: 'checked'
               })(<Checkbox>Delivery Order</Checkbox>)}
             </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
@@ -135,7 +132,7 @@ const FormAdd = ({
                     required: false
                   }
                 ]
-              })(<Input disabled />)}
+              })(<Input disabled />)}data
             </FormItem>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transType', {
