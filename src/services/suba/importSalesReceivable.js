@@ -1,21 +1,9 @@
-import { request, config, crypt } from 'utils'
-
-const { importstock, adjust } = config.api
-
-export async function queryCode (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `/stocks/import/${params.id}`,
-    method: 'get',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
+import { request, crypt } from 'utils'
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/stocks/import',
+    url: '/suba/import-sales-receivable',
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -25,27 +13,7 @@ export async function query (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: importstock,
-    method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function opnameStock (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${adjust}/opname`,
-    method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function cancelOpname (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/opname-cancel',
+    url: '/suba/import-sales-receivable',
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -55,7 +23,17 @@ export async function cancelOpname (params) {
 export async function executeList (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/stocks/import/execute/${params.storeId}`,
+    url: '/suba/import-sales-receivable/execute',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function cancelOpname (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/suba/import-sales-receivable/cancel',
     method: 'post',
     data: params,
     headers: apiHeaderToken

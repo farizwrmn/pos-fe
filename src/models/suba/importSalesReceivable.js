@@ -3,10 +3,8 @@ import { message, Modal } from 'antd'
 import {
   query,
   add,
-  opnameStock,
-  cancelOpname,
-  edit,
-  remove
+  executeList,
+  cancelOpname
 } from 'services/suba/importSalesReceivable'
 import { queryLastActive } from 'services/period'
 import { getDateTime } from 'services/setting/time'
@@ -63,15 +61,6 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
-    },
-
     * add ({ payload }, { call, put }) {
       payload.header = {
         storeId: lstorage.getCurrentUserStore()
@@ -118,7 +107,7 @@ export default modelExtend(pageModel, {
           },
           store
         }
-        const response = yield call(opnameStock, {
+        const response = yield call(executeList, {
           stock
         })
         if (response && response.success) {
@@ -147,31 +136,6 @@ export default modelExtend(pageModel, {
         message.success('Success cancel opname')
       } else {
         throw response
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ importSalesReceivable }) => importSalesReceivable.currentItem.id)
-      const newCounter = { ...payload, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({ type: 'query' })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
       }
     }
   },
