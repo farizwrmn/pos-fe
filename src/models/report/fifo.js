@@ -4,7 +4,7 @@
 import { Modal, message } from 'antd'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
-import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoValueAll, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
+import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
 
 export default {
   namespace: 'fifoReport',
@@ -31,12 +31,6 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        // if (location.pathname === '/report/accounting/balance-sheet' && location.query.to) {
-        //   dispatch({
-        //     type: 'queryFifoValuesAll',
-        //     payload: location.query
-        //   })
-        // }
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey && location.query.period && location.query.year) {
           if (location.query.activeKey === '0') {
             dispatch({
@@ -269,48 +263,6 @@ export default {
             listRekap: data.data,
             period: payload.period,
             year: payload.year,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
-              total: data.total
-            },
-            date
-          }
-        })
-      } else {
-        // console.log('no Data')
-        // Modal.warning({
-        //   title: 'No Data',
-        //   content: 'No data inside storage'
-        // })
-        yield put({ type: 'setNull' })
-        throw data
-      }
-    },
-    * queryFifoValuesAll ({ payload = {} }, { call, put }) {
-      const { to } = payload
-      const period = moment(to, 'YYYY-MM-DD').format('MM')
-      const year = moment(to, 'YYYY-MM-DD').format('YYYY')
-      const date = {
-        period,
-        year
-      }
-      yield put({
-        type: 'setPeriod',
-        payload: date
-      })
-      yield put({
-        type: 'setNull',
-        payload: date
-      })
-      const data = yield call(queryFifoValueAll, date)
-      if (data.success) {
-        yield put({
-          type: 'querySuccessTrans',
-          payload: {
-            listRekap: data.data,
-            period: date.period,
-            year: date.year,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,

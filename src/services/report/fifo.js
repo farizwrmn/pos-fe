@@ -43,17 +43,6 @@ export async function queryFifoValue (params) {
   })
 }
 
-export async function queryFifoValueAll (params) {
-  const apiHeaderToken = crypt.apiheader()
-  const url = `${fiforeport}/value-all`
-  return request({
-    url,
-    method: 'get',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
 export async function queryFifoCard (params) {
   const apiHeaderToken = crypt.apiheader()
   params.store = lstorage.getCurrentUserStore()

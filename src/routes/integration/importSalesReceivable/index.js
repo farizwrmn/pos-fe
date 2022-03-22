@@ -125,8 +125,15 @@ const ImportSalesReceivable = ({
     })
   }
 
-  const handleProduct = () => {
+  const download = (dataurl, filename) => {
+    const link = document.createElement('a')
+    link.href = dataurl
+    link.download = filename
+    link.click()
+  }
 
+  const handleProduct = () => {
+    download('/excel/daftar-piutang-sales.xlsx', 'daftar-piutang-sales.xlsx')
   }
 
   return (
@@ -134,7 +141,7 @@ const ImportSalesReceivable = ({
       <div>
         <span>
           {'Product: '}
-          <Button type="default" onClick={() => handleProduct()}>Product</Button>
+          <Button type="default" onClick={() => handleProduct()}>Export Template</Button>
           <label
             htmlFor="uploadProduct"
             className="ant-btn ant-btn-primary ant-btn-lg"
