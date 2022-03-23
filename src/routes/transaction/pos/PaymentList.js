@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { posTotal } from 'utils'
 import { Button, Input, InputNumber, Form, Modal, Select } from 'antd'
-import { checkPermissionEditQtyPos } from 'utils/alertModal'
+import { checkPermissionEditQtyPos, checkPermissionEditPricePos } from 'utils/alertModal'
 
 const FormItem = Form.Item
 const confirm = Modal.confirm
@@ -14,6 +14,7 @@ const formItemLayout = {
 }
 
 const editQty = checkPermissionEditQtyPos()
+const editPrice = checkPermissionEditPricePos()
 
 const PaymentList = ({
   onChooseItem,
@@ -25,7 +26,9 @@ const PaymentList = ({
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue
+    getFieldsValue,
+    getFieldValue,
+    setFieldsValue
   },
   ...modalProps
 }) => {
@@ -36,6 +39,10 @@ const PaymentList = ({
     }
     data.sellingPrice = data.price
     data.total = posTotal(data)
+
+    setFieldsValue({
+      total: data.total
+    })
     data.productId = item.productId
     data.code = item.code
     data.name = item.name
@@ -155,7 +162,7 @@ const PaymentList = ({
             }]
           })(
             <InputNumber
-              disabled
+              disabled={item.bundleId ? true : editPrice}
               min={0}
               onBlur={value => handleTotalChange(value)}
             />
@@ -174,7 +181,7 @@ const PaymentList = ({
               defaultValue={0}
               min={0}
               onBlur={value => handleTotalChange(value)}
-              disabled={editQty}
+              disabled={item.bundleId ? true : editQty}
             />
           )}
         </FormItem>
@@ -250,7 +257,8 @@ const PaymentList = ({
           {getFieldDecorator('total', {
             initialValue: posTotal({
               ...item,
-              ...getFieldsValue()
+              ...getFieldsValue(),
+              sellingPrice: (item.bundleId ? true : editPrice) ? getFieldValue('price') : item.sellingPrice
             }),
             rules: [{
               required: true,
