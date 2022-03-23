@@ -25,82 +25,46 @@ const List = ({ ...tableProps,
 
   const columns = [
     {
+      title: 'Sales Name',
+      dataIndex: 'salesName',
+      key: 'salesName',
+      width: 100
+    },
+    {
       title: 'Nama Target',
       dataIndex: 'targetName',
       key: 'targetName',
-      width: 100,
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.targetName}</div>
-          </div>
-        )
-      }
+      width: 100
     },
     {
       title: 'Product 1',
       dataIndex: 'product1',
       key: 'product1',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product1}</div>
-          </div>
-        )
-      }
+      width: 150
     },
     {
       title: 'Product 2',
       dataIndex: 'product2',
       key: 'product2',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product2}</div>
-          </div>
-        )
-      }
+      width: 150
     },
     {
       title: 'Product 3',
       dataIndex: 'product3',
       key: 'product3',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product3}</div>
-          </div>
-        )
-      }
+      width: 150
     },
     {
       title: 'Product 4',
       dataIndex: 'product4',
       key: 'product4',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product4}</div>
-          </div>
-        )
-      }
+      width: 150
     },
     {
       title: 'Product 5',
       dataIndex: 'product5',
       key: 'product5',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <div>
-            <div>{record.product5}</div>
-          </div>
-        )
-      }
+      width: 150
     },
 
     {
