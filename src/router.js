@@ -228,6 +228,39 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'integration/subagro/promo',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/suba/promo'))
+              cb(null, require('./routes/integration/promo'))
+            }, 'suba-promo')
+          }
+        }, {
+          path: 'integration/subagro/target-sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/targetSales'))
+              cb(null, require('./routes/integration/targetSales'))
+            }, 'suba-target-sales')
+          }
+        }, {
+          path: 'integration/subagro/sales-receivable',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/salesReceivable'))
+              cb(null, require('./routes/integration/salesReceivable'))
+            }, 'suba-sales-receivable')
+          }
+        }, {
+          path: 'integration/subagro/sales-receivable/import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/importSalesReceivable'))
+              cb(null, require('./routes/integration/importSalesReceivable'))
+            }, 'suba-sales-receivable-import')
+          }
+        }, {
           path: 'master/store-price',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -251,6 +284,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/importstock'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
               cb(null, require('./routes/master/product/import/'))
             }, 'master-product-stock-import')
           }

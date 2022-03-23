@@ -350,8 +350,8 @@ const modal = ({
             <FormItem label="User Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('userName', {
                 initialValue: item.userName,
-                rules: [{ required: true, pattern: /^[\s\S]{4,30}$/, message: 'Min: 4, Max: 30' }]
-              })(<Input maxLength={30} />)}
+                rules: [{ required: true, pattern: /^[\s\S]{4,200}$/, message: 'Min: 4, Max: 200' }]
+              })(<Input maxLength={200} />)}
             </FormItem>
             <FormItem label="Active" {...formItemLayout}>
               {getFieldDecorator('active', {

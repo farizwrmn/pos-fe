@@ -1,8 +1,9 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable jsx-a11y/label-has-for */
 import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, Row, message, Modal, Col
+  Button, Icon, message, Modal
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
@@ -14,9 +15,13 @@ const ImportStock = ({
   loading,
   dispatch,
   importstock,
+  productbrand,
+  productcategory,
   productstock,
   app
 }) => {
+  const { listBrand } = productbrand
+  const { listCategory } = productcategory
   const { list, pagination } = importstock
   const { user, storeInfo } = app
   const {
@@ -27,7 +32,7 @@ const ImportStock = ({
   const listProps = {
     dataSource: list,
     pagination,
-    loading: loading.effects['importstock/query'],
+    loading: loading.effects['importstock/query'] || loading.effects['importstock/execute'] || loading.effects['importstock/add'] || loading.effects['importstock/bulkInsert'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -43,7 +48,9 @@ const ImportStock = ({
 
   const printProps = {
     user,
-    storeInfo
+    storeInfo,
+    listBrand,
+    listCategory
   }
 
   const uploadProps = {
@@ -62,8 +69,8 @@ const ImportStock = ({
 
 
   let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS data={listPrintAllStock} name="Export Opname Template" {...printProps} />)
-    : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Data</Button>)
+    ? (<PrintXLS data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
+    : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   const handleChangeFile = (event) => {
     let uploadData = []
@@ -78,10 +85,10 @@ const ImportStock = ({
           const sheet = workbook.getWorksheet('POS 1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productId = row.values[3]
-              const qty = row.values[12]
-              const price = row.values[13]
-              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(qty) > 0 && Number(price) > 0) {
+              const productId = row.values[4]
+              const qty = row.values[18]
+              const price = row.values[19]
+              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(price) > 0) {
                 const data = {
                   productId: Number(productId),
                   qty: Number(qty),
@@ -119,22 +126,23 @@ const ImportStock = ({
           const sheet = workbook.getWorksheet('POS 1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productCode = row.values[3]
-              const productName = row.values[4]
-              const barCode01 = row.values[5]
-              const sellPrice = row.values[6]
-              const distPrice01 = row.values[7]
-              const distPrice02 = row.values[8]
-              const distPrice03 = row.values[9]
-              const distPrice04 = row.values[10]
-              const distPrice05 = row.values[11]
-              const distPrice06 = row.values[12]
-              const distPrice07 = row.values[13]
-              const distPrice08 = row.values[14]
-              const brandId = row.values[15]
-              const categoryId = row.values[16]
-              const trackQty = row.values[17]
-              const alertQty = row.values[18]
+              let startPoint = 3
+              const productCode = row.values[++startPoint]
+              const productName = row.values[++startPoint]
+              const barCode01 = row.values[++startPoint]
+              const sellPrice = row.values[++startPoint]
+              const distPrice01 = row.values[++startPoint]
+              const distPrice02 = row.values[++startPoint]
+              const distPrice03 = row.values[++startPoint]
+              const distPrice04 = row.values[++startPoint]
+              const distPrice05 = row.values[++startPoint]
+              const distPrice06 = row.values[++startPoint]
+              const distPrice07 = row.values[++startPoint]
+              const distPrice08 = row.values[++startPoint]
+              const brandId = row.values[++startPoint]
+              const categoryId = row.values[++startPoint]
+              const trackQty = row.values[++startPoint]
+              const alertQty = row.values[++startPoint]
               if (rowIndex >= 7) {
                 const data = {
                   productCode,
@@ -149,8 +157,8 @@ const ImportStock = ({
                   distPrice06,
                   distPrice07,
                   distPrice08,
-                  brandId: Number(brandId),
-                  categoryId: Number(categoryId),
+                  brandName: brandId,
+                  categoryName: categoryId,
                   trackQty,
                   alertQty
                 }
@@ -182,59 +190,94 @@ const ImportStock = ({
     })
   }
 
+  const handleCancel = () => {
+    Modal.confirm({
+      title: 'Do you want to cancel this list ?',
+      onOk () {
+        dispatch({
+          type: 'importstock/cancel'
+        })
+      }
+    })
+  }
+
   return (
     <div className="content-inner">
-      <Row>
-        <Col span={12}>
-          {buttonClickXLS}
-          <div>
-            <label htmlFor="opname" className="ant-btn ant-btn-default ant-btn-lg" style={{ padding: '0.5em' }}>Select File</label>
-            <input
-              id="opname"
-              type="file"
-              className="ant-btn ant-btn-default ant-btn-lg"
-              style={{ visibility: 'hidden' }}
-              {...uploadProps}
-              onChange={handleChangeFile}
-            />
-          </div>
-        </Col>
-        <Col span={12} style={{ textAlign: 'right' }}>
-          <ProductXLS data={[]} name="Export Product Template" {...printProps} />
-          <div>
-            <label
-              htmlFor="uploadProduct"
-              className="ant-btn ant-btn-default ant-btn-lg"
-              style={{
-                padding: '0.5em'
-              }}
-            >
-              Select File
-            </label>
-            <input
-              id="uploadProduct"
-              type="file"
-              style={{
-                visibility: 'hidden'
-              }}
-              className="ant-btn ant-btn-default ant-btn-lg"
-              {...uploadProps}
-              onChange={handleImportProduct}
-            />
-          </div>
-        </Col>
-      </Row>
+      <div>
+        <span>
+          {'Product: '}
+          <ProductXLS data={[]} name="Export Template Product" {...printProps} />
+          <label
+            htmlFor="uploadProduct"
+            className="ant-btn ant-btn-primary ant-btn-lg"
+            style={{
+              padding: '0.5em',
+              marginLeft: '15px'
+            }}
+          >
+            Select File
+          </label>
+          <input
+            type="file"
+            style={{
+              visibility: 'hidden'
+            }}
+            className="ant-btn ant-btn-default ant-btn-lg"
+            {...uploadProps}
+            id="uploadProduct"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            {...uploadProps}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleImportProduct(event)
+            }}
+          />
+        </span>
+      </div>
+
+      <div>
+        {'Stock: '}
+        {buttonClickXLS}
+        <span>
+          <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+          <input
+            id="opname"
+            type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            style={{ visibility: 'hidden' }}
+            {...uploadProps}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleChangeFile(event)
+            }}
+          />
+        </span>
+      </div>
       <List {...listProps} />
-      <div
-        style={{ textAlign: 'right' }}
+      <span
+        style={{ textAlign: 'right', marginTop: '15px' }}
       >
+        <Button
+          style={{ marginRight: '15px' }}
+          type="danger"
+          onClick={handleCancel}
+          disabled={loading.effects['importstock/execute'] || loading.effects['importstock/cancel'] || loading.effects['importstock/add'] || loading.effects['importstock/bulkInsert']}
+        >
+          Cancel
+        </Button>
         <Button
           type="primary"
           onClick={handleExecute}
+          disabled={loading.effects['importstock/execute'] || loading.effects['importstock/cancel'] || loading.effects['importstock/add'] || loading.effects['importstock/bulkInsert']}
         >
           Execute
         </Button>
-      </div>
+      </span>
     </div>
   )
 }
@@ -244,11 +287,15 @@ export default connect(
     loading,
     importstock,
     productstock,
+    productbrand,
+    productcategory,
     app
   }) => ({
     loading,
     importstock,
     productstock,
+    productbrand,
+    productcategory,
     app
   })
 )(ImportStock)

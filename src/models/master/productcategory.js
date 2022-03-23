@@ -45,6 +45,7 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') dispatch({ type: 'query' })
         } else if (pathname === '/marketing/promo'
+          || pathname === '/master/product/stock/import'
           || pathname === '/stock'
           || pathname === '/tools/sellprice') {
           dispatch({ type: 'query', payload: { type: 'all' } })

@@ -42,6 +42,16 @@ export async function opnameStock (params) {
   })
 }
 
+export async function cancelOpname (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/opname-cancel',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function executeList (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

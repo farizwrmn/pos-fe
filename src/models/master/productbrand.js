@@ -45,6 +45,7 @@ export default modelExtend(pageModel, {
           || pathname === '/stock'
           || pathname === '/tools/sellprice'
           || pathname === '/marketing/target'
+          || pathname === '/master/product/stock/import'
         ) {
           dispatch({ type: 'query', payload: { type: 'all' } })
         }

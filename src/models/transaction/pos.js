@@ -2360,6 +2360,7 @@ export default {
           productName: item.productName,
           productId: item.id,
           sellPrice: item.sellPrice,
+          retailPrice: item.retailPrice,
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02,
           distPrice03: item.distPrice03,
