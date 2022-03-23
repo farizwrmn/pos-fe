@@ -118,6 +118,17 @@ const AdvancedForm = ({
       <Card {...cardProps}>
         <Row>
           <Col {...column}>
+            <FormItem label="Sales Name" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('salesName', {
+                initialValue: item.salesName,
+                rules: [
+                  {
+                    required: true,
+                    message: 'a-Z & 0-9'
+                  }
+                ]
+              })(<Input />)}
+            </FormItem>
             <FormItem label="Target Name" hasFeedback {...formItemLayout}>
               {getFieldDecorator('targetName', {
                 initialValue: item.targetName,
