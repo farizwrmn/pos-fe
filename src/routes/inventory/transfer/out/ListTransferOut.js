@@ -5,28 +5,7 @@ import moment from 'moment'
 import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 
-const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, listTransOut, onClosePrint }) => {
-  const transHeader = listTransOut ? {
-    employeeId: {
-      key: listTransOut.employeeId || '',
-      label: listTransOut.employeeName || ''
-    },
-    storeId: {
-      key: listTransOut.storeId || '',
-      label: listTransOut.storeName || ''
-    },
-    storeIdReceiver: {
-      key: listTransOut.storeIdReceiver || '',
-      label: listTransOut.storeNameReceiver || ''
-    },
-    totalColly: listTransOut.totalColly || '',
-    transNo: listTransOut.transNo || '',
-    transType: listTransOut.transType || '',
-    carNumber: listTransOut.carNumber || '',
-    description: listTransOut.description || '',
-    reference: listTransOut.reference || ''
-  } : {}
-
+const ListTransfer = ({ ...tableProps, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
   const clickPrint = (record) => {
     const { transNo, storeIdReceiver } = record
     getProducts(transNo)
@@ -34,10 +13,27 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
     onShowPrint()
   }
 
+  console.log('listTransOut', listTransOut)
+
   const printProps = {
     listItem: listProducts,
-    itemPrint: transHeader,
-    itemHeader: transHeader,
+    itemPrint: listTransOut && listTransOut.id ? {
+      transNo: listTransOut.transNo,
+      employeeName: listTransOut.employeeName,
+      carNumber: listTransOut.carNumber,
+      storeName: listTransOut.storeName,
+      totalColly: listTransOut.totalColly,
+      storeNameReceiver: listTransOut.storeNameReceiver,
+      description: listTransOut.description
+    } : {
+      transNo: '',
+      employeeName: '',
+      carNumber: '',
+      storeName: '',
+      totalColly: '',
+      storeNameReceiver: '',
+      description: ''
+    },
     storeInfo,
     user,
     printNo: 1

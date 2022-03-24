@@ -476,6 +476,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     listTransferOut,
     listProducts,
     listTransOut,
+    itemPrint: currentItemPrint,
     loading: loading.effects['transferOut/queryTransferOut'],
     location,
     filter,

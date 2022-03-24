@@ -3,7 +3,6 @@
  */
 import { Modal, message } from 'antd'
 import moment from 'moment'
-import { prefix } from 'utils/config.main'
 import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
 
 export default {
@@ -327,11 +326,9 @@ export default {
     * queryHistory ({ payload = {} }, { call, put }) {
       let data
       try {
-        const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
         data = yield call(queryFifoHistory, {
           ...payload,
-          from: storeInfo.startPeriod,
-          fromDate: payload.from
+          from: payload.from
         })
         if (data.success === false) {
           Modal.warning({

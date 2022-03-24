@@ -635,6 +635,21 @@ class AdvancedForm extends Component {
       }
     }
 
+    const handleSelectAll = () => {
+      const listSelected = getFieldValue('shopeeLogistic')
+      const listAvail = listShopeeLogistic.map(item => item.logistics_channel_id)
+      if (listSelected.length === listAvail.length) {
+        setFieldsValue({
+          shopeeLogistic: []
+        })
+      } else {
+        setFieldsValue({
+          shopeeLogistic: listShopeeLogistic.map(item => item.logistics_channel_id)
+        })
+      }
+    }
+
+
     const hdlGetSupplier = () => {
       onGetSupplier()
       dispatch({
@@ -1217,6 +1232,7 @@ class AdvancedForm extends Component {
                     }
                     return null
                   }) : null}
+                <Button type="primary" onClick={() => handleSelectAll()}>{getFieldValue('shopeeLogistic') && listShopeeLogistic && listShopeeLogistic.length > 0 && getFieldValue('shopeeLogistic').length === listShopeeLogistic.length ? 'DE' : ''}SELECT ALL LOGISTIC</Button>
                 <FormItem label="Shopee Logistic" help={`${getFieldValue('shopeeLogistic') && getFieldValue('shopeeLogistic').length ? getFieldValue('shopeeLogistic').length : 0} Logistics Selected`} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('shopeeLogistic', {
                     initialValue: item.shopeeLogistic || [],
@@ -1232,7 +1248,8 @@ class AdvancedForm extends Component {
                     allowClear
                     optionFilterProp="children"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >{shopeeLogistic}
+                  >
+                    {shopeeLogistic}
                   </Select>)}
                 </FormItem>
                 <FormItem label="Dangerous Item" help="won't appear on the Android/IOS" {...formItemLayout}>
