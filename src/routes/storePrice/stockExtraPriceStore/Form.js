@@ -91,8 +91,6 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.productId = data.productId ? data.productId.key : null
-      data.storeId = data.storeId ? data.storeId.key : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -106,7 +104,7 @@ const FormCounter = ({
   }
 
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option title={`${x.storeName} (${x.storeCode})`} key={x.id}>{`${x.storeName} (${x.storeCode})`}</Option>)) : []
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option title={`${x.storeName} (${x.storeCode})`} key={x.id} value={x.id}>{`${x.storeName} (${x.storeCode})`}</Option>)) : []
 
   const onChangeProduct = (value) => {
     if (value && value.key) {
@@ -139,10 +137,7 @@ const FormCounter = ({
             {...formItemLayout}
           >
             {getFieldDecorator('storeId', {
-              initialValue: item.storeId ? {
-                key: item.storeId,
-                label: `${item.store.storeName} (${item.store.storeCode})`
-              } : undefined,
+              initialValue: modalType === 'add' ? [] : item.storeId,
               rules: [
                 {
                   required: true
@@ -157,8 +152,8 @@ const FormCounter = ({
                 allowClear
                 optionFilterProp="children"
 
+                multiple={modalType === 'add'}
                 notFoundContent={loading.effects['userStore/getAllListStores'] ? <Spin size="small" /> : null}
-                labelInValue
                 filterOption={filterOption}
               >
                 {childrenTransNo}
@@ -167,10 +162,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Product" hasFeedback {...formItemLayout}>
             {getFieldDecorator('productId', {
-              initialValue: item.productId ? {
-                key: item.productId,
-                label: `${item.product.productName} (${item.product.productCode})`
-              } : undefined,
+              initialValue: item.productId,
               rules: [
                 {
                   required: true
@@ -186,7 +178,6 @@ const FormCounter = ({
 
               notFoundContent={loading.effects['productstock/query'] ? <Spin size="small" /> : null}
               onSearch={value => showLov('productstock', { q: value })}
-              labelInValue
               onChange={onChangeProduct}
               filterOption={filterOption}
             >

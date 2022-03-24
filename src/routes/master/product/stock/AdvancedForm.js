@@ -5,7 +5,7 @@ import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox,
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
-import { getDistPriceName } from 'utils/string'
+import { getDistPriceName, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
 
 const { apiCompanyURL } = rest
@@ -635,6 +635,21 @@ class AdvancedForm extends Component {
       }
     }
 
+    const handleSelectAll = () => {
+      const listSelected = getFieldValue('shopeeLogistic')
+      const listAvail = listShopeeLogistic.map(item => item.logistics_channel_id)
+      if (listSelected.length === listAvail.length) {
+        setFieldsValue({
+          shopeeLogistic: []
+        })
+      } else {
+        setFieldsValue({
+          shopeeLogistic: listShopeeLogistic.map(item => item.logistics_channel_id)
+        })
+      }
+    }
+
+
     const hdlGetSupplier = () => {
       onGetSupplier()
       dispatch({
@@ -952,7 +967,7 @@ class AdvancedForm extends Component {
           <Col {...parentThreeDivision}>
             <Card {...cardProps} title={<h3>Pricing</h3>}>
               <Row>
-                <FormItem label={getDistPriceName('sellPrice')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('sellPrice')} help={getDistPriceDescription('sellPrice')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('sellPrice', {
                     initialValue: item.sellPrice,
                     rules: [
@@ -964,7 +979,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice01')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice01')} help={getDistPriceDescription('distPrice01')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice01', {
                     initialValue: item.distPrice01,
                     rules: [
@@ -976,7 +991,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice02')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice02')} help={getDistPriceDescription('distPrice02')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice02', {
                     initialValue: item.distPrice02,
                     rules: [
@@ -988,7 +1003,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice03')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice03')} help={getDistPriceDescription('distPrice03')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice03', {
                     initialValue: item.distPrice03,
                     rules: [
@@ -1000,7 +1015,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice04')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice04')} help={getDistPriceDescription('distPrice04')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice04', {
                     initialValue: item.distPrice04,
                     rules: [
@@ -1012,7 +1027,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice05')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice05')} help={getDistPriceDescription('distPrice05')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice05', {
                     initialValue: item.distPrice05,
                     rules: [
@@ -1024,7 +1039,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice06')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice06')} help={getDistPriceDescription('distPrice06')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice06', {
                     initialValue: item.distPrice06,
                     rules: [
@@ -1036,7 +1051,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice07')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice07')} help={getDistPriceDescription('distPrice07')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice07', {
                     initialValue: item.distPrice07,
                     rules: [
@@ -1048,7 +1063,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
-                <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
+                <FormItem label={getDistPriceName('distPrice08')} help={getDistPriceDescription('distPrice08')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice08', {
                     initialValue: item.distPrice08,
                     rules: [
@@ -1217,6 +1232,7 @@ class AdvancedForm extends Component {
                     }
                     return null
                   }) : null}
+                <Button type="primary" onClick={() => handleSelectAll()}>{getFieldValue('shopeeLogistic') && listShopeeLogistic && listShopeeLogistic.length > 0 && getFieldValue('shopeeLogistic').length === listShopeeLogistic.length ? 'DE' : ''}SELECT ALL LOGISTIC</Button>
                 <FormItem label="Shopee Logistic" help={`${getFieldValue('shopeeLogistic') && getFieldValue('shopeeLogistic').length ? getFieldValue('shopeeLogistic').length : 0} Logistics Selected`} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('shopeeLogistic', {
                     initialValue: item.shopeeLogistic || [],
@@ -1232,7 +1248,8 @@ class AdvancedForm extends Component {
                     allowClear
                     optionFilterProp="children"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >{shopeeLogistic}
+                  >
+                    {shopeeLogistic}
                   </Select>)}
                 </FormItem>
                 <FormItem label="Dangerous Item" help="won't appear on the Android/IOS" {...formItemLayout}>

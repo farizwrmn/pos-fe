@@ -47,7 +47,7 @@ export default modelExtend(pageModel, {
     filter: null,
     sort: null,
     listProducts: [],
-    listTransOut: [],
+    listTransOut: {},
     showPrintModal: false,
     pagination: {
       // showSizeChanger: true,

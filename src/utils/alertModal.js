@@ -65,8 +65,20 @@ const checkPermissionEditQtyPos = () => {
   return Boolean(permissionValue)
 }
 
+const checkPermissionEditPricePos = () => {
+  const Inventory = getSetting('Inventory')
+  let permissionValue = true
+  // const permissionValue = getPermission('post_month_transaction')
+  if (Inventory) {
+    const jsonParse = JSON.parse(Inventory)
+    permissionValue = jsonParse.posOrder ? jsonParse.posOrder.disable_price_pos_edit : true
+  }
+  return Boolean(permissionValue)
+}
+
 module.exports = {
   stockMinusAlert,
   checkPermissionMonthTransaction,
-  checkPermissionEditQtyPos
+  checkPermissionEditQtyPos,
+  checkPermissionEditPricePos
 }

@@ -75,6 +75,15 @@ const getDistPriceName = (fromStock) => {
   return fromStock
 }
 
+const getDistPriceDescription = (fromStock) => {
+  const listPrice = lstorage.getPriceName()
+  const selectedDist = listPrice.filter(filtered => filtered.sellPrice === fromStock)
+  if (selectedDist && selectedDist[0]) {
+    return `${selectedDist[0].description}`
+  }
+  return fromStock
+}
+
 function withoutFormat (file) {
   const formats = ['png', 'jpg', 'jpeg', 'gif']
   const regex = new RegExp(`.(${formats.join('|')})$`, 'gi')
@@ -89,5 +98,6 @@ export {
   countFollower,
   getLinkName,
   getDistPriceName,
-  withoutFormat
+  withoutFormat,
+  getDistPriceDescription
 }

@@ -9,7 +9,6 @@ const ListTransfer = ({ ...tableProps, showAcceptModal, modalAcceptVisible, upda
     showAcceptModal(record)
   }
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter)
     updateFilter(filters, sorter)
   }
 
@@ -42,11 +41,11 @@ const ListTransfer = ({ ...tableProps, showAcceptModal, modalAcceptVisible, upda
       dataIndex: 'status',
       key: 'status',
       render: text =>
-        (<span>
-          <Tag color={text === '0' ? 'blue' : text === '1' ? 'green' : 'red'}>
-            {text === '0' ? 'Not-updated' : text === '1' ? 'Updated' : 'Canceled'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text === '0' ? 'blue' : text === '1' ? 'green' : 'red'}>
+          {text === '0' ? 'Not-updated' : text === '1' ? 'Updated' : 'Canceled'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Transaction No',

@@ -57,7 +57,6 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   }
 
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter)
     updateFilter(filters, sorter)
   }
 
@@ -108,11 +107,11 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       dataIndex: 'status',
       key: 'status',
       render: (text, record) =>
-        (<span>
-          <Tag color={record.status ? 'green' : 'red'}>
-            {record.status ? 'Accepted' : 'Canceled'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={record.status ? 'green' : 'red'}>
+          {record.status ? 'Accepted' : 'Canceled'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Transaction No',
