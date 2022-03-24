@@ -4,7 +4,6 @@ import { Table } from 'antd'
 
 const ListTransfer = ({ ...tableProps, updateFilter }) => {
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter)
     updateFilter(filters, sorter)
   }
 

@@ -13,8 +13,6 @@ const ListTransfer = ({ ...tableProps, listTransOut, filter, sort, updateFilter,
     onShowPrint()
   }
 
-  console.log('listTransOut', listTransOut)
-
   const printProps = {
     listItem: listProducts,
     itemPrint: listTransOut && listTransOut.id ? {
@@ -51,7 +49,6 @@ const ListTransfer = ({ ...tableProps, listTransOut, filter, sort, updateFilter,
   }
 
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter)
     updateFilter(filters, sorter)
   }
 
