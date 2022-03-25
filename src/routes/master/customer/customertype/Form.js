@@ -186,6 +186,16 @@ const formCustomerType = ({
               initialValue: item.id ? item.showAsDiscount : true
             })(<Checkbox />)}
           </FormItem>
+          <FormItem label="Description" help="Help you on input product's price" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input maxLength={255} />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>

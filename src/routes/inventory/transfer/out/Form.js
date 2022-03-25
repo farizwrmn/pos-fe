@@ -132,7 +132,7 @@ const FormAdd = ({
                     required: false
                   }
                 ]
-              })(<Input disabled />)}data
+              })(<Input disabled />)}
             </FormItem>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transType', {

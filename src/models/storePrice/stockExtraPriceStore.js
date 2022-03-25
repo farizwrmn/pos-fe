@@ -60,10 +60,17 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
+    * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, payload)
+      const pagination = yield select(({ stockExtraPriceStore }) => stockExtraPriceStore.pagination)
       if (data.success) {
-        yield put({ type: 'query' })
+        yield put({
+          type: 'query',
+          payload: {
+            page: pagination.current,
+            pageSize: pagination.pageSize
+          }
+        })
       } else {
         throw data
       }
@@ -71,29 +78,27 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const { data, resetFields } = payload
-      const response = yield call(add, data)
-      if (response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({
-          type: 'query'
-        })
-        resetFields()
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: data
-          }
-        })
-        throw data
+      if (data && data.storeId && data.storeId.length > 0) {
+        for (let key in data.storeId) {
+          const storeId = data.storeId[key]
+          yield call(add, {
+            ...data,
+            storeId
+          })
+        }
       }
+      success()
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalType: 'add',
+          currentItem: {}
+        }
+      })
+      yield put({
+        type: 'query'
+      })
+      resetFields()
     },
 
     * edit ({ payload }, { select, call, put }) {

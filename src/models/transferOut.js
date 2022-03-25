@@ -47,7 +47,7 @@ export default modelExtend(pageModel, {
     filter: null,
     sort: null,
     listProducts: [],
-    listTransOut: [],
+    listTransOut: {},
     showPrintModal: false,
     pagination: {
       // showSizeChanger: true,
@@ -67,6 +67,13 @@ export default modelExtend(pageModel, {
             payload: {
               seqCode: 'MUOUT',
               type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+            }
+          })
+          const { deliveryOrderNo } = location.query
+          dispatch({
+            type: 'queryTransferOut',
+            payload: {
+              deliveryOrderNo
             }
           })
         }
@@ -288,7 +295,7 @@ export default modelExtend(pageModel, {
 
     * queryTransferOut ({ payload = {} }, { call, put }) {
       const data = yield call(queryTransferOut, payload)
-      if (data) {
+      if (data && data.success && data.data.length > 0) {
         yield put({
           type: 'querySuccessListTransferOut',
           payload: {
@@ -300,6 +307,24 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+      if (payload.transNo && data && data.success && data.data.length === 0) {
+        const response = yield call(queryTransferOut, {
+          deliveryOrderNo: payload.transNo
+        })
+        if (response && response.success && response.data.length > 0) {
+          yield put({
+            type: 'querySuccessListTransferOut',
+            payload: {
+              listTransferOut: response.data,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 10,
+                total: response.total
+              }
+            }
+          })
+        }
       }
     },
 
