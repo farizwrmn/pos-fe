@@ -308,7 +308,6 @@ export default modelExtend(pageModel, {
           }
         })
       }
-      console.log('data', payload, data)
       if (payload.transNo && data && data.success && data.data.length === 0) {
         const response = yield call(queryTransferOut, {
           deliveryOrderNo: payload.transNo
