@@ -80,6 +80,14 @@ const ListTransfer = ({ ...tableProps, listTransOut, filter, sort, updateFilter,
       render: text => <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}`}>{text}</Link>
     },
     {
+      title: 'Delivery Order',
+      dataIndex: 'deliveryOrderNo',
+      key: 'deliveryOrderNo',
+      sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
+      sortOrder: sort.columnKey === 'transNo' && sort.order,
+      render: text => <Link to={`/inventory/transfer/out?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
+    },
+    {
       title: 'Sender',
       dataIndex: 'storeName',
       key: 'storeName',
