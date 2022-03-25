@@ -308,10 +308,9 @@ export default modelExtend(pageModel, {
           }
         })
       }
-      if (payload.start && payload.end && payload.transNo && data && data.success && data.data.length === 0) {
+      console.log('data', payload, data)
+      if (payload.transNo && data && data.success && data.data.length === 0) {
         const response = yield call(queryTransferOut, {
-          ...payload,
-          transNo: undefined,
           deliveryOrderNo: payload.transNo
         })
         if (response && response.success && response.data.length > 0) {
