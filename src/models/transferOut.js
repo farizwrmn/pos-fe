@@ -69,6 +69,13 @@ export default modelExtend(pageModel, {
               type: lstorage.getCurrentUserStore() // diganti dengan StoreId
             }
           })
+          const { deliveryOrderNo } = location.query
+          dispatch({
+            type: 'queryTransferOut',
+            payload: {
+              deliveryOrderNo
+            }
+          })
         }
         // else if (location.pathname === '/inventory/transfer/in') {
         //   dispatch({
@@ -288,7 +295,7 @@ export default modelExtend(pageModel, {
 
     * queryTransferOut ({ payload = {} }, { call, put }) {
       const data = yield call(queryTransferOut, payload)
-      if (data) {
+      if (data && data.success && data.data.length > 0) {
         yield put({
           type: 'querySuccessListTransferOut',
           payload: {
@@ -300,6 +307,26 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+      if (payload.start && payload.end && payload.transNo && data && data.success && data.data.length === 0) {
+        const response = yield call(queryTransferOut, {
+          ...payload,
+          transNo: undefined,
+          deliveryOrderNo: payload.transNo
+        })
+        if (response && response.success && response.data.length > 0) {
+          yield put({
+            type: 'querySuccessListTransferOut',
+            payload: {
+              listTransferOut: response.data,
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 10,
+                total: response.total
+              }
+            }
+          })
+        }
       }
     },
 
