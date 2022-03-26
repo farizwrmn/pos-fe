@@ -16,6 +16,12 @@ const List = ({ ...tableProps, editList }) => {
       width: '50px'
     },
     {
+      title: 'TransNo',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      width: '150px'
+    },
+    {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
@@ -67,7 +73,7 @@ const List = ({ ...tableProps, editList }) => {
     <div>
       <Table
         bordered={false}
-        scroll={{ x: 500, y: 700 }}
+        scroll={{ x: 600, y: 700 }}
         columns={columns}
         simple
         rowKey={record => record.no}
