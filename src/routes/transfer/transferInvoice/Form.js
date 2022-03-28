@@ -53,6 +53,7 @@ const FormCounter = ({
   listStore,
   button,
   resetListItem,
+  loadingEffect,
   form: {
     getFieldDecorator,
     validateFields,
@@ -228,7 +229,18 @@ const FormCounter = ({
         <Row>
           <Col {...column}>
             {modalType === 'edit' && <PrintPDFInvoice {...printProps} />}
-            <Button type="primary" size="large" disabled={modalType === 'edit'} onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Transfer Out</Button>
+            <Button
+              loading={loadingEffect['transferInvoice/addItem']
+                || loadingEffect['transferInvoice/addItemNormal']
+                || loadingEffect['transferInvoice/groupListItem']}
+              disabled={modalType === 'edit' || loadingEffect['transferInvoice/addItem']
+                || loadingEffect['transferInvoice/addItemNormal']
+                || loadingEffect['transferInvoice/groupListItem']}
+              type="primary"
+              size="large"
+              onClick={() => hdlModalShow()}
+              style={{ marginBottom: '8px' }}
+            >Transfer Out</Button>
           </Col>
           <Col {...column} />
         </Row>
