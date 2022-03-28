@@ -161,12 +161,10 @@ export default modelExtend(pageModel, {
 
     * showProductQty ({ payload }, { call, put }) {
       let { data } = payload
-      console.log('data', data)
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const newData = data.map(x => x.id)
 
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
-      console.log('listProductData', listProductData)
       if (listProductData.success) {
         for (let n = 0; n < (listProductData.data || []).length; n += 1) {
           data = data.map((x) => {
@@ -181,7 +179,6 @@ export default modelExtend(pageModel, {
           })
         }
 
-        console.log('data', data)
         yield put({
           type: 'queryGetProductsSuccess',
           payload: {

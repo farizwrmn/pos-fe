@@ -66,7 +66,6 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
   const hdlDateChange = (e) => {
     if (e) {
       let a = e.format('YYYY-MM-DD')
-      console.log(moment(a, 'YYYY-MM-DD').add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD'))
       onChangeDate(moment(a, 'YYYY-MM-DD').add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD'))
     } else {
       onChangeDate(null)
