@@ -20,9 +20,13 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data && data.transferOut ? data.transferOut.transNo : '' || '').toString(), alignment: 'left', fontSize: 11 })
+        if (data && data.deliveryOrderNo) {
+          row.push({ text: `Delivery Order: ${(data && data.deliveryOrderNo ? data.deliveryOrderNo : '').toString()}`, alignment: 'left', fontSize: 11 })
+        } else {
+          row.push({ text: (data && data.transferOut ? data.transferOut.transNo : '' || '').toString(), alignment: 'left', fontSize: 11 })
+        }
         row.push({ text: (data && data.transferOut ? moment(data.transferOut.transDate, 'YYYY-MM-DD HH:mm:ss').format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.amount)), alignment: 'right', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.amountTransfer)), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.memo || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
@@ -33,7 +37,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
 
   // Declare Variable
   // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountTransfer), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -88,7 +92,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         layout: 'noBorders'
       },
       {
-        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 745, y2: 5, lineWidth: 0.5 }]
       }
     ],
     margin: [30, 12, 12, 30]
@@ -100,7 +104,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         height: 160,
         stack: [
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 745, y2: 5, lineWidth: 0.5 }]
           },
           {
             // columns: [
@@ -227,7 +231,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '15%', '34%', '35%'],
+    width: ['6%', '30%', '10%', '19%', '35%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',

@@ -381,10 +381,14 @@ export default modelExtend(pageModel, {
             listItem: transferInvoiceDetail ?
               transferInvoiceDetail.map((item, index) => ({
                 no: index + 1,
+                amountTransfer: item.amount,
                 ...item
               }))
               : []
           }
+        })
+        yield put({
+          type: 'groupListItem'
         })
       } else {
         throw data
@@ -447,7 +451,8 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {},
-            listItem: []
+            listItem: [],
+            listTransGroup: []
           }
         })
         yield put({ type: 'querySequence' })

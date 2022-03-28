@@ -79,7 +79,13 @@ const Browse = ({
       {
         title: 'Trans No',
         dataIndex: 'transferOut.transNo',
-        key: 'transferOut.transNo'
+        key: 'transferOut.transNo',
+        render: (text, record) => {
+          if (record.deliveryOrderNo) {
+            return `Delivery Order: ${record.deliveryOrderNo}`
+          }
+          return text
+        }
       },
       {
         title: 'Employee',
