@@ -4,6 +4,7 @@ import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import moment from 'moment'
+import { getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from '../services/sequence'
 import {
   query,
@@ -262,8 +263,8 @@ export default modelExtend(pageModel, {
           const totalSellingPrice = (x[key].qty * x[key].price)
           const discItem = ((totalSellingPrice * discPercentItem) - discNominalItem) * discPercentInvoice
           const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
-          x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
+          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
+          x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
           x[key].total = x[key].dpp + x[key].ppn
         }
         localStorage.setItem('product_detail', JSON.stringify(x))

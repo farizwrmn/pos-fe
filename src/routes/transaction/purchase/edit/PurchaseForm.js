@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
+import { getVATPercentage, getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { lstorage, numberFormat, alertModal } from 'utils'
 import { prefix } from 'utils/config.main'
 import Browse from './Browse'
@@ -74,8 +75,8 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
       const total = (x[key].qty * x[key].price)
       const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
       const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
-      x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
+      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
+      x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
     localStorage.setItem('product_detail', JSON.stringify(x))
@@ -266,7 +267,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                 })(<Select onBlur={hdlChangePercent}>
                   <Option value="I">Include</Option>
                   <Option value="E">Exclude (0%)</Option>
-                  <Option value="S">Exclude (10%)</Option>
+                  <Option value="S">Exclude ({getVATPercentage()}%)</Option>
                 </Select>)}
               </FormItem>
               <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
