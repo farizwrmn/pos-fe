@@ -118,8 +118,16 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: transferInvoiceDetail
+            listDetail: transferInvoiceDetail.map((item) => {
+              return ({
+                ...item,
+                amountTransfer: item.amount
+              })
+            })
           }
+        })
+        yield put({
+          type: 'groupListTransfer'
         })
       } else {
         throw data
@@ -345,6 +353,37 @@ export default modelExtend(pageModel, {
         }
       })
       const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
+      let listTransGroup = []
+      const listTransDelivery = listItem.filter(filtered => filtered.deliveryOrderNo)
+      const listTransNormal = listItem.filter(filtered => !filtered.deliveryOrderNo)
+      for (let key in listTransDelivery.filter(filtered => filtered.deliveryOrderNo)) {
+        const item = {
+          ...listTransDelivery[key]
+        }
+        const filteredExists = listTransGroup.filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+        if (filteredExists && filteredExists.length === 0) {
+          item.amountTransfer = listTransDelivery
+            .filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+            .reduce((prev, next) => prev + next.amount, 0)
+          listTransGroup.push(item)
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: listTransNormal.concat(listTransGroup)
+        }
+      })
+    },
+
+    * groupListTransfer (payload, { select, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: []
+        }
+      })
+      const listItem = yield select(({ transferInvoice }) => transferInvoice.listDetail)
       let listTransGroup = []
       const listTransDelivery = listItem.filter(filtered => filtered.deliveryOrderNo)
       const listTransNormal = listItem.filter(filtered => !filtered.deliveryOrderNo)

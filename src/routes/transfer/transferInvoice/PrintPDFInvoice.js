@@ -231,7 +231,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '30%', '10%', '19%', '35%'],
+    width: ['6%', '30%', '10%', '24%', '30%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
