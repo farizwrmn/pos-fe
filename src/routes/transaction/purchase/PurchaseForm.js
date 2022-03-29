@@ -85,6 +85,12 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
       const total = (x[key].qty * x[key].price)
       const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
       const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+      x[key].portion = totalPrice > 0 ? total / totalPrice : 0
+      if (data.deliveryFee && data.deliveryFee !== '' && data.deliveryFee > 0) {
+        x[key].deliveryFee = x[key].portion * data.deliveryFee
+      } else {
+        x[key].deliveryFee = 0
+      }
       x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
       x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
@@ -316,6 +322,16 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
                   <FormItem label="Due Date" hasFeedback {...formItemLayout}>
                     <Input disabled value={date} />
                   </FormItem>
+                  <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('deliveryFee', {
+                      initialValue: 0,
+                      rules: [{
+                        required: true,
+                        pattern: /^([0-9.-]{0,19})$/i,
+                        message: 'Required'
+                      }]
+                    })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
+                  </FormItem>
                 </Col>
               </Row>
             </Panel>
@@ -436,8 +452,13 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
           </FormItem>
         </Row>
         <Row>
+          <FormItem label="Delivery Fee" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={formatNumberIndonesia(parseFloat(getFieldValue('deliveryFee')))} />
+          </FormItem>
+        </Row>
+        <Row>
           <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={formatNumberIndonesia(parseFloat(nettoTotal))} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(nettoTotal) + parseFloat(getFieldValue('deliveryFee') !== '' && getFieldValue('deliveryFee') != null ? getFieldValue('deliveryFee') : 0))} />
           </FormItem>
         </Row>
       </div>

@@ -16,7 +16,7 @@ const Browse = ({
       title: 'Product',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '380px',
+      width: '300px',
       render: (text, record) => {
         return (
           <div>
@@ -35,10 +35,10 @@ const Browse = ({
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Discount',
+      title: 'Price',
       dataIndex: 'disc1',
       key: 'disc1',
-      width: '150px',
+      width: '140px',
       className: styles.alignRight,
       render: (text, record) => {
         return (
@@ -54,7 +54,7 @@ const Browse = ({
       title: 'TAX',
       dataIndex: 'dpp',
       key: 'dpp',
-      width: '150px',
+      width: '140px',
       className: styles.alignRight,
       render: (text, record) => {
         return (
@@ -66,13 +66,32 @@ const Browse = ({
       }
     },
     {
+      title: 'Delivery',
+      dataIndex: 'deliveryFee',
+      key: 'deliveryFee',
+      width: '140px',
+      className: styles.alignRight,
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>Portion: {(parseFloat(record.portion || 0).toFixed(2) || '-').toLocaleString()}</b></div>
+            <div><b>Delivery: {(Math.round(record.deliveryFee || 0) || '-').toLocaleString()}</b></div>
+          </div>
+        )
+      }
+    },
+    {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      width: '150px',
+      width: '140px',
       className: styles.alignRight,
       render: (text) => {
-        return <div><b>{(text || '-').toLocaleString()}</b></div>
+        return (
+          <div>
+            <div><b>Total: {(text || '-').toLocaleString()}</b></div>
+          </div>
+        )
       }
     }
   ]

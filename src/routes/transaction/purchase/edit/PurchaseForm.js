@@ -34,7 +34,7 @@ const formItemLayout1 = {
   wrapperCol: { span: 12 }
 }
 
-const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields }, ...purchaseProps }) => {
+const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields, getFieldValue }, ...purchaseProps }) => {
   const {
     onInvoiceHeader
   } = purchaseProps
@@ -75,6 +75,12 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
       const total = (x[key].qty * x[key].price)
       const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
       const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
+      x[key].portion = totalPrice > 0 ? total / totalPrice : 0
+      if (data.deliveryFee && data.deliveryFee !== '' && data.deliveryFee > 0) {
+        x[key].deliveryFee = x[key].portion * data.deliveryFee
+      } else {
+        x[key].deliveryFee = 0
+      }
       x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
       x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
@@ -298,6 +304,16 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   }]
                 })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
               </FormItem>
+              <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('deliveryFee', {
+                  initialValue: transNo.deliveryFee,
+                  rules: [{
+                    required: true,
+                    pattern: /^([0-9.-]{0,19})$/i,
+                    message: 'Required'
+                  }]
+                })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
+              </FormItem>
             </Col>
           </Row>
         </Col>
@@ -346,8 +362,13 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
           </FormItem>
         </Row>
         <Row>
+          <FormItem label="Delivery Fee" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
+            <Input disabled value={formatNumberIndonesia(parseFloat(getFieldValue('deliveryFee')))} />
+          </FormItem>
+        </Row>
+        <Row>
           <FormItem label="Netto Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
-            <Input disabled value={formatNumberIndonesia(nettoTotal)} />
+            <Input disabled value={formatNumberIndonesia(parseFloat(nettoTotal) + parseFloat(getFieldValue('deliveryFee') !== '' && getFieldValue('deliveryFee') != null ? getFieldValue('deliveryFee') : 0))} />
           </FormItem>
         </Row>
       </div>
