@@ -30,6 +30,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
           { text: formatNumberIndonesia(data.dpp), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.ppn), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.rounding), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(data.deliveryFee), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(data.netto), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -45,6 +46,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   let dppTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.dpp), 0)
   let ppnTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.ppn), 0)
   let roundingTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.rounding), 0)
+  let deliveryFeeTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.deliveryFee), 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const styles = {
@@ -152,6 +154,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PPN', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'ROUNDING', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DELIVERY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NETTO', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -174,6 +177,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { text: formatNumberIndonesia(dppTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(ppnTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(roundingTotal), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(deliveryFeeTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumberIndonesia(nettoTotal), alignment: 'right', fontSize: 12 }
     ]
   ]
@@ -181,7 +185,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['3%', '10%', '7%', '7%', '13%', '8%', '9%', '8%', '9%', '9%', '8%', '10%'],
+    width: ['3%', '10%', '7%', '7%', '10%', '8%', '8%', '8%', '8%', '8%', '8%', '8%', '8%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A3',
     pageOrientation: 'landscape',

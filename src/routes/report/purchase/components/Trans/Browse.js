@@ -53,6 +53,13 @@ const Browse = ({ ...browseProps }) => {
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
     },
     {
+      title: 'Delivery',
+      dataIndex: 'deliveryFee',
+      key: 'deliveryFee',
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text)}</p>
+    },
+    {
       title: 'Netto',
       dataIndex: 'netto',
       key: 'netto',

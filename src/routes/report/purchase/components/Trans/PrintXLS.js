@@ -12,6 +12,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   let dppTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.dpp), 0)
   let ppnTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.ppn), 0)
   let roundingTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.rounding), 0)
+  let deliveryFeeTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.deliveryFee), 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.netto), 0)
 
   const styles = {
@@ -75,6 +76,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
           { value: parseFloat(data.dpp), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: parseFloat(data.ppn), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: parseFloat(data.rounding), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: parseFloat(data.deliveryFee), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: parseFloat(data.netto), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
         ]
         body.push(row)
@@ -105,6 +107,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       { value: 'DPP', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'PPN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'ROUNDING', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'DELIVERY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
@@ -131,6 +134,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
       { value: dppTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: ppnTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: roundingTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: deliveryFeeTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: nettoTotal, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
   ]
