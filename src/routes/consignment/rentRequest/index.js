@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
-  const { consignmentId, list, pagination, modalType, currentItem, activeKey } = rentRequest
+  const { consignmentId, listBox, listOutlet, list, pagination, modalType, currentItem, activeKey } = rentRequest
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -90,6 +90,9 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
   const formProps = {
     modalType,
     item: currentItem,
+    dispatch,
+    listBox,
+    listOutlet,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({

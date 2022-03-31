@@ -10,6 +10,12 @@ const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
 const APISOCKET = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}`
 
+const APICONSIGNMENTPROTOCOL = production ? 'https' : 'http' // 'localhost'
+const APICONSIGNMENTHOST = production ? (process.env.API_ENDPOINT || 'consignment2.k3mart.id') : 'localhost' // 'localhost'
+const APICONSIGNMENTPORT = production ? 443 : 3120
+const APICONSIGNMENTVERSION = production ? '/api/v1' : ''
+const APICONSIGNMENTURL = `${APICONSIGNMENTPROTOCOL}://${APICONSIGNMENTHOST}:${APICONSIGNMENTPORT}${APICONSIGNMENTVERSION}`
+
 const IMAGEURL = true ? 'https://graph.k3mart.id/image' : 'http://localhost:3100'
 const APIIMAGECOMPANYPROTOCOL = true ? 'https' : 'http' // 'localhost'
 const APIIMAGECOMPANYHOST = true ? ('graph.k3mart.id') : 'localhost' // 'localhost'
@@ -37,6 +43,7 @@ module.exports = {
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,
     apiCompanyURI: APICOMPANYURL,
+    apiConsignmentURL: APICONSIGNMENTURL,
     apiUserCompany: `${APICOMPANYURL}/users/company`
   }
 }

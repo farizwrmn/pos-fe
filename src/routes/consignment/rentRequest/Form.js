@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, DatePicker, Checkbox, Button, Row, InputNumber, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -26,11 +26,14 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  dispatch,
   onSubmit,
   onCancel,
   modalType,
   button,
+  listBox = [],
   form: {
+    setFieldsValue,
     getFieldDecorator,
     validateFields,
     getFieldsValue,
@@ -65,9 +68,8 @@ const FormCounter = ({
       if (errors) {
         return
       }
-      const data = {
-        ...getFieldsValue()
-      }
+      const data = getFieldsValue()
+      console.log('data', data)
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -78,35 +80,133 @@ const FormCounter = ({
     })
   }
 
+  const setPrice = (event, code) => {
+    const data = getFieldsValue()
+    const finalList = listBox.map((item) => {
+      if (item.box_code === code) {
+        item.selected = event.target.checked
+        return item
+      }
+      return item
+    })
+    dispatch({
+      type: 'rentRequest/updateState',
+      payload: {
+        listBox: finalList
+      }
+    })
+    const subtotal = finalList.filter(filtered => filtered.selected).reduce((prev, next) => prev + (next.price || 0), 0)
+    setFieldsValue({
+      price: subtotal,
+      finalPrice: subtotal - (data.discount || 0)
+    })
+  }
+
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Vendor" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('vendorId', {
+              initialValue: item.vendorId,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input autoFocus />)}
+          </FormItem>
+          <FormItem label="Start Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('startDate', {
+              initialValue: item.startDate,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<DatePicker />)}
+          </FormItem>
+          <FormItem label="Period" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('period', {
+              initialValue: item.period,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber
+
+              min={0}
+              max={100}
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem label="Price" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('price', {
+              initialValue: item.price,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              min={0}
+              max={9999999999}
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem label="Discount" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discount', {
+              initialValue: item.discount,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              min={0}
+              max={9999999999}
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem label="Final Price" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('finalPrice', {
+              initialValue: item.finalPrice,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber
+              disabled
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              min={0}
+              max={9999999999}
+              style={{ width: '100%' }}
+            />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
+        </Col>
+        <Col {...column}>
+          <Row>
+            {listBox.map((item) => {
+              return (
+                <Col span={4}>
+                  <FormItem {...formItemLayout}>
+                    {getFieldDecorator(`box['${item.box_code}']`, {
+                      initialValue: Boolean(item.selected),
+                      valuePropName: 'checked'
+                    })(<Checkbox onChange={event => setPrice(event, item.box_code)}>{`${item.box_code}\n${(item.price || '').toLocaleString()}`}</Checkbox>)}
+                  </FormItem>
+                </Col>
+              )
+            })}
+          </Row>
         </Col>
       </Row>
     </Form>

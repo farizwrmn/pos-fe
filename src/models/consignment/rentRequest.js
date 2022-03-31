@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/consignment/rentRequest'
+import { query, queryBox, add, edit, remove } from 'services/consignment/rentRequest'
 import { getConsignmentId } from 'utils/lstorage'
 import { pageModel } from '../common'
 
@@ -15,6 +15,9 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     modalType: 'add',
+    rentRequest: [],
+    listBox: [],
+    listOutlet: [],
     consignmentId: getConsignmentId(),
     activeKey: '0',
     list: [],
@@ -37,25 +40,70 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            dispatch({ type: 'query', payload: other })
+          } else {
+            dispatch({ type: 'queryBox', payload: other })
+          }
         }
       })
     }
   },
 
   effects: {
+    * queryBox ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listBox: [],
+          listOutlet: []
+        }
+      })
+      const consignmentId = getConsignmentId()
+      if (consignmentId) {
+        payload.outlet_id = consignmentId
+        const data = yield call(queryBox, payload)
+        if (data.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listBox: data.listBox,
+              listOutlet: data.listOutlet
+            }
+          })
+        } else {
+          throw data
+        }
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data.success) {
+      const consignmentId = getConsignmentId()
+      if (consignmentId) {
+        payload.outlet_id = consignmentId
+        const data = yield call(query, payload)
+        if (data.success) {
+          yield put({
+            type: 'querySuccess',
+            payload: {
+              list: data.data,
+              pagination: {
+                current: Number(data.page) || 1,
+                pageSize: Number(data.pageSize) || 10,
+                total: data.total
+              }
+            }
+          })
+        }
+      } else {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: [],
             pagination: {
-              current: Number(data.page) || 1,
-              pageSize: Number(data.pageSize) || 10,
-              total: data.total
+              current: 1,
+              pageSize: 10,
+              total: 0
             }
           }
         })
