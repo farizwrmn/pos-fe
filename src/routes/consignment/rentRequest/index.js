@@ -99,7 +99,7 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `rentRequest/${modalType}`,
+        type: 'rentRequest/add',
         payload: {
           data,
           reset

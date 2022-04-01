@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Select, Spin, DatePicker, Checkbox, Button, Row, InputNumber, Col, Modal, message } from 'antd'
 import moment from 'moment'
 import { getVATPercentage, getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import { getConsignmentId } from 'utils/lstorage'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -42,6 +43,7 @@ const FormCounter = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields
   }
 }) => {
@@ -79,53 +81,49 @@ const FormCounter = ({
         return
       }
       data.vendorId = data.vendorId && data.vendorId.key ? data.vendorId.key : null
-      console.log('data', data)
+      data.startDate = data.startDate ? moment(data.vendorId).format('YYYY-MM-DD') : null
+
+      let selectedBox = []
+
+      for (let key in data.box) {
+        const item = data.box[key]
+        if (item) {
+          selectedBox.push(parseFloat(key))
+        }
+      }
+
+      if (selectedBox && selectedBox.length === 0) {
+        message.error('Select at least 1 box')
+        return
+      }
+
+      const requestParams = {
+        header: {
+          outlet_id: getConsignmentId(),
+          DPP: parseFloat(parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppExclude() : 1)).toFixed(2)),
+          PPN: parseFloat(parseFloat(getFieldValue('taxType') === 'I' ? (((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / getDenominatorPPNInclude() : getFieldValue('taxType') === 'S' ? ((getFieldValue('DPP') || 0) * getDenominatorPPNExclude()) : 0).toFixed(2)),
+          discount: data.discount,
+          final_price: (((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) * (getFieldValue('taxType') === 'S' ? (1 + getDenominatorPPNExclude()) : 1),
+          period: data.period,
+          price: data.price,
+          start_date: data.startDate,
+          taxType: data.taxType,
+          vendor_id: data.vendorId
+        },
+        detail: selectedBox
+      }
+
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, resetFields)
+          onSubmit(requestParams, resetFields)
         },
         onCancel () { }
       })
     })
   }
 
-  const onChangeTaxType = (value) => {
-    const data = getFieldsValue()
-    const subtotal = (data.price || 0) - (data.discount || 0)
-    switch (value) {
-      case 'E':
-        setFieldsValue({
-          price: subtotal,
-          DPP: subtotal,
-          PPN: 0,
-          finalPrice: subtotal
-        })
-        break
-      case 'I':
-        setFieldsValue({
-          price: subtotal,
-          DPP: subtotal / getDenominatorDppExclude(),
-          PPN: subtotal / getDenominatorPPNInclude(),
-          finalPrice: subtotal
-        })
-        break
-      case 'S':
-        setFieldsValue({
-          price: subtotal,
-          DPP: subtotal,
-          PPN: subtotal * getDenominatorPPNExclude(),
-          finalPrice: subtotal + (subtotal * getDenominatorPPNExclude())
-        })
-        break
-
-      default:
-        break
-    }
-  }
-
   const setPrice = (event, code) => {
-    const data = getFieldsValue()
     const finalList = listBox.map((item) => {
       if (item.box_code === code) {
         item.selected = event.target.checked
@@ -139,33 +137,14 @@ const FormCounter = ({
         listBox: finalList
       }
     })
-    const subtotal = finalList.filter(filtered => filtered.selected).reduce((prev, next) => prev + (next.price || 0), 0)
+    const price = finalList
+      .filter(filtered => filtered.selected)
+      .reduce((prev, next) => prev + (next.price || 0), 0)
     setFieldsValue({
-      price: subtotal,
-      finalPrice: subtotal - (data.discount || 0)
+      price
     })
-    onChangeTaxType(data.taxType)
   }
 
-  const onChangePrice = (value) => {
-    const data = getFieldsValue()
-    setFieldsValue({
-      price: value,
-      finalPrice: value - (data.discount || 0)
-    })
-    onChangeTaxType(data.taxType)
-  }
-
-  const onChangeDiscount = (value) => {
-    const data = getFieldsValue()
-    const subtotal = (data.price || 0)
-    setFieldsValue({
-      price: subtotal,
-      discount: value,
-      finalPrice: subtotal - (value || 0)
-    })
-    onChangeTaxType(data.taxType)
-  }
 
   const disabledDate = (current) => {
     return current < moment(new Date()).add(-1, 'days').endOf('day')
@@ -220,7 +199,6 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
-
               min={1}
               max={100}
               style={{ width: '100%' }}
@@ -235,7 +213,6 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
-              onChange={onChangePrice}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -250,7 +227,6 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
-              onChange={onChangeDiscount}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -263,63 +239,45 @@ const FormCounter = ({
                 required: true,
                 message: 'Required'
               }]
-            })(<Select onChange={value => onChangeTaxType(value)}>
+            })(<Select>
               <Option value="I">Include</Option>
               <Option value="E">Exclude (0%)</Option>
               <Option value="S">Exclude ({getVATPercentage()}%)</Option>
             </Select>)}
           </FormItem>
           <FormItem label="DPP" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('DPP', {
-              initialValue: 0,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<InputNumber
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            <InputNumber
+              value={parseFloat(parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppExclude() : 1)).toFixed(2))}
+              formatter={value => `${value}`.toLocaleString()}
               disabled
               min={0}
               max={9999999999}
               style={{ width: '100%', color: 'black' }}
-            />)}
+            />
           </FormItem>
           <FormItem label="PPN" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('PPN', {
-              initialValue: 0,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<InputNumber
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            <InputNumber
+              value={parseFloat(parseFloat(getFieldValue('taxType') === 'I' ? (((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / getDenominatorPPNInclude() : getFieldValue('taxType') === 'S' ? ((getFieldValue('DPP') || 0) * getDenominatorPPNExclude()) : 0).toFixed(2))}
+              formatter={value => `${value}`.toLocaleString()}
               disabled
               min={0}
               max={9999999999}
               style={{ width: '100%', color: 'black' }}
-            />)}
+            />
           </FormItem>
           <FormItem label="Final Price" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('finalPrice', {
-              initialValue: 0,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<InputNumber
+            <InputNumber
+              value={(((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) * (getFieldValue('taxType') === 'S' ? (1 + getDenominatorPPNExclude()) : 1)}
               disabled
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              formatter={value => `${value}`.toLocaleString()}
               min={0}
               max={9999999999}
               style={{ width: '100%', color: 'black' }}
-            />)}
+            />
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" disable={loading.effects['rentRequest/add']} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
         <Col {...column}>
@@ -328,10 +286,10 @@ const FormCounter = ({
               return (
                 <Col span={4}>
                   <FormItem {...formItemLayout}>
-                    {getFieldDecorator(`box['${item.box_code}']`, {
+                    {getFieldDecorator(`box[${item.id}]`, {
                       initialValue: Boolean(item.selected),
                       valuePropName: 'checked'
-                    })(<Checkbox onChange={event => setPrice(event, item.box_code)}>
+                    })(<Checkbox disabled={item.disabled} style={{ color: item.disabled ? 'grey' : (item.selected ? 'green' : 'black') }} onChange={event => setPrice(event, item.box_code)}>
                       {item.box_code}
                       <div>{(item.price || '').toLocaleString()}</div>
                     </Checkbox>)}

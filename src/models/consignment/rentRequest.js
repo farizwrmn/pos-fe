@@ -198,13 +198,14 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
           }
-        })
+        }))
+      } else {
         throw data
       }
     },
