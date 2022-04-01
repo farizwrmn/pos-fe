@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
-  const { consignmentId, listBox, listOutlet, list, pagination, modalType, currentItem, activeKey } = rentRequest
+  const { consignmentId, listBox, listVendor, listOutlet, list, pagination, modalType, currentItem, activeKey } = rentRequest
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -87,12 +87,15 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
     })
   }
 
+  let timeout
   const formProps = {
     modalType,
+    loading,
     item: currentItem,
     dispatch,
     listBox,
     listOutlet,
+    listVendor,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
@@ -102,6 +105,30 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
           reset
         }
       })
+    },
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: 'rentRequest/queryVendor',
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: 'rentRequest/queryVendor',
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
     },
     onCancel () {
       const { pathname } = location

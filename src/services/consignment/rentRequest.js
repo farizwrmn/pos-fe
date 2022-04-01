@@ -21,6 +21,16 @@ export async function query (params) {
   })
 }
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/rent-request/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

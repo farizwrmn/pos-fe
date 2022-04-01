@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, DatePicker, Checkbox, Button, Row, InputNumber, Col, Modal } from 'antd'
+import { Form, Select, Spin, DatePicker, Checkbox, Button, Row, InputNumber, Col, Modal, message } from 'antd'
+import moment from 'moment'
+import { getVATPercentage, getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -25,11 +28,13 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
   dispatch,
   onSubmit,
   onCancel,
   modalType,
+  loading,
+  listVendor,
+  showLov,
   button,
   listBox = [],
   form: {
@@ -69,6 +74,11 @@ const FormCounter = ({
         return
       }
       const data = getFieldsValue()
+      if (data.finalPrice <= 0) {
+        message.warning('Final price is invalid')
+        return
+      }
+      data.vendorId = data.vendorId && data.vendorId.key ? data.vendorId.key : null
       console.log('data', data)
       Modal.confirm({
         title: 'Do you want to save this item?',
@@ -78,6 +88,40 @@ const FormCounter = ({
         onCancel () { }
       })
     })
+  }
+
+  const onChangeTaxType = (value) => {
+    const data = getFieldsValue()
+    const subtotal = (data.price || 0) - (data.discount || 0)
+    switch (value) {
+      case 'E':
+        setFieldsValue({
+          price: subtotal,
+          DPP: subtotal,
+          PPN: 0,
+          finalPrice: subtotal
+        })
+        break
+      case 'I':
+        setFieldsValue({
+          price: subtotal,
+          DPP: subtotal / getDenominatorDppExclude(),
+          PPN: subtotal / getDenominatorPPNInclude(),
+          finalPrice: subtotal
+        })
+        break
+      case 'S':
+        setFieldsValue({
+          price: subtotal,
+          DPP: subtotal,
+          PPN: subtotal * getDenominatorPPNExclude(),
+          finalPrice: subtotal + (subtotal * getDenominatorPPNExclude())
+        })
+        break
+
+      default:
+        break
+    }
   }
 
   const setPrice = (event, code) => {
@@ -100,7 +144,35 @@ const FormCounter = ({
       price: subtotal,
       finalPrice: subtotal - (data.discount || 0)
     })
+    onChangeTaxType(data.taxType)
   }
+
+  const onChangePrice = (value) => {
+    const data = getFieldsValue()
+    setFieldsValue({
+      price: value,
+      finalPrice: value - (data.discount || 0)
+    })
+    onChangeTaxType(data.taxType)
+  }
+
+  const onChangeDiscount = (value) => {
+    const data = getFieldsValue()
+    const subtotal = (data.price || 0)
+    setFieldsValue({
+      price: subtotal,
+      discount: value,
+      finalPrice: subtotal - (value || 0)
+    })
+    onChangeTaxType(data.taxType)
+  }
+
+  const disabledDate = (current) => {
+    return current < moment(new Date()).add(-1, 'days').endOf('day')
+  }
+
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const optionSelect = (listVendor || []).length > 0 ? listVendor.map(c => <Option value={c.id} key={c.id} title={`${c.name} (${c.vendor_code})`}>{`${c.name} (${c.vendor_code})`}</Option>) : []
 
   return (
     <Form layout="horizontal">
@@ -108,27 +180,40 @@ const FormCounter = ({
         <Col {...column}>
           <FormItem label="Vendor" hasFeedback {...formItemLayout}>
             {getFieldDecorator('vendorId', {
-              initialValue: item.vendorId,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input autoFocus />)}
+            })(<Select
+              style={{ width: '250px' }}
+              placeholder="Select Vendor"
+
+              showSearch
+
+              notFoundContent={loading.effects['rentRequest/queryVendor'] ? <Spin size="small" /> : null}
+              onSearch={value => showLov('rentRequest', { q: value })}
+              labelInValue
+              filterOption={filterOption}
+            >
+              {optionSelect}
+            </Select>)}
           </FormItem>
           <FormItem label="Start Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('startDate', {
-              initialValue: item.startDate,
+              initialValue: moment(),
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<DatePicker />)}
+            })(<DatePicker
+              disabledDate={disabledDate}
+            />)}
           </FormItem>
           <FormItem label="Period" hasFeedback {...formItemLayout}>
             {getFieldDecorator('period', {
-              initialValue: item.period,
+              initialValue: 1,
               rules: [
                 {
                   required: true
@@ -136,21 +221,21 @@ const FormCounter = ({
               ]
             })(<InputNumber
 
-              min={0}
+              min={1}
               max={100}
               style={{ width: '100%' }}
             />)}
           </FormItem>
           <FormItem label="Price" hasFeedback {...formItemLayout}>
             {getFieldDecorator('price', {
-              initialValue: item.price,
+              initialValue: 0,
               rules: [
                 {
                   required: true
                 }
               ]
             })(<InputNumber
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              onChange={onChangePrice}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -158,7 +243,35 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Discount" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discount', {
-              initialValue: item.discount,
+              initialValue: 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber
+              onChange={onChangeDiscount}
+              min={0}
+              max={9999999999}
+              style={{ width: '100%' }}
+            />)}
+          </FormItem>
+          <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxType', {
+              initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select onChange={value => onChangeTaxType(value)}>
+              <Option value="I">Include</Option>
+              <Option value="E">Exclude (0%)</Option>
+              <Option value="S">Exclude ({getVATPercentage()}%)</Option>
+            </Select>)}
+          </FormItem>
+          <FormItem label="DPP" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('DPP', {
+              initialValue: 0,
               rules: [
                 {
                   required: true
@@ -166,14 +279,31 @@ const FormCounter = ({
               ]
             })(<InputNumber
               formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              disabled
               min={0}
               max={9999999999}
-              style={{ width: '100%' }}
+              style={{ width: '100%', color: 'black' }}
+            />)}
+          </FormItem>
+          <FormItem label="PPN" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('PPN', {
+              initialValue: 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              disabled
+              min={0}
+              max={9999999999}
+              style={{ width: '100%', color: 'black' }}
             />)}
           </FormItem>
           <FormItem label="Final Price" hasFeedback {...formItemLayout}>
             {getFieldDecorator('finalPrice', {
-              initialValue: item.finalPrice,
+              initialValue: 0,
               rules: [
                 {
                   required: true
@@ -184,7 +314,7 @@ const FormCounter = ({
               formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               min={0}
               max={9999999999}
-              style={{ width: '100%' }}
+              style={{ width: '100%', color: 'black' }}
             />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
@@ -201,7 +331,10 @@ const FormCounter = ({
                     {getFieldDecorator(`box['${item.box_code}']`, {
                       initialValue: Boolean(item.selected),
                       valuePropName: 'checked'
-                    })(<Checkbox onChange={event => setPrice(event, item.box_code)}>{`${item.box_code}\n${(item.price || '').toLocaleString()}`}</Checkbox>)}
+                    })(<Checkbox onChange={event => setPrice(event, item.box_code)}>
+                      {item.box_code}
+                      <div>{(item.price || '').toLocaleString()}</div>
+                    </Checkbox>)}
                   </FormItem>
                 </Col>
               )

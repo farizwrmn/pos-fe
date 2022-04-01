@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryBox, add, edit, remove } from 'services/consignment/rentRequest'
+import { query, queryBox, queryById, add, edit, remove } from 'services/consignment/rentRequest'
+import { query as queryVendor } from 'services/consignment/vendor'
 import { getConsignmentId } from 'utils/lstorage'
+import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -13,11 +15,13 @@ export default modelExtend(pageModel, {
   namespace: 'rentRequest',
 
   state: {
+    data: {},
     currentItem: {},
     modalType: 'add',
     rentRequest: [],
     listBox: [],
     listOutlet: [],
+    listVendor: [],
     consignmentId: getConsignmentId(),
     activeKey: '0',
     list: [],
@@ -33,6 +37,15 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/integration/consignment/rent-request/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1])
+            }
+          })
+        }
         if (pathname === '/integration/consignment/rent-request') {
           dispatch({
             type: 'updateState',
@@ -41,7 +54,13 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query', payload: other })
+            dispatch({
+              type: 'query',
+              payload: {
+                status: 'pending',
+                ...other
+              }
+            })
           } else {
             dispatch({ type: 'queryBox', payload: other })
           }
@@ -51,6 +70,26 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          data: {}
+        }
+      })
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * queryBox ({ payload = {} }, { call, put }) {
       yield put({
         type: 'updateState',
@@ -77,11 +116,34 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryVendor ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listVendor: []
+        }
+      })
+      const data = yield call(queryVendor, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listVendor: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
       if (consignmentId) {
         payload.outlet_id = consignmentId
-        const data = yield call(query, payload)
+        const data = yield call(query, {
+          ...payload,
+          order: '-id'
+        })
         if (data.success) {
           yield put({
             type: 'querySuccess',

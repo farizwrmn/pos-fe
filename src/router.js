@@ -1194,6 +1194,14 @@ const Routers = function ({ history, app }) {
             }, 'consignment/rent/rent-request')
           }
         }, {
+          path: 'integration/consignment/rent-request/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/rentRequest'))
+              cb(null, require('./routes/consignment/rentRequest/detail'))
+            }, 'consignment/rent/rent-request-detail')
+          }
+        }, {
           path: 'cash-entry/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
