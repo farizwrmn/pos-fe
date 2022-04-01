@@ -7,10 +7,13 @@ import {
   Col,
   Tag,
   Button,
-  Spin
+  Spin,
+  Modal
 } from 'antd'
 import moment from 'moment'
 import styles from './index.less'
+import ModalApprove from './ModalApprove'
+import ModalCancel from './ModalCancel'
 
 const getTag = (record) => {
   let status = <Tag color="grey">{record.status.toUpperCase()}</Tag>
@@ -35,8 +38,12 @@ const getTag = (record) => {
 }
 
 
-const Detail = ({ rentRequest, dispatch }) => {
-  const { data } = rentRequest
+const Detail = ({ loading, rentRequest, dispatch }) => {
+  const {
+    data,
+    modalCancelVisible,
+    modalApproveVisible
+  } = rentRequest
 
   const BackToList = () => {
     dispatch(routerRedux.push('/integration/consignment/rent-request?activeKey=1'))
@@ -46,12 +53,100 @@ const Detail = ({ rentRequest, dispatch }) => {
     return <Spin size="large" />
   }
 
+  const modalCancelProps = {
+    loading,
+    data,
+    item: data[0],
+    visible: modalCancelVisible,
+    onOk (data) {
+      Modal.confirm({
+        title: 'Are you sure void this request?',
+        onOk () {
+          dispatch({
+            type: 'rentRequest/voidRequest',
+            payload: {
+              data
+            }
+          })
+        },
+        onCancel () {
+          console.log('no')
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'rentRequest/updateState',
+        payload: {
+          modalCancelVisible: false
+        }
+      })
+    }
+  }
+
+  const modalApproveProps = {
+    loading,
+    data,
+    item: data[0],
+    visible: modalApproveVisible,
+    onOk (data) {
+      Modal.confirm({
+        title: 'Are you sure approve this request?',
+        onOk () {
+          dispatch({
+            type: 'rentRequest/updateState',
+            payload: {
+              modalApproveVisible: false
+            }
+          })
+          dispatch({
+            type: 'rentRequest/approveRequest',
+            payload: {
+              data
+            }
+          })
+        },
+        onCancel () {
+          console.log('no')
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'rentRequest/updateState',
+        payload: {
+          modalApproveVisible: false
+        }
+      })
+    }
+  }
+
+  const voidTrans = () => {
+    dispatch({
+      type: 'rentRequest/updateState',
+      payload: {
+        modalCancelVisible: true
+      }
+    })
+  }
+
+  const approveTrans = () => {
+    dispatch({
+      type: 'rentRequest/updateState',
+      payload: {
+        modalApproveVisible: true
+      }
+    })
+  }
+
   return (<div className="wrapper">
     <Row>
-      <Col lg={6}>
+      <Col lg={12}>
         <div className="content-inner-zero-min-height">
           <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
           <h1>Detail Info</h1>
+          <Button type="primary" icon="check" loading={loading.effects['rentRequest/approveRequest'] || loading.effects['rentRequest/queryDetail']} disabled={data && data.status !== 'pending'} onClick={() => approveTrans()}>Approve</Button>
+          <Button type="danger" style={{ marginLeft: '20px' }} icon="delete" loading={loading.effects['rentRequest/voidRequest'] || loading.effects['rentRequest/queryDetail']} disabled={data && data.status !== 'pending'} onClick={() => voidTrans()}>Void</Button>
           <div className={styles.content}>
             <Row>
               <Col span={12}><strong>ID Permintaan Sewa</strong></Col>
@@ -112,13 +207,16 @@ const Detail = ({ rentRequest, dispatch }) => {
           </div>
         </div>
       </Col>
-      <Col lg={18} />
+      <Col lg={10} />
     </Row>
+    {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
+    {modalApproveVisible && <ModalApprove {...modalApproveProps} />}
   </div>)
 }
 
 Detail.propTypes = {
-  rentRequest: PropTypes.object
+  rentRequest: PropTypes.object,
+  loading: PropTypes.object
 }
 
-export default connect(({ app, rentRequest }) => ({ app, rentRequest }))(Detail)
+export default connect(({ app, loading, rentRequest }) => ({ app, loading, rentRequest }))(Detail)
