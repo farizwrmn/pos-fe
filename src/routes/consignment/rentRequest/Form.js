@@ -81,7 +81,7 @@ const FormCounter = ({
         return
       }
       data.vendorId = data.vendorId && data.vendorId.key ? data.vendorId.key : null
-      data.startDate = data.startDate ? moment(data.vendorId).format('YYYY-MM-DD') : null
+      data.startDate = data.startDate ? moment(data.startDate).format('YYYY-MM-DD') : null
 
       let selectedBox = []
 
@@ -96,6 +96,8 @@ const FormCounter = ({
         message.error('Select at least 1 box')
         return
       }
+
+      console.log('data', data)
 
       const requestParams = {
         header: {

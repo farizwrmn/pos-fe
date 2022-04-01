@@ -175,7 +175,12 @@ export default modelExtend(pageModel, {
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
-        yield put({ type: 'query' })
+        yield put({
+          type: 'query',
+          payload: {
+            status: 'pending'
+          }
+        })
       } else {
         throw data
       }
@@ -193,7 +198,10 @@ export default modelExtend(pageModel, {
           }
         })
         yield put({
-          type: 'query'
+          type: 'query',
+          payload: {
+            status: 'pending'
+          }
         })
         if (payload.reset) {
           payload.reset()
@@ -231,7 +239,12 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({ type: 'query' })
+        yield put({
+          type: 'query',
+          payload: {
+            status: 'pending'
+          }
+        })
         if (payload.reset) {
           payload.reset()
         }

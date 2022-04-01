@@ -36,7 +36,7 @@ const List = (props) => {
               </Link>
             </div>
             <div>{status}</div>
-            <div>IDR {record.price.toLocaleString()}</div>
+            <div>IDR {(record.price || '-').toLocaleString()}</div>
           </div>
         )
       }
