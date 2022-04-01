@@ -79,7 +79,15 @@ const Detail = ({ rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Diskon</Col>
-              <Col span={12}>IDR {(data.discount || '').toLocaleString()}</Col>
+              <Col span={12}>IDR {(data.discount || '0').toLocaleString()}</Col>
+            </Row>
+            <Row>
+              <Col span={12}>DPP</Col>
+              <Col span={12}>IDR {(data.DPP || '0').toLocaleString()}</Col>
+            </Row>
+            <Row>
+              <Col span={12}>PPN</Col>
+              <Col span={12}>IDR {(data.PPN || '0').toLocaleString()}</Col>
             </Row>
             <Row>
               <Col span={12}>Harga Final</Col>
