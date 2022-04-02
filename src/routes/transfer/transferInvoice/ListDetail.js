@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
 const Browse = ({
-  handleModalShowList, modalType, listItem, ...purchaseProps }) => {
+  handleModalShowList, listTransGroup, modalType, listItem, ...purchaseProps }) => {
   let columns = [
     {
       title: 'No',
@@ -14,7 +14,13 @@ const Browse = ({
     {
       title: 'Trans No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => {
+        if (record.deliveryOrderNo) {
+          return `Delivery Order: ${record.deliveryOrderNo}`
+        }
+        return text
+      }
     },
     {
       title: 'Employee',
@@ -23,8 +29,8 @@ const Browse = ({
     },
     {
       title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+      dataIndex: 'amountTransfer',
+      key: 'amountTransfer',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
@@ -48,7 +54,7 @@ const Browse = ({
       key: 'total',
       className: styles.alignRight,
       render: (text, item) => {
-        const total = (item.amount * (1 + (item.chargePercent / 100))) + item.chargeNominal
+        const total = (item.amountTransfer * (1 + (item.chargePercent / 100))) + item.chargeNominal
         return (total || '-').toLocaleString()
       }
     },
@@ -73,7 +79,13 @@ const Browse = ({
       {
         title: 'Trans No',
         dataIndex: 'transferOut.transNo',
-        key: 'transferOut.transNo'
+        key: 'transferOut.transNo',
+        render: (text, record) => {
+          if (record.deliveryOrderNo) {
+            return `Delivery Order: ${record.deliveryOrderNo}`
+          }
+          return text
+        }
       },
       {
         title: 'Employee',
@@ -82,8 +94,8 @@ const Browse = ({
       },
       {
         title: 'Amount',
-        dataIndex: 'amount',
-        key: 'amount',
+        dataIndex: 'amountTransfer',
+        key: 'amountTransfer',
         className: styles.alignRight,
         render: text => (text || '-').toLocaleString()
       },
@@ -107,7 +119,7 @@ const Browse = ({
         key: 'total',
         className: styles.alignRight,
         render: (text, item) => {
-          const total = (item.amount * (1 + (item.chargePercent / 100))) + item.chargeNominal
+          const total = (item.amountTransfer * (1 + (item.chargePercent / 100))) + item.chargeNominal
           return (total || '-').toLocaleString()
         }
       },
@@ -135,7 +147,7 @@ const Browse = ({
       onRowClick={_record => hdlModalShow(_record)}
       footer={() => (
         <div>
-          <div>Total : {listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0).toLocaleString()}</div>
+          <div>Total : {listTransGroup.reduce((cnt, item) => cnt + (parseFloat(item.amountTransfer) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0).toLocaleString()}</div>
         </div>)
       }
     />

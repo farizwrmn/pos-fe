@@ -1,4 +1,5 @@
 import React from 'react'
+import lodash from 'lodash'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
@@ -14,8 +15,9 @@ import styles from './index.less'
 
 const { checkPermissionMonthTransaction } = alertModal
 
-const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
+const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, app }) => {
   const { data, listAccounting, listDetail, disableConfirm, showPrint, modalCancelVisible, currentItem, modalEditVisible } = transferOutDetail
+  const { deliveryOrderNo } = location.query
   const { listProducts } = transferOut
   const { user, storeInfo } = app
   const content = []
@@ -60,12 +62,12 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
     })
     // dispatch(routerRedux.push('/inventory/transfer/in'))
   }
-
   const postTrans = () => {
     dispatch({
       type: 'transferOutDetail/postTrans',
       payload: {
         data: {
+          deliveryOrderNo,
           id: data[0].id,
           transNo: data[0].transNo,
           storeId: data[0].storeId
@@ -79,8 +81,8 @@ const Detail = ({ transferOut, transferOutDetail, dispatch, loading, app }) => {
       type: 'transferOutDetail/editTrans',
       payload: {
         data: {
-          id: data[0].id,
-          transNo: data[0].transNo,
+          deliveryOrderNo,
+          transNo: deliveryOrderNo ? lodash.uniq(listDetail.map(item => item.transNo)) : data[0].transNo,
           storeId: data[0].storeId
         }
       }

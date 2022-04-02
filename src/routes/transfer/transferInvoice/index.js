@@ -16,8 +16,8 @@ const TabPane = Tabs.TabPane
 const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut, loading, dispatch, location, app }) => {
   const { query, pathname } = location
   const { listAllStores } = userStore
-  const { list, listStore, listItem, listLovVisible, modalPaymentVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
-  const { listTrans: listTransfer } = transferOut
+  const { listTransGroup, list, listStore, listItem, listLovVisible, modalPaymentVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
+  const { listTrans: listTransfer, listTransGroup: listTransferGroup } = transferOut
   const { listAccountCode } = accountCode
   const { user, storeInfo } = app
   const filterProps = {
@@ -193,39 +193,50 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
       const { listItem } = transferInvoice
       listItem[data.no - 1] = data
       dispatch({
-        type: 'transferInvoice/updateState',
+        type: 'transferInvoice/editModalItem',
         payload: {
-          modalVisible: false,
-          modalItemType: 'add',
-          listItem,
-          currentItemList: {}
+          listItem
         }
       })
       message.success('success edit item')
     },
-    deleteModalItem (no) {
+    deleteModalItem (id, deliveryOrderNo) {
       const { listItem } = transferInvoice
-      const newItemList = listItem
-        .filter(filtered => filtered.no !== no)
-        .map((item, index) => ({
-          ...item,
-          no: index + 1
-        }))
+      let newItemList = []
+      if (deliveryOrderNo) {
+        newItemList = listItem
+          .filter(filtered => filtered.deliveryOrderNo !== deliveryOrderNo)
+          .map((item, index) => ({
+            ...item,
+            no: index + 1
+          }))
+      } else {
+        newItemList = listItem
+          .filter(filtered => filtered.id !== id)
+          .map((item, index) => ({
+            ...item,
+            no: index + 1
+          }))
+      }
+
       dispatch({
-        type: 'transferInvoice/updateState',
+        type: 'transferInvoice/deleteModalItem',
         payload: {
-          modalVisible: false,
-          modalItemType: 'add',
-          listItem: newItemList,
-          currentItemList: {}
+          listItem: newItemList
         }
       })
       message.success('success delete item')
     }
   }
+
   const listDetailProps = {
-    dataSource: listItem,
-    modalType
+    listTransGroup,
+    dataSource: listTransGroup.map((item, index) => ({ ...item, no: index + 1 })),
+    listItem,
+    modalType,
+    loading: loading.effects['transferInvoice/addItem']
+      || loading.effects['transferInvoice/addItemNormal']
+      || loading.effects['transferInvoice/groupListItem']
   }
 
   const modalLovProps = {
@@ -245,26 +256,14 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
 
   const listLovProps = {
     modalProps: modalLovProps,
-    dataSource: listTransfer,
+    listTransfer,
+    dataSource: listTransferGroup,
     visible: listLovVisible,
     user,
     storeInfo,
     pagination: false,
     loading: loading.effects['transferOut/queryLov'],
     location,
-    // onChange (page) {
-    //   dispatch({
-    //     type: 'transferOut/query',
-    //     payload: {
-    //       page: page.current,
-    //       pageSize: page.pageSize,
-    //       listLovVisible: false,
-    //       storeId: lstorage.getCurrentUserStore(),
-    //       storeIdReceiver: currentItem.storeIdReceiver,
-    //       status: 1
-    //     }
-    //   })
-    // },
     changePeriod (storeIdReceiver) {
       dispatch({
         type: 'transferInvoice/updateState',
@@ -290,7 +289,12 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
       })
     },
     addModalItem (data) {
-      const filtered = listItem.filter(filtered => filtered.id === data.id)
+      let filtered = []
+      if (data && data.deliveryOrderNo) {
+        filtered = listItem.filter(filtered => filtered.deliveryOrderNo === data.deliveryOrderNo)
+      } else {
+        filtered = listItem.filter(filtered => filtered.id === data.id)
+      }
       if (filtered && filtered[0]) {
         message.warning('item already exists')
         return
@@ -335,8 +339,10 @@ const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut,
     modalVisible,
     modalProps,
     listDetailProps,
+    listTransGroup,
     listItem,
     item: currentItem,
+    loadingEffect: loading.effects,
     loading: loading.effects['transferInvoice/add'] || loading.effects['transferInvoice/edit'] || loading.effects['transferInvoice/setEdit'],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, detail, oldValue, reset) {

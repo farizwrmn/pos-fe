@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Button, Input, Form, InputNumber, Row, Col } from 'antd'
+import { getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import LatestPrice from './LatestPrice'
 
 const FormItem = Form.Item
@@ -70,11 +71,11 @@ class PurchaseList extends Component {
         data.dpp = TOTAL
         data.ppn = 0
       } else if (tax === 'I') {
-        data.dpp = TOTAL / 1.1
-        data.ppn = TOTAL * 0.1
+        data.dpp = TOTAL / getDenominatorDppExclude()
+        data.ppn = TOTAL * getDenominatorPPNInclude()
       } else if (tax === 'S') {
         data.dpp = TOTAL
-        data.ppn = TOTAL * 0.1
+        data.ppn = TOTAL * getDenominatorPPNExclude()
       }
       data.total = data.dpp + data.ppn
       onChangeTotalItem(data)

@@ -193,6 +193,7 @@ const removeAllKey = () => {
 
 // get value
 // role
+const getConsignmentId = () => { return getStorageKey('udi')[7] }
 const getListUserRoles = () => { return getStorageKey('uelor')[1] }
 const getCurrentUserRole = () => { return getStorageKey('udi')[2] }
 // company
@@ -312,5 +313,6 @@ module.exports = {
   setVoucherList,
   removeQrisImage,
   getShopeeRequireLogin,
-  setShopeeRequireLogin
+  setShopeeRequireLogin,
+  getConsignmentId
 }

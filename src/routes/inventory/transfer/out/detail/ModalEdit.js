@@ -24,6 +24,8 @@ const ModalEdit = ({
       }
       const record = {
         id: item ? item.id : '',
+        productId: item.productId,
+        deliveryOrderNo: data.length > 0 ? data[0].deliveryOrderNo : null,
         transNo: data.length > 0 ? data[0].transNo : '',
         storeId: data.length > 0 ? data[0].storeId : '',
         ...getFieldsValue()
