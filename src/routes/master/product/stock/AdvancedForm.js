@@ -5,7 +5,7 @@ import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox,
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
-import { getDistPriceName, getDistPriceDescription } from 'utils/string'
+import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
 
 const { apiCompanyURL } = rest
@@ -793,6 +793,22 @@ class AdvancedForm extends Component {
       }
     }
 
+    const onDistPrice = () => {
+      const sellPrice = getFieldValue('sellPrice')
+      if (sellPrice > 0) {
+        setFieldsValue({
+          distPrice01: (1 + (getDistPricePercent('distPrice01') / 100)) * sellPrice,
+          distPrice02: (1 + (getDistPricePercent('distPrice02') / 100)) * sellPrice,
+          distPrice03: (1 + (getDistPricePercent('distPrice03') / 100)) * sellPrice,
+          distPrice04: (1 + (getDistPricePercent('distPrice04') / 100)) * sellPrice,
+          distPrice05: (1 + (getDistPricePercent('distPrice05') / 100)) * sellPrice,
+          distPrice06: (1 + (getDistPricePercent('distPrice06') / 100)) * sellPrice,
+          distPrice07: (1 + (getDistPricePercent('distPrice07') / 100)) * sellPrice,
+          distPrice08: (1 + (getDistPricePercent('distPrice08') / 100)) * sellPrice
+        })
+      }
+    }
+
     return (
       <Form layout="horizontal">
         <FooterToolbar>
@@ -979,6 +995,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
+                <Button type="primary" size="small" onClick={() => onDistPrice()}>Auto Fill</Button>
                 <FormItem label={getDistPriceName('distPrice01')} help={getDistPriceDescription('distPrice01')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice01', {
                     initialValue: item.distPrice01,

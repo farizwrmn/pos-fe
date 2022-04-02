@@ -180,6 +180,18 @@ const formCustomerType = ({
             >{children}
             </Select>)}
           </FormItem>
+          <FormItem label="Price Add (%)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPricePercent', {
+              initialValue: item.distPricePercent,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9.][0-9.-]{0,3})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber min={0} max={999} style={{ width: '100%' }} />)}
+          </FormItem>
           <FormItem label="Show as Discount" {...formItemLayout}>
             {getFieldDecorator('showAsDiscount', {
               valuePropName: 'checked',

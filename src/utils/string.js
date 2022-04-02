@@ -75,6 +75,15 @@ const getDistPriceName = (fromStock) => {
   return fromStock
 }
 
+const getDistPricePercent = (fromStock) => {
+  const listPrice = lstorage.getPriceName()
+  const selectedDist = listPrice.filter(filtered => filtered.sellPrice === fromStock)
+  if (selectedDist && selectedDist[0]) {
+    return selectedDist[0].distPricePercent
+  }
+  return 1
+}
+
 const getDistPriceDescription = (fromStock) => {
   const listPrice = lstorage.getPriceName()
   const selectedDist = listPrice.filter(filtered => filtered.sellPrice === fromStock)
@@ -99,5 +108,6 @@ export {
   getLinkName,
   getDistPriceName,
   withoutFormat,
-  getDistPriceDescription
+  getDistPriceDescription,
+  getDistPricePercent
 }
