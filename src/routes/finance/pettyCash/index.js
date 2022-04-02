@@ -205,7 +205,6 @@ const PettyCash = ({ pettyCash, accountCode, userStore, loading, dispatch, locat
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
-      console.log('data', data, listItem)
       dispatch({
         type: 'pettyCash/add',
         payload: {
