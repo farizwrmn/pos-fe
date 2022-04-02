@@ -31,6 +31,21 @@ export async function uploadAdvertisingImage (params) {
   })
 }
 
+export async function uploadRentImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/rentpayment?folder=consignment`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
+
 export async function uploadBundleImage (params) {
   const apiHeaderToken = {
     'Content-Type': 'application/x-www-form-urlencoded',

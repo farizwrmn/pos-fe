@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Icon, Upload, message, Modal, Button } from 'antd'
-import { lstorage } from 'utils'
 import { rest } from 'utils/config.company'
 
 const { apiCompanyURL } = rest
@@ -19,19 +18,15 @@ const ModalApprove = ({
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...modalProps
 }) => {
-  let defaultRole = (lstorage.getStorageKey('udi')[3] || '')
   const handleOk = () => {
-    if (defaultRole === 'CSH') return
     validateFields((errors) => {
       if (errors) return
       const record = {
-        id: item ? item.id : '',
-        transNo: data ? data.transNo : '',
-        storeId: data ? data.storeId : '',
+        id: item ? item.id : null,
         ...getFieldsValue()
       }
       Modal.confirm({
-        title: `Void ${data.transNo}'s payment`,
+        title: 'Approve payment',
         content: 'Are you sure ?',
         onOk () {
           onOk(record)

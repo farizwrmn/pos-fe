@@ -59,3 +59,23 @@ export async function edit (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function approve (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/rent-request-approve/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function voidTrans (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/rent-request-void/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryBox, queryById, add, edit, remove } from 'services/consignment/rentRequest'
+import FormData from 'form-data'
+import { query, queryBox, queryById, add, edit, approve, voidTrans, remove } from 'services/consignment/rentRequest'
 import { query as queryVendor } from 'services/consignment/vendor'
+import { uploadRentImage } from 'services/utils/imageUploader'
 import { getConsignmentId } from 'utils/lstorage'
 import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
@@ -255,6 +257,97 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
+        throw data
+      }
+    },
+
+    * approveRequest ({ payload }, { call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.image
+        && payload.data.image.fileList
+        && payload.data.image.fileList.length > 0) {
+        for (let key in payload.data.image.fileList) {
+          const item = payload.data.image.fileList[key]
+          const formData = new FormData()
+          formData.append('file', item.originFileObj)
+          const responseUpload = yield call(uploadRentImage, formData)
+          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+            uploadedImage.push(responseUpload.data.filename)
+          }
+          break
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.image
+        && payload.data.image.fileList
+        && payload.data.image.fileList.length > 0
+        && payload.data.image.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.image = uploadedImage[0]
+      } else {
+        payload.data.image = 'no_image.png'
+      }
+      // End - Upload Image
+      const data = yield call(approve, payload.data)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
+        yield put({
+          type: 'query',
+          payload: {
+            status: 'pending'
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * voidRequest ({ payload }, { call, put }) {
+      const data = yield call(voidTrans, payload.data)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            activeKey: '1'
+          }
+        })
+        const { pathname } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            activeKey: '1'
+          }
+        }))
+        yield put({
+          type: 'query',
+          payload: {
+            status: 'pending'
+          }
+        })
+      } else {
         throw data
       }
     }

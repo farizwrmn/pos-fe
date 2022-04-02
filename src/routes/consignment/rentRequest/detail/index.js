@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { IMAGEURL } from 'utils/config.company'
 import {
   Row,
   Col,
@@ -13,7 +14,6 @@ import {
 import moment from 'moment'
 import styles from './index.less'
 import ModalApprove from './ModalApprove'
-import ModalCancel from './ModalCancel'
 
 const getTag = (record) => {
   let status = <Tag color="grey">{record.status.toUpperCase()}</Tag>
@@ -41,7 +41,6 @@ const getTag = (record) => {
 const Detail = ({ loading, rentRequest, dispatch }) => {
   const {
     data,
-    modalCancelVisible,
     modalApproveVisible
   } = rentRequest
 
@@ -53,61 +52,23 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
     return <Spin size="large" />
   }
 
-  const modalCancelProps = {
-    loading,
-    data,
-    item: data[0],
-    visible: modalCancelVisible,
-    onOk (data) {
-      Modal.confirm({
-        title: 'Are you sure void this request?',
-        onOk () {
-          dispatch({
-            type: 'rentRequest/voidRequest',
-            payload: {
-              data
-            }
-          })
-        },
-        onCancel () {
-          console.log('no')
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'rentRequest/updateState',
-        payload: {
-          modalCancelVisible: false
-        }
-      })
-    }
-  }
-
   const modalApproveProps = {
     loading,
     data,
-    item: data[0],
+    item: data,
     visible: modalApproveVisible,
-    onOk (data) {
-      Modal.confirm({
-        title: 'Are you sure approve this request?',
-        onOk () {
-          dispatch({
-            type: 'rentRequest/updateState',
-            payload: {
-              modalApproveVisible: false
-            }
-          })
-          dispatch({
-            type: 'rentRequest/approveRequest',
-            payload: {
-              data
-            }
-          })
-        },
-        onCancel () {
-          console.log('no')
+    onOk (data, reset) {
+      dispatch({
+        type: 'rentRequest/updateState',
+        payload: {
+          modalApproveVisible: false
+        }
+      })
+      dispatch({
+        type: 'rentRequest/approveRequest',
+        payload: {
+          data,
+          reset
         }
       })
     },
@@ -122,10 +83,20 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
   }
 
   const voidTrans = () => {
-    dispatch({
-      type: 'rentRequest/updateState',
-      payload: {
-        modalCancelVisible: true
+    Modal.confirm({
+      title: 'Void this request',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'rentRequest/voidRequest',
+          payload: {
+            data: {
+              id: data.id
+            }
+          }
+        })
+      },
+      onCancel () {
       }
     })
   }
@@ -204,12 +175,20 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
               <Col span={12}>Dipegang pada</Col>
               <Col span={12}>{moment(data.updated_at).format('DD-MMM-YYYY HH:mm')}</Col>
             </Row>
+            {data.payment_proof && (
+              <Row>
+                <Col span={12}>Bukti bayar</Col>
+                <Col span={12}>
+                  <img height="180px" src={`${IMAGEURL}/${data.payment_proof}`} alt="no_image" />
+                </Col>
+              </Row>
+            )}
           </div>
         </div>
       </Col>
       <Col lg={10} />
     </Row>
-    {modalCancelVisible && <ModalCancel {...modalCancelProps} />}
+    {/* {modalCancelVisible && <ModalCancel {...modalCancelProps} />} */}
     {modalApproveVisible && <ModalApprove {...modalApproveProps} />}
   </div>)
 }
