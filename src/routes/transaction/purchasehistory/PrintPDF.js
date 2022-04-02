@@ -29,6 +29,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
 
   // Declare Variable
   let productTotal = invoiceItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+  let deliveryFeeTotal = invoiceItem.reduce((cnt, o) => cnt + parseFloat(o.deliveryFee), 0)
   let subTotal = invoiceItem.reduce((cnt, o) => cnt + parseFloat(o.dpp), 0)
   let totalTax = invoiceItem.reduce((cnt, o) => cnt + parseFloat(o.ppn), 0)
   const styles = {
@@ -234,7 +235,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: '', border: [false] },
       { text: 'Sub Total', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
-      { text: subTotal.toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
+      { text: (subTotal || '').toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
       { text: 'Catatan', colSpan: 3 },
@@ -243,7 +244,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: '', border: [false] },
       { text: 'Pajak', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
-      { text: totalTax.toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
+      { text: (totalTax || '').toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
       { text: `1. Total Qty: ${productTotal}`, colSpan: 3, border: [true, false, true, false] },
@@ -252,16 +253,25 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: '', border: [false] },
       { text: 'Rounding', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
-      { text: (invoiceInfo.rounding).toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
+      { text: (invoiceInfo.rounding || '').toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
       { text: `2. Total pembayaran jatuh tempo dalam ${invoiceInfo.tempo ? invoiceInfo.tempo : 0} hari`, colSpan: 3, border: [true, false, true, true] },
       {},
       {},
       { text: '', border: [false] },
+      { text: 'Delivery', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
+      {},
+      { text: (deliveryFeeTotal || '').toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
+    ],
+    [
+      { text: '', border: [false] },
+      { text: '', border: [false] },
+      { text: '', border: [false] },
+      { text: '', border: [false] },
       { text: 'Total', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
-      { text: (subTotal + totalTax + invoiceInfo.rounding).toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
+      { text: (subTotal + totalTax + invoiceInfo.rounding + deliveryFeeTotal).toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ]
 
   ]

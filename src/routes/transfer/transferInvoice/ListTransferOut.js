@@ -10,7 +10,13 @@ const List = ({ addModalItem, modalProps, changePeriod, ...tableProps }) => {
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => {
+        if (record.deliveryOrderNo) {
+          return `Delivery Order: ${record.deliveryOrderNo}`
+        }
+        return text
+      }
     },
     {
       title: 'Store Name',

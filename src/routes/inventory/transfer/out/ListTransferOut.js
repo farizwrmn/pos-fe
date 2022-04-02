@@ -5,7 +5,7 @@ import moment from 'moment'
 import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 
-const ListTransfer = ({ ...tableProps, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
+const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
   const clickPrint = (record) => {
     const { transNo, storeIdReceiver } = record
     getProducts(transNo)
@@ -85,7 +85,12 @@ const ListTransfer = ({ ...tableProps, listTransOut, filter, sort, updateFilter,
       key: 'deliveryOrderNo',
       sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
       sortOrder: sort.columnKey === 'transNo' && sort.order,
-      render: text => <Link to={`/inventory/transfer/out?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
+      render: (text) => {
+        if (deliveryOrderNo === text) {
+          return <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
+        }
+        return <Link to={`/inventory/transfer/out?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
+      }
     },
     {
       title: 'Sender',

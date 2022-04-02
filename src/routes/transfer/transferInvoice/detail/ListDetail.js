@@ -30,8 +30,8 @@ const List = ({ ...tableProps, editList }) => {
     {
       title: 'Amount',
       width: 100,
-      dataIndex: 'amount',
-      key: 'amount',
+      dataIndex: 'amountTransfer',
+      key: 'amountTransfer',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
@@ -58,7 +58,7 @@ const List = ({ ...tableProps, editList }) => {
       key: 'total',
       className: styles.alignRight,
       render: (text, item) => {
-        const total = (item.amount * (1 + (item.chargePercent / 100))) + item.chargeNominal
+        const total = (item.amountTransfer * (1 + (item.chargePercent / 100))) + item.chargeNominal
         return (total || '-').toLocaleString()
       }
     },
@@ -81,7 +81,7 @@ const List = ({ ...tableProps, editList }) => {
         onRowClick={record => handleMenuClick(record)}
         footer={() => (
           <div>
-            <div>Total : {tableProps.dataSource ? tableProps.dataSource.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0).toLocaleString() : 0}</div>
+            <div>Total : {tableProps.dataSource ? tableProps.dataSource.reduce((cnt, item) => cnt + (parseFloat(item.amountTransfer) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0).toLocaleString() : 0}</div>
           </div>)
         }
       />

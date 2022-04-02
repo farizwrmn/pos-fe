@@ -13,7 +13,7 @@ import styles from './index.less'
 
 
 const Detail = ({ transferInvoice, dispatch }) => {
-  const { listDetail, data } = transferInvoice
+  const { listTransGroup, data } = transferInvoice
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -33,7 +33,7 @@ const Detail = ({ transferInvoice, dispatch }) => {
   }
 
   const formDetailProps = {
-    dataSource: listDetail
+    dataSource: listTransGroup
   }
 
   return (<div className="wrapper">

@@ -4,6 +4,7 @@ import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import moment from 'moment'
+import { getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from '../services/sequence'
 import {
   query,
@@ -160,12 +161,10 @@ export default modelExtend(pageModel, {
 
     * showProductQty ({ payload }, { call, put }) {
       let { data } = payload
-      console.log('data', data)
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const newData = data.map(x => x.id)
 
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
-      console.log('listProductData', listProductData)
       if (listProductData.success) {
         for (let n = 0; n < (listProductData.data || []).length; n += 1) {
           data = data.map((x) => {
@@ -180,7 +179,6 @@ export default modelExtend(pageModel, {
           })
         }
 
-        console.log('data', data)
         yield put({
           type: 'queryGetProductsSuccess',
           payload: {
@@ -262,8 +260,14 @@ export default modelExtend(pageModel, {
           const totalSellingPrice = (x[key].qty * x[key].price)
           const discItem = ((totalSellingPrice * discPercentItem) - discNominalItem) * discPercentInvoice
           const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? 1.1 : 1))
-          x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / 11 : ppnType === 'S' ? (x[key].dpp * 0.1) : 0))
+          x[key].portion = totalPrice > 0 ? total / totalPrice : 0
+          if (data.deliveryFee && data.deliveryFee !== '' && data.deliveryFee > 0) {
+            x[key].deliveryFee = x[key].portion * data.deliveryFee
+          } else {
+            x[key].deliveryFee = 0
+          }
+          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
+          x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
           x[key].total = x[key].dpp + x[key].ppn
         }
         localStorage.setItem('product_detail', JSON.stringify(x))
@@ -289,6 +293,7 @@ export default modelExtend(pageModel, {
       if ((purchase_detail || []).length !== 0) {
         let arrayProd = []
         for (let n = 0; n < purchase_detail.length; n += 1) {
+          console.log('purchase_detail[n]', purchase_detail[n])
           arrayProd.push({
             storeId,
             transNo: transData.transNo,
@@ -298,6 +303,8 @@ export default modelExtend(pageModel, {
             purchasePrice: purchase_detail[n].price,
             DPP: purchase_detail[n].dpp,
             PPN: purchase_detail[n].ppn,
+            deliveryFee: purchase_detail[n].deliveryFee,
+            portion: purchase_detail[n].portion,
             discPercent: purchase_detail[n].disc1,
             discNominal: purchase_detail[n].discount,
             transType: transData.transType
@@ -361,6 +368,8 @@ export default modelExtend(pageModel, {
             productName: dataVoidMap.name,
             qty: dataVoidMap.qty,
             purchasePrice: dataVoidMap.price,
+            deliveryFee: dataVoidMap.deliveryFee,
+            portion: dataVoidMap.portion,
             DPP: dataVoidMap.dpp,
             PPN: dataVoidMap.ppn,
             discPercent: dataVoidMap.disc1,
@@ -398,6 +407,8 @@ export default modelExtend(pageModel, {
           purchasePrice: dataArrayProdEditMap.price,
           DPP: dataArrayProdEditMap.dpp,
           PPN: dataArrayProdEditMap.ppn,
+          deliveryFee: dataArrayProdEditMap.deliveryFee,
+          portion: dataArrayProdEditMap.portion,
           discPercent: dataArrayProdEditMap.disc1,
           discNominal: dataArrayProdEditMap.discount,
           void: dataArrayProdEditMap.void
@@ -559,6 +570,8 @@ export default modelExtend(pageModel, {
             productCode: data.data[n].productCode,
             name: data.data[n].productName,
             qty: data.data[n].qty,
+            portion: data.data[n].portion,
+            deliveryFee: data.data[n].deliveryFee,
             price: data.data[n].purchasePrice,
             discount: data.data[n].discNominal,
             disc1: data.data[n].discPercent,
@@ -620,6 +633,8 @@ export default modelExtend(pageModel, {
           discount: ary[n].discount,
           price: ary[n].price,
           dpp: ary[n].dpp,
+          deliveryFee: ary[n].deliveryFee,
+          portion: ary[n].portion,
           ppn: ary[n].ppn,
           ket: ary[n].ket,
           qty: ary[n].qty,

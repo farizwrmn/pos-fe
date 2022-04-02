@@ -36,6 +36,19 @@ class ModalList extends Component {
       ...modalProps
     } = this.props
 
+    const onDeleteModalItem = (item) => {
+      Modal.confirm({
+        title: 'Delete Item',
+        content: 'Delete This Item?',
+        onOk () {
+          deleteModalItem(item.id, item.deliveryOrderNo)
+        },
+        onCancel () {
+
+        }
+      })
+    }
+
     const handleClick = () => {
       validateFields((errors) => {
         if (errors) {
@@ -63,9 +76,9 @@ class ModalList extends Component {
     return (
       <Modal {...modalOpts}
         footer={[
-          <Button size="large" key="delete" type="danger" onClick={() => deleteModalItem(item.no)} disabled={modalType === 'edit'}>Delete</Button>,
+          <Button size="large" key="delete" type="danger" onClick={() => onDeleteModalItem(item)} disabled={modalType === 'edit'}>Delete</Button>,
           <Button size="large" key="back" onClick={() => modalProps.onCancel()}>Cancel</Button>,
-          <Button size="large" key="submit" type="primary" onClick={handleClick}>{total > 0 ? `Ok (${numberFormatter(parseInt(total, 10))})` : 'Ok'}</Button>
+          <Button disabled={item.deliveryOrderNo} size="large" key="submit" type="primary" onClick={handleClick}>{total > 0 ? `Ok (${numberFormatter(parseInt(total, 10))})` : 'Ok'}</Button>
         ]}
       >
         <Form>
@@ -98,6 +111,7 @@ class ModalList extends Component {
                 message: 'Charge Percent is not define'
               }]
             })(<InputNumber
+              disabled={item.deliveryOrderNo}
               min={0}
               max={100}
               onKeyDown={(e) => {
@@ -117,6 +131,7 @@ class ModalList extends Component {
                 message: 'Charge Nominal is not define'
               }]
             })(<InputNumber
+              disabled={item.deliveryOrderNo}
               min={0}
               max={9999999999}
               onKeyDown={(e) => {
@@ -131,6 +146,7 @@ class ModalList extends Component {
             {getFieldDecorator('memo', {
               initialValue: item.memo
             })(<Input
+              disabled={item.deliveryOrderNo}
               onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   handleClick()
