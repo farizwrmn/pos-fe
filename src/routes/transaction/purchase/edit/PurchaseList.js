@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { Modal, Button, Input, Form, InputNumber } from 'antd'
 
 const FormItem = Form.Item
@@ -22,8 +23,11 @@ const PurchaseList = ({ curHead, onChooseItem, transNo, onChangeTotalItem, onVoi
       data.dpp = TOTAL
       data.ppn = 0
     } else if (tax === 'I') {
+      data.dpp = TOTAL / getDenominatorDppExclude()
+      data.ppn = TOTAL * getDenominatorPPNInclude()
+    } else if (tax === 'S') {
       data.dpp = TOTAL
-      data.ppn = TOTAL * 0.1
+      data.ppn = TOTAL * getDenominatorPPNExclude()
     }
     data.total = TOTAL + data.ppn
     onChangeTotalItem(data)
