@@ -56,6 +56,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'sellPrice'
     },
     {
+      title: 'Price Add (%)',
+      dataIndex: 'distPricePercent',
+      key: 'distPricePercent'
+    },
+    {
       title: 'Show as Discount',
       dataIndex: 'showAsDiscount',
       key: 'showAsDiscount',
