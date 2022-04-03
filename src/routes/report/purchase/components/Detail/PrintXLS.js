@@ -70,6 +70,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       { value: 'DISK(%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISK(N)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TOTAL DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'DELIVERY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
@@ -131,9 +132,9 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
         { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
-        { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
-        { value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+        { value: 'DELIVERY', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
+        { value: (master.deliveryFee || '-').toLocaleString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
       ]
     ]
     tableTitles.push(tableTitle)
@@ -154,6 +155,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         tableBody.push({ value: `${(parseFloat(data.discPercent) || 0).toString()}%`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push({ value: data.discNominal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push({ value: data.totalDiscount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        tableBody.push({ value: data.deliveryFee, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push({ value: data.netto, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         group.push(tableBody)
         count += 1
@@ -164,6 +166,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
     let totalQty = master.items.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
     let totalSubTotal = master.items.reduce((cnt, o) => cnt + (parseFloat(o.qty * o.purchasePrice) || 0), 0)
     let totalDiscount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.totalDiscount) || 0), 0)
+    let deliveryFeeTotal = master.items.reduce((cnt, o) => cnt + (parseFloat(o.deliveryFee) || 0), 0)
     let totalAfterDiscount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
 
     let tableFooter = []
@@ -178,6 +181,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
       tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
       tableFooter.push({ value: totalDiscount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
+      tableFooter.push({ value: deliveryFeeTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
       tableFooter.push({ value: totalAfterDiscount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
     }
     tableFooters.push(tableFooter)
@@ -196,9 +200,11 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       { value: 'DISK(%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'DISK(N)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'TOTAL DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'DELIVERY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
     ],
     [
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
@@ -229,6 +235,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
         { value: `${(parseFloat(item.discPercent) || 0).toString()}%`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: item.discNominal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: item.totalDiscount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: item.deliveryFee, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: item.netto, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
       ])
     }

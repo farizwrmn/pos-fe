@@ -7,7 +7,7 @@ import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from 'services/sequence'
 import { queryById, query, queryId, add, edit, remove, payment } from 'services/transfer/transferInvoice'
 import { query as queryDetail } from 'services/transfer/transferInvoiceDetail'
-import { queryDetail as queryTransferDetail, queryCost } from 'services/transferStockOut'
+import { queryDetail as queryTransferDetail, queryLov, queryCost } from 'services/transferStockOut'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
   state: {
     data: {},
     listDetail: [],
+    listTransGroup: [],
     listStore: [],
     currentItem: {},
     currentItemList: {},
@@ -117,8 +118,16 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: transferInvoiceDetail
+            listDetail: transferInvoiceDetail.map((item) => {
+              return ({
+                ...item,
+                amountTransfer: item.amount
+              })
+            })
           }
+        })
+        yield put({
+          type: 'groupListTransfer'
         })
       } else {
         throw data
@@ -166,11 +175,110 @@ export default modelExtend(pageModel, {
     },
 
     * addItem ({ payload }, { select, call, put }) {
-      const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
-      const filtered = listItem.filter(filtered => filtered.id === payload)
-      if (filtered && filtered[0]) {
-        message.success('item already exists')
+      if (payload.data && payload.data.deliveryOrderNo) {
+        const listTransfer = yield call(queryLov, {
+          deliveryOrderNo: payload.data.deliveryOrderNo,
+          storeId: lstorage.getCurrentUserStore()
+        })
+        if (listTransfer.success && listTransfer.data && listTransfer.data.length > 0) {
+          const checkValid = listTransfer.data.filter(filtered => !filtered.posting)
+          if (checkValid && checkValid[0]) {
+            Modal.warning({
+              title: 'Transfer Out is not posting',
+              content: `Please posting ${checkValid[0].transNo}`
+            })
+          } else {
+            for (let key in listTransfer.data) {
+              const item = listTransfer.data[key]
+              const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
+              const data = yield call(queryDetail, {
+                transferId: item.id
+              })
+              const transferDetail = yield call(queryTransferDetail, {
+                transNo: item.transNo,
+                storeId: item.storeId
+              })
+              const cost = yield call(queryCost, {
+                transNo: item.transNo,
+                storeId: item.storeId,
+                storeIdReceiver: item.storeIdReceiver
+              })
+              if (!cost.success) {
+                throw cost
+              }
+              if (!transferDetail.success) {
+                throw transferDetail
+              }
+              if (data.success) {
+                if (data.data.length === 0) {
+                  const newListItem = ([]).concat(listItem)
+                  let amount = 0
+                  amount = transferDetail.mutasi ? transferDetail.mutasi
+                    .reduce(
+                      (prev, next) => prev + (parseFloat(next.purchasePrice) * parseFloat(next.qty)),
+                      0) : 0
+                  if (amount === 0) {
+                    amount = cost.data ? cost
+                      .data
+                      .reduce(
+                        (prev, next) => prev + (parseFloat(next.purchasePrice) * parseFloat(next.qty)),
+                        0) : 0
+                  }
+                  if (amount === 0) {
+                    throw new Error('Transfer total is 0')
+                  }
+                  if (item && item.deliveryOrderNo) {
+                    newListItem.push({
+                      ...item,
+                      no: (listItem || []).length + 1,
+                      chargePercent: 0,
+                      chargeNominal: 0,
+                      amount,
+                      amountTransfer: 0
+                    })
+                  } else {
+                    newListItem.push({
+                      ...item,
+                      no: (listItem || []).length + 1,
+                      chargePercent: 0,
+                      chargeNominal: 0,
+                      amount,
+                      amountTransfer: amount
+                    })
+                  }
+                  yield put({
+                    type: 'updateState',
+                    payload: {
+                      listLovVisible: false,
+                      modalVisible: false,
+                      modalItemType: 'add',
+                      listItem: newListItem,
+                      currentItemList: {}
+                    }
+                  })
+                } else {
+                  message.warning('transfer already used')
+                }
+              } else {
+                throw data
+              }
+            }
+            message.success('success add item')
+          }
+        }
+        yield put({
+          type: 'groupListItem'
+        })
+      } else if (payload.data && !payload.data.deliveryOrderNo) {
+        yield put({
+          type: 'addItemNormal',
+          payload
+        })
       }
+    },
+
+    * addItemNormal ({ payload }, { select, call, put }) {
+      const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
       const data = yield call(queryDetail, {
         transferId: payload.data.id
       })
@@ -212,7 +320,8 @@ export default modelExtend(pageModel, {
             no: (listItem || []).length + 1,
             chargePercent: 0,
             chargeNominal: 0,
-            amount
+            amount,
+            amountTransfer: amount
           })
           yield put({
             type: 'updateState',
@@ -225,12 +334,77 @@ export default modelExtend(pageModel, {
             }
           })
           message.success('success add item')
+          yield put({
+            type: 'groupListItem'
+          })
         } else {
           message.warning('transfer already used')
         }
       } else {
         throw data
       }
+    },
+
+    * groupListItem (payload, { select, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: []
+        }
+      })
+      const listItem = yield select(({ transferInvoice }) => transferInvoice.listItem)
+      let listTransGroup = []
+      const listTransDelivery = listItem.filter(filtered => filtered.deliveryOrderNo)
+      const listTransNormal = listItem.filter(filtered => !filtered.deliveryOrderNo)
+      for (let key in listTransDelivery.filter(filtered => filtered.deliveryOrderNo)) {
+        const item = {
+          ...listTransDelivery[key]
+        }
+        const filteredExists = listTransGroup.filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+        if (filteredExists && filteredExists.length === 0) {
+          item.amountTransfer = listTransDelivery
+            .filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+            .reduce((prev, next) => prev + next.amount, 0)
+          listTransGroup.push(item)
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: listTransNormal.concat(listTransGroup)
+        }
+      })
+    },
+
+    * groupListTransfer (payload, { select, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: []
+        }
+      })
+      const listItem = yield select(({ transferInvoice }) => transferInvoice.listDetail)
+      let listTransGroup = []
+      const listTransDelivery = listItem.filter(filtered => filtered.deliveryOrderNo)
+      const listTransNormal = listItem.filter(filtered => !filtered.deliveryOrderNo)
+      for (let key in listTransDelivery.filter(filtered => filtered.deliveryOrderNo)) {
+        const item = {
+          ...listTransDelivery[key]
+        }
+        const filteredExists = listTransGroup.filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+        if (filteredExists && filteredExists.length === 0) {
+          item.amountTransfer = listTransDelivery
+            .filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+            .reduce((prev, next) => prev + next.amount, 0)
+          listTransGroup.push(item)
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: listTransNormal.concat(listTransGroup)
+        }
+      })
     },
 
     * setEdit ({ payload }, { call, put }) {
@@ -246,14 +420,48 @@ export default modelExtend(pageModel, {
             listItem: transferInvoiceDetail ?
               transferInvoiceDetail.map((item, index) => ({
                 no: index + 1,
+                amountTransfer: item.amount,
                 ...item
               }))
               : []
           }
         })
+        yield put({
+          type: 'groupListItem'
+        })
       } else {
         throw data
       }
+    },
+
+    * editModalItem (payload, { put }) {
+      yield put({
+        type: 'transferInvoice/updateState',
+        payload: {
+          modalVisible: false,
+          modalItemType: 'add',
+          listItem: payload.listItem,
+          currentItemList: {}
+        }
+      })
+      yield put({
+        type: 'groupListItem'
+      })
+    },
+
+    * deleteModalItem ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalVisible: false,
+          modalItemType: 'add',
+          listItem: payload.listItem,
+          currentItemList: {}
+        }
+      })
+      yield put({
+        type: 'groupListItem'
+      })
     },
 
     * delete ({ payload }, { call, put }) {
@@ -282,7 +490,8 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {},
-            listItem: []
+            listItem: [],
+            listTransGroup: []
           }
         })
         yield put({ type: 'querySequence' })

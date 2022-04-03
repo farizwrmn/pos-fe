@@ -9,71 +9,90 @@ const Browse = ({
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no'
+      key: 'no',
+      width: '70px'
     },
     {
-      title: 'Product Code',
+      title: 'Product',
       dataIndex: 'productCode',
-      key: 'productCode'
-    },
-    {
-      title: 'Product Name',
-      dataIndex: 'name',
-      key: 'name'
+      key: 'productCode',
+      width: '300px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>{text}</b></div>
+            <div>{record.name}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
+      width: '100px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Disc %',
       dataIndex: 'disc1',
       key: 'disc1',
+      width: '140px',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>Price: {(record.price || '-').toLocaleString()}</b></div>
+            <div>Disc (%): {(text || '-').toLocaleString()}</div>
+            <div>Disc (N): {(record.discount || '-').toLocaleString()}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Disc NML',
-      dataIndex: 'discount',
-      key: 'discount',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'DPP',
+      title: 'TAX',
       dataIndex: 'dpp',
       key: 'dpp',
+      width: '140px',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>DPP: {(text || '-').toLocaleString()}</b></div>
+            <div>PPN: {(record.ppn || '-').toLocaleString()}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'PPN',
-      dataIndex: 'ppn',
-      key: 'ppn',
+      title: 'Delivery',
+      dataIndex: 'deliveryFee',
+      key: 'deliveryFee',
+      width: '140px',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>Portion: {(parseFloat(record.portion || 0).toFixed(2) || '-').toLocaleString()}</b></div>
+            <div><b>Delivery: {(Math.round(record.deliveryFee || 0) || '-').toLocaleString()}</b></div>
+          </div>
+        )
+      }
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
+      width: '140px',
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Ket',
-      dataIndex: 'ket',
-      key: 'ket'
+      render: (text) => {
+        return (
+          <div>
+            <div><b>Total: {(text || '-').toLocaleString()}</b></div>
+          </div>
+        )
+      }
     }
   ]
 
@@ -84,7 +103,7 @@ const Browse = ({
   return (
     <Table
       bordered
-      scroll={{ x: 1300 }}
+      scroll={{ x: 1000 }}
       columns={columns}
       simple
       size="small"

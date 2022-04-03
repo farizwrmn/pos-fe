@@ -25,6 +25,7 @@ export default modelExtend(pageModel, {
   state: {
     listTrans: [],
     listItem: [],
+    listTransGroup: [],
     listStore: [],
     listHeader: [],
     listChangeTransferOut: [],
@@ -105,8 +106,30 @@ export default modelExtend(pageModel, {
       }
     },
     * queryLov ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTransGroup: []
+        }
+      })
       const data = yield call(queryLov, payload)
+      let listTransGroup = []
       if (data) {
+        const listTransDelivery = data.data.filter(filtered => filtered.deliveryOrderNo)
+        const listTransNormal = data.data.filter(filtered => !filtered.deliveryOrderNo)
+        for (let key in listTransDelivery) {
+          const item = listTransDelivery[key]
+          const filteredExists = listTransGroup.filter(filtered => filtered.deliveryOrderNo === item.deliveryOrderNo)
+          if (filteredExists && filteredExists.length === 0) {
+            listTransGroup.push(item)
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransGroup: listTransNormal.concat(listTransGroup)
+          }
+        })
         yield put({
           type: 'querySuccessTransferOut',
           payload: {
@@ -308,7 +331,6 @@ export default modelExtend(pageModel, {
           }
         })
       }
-      console.log('data', payload, data)
       if (payload.transNo && data && data.success && data.data.length === 0) {
         const response = yield call(queryTransferOut, {
           deliveryOrderNo: payload.transNo

@@ -198,6 +198,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           price: e.costPrice,
           discount: discNML,
           disc1: discPRC,
+          portion: 0,
+          deliveryFee: 0,
           dpp: 0,
           ppn: 0,
           ket: '',

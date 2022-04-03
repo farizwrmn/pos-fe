@@ -27,16 +27,27 @@ export default {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(() => {
+      history.listen((location) => {
+        const { deliveryOrderNo } = location.query
         const match = pathToRegexp('/inventory/transfer/out/:id').exec(location.pathname)
         if (match) {
-          dispatch({
-            type: 'queryDetail',
-            payload: {
-              transNo: decodeURIComponent(match[1]),
-              storeId: lstorage.getCurrentUserStore()
-            }
-          })
+          if (deliveryOrderNo) {
+            dispatch({
+              type: 'queryDetail',
+              payload: {
+                deliveryOrderNo,
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          } else {
+            dispatch({
+              type: 'queryDetail',
+              payload: {
+                transNo: decodeURIComponent(match[1]),
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          }
         }
       })
     }
@@ -69,8 +80,8 @@ export default {
             type: 'transferOutDetail/editPrice',
             payload: {
               data: {
-                storeId: payload.data.storeId,
-                transNo: payload.data.transNo,
+                storeId: item.storeId,
+                transNo: item.transNo,
                 productId: item.productId,
                 purchasePrice: item && item.qty && item.qty > 0 && filteredPrice && filteredPrice[0]
                   ? (filteredPrice[0].purchasePrice > 0 ? Math.ceil(filteredPrice[0].purchasePrice) : masterCostPrice) : 0,
@@ -80,13 +91,23 @@ export default {
             }
           })
         }
-        yield put({
-          type: 'queryDetail',
-          payload: {
-            transNo: response.data[0].transNo,
-            storeId: response.data[0].storeId
-          }
-        })
+        if (payload.data && payload.data.deliveryOrderNo) {
+          yield put({
+            type: 'queryDetail',
+            payload: {
+              deliveryOrderNo: payload.data.deliveryOrderNo,
+              storeId: response.data[0].storeId
+            }
+          })
+        } else {
+          yield put({
+            type: 'queryDetail',
+            payload: {
+              transNo: response.data[0].transNo,
+              storeId: response.data[0].storeId
+            }
+          })
+        }
       }
     },
 
@@ -126,13 +147,23 @@ export default {
             currentItem: {}
           }
         })
-        yield put({
-          type: 'queryDetail',
-          payload: {
-            transNo: payload.data.transNo,
-            storeId: payload.data.storeId
-          }
-        })
+        if (payload.data && payload.data.deliveryOrderNo) {
+          yield put({
+            type: 'queryDetail',
+            payload: {
+              deliveryOrderNo: payload.data.deliveryOrderNo,
+              storeId: payload.data.storeId
+            }
+          })
+        } else {
+          yield put({
+            type: 'queryDetail',
+            payload: {
+              transNo: payload.data.transNo,
+              storeId: payload.data.storeId
+            }
+          })
+        }
         if (payload.resetFields) payload.resetFields()
       } else {
         throw response
@@ -155,13 +186,23 @@ export default {
         if (payload.break) {
           return
         }
-        yield put({
-          type: 'queryDetail',
-          payload: {
-            transNo: payload.data.transNo,
-            storeId: payload.data.storeId
-          }
-        })
+        if (payload.data && payload.data.deliveryOrderNo) {
+          yield put({
+            type: 'queryDetail',
+            payload: {
+              deliveryOrderNo: payload.data.deliveryOrderNo,
+              storeId: payload.data.storeId
+            }
+          })
+        } else {
+          yield put({
+            type: 'queryDetail',
+            payload: {
+              transNo: payload.data.transNo,
+              storeId: payload.data.storeId
+            }
+          })
+        }
         if (payload.resetFields) payload.resetFields()
       } else {
         throw response

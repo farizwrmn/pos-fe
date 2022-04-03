@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { getVATPercentage } from 'utils/tax'
 import { Form, Select, Button, Input, DatePicker, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
@@ -130,7 +131,7 @@ const Company = ({
               {/* onBlur={hdlChangePercent} */}
               <Option value="I">Include</Option>
               <Option value="E">Exclude (0%)</Option>
-              <Option value="S">Exclude (10%)</Option>
+              <Option value="S">Exclude ({getVATPercentage()}%)</Option>
             </Select>)}
           </FormItem>
           <FormItem label="TAX ID" {...formItemLayout}>

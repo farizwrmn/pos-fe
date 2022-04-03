@@ -44,6 +44,7 @@ const FormCounter = ({
   modalType,
   modalItemType,
   modalShowList,
+  listTransGroup,
   listItem,
   modalVisible,
   modalProps,
@@ -53,6 +54,7 @@ const FormCounter = ({
   listStore,
   button,
   resetListItem,
+  loadingEffect,
   form: {
     getFieldDecorator,
     validateFields,
@@ -70,7 +72,7 @@ const FormCounter = ({
       }
       const storeIdReceiver = getFieldValue('storeIdReceiver')
       if (storeIdReceiver) {
-        changePeriod(storeIdReceiver.key, start, end)
+        changePeriod(storeIdReceiver, start, end)
       }
     })
   }
@@ -84,7 +86,7 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       data.storeId = lstorage.getCurrentUserStore()
-      data.storeIdReceiver = data.storeIdReceiver ? data.storeIdReceiver.key : null
+      data.storeIdReceiver = data.storeIdReceiver
       data.total = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) || 0), 0)
       data.chargeTotal = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (parseFloat(item.chargePercent) / 100)) + parseFloat(item.chargeNominal) || 0, 0)
       data.netto = listItem.reduce((cnt, item) => cnt + (parseFloat(item.amount) * (1 + (parseFloat(item.chargePercent) / 100))) + parseFloat(item.chargeNominal) || 0, 0)
@@ -114,14 +116,14 @@ const FormCounter = ({
       }
       const storeIdReceiver = getFieldValue('storeIdReceiver')
       if (item && item.storeId) {
-        if (storeIdReceiver && storeIdReceiver.key) {
+        if (storeIdReceiver && storeIdReceiver) {
           modalShow(
-            storeIdReceiver.key,
+            storeIdReceiver,
             moment().startOf('month').format('YYYY-MM-DD'),
             moment().endOf('month').format('YYYY-MM-DD')
           )
         }
-        if (parseFloat(item.storeIdReceiver) !== parseFloat(storeIdReceiver.key)) {
+        if (parseFloat(item.storeIdReceiver) !== parseFloat(storeIdReceiver)) {
           resetListItem()
         }
       } else {
@@ -158,7 +160,7 @@ const FormCounter = ({
       let groupStore = []
       for (let id = 0; id < listStore.length; id += 1) {
         groupStore.push(
-          <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
+          <Option title={listStore[id].label} disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
             {listStore[id].label}
           </Option>
         )
@@ -172,7 +174,7 @@ const FormCounter = ({
     // listItem: listProducts,
     // itemPrint: transHeader,
     // itemHeader: transHeader,
-    listItem,
+    listItem: listTransGroup,
     itemPrint: item,
     itemHeader: item,
     storeInfo,
@@ -197,17 +199,13 @@ const FormCounter = ({
             </FormItem>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
-                initialValue: item.storeIdReceiver ? {
-                  key: item.storeIdReceiver,
-                  label: `${item.storeIdReceiverDetail ? item.storeIdReceiverDetail.storeName : item.storeIdReceiver}`
-                } : undefined,
+                initialValue: item.storeIdReceiver,
                 rules: [
                   {
                     required: true
                   }
                 ]
               })(<Select
-                labelInValue
                 disabled={modalType === 'edit'}
               >
                 {childrenStoreReceived}
@@ -228,7 +226,18 @@ const FormCounter = ({
         <Row>
           <Col {...column}>
             {modalType === 'edit' && <PrintPDFInvoice {...printProps} />}
-            <Button type="primary" size="large" disabled={modalType === 'edit'} onClick={() => hdlModalShow()} style={{ marginBottom: '8px' }}>Transfer Out</Button>
+            <Button
+              loading={loadingEffect['transferInvoice/addItem']
+                || loadingEffect['transferInvoice/addItemNormal']
+                || loadingEffect['transferInvoice/groupListItem']}
+              disabled={modalType === 'edit' || loadingEffect['transferInvoice/addItem']
+                || loadingEffect['transferInvoice/addItemNormal']
+                || loadingEffect['transferInvoice/groupListItem']}
+              type="primary"
+              size="large"
+              onClick={() => hdlModalShow()}
+              style={{ marginBottom: '8px' }}
+            >Transfer Out</Button>
           </Col>
           <Col {...column} />
         </Row>

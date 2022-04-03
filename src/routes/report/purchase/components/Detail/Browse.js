@@ -47,17 +47,17 @@ const Browse = ({ ...browseProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Total',
-      dataIndex: 'netto',
-      key: 'netto',
+      title: 'Delivery',
+      dataIndex: 'deliveryFee',
+      key: 'deliveryFee',
       width: '100px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Grand Total',
-      dataIndex: 'grandtotal',
-      key: 'grandtotal',
+      title: 'Total',
+      dataIndex: 'netto',
+      key: 'netto',
       width: '100px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()

@@ -42,6 +42,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
     let totalSubTotal = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty * o.purchasePrice) || 0), 0)
     let totalDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.totalDiscount) || 0), 0)
     let totalAfterDiscount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.netto) || 0), 0)
+    let deliveryFeeTotal = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.deliveryFee) || 0), 0)
 
     let body = []
 
@@ -56,6 +57,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
         { text: 'DISK(%)', style: 'tableHeader' },
         { text: 'DISK(N)', style: 'tableHeader' },
         { text: 'TOTAL DISKON', style: 'tableHeader' },
+        { text: 'DELIVERY', style: 'tableHeader' },
         { text: 'TOTAL', style: 'tableHeader' }
       ]
     ]
@@ -78,6 +80,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
           { text: `${formatNumberIndonesia(parseFloat(data.discPercent) || 0)} %`, alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.discNominal) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.totalDiscount) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.deliveryFee) || 0), alignment: 'right', fontSize: 11 },
           { text: formatNumberIndonesia(parseFloat(data.netto) || 0), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -95,10 +98,13 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
       {},
       {},
       { text: formatNumberIndonesia(totalDiscount), style: 'rowNumberFooter' },
+      { text: formatNumberIndonesia(deliveryFeeTotal), style: 'rowNumberFooter' },
       { text: formatNumberIndonesia(totalAfterDiscount), style: 'rowNumberFooter' }
     ]
     body.push(totalRow)
-    width.push(['4%', '16%', '24%', '6%', '8%', '8%', '7%', '7%', '10%', '10%'])
+    width.push(['4%', '11%', '24%', '6%', '8%',
+      '8%', '7%', '7%', '8%', '8%',
+      '9%'])
     return body
   }
 
@@ -120,7 +126,7 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
               [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(listData[i].transDate).format('DD-MMM-YYYY'), fontSize: 11 }, {}, { text: 'NAMA PEMASOK', fontSize: 11 }, ':', { text: (listData[i].supplierName || '').toString(), fontSize: 11 }],
               [{ text: 'TIPE PAJAK', fontSize: 11 }, ':', { text: (listData[i].taxType || '').toString(), fontSize: 11 }, {}, { text: 'ALAMAT', fontSize: 11 }, ':', { text: '', fontSize: 11 }],
               [{ text: 'DISKON(%)', fontSize: 11 }, ':', { text: `${(listData[i].discInvoicePercent || 0).toString()}%`, fontSize: 11 }, {}, { text: 'MEMO', fontSize: 11 }, ':', { text: (listData[i].memo || '').toString(), fontSize: 11 }],
-              [{ text: 'DISKON(N)', fontSize: 11 }, ':', { text: formatNumberIndonesia(listData[i].discInvoiceNominal || 0), fontSize: 11 }, {}, {}, {}, {}]
+              [{ text: 'DISKON(N)', fontSize: 11 }, ':', { text: formatNumberIndonesia(listData[i].discInvoiceNominal || 0), fontSize: 11 }, {}, { text: 'DELIVERY', fontSize: 11 }, ':', { text: (listData[i].deliveryFee || '').toLocaleString(), fontSize: 11 }]
             ]
           },
           layout: 'noBorders'
@@ -141,13 +147,14 @@ const PrintPDF = ({ user, listData, storeInfo, fromDate, toDate }) => {
             { text: 'DISK(%)', style: 'tableHeader' },
             { text: 'DISK(N)', style: 'tableHeader' },
             { text: 'TOTAL DISKON', style: 'tableHeader' },
+            { text: 'DELIVERY', style: 'tableHeader' },
             { text: 'TOTAL', style: 'tableHeader' }
           ]
         ]
         for (let i = 0; i < headers.length; i += 1) {
           body.push(headers[i])
         }
-        width.push(['4%', '16%', '24%', '6%', '8%', '8%', '7%', '7%', '10%', '10%'])
+        width.push(['4%', '10%', '24%', '6%', '8%', '8%', '7%', '7%', '9%', '8%', '9%'])
         tableBody.push(body)
       }
     } catch (e) {

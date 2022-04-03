@@ -795,7 +795,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/purchase'))
               registerModel(app, require('./models/master/supplier'))
-              cb(null, require('./routes/report/purchase/summary/'))
+              cb(null, require('./routes/report/purchase/summary'))
             }, 'report-purchase-summary')
           }
         }, {
@@ -1184,6 +1184,22 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               cb(null, require('./routes/accounts/cashentry/'))
             }, 'accounts-cash-entry')
+          }
+        }, {
+          path: 'integration/consignment/rent-request',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/rentRequest'))
+              cb(null, require('./routes/consignment/rentRequest'))
+            }, 'consignment/rent/rent-request')
+          }
+        }, {
+          path: 'integration/consignment/rent-request/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/rentRequest'))
+              cb(null, require('./routes/consignment/rentRequest/detail'))
+            }, 'consignment/rent/rent-request-detail')
           }
         }, {
           path: 'cash-entry/:id',
