@@ -1154,6 +1154,14 @@ const Routers = function ({ history, app }) {
             }, 'accounts-payable-form-detail')
           }
         }, {
+          path: 'master/product/country',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productcountry'))
+              cb(null, require('./routes/product/productcountry'))
+            }, 'master-product-country')
+          }
+        }, {
           path: 'inventory/transfer/invoice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

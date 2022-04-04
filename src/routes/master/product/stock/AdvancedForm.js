@@ -1306,6 +1306,14 @@ class AdvancedForm extends Component {
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
+              <FormItem label="Halal" {...formItemLayout}>
+                {getFieldDecorator('isHalal', {
+                  valuePropName: 'checked',
+                  initialValue: item.isHalal === undefined
+                    ? false
+                    : item.isHalal
+                })(<Checkbox>Halal</Checkbox>)}
+              </FormItem>
               <FormItem label="Status" {...formItemLayout}>
                 {getFieldDecorator('active', {
                   valuePropName: 'checked',
