@@ -35,6 +35,7 @@ const FormCounter = ({
   modalType,
   loading,
   listVendor,
+  user,
   showLov,
   button,
   listBox = [],
@@ -147,6 +148,9 @@ const FormCounter = ({
 
 
   const disabledDate = (current) => {
+    if (user.permissions.role === 'SPR' || user.permissions.role === 'OWN') {
+      return false
+    }
     return current < moment(new Date()).add(-1, 'days').endOf('day')
   }
 
@@ -213,6 +217,7 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
+              disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -227,6 +232,7 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
+              disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -234,12 +240,14 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxType', {
-              initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
+              initialValue: 'S',
               rules: [{
                 required: true,
                 message: 'Required'
               }]
-            })(<Select>
+            })(<Select
+              disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
+            >
               <Option value="I">Include</Option>
               <Option value="E">Exclude (0%)</Option>
               <Option value="S">Exclude ({getVATPercentage()}%)</Option>
@@ -252,7 +260,7 @@ const FormCounter = ({
               disabled
               min={0}
               max={9999999999}
-              style={{ width: '100%', color: 'black' }}
+              style={{ width: '100%' }}
             />
           </FormItem>
           <FormItem label="PPN" hasFeedback {...formItemLayout}>
