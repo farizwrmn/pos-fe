@@ -17,6 +17,7 @@ const APICONSIGNMENTVERSION = production ? '/api/v1' : ''
 const APICONSIGNMENTURL = `${APICONSIGNMENTPROTOCOL}://${APICONSIGNMENTHOST}:${APICONSIGNMENTPORT}${APICONSIGNMENTVERSION}`
 
 const IMAGEURL = true ? 'https://graph.k3mart.id/image' : 'http://localhost:3100'
+const IMAGECONSIGNMENTURL = true ? 'https://consignment.k3mart.id/images/payment_proof' : 'http://localhost:3100'
 const APIIMAGECOMPANYPROTOCOL = true ? 'https' : 'http' // 'localhost'
 const APIIMAGECOMPANYHOST = true ? ('graph.k3mart.id') : 'localhost' // 'localhost'
 const APIIMAGEPROTOCOL = APIIMAGECOMPANYPROTOCOL
@@ -30,6 +31,7 @@ module.exports = {
   companyName: 'Smartech Indo',
   APISOCKET,
   IMAGEURL,
+  IMAGECONSIGNMENTURL,
   MAIN_WEBSITE,
   APIIMAGEURL,
   couchdb: {
