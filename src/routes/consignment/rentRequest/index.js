@@ -91,6 +91,7 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
   const formProps = {
     modalType,
     loading,
+    user,
     item: currentItem,
     dispatch,
     listBox,
