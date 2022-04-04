@@ -50,7 +50,7 @@ const ModalApprove = ({
           {getFieldDecorator('image', {
             rules: [
               {
-                required: true
+                required: false
               }
             ]
           })(
