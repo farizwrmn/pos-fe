@@ -217,6 +217,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/specificationStock'))
               registerModel(app, require('./models/master/specification'))
               registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/product/productcountry'))
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/master/variant'))
               registerModel(app, require('./models/transaction/pos'))
@@ -1152,6 +1153,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/payableForm'))
               cb(null, require('./routes/accounts/payableform/detail'))
             }, 'accounts-payable-form-detail')
+          }
+        }, {
+          path: 'master/product/country',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productcountry'))
+              cb(null, require('./routes/product/productcountry'))
+            }, 'master-product-country')
           }
         }, {
           path: 'inventory/transfer/invoice',

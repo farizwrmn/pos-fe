@@ -9,13 +9,13 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
-  const { consignmentId, listBox, listVendor, listOutlet, list, pagination, modalType, currentItem, activeKey } = rentRequest
+const Counter = ({ productcountry, loading, dispatch, location, app }) => {
+  const { list, pagination, modalType, currentItem, activeKey } = productcountry
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'rentRequest/query',
+        type: 'productcountry/query',
         payload: {
           ...value
         }
@@ -28,7 +28,7 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['rentRequest/query'],
+    loading: loading.effects['productcountry/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -50,13 +50,13 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'rentRequest/editItem',
+        type: 'productcountry/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'rentRequest/delete',
+        type: 'productcountry/delete',
         payload: id
       })
     }
@@ -64,7 +64,7 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'rentRequest/changeTab',
+      type: 'productcountry/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -75,61 +75,30 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'rentRequest/updateState', payload: { list: [] } })
+    dispatch({ type: 'productcountry/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'rentRequest/updateState',
+      type: 'productcountry/updateState',
       payload: {
         activeKey: '1'
       }
     })
   }
 
-  let timeout
   const formProps = {
     modalType,
-    loading,
-    user,
     item: currentItem,
-    dispatch,
-    listBox,
-    listOutlet,
-    listVendor,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: 'rentRequest/add',
+        type: `productcountry/${modalType}`,
         payload: {
           data,
           reset
         }
       })
-    },
-    showLov (models, data) {
-      if (!data) {
-        dispatch({
-          type: 'rentRequest/queryVendor',
-          payload: {
-            pageSize: 5
-          }
-        })
-      }
-      if (timeout) {
-        clearTimeout(timeout)
-        timeout = null
-      }
-
-      timeout = setTimeout(() => {
-        dispatch({
-          type: 'rentRequest/queryVendor',
-          payload: {
-            pageSize: 5,
-            ...data
-          }
-        })
-      }, 400)
     },
     onCancel () {
       const { pathname } = location
@@ -140,18 +109,12 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'rentRequest/updateState',
+        type: 'productcountry/updateState',
         payload: {
           currentItem: {}
         }
       })
     }
-  }
-
-  if (!consignmentId) {
-    return (
-      <div>Consignment not linked to this store, please contact your administrator</div>
-    )
   }
 
   let moreButtonTab
@@ -179,11 +142,11 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
-  rentRequest: PropTypes.object,
+  productcountry: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ rentRequest, loading, app }) => ({ rentRequest, loading, app }))(Counter)
+export default connect(({ productcountry, loading, app }) => ({ productcountry, loading, app }))(Counter)

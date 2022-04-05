@@ -5,7 +5,7 @@ import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox,
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
-import { getDistPriceName, getDistPriceDescription } from 'utils/string'
+import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
 
 const { apiCompanyURL } = rest
@@ -237,6 +237,7 @@ class AdvancedForm extends Component {
       listVariantStock,
       listGrabCategory,
       listInventory,
+      listProductCountry,
       onGetShopeeCategory,
       editItemProductById,
       supplierInformation,
@@ -442,6 +443,7 @@ class AdvancedForm extends Component {
     // const variant = () => {
     //   showVariantId()
     // }
+    const productCountry = (listProductCountry || []).length > 0 ? listProductCountry.map(c => <Option value={c.countryName} key={c.countryName} title={`${c.countryCode} - ${c.countryName}`}>{`${c.countryCode} - ${c.countryName}`}</Option>) : []
     const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
     const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
     const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
@@ -793,6 +795,22 @@ class AdvancedForm extends Component {
       }
     }
 
+    const onDistPrice = () => {
+      const sellPrice = getFieldValue('sellPrice')
+      if (sellPrice > 0) {
+        setFieldsValue({
+          distPrice01: (1 + (getDistPricePercent('distPrice01') / 100)) * sellPrice,
+          distPrice02: (1 + (getDistPricePercent('distPrice02') / 100)) * sellPrice,
+          distPrice03: (1 + (getDistPricePercent('distPrice03') / 100)) * sellPrice,
+          distPrice04: (1 + (getDistPricePercent('distPrice04') / 100)) * sellPrice,
+          distPrice05: (1 + (getDistPricePercent('distPrice05') / 100)) * sellPrice,
+          distPrice06: (1 + (getDistPricePercent('distPrice06') / 100)) * sellPrice,
+          distPrice07: (1 + (getDistPricePercent('distPrice07') / 100)) * sellPrice,
+          distPrice08: (1 + (getDistPricePercent('distPrice08') / 100)) * sellPrice
+        })
+      }
+    }
+
     return (
       <Form layout="horizontal">
         <FooterToolbar>
@@ -979,6 +997,7 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
+                <Button type="primary" size="small" onClick={() => onDistPrice()}>Auto Fill</Button>
                 <FormItem label={getDistPriceName('distPrice01')} help={getDistPriceDescription('distPrice01')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('distPrice01', {
                     initialValue: item.distPrice01,
@@ -1288,6 +1307,29 @@ class AdvancedForm extends Component {
                     }
                   ]
                 })(<InputNumber {...InputNumberProps} />)}
+              </FormItem>
+              <FormItem label="Halal" {...formItemLayout}>
+                {getFieldDecorator('isHalal', {
+                  valuePropName: 'checked',
+                  initialValue: item.isHalal === undefined
+                    ? true
+                    : item.isHalal
+                })(<Checkbox>Halal</Checkbox>)}
+              </FormItem>
+              <FormItem label="Country" hasFeedback help="Usage in price tag" {...formItemLayout}>
+                {getFieldDecorator('countryName', {
+                  initialValue: modalType === 'add' ? undefined : item.countryName,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productCountry}
+                </Select>)}
               </FormItem>
               <FormItem label="Status" {...formItemLayout}>
                 {getFieldDecorator('active', {
