@@ -217,6 +217,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/specificationStock'))
               registerModel(app, require('./models/master/specification'))
               registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/product/productcountry'))
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/master/variant'))
               registerModel(app, require('./models/transaction/pos'))
