@@ -109,9 +109,10 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
           },
           {
             columns: [
-              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: '', fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeReceiver ? itemHeader.employeeReceiver : '').toString()}`, fontSize: 12, alignment: 'center', margin: [0, 5, 0, 0] }
+              { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: 'Dipacking oleh \n\n\n\n. . . . . . . . . . . . . . . .', fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: 'Dikirim oleh \n\n\n\n. . . . . . . . . . . . . . . .', fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: `Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemHeader.employeeReceiver ? itemHeader.employeeReceiver : '').toString()}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] }
             ]
           },
           {
