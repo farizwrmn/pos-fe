@@ -1335,9 +1335,9 @@ class AdvancedForm extends Component {
                 })(<Select>
                   <Option value="E">Exclude (0%)</Option>
                   <Option value="I">Include ({getVATPercentage()}%)</Option>
-                  <Option value="S">Exclude ({getVATPercentage()}%)</Option>
+                  {/* <Option value="S">Exclude ({getVATPercentage()}%)</Option> */}
                   <Option value="O">Include ({getCountryTaxPercentage()}%)</Option>
-                  <Option value="X">Exclude ({getCountryTaxPercentage()}%)</Option>
+                  {/* <Option value="X">Exclude ({getCountryTaxPercentage()}%)</Option> */}
                 </Select>)}
               </FormItem>
               <FormItem label="Country" hasFeedback help="Usage in price tag" {...formItemLayout}>
