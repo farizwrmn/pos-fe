@@ -4,6 +4,12 @@ export const getVATPercentage = () => {
   return PPN_PERCENTAGE
 }
 
+const PB1_PERCENTAGE = 10
+
+export const getCountryTaxPercentage = () => {
+  return PB1_PERCENTAGE
+}
+
 export const getDenominatorDppExclude = () => {
   return (100 + PPN_PERCENTAGE) / 100
 }
