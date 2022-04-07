@@ -8,22 +8,22 @@ import { Table } from 'antd'
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
-      title: 'Account',
-      dataIndex: 'accountName',
-      key: 'accountName',
+      title: 'TYPE',
+      dataIndex: 'type',
+      key: 'type',
       width: '175px'
     },
     {
-      title: 'Debit',
-      dataIndex: 'debit',
-      key: 'debit',
+      title: 'DPP',
+      dataIndex: 'DPP',
+      key: 'DPP',
       width: '155px',
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Credit',
-      dataIndex: 'credit',
-      key: 'credit',
+      title: 'PPN',
+      dataIndex: 'PPN',
+      key: 'PPN',
       width: '155px',
       render: text => (text || '-').toLocaleString()
     }
