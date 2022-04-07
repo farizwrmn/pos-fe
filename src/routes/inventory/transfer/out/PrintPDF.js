@@ -141,7 +141,8 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
           {
             columns: [
               { text: `Dibuat oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n${user.username}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
-              { text: `PIC \n\n\n\n. . . . . . . . . . . . . . . .  \n${(itemPrint.employeeName || '').toString()}`, fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: 'Dipacking oleh \n\n\n\n. . . . . . . . . . . . . . . .', fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
+              { text: 'Dikirim oleh \n\n\n\n. . . . . . . . . . . . . . . .', fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] },
               { text: 'Diterima oleh \n\n\n\n. . . . . . . . . . . . . . . .  \n', fontSize: 10, alignment: 'center', margin: [0, 5, 0, 0] }
             ]
           },

@@ -289,8 +289,6 @@ export default modelExtend(pageModel, {
       }
       if (uploadedImage && uploadedImage.length) {
         payload.data.image = uploadedImage[0]
-      } else {
-        payload.data.image = 'no_image.png'
       }
       // End - Upload Image
       const data = yield call(approve, payload.data)
