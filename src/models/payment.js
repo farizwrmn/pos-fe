@@ -4,7 +4,7 @@ import { lstorage, variables, alertModal } from 'utils'
 import { prefix } from 'utils/config.main'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
-import { getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import defaultFont from 'utils/defaultFont'
 import { routerRedux } from 'dva/router'
 import * as cashierService from '../services/payment'
@@ -156,7 +156,7 @@ export default {
               (1 - (dataPos[key].disc2 / 100)) * // -disc2
               (1 - (dataPos[key].disc3 / 100))) - // -disc3
               dataPos[key].discount) // -discount
-            const dpp = totalPrice / (companySetting === 'I' ? getDenominatorDppExclude() : 1)
+            const dpp = totalPrice / (companySetting === 'I' ? getDenominatorDppInclude() : 1)
             const ppn = (companySetting === 'I' ? totalPrice / getDenominatorPPNInclude() : companySetting === 'S' ? totalPrice * getDenominatorPPNExclude() : 0)
             arrayProd.push({
               storeId,
@@ -200,7 +200,7 @@ export default {
             const portion = (x.totalPrice / grandTotal)
             const discountLoyalty = (portion * (payload.useLoyalty || 0))
             const totalPrice = x.totalPrice - discountLoyalty
-            const dpp = totalPrice / (companySetting === 'I' ? getDenominatorDppExclude() : 1)
+            const dpp = totalPrice / (companySetting === 'I' ? getDenominatorDppInclude() : 1)
             const ppn = (companySetting === 'I' ? totalPrice / getDenominatorPPNInclude() : companySetting === 'S' ? totalPrice * getDenominatorPPNExclude() : 0)
             return {
               storeId: x.storeId,

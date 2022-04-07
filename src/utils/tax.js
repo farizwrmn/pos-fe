@@ -10,7 +10,7 @@ export const getCountryTaxPercentage = () => {
   return PB1_PERCENTAGE
 }
 
-export const getDenominatorDppExclude = () => {
+export const getDenominatorDppInclude = () => {
   return (100 + PPN_PERCENTAGE) / 100
 }
 
