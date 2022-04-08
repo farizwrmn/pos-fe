@@ -1311,8 +1311,7 @@ class AdvancedForm extends Component {
               </FormItem>
               <FormItem label="Halal" {...formItemLayout}>
                 {getFieldDecorator('isHalal', {
-                  valuePropName: 'checked',
-                  initialValue: item.isHalal != null ? item.isHalal : 1
+                  initialValue: item.isHalal
                 })(
                   <Select
                     showSearch
@@ -1327,7 +1326,7 @@ class AdvancedForm extends Component {
               </FormItem>
               <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxType', {
-                  initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
+                  initialValue: modalType === 'add' ? 'E' : item.taxType,
                   rules: [{
                     required: true,
                     message: 'Required'
