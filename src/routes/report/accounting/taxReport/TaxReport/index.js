@@ -28,6 +28,8 @@ const Report = ({ dispatch, userStore, taxReport, loading, app }) => {
     listTrans,
     user,
     storeInfo,
+    fromDate: from,
+    toDate: to,
     from,
     to,
     productCode,
