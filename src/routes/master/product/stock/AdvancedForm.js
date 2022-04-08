@@ -1344,7 +1344,7 @@ class AdvancedForm extends Component {
                   initialValue: modalType === 'add' ? undefined : item.countryName,
                   rules: [
                     {
-                      required: true
+                      required: false
                     }
                   ]
                 })(<Select
