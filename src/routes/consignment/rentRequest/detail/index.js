@@ -175,14 +175,21 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
               <Col span={12}>Dipegang pada</Col>
               <Col span={12}>{moment(data.updated_at).format('DD-MMM-YYYY HH:mm')}</Col>
             </Row>
+            {data.payment_rule && !data.payment_rule.includes('no_image') && (
+              <Row>
+                <Col span={12}>Upload by Admin</Col>
+                <Col span={12}>
+                  {data.payment_rule ?
+                    <img height="180px" src={`${IMAGEURL}/${data.payment_rule}`} alt="no_image" />
+                    : null}
+                </Col>
+              </Row>
+            )}
             {data.payment_proof && !data.payment_proof.includes('no_image') && (
               <Row>
-                <Col span={12}>Bukti bayar</Col>
+                <Col span={12}>Upload by Vendor</Col>
                 <Col span={12}>
-                  {data.payment_proof && data.payment_proof.includes('rentpayment') ?
-                    <img height="180px" src={`${IMAGEURL}/${data.payment_proof}`} alt="no_image" />
-                    : null}
-                  {data.payment_proof && !data.payment_proof.includes('rentpayment') ?
+                  {data.payment_proof ?
                     <img height="180px" src={`${IMAGECONSIGNMENTURL}/${data.payment_proof}`} alt="no_image" />
                     : null}
                 </Col>
