@@ -5,6 +5,7 @@ import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox,
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
+import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
 import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
 
@@ -1310,18 +1311,40 @@ class AdvancedForm extends Component {
               </FormItem>
               <FormItem label="Halal" {...formItemLayout}>
                 {getFieldDecorator('isHalal', {
-                  valuePropName: 'checked',
-                  initialValue: item.isHalal === undefined
-                    ? true
-                    : item.isHalal
-                })(<Checkbox>Halal</Checkbox>)}
+                  initialValue: item.isHalal
+                })(
+                  <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  >
+                    <Option value={1} key={1}>Blank</Option>
+                    <Option value={2} key={2}>Halal</Option>
+                    <Option value={3} key={3}>Non-halal</Option>
+                  </Select>
+                )}
+              </FormItem>
+              <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxType', {
+                  initialValue: modalType === 'add' ? 'E' : item.taxType,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Select>
+                  <Option value="E">Exclude (0%)</Option>
+                  <Option value="I">Include ({getVATPercentage()}%)</Option>
+                  {/* <Option value="S">Exclude ({getVATPercentage()}%)</Option> */}
+                  <Option value="O">Include ({getCountryTaxPercentage()}%)</Option>
+                  {/* <Option value="X">Exclude ({getCountryTaxPercentage()}%)</Option> */}
+                </Select>)}
               </FormItem>
               <FormItem label="Country" hasFeedback help="Usage in price tag" {...formItemLayout}>
                 {getFieldDecorator('countryName', {
                   initialValue: modalType === 'add' ? undefined : item.countryName,
                   rules: [
                     {
-                      required: true
+                      required: false
                     }
                   ]
                 })(<Select

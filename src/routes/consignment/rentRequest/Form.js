@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Select, Spin, DatePicker, Checkbox, Button, Row, InputNumber, Col, Modal, message } from 'antd'
 import moment from 'moment'
-import { getVATPercentage, getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import { getVATPercentage, getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { getConsignmentId } from 'utils/lstorage'
 
 const FormItem = Form.Item
@@ -101,8 +101,8 @@ const FormCounter = ({
       const requestParams = {
         header: {
           outlet_id: getConsignmentId(),
-          DPP: parseFloat(parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppExclude() : 1)).toFixed(2)),
-          PPN: parseFloat(parseFloat(getFieldValue('taxType') === 'I' ? (((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / getDenominatorPPNInclude() : getFieldValue('taxType') === 'S' ? ((parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppExclude() : 1))) * getDenominatorPPNExclude()) : 0).toFixed(2)),
+          DPP: parseFloat(parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppInclude() : 1)).toFixed(2)),
+          PPN: parseFloat(parseFloat(getFieldValue('taxType') === 'I' ? (((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / getDenominatorPPNInclude() : getFieldValue('taxType') === 'S' ? ((parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppInclude() : 1))) * getDenominatorPPNExclude()) : 0).toFixed(2)),
           discount: data.discount,
           final_price: (((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) * (getFieldValue('taxType') === 'S' ? (1 + getDenominatorPPNExclude()) : 1),
           period: data.period,
@@ -255,7 +255,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="DPP" hasFeedback {...formItemLayout}>
             <InputNumber
-              value={parseFloat(parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppExclude() : 1)).toFixed(2))}
+              value={parseFloat(parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppInclude() : 1)).toFixed(2))}
               formatter={value => `${value}`.toLocaleString()}
               disabled
               min={0}
@@ -267,7 +267,7 @@ const FormCounter = ({
             <InputNumber
               value={parseFloat(parseFloat(getFieldValue('taxType') === 'I' ?
                 ((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / getDenominatorPPNInclude())
-                : getFieldValue('taxType') === 'S' ? (parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppExclude() : 1)) * getDenominatorPPNExclude())
+                : getFieldValue('taxType') === 'S' ? (parseFloat((((getFieldValue('price') || 0) * (getFieldValue('period') || 0)) - (getFieldValue('discount') || 0)) / (getFieldValue('taxType') === 'I' ? getDenominatorDppInclude() : 1)) * getDenominatorPPNExclude())
                   : 0).toFixed(2))}
               formatter={value => `${value}`.toLocaleString()}
               disabled

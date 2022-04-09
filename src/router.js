@@ -1033,6 +1033,15 @@ const Routers = function ({ history, app }) {
             }, 'report-accounting-balance-sheet')
           }
         }, {
+          path: 'report/accounting/tax-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/taxReport'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/report/accounting/taxReport'))
+            }, 'report-accounting-tax-report')
+          }
+        }, {
           path: 'report/accounting/cash-flow',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

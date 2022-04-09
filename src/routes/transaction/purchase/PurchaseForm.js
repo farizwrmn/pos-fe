@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { DatePicker, Checkbox, message, Form, Modal, Input, Select, InputNumber, Collapse, Table, Col, Row, Button } from 'antd'
 import moment from 'moment'
 import { numberFormat, alertModal } from 'utils'
-import { getVATPercentage, getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import { getVATPercentage, getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { prefix } from 'utils/config.main'
 import Browse from './Browse'
 import ModalBrowse from './ModalBrowse'
@@ -91,7 +91,7 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
       } else {
         x[key].deliveryFee = 0
       }
-      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
+      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
       x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
