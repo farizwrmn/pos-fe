@@ -4,7 +4,7 @@ import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import moment from 'moment'
-import { getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from '../services/sequence'
 import {
   query,
@@ -266,7 +266,7 @@ export default modelExtend(pageModel, {
           } else {
             x[key].deliveryFee = 0
           }
-          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
+          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
           x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
           x[key].total = x[key].dpp + x[key].ppn
         }

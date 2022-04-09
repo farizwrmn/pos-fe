@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
-import { getVATPercentage, getDenominatorDppExclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import { getVATPercentage, getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { lstorage, numberFormat, alertModal } from 'utils'
 import { prefix } from 'utils/config.main'
 import Browse from './Browse'
@@ -81,7 +81,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
       } else {
         x[key].deliveryFee = 0
       }
-      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppExclude() : 1))
+      x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
       x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
       x[key].total = parseFloat(x[key].dpp + x[key].ppn)
     }
