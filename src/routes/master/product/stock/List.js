@@ -380,7 +380,9 @@ const List = ({ ...tableProps,
         bordered
         columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
           ? columns
-          : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'supplierId' && filtered.key !== 'margin')}
+          : (user.permissions.role === 'ADF' ?
+            columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'margin')
+            : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'supplierId' && filtered.key !== 'margin'))}
         simple
         scroll={{ x: 2000 }}
         rowKey={record => record.id}
