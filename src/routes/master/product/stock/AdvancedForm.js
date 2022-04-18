@@ -8,6 +8,7 @@ import { IMAGEURL, rest } from 'utils/config.company'
 import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
 import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
+import ModalGrabmartCampaign from './ModalGrabmartCampaign'
 
 const { apiCompanyURL } = rest
 const { Variant, Specification, Stock } = DataQuery
@@ -265,7 +266,9 @@ class AdvancedForm extends Component {
       listSpecification,
       listSpecificationCode,
       showProductModal,
+      onClickGrabmartCampaign,
       listShopeeCategoryRecommend,
+      modalGrabmartCampaignProps,
       form: {
         getFieldDecorator,
         validateFields,
@@ -1522,6 +1525,7 @@ class AdvancedForm extends Component {
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
               </FormItem>
+              {modalType === 'edit' ? (<Button type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Create Campaign</Button>) : null}
             </Card>
           </Col>
         </Row>
@@ -1545,6 +1549,7 @@ class AdvancedForm extends Component {
         {modalVariantVisible && <Variant {...modalVariantProps} />}
         {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
         {modalProductVisible && <Stock {...modalProductProps} />}
+        {modalGrabmartCampaignProps.visible && <ModalGrabmartCampaign {...modalGrabmartCampaignProps} />}
       </Form>
     )
   }

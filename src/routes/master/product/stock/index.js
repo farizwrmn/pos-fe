@@ -54,7 +54,9 @@ const ProductStock = ({ productcountry, stockExtraPriceStore, shopeeCategory, sp
     modalQuantityVisible,
     inventoryMode,
     lastTrans,
-    listInventory
+    listInventory,
+    modalGrabmartCampaignVisible,
+    modalGrabmartItem
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -283,7 +285,42 @@ const ProductStock = ({ productcountry, stockExtraPriceStore, shopeeCategory, sp
     })
   }
 
+  const modalGrabmartCampaignProps = {
+    title: 'Grabmart Campaign',
+    visible: modalGrabmartCampaignVisible,
+    item: modalGrabmartItem,
+    loading: loading.effects['grabmartCampaign/submit'] || loading.effects['grabmartCampaign/remove'] || loading.effects['grabmartCampaign/edit'],
+    onOk (item, reset) {
+      dispatch({
+        type: 'grabmartCampaign/submit',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onDelete (item, reset) {
+      dispatch({
+        type: 'grabmartCampaign/remove',
+        payload: {
+          item,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalGrabmartItem: {},
+          modalGrabmartCampaignVisible: false
+        }
+      })
+    }
+  }
+
   const formProps = {
+    modalGrabmartCampaignProps,
     listShopeeCategoryRecommend,
     listShopeeLogistic,
     listShopeeCategory,
@@ -328,6 +365,20 @@ const ProductStock = ({ productcountry, stockExtraPriceStore, shopeeCategory, sp
           data,
           location,
           reset
+        }
+      })
+    },
+    onClickGrabmartCampaign (productId) {
+      dispatch({
+        type: 'productstock/showGrabmartCampaign',
+        payload: {
+          productId
+        }
+      })
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          modalGrabmartCampaignVisible: true
         }
       })
     },
