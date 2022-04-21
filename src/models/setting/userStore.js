@@ -35,6 +35,7 @@ export default modelExtend(pageModel, {
           || location.pathname === '/accounts/payable-form'
           || location.pathname === '/inventory/transfer/invoice'
           || location.pathname === '/master/store-price'
+          || location.pathname === '/stock'
           || location.pathname === '/master/store-price-upload') {
           dispatch({
             type: 'getAllListStores'

@@ -1525,7 +1525,7 @@ class AdvancedForm extends Component {
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
               </FormItem>
-              {modalType === 'edit' ? (<Button type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Create Campaign</Button>) : null}
+              {modalType === 'edit' ? (<Button type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Grabmart Campaign</Button>) : null}
             </Card>
           </Col>
         </Row>

@@ -144,7 +144,7 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'updateState',
             payload: {
-              modalGrabmartItem: response.data
+              modalGrabmartItem: response.data || {}
             }
           })
         }
