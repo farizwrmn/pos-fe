@@ -6,9 +6,9 @@ import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
 import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
+import ModalGrabmartCampaign from 'components/ModalGrabmartCampaign'
 import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
-import ModalGrabmartCampaign from './ModalGrabmartCampaign'
 
 const { apiCompanyURL } = rest
 const { Variant, Specification, Stock } = DataQuery
@@ -1525,7 +1525,8 @@ class AdvancedForm extends Component {
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
               </FormItem>
-              {modalType === 'edit' ? (<Button type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Grabmart Campaign</Button>) : null}
+              <Button disabled={modalType === 'add'} type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Grabmart Campaign</Button>
+              {modalType === 'add' ? (<div>You can add campaign after the product is up into grabmart menu</div>) : null}
             </Card>
           </Col>
         </Row>

@@ -1783,14 +1783,6 @@ const Routers = function ({ history, app }) {
             }, 'integration-consignment')
           }
         }, {
-          path: 'integration/revenue-calculator',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/revenueCalculator'))
-              cb(null, require('./routes/integration/revenueCalculator'))
-            }, 'integration-revenue-calculator')
-          }
-        }, {
           path: 'integration/marketplace',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
