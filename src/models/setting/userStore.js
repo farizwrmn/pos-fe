@@ -36,6 +36,7 @@ export default modelExtend(pageModel, {
           || location.pathname === '/inventory/transfer/invoice'
           || location.pathname === '/master/store-price'
           || location.pathname === '/stock'
+          || location.pathname === '/integration/grabmart-campaign'
           || location.pathname === '/master/store-price-upload') {
           dispatch({
             type: 'getAllListStores'
