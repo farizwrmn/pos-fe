@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/integration/grabmartCampaign'
+import { query as queryAlwaysOn, add as addAlwaysOn, remove as removeAlwaysOn } from 'services/grabmart/alwaysOnProduct'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -13,6 +14,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    listAlwaysOn: [],
     modalType: 'add',
     activeKey: '0',
     list: [],
@@ -28,20 +30,65 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/integration/grabmart-campaign') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            dispatch({ type: 'query', payload: other })
+          }
+          if (activeKey === '2') {
+            dispatch({ type: 'queryAlwaysOn' })
+          }
         }
       })
     }
   },
 
   effects: {
+    * queryAlwaysOn (payload, { call, put }) {
+      const response = yield call(queryAlwaysOn, {
+        type: 'all'
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAlwaysOn: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * addAlwaysOn ({ payload }, { call, put }) {
+      const data = yield call(addAlwaysOn, payload.data)
+      if (data.success) {
+        yield put({
+          type: 'queryAlwaysOn'
+        })
+        message.success('Success add product')
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
+        throw data
+      }
+    },
+
+    * deleteAlwaysOn ({ payload }, { call, put }) {
+      const data = yield call(removeAlwaysOn, payload)
+      if (data.success) {
+        message.success('Success delete product')
+        yield put({ type: 'queryAlwaysOn' })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)

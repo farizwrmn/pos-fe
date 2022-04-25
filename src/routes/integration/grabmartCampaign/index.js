@@ -2,16 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
+import { Button, Tabs, Modal } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import AlwaysOnProduct from './AlwaysOnProduct'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ grabmartCampaign, userStore, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = grabmartCampaign
+const Counter = ({ grabmartCampaign, productstock, userStore, loading, dispatch, location, app }) => {
+  const { list, pagination, listAlwaysOn, modalType, currentItem, activeKey } = grabmartCampaign
   const { listAllStores } = userStore
+  const { list: listProduct } = productstock
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -106,6 +108,59 @@ const Counter = ({ grabmartCampaign, userStore, loading, dispatch, location, app
     }
   }
 
+  let timeout
+  const alwaysOnProductProps = {
+    listAlwaysOn,
+    listProduct,
+    loading,
+    fetching: loading.effects['productstock/query'],
+    showLov (models, data) {
+      console.log('showLov', models, data)
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      timeout = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
+    },
+    onSubmit (data) {
+      dispatch({
+        type: 'grabmartCampaign/addAlwaysOn',
+        payload: {
+          data
+        }
+      })
+    },
+    deleteItem (item) {
+      Modal.confirm({
+        title: `Delete ${item.product.productName}`,
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'grabmartCampaign/deleteAlwaysOn',
+            payload: item.id
+          })
+        }
+      })
+    }
+  }
+
   let moreButtonTab
   if (activeKey === '0') {
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
@@ -125,6 +180,13 @@ const Counter = ({ grabmartCampaign, userStore, loading, dispatch, location, app
             </div>
           }
         </TabPane>
+        <TabPane tab="Always On" key="2">
+          {activeKey === '2' && (
+            <div>
+              <AlwaysOnProduct {...alwaysOnProductProps} />
+            </div>
+          )}
+        </TabPane>
       </Tabs>
     </div>
   )
@@ -139,4 +201,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ grabmartCampaign, userStore, loading, app }) => ({ grabmartCampaign, userStore, loading, app }))(Counter)
+export default connect(({ grabmartCampaign, productstock, userStore, loading, app }) => ({ grabmartCampaign, productstock, userStore, loading, app }))(Counter)

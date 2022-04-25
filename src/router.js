@@ -1583,6 +1583,7 @@ const Routers = function ({ history, app }) {
           path: 'integration/grabmart-campaign',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/integration/grabmartCampaign'))
               cb(null, require('./routes/integration/grabmartCampaign'))
