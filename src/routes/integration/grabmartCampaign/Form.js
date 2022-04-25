@@ -31,6 +31,7 @@ const column = {
 class FormCounter extends Component {
   state = {
     endOpen: false,
+    endOpenWorking: false,
     currentStep: 0,
     firstStep: 'process',
     secondStep: 'wait',
@@ -46,6 +47,16 @@ class FormCounter extends Component {
 
   handleEndOpenChange = (open) => {
     this.setState({ endOpen: open })
+  }
+
+  handleStartWorkingOpenChange = (open) => {
+    if (!open) {
+      this.setState({ endOpenWorking: true })
+    }
+  }
+
+  handleEndWorkingOpenChange = (open) => {
+    this.setState({ endOpenWorking: open })
   }
 
   goToStepTwo = () => {
@@ -145,6 +156,9 @@ class FormCounter extends Component {
         const data = {
           ...getFieldsValue()
         }
+        data.productType = 'PRODUCT'
+        data.availableDate = data.availableDate && data.availableDate.length > 0 ? data.availableDate.toString() : null
+        data.availableStore = data.availableStore && data.availableStore.length > 0 ? data.availableStore.toString() : null
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
@@ -189,10 +203,11 @@ class FormCounter extends Component {
       })
     }
 
-    const childrenProduct = listProduct.length > 0 ? listProduct.map(x => (<Option key={x.id}>{`${x.product.productName} (${x.product.productCode})`}</Option>)) : []
+    const childrenProduct = listProduct.length > 0 ? listProduct.map(x => (<Option key={x.productId}>{`${x.product.productName} (${x.product.productCode})`}</Option>)) : []
     let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
     const {
       endOpen,
+      endOpenWorking,
       currentStep,
       firstStep,
       secondStep,
@@ -263,16 +278,6 @@ class FormCounter extends Component {
                   </Select>
                 )}
               </FormItem>
-              <FormItem label="Discount Cap" hasFeedback={currentStep === 1} {...formItemLayout}>
-                {getFieldDecorator('discountCap', {
-                  initialValue: item.discountCap || 0,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<InputNumber style={{ width: '100%' }} min={0} />)}
-              </FormItem>
               <FormItem label="Discount Value" hasFeedback={currentStep === 1} {...formItemLayout}>
                 {getFieldDecorator('discountValue', {
                   initialValue: item.discountValue || 1,
@@ -282,6 +287,16 @@ class FormCounter extends Component {
                     }
                   ]
                 })(<InputNumber style={{ width: '100%' }} min={1} />)}
+              </FormItem>
+              <FormItem label="Discount Limit" hasFeedback={currentStep === 1} {...formItemLayout}>
+                {getFieldDecorator('discountCap', {
+                  initialValue: item.discountCap || 0,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<InputNumber style={{ width: '100%' }} min={0} />)}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
                 <Button type="default" style={{ marginRight: '10px' }} onClick={this.backToStepOne}>Back</Button>
@@ -377,9 +392,58 @@ class FormCounter extends Component {
                     showTime
                     format="YYYY-MM-DD HH:mm:ss"
                     placeholder="End"
-                    onChange={this.onEndChange}
                     open={endOpen}
                     onOpenChange={this.handleEndOpenChange}
+                  />
+                )}
+              </FormItem>
+
+              <FormItem label="Start Working Hour" hasFeedback={currentStep === 2} {...formItemLayout}>
+                {getFieldDecorator('conditionsWorkingHourStartTime', {
+                  initialValue: item.conditionsWorkingHourStartTime,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    disabledDate={(startValue) => {
+                      const endValue = getFieldValue('conditionsWorkingHourEndTime')
+                      if (!startValue || !endValue) {
+                        return startValue < moment().startOf('day')
+                      }
+                      return startValue < moment().startOf('day') || startValue.valueOf() > endValue.valueOf()
+                    }}
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="Start"
+                    onOpenChange={this.handleStartWorkingOpenChange}
+                  />
+                )}
+              </FormItem>
+              <FormItem label="End Working Hour" hasFeedback={currentStep === 2} {...formItemLayout}>
+                {getFieldDecorator('conditionsWorkingHourEndTime', {
+                  initialValue: item.conditionsWorkingHourEndTime,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    disabledDate={(endValue) => {
+                      const startValue = getFieldValue('conditionsWorkingHourStartTime')
+                      if (!endValue || !startValue) {
+                        return endValue < moment().startOf('day')
+                      }
+                      return endValue < moment().startOf('day') || endValue.valueOf() <= startValue.valueOf()
+                    }}
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="End"
+                    open={endOpenWorking}
+                    onOpenChange={this.handleEndWorkingOpenChange}
                   />
                 )}
               </FormItem>
@@ -415,7 +479,7 @@ class FormCounter extends Component {
                   rules: [
                     {
                       required: true,
-                      pattern: /^[a-z0-9/\n _-]{20,255}$/i,
+                      pattern: /^[a-z0-9/\n _-]{5,255}$/i,
                       message: 'Max 2000 character'
                     }
                   ]
