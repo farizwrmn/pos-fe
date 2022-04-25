@@ -1590,6 +1590,14 @@ const Routers = function ({ history, app }) {
             }, 'integration-grabmart-campaign')
           }
         }, {
+          path: 'integration/grabmart-campaign/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/grabmartCampaign'))
+              cb(null, require('./routes/integration/grabmartCampaign/detail'))
+            }, 'integration-grabmart-campaign-detail')
+          }
+        }, {
           path: 'setting/periods',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

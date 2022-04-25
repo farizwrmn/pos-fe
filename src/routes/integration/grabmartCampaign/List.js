@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
+import { Link } from 'dva/router'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -21,7 +22,14 @@ const List = ({ ...tableProps, deleteItem }) => {
     {
       title: 'Campaign Name',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (text, record) => {
+        return (
+          <Link to={`/integration/grabmart-campaign/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
       title: 'Memo',

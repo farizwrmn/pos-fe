@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
+import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/integration/grabmartCampaign'
+import { query, queryById, add, uploadGrabmartCampaign, edit, remove } from 'services/integration/grabmartCampaign'
 import { query as queryAlwaysOn, add as addAlwaysOn, remove as removeAlwaysOn } from 'services/grabmart/alwaysOnProduct'
 import { pageModel } from '../common'
 
@@ -14,7 +16,9 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    data: {},
     listAlwaysOn: [],
+    listDetail: [],
     modalType: 'add',
     activeKey: '0',
     list: [],
@@ -30,6 +34,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/integration/grabmart-campaign/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
         if (pathname === '/integration/grabmart-campaign') {
           dispatch({
             type: 'updateState',
@@ -49,6 +63,22 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { purchase, campaignMapProduct, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: campaignMapProduct || []
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * queryAlwaysOn (payload, { call, put }) {
       const response = yield call(queryAlwaysOn, {
         type: 'all'
@@ -77,6 +107,25 @@ export default modelExtend(pageModel, {
         }
       } else {
         throw data
+      }
+    },
+
+    * uploadGrabmart ({ payload }, { call, put }) {
+      const data = yield call(uploadGrabmartCampaign, payload.data)
+      if (data.success) {
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            id: payload.data.campaignId,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        message.success('Success upload to grabmart')
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
+        message.success(data.data.message)
       }
     },
 
@@ -130,6 +179,9 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        yield put(routerRedux.push({
+          pathname: `/integration/grabmart-campaign/${data.data.id}`
+        }))
         if (payload.reset) {
           payload.reset()
         }

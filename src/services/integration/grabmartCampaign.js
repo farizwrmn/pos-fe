@@ -1,5 +1,15 @@
 import { request, crypt } from 'utils'
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/grabmart-campaign/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
