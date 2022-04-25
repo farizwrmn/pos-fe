@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Button, Select, Input, Steps, InputNumber, Row, Col, DatePicker, Form } from 'antd'
+import { Modal, Button, Spin, Select, Input, Steps, InputNumber, Row, Col, DatePicker, Form } from 'antd'
 import moment from 'moment'
 
 const { TextArea } = Input
@@ -113,6 +113,8 @@ class FormCounter extends Component {
       item = {},
       onSubmit,
       modalType,
+      listProduct,
+      fetching,
       button,
       form: { getFieldDecorator, getFieldValue, validateFields, getFieldsValue, resetFields },
       listAllStores
@@ -187,6 +189,7 @@ class FormCounter extends Component {
       })
     }
 
+    const childrenProduct = listProduct.length > 0 ? listProduct.map(x => (<Option key={x.id}>{`${x.product.productName} (${x.product.productCode})`}</Option>)) : []
     let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
     const {
       endOpen,
@@ -219,14 +222,26 @@ class FormCounter extends Component {
                 })(<Input maxLength={255} />)}
               </FormItem>
               <FormItem label="Item" hasFeedback={currentStep === 0} {...formItemLayout}>
-                {getFieldDecorator('item', {
-                  initialValue: item.item,
+                {getFieldDecorator('productId', {
+                  initialValue: item.productId,
                   rules: [
                     {
                       required: true
                     }
                   ]
-                })(<Input maxLength={255} />)}
+                })(
+                  <Select
+                    allowClear
+                    showSearch
+                    size="large"
+                    style={{ width: '100%' }}
+                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                    placeholder="Choose Product"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {childrenProduct}
+                  </Select>
+                )}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
                 <Button type="primary" onClick={handleFirstStep}>Next</Button>

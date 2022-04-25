@@ -40,7 +40,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') {
             dispatch({ type: 'query', payload: other })
           }
-          if (activeKey === '2') {
+          if (activeKey === '0' || activeKey === '2') {
             dispatch({ type: 'queryAlwaysOn' })
           }
         }

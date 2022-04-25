@@ -78,6 +78,8 @@ const Counter = ({ grabmartCampaign, productstock, userStore, loading, dispatch,
   }
 
   const formProps = {
+    listProduct: listAlwaysOn,
+    fetching: loading.effects['productstock/query'],
     listAllStores,
     modalType,
     item: currentItem,
