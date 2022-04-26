@@ -72,7 +72,7 @@ const Detail = ({ grabmartCampaign, loading, dispatch }) => {
 
   return (<div className="wrapper">
     <Row>
-      <Col lg={12}>
+      <Col lg={10}>
         <div className="content-inner-zero-min-height">
           <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
           <h1>Invoice Info</h1>
@@ -81,7 +81,7 @@ const Detail = ({ grabmartCampaign, loading, dispatch }) => {
           </div>
         </div>
       </Col>
-      <Col lg={12}>
+      <Col lg={14}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
           <Row style={{ padding: '10px', margin: '4px' }}>

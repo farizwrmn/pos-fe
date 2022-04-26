@@ -15,10 +15,16 @@ const ListDetail = ({ loading, ...tableProps, onUploadStore, editList }) => {
       width: 100
     },
     {
+      title: 'Response',
+      dataIndex: 'response',
+      key: 'response',
+      width: 200
+    },
+    {
       title: 'Status',
       dataIndex: 'grabCampaignId',
       key: 'grabCampaignId',
-      width: 200,
+      width: 100,
       render: (text, record) => {
         if (text) {
           return (<Tag color="green">Uploaded</Tag>)
