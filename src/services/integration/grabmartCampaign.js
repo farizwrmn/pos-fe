@@ -48,3 +48,14 @@ export async function edit (params) {
     headers: apiHeaderToken
   })
 }
+
+
+export async function uploadGrabmartCampaign (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/grabmart-campaign-upload/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
