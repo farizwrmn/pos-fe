@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import moment from 'moment'
 import {
   Row,
   Col,
@@ -35,7 +36,7 @@ const Detail = ({ grabmartCampaign, loading, dispatch }) => {
   const formDetailProps = {
     dataSource: listDetail,
     loading,
-    onUploadStore (data) {
+    onUploadStore (item) {
       Modal.confirm({
         title: 'Upload to grabmart campaign',
         content: 'Are you sure ?',
@@ -43,7 +44,25 @@ const Detail = ({ grabmartCampaign, loading, dispatch }) => {
           dispatch({
             type: 'grabmartCampaign/uploadGrabmart',
             payload: {
-              data
+              data: {
+                id: item.id,
+                campaignId: data.id,
+                merchantId: item.grabStore.merchantId,
+                name: data.name,
+                quotasTotalCount: data.quotasTotalCount,
+                quotasTotalCountPerUser: data.quotasTotalCountPerUser,
+                conditionsStartTime: data.conditionsStartTime,
+                conditionsEndTime: data.conditionsEndTime,
+                conditionsWorkingHourStartTime: moment(data.conditionsWorkingHourStartTime, 'HH:mm:ss').format('HH:mm'),
+                conditionsWorkingHourEndTime: moment(data.conditionsWorkingHourEndTime, 'HH:mm:ss').format('HH:mm'),
+                conditionsEaterType: data.conditionsEaterType,
+                conditionsMinBasketAmount: data.conditionsMinBasketAmount,
+                discountCap: data.discountCap,
+                discountValue: data.discountValue,
+                discountType: data.discountType,
+                discountScopeType: data.discountScopeType,
+                discountObjectId: item.grabProductId
+              }
             }
           })
         }

@@ -286,7 +286,7 @@ class FormCounter extends Component {
                       required: true
                     }
                   ]
-                })(<InputNumber style={{ width: '100%' }} min={1} />)}
+                })(<InputNumber style={{ width: '100%' }} min={1} max={getFieldValue('discountType') === 'percentage' ? 100 : 1000000} />)}
               </FormItem>
               <FormItem label="Discount Limit" hasFeedback={currentStep === 1} {...formItemLayout}>
                 {getFieldDecorator('discountCap', {
