@@ -2,18 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag, Button } from 'antd'
 
-const ListDetail = ({ ...tableProps, loading, onUploadStore, editList }) => {
+const ListDetail = ({ loading, ...tableProps, onUploadStore, editList }) => {
   const handleMenuClick = (record) => {
     editList(record)
   }
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 40
-    },
     {
       title: 'StoreName',
       dataIndex: 'store.storeName',
@@ -37,7 +31,9 @@ const ListDetail = ({ ...tableProps, loading, onUploadStore, editList }) => {
   return (
     <div>
       <Table {...tableProps}
+        loading={loading.effects['grabmartCampaign/queryDetail']}
         bordered={false}
+        pagination={false}
         scroll={{ x: 500, y: 270 }}
         columns={columns}
         simple
