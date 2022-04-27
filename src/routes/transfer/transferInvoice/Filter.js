@@ -89,7 +89,7 @@ const Filter = ({
                 allowClear
                 size="large"
                 style={{ minWidth: '300px' }}
-                placeholder="Choose StoreId"
+                placeholder="Choose Store"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {childrenTransNo}

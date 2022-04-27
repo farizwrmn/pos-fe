@@ -223,6 +223,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/store'))
               registerModel(app, require('./models/shopee/shopeeCategory'))
               cb(null, require('./routes/master/product/stock'))
@@ -1579,6 +1580,24 @@ const Routers = function ({ history, app }) {
             }, 'integration-shopee-queue')
           }
         }, {
+          path: 'integration/grabmart-campaign',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/integration/grabmartCampaign'))
+              cb(null, require('./routes/integration/grabmartCampaign'))
+            }, 'integration-grabmart-campaign')
+          }
+        }, {
+          path: 'integration/grabmart-campaign/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/integration/grabmartCampaign'))
+              cb(null, require('./routes/integration/grabmartCampaign/detail'))
+            }, 'integration-grabmart-campaign-detail')
+          }
+        }, {
           path: 'setting/periods',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1780,14 +1799,6 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               cb(null, require('./routes/integration/consignment'))
             }, 'integration-consignment')
-          }
-        }, {
-          path: 'integration/revenue-calculator',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/revenueCalculator'))
-              cb(null, require('./routes/integration/revenueCalculator'))
-            }, 'integration-revenue-calculator')
           }
         }, {
           path: 'integration/marketplace',

@@ -9,6 +9,7 @@ import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
+import { activeGrabCampaign } from 'services/grab/grabCampaign'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -34,6 +35,8 @@ export default modelExtend(pageModel, {
     show: 1,
     showModal: false,
     showModalProduct: false,
+    modalGrabmartItem: {},
+    modalGrabmartCampaignVisible: false,
     modalProductType: '',
     listPrintAllStock: [],
     listInventory: [],
@@ -132,6 +135,31 @@ export default modelExtend(pageModel, {
           payload: { listInventory: dataType.data }
         })
       }
+    },
+
+    * showGrabmartCampaign ({ payload = {} }, { call, put }) {
+      if (payload && payload.productId) {
+        const response = yield call(activeGrabCampaign, payload)
+        if (response.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalGrabmartItem: response.data || {}
+            }
+          })
+        }
+      } else {
+        message.warning('Require Product ID')
+      }
+    },
+
+    * hideGrabmartCampaign (payload, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalGrabmartCampaignVisible: false
+        }
+      })
     },
 
     * queryLastAdjust ({ payload = {} }, { call, put }) {
@@ -252,12 +280,12 @@ export default modelExtend(pageModel, {
     * showProductQty ({ payload }, { call, put }) {
       let { data } = payload
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const newData = data.map(x => x.id)
+      const newData = data && data.map(x => x.id)
 
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
       if (listProductData.success) {
         for (let n = 0; n < (listProductData.data || []).length; n += 1) {
-          data = data.map((x) => {
+          data = data && data.map((x) => {
             if (x.id === listProductData.data[n].id) {
               const { count, ...other } = x
               return {
@@ -284,7 +312,7 @@ export default modelExtend(pageModel, {
     * showProductStoreQty ({ payload }, { call, put }) {
       let { data } = payload
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const newData = data.map(x => x.id)
+      const newData = data && data.map(x => x.id)
 
       const listProductData = yield call(queryPOSproductStore, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
       if (listProductData.success) {
@@ -430,6 +458,12 @@ export default modelExtend(pageModel, {
         type: 'updateState',
         payload: {
           currentItem: payload.item
+        }
+      })
+      yield put({
+        type: 'showGrabmartCampaign',
+        payload: {
+          productId: payload.item.id
         }
       })
     },
@@ -634,7 +668,7 @@ export default modelExtend(pageModel, {
       const reg = new RegExp(text, 'gi')
       let productNames
       if (text.length > 0) {
-        productNames = data.map((record) => {
+        productNames = data && data.map((record) => {
           const match = record.productName.match(reg)
           if (!match) {
             return null

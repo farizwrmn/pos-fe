@@ -110,7 +110,7 @@ const ModalItem = ({
               mode={modalType === 'add' ? 'multiple' : 'default'}
               size="large"
               style={{ width: '100%' }}
-              placeholder="Choose StoreId"
+              placeholder="Choose Store"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {listStore}
