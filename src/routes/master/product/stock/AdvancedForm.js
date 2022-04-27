@@ -1525,8 +1525,8 @@ class AdvancedForm extends Component {
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
               </FormItem>
-              <Button disabled={modalType === 'add'} type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Grabmart Campaign</Button>
-              {modalType === 'add' ? (<div>You can add campaign after the product is up into grabmart menu</div>) : null}
+              {/* <Button disabled={modalType === 'add'} type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Grabmart Campaign</Button>
+              {modalType === 'add' ? (<div>You can add campaign after the product is up into grabmart menu</div>) : null} */}
             </Card>
           </Col>
         </Row>
