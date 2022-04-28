@@ -12,6 +12,7 @@ import {
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { queryPaymentSplit } from 'services/payment/payment'
+import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { validateVoucher } from '../../services/marketing/voucher'
@@ -76,6 +77,7 @@ export default {
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
     standardInvoice: true,
+    modalGrabmartCodeVisible: false,
     currentReplaceBundle: {},
     currentBuildComponent: {},
     list: [],
@@ -3100,6 +3102,7 @@ export default {
       localStorage.removeItem('service_detail')
       localStorage.removeItem('consignment')
       localStorage.removeItem('voucher_list')
+      localStorage.removeItem('payShortcutSelected')
       localStorage.removeItem('cashier_trans')
       localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
       if (!defaultValue) {
@@ -3159,6 +3162,21 @@ export default {
 
     * backPrevious ({ payload = {} }, { put }) {
       yield put({ type: 'hideModalShift', payload })
+    },
+
+    * submitGrabmartCode ({ payload = {} }, { call, put }) {
+      console.log('payload', payload)
+      const response = yield call(queryGrabmartCode, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalGrabmartCodeVisible: false
+          }
+        })
+      } else {
+        throw response
+      }
     },
 
     * getServiceUsageReminder ({ payload = {} }, { call, put }) {
