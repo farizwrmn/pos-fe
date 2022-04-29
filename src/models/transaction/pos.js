@@ -534,7 +534,9 @@ export default {
         && selectedPaymentShortcut.memberId == 0) {
         for (let key in dataPos) {
           const item = dataPos[key]
-          dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+          if (!item.bundleId) {
+            dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+          }
           dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
           dataPos[key].price = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
           dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
@@ -547,7 +549,9 @@ export default {
           if (memberInformation.memberSellPrice === 'sellPrice') {
             memberInformation.memberSellPrice = 'retailPrice'
           }
-          dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+          if (!item.bundleId) {
+            dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+          }
           dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
           dataPos[key].price = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
           dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
