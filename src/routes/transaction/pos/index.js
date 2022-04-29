@@ -140,7 +140,8 @@ const Pos = ({
     listVoucher,
     modalVoucherVisible,
     modalCashRegisterVisible,
-    modalGrabmartCodeVisible
+    modalGrabmartCodeVisible,
+    currentGrabOrder
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -2209,6 +2210,22 @@ const Pos = ({
                   <div style={{ fontSize: '16px' }}>Total: <strong>{totalPayment.toLocaleString()}</strong></div>
                   <div style={{ fontSize: '16px' }}>Service Charge: <strong>{dineIn.toLocaleString()}</strong></div>
                   <div style={{ fontSize: '16px' }}>Netto: <strong>{(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()}</strong></div>
+                  {currentGrabOrder
+                    && currentGrabOrder.campaigns
+                    && currentGrabOrder.campaigns
+                      .filter(filtered => filtered && filtered.appliedItemIDs && filtered.appliedItemIDs.length > 0)
+                      .map((item) => {
+                        return (
+                          <Tag
+                            style={{ marginBottom: '10px' }}
+                            key={item.id}
+                            closable={false}
+                            color="green"
+                          >
+                            {`${item.campaignName} => Total: Rp ${(item.deductedAmount || 0) / 100}`}
+                          </Tag>
+                        )
+                      })}
                 </div>
               </Col>
             </Row>
