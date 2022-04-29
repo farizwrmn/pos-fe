@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import ListDetail from './ListDetail'
 
-const formPayment = ({
+const TransDetail = ({
   onUploadStore,
   onDeleteStore,
   dataSource,
@@ -34,7 +34,7 @@ const formPayment = ({
   )
 }
 
-formPayment.propTypes = {
+TransDetail.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
@@ -45,4 +45,4 @@ formPayment.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(formPayment)
+export default Form.create()(TransDetail)
