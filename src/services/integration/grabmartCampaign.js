@@ -59,3 +59,14 @@ export async function uploadGrabmartCampaign (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function deleteGrabmartCampaign (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/grabmart-campaign-delete/${params.id}`,
+    method: 'delete',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+

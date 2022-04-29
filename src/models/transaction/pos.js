@@ -3203,6 +3203,9 @@ export default {
         type: 'pos/setPaymentShortcut'
       })
       yield put({
+        type: 'pos/getGrabmartOrder'
+      })
+      yield put({
         type: 'updateState',
         payload: {
           currentBundlePayment: {},

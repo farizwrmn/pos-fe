@@ -8,6 +8,7 @@ import ListDetail from './ListDetail'
 
 const formPayment = ({
   onUploadStore,
+  onDeleteStore,
   dataSource,
   loading,
   form: {
@@ -16,6 +17,7 @@ const formPayment = ({
 }) => {
   const listProps = {
     onUploadStore,
+    onDeleteStore,
     dataSource,
     loading,
     editList () {

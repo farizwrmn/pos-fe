@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
-import { query, queryById, add, uploadGrabmartCampaign, edit, remove } from 'services/integration/grabmartCampaign'
+import { query, queryById, add, uploadGrabmartCampaign, deleteGrabmartCampaign, edit, remove } from 'services/integration/grabmartCampaign'
 import { query as queryAlwaysOn, add as addAlwaysOn, remove as removeAlwaysOn } from 'services/grabmart/alwaysOnProduct'
 import { pageModel } from '../common'
 
@@ -112,6 +112,25 @@ export default modelExtend(pageModel, {
 
     * uploadGrabmart ({ payload }, { call, put }) {
       const data = yield call(uploadGrabmartCampaign, payload.data)
+      if (data.success) {
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            id: payload.data.campaignId,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        message.success('Success upload to grabmart')
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
+        message.success(data.data.message)
+      }
+    },
+
+    * deleteGrabmart ({ payload }, { call, put }) {
+      const data = yield call(deleteGrabmartCampaign, payload.data)
       if (data.success) {
         yield put({
           type: 'queryDetail',
