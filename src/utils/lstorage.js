@@ -99,6 +99,14 @@ const setPaymentShortcutSelected = (priceList) => {
   return localStorage.setItem('payShortcutSelected', JSON.stringify(priceList || '{}'))
 }
 
+const getGrabmartOrder = () => {
+  return localStorage.getItem('grabmartOrder') ? JSON.parse(localStorage.getItem('grabmartOrder')) : []
+}
+
+const setGrabmartOrder = (grabOrder) => {
+  return localStorage.setItem('grabmartOrder', JSON.stringify(grabOrder || '{}'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -314,5 +322,7 @@ module.exports = {
   removeQrisImage,
   getShopeeRequireLogin,
   setShopeeRequireLogin,
-  getConsignmentId
+  getConsignmentId,
+  getGrabmartOrder,
+  setGrabmartOrder
 }

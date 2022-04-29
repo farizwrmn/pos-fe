@@ -60,7 +60,6 @@ export default {
         type: 'setNull',
         payload: date
       })
-      console.log('payload', payload)
       const data = yield call(generalLedger, payload)
       if (data.success) {
         yield put({

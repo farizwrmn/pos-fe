@@ -800,7 +800,6 @@ const Pos = ({
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,
     onOk (item, reset) {
-      console.log('item', item)
       dispatch({
         type: 'pettyCashDetail/insertExpense',
         payload: {
@@ -1006,6 +1005,7 @@ const Pos = ({
   }
 
   const chooseProduct = (item) => {
+    console.log('chooseProduct', item)
     dispatch({
       type: 'pos/chooseProduct',
       payload: {
@@ -1716,16 +1716,24 @@ const Pos = ({
           storeId: lstorage.getCurrentUserStore()
         }
       })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalGrabmartCodeVisible: false
+        }
+      })
     }
   }
 
   const handleChangeDineIn = (event, type, item) => {
-    console.log('item', item)
     if (item.typeCode === 'GM') {
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalGrabmartCodeVisible: true
+          modalGrabmartCodeVisible: true,
+          modalGrabmartCodeItem: item
         }
       })
     } else {

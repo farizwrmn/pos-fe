@@ -5,7 +5,6 @@ import styles from './index.less'
 import GroupItem from './GroupItem'
 
 const GroupShow = ({ item }) => {
-  console.log('item', item)
   return (
     <div className={styles.item}>
       <Row>

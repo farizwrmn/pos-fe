@@ -284,6 +284,8 @@ export default {
                 localStorage.removeItem('cashier_trans')
                 localStorage.removeItem('service_detail')
                 localStorage.removeItem('consignment')
+                localStorage.removeItem('payShortcutSelected')
+                localStorage.removeItem('grabmartOrder')
                 yield localStorage.removeItem('member')
                 yield localStorage.removeItem('memberUnit')
                 yield localStorage.removeItem('mechanic')
@@ -302,6 +304,9 @@ export default {
                 })
                 yield put({
                   type: 'pos/setPaymentShortcut'
+                })
+                yield put({
+                  type: 'pos/getGrabmartOrder'
                 })
                 yield put({
                   type: 'pos/setDefaultMember'
