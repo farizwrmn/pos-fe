@@ -92,7 +92,7 @@ const setPaymentShortcut = (priceList) => {
 }
 
 const getPaymentShortcutSelected = () => {
-  return localStorage.getItem('payShortcutSelected') ? JSON.parse(localStorage.getItem('payShortcutSelected')) : []
+  return localStorage.getItem('payShortcutSelected') ? JSON.parse(localStorage.getItem('payShortcutSelected')) : {}
 }
 
 const setPaymentShortcutSelected = (priceList) => {
@@ -100,7 +100,7 @@ const setPaymentShortcutSelected = (priceList) => {
 }
 
 const getGrabmartOrder = () => {
-  return localStorage.getItem('grabmartOrder') ? JSON.parse(localStorage.getItem('grabmartOrder')) : []
+  return localStorage.getItem('grabmartOrder') ? JSON.parse(localStorage.getItem('grabmartOrder')) : {}
 }
 
 const setGrabmartOrder = (grabOrder) => {
