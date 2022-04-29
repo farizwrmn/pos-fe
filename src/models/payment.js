@@ -247,6 +247,7 @@ export default {
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
+              grabOrder: lstorage.getGrabmartOrder(),
               transNo: trans,
               taxType: companySetting,
               taxInvoiceNo: payload.taxInfo.taxInvoiceNo,
