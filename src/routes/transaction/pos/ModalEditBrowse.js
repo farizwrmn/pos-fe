@@ -4,7 +4,7 @@ import PaymentList from './PaymentList'
 import ServiceList from './ServiceList'
 import ConsignmentList from './ConsignmentList'
 
-const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
+const ModalEditBrowse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChooseItem, totalItem, onChangeTotalItem, ...modalProps }) => {
   const { currentBuildComponent, pagination, listMechanic, itemPayment, itemService, itemConsignment, modalType, isMotion } = pos
   let title = ''
   if (modalType === 'modalPayment') {
@@ -49,7 +49,7 @@ const Browse = ({ location, onChange, dispatch, pos, loading, DeleteItem, onChoo
   )
 }
 
-Browse.propTypes = {
+ModalEditBrowse.propTypes = {
   pos: PropTypes.object,
   location: PropTypes.object,
   loading: PropTypes.object,
@@ -59,4 +59,4 @@ Browse.propTypes = {
   totalItem: PropTypes.string
 }
 
-export default Browse
+export default ModalEditBrowse

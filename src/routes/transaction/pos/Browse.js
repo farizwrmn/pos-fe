@@ -8,8 +8,6 @@ import ListProductLock from './ListProductLock'
 import ListService from './ListService'
 import ListWorkOrder from './ListWorkOrder'
 import ListQueue from './ListQueue'
-// import PaymentList from './PaymentList'
-// import ServiceList from './ServiceList'
 import ListAsset from './ListAsset'
 import ListConsignment from './ListConsignment'
 
@@ -77,8 +75,6 @@ const Browse = ({ location, showProductQty, onChange, dispatch, pos, loading, De
       {(modalType === 'browseService') && <ListService {...listProps} />}
       {(modalType === 'browseWorkOrder') && <ListWorkOrder {...listProps} />}
       {(modalType === 'queue') && <ListQueue {...listProps} />}
-      {/* {(modalType === 'modalPayment') && <PaymentList {...listProps} />}
-      {(modalType === 'modalService') && <ServiceList {...listProps} />} */}
     </Modal>
   )
 }

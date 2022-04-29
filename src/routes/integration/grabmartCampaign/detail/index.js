@@ -36,9 +36,25 @@ const Detail = ({ grabmartCampaign, loading, dispatch }) => {
   const formDetailProps = {
     dataSource: listDetail,
     loading,
+    onDeleteStore (item) {
+      Modal.confirm({
+        title: 'Delete this campaign',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'grabmartCampaign/deleteGrabmart',
+            payload: {
+              data: {
+                id: item.id
+              }
+            }
+          })
+        }
+      })
+    },
     onUploadStore (item) {
       Modal.confirm({
-        title: 'Upload to grabmart campaign',
+        title: 'Upload to grabmart campaign; ETA: 5 Minutes',
         content: 'Are you sure ?',
         onOk () {
           dispatch({

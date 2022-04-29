@@ -12,6 +12,7 @@ import {
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { queryPaymentSplit } from 'services/payment/payment'
+import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { validateVoucher } from '../../services/marketing/voucher'
@@ -62,10 +63,56 @@ const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 const {
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setServiceTrans, setConsignment,
-  getVoucherList, setVoucherList
+  getVoucherList, setVoucherList,
+  getGrabmartOrder, setGrabmartOrder
 } = lstorage
 
 const { updateCashierTrans } = cashierService
+
+const getDiscountByProductCode = (currentGrabOrder, productCode) => {
+  let discount = 0
+  const filteredCampaign = currentGrabOrder
+    .campaignItem
+    .filter((filtered) => {
+      if (!filtered) return false
+      const splitTheObject = filtered.split('-')
+      if (splitTheObject
+        && splitTheObject.length === 3
+        && splitTheObject[2] === productCode) {
+        return true
+      }
+      return false
+    })
+  if (filteredCampaign && filteredCampaign[0]) {
+    const filteredCampaignOrder = currentGrabOrder
+      .campaigns
+      .filter((filtered) => {
+        if (filtered && filtered.appliedItemIDs && filtered.appliedItemIDs.length > 0) {
+          const selectedAppliedItems = filtered.appliedItemIDs.filter((filtered) => {
+            if (!filtered) return false
+            const splitTheObject = filtered.split('-')
+            if (splitTheObject
+              && splitTheObject.length === 3
+              && splitTheObject[2] === productCode) {
+              return true
+            }
+            return false
+          })
+          if (selectedAppliedItems && selectedAppliedItems[0]) {
+            return true
+          }
+          return false
+        }
+        return false
+      })
+    if (filteredCampaignOrder
+      && filteredCampaignOrder[0]
+      && filteredCampaignOrder[0].deductedAmount > 0) {
+      discount = filteredCampaignOrder[0].deductedAmount / 100
+    }
+  }
+  return discount
+}
 
 export default {
 
@@ -76,6 +123,9 @@ export default {
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
     standardInvoice: true,
+    modalGrabmartCodeVisible: false,
+    modalGrabmartCodeItem: {},
+    currentGrabOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
     list: [],
@@ -241,6 +291,9 @@ export default {
           })
           dispatch({
             type: 'setPaymentShortcut'
+          })
+          dispatch({
+            type: 'getGrabmartOrder'
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry' || location.pathname === '/journal-entry') {
@@ -469,6 +522,7 @@ export default {
     },
 
     * changeDineIn ({ payload }, { select, put }) {
+      const currentGrabOrder = getGrabmartOrder()
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
       const { typePembelian, selectedPaymentShortcut } = payload
@@ -480,9 +534,12 @@ export default {
         && selectedPaymentShortcut.memberId == 0) {
         for (let key in dataPos) {
           const item = dataPos[key]
+          if (!item.bundleId) {
+            dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+          }
           dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
           dataPos[key].price = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
-          dataPos[key].total = dataPos[key].sellPrice * item.qty
+          dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
         }
       }
       // eslint-disable-next-line eqeqeq
@@ -492,9 +549,12 @@ export default {
           if (memberInformation.memberSellPrice === 'sellPrice') {
             memberInformation.memberSellPrice = 'retailPrice'
           }
+          if (!item.bundleId) {
+            dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+          }
           dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
           dataPos[key].price = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
-          dataPos[key].total = dataPos[key].sellPrice * item.qty
+          dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
         }
       }
 
@@ -702,6 +762,16 @@ export default {
           }
         })
       }
+    },
+
+    * getGrabmartOrder (payload, { put }) {
+      const currentGrabOrder = getGrabmartOrder()
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentGrabOrder
+        }
+      })
     },
 
     * setPaymentShortcut ({ payload = {} }, { put }) {
@@ -2494,6 +2564,7 @@ export default {
     },
 
     * chooseProduct ({ payload }, { select, put }) {
+      const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
       const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
@@ -2580,6 +2651,13 @@ export default {
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
           }
+          if (!((currentBuildComponent || {}).no)
+            && !((currentReward || {}).categoryCode)
+            && currentGrabOrder
+            && currentGrabOrder.campaignItem
+            && currentGrabOrder.campaignItem.length > 0) {
+            item.discount = getDiscountByProductCode(currentGrabOrder, item.productCode)
+          }
           const data = {
             no: currentItem.no,
             categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
@@ -2608,11 +2686,11 @@ export default {
             qty: newQty,
             sellPrice: selectedPrice,
             price: selectedPrice,
-            discount: 0,
+            discount: (item.discount || 0),
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: selectedPrice * newQty
+            total: (selectedPrice * newQty) - (item.discount || 0)
           }
 
           if (currentBuildComponent && currentBuildComponent.no) {
@@ -2640,6 +2718,14 @@ export default {
             // eslint-disable-next-line eqeqeq
             && selectedPaymentShortcut.memberId == 0) {
             selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+          }
+          if (
+            !((currentBuildComponent || {}).no)
+            && !((currentReward || {}).categoryCode)
+            && currentGrabOrder
+            && currentGrabOrder.campaignItem
+            && currentGrabOrder.campaignItem.length > 0) {
+            item.discount = getDiscountByProductCode(currentGrabOrder, item.productCode)
           }
           const data = {
             no: arrayProd.length + 1,
@@ -2669,11 +2755,11 @@ export default {
             qty,
             sellPrice: selectedPrice,
             price: selectedPrice,
-            discount: 0,
+            discount: (item.discount || 0),
             disc1: 0,
             disc2: 0,
             disc3: 0,
-            total: selectedPrice * curQty
+            total: (selectedPrice * curQty) - (item.discount || 0)
           }
 
           if (currentBuildComponent && currentBuildComponent.no) {
@@ -3100,6 +3186,8 @@ export default {
       localStorage.removeItem('service_detail')
       localStorage.removeItem('consignment')
       localStorage.removeItem('voucher_list')
+      localStorage.removeItem('payShortcutSelected')
+      localStorage.removeItem('grabmartOrder')
       localStorage.removeItem('cashier_trans')
       localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
       if (!defaultValue) {
@@ -3111,6 +3199,12 @@ export default {
       localStorage.removeItem('woNumber')
       localStorage.removeItem('bundle_promo')
       localStorage.removeItem('workorder')
+      yield put({
+        type: 'pos/setPaymentShortcut'
+      })
+      yield put({
+        type: 'pos/getGrabmartOrder'
+      })
       yield put({
         type: 'updateState',
         payload: {
@@ -3159,6 +3253,54 @@ export default {
 
     * backPrevious ({ payload = {} }, { put }) {
       yield put({ type: 'hideModalShift', payload })
+    },
+
+    * submitGrabmartCode ({ payload = {} }, { select, call, put }) {
+      const item = yield select(({ pos }) => pos.modalGrabmartCodeItem)
+      const response = yield call(queryGrabmartCode, payload)
+      if (response && response.success) {
+        const event = item.dineInTax
+        const type = item.consignmentPaymentType
+        setGrabmartOrder(response.data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalGrabmartCodeVisible: false
+          }
+        })
+        localStorage.setItem('dineInTax', event)
+        localStorage.setItem('typePembelian', type)
+
+        yield put({
+          type: 'pos/changeDineIn',
+          payload: {
+            dineInTax: event,
+            typePembelian: type,
+            selectedPaymentShortcut: item
+          }
+        })
+
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            dineInTax: event,
+            typePembelian: type
+          }
+        })
+
+        yield put({
+          type: 'pos/setPaymentShortcut',
+          payload: {
+            item
+          }
+        })
+        yield put({
+          type: 'getGrabmartOrder',
+          payload: {}
+        })
+      } else {
+        throw response
+      }
     },
 
     * getServiceUsageReminder ({ payload = {} }, { call, put }) {

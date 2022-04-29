@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag, Button } from 'antd'
+import { Table, Button } from 'antd'
 
-const ListDetail = ({ loading, ...tableProps, onUploadStore, editList }) => {
+const ListDetail = ({ loading, ...tableProps, onDeleteStore, onUploadStore, editList }) => {
   const handleMenuClick = (record) => {
     editList(record)
   }
@@ -27,7 +27,7 @@ const ListDetail = ({ loading, ...tableProps, onUploadStore, editList }) => {
       width: 100,
       render: (text, record) => {
         if (text) {
-          return (<Tag color="green">Uploaded</Tag>)
+          return (<Button type="danger" disabled={loading.effects['grabmartCampaign/deleteGrabmart']} onClick={() => onDeleteStore(record)}>Delete</Button>)
         }
         return (<Button type="primary" disabled={loading.effects['grabmartCampaign/uploadGrabmart']} onClick={() => onUploadStore(record)}>Upload</Button>)
       }

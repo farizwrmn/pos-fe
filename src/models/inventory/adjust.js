@@ -271,7 +271,6 @@ export default modelExtend(pageModel, {
     },
 
     * adjustEdit ({ payload }, { call, put, select }) {
-      console.log('payload', payload)
       const disabledItemIn = yield select(({ adjust }) => adjust.disabledItemIn)
       const dataBrowse = yield select(({ adjust }) => adjust.dataBrowse)
       const activeKey = yield select(({ adjust }) => adjust.activeKey)

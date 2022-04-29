@@ -10,7 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 12 }
 }
 
-const PaymentList = ({
+const ConsignmentList = ({
   DeleteItem,
   onChooseItem,
   onChangeTotalItem,
@@ -221,7 +221,7 @@ const PaymentList = ({
   )
 }
 
-PaymentList.propTypes = {
+ConsignmentList.propTypes = {
   form: PropTypes.object.isRequired,
   pos: PropTypes.object,
   itemConsignment: PropTypes.object,
@@ -230,4 +230,4 @@ PaymentList.propTypes = {
   DeleteItem: PropTypes.func,
   onChangeTotalItem: PropTypes.func
 }
-export default Form.create()(PaymentList)
+export default Form.create()(ConsignmentList)
