@@ -1,4 +1,3 @@
-// import DataTable from './DataTable'
 import DropOption from './DropOption'
 import Search from './Search'
 import Editor from './Editor'
@@ -21,7 +20,6 @@ import { Permission } from './Error'
 
 export {
   Layout,
-  // DataTable,
   DropOption,
   Search,
   Editor,
