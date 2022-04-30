@@ -429,30 +429,6 @@ const Routers = function ({ history, app }) {
             }, 'master-payment-option-cost')
           }
         }, {
-          path: 'master/car/brand',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/master/car'))
-              cb(null, require('./routes/master/car/brand/'))
-            }, 'master-car-brand')
-          }
-        }, {
-          path: 'master/car/model',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/master/car'))
-              cb(null, require('./routes/master/car/model/'))
-            }, 'master-car-model')
-          }
-        }, {
-          path: 'master/car/type',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/master/car'))
-              cb(null, require('./routes/master/car/type/'))
-            }, 'master-car-type')
-          }
-        }, {
           path: 'master/work-order/custom-fields',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1770,21 +1746,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/purchase'))
               cb(null, require('./routes/monitor/purchase'))
             }, 'purchase-history')
-          }
-        }, {
-          path: 'monitor/followup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/followUp'))
-              registerModel(app, require('./models/marketing/promo'))
-              registerModel(app, require('./models/marketing/bundlingRules'))
-              registerModel(app, require('./models/marketing/bundlingReward'))
-              registerModel(app, require('./models/master/productstock'))
-              registerModel(app, require('./models/master/productbrand'))
-              registerModel(app, require('./models/master/productcategory'))
-              registerModel(app, require('./models/master/service'))
-              cb(null, require('./routes/monitor/followUp'))
-            }, 'follow-up')
           }
         }, {
           path: 'integration/member',

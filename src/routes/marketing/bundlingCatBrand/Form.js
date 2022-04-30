@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, message, Button, Row, Col, Tag, Tree, Select, DatePicker, TimePicker, Checkbox, Modal } from 'antd'
 import moment from 'moment'
-import _ from 'lodash'
+import has from 'lodash/has'
 import { posTotal } from 'utils'
 import ModalLov from './ModalLov'
 import ModalRules from './ModalRules'
@@ -84,7 +84,7 @@ const FormCounter = ({
       hideModal()
     },
     onRowClick (item) {
-      const type = _.has(item, 'productCode') ? 'P' : 'S'
+      const type = has(item, 'productCode') ? 'P' : 'S'
       if (typeModal === 'Rules') {
         let arrayProd = []
         const listByCode = listRules

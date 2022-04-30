@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs, Dropdown, Menu } from 'antd'
-import _ from 'lodash'
+import uniqBy from 'lodash/uniqBy'
 import Form from './Form'
 import List from './List'
 import PrintPDF from './PrintPDF'
@@ -209,7 +209,7 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
   }
 
   const printProps = {
-    dataSource: _.uniqBy(listUnit, 'memberId').map(data => ({
+    dataSource: uniqBy(listUnit, 'memberId').map(data => ({
       ...data,
       memberUnit: listUnit.filter(x => x.memberId === data.memberId)
     })),
@@ -225,14 +225,14 @@ const CustomerUnit = ({ customer, customerunit, loading, dispatch, location, app
       })
     }
   }
-  const dataAll = _.uniqBy(listUnitAll, 'memberId').map(data => ({
+  const dataAll = uniqBy(listUnitAll, 'memberId').map(data => ({
     ...data,
     memberUnit: listUnitAll.filter(x => x.memberId === data.memberId)
   }))
   const menu = (
     <Menu onClick={getMemberUnitData}>
-      {_.uniqBy(listUnit, 'memberId').length === 1 ? <Menu.Item key="1"><PrintPDF name="PDF (current)" {...printProps} /></Menu.Item> : null}
-      {_.uniqBy(listUnit, 'memberId').length === 1 ? <Menu.Item disabled={listUnit.length === 0} key="2"><PrintXLS name="XLS (current)" {...printProps} /></Menu.Item> : null}
+      {uniqBy(listUnit, 'memberId').length === 1 ? <Menu.Item key="1"><PrintPDF name="PDF (current)" {...printProps} /></Menu.Item> : null}
+      {uniqBy(listUnit, 'memberId').length === 1 ? <Menu.Item disabled={listUnit.length === 0} key="2"><PrintXLS name="XLS (current)" {...printProps} /></Menu.Item> : null}
       {listUnitAll.length > 0 && listUnitAll.length <= 500 && <Menu.Item key="3"><PrintPDF name="PDF (all)" {...printProps} dataSource={dataAll} /></Menu.Item>}
       {listUnitAll.length > 0 && <Menu.Item key="4"><PrintXLS name="XLS (all)" {...printProps} dataSource={dataAll} dataList={dataAll} /></Menu.Item>}
       {listUnitAll.length === 0 && <Menu.Item key="5">Get All</Menu.Item>}
