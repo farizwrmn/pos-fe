@@ -57,7 +57,7 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
   document.head.appendChild(menuStyle)
 
   // 生成树状 - Generate a tree
-  const menuTree = arrayToTree(menu && menu.filter(_ => _.mpid !== '-1').sort((x, y) => x.menuId - y.menuId), 'menuId', 'mpid')
+  const menuTree = arrayToTree(menu && menu.filter(filtered => filtered.mpid !== '-1').sort((x, y) => x.menuId - y.menuId), 'menuId', 'mpid')
   const levelMap = {}
 
   // 递归生成菜单 - Generate a tree

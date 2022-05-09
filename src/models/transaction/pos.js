@@ -5,6 +5,7 @@ import moment from 'moment'
 import { lstorage, variables } from 'utils'
 import { prefix } from 'utils/config.main'
 import { allowPrint } from 'utils/validation'
+import get from 'lodash/get'
 // import { numberFormatter } from 'utils/string'
 import {
   TYPE_PEMBELIAN_UMUM,
@@ -1340,11 +1341,11 @@ export default {
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
-        // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+        // const listQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
         let tempQueue = []
         let tempTrans = []
         for (let n = 0; n < 10; n += 1) {
-          tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+          tempQueue = get(queue, `queue${n}`) ? get(queue, `queue${n}`) : []
           if (tempQueue.length > 0) {
             tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
           }
@@ -1431,11 +1432,11 @@ export default {
       const { data } = payload
       function getQueueQuantity () {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue') || '[]') : {}
-        // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+        // const listQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
         let tempQueue = []
         let tempTrans = []
         for (let n = 0; n < 10; n += 1) {
-          tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+          tempQueue = get(queue, `queue${n}`) ? get(queue, `queue${n}`) : []
           if (tempQueue.length > 0) {
             tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
           }
@@ -4070,7 +4071,7 @@ export default {
 
     changeQueue (state, action) {
       let listQueue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-      listQueue = _.get(listQueue, `queue${action.payload.queue}`) ? _.get(listQueue, `queue${action.payload.queue}`) : []
+      listQueue = get(listQueue, `queue${action.payload.queue}`) ? get(listQueue, `queue${action.payload.queue}`) : []
       return { ...state, listQueue, curQueue: action.payload.queue }
     },
     setListPaymentDetail (state, action) {
