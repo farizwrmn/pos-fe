@@ -141,7 +141,7 @@ export default modelExtend(pageModel, {
 
     * delete ({ payload }, { call, put, select }) {
       const data = yield call(removeUnit, { id: payload.policeNo, memberCode: payload.member.id })
-      const { selectedRowKeys } = yield select(_ => _.customer)
+      const { selectedRowKeys } = yield select(models => models.customer)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query', payload: { code: payload.member.memberCode } })

@@ -50,7 +50,7 @@ export default modelExtend(pageModel, {
 
     * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(_ => _.employee)
+      const { selectedRowKeys } = yield select(models => models.employee)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
@@ -116,22 +116,26 @@ export default modelExtend(pageModel, {
 
     querySuccess (state, action) {
       const { list, listLovEmployee, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         list,
         listLovEmployee,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     querySuccessLov (state, action) {
       const { listLovJobPosition, pagination } = action.payload
-      return { ...state,
+      return {
+        ...state,
         listLovJobPosition,
         pagination: {
           ...state.pagination,
           ...pagination
-        } }
+        }
+      }
     },
     updateState (state, { payload }) {
       return {
@@ -140,7 +144,8 @@ export default modelExtend(pageModel, {
       }
     },
     modalShow (state, { payload }) {
-      return { ...state,
+      return {
+        ...state,
         ...payload,
         modalVisible: true,
         disableItem: { employeeId: payload.modalType !== 'add' }

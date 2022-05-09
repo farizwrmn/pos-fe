@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import map from 'lodash/map'
+import filter from 'lodash/filter'
 import Browse from './Browse'
 import Filter from './Filter'
 
@@ -9,9 +11,9 @@ const Report = ({ dispatch, loading, purchaseReport, supplier, app }) => {
   const { list } = supplier
   const { user, storeInfo } = app
 
-  const listData = _.map(listPurchase, (item) => {
+  const listData = map(listPurchase, (item) => {
     return Object.assign(item, {
-      items: _.filter(listPurchaseDetail, { transNo: item.transNo })
+      items: filter(listPurchaseDetail, { transNo: item.transNo })
     })
   })
   const browseProps = {

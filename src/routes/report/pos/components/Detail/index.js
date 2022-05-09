@@ -5,6 +5,8 @@ import moment from 'moment'
 import { ModalFilter } from 'components'
 import { routerRedux } from 'dva/router'
 import { numberFormat } from 'utils'
+import map from 'lodash/map'
+import filter from 'lodash/filter'
 import Browse from './Browse'
 import Filter from './Filter'
 
@@ -34,9 +36,9 @@ const Report = ({ dispatch, loading, location, posReport, app }) => {
     })
   }
 
-  const listData = _.map(listPOS, (item) => {
+  const listData = map(listPOS, (item) => {
     return Object.assign(item, {
-      items: _.filter(listPOSDetail, { transNo: item.transNo })
+      items: filter(listPOSDetail, { transNo: item.transNo })
     })
   })
 

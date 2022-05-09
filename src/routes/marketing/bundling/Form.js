@@ -114,7 +114,7 @@ class FormCounter extends Component {
         hideModal()
       },
       onRowClick (item) {
-        let type = has(item, 'productCode') ? 'P' : _.has(item, 'serviceCode') ? 'S' : null
+        let type = has(item, 'productCode') ? 'P' : has(item, 'serviceCode') ? 'S' : null
         let categoryCode = null
         let categoryName = null
         if (type === null) {

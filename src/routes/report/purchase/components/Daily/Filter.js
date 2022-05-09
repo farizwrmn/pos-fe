@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
 import { Button, DatePicker, Select, Row, Col, Icon, Form } from 'antd'
+import groupBy from 'lodash/groupBy'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
@@ -33,8 +34,8 @@ const Filter = ({ onDateChange, onFilterChange, listDaily, onListReset, form: { 
   let optionBrand = []
   if (listDaily.length > 0) {
     let myArray = listDaily
-    let category = _.groupBy(myArray, 'categoryName')
-    let brand = _.groupBy(myArray, 'brandName')
+    let category = groupBy(myArray, 'categoryName')
+    let brand = groupBy(myArray, 'brandName')
     for (let i = 0; i < Object.keys(category).length; i += 1) {
       optionCategory.push(<Option key={Object.keys(category)[i].toString(36)}>{Object.keys(category)[i].toString(36)}</Option>)
     }
