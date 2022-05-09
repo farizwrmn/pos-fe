@@ -2175,7 +2175,13 @@ const Pos = ({
                           }}
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
-                          {item.shortcutName}
+                          {selectedPaymentShortcut
+                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && selectedPaymentShortcut.typeCode === item.typeCode
+                            && currentGrabOrder
+                            && currentGrabOrder.shortOrderNumber
+                            ? currentGrabOrder.shortOrderNumber
+                            : item.shortcutName}
                         </Button>
                       )
                     })}
@@ -2198,7 +2204,13 @@ const Pos = ({
                           }}
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
-                          {item.shortcutName}
+                          {selectedPaymentShortcut
+                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && selectedPaymentShortcut.typeCode === item.typeCode
+                            && currentGrabOrder
+                            && currentGrabOrder.shortOrderNumber
+                            ? currentGrabOrder.shortOrderNumber
+                            : item.shortcutName}
                         </Button>
                       )
                     })}
@@ -2217,10 +2229,10 @@ const Pos = ({
                       .map((item) => {
                         return (
                           <Tag
-                            style={{ marginBottom: '10px' }}
+                            style={{ marginBottom: '10px', color: 'black' }}
                             key={item.id}
                             closable={false}
-                            color="green"
+                            color="red"
                           >
                             {`${item.campaignName} => Total: Rp ${(item.deductedAmount || 0) / 100}`}
                           </Tag>
