@@ -68,6 +68,7 @@ const insertCashierTrans = (dataObject) => {
   let previousData = getCashierTrans()
   dataObject.sellingPrice = dataObject.price
   const total = posTotal(dataObject)
+  console.log('dataObject', dataObject)
 
   // eslint-disable-next-line eqeqeq
   const filter = previousData && previousData.filter(filtered => filtered.code == dataObject.code && filtered.bundleId == dataObject.bundleId)

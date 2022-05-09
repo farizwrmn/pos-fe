@@ -6,7 +6,7 @@ import FormInput from './Form'
 
 const Menu = ({ menu, dispatch }) => {
   const { listMenu, currentItem, modalType, modalEdit } = menu
-  const menuTree = arrayToTree(listMenu.filter(_ => _.mpid !== '-1').sort((x, y) => x.menuId - y.menuId), 'menuId', 'mpid')
+  const menuTree = arrayToTree(listMenu.filter(filtered => filtered.mpid !== '-1').sort((x, y) => x.menuId - y.menuId), 'menuId', 'mpid')
   const listProps = {
     modalEdit,
     onSelectMenu (item) {

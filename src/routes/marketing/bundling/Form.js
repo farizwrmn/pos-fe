@@ -20,7 +20,7 @@ import {
   InputNumber
 } from 'antd'
 import moment from 'moment'
-import _ from 'lodash'
+import has from 'lodash/has'
 import { posTotal } from 'utils'
 import { IMAGEURL, rest } from 'utils/config.company'
 import { FooterToolbar } from 'components'
@@ -114,16 +114,16 @@ class FormCounter extends Component {
         hideModal()
       },
       onRowClick (item) {
-        let type = _.has(item, 'productCode') ? 'P' : _.has(item, 'serviceCode') ? 'S' : null
+        let type = has(item, 'productCode') ? 'P' : has(item, 'serviceCode') ? 'S' : null
         let categoryCode = null
         let categoryName = null
         if (type === null) {
-          if (_.has(item, 'categoryCode')) {
+          if (has(item, 'categoryCode')) {
             categoryCode = item.categoryCode
             categoryName = item.categoryName
             type = 'P'
           }
-          if (_.has(item, 'miscCode')) {
+          if (has(item, 'miscCode')) {
             categoryCode = item.miscName
             categoryName = item.miscDesc
             type = 'S'
@@ -724,7 +724,7 @@ class FormCounter extends Component {
                     allowClear
                     size="large"
                     style={{ width: '100%' }}
-                    placeholder="Choose StoreId"
+                    placeholder="Choose Store"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {childrenTransNo}

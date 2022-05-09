@@ -36,7 +36,7 @@ const List = ({ list, showEditModal, onEdit, modalEdit, deleteField }) => {
     }
   }
 
-  const menuTree = arrayToTree((list || []).filter(_ => _.id !== null), 'id', 'fieldParentId')
+  const menuTree = arrayToTree((list || []).filter(filtered => filtered.id !== null), 'id', 'fieldParentId')
   const levelMap = {}
   const getMenus = (menuTreeN) => {
     return menuTreeN.map((item) => {

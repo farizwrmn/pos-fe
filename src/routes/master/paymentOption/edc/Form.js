@@ -100,7 +100,7 @@ const FormCounter = ({
     })
   }
 
-  const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+  const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
   return (
     <Form layout="horizontal">

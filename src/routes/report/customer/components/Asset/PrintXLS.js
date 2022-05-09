@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { RepeatExcelReport } from 'components'
+import reduce from 'lodash/reduce'
 
 const PrintXLS = ({ listAsset, storeInfo }) => {
-  const listData = _.reduce(listAsset, (group, item) => {
+  const listData = reduce(listAsset, (group, item) => {
     (group[item.memberCode] = group[item.memberCode] || []).push(item)
     return group
   }, [])

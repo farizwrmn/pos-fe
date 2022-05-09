@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, message } from 'antd'
+import { Menu, Icon, message, Tooltip } from 'antd'
 import { Link } from 'dva/router'
 import { arrayToTree, queryArray, lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
@@ -57,7 +57,7 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
   document.head.appendChild(menuStyle)
 
   // 生成树状 - Generate a tree
-  const menuTree = arrayToTree(menu && menu.filter(_ => _.mpid !== '-1').sort((x, y) => x.menuId - y.menuId), 'menuId', 'mpid')
+  const menuTree = arrayToTree(menu && menu.filter(filtered => filtered.mpid !== '-1').sort((x, y) => x.menuId - y.menuId), 'menuId', 'mpid')
   const levelMap = {}
 
   // 递归生成菜单 - Generate a tree
@@ -68,12 +68,15 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
           levelMap[item.menuId] = item.mpid
         }
         return (
-          <Menu.SubMenu className={!item.bpid ? 'parent' : 'child'}
+          <Menu.SubMenu
+            className={!item.bpid ? 'parent' : 'child'}
             key={item.menuId}
-            title={<span>
-              {item.icon && <Icon type={item.icon} />}
-              {(!siderFoldN || !menuTree.includes(item)) && item.name}
-            </span>}
+            title={(
+              <span>
+                {item.icon && <Icon type={item.icon} />}
+                {(!siderFoldN || !menuTree.includes(item)) && item.name}
+              </span>
+            )}
           >
             {getMenus(item.children, siderFoldN)}
           </Menu.SubMenu>
@@ -81,10 +84,12 @@ const Menus = ({ siderFold, sidebarColor, darkTheme, handleClickNavMenu, navOpen
       }
       return (
         <Menu.Item key={item.menuId} className={!item.bpid ? 'parent' : 'child'}>
-          <Link to={item.route}>
-            {item.icon && <Icon type={item.icon} />}
-            {(!siderFoldN || !menuTree.includes(item)) && item.name}
-          </Link>
+          <Tooltip placement="right" title={item.name}>
+            <Link to={item.route}>
+              {item.icon && <Icon type={item.icon} />}
+              {(!siderFoldN || !menuTree.includes(item)) && item.name}
+            </Link>
+          </Tooltip>
         </Menu.Item>
       )
     })

@@ -5,6 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ModalFilter } from 'components'
 import { Button, Select, Row, Col, Icon, Form } from 'antd'
+import groupBy from 'lodash/groupBy'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
@@ -59,13 +60,13 @@ const Filter = ({
   let optionBrand = []
   if (listDailyTempCategories && listDailyTempCategories.length) {
     let myArray = listDailyTempCategories
-    let categories = _.groupBy(myArray, 'categoryName')
+    let categories = groupBy(myArray, 'categoryName')
     for (let i = 0; i < Object.keys(categories).length; i += 1) {
       optionCategory.push(<Option key={Object.keys(categories)[i].toString(36)}>{Object.keys(categories)[i].toString(36)}</Option>)
     }
   }
   if (listDailyTempBrands && listDailyTempBrands.length) {
-    let brands = _.groupBy(listDailyTempBrands, 'brandName')
+    let brands = groupBy(listDailyTempBrands, 'brandName')
     for (let i = 0; i < Object.keys(brands).length; i += 1) {
       optionBrand.push(<Option key={Object.keys(brands)[i].toString(36)}>{Object.keys(brands)[i].toString(36)}</Option>)
     }

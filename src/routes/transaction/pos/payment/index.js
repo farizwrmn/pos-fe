@@ -53,6 +53,7 @@ const Payment = ({
     cashierInformation,
     selectedPaymentShortcut,
     currentBundlePayment,
+    currentGrabOrder,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -264,6 +265,7 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    currentGrabOrder,
     currentBundlePayment,
     selectedPaymentShortcut,
     confirmPayment,

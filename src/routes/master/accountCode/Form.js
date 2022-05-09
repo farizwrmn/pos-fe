@@ -150,7 +150,7 @@ const FormCounter = ({
     resetFields()
   }
 
-  const menuTree = arrayToTree((listAccountCodeLov || []).filter(_ => _.id !== null), 'id', 'accountParentId')
+  const menuTree = arrayToTree((listAccountCodeLov || []).filter(filtered => filtered.id !== null), 'id', 'accountParentId')
   const levelMap = {}
   const getMenus = (menuTreeN) => {
     return menuTreeN.map((item) => {

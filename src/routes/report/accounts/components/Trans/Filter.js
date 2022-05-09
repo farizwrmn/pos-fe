@@ -76,7 +76,7 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
               allowClear
               size="large"
               style={{ width: '189px', marginTop: '10px' }}
-              placeholder="Choose StoreId"
+              placeholder="Choose Store"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {childrenTransNo}

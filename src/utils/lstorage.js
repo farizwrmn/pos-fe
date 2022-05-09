@@ -92,11 +92,19 @@ const setPaymentShortcut = (priceList) => {
 }
 
 const getPaymentShortcutSelected = () => {
-  return localStorage.getItem('payShortcutSelected') ? JSON.parse(localStorage.getItem('payShortcutSelected')) : []
+  return localStorage.getItem('payShortcutSelected') ? JSON.parse(localStorage.getItem('payShortcutSelected')) : {}
 }
 
 const setPaymentShortcutSelected = (priceList) => {
   return localStorage.setItem('payShortcutSelected', JSON.stringify(priceList || '{}'))
+}
+
+const getGrabmartOrder = () => {
+  return localStorage.getItem('grabmartOrder') ? JSON.parse(localStorage.getItem('grabmartOrder')) : {}
+}
+
+const setGrabmartOrder = (grabOrder) => {
+  return localStorage.setItem('grabmartOrder', JSON.stringify(grabOrder || '{}'))
 }
 
 const getConsignment = () => {
@@ -314,5 +322,7 @@ module.exports = {
   removeQrisImage,
   getShopeeRequireLogin,
   setShopeeRequireLogin,
-  getConsignmentId
+  getConsignmentId,
+  getGrabmartOrder,
+  setGrabmartOrder
 }

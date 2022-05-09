@@ -43,6 +43,7 @@ import ModalVoucher from './ModalVoucher'
 import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
 import Advertising from './Advertising'
+import ModalGrabmartCode from './ModalGrabmartCode'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -138,7 +139,9 @@ const Pos = ({
     currentBuildComponent,
     listVoucher,
     modalVoucherVisible,
-    modalCashRegisterVisible
+    modalCashRegisterVisible,
+    modalGrabmartCodeVisible,
+    currentGrabOrder
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -798,7 +801,6 @@ const Pos = ({
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,
     onOk (item, reset) {
-      console.log('item', item)
       dispatch({
         type: 'pettyCashDetail/insertExpense',
         payload: {
@@ -1004,6 +1006,7 @@ const Pos = ({
   }
 
   const chooseProduct = (item) => {
+    console.log('chooseProduct', item)
     dispatch({
       type: 'pos/chooseProduct',
       payload: {
@@ -1699,42 +1702,78 @@ const Pos = ({
     })
   }
 
+  const modalGrabmartCodeProps = {
+    visible: modalGrabmartCodeVisible,
+    loading: loading.effects['pos/submitGrabmartCode'],
+    maskClosable: false,
+    title: 'Input your Grabmart Invoice Code',
+    confirmLoading: loading.effects['pos/submitGrabmartCode'],
+    wrapClassName: 'vertical-center-modal',
+    onSubmit (data) {
+      dispatch({
+        type: 'pos/submitGrabmartCode',
+        payload: {
+          ...data,
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalGrabmartCodeVisible: false
+        }
+      })
+    }
+  }
+
   const handleChangeDineIn = (event, type, item) => {
-    Modal.confirm({
-      title: 'Ubah Tipe Transaksi',
-      content: 'Anda yakin dengan transaksi ini ?',
-      onOk () {
-        localStorage.setItem('dineInTax', event)
-        localStorage.setItem('typePembelian', type)
+    if (item.typeCode === 'GM') {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalGrabmartCodeVisible: true,
+          modalGrabmartCodeItem: item
+        }
+      })
+    } else {
+      Modal.confirm({
+        title: 'Ubah Tipe Transaksi',
+        content: 'Anda yakin dengan transaksi ini ?',
+        onOk () {
+          localStorage.setItem('dineInTax', event)
+          localStorage.setItem('typePembelian', type)
 
-        dispatch({
-          type: 'pos/changeDineIn',
-          payload: {
-            dineInTax: event,
-            typePembelian: type,
-            selectedPaymentShortcut: item
-          }
-        })
+          dispatch({
+            type: 'pos/changeDineIn',
+            payload: {
+              dineInTax: event,
+              typePembelian: type,
+              selectedPaymentShortcut: item
+            }
+          })
 
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            dineInTax: event,
-            typePembelian: type
-          }
-        })
+          dispatch({
+            type: 'pos/updateState',
+            payload: {
+              dineInTax: event,
+              typePembelian: type
+            }
+          })
 
-        dispatch({
-          type: 'pos/setPaymentShortcut',
-          payload: {
-            item
-          }
-        })
-      },
-      onCancel () {
+          dispatch({
+            type: 'pos/setPaymentShortcut',
+            payload: {
+              item
+            }
+          })
+        },
+        onCancel () {
 
-      }
-    })
+        }
+      })
+    }
   }
 
   const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
@@ -2120,22 +2159,29 @@ const Pos = ({
             <Row>
               <Col md={24} lg={16} >
                 <Button.Group style={{ width: '100%' }}>
-                  {/* <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Take Away</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Dine In</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>GrabFood</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>GrabMart</Button> */}
 
                   {selectedPaymentShortcut && listPaymentShortcut && listPaymentShortcut
                     .filter(filtered => filtered.groupName === 'Payment1')
                     .map((item) => {
                       return (
                         <Button
+                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
-                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)}
+                          onClick={() => {
+                            if (selectedPaymentShortcut.id !== item.id) {
+                              handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)
+                            }
+                          }}
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
-                          {item.shortcutName}
+                          {selectedPaymentShortcut
+                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && selectedPaymentShortcut.typeCode === item.typeCode
+                            && currentGrabOrder
+                            && currentGrabOrder.shortOrderNumber
+                            ? currentGrabOrder.shortOrderNumber
+                            : item.shortcutName}
                         </Button>
                       )
                     })}
@@ -2143,22 +2189,28 @@ const Pos = ({
                 <br />
                 <br />
                 <Button.Group style={{ width: '100%' }}>
-                  {/* <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_UMUM)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_UMUM ? 'primary' : 'secondary'}>Tokopedia</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(10, TYPE_PEMBELIAN_DINEIN)} type={dineInTax && dineInTax === 10 && typePembelian === TYPE_PEMBELIAN_DINEIN ? 'primary' : 'secondary'}>Shopee</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABFOOD)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABFOOD ? 'primary' : 'secondary'}>Bukalapak</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>JD.id</Button>
-                  <Button style={{ width: '20%' }} size="large" onClick={() => handleChangeDineIn(0, TYPE_PEMBELIAN_GRABMART)} type={dineInTax === 0 && typePembelian === TYPE_PEMBELIAN_GRABMART ? 'primary' : 'secondary'}>Blibli</Button> */}
                   {selectedPaymentShortcut && listPaymentShortcut && listPaymentShortcut
                     .filter(filtered => filtered.groupName === 'ECommerce')
                     .map((item) => {
                       return (
                         <Button
+                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
-                          onClick={() => handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)}
+                          onClick={() => {
+                            if (selectedPaymentShortcut.id !== item.id) {
+                              handleChangeDineIn(item.dineInTax, item.consignmentPaymentType, item)
+                            }
+                          }}
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
-                          {item.shortcutName}
+                          {selectedPaymentShortcut
+                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && selectedPaymentShortcut.typeCode === item.typeCode
+                            && currentGrabOrder
+                            && currentGrabOrder.shortOrderNumber
+                            ? currentGrabOrder.shortOrderNumber
+                            : item.shortcutName}
                         </Button>
                       )
                     })}
@@ -2170,6 +2222,22 @@ const Pos = ({
                   <div style={{ fontSize: '16px' }}>Total: <strong>{totalPayment.toLocaleString()}</strong></div>
                   <div style={{ fontSize: '16px' }}>Service Charge: <strong>{dineIn.toLocaleString()}</strong></div>
                   <div style={{ fontSize: '16px' }}>Netto: <strong>{(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()}</strong></div>
+                  {currentGrabOrder
+                    && currentGrabOrder.campaigns
+                    && currentGrabOrder.campaigns
+                      .filter(filtered => filtered && filtered.appliedItemIDs && filtered.appliedItemIDs.length > 0)
+                      .map((item) => {
+                        return (
+                          <Tag
+                            style={{ marginBottom: '10px', color: 'black' }}
+                            key={item.id}
+                            closable={false}
+                            color="red"
+                          >
+                            {`${item.campaignName} => Total: Rp ${(item.deductedAmount || 0) / 100}`}
+                          </Tag>
+                        )
+                      })}
                 </div>
               </Col>
             </Row>
@@ -2209,6 +2277,7 @@ const Pos = ({
         </div>
       }
       {/* {modalShiftVisible && <ModalShift {...modalShiftProps} />} */}
+      {modalGrabmartCodeVisible && <ModalGrabmartCode {...modalGrabmartCodeProps} />}
     </div >
   )
 }

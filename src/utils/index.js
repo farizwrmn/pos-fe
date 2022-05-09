@@ -1,5 +1,5 @@
 import classnames from 'classnames'
-import lodash from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { message } from 'antd'
 import moment from 'moment'
 import configCompany from './config.company'
@@ -92,7 +92,7 @@ const queryArray = (array, key, keyAlias = 'key') => {
  * @return  {Array}
  */
 const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
-  let data = lodash.cloneDeep(array)
+  let data = cloneDeep(array)
   let result = []
   let hash = {}
   data.forEach((item, index) => {

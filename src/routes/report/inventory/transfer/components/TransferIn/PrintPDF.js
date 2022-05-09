@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatReport } from 'components'
 import { numberFormat } from 'utils'
+import reduce from 'lodash/reduce'
 
 const { formatNumberIndonesia } = numberFormat
 
@@ -47,7 +48,7 @@ const PrintPDF = ({ user, listInventoryTransfer, storeInfo, period }) => {
   }
 
   const group = (data, key) => {
-    return _.reduce(data, (group, item) => {
+    return reduce(data, (group, item) => {
       (group[item[key]] = group[item[key]] || []).push(item)
       return group
     }, [])
