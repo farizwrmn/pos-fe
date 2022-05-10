@@ -117,7 +117,6 @@ const Counter = ({ grabmartCampaign, productstock, userStore, loading, dispatch,
     loading,
     fetching: loading.effects['productstock/query'],
     showLov (models, data) {
-      console.log('showLov', models, data)
       if (!data) {
         dispatch({
           type: `${models}/query`,
@@ -197,6 +196,7 @@ const Counter = ({ grabmartCampaign, productstock, userStore, loading, dispatch,
 Counter.propTypes = {
   grabmartCampaign: PropTypes.object,
   userStore: PropTypes.object,
+  productstock: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
