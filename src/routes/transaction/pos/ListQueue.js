@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import get from 'lodash/get'
 import {
   setCashierTrans,
   setServiceTrans,
@@ -24,7 +25,7 @@ const ListQueue = ({ pos, dispatch }) => {
 
   const handleClick = () => {
     const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    const listOfQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+    const listOfQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
     const useQueue = `queue${curQueue}`
     if (Object.keys(listOfQueue).length === 0) {
       Modal.warning({

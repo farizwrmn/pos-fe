@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Pagination, Tree } from 'antd'
 // import { arrayToTree } from 'utils'
-import _ from 'lodash'
+import mapValues from 'lodash/mapValues'
+import values from 'lodash/values'
+import groupBy from 'lodash/groupBy'
+import omit from 'lodash/omit'
 
 const TreeNode = Tree.TreeNode
 
@@ -21,8 +24,8 @@ const List = ({ ...tableProps, editItemById }) => {
     })
   }
 
-  const grouped = _.mapValues(_.groupBy(dataSource, 'categoryId'), clist => clist.map(car => _.omit(car, 'categoryId')))
-  const arrayGrouped = _.values(grouped)
+  const grouped = mapValues(groupBy(dataSource, 'categoryId'), clist => clist.map(car => omit(car, 'categoryId')))
+  const arrayGrouped = values(grouped)
   const groupeded = arrayGrouped.map((x) => {
     return x
   }).map((y) => {
@@ -35,7 +38,7 @@ const List = ({ ...tableProps, editItemById }) => {
   })
 
 
-  // const menuTree = arrayToTree((dataSource || []).filter(_ => _.id !== null), 'id', 'categoryParentId')
+  // const menuTree = arrayToTree((dataSource || []).filter(filtered => filtered.id !== null), 'id', 'categoryParentId')
   // const levelMap = {}
   // const getMenus = (menuTreeN) => {
   //   return menuTreeN.map((item) => {

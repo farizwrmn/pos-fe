@@ -93,6 +93,7 @@ class FormPayment extends React.Component {
 
   render () {
     const {
+      currentGrabOrder,
       currentBundlePayment,
       item = {},
       paymentModalVisible,
@@ -249,7 +250,7 @@ class FormPayment extends React.Component {
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
 
-    const menuTree = arrayToTree(options.filter(_ => _.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+    const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
     const getMenus = (menuTreeN) => {
       return menuTreeN.map((item) => {
@@ -421,7 +422,7 @@ class FormPayment extends React.Component {
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardName', {
-                  initialValue: item.cardName,
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',
@@ -435,7 +436,7 @@ class FormPayment extends React.Component {
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
-                  initialValue: item.cardNo,
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',

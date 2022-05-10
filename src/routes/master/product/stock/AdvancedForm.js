@@ -6,6 +6,7 @@ import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
 import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
+import ModalGrabmartCampaign from 'components/ModalGrabmartCampaign'
 import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
 import ModalSupplier from './ModalSupplier'
 
@@ -265,7 +266,9 @@ class AdvancedForm extends Component {
       listSpecification,
       listSpecificationCode,
       showProductModal,
+      onClickGrabmartCampaign,
       listShopeeCategoryRecommend,
+      modalGrabmartCampaignProps,
       form: {
         getFieldDecorator,
         validateFields,
@@ -1522,6 +1525,8 @@ class AdvancedForm extends Component {
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
               </FormItem>
+              {/* <Button disabled={modalType === 'add'} type="primary" size="default" onClick={() => onClickGrabmartCampaign(item.id)}>Grabmart Campaign</Button>
+              {modalType === 'add' ? (<div>You can add campaign after the product is up into grabmart menu</div>) : null} */}
             </Card>
           </Col>
         </Row>
@@ -1545,6 +1550,7 @@ class AdvancedForm extends Component {
         {modalVariantVisible && <Variant {...modalVariantProps} />}
         {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
         {modalProductVisible && <Stock {...modalProductProps} />}
+        {modalGrabmartCampaignProps.visible && <ModalGrabmartCampaign {...modalGrabmartCampaignProps} />}
       </Form>
     )
   }

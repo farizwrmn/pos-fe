@@ -1,5 +1,5 @@
 import React from 'react'
-import lodash from 'lodash'
+import uniq from 'lodash/uniq'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
@@ -82,7 +82,7 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
       payload: {
         data: {
           deliveryOrderNo,
-          transNo: deliveryOrderNo ? lodash.uniq(listDetail.map(item => item.transNo)) : data[0].transNo,
+          transNo: deliveryOrderNo ? uniq(listDetail.map(item => item.transNo)) : data[0].transNo,
           storeId: data[0].storeId
         }
       }

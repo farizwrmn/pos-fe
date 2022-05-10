@@ -13,7 +13,7 @@ import { pageModel } from './../common'
 const numberFormatter = numberFormat.numberFormatter
 
 const group = (data, key) => {
-  return _.reduce(data, (group, item) => {
+  return data.reduce(data, (group, item) => {
     (group[`${item[key]}`] = group[`${item[key]}`] || []).push(item)
     return group
   }, [])

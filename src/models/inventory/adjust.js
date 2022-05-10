@@ -11,6 +11,7 @@ import { query as queryEmployee, queryByCode as queryEmployeeId } from 'services
 import { query as querySequence } from 'services/sequence'
 import { getDateTime } from 'services/setting/time'
 import { queryLastActive } from 'services/period'
+import get from 'lodash/get'
 import { pageModel } from '../common'
 
 const { stockMinusAlert } = alertModal
@@ -150,7 +151,7 @@ export default modelExtend(pageModel, {
 
     * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, payload)
-      const { selectedRowKeys } = yield select(_ => _.purchaseId)
+      const { selectedRowKeys } = yield select(models => models.purchaseId)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
@@ -271,7 +272,6 @@ export default modelExtend(pageModel, {
     },
 
     * adjustEdit ({ payload }, { call, put, select }) {
-      console.log('payload', payload)
       const disabledItemIn = yield select(({ adjust }) => adjust.disabledItemIn)
       const dataBrowse = yield select(({ adjust }) => adjust.dataBrowse)
       const activeKey = yield select(({ adjust }) => adjust.activeKey)
@@ -281,11 +281,11 @@ export default modelExtend(pageModel, {
 
       const getQueueQuantity = () => {
         const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-        // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+        // const listQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
         let tempQueue = []
         let tempTrans = []
         for (let n = 0; n < 10; n += 1) {
-          tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+          tempQueue = get(queue, `queue${n}`) ? get(queue, `queue${n}`) : []
           if (tempQueue.length > 0) {
             tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
           }

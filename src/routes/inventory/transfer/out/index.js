@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Modal, Tabs } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
+import get from 'lodash/get'
 import { lstorage } from 'utils'
 import Form from './Form'
 import ModalItem from './Modal'
@@ -99,11 +100,11 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
 
   function getQueueQuantity () {
     const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    // const listQueue = _.get(queue, `queue${curQueue}`) ? _.get(queue, `queue${curQueue}`) : []
+    // const listQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
     let tempQueue = []
     let tempTrans = []
     for (let n = 0; n < 10; n += 1) {
-      tempQueue = _.get(queue, `queue${n}`) ? _.get(queue, `queue${n}`) : []
+      tempQueue = get(queue, `queue${n}`) ? get(queue, `queue${n}`) : []
       if (tempQueue.length > 0) {
         tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
       }

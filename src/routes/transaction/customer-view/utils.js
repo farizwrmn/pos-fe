@@ -1,3 +1,5 @@
+import reduce from 'lodash/reduce'
+
 const chooseOnePaymentType = (type = 'C', list = []) => {
   if (!type) return 'Cash'
   if (!list) return 'Cash'
@@ -9,7 +11,7 @@ const chooseOnePaymentType = (type = 'C', list = []) => {
 }
 
 const group = (data, key) => {
-  return _.reduce(data, (group, item) => {
+  return reduce(data, (group, item) => {
     (group[`${item[key]}`] = group[`${item[key]}`] || []).push(item)
     return group
   }, [])

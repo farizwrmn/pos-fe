@@ -116,7 +116,7 @@ const formProductCategory = ({
     })
   }
 
-  const menuTree = arrayToTree((listCategoryCurrent || []).filter(_ => _.id !== null), 'id', 'categoryParentId')
+  const menuTree = arrayToTree((listCategoryCurrent || []).filter(filtered => filtered.id !== null), 'id', 'categoryParentId')
   const levelMap = {}
   const getMenus = (menuTreeN) => {
     return menuTreeN.map((item) => {
