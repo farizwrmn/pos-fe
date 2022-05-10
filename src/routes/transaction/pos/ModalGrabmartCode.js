@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Modal, Button } from 'antd'
+import { Form, Input, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
 
@@ -65,10 +65,11 @@ class ModalGrabmartCode extends Component {
               rules: [
                 {
                   required: true,
-                  message: 'Required'
+                  message: 'Required',
+                  pattern: /^[0-9]+$/i
                 }
               ]
-            })(<InputNumber min={0} max={99999} onKeyDown={e => hdlClickKeyDown(e)} />)}
+            })(<Input maxLength={10} onKeyDown={e => hdlClickKeyDown(e)} />)}
           </FormItem>
         </Form>
       </Modal>

@@ -48,6 +48,7 @@ const tailFormItemLayout = {
 const AlwaysOnProduct = ({
   listAlwaysOn = [],
   listProduct = [],
+  childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option key={x.id}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
   fetching,
   deleteItem,
   loading,
@@ -72,8 +73,6 @@ const AlwaysOnProduct = ({
       })
     })
   }
-
-  const childrenProduct = listProduct.length > 0 ? listProduct.map(x => (<Option key={x.productId}>{`${x.productName} (${x.productCode})`}</Option>)) : []
 
   return (
     <div>
