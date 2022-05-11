@@ -40,7 +40,7 @@ const ListDetail = ({ loading, ...tableProps, onDeleteStore, onUploadStore, edit
         loading={loading.effects['grabmartCampaign/queryDetail']}
         bordered={false}
         pagination={false}
-        scroll={{ x: 500, y: 270 }}
+        scroll={{ x: 500 }}
         columns={columns}
         simple
         rowKey={record => record.no}
