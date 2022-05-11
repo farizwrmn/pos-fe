@@ -10,7 +10,7 @@ import List from './List'
 
 const FormItem = Form.Item
 
-const formPayment = ({
+const FormPayment = ({
   listAmount,
   cancelPayment,
   editItem,
@@ -39,7 +39,7 @@ const formPayment = ({
   )
 }
 
-formPayment.propTypes = {
+FormPayment.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
@@ -50,4 +50,4 @@ formPayment.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(formPayment)
+export default Form.create()(FormPayment)
