@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 const production = process.env.NODE_ENV === 'production'
 const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart' // 'localhost'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'

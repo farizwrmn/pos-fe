@@ -308,12 +308,13 @@ const FormCounter = ({
       dataIndex: 'type',
       key: 'type',
       width: '100',
-      render: text =>
-      (<span>
-        <Tag color={text === 'P' ? 'green' : 'blue'}>
-          {text === 'P' ? 'Product' : 'Service'}
-        </Tag>
-      </span>)
+      render: (text) => {
+        return (<span>
+          <Tag color={text === 'P' ? 'green' : 'blue'}>
+            {text === 'P' ? 'Product' : 'Service'}
+          </Tag>
+        </span>)
+      }
     },
     {
       title: 'Code',
