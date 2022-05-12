@@ -12,7 +12,7 @@ import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
-import { queryPaymentSplit } from 'services/payment/payment'
+import { queryPaymentInvoice } from 'services/payment/payment'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
@@ -27,7 +27,6 @@ import {
   queryDetail,
   queryDetailConsignment,
   queryPos as queryaPos,
-  queryById as queryInvoiceById,
   updatePos
 } from '../../services/payment'
 import {
@@ -123,7 +122,6 @@ export default {
     currentBundlePayment: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
-    standardInvoice: true,
     modalGrabmartCodeVisible: false,
     modalGrabmartCodeItem: {},
     currentGrabOrder: {},
@@ -243,24 +241,6 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        let match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
-        const matchAdmin = pathToRegexp('/transaction/pos/admin-invoice/:id').exec(location.pathname)
-        if (matchAdmin) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              standardInvoice: false
-            }
-          })
-          match = matchAdmin
-        } else {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              standardInvoice: true
-            }
-          })
-        }
         const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({
@@ -313,14 +293,6 @@ export default {
             payload: {
               cashierId: userId,
               status: 'O'
-            }
-          })
-        } else if (match) {
-          dispatch({
-            type: 'queryPosById',
-            payload: {
-              id: match[1],
-              type: 'print'
             }
           })
         } else if (location.pathname === '/transaction/pos/history') {
@@ -835,27 +807,6 @@ export default {
       }
     },
 
-    * queryPosById ({ payload = {} }, { call, put }) {
-      const { type, ...other } = payload
-      const response = yield call(queryInvoiceById, other)
-      if (response && response.success) {
-        yield put({
-          type: 'queryPosDetail',
-          payload: {
-            id: response.pos.transNo,
-            data: response.pos,
-            type
-          }
-        })
-        yield put({
-          type: 'pos/setListPaymentDetail',
-          payload: response.pos
-        })
-      } else {
-        throw response
-      }
-    },
-
     * queryPosDetail ({ payload }, { call, put }) {
       const { type } = payload
       const data = yield call(queryDetail, {
@@ -871,9 +822,8 @@ export default {
       let dataPayment = []
       let dataPaymentInvoice = []
       if (data && PosData && PosData.success) {
-        const payment = yield call(queryPaymentSplit, {
-          id: PosData.pos.transNo,
-          transNo: PosData.pos.transNo,
+        const payment = yield call(queryPaymentInvoice, {
+          reference: PosData.pos.id,
           storeId: lstorage.getCurrentUserStore()
         })
         if (payment && payment.data) {
