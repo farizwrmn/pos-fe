@@ -14,24 +14,22 @@ import Member from './Member'
 import { groupProduct } from './utils'
 import ModalConfirm from './ModalConfirm'
 
-const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) => {
+const Invoice = ({ dispatch, posInvoice, app }) => {
   const {
     listPaymentDetail,
     memberPrint,
     mechanicPrint,
     posData,
     modalConfirmVisible,
-    standardInvoice
-  } = pos
-  const {
+    standardInvoice,
+
     listAmount,
-    listAmountInvoice
-  } = paymentDetail
-  const {
+    listAmountInvoice,
+
     listOpts
-  } = paymentOpts
+
+  } = posInvoice
   const { storeInfo, user } = app
-  const { companyInfo } = payment
   const data = {
     posData,
     data: listPaymentDetail.data,
@@ -127,7 +125,6 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     unitInfo: {
       ...listPaymentDetail
     },
-    companyInfo,
     storeInfo,
     memberName: data.memberPrint.memberName,
     phone: data.memberPrint.mobileNumber ? data.memberPrint.mobileNumber : data.memberPrint.phoneNumber,
@@ -142,7 +139,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
 
   const onShowDeliveryOrder = () => {
     dispatch({
-      type: 'pos/updateState',
+      type: 'posInvoice/updateState',
       payload: {
         modalConfirmVisible: true
       }
@@ -169,7 +166,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     ...formConfirmOpts,
     onShowModal () {
       dispatch({
-        type: 'pos/updateState',
+        type: 'posInvoice/updateState',
         payload: {
           modalConfirmVisible: true
         }
@@ -177,7 +174,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     },
     onOkPrint () {
       dispatch({
-        type: 'pos/updateState',
+        type: 'posInvoice/updateState',
         payload: {
           modalConfirmVisible: false
         }
@@ -185,7 +182,7 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
     },
     onCancel () {
       dispatch({
-        type: 'pos/updateState',
+        type: 'posInvoice/updateState',
         payload: {
           modalConfirmVisible: false
         }
@@ -233,17 +230,11 @@ const Invoice = ({ dispatch, pos, paymentOpts, paymentDetail, app, payment }) =>
 }
 
 export default connect(({
-  pos,
-  payment,
-  paymentOpts,
-  paymentDetail,
+  posInvoice,
   loading,
   app
 }) => ({
-  pos,
-  payment,
-  paymentOpts,
-  paymentDetail,
+  posInvoice,
   loading,
   app
 }))(Invoice)
