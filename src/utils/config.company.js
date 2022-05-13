@@ -12,7 +12,7 @@ const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPOR
 const APISOCKET = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}`
 
 const APICONSIGNMENTPROTOCOL = production ? 'https' : 'http' // 'localhost'
-const APICONSIGNMENTHOST = production ? (process.env.API_CONSIGNMENT_ENDPOINT || 'consignment2.k3mart.id') : 'localhost' // 'localhost'
+const APICONSIGNMENTHOST = production ? (process.env.API_CONSIGNMENT_ENDPOINT || 'consignment-api.k3mart.id') : 'localhost' // 'localhost'
 const APICONSIGNMENTPORT = production ? 443 : 3120
 const APICONSIGNMENTVERSION = production ? '/api/v1' : ''
 const APICONSIGNMENTURL = `${APICONSIGNMENTPROTOCOL}://${APICONSIGNMENTHOST}:${APICONSIGNMENTPORT}${APICONSIGNMENTVERSION}`
