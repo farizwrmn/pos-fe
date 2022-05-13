@@ -5,6 +5,7 @@ import {
   getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
   setCashierTrans, setServiceTrans, setBundleTrans
 } from 'utils/lstorage'
+import reduce from 'lodash/reduce'
 import { query } from '../../services/marketing/bundling'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
@@ -13,7 +14,7 @@ import { pageModel } from './../common'
 const numberFormatter = numberFormat.numberFormatter
 
 const group = (data, key) => {
-  return data.reduce(data, (group, item) => {
+  return reduce(data, (group, item) => {
     (group[`${item[key]}`] = group[`${item[key]}`] || []).push(item)
     return group
   }, [])

@@ -7,7 +7,7 @@ import {
   SALESPAY,
   SALES
 } from 'utils/variable'
-import { query, queryPaymentSplit, add, cancelPayment } from '../../../services/payment/payment'
+import { query, queryPaymentInvoice, add, cancelPayment } from '../../../services/payment/payment'
 import { queryDetail } from '../../../services/payment'
 
 const success = (msg) => {
@@ -75,7 +75,10 @@ export default {
       })
       const { id, ...other } = payload
       const invoiceInfo = yield call(query, payload)
-      const payment = yield call(queryPaymentSplit, other)
+      const payment = yield call(queryPaymentInvoice, {
+        reference: invoiceInfo && invoiceInfo.data && invoiceInfo.data[0] && invoiceInfo.data[0].id,
+        storeId: other.storeId
+      })
       const data = yield call(queryDetail, {
         id
       })
@@ -221,6 +224,7 @@ export default {
         yield put({
           type: 'queryPosDetail',
           payload: {
+            reference: data.id,
             id: payload.data.transNo,
             transNo: payload.data.transNo,
             storeId: lstorage.getCurrentUserStore()

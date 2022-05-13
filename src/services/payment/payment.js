@@ -42,10 +42,11 @@ export async function queryPaymentWithPOS (params) {
   })
 }
 
-export async function queryPaymentSplit (params) {
+
+export async function queryPaymentInvoice (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentOpts}/some`,
+    url: `${paymentOpts}/invoice`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

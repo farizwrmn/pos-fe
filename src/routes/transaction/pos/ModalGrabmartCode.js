@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Modal, Button } from 'antd'
+import { Form, Input, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
 
@@ -60,15 +60,16 @@ class ModalGrabmartCode extends Component {
         ]}
       >
         <Form>
-          <FormItem label="Invoice Code" {...formItemLayout}>
+          <FormItem label="Invoice Code" help="input 3 nomor dari GM-123, contohnya: 123 atau 123F" {...formItemLayout}>
             {getFieldDecorator('shortOrderNumber', {
               rules: [
                 {
                   required: true,
-                  message: 'Required'
+                  message: 'Required',
+                  pattern: /^[A-Z0-9]+$/i
                 }
               ]
-            })(<InputNumber min={0} max={99999} onKeyDown={e => hdlClickKeyDown(e)} />)}
+            })(<Input maxLength={10} placeholder="123 or 123F" onKeyDown={e => hdlClickKeyDown(e)} />)}
           </FormItem>
         </Form>
       </Modal>

@@ -18,19 +18,6 @@ export default {
             type: 'queryOpts'
           })
         }
-        let matchInvoice = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
-        const matchAdmin = pathToRegexp('/transaction/pos/admin-invoice/:id').exec(location.pathname)
-        if (matchAdmin) {
-          matchInvoice = matchAdmin
-        }
-        if (matchInvoice) {
-          dispatch({
-            type: 'queryOpts',
-            payload: {
-              type: 'all'
-            }
-          })
-        }
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
         if (
           location.pathname === '/transaction/pos/'

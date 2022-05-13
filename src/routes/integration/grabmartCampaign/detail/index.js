@@ -45,7 +45,8 @@ const Detail = ({ grabmartCampaign, loading, dispatch }) => {
             type: 'grabmartCampaign/deleteGrabmart',
             payload: {
               data: {
-                id: item.id
+                id: item.id,
+                campaignId: data.id
               }
             }
           })
