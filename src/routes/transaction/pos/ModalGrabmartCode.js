@@ -60,16 +60,16 @@ class ModalGrabmartCode extends Component {
         ]}
       >
         <Form>
-          <FormItem label="Invoice Code" {...formItemLayout}>
+          <FormItem label="Invoice Code" help="input 3 nomor dari GM-123, contohnya: 123 atau 123F" {...formItemLayout}>
             {getFieldDecorator('shortOrderNumber', {
               rules: [
                 {
                   required: true,
                   message: 'Required',
-                  pattern: /^[0-9]+$/i
+                  pattern: /^[A-Z0-9]+$/i
                 }
               ]
-            })(<Input maxLength={10} onKeyDown={e => hdlClickKeyDown(e)} />)}
+            })(<Input maxLength={10} placeholder="123 or 123F" onKeyDown={e => hdlClickKeyDown(e)} />)}
           </FormItem>
         </Form>
       </Modal>
