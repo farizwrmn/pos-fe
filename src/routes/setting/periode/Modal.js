@@ -15,7 +15,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
+const ModalEntry = ({
   onOk,
   periodDate,
   accountNumber,
@@ -93,11 +93,11 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalEntry.propTypes = {
   form: PropTypes.isRequired,
   periodDate: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
   accountNumber: PropTypes.string.isRequired
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEntry)

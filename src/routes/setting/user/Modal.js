@@ -26,7 +26,7 @@ const paddingTop10 = {
   display: 'block'
 }
 
-const modal = ({
+const ModalEntry = ({
   item = {},
   storeItem = {},
   roleItem = {},
@@ -290,7 +290,7 @@ const modal = ({
   return (
     <Modal width="35vw"
       height="70vh"
-      className={styles.modal}
+      className={styles.ModalEntry}
       {...modalOpts}
       footer={[
         <Button key="back" onClick={() => hdlButtonCancelClick()} >Cancel</Button>,
@@ -469,7 +469,7 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalEntry.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -479,4 +479,4 @@ modal.propTypes = {
   modalIsEmployeeChange: PropTypes.func
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEntry)

@@ -23,7 +23,7 @@ const formItemLayout = {
   wrapperCol: { span: 16 }
 }
 
-const modal = ({
+const ModalEntry = ({
   user,
   onOk,
   onCancel,
@@ -352,10 +352,10 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalEntry.propTypes = {
   form: PropTypes.object.isRequired,
   onOk: PropTypes.func,
   onCancel: PropTypes.func
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEntry)

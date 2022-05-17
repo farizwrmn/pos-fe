@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Button } from 'antd'
 
-const modal = ({
+const ModalDemand = ({
   onOk,
   data,
+  listProductDemand,
   form: { validateFields, getFieldsValue, resetFields },
   ...modalProps
 }) => {
@@ -39,11 +40,11 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalDemand.propTypes = {
   form: PropTypes.object.isRequired,
   location: PropTypes.object,
   onOk: PropTypes.func,
   invoiceCancel: PropTypes.object
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalDemand)

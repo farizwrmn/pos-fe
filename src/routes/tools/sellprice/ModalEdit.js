@@ -11,7 +11,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
+const ModalEdit = ({
   currentItemList,
   onOkList,
   onCancelList,
@@ -133,8 +133,7 @@ const modal = ({
     </Modal >
   )
 }
-
-modal.propTypes = {
+ModalEdit.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -142,4 +141,4 @@ modal.propTypes = {
   enablePopover: PropTypes.func
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEdit)
