@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Button, Checkbox, Row, Col, Select } from 'antd'
+import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
@@ -40,6 +41,7 @@ const FormAdd = ({
   listStore,
   getEmployee,
   hideEmployee,
+  modalProductDemandProps,
   ...listProps,
   // ...filterProps,
   // ...formProps,
@@ -54,7 +56,7 @@ const FormAdd = ({
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
-  const { handleProductBrowse, handleInvoiceBrowse } = modalProductProps
+  const { handleProductBrowse, handleInvoiceBrowse, handleProductDemandBrowse } = modalProductProps
   let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -168,7 +170,8 @@ const FormAdd = ({
                 </Select>
               )}
             </FormItem>
-            <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+            <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+            <Button type="default" size="large" onClick={() => handleProductDemandBrowse()} style={{ marginRight: '10px' }}>Demand</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
             {modalProductVisible && <Browse {...modalProductOpts} />}
             {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
@@ -224,6 +227,7 @@ const FormAdd = ({
         <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
+        {modalProductDemandProps.visible && <ModalDemand {...modalProductDemandProps} />}
         {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>
     </div>

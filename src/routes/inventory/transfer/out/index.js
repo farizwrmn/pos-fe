@@ -14,12 +14,13 @@ const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
-  const { listTransferOut, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+  const { listTransferOut, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { query } = location
   const { modalProductVisible, listProductData, searchText } = pos
   const { list } = employee
   let listEmployee = list
   const { user, storeInfo } = app
+  console.log('modalProductDemandVisible', modalProductDemandVisible)
   const filterProps = {
     display,
     filter: {
@@ -142,6 +143,30 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     }
     return true
   }
+
+  const modalProductDemandProps = {
+    visible: modalProductDemandVisible,
+    loading: loading.effects['transferOut/queryTransferDemand'],
+    maskClosable: false,
+    title: 'Transfer demand',
+    confirmLoading: loading.effects['transferOut/submitProductDemand'],
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: 'transferOut/submitProductDemand',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'transferOut/hideModalDemand',
+        payload: {
+          modalProductDemandVisible: false
+        }
+      })
+    }
+  }
+
   const modalProductProps = {
     location,
     loading,
@@ -180,6 +205,14 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/updateState',
         payload: {
           modalInvoiceVisible: false
+        }
+      })
+    },
+    handleProductDemandBrowse () {
+      dispatch({
+        type: 'transferOut/showModalDemand',
+        payload: {
+          modalProductDemandVisible: true
         }
       })
     },
@@ -408,6 +441,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     listStore,
     listEmployee,
     item: currentItem,
+    modalProductDemandProps,
     modalProductProps,
     modalProductVisible,
     modalInvoiceVisible,

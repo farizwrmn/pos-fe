@@ -34,6 +34,7 @@ export default modelExtend(pageModel, {
     currentItemList: {},
     currentItemPrint: {},
     filterSearch: {},
+    modalProductDemandVisible: false,
     modalVisible: false,
     modalConfirmVisible: false,
     modalInvoiceVisible: false, // purchase modal visible
@@ -186,6 +187,25 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+
+    * showModalDemand ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalProductDemandVisible: true
+        }
+      })
+    },
+
+    * hideModalDemand ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalProductDemandVisible: false
+        }
+      })
+    },
+
     * queryChangeHpokokTransferOut ({ payload = {} }, { call, put }) {
       const data = yield call(queryChangeHpokokTransferOut, payload)
       if (data.success) {
