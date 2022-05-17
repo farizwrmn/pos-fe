@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Button } from 'antd'
+import { Table, Form, Modal, Button } from 'antd'
 
 const ModalDemand = ({
   onOk,
@@ -25,6 +25,43 @@ const ModalDemand = ({
       resetFields()
     })
   }
+
+  const columns = [
+
+    {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: 150,
+      render: (text, record) => {
+        return (
+          <div>
+            <div><strong>{record.productCode}</strong></div>
+            <div>{record.productName}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Brand',
+      dataIndex: 'brandName',
+      key: 'brandName',
+      width: 100
+    },
+    {
+      title: 'Category',
+      dataIndex: 'categoryName',
+      key: 'categoryName',
+      width: 100
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      width: 80
+    }
+  ]
+
   const modalOpts = {
     ...modalProps,
     onOk: handleOk
@@ -35,7 +72,14 @@ const ModalDemand = ({
         <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
       ]}
     >
-      Total
+      <Table
+        dataSource={listProductDemand}
+        bordered
+        columns={columns}
+        simple
+        scroll={{ x: 400 }}
+        rowKey={record => record.id}
+      />
     </Modal>
   )
 }
