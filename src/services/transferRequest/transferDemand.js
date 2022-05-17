@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function queryActive (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/transfer-demand-active',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

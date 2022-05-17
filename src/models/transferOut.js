@@ -3,6 +3,7 @@ import moment from 'moment'
 import { Modal, message } from 'antd'
 import { prefix } from 'utils/config.main'
 import { lstorage, color, alertModal } from 'utils'
+import { queryActive } from 'services/transferRequest/transferDemand'
 import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
@@ -30,6 +31,7 @@ export default modelExtend(pageModel, {
     listHeader: [],
     listChangeTransferOut: [],
     listChangeTransferIn: [],
+    listProductDemand: [],
     currentItem: {},
     currentItemList: {},
     currentItemPrint: {},
@@ -105,6 +107,7 @@ export default modelExtend(pageModel, {
         })
       }
     },
+
     * queryLov ({ payload = {} }, { call, put }) {
       yield put({
         type: 'updateState',
@@ -188,20 +191,27 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * showModalDemand ({ payload = {} }, { call, put }) {
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalProductDemandVisible: true
-        }
+    * showModalDemand (payload, { call, put }) {
+      const response = yield call(queryActive, {
+        storeId: lstorage.getCurrentUserStore()
       })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalProductDemandVisible: true,
+            listProductDemand: response.data
+          }
+        })
+      }
     },
 
-    * hideModalDemand ({ payload = {} }, { call, put }) {
+    * hideModalDemand (payload, { put }) {
       yield put({
         type: 'updateState',
         payload: {
-          modalProductDemandVisible: false
+          modalProductDemandVisible: false,
+          listProductDemand: []
         }
       })
     },
