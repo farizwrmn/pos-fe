@@ -56,7 +56,7 @@ const FormAdd = ({
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
-  const { handleProductBrowse, handleInvoiceBrowse, handleProductDemandBrowse } = modalProductProps
+  const { handleProductBrowse, handleInvoiceBrowse, handleProductDemandBrowse, loading } = modalProductProps
   let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -171,7 +171,7 @@ const FormAdd = ({
               )}
             </FormItem>
             <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
-            <Button type="default" size="large" onClick={() => handleProductDemandBrowse()} style={{ marginRight: '10px' }}>Demand</Button>
+            <Button disabled={loading.effects['transferOut/showModalDemand']} type="default" size="large" onClick={() => handleProductDemandBrowse()} style={{ marginRight: '10px' }}>Demand</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
             {modalProductVisible && <Browse {...modalProductOpts} />}
             {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}

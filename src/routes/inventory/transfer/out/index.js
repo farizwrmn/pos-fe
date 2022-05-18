@@ -13,14 +13,15 @@ import FilterTransfer from './FilterTransferOut'
 const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
-const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
-  const { listTransferOut, listProductDemand, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+const Transfer = ({ location, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
+  const { listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { query } = location
   const { modalProductVisible, listProductData, searchText } = pos
   const { list } = employee
   let listEmployee = list
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
   const { user, storeInfo } = app
-  console.log('modalProductDemandVisible', modalProductDemandVisible)
   const filterProps = {
     display,
     filter: {
@@ -146,8 +147,12 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
 
   const modalProductDemandProps = {
     listProductDemand,
+    listCategory,
+    listBrand,
+    width: 800,
+    loading,
+    selectedRowKeys,
     visible: modalProductDemandVisible,
-    loading: loading.effects['transferOut/queryTransferDemand'],
     maskClosable: false,
     title: 'Transfer demand',
     confirmLoading: loading.effects['transferOut/submitProductDemand'],
@@ -163,6 +168,14 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/hideModalDemand',
         payload: {
           modalProductDemandVisible: false
+        }
+      })
+    },
+    updateSelectedKey (key) {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          selectedRowKeys: key
         }
       })
     }
@@ -631,10 +644,12 @@ Transfer.propTypes = {
   transferOut: PropTypes.object,
   pos: PropTypes.object,
   app: PropTypes.object,
+  productcategory: PropTypes.object,
+  productbrand: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object
 }
 
 
-export default connect(({ transferOut, pos, employee, app, loading }) => ({ transferOut, pos, employee, app, loading }))(Transfer)
+export default connect(({ transferOut, pos, productcategory, productbrand, employee, app, loading }) => ({ transferOut, pos, productcategory, productbrand, employee, app, loading }))(Transfer)

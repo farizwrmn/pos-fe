@@ -1483,6 +1483,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
             }, 'inventory-transfer-out')

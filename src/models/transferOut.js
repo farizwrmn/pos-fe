@@ -32,6 +32,7 @@ export default modelExtend(pageModel, {
     listChangeTransferOut: [],
     listChangeTransferIn: [],
     listProductDemand: [],
+    selectedRowKeys: [],
     currentItem: {},
     currentItemList: {},
     currentItemPrint: {},
@@ -211,7 +212,8 @@ export default modelExtend(pageModel, {
         type: 'updateState',
         payload: {
           modalProductDemandVisible: false,
-          listProductDemand: []
+          listProductDemand: [],
+          selectedRowKeys: []
         }
       })
     },
