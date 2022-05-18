@@ -175,6 +175,17 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
         }
       })
     },
+    handleGetAll (storeId) {
+      console.log('handleGetAll')
+      dispatch({
+        type: 'transferOut/showModalDemand',
+        payload: {
+          type: 'all',
+          modalProductDemandVisible: true,
+          storeId
+        }
+      })
+    },
     updateSelectedKey (key) {
       dispatch({
         type: 'transferOut/updateState',

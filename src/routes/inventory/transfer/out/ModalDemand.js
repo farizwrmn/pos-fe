@@ -11,6 +11,7 @@ const ModalDemand = ({
   listProductDemand,
   selectedRowKeys,
   updateSelectedKey,
+  onGetAll,
   form: { validateFields, getFieldsValue, resetFields },
   ...modalProps
 }) => {
@@ -136,6 +137,7 @@ const ModalDemand = ({
         <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
       ]}
     >
+      <Button key="submit" onClick={() => onGetAll()} type="primary">Show All</Button>
       <Table
         dataSource={listProductDemand}
         pagination={{

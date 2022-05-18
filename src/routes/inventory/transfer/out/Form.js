@@ -70,6 +70,17 @@ const FormAdd = ({
     }
   }
 
+  const onGetAllDemand = () => {
+    console.log('onGetAll1')
+    if (getFieldValue('storeIdReceiver')) {
+      console.log('onGetAll', getFieldValue('storeIdReceiver'))
+      modalProductDemandProps.handleGetAll(getFieldValue('storeIdReceiver'))
+    } else {
+      message.warning('Choose destination store')
+      validateFields(['storeIdReceiver'])
+    }
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -250,7 +261,14 @@ const FormAdd = ({
         <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
-        {modalProductDemandProps.visible && <ModalDemand {...modalProductDemandProps} />}
+        {modalProductDemandProps.visible && (
+          <ModalDemand
+            onGetAll={() => {
+              onGetAllDemand()
+            }}
+            {...modalProductDemandProps}
+          />
+        )}
         {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>
     </div>

@@ -195,7 +195,8 @@ export default modelExtend(pageModel, {
     * showModalDemand ({ payload = {} }, { call, put }) {
       const response = yield call(queryActive, {
         storeId: lstorage.getCurrentUserStore(),
-        storeIdReceiver: payload.storeId
+        storeIdReceiver: payload.storeId,
+        type: payload.type
       })
       if (response && response.success) {
         yield put({
