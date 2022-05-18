@@ -137,7 +137,7 @@ const ModalDemand = ({
         <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
       ]}
     >
-      <Button key="submit" onClick={() => onGetAll()} type="primary">Show All</Button>
+      <Button key="submit" onClick={() => onGetAll()} type="primary" style={{ marginBottom: '10px' }}>Show All</Button>
       <Table
         dataSource={listProductDemand}
         pagination={{
