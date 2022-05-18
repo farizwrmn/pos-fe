@@ -98,7 +98,7 @@ const FormAdd = ({
       let groupStore = []
       for (let id = 0; id < listStore.length; id += 1) {
         groupStore.push(
-          <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
+          <Option disabled={item.storeId === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
             {listStore[id].label}
           </Option>
         )

@@ -194,7 +194,8 @@ export default modelExtend(pageModel, {
 
     * showModalDemand ({ payload = {} }, { call, put }) {
       const response = yield call(queryActive, {
-        storeId: payload.storeId
+        storeId: lstorage.getCurrentUserStore(),
+        storeIdReceiver: payload.storeId
       })
       if (response && response.success) {
         yield put({
@@ -350,8 +351,8 @@ export default modelExtend(pageModel, {
         }
       } else {
         error(response)
-        if (response && response.data && response.data[0]) {
-          stockMinusAlert(response)
+        if (response && typeof response.message === 'object') {
+          stockMinusAlert([response.message])
         }
         // throw data
       }
