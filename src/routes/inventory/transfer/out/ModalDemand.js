@@ -70,6 +70,12 @@ const ModalDemand = ({
       width: 80
     },
     {
+      title: 'Stock',
+      dataIndex: 'stock',
+      key: 'stock',
+      width: 80
+    },
+    {
       title: 'Demand',
       dataIndex: 'qtyDemand',
       key: 'qtyDemand',
