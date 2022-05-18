@@ -157,17 +157,21 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
     title: 'Transfer demand',
     confirmLoading: loading.effects['transferOut/submitProductDemand'],
     wrapClassName: 'vertical-center-modal',
-    onOk (data) {
+    onOk () {
       dispatch({
         type: 'transferOut/submitProductDemand',
-        payload: data
+        payload: {
+          listProductDemand,
+          selectedRowKeys
+        }
       })
     },
     onCancel () {
       dispatch({
         type: 'transferOut/hideModalDemand',
         payload: {
-          modalProductDemandVisible: false
+          modalProductDemandVisible: false,
+          selectedRowKeys: []
         }
       })
     },
@@ -222,11 +226,12 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
         }
       })
     },
-    handleProductDemandBrowse () {
+    handleProductDemandBrowse (storeId) {
       dispatch({
         type: 'transferOut/showModalDemand',
         payload: {
-          modalProductDemandVisible: true
+          modalProductDemandVisible: true,
+          storeId
         }
       })
     },
@@ -472,6 +477,14 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
           data,
           detail: list,
           reset
+        }
+      })
+    },
+    resetListItem () {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          listItem: []
         }
       })
     },

@@ -192,9 +192,9 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * showModalDemand (payload, { call, put }) {
+    * showModalDemand ({ payload = {} }, { call, put }) {
       const response = yield call(queryActive, {
-        storeId: lstorage.getCurrentUserStore()
+        storeId: payload.storeId
       })
       if (response && response.success) {
         yield put({
@@ -205,6 +205,34 @@ export default modelExtend(pageModel, {
           }
         })
       }
+    },
+
+    * submitProductDemand ({ payload = {} }, { put }) {
+      const { selectedRowKeys, listProductDemand } = payload
+      const listItem = listProductDemand.filter((filtered) => {
+        return selectedRowKeys.includes(filtered.productId)
+      }).map((item, index) => {
+        return ({
+          no: index + 1,
+          brandName: item.brandName,
+          categoryName: item.categoryName,
+          productImage: item.productImage,
+          productCode: item.productCode,
+          productId: item.id,
+          transType: 'MUOUT',
+          productName: item.productName,
+          qty: item.qty,
+          description: null
+        })
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem,
+          modalProductDemandVisible: false,
+          selectedRowKeys: []
+        }
+      })
     },
 
     * hideModalDemand (payload, { put }) {

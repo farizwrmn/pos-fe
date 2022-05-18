@@ -21,8 +21,8 @@ const ModalDemand = ({
         ...getFieldsValue()
       }
       Modal.confirm({
-        title: `Void ${data.transNo}'s payment`,
-        content: 'Are you sure ?',
+        title: 'Insert Product Transaction',
+        content: 'This action will reset your current process, Are you sure ?',
         onOk () {
           onOk(record)
         }
@@ -64,10 +64,13 @@ const ModalDemand = ({
       width: 100
     },
     {
-      title: 'Qty',
+      title: (<strong>Qty</strong>),
       dataIndex: 'qty',
       key: 'qty',
-      width: 80
+      width: 80,
+      render: (text) => {
+        return (<strong>{text}</strong>)
+      }
     },
     {
       title: 'Stock',
