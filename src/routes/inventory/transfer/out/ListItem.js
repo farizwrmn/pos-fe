@@ -1,11 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, InputNumber } from 'antd'
 import styles from '../../../../themes/index.less'
 
-const ListItem = ({ ...tableProps, onModalVisible }) => {
-  const handleMenuClick = (record) => {
-    onModalVisible(record)
+const ListItem = ({ ...tableProps, handleItemEdit }) => {
+  // const handleMenuClick = (record) => {
+  //   onModalVisible(record)
+  // }
+
+  const handleBlurQty = (productId, qty, event) => {
+    event.target.value = parseFloat(qty)
+  }
+
+  const handleFocus = (event) => {
+    event.target.select()
+  }
+
+  const handleChangeQty = (record, event) => {
+    const qty = event.target.value
+    handleItemEdit({
+      ...record,
+      qty: parseFloat(qty)
+    }, event)
   }
 
   const columns = [
@@ -23,7 +39,7 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
       }
     },
     {
-      title: 'Code',
+      title: 'Product',
       dataIndex: 'productCode',
       key: 'productCode',
       render (text, record) {
@@ -31,27 +47,49 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
           props: {
             style: { background: record.color }
           },
-          children: <div>{text}</div>
+          children: (
+            <div>
+              <div>{record.productCode}</div>
+              <div>{record.productName}</div>
+            </div>
+          )
         }
       }
     },
     {
-      title: 'Name',
-      dataIndex: 'productName',
-      key: 'productName',
+      title: (<strong>Qty</strong>),
+      dataIndex: 'qty',
+      key: 'qty',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
       render (text, record) {
         return {
           props: {
             style: { background: record.color }
           },
-          children: <div>{text}</div>
+          children: (
+            <div>
+              <InputNumber
+                key={record.productId}
+                value={text}
+                max={record && record.stock > 0 ? record.stock : undefined}
+                onBlur={event => handleBlurQty(record.productId, text, event)}
+                onFocus={event => handleFocus(event)}
+                onKeyDown={(event) => {
+                  if (event.keyCode === 13) {
+                    handleChangeQty(record, event)
+                  }
+                }}
+              />
+            </div>
+          )
         }
       }
     },
     {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
+      title: 'Demand',
+      dataIndex: 'qtyDemand',
+      key: 'qtyDemand',
       className: styles.alignRight,
       // render: text => (text || '-').toLocaleString()
       render (text, record) {
@@ -64,15 +102,32 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
       }
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: 'Stock',
+      dataIndex: 'stock',
+      key: 'stock',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
       render (text, record) {
         return {
           props: {
             style: { background: record.color }
           },
-          children: <div>{text}</div>
+          children: <div>{(text || '-').toLocaleString()}</div>
+        }
+      }
+    },
+    {
+      title: 'QtyStore',
+      dataIndex: 'qtyStore',
+      key: 'qtyStore',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{(text || '-').toLocaleString()}</div>
         }
       }
     }
@@ -80,15 +135,18 @@ const ListItem = ({ ...tableProps, onModalVisible }) => {
 
   return (
     <div>
-      <Table {...tableProps}
-        bordered
-        columns={columns}
-        simple
-        size="small"
-        scroll={{ x: 1000 }}
-        rowKey={record => record.no}
-        onRowClick={item => handleMenuClick(item)}
-      />
+      <form>
+        <Table {...tableProps}
+          pagination={false}
+          bordered
+          columns={columns}
+          simple
+          size="small"
+          scroll={{ x: 1000 }}
+          rowKey={record => record.no}
+        // onRowClick={item => handleMenuClick(item)}
+        />
+      </form>
     </div>
   )
 }

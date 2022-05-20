@@ -204,7 +204,7 @@ const FormAdd = ({
                 </Select>
               )}
             </FormItem>
-            <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+            <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Purchase</Button>
             <Button disabled={loading.effects['transferOut/showModalDemand']} type="default" size="large" onClick={() => onClickDemand()} style={{ marginRight: '10px' }}>Demand</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
             {modalProductVisible && <Browse {...modalProductOpts} />}

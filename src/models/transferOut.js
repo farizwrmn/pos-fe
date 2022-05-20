@@ -4,6 +4,7 @@ import { Modal, message } from 'antd'
 import { prefix } from 'utils/config.main'
 import { lstorage, color, alertModal } from 'utils'
 import { queryActive } from 'services/transferRequest/transferDemand'
+import { queryPOSproduct } from 'services/master/productstock'
 import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
@@ -192,6 +193,38 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * updateQty ({ payload = {} }, { call, put }) {
+      const { listItem, item, form, events } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: item.productId })
+      if (listProductData.success) {
+        const totalListProduct = listProductData.data.filter(filtered => filtered.productId === item.productId)
+          .reduce((prev, next) => prev + next.count, 0)
+        if (item.qty > totalListProduct) {
+          Modal.warning({
+            title: 'No available stock',
+            content: `Your input: ${item.qty}, Available: ${totalListProduct}`
+          })
+          return
+        }
+      }
+      listItem[item.no - 1] = item
+      yield put({
+        type: 'transferOut/updateState',
+        payload: {
+          currentItemList: {},
+          modalVisible: false,
+          listItem
+        }
+      })
+      if (form && events) {
+        const index = [...form].indexOf(events.target)
+        if (form.elements[index + 1]) {
+          form.elements[index + 1].focus()
+        }
+      }
+    },
+
     * showModalDemand ({ payload = {} }, { call, put }) {
       const response = yield call(queryActive, {
         storeId: lstorage.getCurrentUserStore(),
@@ -222,6 +255,8 @@ export default modelExtend(pageModel, {
           productCode: item.productCode,
           productId: item.id,
           transType: 'MUOUT',
+          qtyStore: item.qtyStore,
+          stock: item.stock,
           productName: item.productName,
           qty: item.qty,
           description: null
