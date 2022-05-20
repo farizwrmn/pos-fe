@@ -246,10 +246,14 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * submitProductDemand ({ payload = {} }, { put }) {
+    * submitProductDemand ({ payload = {} }, { put, select }) {
       const { selectedRowKeys, listProductDemand } = payload
-      const listItem = listProductDemand.filter((filtered) => {
+      const listItem = yield select(({ transferOut }) => transferOut.listItem)
+      const mapListItem = listItem.map(item => item.productId)
+      const newListItem = listProductDemand.filter((filtered) => {
         return selectedRowKeys.includes(filtered.productId)
+      }).filter((filtered) => {
+        return !mapListItem.includes(filtered.productId)
       }).map((item, index) => {
         return ({
           no: index + 1,
@@ -260,6 +264,9 @@ export default modelExtend(pageModel, {
           productId: item.id,
           transType: 'MUOUT',
           qtyStore: item.qtyStore,
+          dimension: item.dimension,
+          dimensionBox: item.dimensionBox,
+          dimensionPack: item.dimensionPack,
           stock: item.stock,
           productName: item.productName,
           qty: item.qty,
@@ -269,7 +276,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          listItem,
+          listItem: listItem.concat(newListItem).map((item, index) => ({ ...item, no: index + 1 })),
           modalProductDemandVisible: false,
           selectedRowKeys: []
         }

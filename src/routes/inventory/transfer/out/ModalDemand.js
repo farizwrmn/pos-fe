@@ -44,6 +44,7 @@ const ModalDemand = ({
           <div>
             <div><strong>{record.productCode}</strong></div>
             <div>{record.productName}</div>
+            <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
           </div>
         )
       }
@@ -145,7 +146,7 @@ const ModalDemand = ({
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
+        <Button key="submit" onClick={() => handleOk()} type="primary" disabled={loading.effects['transferOut/submitProductDemand']} >Process</Button>
       ]}
     >
       <Button key="submit" onClick={() => onGetAll()} type="primary" style={{ marginBottom: '10px' }}>Show All</Button>

@@ -51,6 +51,7 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
             <div>
               <div>{record.productCode}</div>
               <div>{record.productName}</div>
+              <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
             </div>
           )
         }
