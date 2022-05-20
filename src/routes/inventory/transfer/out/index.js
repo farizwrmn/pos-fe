@@ -6,7 +6,6 @@ import moment from 'moment'
 import get from 'lodash/get'
 import { lstorage } from 'utils'
 import Form from './Form'
-import ModalItem from './Modal'
 import ListTransfer from './ListTransferOut'
 import FilterTransfer from './FilterTransferOut'
 
@@ -94,7 +93,7 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
       payload: {
         listItem,
         item,
-        form: event.target.form,
+        form: event ? event.target.form : null,
         events: {
           ...event
         }
@@ -464,6 +463,7 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
     ...listProps,
     ...formEditProps,
     ...formConfirmProps,
+    formEditProps,
     dispatch,
     listTrans,
     listItem,
@@ -653,7 +653,6 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
       <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
         <TabPane tab="Add" key="0">
           <Form {...formProps} />
-          {modalVisible && <ModalItem {...formEditProps} />}
         </TabPane>
         <TabPane tab="Archieve" key="1">
           <FilterTransfer {...filterTransferProps} />

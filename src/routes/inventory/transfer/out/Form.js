@@ -5,6 +5,7 @@ import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
+import ModalItem from './Modal'
 
 const { Option } = Select
 const FormItem = Form.Item
@@ -33,6 +34,7 @@ const FormAdd = ({
   // resetItem,
   modalProductVisible,
   modalInvoiceVisible,
+  formEditProps,
   button,
   loadingButton,
   resetListItem,
@@ -269,6 +271,7 @@ const FormAdd = ({
             {...modalProductDemandProps}
           />
         )}
+        {formEditProps.visible && <ModalItem {...formEditProps} />}
         {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>
     </div>

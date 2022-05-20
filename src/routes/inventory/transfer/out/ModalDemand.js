@@ -52,7 +52,9 @@ const ModalDemand = ({
       title: 'Brand',
       dataIndex: 'brandName',
       key: 'brandName',
-      onFilter: (value, record) => record.brandName.includes(value),
+      onFilter: (value, record) => {
+        return record.brandName.includes(value)
+      },
       filters: listBrand ? listBrand.map(item => ({ text: item.brandName, value: item.brandName })) : [],
       width: 100
     },
@@ -60,7 +62,9 @@ const ModalDemand = ({
       title: 'Category',
       dataIndex: 'categoryName',
       key: 'categoryName',
-      onFilter: (value, record) => record.categoryName.includes(value),
+      onFilter: (value, record) => {
+        return record.categoryName.includes(value)
+      },
       filters: listCategory ? listCategory.map(item => ({ text: item.categoryName, value: item.categoryName })) : [],
       width: 100
     },
@@ -69,6 +73,7 @@ const ModalDemand = ({
       dataIndex: 'qty',
       key: 'qty',
       width: 80,
+      sorter: (a, b) => a.qty - b.qty,
       render: (text) => {
         return (<strong>{text}</strong>)
       }
@@ -77,36 +82,42 @@ const ModalDemand = ({
       title: 'Stock',
       dataIndex: 'stock',
       key: 'stock',
+      sorter: (a, b) => a.qty - b.qty,
       width: 80
     },
     {
       title: 'Demand',
       dataIndex: 'qtyDemand',
       key: 'qtyDemand',
+      sorter: (a, b) => a.qty - b.qty,
       width: 80
     },
     {
       title: 'Current MUIN',
       dataIndex: 'qtyTransferIn',
       key: 'qtyTransferIn',
+      sorter: (a, b) => a.qty - b.qty,
       width: 80
     },
     {
       title: 'Sales',
       dataIndex: 'qtyOldSales',
       key: 'qtyOldSales',
+      sorter: (a, b) => a.qty - b.qty,
       width: 80
     },
     {
       title: 'Fulfill',
       dataIndex: 'qtyOldFulfillment',
       key: 'qtyOldFulfillment',
+      sorter: (a, b) => a.qty - b.qty,
       width: 80
     },
     {
       title: 'Old MUIN',
       dataIndex: 'qtyOldTransferIn',
       key: 'qtyOldTransferIn',
+      sorter: (a, b) => a.qty - b.qty,
       width: 80
     }
   ]
@@ -122,11 +133,11 @@ const ModalDemand = ({
     onChange: (selectedRowKeys) => {
       updateSelectedKey(selectedRowKeys)
     },
-    onSelectAll: () => {
-      if (listProductDemand.length === selectedRowKeys.length) {
+    onSelectAll: (checked, tableData) => {
+      if (tableData.length === selectedRowKeys.length) {
         updateSelectedKey([])
       } else {
-        updateSelectedKey(listProductDemand.map(item => item.id))
+        updateSelectedKey(tableData.map(item => item.id))
       }
     }
   }

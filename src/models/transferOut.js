@@ -197,8 +197,9 @@ export default modelExtend(pageModel, {
       const { listItem, item, form, events } = payload
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: item.productId })
+      let totalListProduct = 0
       if (listProductData.success) {
-        const totalListProduct = listProductData.data.filter(filtered => filtered.productId === item.productId)
+        totalListProduct = listProductData.data.filter(filtered => filtered.productId === item.productId)
           .reduce((prev, next) => prev + next.count, 0)
         if (item.qty > totalListProduct) {
           Modal.warning({
@@ -207,6 +208,9 @@ export default modelExtend(pageModel, {
           })
           return
         }
+      }
+      if (totalListProduct > 0) {
+        item.stock = totalListProduct
       }
       listItem[item.no - 1] = item
       yield put({

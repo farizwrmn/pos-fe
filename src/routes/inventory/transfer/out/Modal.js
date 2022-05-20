@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
-const { TextArea } = Input
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -119,14 +118,6 @@ class TransferModal extends Component {
                 }}
               />
             )}
-          </FormItem>
-          <FormItem label="Description" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('description', {
-              initialValue: currentItemList.description,
-              rules: [{
-                required: false
-              }]
-            })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
         </Form>
       </Modal>
