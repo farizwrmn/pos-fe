@@ -598,9 +598,57 @@ const Routers = function ({ history, app }) {
           path: 'transaction/purchase/order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/purchase/purchaseOrder'))
+              registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
               cb(null, require('./routes/purchase/purchaseOrder'))
             }, 'transaction-purchase-order')
+          }
+        }, {
+          path: 'transaction/purchase/demand',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/purchaseOrder/purchaseDemand'))
+              cb(null, require('./routes/purchase/purchaseDemand'))
+            }, 'transaction-purchase-demand')
+          }
+        }, {
+          path: 'transaction/purchase/fulfillment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/purchaseOrder/purchaseFulfillment'))
+              cb(null, require('./routes/purchase/purchaseFulfillment'))
+            }, 'transaction-purchase-fulfillment')
+          }
+        }, {
+          path: 'transaction/purchase/price',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/purchaseOrder/purchasePrice'))
+              cb(null, require('./routes/purchase/purchasePrice'))
+            }, 'transaction-purchase-price')
+          }
+        }, {
+          path: 'inventory/transfer/demand',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferRequest/transferDemand'))
+              cb(null, require('./routes/transferRequest/transferDemand'))
+            }, 'inventory-transfer-demand')
+          }
+        }, {
+          path: 'inventory/transfer/fulfillment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferRequest/transferDemand'))
+              cb(null, require('./routes/transferRequest/transferDemand'))
+            }, 'inventory-transfer-demand')
+          }
+        }, {
+          path: 'inventory/transfer/schedule',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferRequest/transferSchedule'))
+              cb(null, require('./routes/transferRequest/transferSchedule'))
+            }, 'inventory-transfer-schedule')
           }
         }, {
           path: 'transaction/purchase/return',
@@ -1435,6 +1483,8 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/employee'))
               cb(null, require('./routes/inventory/transfer/out'))
             }, 'inventory-transfer-out')

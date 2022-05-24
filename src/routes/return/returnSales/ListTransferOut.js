@@ -104,12 +104,13 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (text, record) =>
-      (<span>
-        <Tag color={text && record.active ? 'blue' : !text && !record.active ? 'red' : 'green'}>
-          {text && record.active ? 'In progress' : !text && !record.active ? 'Canceled' : 'Accepted'}
-        </Tag>
-      </span>)
+      render: (text, record) => {
+        return (<span>
+          <Tag color={text && record.active ? 'blue' : !text && !record.active ? 'red' : 'green'}>
+            {text && record.active ? 'In progress' : !text && !record.active ? 'Canceled' : 'Accepted'}
+          </Tag>
+        </span>)
+      }
     },
     {
       title: 'Transaction No',

@@ -3,6 +3,8 @@ import moment from 'moment'
 import { Modal, message } from 'antd'
 import { prefix } from 'utils/config.main'
 import { lstorage, color, alertModal } from 'utils'
+import { queryActive } from 'services/transferRequest/transferDemand'
+import { queryPOSproduct } from 'services/master/productstock'
 import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
 import { queryPOSstock as queryProductsInStock } from '../services/master/productstock'
@@ -30,10 +32,13 @@ export default modelExtend(pageModel, {
     listHeader: [],
     listChangeTransferOut: [],
     listChangeTransferIn: [],
+    listProductDemand: [],
+    selectedRowKeys: [],
     currentItem: {},
     currentItemList: {},
     currentItemPrint: {},
     filterSearch: {},
+    modalProductDemandVisible: false,
     modalVisible: false,
     modalConfirmVisible: false,
     modalInvoiceVisible: false, // purchase modal visible
@@ -104,6 +109,7 @@ export default modelExtend(pageModel, {
         })
       }
     },
+
     * queryLov ({ payload = {} }, { call, put }) {
       yield put({
         type: 'updateState',
@@ -186,6 +192,108 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+
+    * updateQty ({ payload = {} }, { call, put }) {
+      const { listItem, item, form, events } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: item.productId })
+      let totalListProduct = 0
+      if (listProductData.success) {
+        totalListProduct = listProductData.data.filter(filtered => filtered.productId === item.productId)
+          .reduce((prev, next) => prev + next.count, 0)
+        if (item.qty > totalListProduct) {
+          Modal.warning({
+            title: 'No available stock',
+            content: `Your input: ${item.qty}, Available: ${totalListProduct}`
+          })
+          return
+        }
+      }
+      if (totalListProduct > 0) {
+        item.stock = totalListProduct
+      }
+      listItem[item.no - 1] = item
+      yield put({
+        type: 'transferOut/updateState',
+        payload: {
+          currentItemList: {},
+          modalVisible: false,
+          listItem
+        }
+      })
+      if (form && events) {
+        const index = [...form].indexOf(events.target)
+        if (form.elements[index + 1]) {
+          form.elements[index + 1].focus()
+        }
+      }
+    },
+
+    * showModalDemand ({ payload = {} }, { call, put }) {
+      const response = yield call(queryActive, {
+        storeId: lstorage.getCurrentUserStore(),
+        storeIdReceiver: payload.storeId,
+        type: payload.type
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalProductDemandVisible: true,
+            listProductDemand: response.data
+          }
+        })
+      }
+    },
+
+    * submitProductDemand ({ payload = {} }, { put, select }) {
+      const { selectedRowKeys, listProductDemand } = payload
+      const listItem = yield select(({ transferOut }) => transferOut.listItem)
+      const mapListItem = listItem.map(item => item.productId)
+      const newListItem = listProductDemand.filter((filtered) => {
+        return selectedRowKeys.includes(filtered.productId)
+      }).filter((filtered) => {
+        return !mapListItem.includes(filtered.productId)
+      }).map((item, index) => {
+        return ({
+          no: index + 1,
+          brandName: item.brandName,
+          categoryName: item.categoryName,
+          productImage: item.productImage,
+          productCode: item.productCode,
+          productId: item.id,
+          transType: 'MUOUT',
+          qtyStore: item.qtyStore,
+          dimension: item.dimension,
+          dimensionBox: item.dimensionBox,
+          dimensionPack: item.dimensionPack,
+          stock: item.stock,
+          productName: item.productName,
+          qty: item.qty,
+          description: null
+        })
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: listItem.concat(newListItem).map((item, index) => ({ ...item, no: index + 1 })),
+          modalProductDemandVisible: false,
+          selectedRowKeys: []
+        }
+      })
+    },
+
+    * hideModalDemand (payload, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalProductDemandVisible: false,
+          listProductDemand: [],
+          selectedRowKeys: []
+        }
+      })
+    },
+
     * queryChangeHpokokTransferOut ({ payload = {} }, { call, put }) {
       const data = yield call(queryChangeHpokokTransferOut, payload)
       if (data.success) {
@@ -290,8 +398,8 @@ export default modelExtend(pageModel, {
         }
       } else {
         error(response)
-        if (response && response.data && response.data[0]) {
-          stockMinusAlert(response)
+        if (response && typeof response.message === 'object') {
+          stockMinusAlert([response.message])
         }
         // throw data
       }

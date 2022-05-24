@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
+const ModalRules = ({
   item,
   onOkList,
   onCancelList,
@@ -75,7 +75,7 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalRules.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -83,4 +83,4 @@ modal.propTypes = {
   enablePopover: PropTypes.func
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalRules)

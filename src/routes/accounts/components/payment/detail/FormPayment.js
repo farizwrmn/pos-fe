@@ -30,7 +30,7 @@ const formItemLayout = {
   }
 }
 
-const formPayment = ({
+const FormPayment = ({
   listAmount,
   curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0),
   data,
@@ -68,7 +68,7 @@ const formPayment = ({
   )
 }
 
-formPayment.propTypes = {
+FormPayment.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
@@ -79,4 +79,4 @@ formPayment.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(formPayment)
+export default Form.create()(FormPayment)

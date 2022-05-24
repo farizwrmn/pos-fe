@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/purchase/purchaseOrder'
+import { query, add, edit, remove } from 'services/purchaseOrder/purchasePrice'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Purchase Price has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'purchaseOrder',
+  namespace: 'purchasePrice',
 
   state: {
     currentItem: {},
@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/transaction/purchase/price') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -70,7 +70,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const data = yield call(add, payload.data)
       if (data.success) {
         success()
         yield put({
@@ -83,6 +83,9 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',
@@ -95,8 +98,8 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ purchaseOrder }) => purchaseOrder.currentItem.id)
-      const newCounter = { ...payload, id }
+      const id = yield select(({ purchasePrice }) => purchasePrice.currentItem.id)
+      const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
@@ -116,6 +119,9 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',

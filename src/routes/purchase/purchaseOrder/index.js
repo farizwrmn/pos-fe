@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ purchaseOrder, loading, dispatch, location, app }) => {
-  const { listAccountCode, pagination, modalType, currentItem, activeKey } = purchaseOrder
+  const { list, pagination, modalType, currentItem, activeKey } = purchaseOrder
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -24,7 +24,7 @@ const Counter = ({ purchaseOrder, loading, dispatch, location, app }) => {
   }
 
   const listProps = {
-    dataSource: listAccountCode,
+    dataSource: list,
     user,
     storeInfo,
     pagination,
@@ -75,7 +75,7 @@ const Counter = ({ purchaseOrder, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'purchaseOrder/updateState', payload: { listAccountCode: [] } })
+    dispatch({ type: 'purchaseOrder/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {

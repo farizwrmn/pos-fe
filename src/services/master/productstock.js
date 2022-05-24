@@ -57,7 +57,9 @@ export async function queryPOSstock (params) {
 export async function queryPOSproduct (params) {
   let product = []
   const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
+  if (!params.storeId) {
+    params.storeId = lstorage.getCurrentUserStore()
+  }
   if (params && params.product) {
     product = params.product.toString().split(',')
     if (product && product.length === 1) {
