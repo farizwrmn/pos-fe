@@ -15,8 +15,6 @@ function Dashboard ({ dispatch, loading, fifoReport, dashboard, pos }) {
     <NumberCard {...item} />
   </Col>))
 
-  console.log('listPosDetail', listPosDetail)
-
   const salesDetailProps = {
     dispatch,
     dataSource: listPosDetail,
