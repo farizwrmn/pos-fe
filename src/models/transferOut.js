@@ -264,6 +264,7 @@ export default modelExtend(pageModel, {
           productId: item.id,
           transType: 'MUOUT',
           qtyStore: item.qtyStore,
+          qtyDemand: item.qtyDemand,
           dimension: item.dimension,
           dimensionBox: item.dimensionBox,
           dimensionPack: item.dimensionPack,
