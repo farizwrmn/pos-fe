@@ -41,7 +41,7 @@ const numberToLetters = (num) => {
 
 const numberFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
-    return `${currency.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+    return `${(Math.ceil(parseFloat(currency || 0))).toLocaleString()}`
   }
   return '0'
 }
