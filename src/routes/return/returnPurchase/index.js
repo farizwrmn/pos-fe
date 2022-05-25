@@ -40,7 +40,10 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     // sort,
     // showPrintModal
   } = returnPurchase
-  const { listSupplier } = purchase
+  const {
+    listPurchaseLatestDetail,
+    listSupplier
+  } = purchase
   const { user, storeInfo } = app
   // const filterProps = {
   //   display,
@@ -87,6 +90,12 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
           modalEditItemVisible: true
         }
       })
+      dispatch({
+        type: 'purchase/getPurchaseLatestDetail',
+        payload: {
+          productId: record.id
+        }
+      })
     },
     editItem (item) {
       dispatch({
@@ -103,6 +112,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       })
     }
   }
+
+  console.log('listItem', listItem)
 
   const modalProductProps = {
     location,
@@ -210,6 +221,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
   const formEditProps = {
     visible: modalEditItemVisible,
     reference,
+    listPurchaseLatestDetail,
+    loadingPurchaseLatest: loading.effects['purchase/getPurchaseLatestDetail'],
     referenceNo,
     item: currentItem,
     listStore: lstorage.getListUserStores(),

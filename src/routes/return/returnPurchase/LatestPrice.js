@@ -23,6 +23,12 @@ const LatestPrice = ({
       dataIndex: 'dpp',
       key: 'dpp',
       render: (text, record) => currencyFormatter(text / record.qty)
+    },
+    {
+      title: 'PPN',
+      dataIndex: 'ppn',
+      key: 'ppn',
+      render: (text, record) => currencyFormatter(text / record.qty)
     }
   ]
   return (
