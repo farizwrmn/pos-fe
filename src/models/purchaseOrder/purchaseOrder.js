@@ -1,24 +1,50 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
-import { message } from 'antd'
-import { query, add, edit, remove } from 'services/purchaseOrder/purchaseOrder'
-import { pageModel } from '../common'
+import { message, Modal } from 'antd'
+import { lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
+import moment from 'moment'
+import { query, queryById, add, edit, approve, remove } from 'services/purchaseOrder/purchaseOrder'
+import { query as querySequence } from 'services/sequence'
+import { queryDetail as queryPurchaseDetail, queryDetailByProductId } from 'services/purchase'
+import {
+  query as queryProductStock,
+  queryPOSproduct
+} from 'services/master/productstock'
+import { pageModel } from './../common'
+
 
 const success = () => {
-  message.success('Purchase Order has been saved')
+  message.success('Return Purchase has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'purchaseOrder',
+  namespace: 'returnPurchase',
 
   state: {
+    data: {},
+    searchText: '',
+    listDetail: [],
+    listItem: [],
+    listPurchaseLatestDetail: [],
+    listProduct: [],
+    listInvoice: [],
+    list: [],
     currentItem: {},
+    currentItemList: {},
+    reference: null,
+    referenceNo: null,
     modalType: 'add',
     activeKey: '0',
-    list: [],
+    modalEditItemVisible: false,
+    modalProductVisible: false,
+    modalInvoiceVisible: false,
+
+    modalReturnVisible: false,
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
+      // showSizeChanger: true,
+      // showQuickJumper: true,
       current: 1
     }
   },
@@ -28,11 +54,28 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/transaction/purchase/order') {
+        const match = pathToRegexp('/transaction/purchase/return/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryReturnPurchaseDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
+        if (pathname === '/transaction/purchase/return') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
+            }
+          })
+          dispatch({
+            type: 'querySequence',
+            payload: {
+              seqCode: 'RBB',
+              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
             }
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
@@ -42,9 +85,142 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * getPurchaseLatestDetail ({ payload }, { call, put }) {
+      const response = yield call(queryDetailByProductId, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseLatestDetail: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * queryReturnPurchaseDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { returnPurchaseDetail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: other,
+            listDetail: returnPurchaseDetail
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * queryReturnDetailInvoice ({ payload = {} }, { call, put }) {
+      const header = yield call(query, {
+        queryType: 'toPayable',
+        supplierId: payload.supplierId
+      })
+      if (header && header.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listInvoice: header.data
+              .map(data => ({
+                ...data,
+                amount: data.returnPurchaseDetail.map((returnData) => {
+                  if (returnData.DPP > 0) {
+                    return returnData.DPP * returnData.qty
+                  }
+                  return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
+                }).reduce((prev, next) => prev + next, 0) * -1,
+                paymentTotal: data.returnPurchaseDetail.map((returnData) => {
+                  if (returnData.DPP > 0) {
+                    return returnData.DPP * returnData.qty
+                  }
+                  return returnData.purchaseDetail ? returnData.purchaseDetail.DPP : 0
+                }).reduce((prev, next) => prev + next, 0) * -1
+              }))
+          }
+        })
+      }
+    },
+
+    * queryProduct ({ payload = {} }, { call, put }) {
+      const data = yield call(queryProductStock, payload)
+      let newData = data.data
+      if (data.success) {
+        yield put({
+          type: 'showProductQty',
+          payload: {
+            data: newData.map(item => ({ ...item, dpp: item.costPrice, DPP: item.costPrice }))
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: newData.map(item => ({ ...item, dpp: item.costPrice, DPP: item.costPrice }))
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            pagination: {
+              total: data.total,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10
+            }
+          }
+        })
+      } else {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Product Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+      }
+    },
+
+    * showProductQty ({ payload }, { call, put }) {
+      let { data } = payload
+      const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
+      const newData = data.map(x => x.id)
+
+      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      if (listProductData.success) {
+        for (let n = 0; n < (listProductData.data || []).length; n += 1) {
+          data = data.map((x) => {
+            if (x.id === listProductData.data[n].id) {
+              const { count, ...other } = x
+              return {
+                ...other,
+                ...listProductData.data[n],
+                productId: listProductData.data[n].id,
+                initialQty: listProductData.data[n].count,
+                qty: listProductData.data[n].count,
+                DPP: x.costPrice,
+                dpp: listProductData.data[n].count * x.costPrice
+              }
+            }
+            return x
+          })
+        }
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: data
+          }
+        })
+      } else {
+        throw listProductData
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(query, {
+        ...payload,
+        order: '-id'
+      })
       if (data.success) {
         yield put({
           type: 'querySuccess',
@@ -69,37 +245,192 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
+    * approve ({ payload }, { call, put }) {
+      const data = yield call(approve, payload)
       if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
+        yield put({ type: 'query' })
+        Modal.success({
+          title: 'Transaction success',
+          content: 'Transaction has been saved'
         })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     },
 
+    * getInvoiceDetailPurchase ({ payload }, { select, call, put }) {
+      const currentItem = yield select(({ returnPurchase }) => returnPurchase.currentItem)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listProduct: [],
+          listItem: []
+        }
+      })
+      const response = yield call(queryPurchaseDetail, {
+        transNo: payload.transNo
+      })
+      if (response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            reference: payload.id,
+            referenceNo: payload.transNo
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listProduct: response.data,
+            modalInvoiceVisible: false,
+            currentItem: {
+              ...currentItem,
+              reference: payload.id,
+              referenceNo: payload.transNo
+            }
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * addItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnPurchase }) => returnPurchase.listItem)
+      const exists = listItem.filter(filtered => filtered.id === payload.item.id)
+      if (exists && exists.length > 0) {
+        message.warning('Product already exists')
+        return
+      }
+      const newListItem = [
+        ...listItem
+      ]
+      const newData = {
+        no: listItem.length + 1,
+        transferStoreId: lstorage.getCurrentUserStore(),
+        id: payload.item.id,
+        qty: 1,
+        productCode: payload.item.productCode,
+        productName: payload.item.productName,
+        initialQty: payload.item.qty,
+        DPP: (parseFloat(payload.item.DPP || 0) + parseFloat(payload.item.PPN || 0)) / payload.item.qty || (parseFloat(payload.item.costPrice || 0) + parseFloat(payload.item.PPN || 0)), // Akan di simpan ke table
+        dpp: (parseFloat(payload.item.DPP || 0) + parseFloat(payload.item.PPN || 0)) || (parseFloat(payload.item.costPrice || 0) + parseFloat(payload.item.PPN || 0)) * payload.item.qty // Total qty * harga
+      }
+      newListItem.push(newData)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: newListItem,
+          modalProductVisible: false
+        }
+      })
+      // yield put({
+      //   type: 'updateState',
+      //   payload: {
+      //     currentItemList: newData,
+      //     modalEditItemVisible: true
+      //   }
+      // })
+    },
+
+    * editItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnPurchase }) => returnPurchase.listItem)
+      const exists = listItem.filter(filtered => filtered.id === payload.item.id)
+      if (exists && exists.length > 0) {
+        const { item } = payload
+        if (item.qty > item.initialQty) {
+          message.warning('Qty of return sales is bigger than sales')
+          return
+        }
+        const newListItem = listItem.map((item) => {
+          if (item.id === payload.item.id) {
+            return ({
+              ...item,
+              ...payload.item
+            })
+          }
+          return item
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: newListItem,
+            currentItemList: {},
+            modalEditItemVisible: false
+          }
+        })
+      } else {
+        message.warning('Product not exists')
+      }
+    },
+
+    * deleteItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnPurchase }) => returnPurchase.listItem)
+      const exists = listItem.filter(filtered => filtered.id === payload.item.id)
+      if (exists && exists.length > 0) {
+        const newListItem = listItem
+          .filter(filtered => filtered.id !== payload.item.id)
+          .map((item, index) => {
+            return ({
+              ...item,
+              no: index + 1
+            })
+          })
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: newListItem,
+            currentItemList: {},
+            modalEditItemVisible: false
+          }
+        })
+      } else {
+        message.warning('Product not exists')
+      }
+    },
+
+    * add ({ payload }, { call, put }) {
+      const response = yield call(add, {
+        data: payload.data,
+        detail: payload.detail
+      })
+      if (response.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {},
+            currentItemList: {},
+            listItem: [],
+            listProduct: []
+          }
+        })
+        payload.resetFields()
+        yield put({
+          type: 'returnPurchase/updateState',
+          payload: {
+            reference: null,
+            referenceNo: null,
+            formType: 'add',
+            currentItem: {},
+            currentItemList: {}
+          }
+        })
+        yield put({
+          type: 'querySequence',
+          payload: {
+            seqCode: 'RBB',
+            type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ purchaseOrder }) => purchaseOrder.currentItem.id)
-      const newCounter = { ...payload.data, id }
+      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
@@ -119,9 +450,6 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
       } else {
         yield put({
           type: 'updateState',
@@ -130,6 +458,25 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+
+    * querySequence ({ payload }, { call, put }) {
+      yield put({ type: 'resetState' })
+      const data = yield call(querySequence, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {
+              transNo: data.data,
+              storeId: lstorage.getCurrentUserStore()
+            },
+            listStore: lstorage.getListUserStores()
+          }
+        })
+      } else {
+        throw (data)
       }
     }
   },
@@ -158,16 +505,6 @@ export default modelExtend(pageModel, {
         activeKey: key,
         modalType: 'add',
         currentItem: {}
-      }
-    },
-
-    editItem (state, { payload }) {
-      const { item } = payload
-      return {
-        ...state,
-        modalType: 'edit',
-        activeKey: '0',
-        currentItem: item
       }
     }
   }
