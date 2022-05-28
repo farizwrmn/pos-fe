@@ -16,11 +16,11 @@ import { pageModel } from './../common'
 
 
 const success = () => {
-  message.success('Return Purchase has been saved')
+  message.success('Purchase Order has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'returnPurchase',
+  namespace: 'purchaseOrder',
 
   state: {
     data: {},
@@ -259,7 +259,7 @@ export default modelExtend(pageModel, {
     },
 
     * getInvoiceDetailPurchase ({ payload }, { select, call, put }) {
-      const currentItem = yield select(({ returnPurchase }) => returnPurchase.currentItem)
+      const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
       yield put({
         type: 'updateState',
         payload: {
@@ -296,7 +296,7 @@ export default modelExtend(pageModel, {
     },
 
     * addItem ({ payload }, { select, put }) {
-      const listItem = yield select(({ returnPurchase }) => returnPurchase.listItem)
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
       const exists = listItem.filter(filtered => filtered.id === payload.item.id)
       if (exists && exists.length > 0) {
         message.warning('Product already exists')
@@ -334,7 +334,7 @@ export default modelExtend(pageModel, {
     },
 
     * editItem ({ payload }, { select, put }) {
-      const listItem = yield select(({ returnPurchase }) => returnPurchase.listItem)
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
       const exists = listItem.filter(filtered => filtered.id === payload.item.id)
       if (exists && exists.length > 0) {
         const { item } = payload
@@ -365,7 +365,7 @@ export default modelExtend(pageModel, {
     },
 
     * deleteItem ({ payload }, { select, put }) {
-      const listItem = yield select(({ returnPurchase }) => returnPurchase.listItem)
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
       const exists = listItem.filter(filtered => filtered.id === payload.item.id)
       if (exists && exists.length > 0) {
         const newListItem = listItem
@@ -407,7 +407,7 @@ export default modelExtend(pageModel, {
         })
         payload.resetFields()
         yield put({
-          type: 'returnPurchase/updateState',
+          type: 'purchaseOrder/updateState',
           payload: {
             reference: null,
             referenceNo: null,

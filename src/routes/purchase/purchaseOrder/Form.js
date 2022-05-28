@@ -26,25 +26,17 @@ const col = {
 const FormAdd = ({
   item = {},
   listSupplier,
-  resetListItem,
   onSubmit,
   button,
   loadingButton,
   listItem,
   handleProductBrowse,
-  // formConfirmProps,
-  // modalConfirmVisible,
-  // modalProductProps,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    getFieldValue,
-    resetFields,
-    setFieldsValue
+    resetFields
   },
-  reference,
-  referenceNo,
   listProps
 }) => {
   const handleSubmit = () => {
@@ -54,9 +46,7 @@ const FormAdd = ({
       }
       const data = {
         ...item,
-        ...getFieldsValue(),
-        referenceNo: getFieldValue('requireInvoice') ? getFieldValue('referenceNo') : null,
-        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null
+        ...getFieldsValue()
       }
       data.supplierId = data.supplierCode.key
       Modal.confirm({
@@ -66,51 +56,15 @@ const FormAdd = ({
           onSubmit(data, listItem, resetFields)
         },
         onCancel () {
-          // cancel
         }
       })
-      // handleReset()
     })
   }
-  // const formConfirmOpts = {
-  //   listItem,
-  //   itemHeader: {
-  //     storeId: {
-  //       label: lstorage.getCurrentUserStoreName()
-  //     },
-  //     ...getFieldsValue()
-  //   },
-  //   ...formConfirmProps
-  // }
+
 
   const supplierData = (listSupplier || []).length > 0 ?
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
-
-  const handleChangeSupplier = () => {
-    const oldSupplierCode = getFieldValue('supplierCode')
-    validateFields(['supplierCode'], (errors) => {
-      if (errors) {
-        return
-      }
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          const type = getFieldValue('type')
-          resetListItem(type)
-        },
-        onCancel () {
-          setFieldsValue({
-            supplierCode: {
-              key: oldSupplierCode ? oldSupplierCode.key : null,
-              label: oldSupplierCode ? oldSupplierCode.label : null
-            }
-          })
-        }
-      })
-    })
-  }
 
   return (
     <div>
@@ -129,13 +83,7 @@ const FormAdd = ({
             </FormItem>
             <FormItem required label="Supplier" {...formItemLayout}>
               {getFieldDecorator('supplierCode', {
-                initialValue: item.supplierId ? {
-                  key: item.supplierId,
-                  value: item.supplierId
-                } : listSupplier && listSupplier[0] ? {
-                  key: listSupplier[0].id,
-                  value: listSupplier[0].supplierName
-                } : undefined,
+                initialValue: item.supplierId,
                 rules: [
                   {
                     required: true
@@ -144,34 +92,12 @@ const FormAdd = ({
               })(<Select
                 showSearch
                 optionFilterProp="children"
-                labelInValue
                 maxTagCount={5}
-                onChange={handleChangeSupplier}
                 style={{ width: '100%' }}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >
                 {supplierData}
               </Select>)}
-            </FormItem>
-            <FormItem label="referenceNo" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('referenceNo', {
-                initialValue: referenceNo,
-                rules: [
-                  {
-                    required: false
-                  }
-                ]
-              })(<Input disabled />)}
-            </FormItem>
-            <FormItem label="reference" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('reference', {
-                initialValue: reference,
-                rules: [
-                  {
-                    required: false
-                  }
-                ]
-              })(<Input disabled />)}
             </FormItem>
             <Button type="primary" size="large" onClick={() => handleProductBrowse(true, true)}>Product</Button>
           </Col>
@@ -184,7 +110,7 @@ const FormAdd = ({
                     required: false
                   }
                 ]
-              })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} />)}
+              })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)}
             </FormItem>
           </Col>
         </Row>

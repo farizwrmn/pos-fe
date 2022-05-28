@@ -13,7 +13,7 @@ import Filter from './Filter'
 // const { getCashierTrans } = lstorage
 const { TabPane } = Tabs
 
-const ReturnSales = ({ location, purchaseOrder, purchase, app, dispatch, loading }) => {
+const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loading }) => {
   const {
     list: listReturnPurchase,
     pagination,
@@ -113,8 +113,6 @@ const ReturnSales = ({ location, purchaseOrder, purchase, app, dispatch, loading
     }
   }
 
-  console.log('listItem', listItem)
-
   const modalProductProps = {
     location,
     dispatch,
@@ -126,7 +124,6 @@ const ReturnSales = ({ location, purchaseOrder, purchase, app, dispatch, loading
     visible: modalProductVisible || modalInvoiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onChange (/* event */) { },
     showProductQty (data) {
       dispatch({
         type: 'purchase/showProductQty',
@@ -459,7 +456,7 @@ const ReturnSales = ({ location, purchaseOrder, purchase, app, dispatch, loading
   )
 }
 
-ReturnSales.propTypes = {
+PurchaseOrder.propTypes = {
   purchaseOrder: PropTypes.object,
   purchase: PropTypes.object,
   app: PropTypes.object,
@@ -469,4 +466,4 @@ ReturnSales.propTypes = {
 }
 
 
-export default connect(({ purchaseOrder, purchase, app, loading }) => ({ purchaseOrder, purchase, app, loading }))(ReturnSales)
+export default connect(({ purchaseOrder, purchase, app, loading }) => ({ purchaseOrder, purchase, app, loading }))(PurchaseOrder)

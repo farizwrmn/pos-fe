@@ -46,11 +46,6 @@ const Browse = ({
     location,
     totalItem,
     onInvoiceHeader,
-    // onChange (e) {
-    //   if (modalType === 'browseProductLock' || modalType === 'browseProductFree') {
-    //     onChange(e)
-    //   }
-    // },
     onChange (e) {
       if (modalProductVisible && pagination && pagination.current > 0) {
         dispatch({
