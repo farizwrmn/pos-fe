@@ -1,126 +1,209 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
+import ListItem from './ListItem'
 
 const FormItem = Form.Item
+const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    span: 8
   },
   wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    span: 9
   }
 }
 
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const col = {
+  lg: {
+    span: 12,
+    offset: 0
+  }
 }
 
-const FormCounter = ({
+const FormAdd = ({
   item = {},
+  listSupplier,
+  resetListItem,
   onSubmit,
-  onCancel,
-  modalType,
   button,
+  loadingButton,
+  listItem,
+  handleProductBrowse,
+  // formConfirmProps,
+  // modalConfirmVisible,
+  // modalProductProps,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields
-  }
+    getFieldValue,
+    resetFields,
+    setFieldsValue
+  },
+  reference,
+  referenceNo,
+  listProps
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
-        ...getFieldsValue()
+        ...item,
+        ...getFieldsValue(),
+        referenceNo: getFieldValue('requireInvoice') ? getFieldValue('referenceNo') : null,
+        reference: getFieldValue('requireInvoice') ? getFieldValue('reference') : null
+      }
+      data.supplierId = data.supplierCode.key
+      Modal.confirm({
+        title: 'Save this transaction',
+        content: 'Are you sure?',
+        onOk () {
+          onSubmit(data, listItem, resetFields)
+        },
+        onCancel () {
+          // cancel
+        }
+      })
+      // handleReset()
+    })
+  }
+  // const formConfirmOpts = {
+  //   listItem,
+  //   itemHeader: {
+  //     storeId: {
+  //       label: lstorage.getCurrentUserStoreName()
+  //     },
+  //     ...getFieldsValue()
+  //   },
+  //   ...formConfirmProps
+  // }
+
+  const supplierData = (listSupplier || []).length > 0 ?
+    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
+    : []
+
+  const handleChangeSupplier = () => {
+    const oldSupplierCode = getFieldValue('supplierCode')
+    validateFields(['supplierCode'], (errors) => {
+      if (errors) {
+        return
       }
       Modal.confirm({
-        title: 'Do you want to save this item?',
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
         onOk () {
-          onSubmit(data)
-          // setTimeout(() => {
-          resetFields()
-          // }, 500)
+          const type = getFieldValue('type')
+          resetListItem(type)
         },
-        onCancel () { }
+        onCancel () {
+          setFieldsValue({
+            supplierCode: {
+              key: oldSupplierCode ? oldSupplierCode.key : null,
+              label: oldSupplierCode ? oldSupplierCode.label : null
+            }
+          })
+        }
       })
     })
   }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <div>
+      <Form layout="horizontal">
+        <Row>
+          <Col {...col}>
+            <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transNo', {
+                initialValue: item.transNo,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input disabled maxLength={20} />)}
+            </FormItem>
+            <FormItem required label="Supplier" {...formItemLayout}>
+              {getFieldDecorator('supplierCode', {
+                initialValue: item.supplierId ? {
+                  key: item.supplierId,
+                  value: item.supplierId
+                } : listSupplier && listSupplier[0] ? {
+                  key: listSupplier[0].id,
+                  value: listSupplier[0].supplierName
+                } : undefined,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                optionFilterProp="children"
+                labelInValue
+                maxTagCount={5}
+                onChange={handleChangeSupplier}
+                style={{ width: '100%' }}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >
+                {supplierData}
+              </Select>)}
+            </FormItem>
+            <FormItem label="referenceNo" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('referenceNo', {
+                initialValue: referenceNo,
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<Input disabled />)}
+            </FormItem>
+            <FormItem label="reference" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('reference', {
+                initialValue: reference,
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<Input disabled />)}
+            </FormItem>
+            <Button type="primary" size="large" onClick={() => handleProductBrowse(true, true)}>Product</Button>
+          </Col>
+          <Col {...col}>
+            <FormItem label="Description" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: item.description,
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <ListItem {...listProps} style={{ marginTop: '10px' }} />
+        <FormItem>
+          <Button disabled={loadingButton.effects['purchaseOrder/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+        </FormItem>
+      </Form>
+    </div>
   )
 }
 
-FormCounter.propTypes = {
+FormAdd.propTypes = {
   form: PropTypes.object.isRequired,
+  disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
+  resetItem: PropTypes.func,
   button: PropTypes.string
 }
 
-export default Form.create()(FormCounter)
+export default Form.create()(FormAdd)

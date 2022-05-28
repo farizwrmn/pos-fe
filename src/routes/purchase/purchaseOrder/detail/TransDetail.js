@@ -4,9 +4,9 @@ import {
   Form,
   Row
 } from 'antd'
-import ListDetail from './ListDetail'
+import List from './ListDetail'
 
-const FormPayment = ({
+const TransDetail = ({
   dataSource,
   form: {
     resetFields
@@ -22,13 +22,13 @@ const FormPayment = ({
   return (
     <Form layout="horizontal">
       <Row>
-        <ListDetail {...listProps} />
+        <List {...listProps} />
       </Row>
     </Form>
   )
 }
 
-FormPayment.propTypes = {
+TransDetail.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
@@ -39,4 +39,4 @@ FormPayment.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(FormPayment)
+export default Form.create()(TransDetail)

@@ -6,7 +6,7 @@ import styles from '../../../../themes/index.less'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const ListDetail = ({ ...tableProps, editList }) => {
+const List = ({ ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
     editList(record)
   }
@@ -19,24 +19,39 @@ const ListDetail = ({ ...tableProps, editList }) => {
       width: 40
     },
     {
-      title: 'Account Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode',
+      title: 'Product Code',
+      dataIndex: 'product.productCode',
+      key: 'product.productCode',
       width: 100
     },
     {
-      title: 'Account Name',
-      dataIndex: 'accountCode',
-      key: 'accountCode',
+      title: 'Product Name',
+      dataIndex: 'product.productName',
+      key: 'product.productName',
       width: 200
     },
     {
-      title: 'Total',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
-      width: 120,
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      width: 60,
       className: styles.alignRight,
       render: text => formatNumberIndonesia(text || 0)
+    },
+    {
+      title: 'Total',
+      dataIndex: 'DPP',
+      key: 'DPP',
+      width: 120,
+      className: styles.alignRight,
+      render: (text, record) => {
+        if (record.purchaseDetail) {
+          const dppItem = record.purchaseDetail.DPP / record.purchaseDetail.qty
+          const total = dppItem * record.qty
+          return formatNumberIndonesia(total || 0)
+        }
+        return 0
+      }
     }
   ]
 
@@ -54,8 +69,8 @@ const ListDetail = ({ ...tableProps, editList }) => {
   )
 }
 
-ListDetail.propTypes = {
+List.propTypes = {
   editList: PropTypes.func
 }
 
-export default ListDetail
+export default List
