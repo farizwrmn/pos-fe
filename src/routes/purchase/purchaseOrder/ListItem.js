@@ -63,49 +63,6 @@ const ListItem = ({ ...tableProps, listItem, onModalVisible }) => {
           children: <div>{(text || '-').toLocaleString()}</div>
         }
       }
-    },
-    {
-      title: 'Price',
-      dataIndex: 'DPP',
-      key: 'DPP',
-      className: styles.alignRight,
-      // render: text => (text || '-').toLocaleString()
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{(text || '-').toLocaleString()}</div>
-        }
-      }
-    },
-    {
-      title: 'Subtotal',
-      dataIndex: 'subtotal',
-      key: 'subtotal',
-      className: styles.alignRight,
-      // render: text => (text || '-').toLocaleString()
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{(record.qty * record.DPP || '-').toLocaleString()}</div>
-        }
-      }
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{text}</div>
-        }
-      }
     }
   ]
 

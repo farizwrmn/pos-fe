@@ -74,7 +74,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'querySequence',
             payload: {
-              seqCode: 'RBB',
+              seqCode: 'PO',
               type: lstorage.getCurrentUserStore() // diganti dengan StoreId
             }
           })
@@ -307,14 +307,11 @@ export default modelExtend(pageModel, {
       ]
       const newData = {
         no: listItem.length + 1,
-        transferStoreId: lstorage.getCurrentUserStore(),
         id: payload.item.id,
+        prductId: payload.item.id,
         qty: 1,
         productCode: payload.item.productCode,
-        productName: payload.item.productName,
-        initialQty: payload.item.qty,
-        DPP: (parseFloat(payload.item.DPP || 0) + parseFloat(payload.item.PPN || 0)) / payload.item.qty || (parseFloat(payload.item.costPrice || 0) + parseFloat(payload.item.PPN || 0)), // Akan di simpan ke table
-        dpp: (parseFloat(payload.item.DPP || 0) + parseFloat(payload.item.PPN || 0)) || (parseFloat(payload.item.costPrice || 0) + parseFloat(payload.item.PPN || 0)) * payload.item.qty // Total qty * harga
+        productName: payload.item.productName
       }
       newListItem.push(newData)
       yield put({
@@ -324,13 +321,6 @@ export default modelExtend(pageModel, {
           modalProductVisible: false
         }
       })
-      // yield put({
-      //   type: 'updateState',
-      //   payload: {
-      //     currentItemList: newData,
-      //     modalEditItemVisible: true
-      //   }
-      // })
     },
 
     * editItem ({ payload }, { select, put }) {
@@ -419,7 +409,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySequence',
           payload: {
-            seqCode: 'RBB',
+            seqCode: 'PO',
             type: lstorage.getCurrentUserStore() // diganti dengan StoreId
           }
         })
