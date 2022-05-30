@@ -7,7 +7,6 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 const numberFormatter = numberFormat.numberFormatter
 
 const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
@@ -62,7 +61,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
             alignment: 'right'
           },
           {
-            text: 'RETUR BELI',
+            text: 'PURCHASE ORDER',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -202,7 +201,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: formatNumberIndonesia(parseFloat(qtyTotal)), alignment: 'right', fontSize: 12 }
+      { text: (parseFloat(qtyTotal) || 0).toLocaleString(), alignment: 'right', fontSize: 12 }
     ]
   ]
   const tableLayout = {
