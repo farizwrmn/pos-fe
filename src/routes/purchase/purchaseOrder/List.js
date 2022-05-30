@@ -7,23 +7,14 @@ import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, approveItem, deleteItem }) => {
+const List = ({ ...tableProps, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     switch (e.key) {
-      case '2': {
+      case '1': {
         confirm({
           title: `Are you sure delete ${record.transNo} ?`,
           onOk () {
             deleteItem(record.id)
-          }
-        })
-        break
-      }
-      case '3': {
-        confirm({
-          title: `Are you sure approve ${record.transNo} ?`,
-          onOk () {
-            approveItem(record.id)
           }
         })
         break
@@ -40,7 +31,7 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
       key: 'transNo',
       render: (text, record) => {
         return (
-          <Link to={`/transaction/purchase/return/${record.id}`}>
+          <Link to={`/transaction/purchase/order/${record.id}`}>
             {text}
           </Link>
         )
@@ -87,7 +78,7 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '3', name: 'Approve' }, { key: '2', name: 'Delete', disabled: false }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete', disabled: false }]} />
       }
     }
   ]

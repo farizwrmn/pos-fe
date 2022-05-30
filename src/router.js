@@ -604,6 +604,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-order')
           }
         }, {
+          path: 'transaction/purchase/order/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
+              cb(null, require('./routes/purchase/purchaseOrder/detail'))
+            }, 'transaction-purchase-order-detail')
+          }
+        }, {
           path: 'transaction/purchase/demand',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

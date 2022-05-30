@@ -80,7 +80,6 @@ const ListItem = ({ ...tableProps, listItem, onModalVisible }) => {
           return (
             <div>
               <div>Total Qty: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0)}</div>
-              <div>Total Price: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + (next.qty * next.DPP), 0) : 0)}</div>
             </div>
           )
         }}

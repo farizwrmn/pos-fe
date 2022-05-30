@@ -21,40 +21,16 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.product.productCode).toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.product.productName).toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.product.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.product.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: numberFormatter(parseFloat(data.qty)), alignment: 'right', fontSize: 11 })
-
-        let total = 0
-        if (data.DPP <= 0 && data.purchaseDetail) {
-          const dppItem = data.purchaseDetail.DPP / data.purchaseDetail.qty
-          total = dppItem * data.qty
-        } else {
-          total = data.DPP * data.qty
-        }
-        row.push({ text: formatNumberIndonesia(parseFloat(total)), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
       count += 1
     }
-    console.log('body', body)
     return body
   }
 
-  // Declare Variable
-  // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let grandTotal = listItem.reduce((cnt, o) => {
-    let total = 0
-    if (o.DPP <= 0 && o.purchaseDetail) {
-      const dppItem = o.purchaseDetail.DPP / o.purchaseDetail.qty
-      total = dppItem * o.qty
-    } else {
-      total = o.DPP * o.qty
-    }
-    return cnt + parseFloat(total)
-  }, 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -101,8 +77,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.createdAt).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'MEMO', fontSize: 11 }, ':', { text: itemHeader.memo, fontSize: 11 }, {}, {}, {}, {}]
+            [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.createdAt).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}]
           ]
         },
         layout: 'noBorders'
@@ -211,9 +186,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
@@ -222,14 +195,14 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
   } catch (e) {
     console.log('error', e)
   }
+
+  const qtyTotal = listItem.reduce((prev, next) => prev + next.qty, 0)
   const tableFooter = [
     [
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: numberFormatter(parseFloat(amountTotal)), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(parseFloat(grandTotal)), alignment: 'right', fontSize: 12 },
-      {}
+      { text: formatNumberIndonesia(parseFloat(qtyTotal)), alignment: 'right', fontSize: 12 }
     ]
   ]
   const tableLayout = {
@@ -249,7 +222,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '20%', '14%', '20%', '20%'],
+    width: ['12%', '30%', '30%', '28%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',

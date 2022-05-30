@@ -20,9 +20,9 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.product.productCode || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.product.productName || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.qty || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
@@ -78,10 +78,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, { text: 'PIC', fontSize: 11 }, ':', { text: (itemHeader.employeeId ? itemHeader.employeeId.label : '').toString(), fontSize: 11 }],
-            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
-            [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeId ? itemHeader.storeId.label : '').toString(), fontSize: 11 }, {}, { text: 'TOTAL PACK', fontSize: 11 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 11 }],
-            [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeIdReceiver ? itemHeader.storeIdReceiver.label : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: `KELUAR${`${itemHeader.description ? '/' : ''}`}${(itemHeader.description || '').toString()}`, fontSize: 11 }]
+            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
+            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}]
           ]
         },
         layout: 'noBorders'

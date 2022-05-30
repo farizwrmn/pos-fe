@@ -38,25 +38,6 @@ const ListProduct = ({ onChooseItem, searchText, dispatch, loadingQty, loadingPr
         }
         return <Icon type="loading" />
       }
-    },
-    {
-      title: 'Initial',
-      dataIndex: 'initialQty',
-      key: 'initialQty',
-      className: styles.alignRight,
-      render: (text) => {
-        if (!loadingQty.effects['purchaseOrder/showProductQty']) {
-          return text || 0
-        }
-        return <Icon type="loading" />
-      }
-    },
-    {
-      title: 'Price',
-      dataIndex: 'dpp',
-      key: 'dpp',
-      className: styles.alignRight,
-      render: (text, record) => (parseFloat(text) / (parseFloat(record.qty)) || '-').toLocaleString()
     }
   ]
 

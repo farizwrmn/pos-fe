@@ -46,11 +46,12 @@ class TransferModal extends Component {
           data.productId = currentItemList.productId
           data.productCode = currentItemList.productCode
           data.productName = currentItemList.productName
+          data.id = currentItemList.id
           onOkList(data)
         } else {
           Modal.warning({
             title: 'Message Error',
-            content: 'Price must greater than zero!'
+            content: 'Qty must greater than zero!'
           })
         }
       })

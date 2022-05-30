@@ -54,17 +54,17 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/transaction/purchase/return/:id').exec(location.pathname)
+        const match = pathToRegexp('/transaction/purchase/order/:id').exec(location.pathname)
         if (match) {
           dispatch({
-            type: 'queryReturnPurchaseDetail',
+            type: 'queryPurchaseOrderDetail',
             payload: {
               id: decodeURIComponent(match[1]),
               storeId: lstorage.getCurrentUserStore()
             }
           })
         }
-        if (pathname === '/transaction/purchase/return') {
+        if (pathname === '/transaction/purchase/order') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -99,15 +99,14 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryReturnPurchaseDetail ({ payload = {} }, { call, put }) {
+    * queryPurchaseOrderDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { returnPurchaseDetail, ...other } = data.data
         yield put({
           type: 'updateState',
           payload: {
-            data: other,
-            listDetail: returnPurchaseDetail
+            data: data.data,
+            listDetail: data.detail
           }
         })
       } else {
@@ -308,7 +307,7 @@ export default modelExtend(pageModel, {
       const newData = {
         no: listItem.length + 1,
         id: payload.item.id,
-        prductId: payload.item.id,
+        productId: payload.item.id,
         qty: 1,
         productCode: payload.item.productCode,
         productName: payload.item.productName

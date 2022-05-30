@@ -38,7 +38,6 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
       }
       count += 1
     }
-    console.log('body', body)
     return body
   }
 

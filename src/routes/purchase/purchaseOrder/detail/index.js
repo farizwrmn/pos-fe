@@ -42,7 +42,7 @@ const Detail = ({ app, purchaseOrder, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/transaction/purchase/return?activeKey=1'))
+    dispatch(routerRedux.push('/transaction/purchase/order?activeKey=1'))
   }
 
   const formDetailProps = {

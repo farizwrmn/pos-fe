@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
+import { lstorage } from 'utils'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -48,7 +49,8 @@ const FormAdd = ({
         ...item,
         ...getFieldsValue()
       }
-      data.supplierId = data.supplierCode.key
+      data.supplierId = data.supplierId
+      data.storeId = lstorage.getCurrentUserStore()
       Modal.confirm({
         title: 'Save this transaction',
         content: 'Are you sure?',
@@ -82,7 +84,7 @@ const FormAdd = ({
               })(<Input disabled maxLength={20} />)}
             </FormItem>
             <FormItem required label="Supplier" {...formItemLayout}>
-              {getFieldDecorator('supplierCode', {
+              {getFieldDecorator('supplierId', {
                 initialValue: item.supplierId,
                 rules: [
                   {
@@ -92,7 +94,6 @@ const FormAdd = ({
               })(<Select
                 showSearch
                 optionFilterProp="children"
-                maxTagCount={5}
                 style={{ width: '100%' }}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
               >

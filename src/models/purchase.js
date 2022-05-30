@@ -94,7 +94,8 @@ export default modelExtend(pageModel, {
           }
         }
         if (location.pathname === '/report/accounts/payable'
-          || location.pathname === '/transaction/purchase/return') {
+          || location.pathname === '/transaction/purchase/return'
+          || location.pathname === '/transaction/purchase/order') {
           dispatch({
             type: 'querySupplier',
             payload: {

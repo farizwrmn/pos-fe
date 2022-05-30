@@ -37,21 +37,6 @@ const List = ({ ...tableProps, editList }) => {
       width: 60,
       className: styles.alignRight,
       render: text => formatNumberIndonesia(text || 0)
-    },
-    {
-      title: 'Total',
-      dataIndex: 'DPP',
-      key: 'DPP',
-      width: 120,
-      className: styles.alignRight,
-      render: (text, record) => {
-        if (record.purchaseDetail) {
-          const dppItem = record.purchaseDetail.DPP / record.purchaseDetail.qty
-          const total = dppItem * record.qty
-          return formatNumberIndonesia(total || 0)
-        }
-        return 0
-      }
     }
   ]
 
@@ -62,7 +47,7 @@ const List = ({ ...tableProps, editList }) => {
         scroll={{ x: 500, y: 270 }}
         columns={columns}
         simple
-        rowKey={record => record.no}
+        rowKey={record => record.id}
         onRowClick={record => handleMenuClick(record)}
       />
     </div>
