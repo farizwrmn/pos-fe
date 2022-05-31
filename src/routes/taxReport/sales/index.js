@@ -6,16 +6,28 @@ import { Button, Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import ListDetail from './ListDetail'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ taxReportSales, loading, dispatch, location, app }) => {
+const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = taxReportSales
+  const { list: listDetail, pagination: paginationDetail } = taxReportSalesDetail
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
         type: 'taxReportSales/query',
+        payload: {
+          ...value
+        }
+      })
+    }
+  }
+  const filterDetailProps = {
+    onFilterChange (value) {
+      dispatch({
+        type: 'taxReportSalesDetail/query',
         payload: {
           ...value
         }
@@ -57,6 +69,45 @@ const Counter = ({ taxReportSales, loading, dispatch, location, app }) => {
     deleteItem (id) {
       dispatch({
         type: 'taxReportSales/delete',
+        payload: id
+      })
+    }
+  }
+
+  const listDetailProps = {
+    dataSource: listDetail,
+    user,
+    storeInfo,
+    pagination: paginationDetail,
+    loading: loading.effects['taxReportSalesDetail/query'],
+    location,
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    },
+    editItem (item) {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+      dispatch({
+        type: 'taxReportSalesDetail/editItem',
+        payload: { item }
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'taxReportSalesDetail/delete',
         payload: id
       })
     }
@@ -136,6 +187,14 @@ const Counter = ({ taxReportSales, loading, dispatch, location, app }) => {
             </div>
           }
         </TabPane>
+        <TabPane tab="Detail" key="2" >
+          {activeKey === '2' &&
+            <div>
+              <Filter {...filterDetailProps} />
+              <ListDetail {...listDetailProps} />
+            </div>
+          }
+        </TabPane>
       </Tabs>
     </div>
   )
@@ -143,10 +202,11 @@ const Counter = ({ taxReportSales, loading, dispatch, location, app }) => {
 
 Counter.propTypes = {
   taxReportSales: PropTypes.object,
+  taxReportSalesDetail: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ taxReportSales, loading, app }) => ({ taxReportSales, loading, app }))(Counter)
+export default connect(({ taxReportSales, taxReportSalesDetail, loading, app }) => ({ taxReportSales, taxReportSalesDetail, loading, app }))(Counter)

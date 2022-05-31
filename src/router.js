@@ -1672,6 +1672,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/sales'))
+              registerModel(app, require('./models/taxReport/salesDetail'))
               cb(null, require('./routes/taxReport/sales'))
             }, 'tax-report-sales')
           }

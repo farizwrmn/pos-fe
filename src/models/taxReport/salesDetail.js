@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/taxReport/purchase'
+import { query, add, edit, remove } from 'services/taxReport/salesDetail'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -9,7 +9,7 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'taxReportPurchase',
+  namespace: 'taxReportSalesDetail',
 
   state: {
     currentItem: {},
@@ -28,14 +28,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/tools/transaction/purchase') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+        if (pathname === '/tools/transaction/sales') {
+          if (activeKey === '2') dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -98,7 +92,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ taxReportPurchase }) => taxReportPurchase.currentItem.id)
+      const id = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.currentItem.id)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {

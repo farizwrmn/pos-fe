@@ -31,6 +31,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       key: 'transDate'
     },
     {
+      title: 'Product',
+      dataIndex: 'productId',
+      key: 'productId'
+    },
+    {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
