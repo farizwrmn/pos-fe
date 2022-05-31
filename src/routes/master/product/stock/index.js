@@ -370,20 +370,6 @@ const ProductStock = ({ productcountry, userStore, stockExtraPriceStore, shopeeC
         }
       })
     },
-    onClickGrabmartCampaign (productId) {
-      dispatch({
-        type: 'productstock/showGrabmartCampaign',
-        payload: {
-          productId
-        }
-      })
-      dispatch({
-        type: 'productstock/updateState',
-        payload: {
-          modalGrabmartCampaignVisible: true
-        }
-      })
-    },
     onGetShopeeCategory (productName) {
       dispatch({
         type: 'shopeeCategory/queryRecommend',

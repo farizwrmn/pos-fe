@@ -9,13 +9,13 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = taxReportPurchase
+const Counter = ({ taxReportMaintenance, loading, dispatch, location, app }) => {
+  const { list, pagination, modalType, currentItem, activeKey } = taxReportMaintenance
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'taxReportPurchase/query',
+        type: 'taxReportMaintenance/query',
         payload: {
           ...value
         }
@@ -28,7 +28,7 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['taxReportPurchase/query'],
+    loading: loading.effects['taxReportMaintenance/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -50,13 +50,13 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'taxReportPurchase/editItem',
+        type: 'taxReportMaintenance/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'taxReportPurchase/delete',
+        type: 'taxReportMaintenance/delete',
         payload: id
       })
     }
@@ -64,7 +64,7 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'taxReportPurchase/changeTab',
+      type: 'taxReportMaintenance/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -75,12 +75,12 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'taxReportPurchase/updateState', payload: { list: [] } })
+    dispatch({ type: 'taxReportMaintenance/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'taxReportPurchase/updateState',
+      type: 'taxReportMaintenance/updateState',
       payload: {
         activeKey: '1'
       }
@@ -93,7 +93,7 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `taxReportPurchase/${modalType}`,
+        type: `taxReportMaintenance/${modalType}`,
         payload: {
           data,
           reset
@@ -109,7 +109,7 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'taxReportPurchase/updateState',
+        type: 'taxReportMaintenance/updateState',
         payload: {
           currentItem: {}
         }
@@ -142,11 +142,11 @@ const Counter = ({ taxReportPurchase, loading, dispatch, location, app }) => {
 }
 
 Counter.propTypes = {
-  taxReportPurchase: PropTypes.object,
+  taxReportMaintenance: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ taxReportPurchase, loading, app }) => ({ taxReportPurchase, loading, app }))(Counter)
+export default connect(({ taxReportMaintenance, loading, app }) => ({ taxReportMaintenance, loading, app }))(Counter)

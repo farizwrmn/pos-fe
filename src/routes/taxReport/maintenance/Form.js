@@ -83,8 +83,8 @@ const FormCounter = ({
       <Row>
         <Col {...column}>
           <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('taxReportPurchase', {
-              initialValue: item.taxReportPurchase,
+            {getFieldDecorator('taxReportMaintenance', {
+              initialValue: item.taxReportMaintenance,
               rules: [
                 {
                   required: true,
