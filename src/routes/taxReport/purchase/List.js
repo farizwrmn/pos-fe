@@ -21,19 +21,46 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'taxReportPurchase',
-      key: 'taxReportPurchase'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Trans Date',
+      dataIndex: 'transDate',
+      key: 'transDate'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      render: (text) => {
+        return text.toLocaleString()
+      }
+    },
+    {
+      title: 'DPP',
+      dataIndex: 'DPP',
+      key: 'DPP',
+      render: (text) => {
+        return text.toLocaleString()
+      }
+    },
+    {
+      title: 'PPN',
+      dataIndex: 'PPN',
+      key: 'PPN',
+      render: (text) => {
+        return text.toLocaleString()
+      }
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
+      render: (text) => {
+        return text.toLocaleString()
+      }
     },
     {
       title: 'Operation',
@@ -49,6 +76,20 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   return (
     <div>
       <Table {...tableProps}
+        pagination={{
+          total: tableProps.dataSource.length,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: total => `Total ${total} Records`,
+          current: 1,
+          pageSizeOptions: [
+            '10',
+            '20',
+            '30',
+            '40',
+            `${tableProps.dataSource.length}`
+          ]
+        }}
         bordered
         columns={columns}
         simple

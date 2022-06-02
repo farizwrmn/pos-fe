@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input } from 'antd'
+import { Form, Row, Col, DatePicker, Button, Icon } from 'antd'
+import moment from 'moment'
 
-const Search = Input.Search
+const { RangePicker } = DatePicker
 const FormItem = Form.Item
 
 const searchBarLayout = {
@@ -21,22 +22,36 @@ const Filter = ({
 }) => {
   const handleSubmit = () => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
-    onFilterChange(field)
+    onFilterChange({
+      from: field.rangeDate[0].format('YYYY-MM-DD'),
+      to: field.rangeDate[1].format('YYYY-MM-DD')
+    })
   }
 
   return (
     <Row>
-      <Col span={12} />
-      <Col {...searchBarLayout} >
-        <FormItem >
-          {getFieldDecorator('q')(
-            <Search
-              placeholder="Search"
-              onSearch={() => handleSubmit()}
-            />
+      <Col span={12}>
+        <FormItem>
+          {getFieldDecorator('rangeDate', {
+            initialValue: [moment().add('-1', 'months'), moment()],
+            rules: [
+              { required: true }
+            ]
+          })(
+            <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
           )}
         </FormItem>
+      </Col>
+      <Col {...searchBarLayout} >
+        <Button
+          type="primary"
+          size="large"
+          style={{ marginLeft: '5px', float: 'right' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleSubmit()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
       </Col>
     </Row>
   )

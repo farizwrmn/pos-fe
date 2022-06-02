@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/taxReport/purchase'
+import { query, add, edit, remove } from 'services/taxReport/purchaseDetail'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -9,14 +9,14 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'taxReportPurchase',
+  namespace: 'taxReportPurchaseDetail',
 
   state: {
     currentItem: {},
     modalType: 'add',
-    selectedRowKeys: [],
-    activeKey: '1',
+    activeKey: '0',
     list: [],
+    selectedRowKeys: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -30,13 +30,7 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/tools/transaction/purchase') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '1'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '2') dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -58,6 +52,24 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * deleteItem ({ payload }, { call, put }) {
+      const data = yield call(remove, {
+        id: payload.selectedRowKeys
+      })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRowKeys: [],
+            list: []
+          }
+        })
+        message.success('Items deleted')
+      } else {
+        throw data
       }
     },
 
@@ -99,7 +111,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ taxReportPurchase }) => taxReportPurchase.currentItem.id)
+      const id = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.currentItem.id)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
