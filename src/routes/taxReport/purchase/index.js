@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane
 const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { listSupplier } = supplier
   const { list, pagination, selectedRowKeys, activeKey } = taxReportPurchase
-  const { list: listDetail, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
+  const { list: listDetail, modalRestoreVisible, listRestore, selectedRowKeysRestore, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
   const { user, storeInfo } = app
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -36,36 +36,6 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
     deleteItem (selectedRowKeys) {
       dispatch({
         type: 'taxReportPurchase/deleteItem',
-        payload: {
-          selectedRowKeys
-        }
-      })
-    }
-  }
-
-  const filterDetailProps = {
-    selectedRowKeys: selectedRowKeysDetail,
-    loading: loading.effects['taxReportPurchaseDetail/query'],
-    listCategory,
-    listBrand,
-    listSupplier,
-    onFilterChange (value) {
-      dispatch({
-        type: 'taxReportPurchaseDetail/query',
-        payload: {
-          ...value
-        }
-      })
-      dispatch({
-        type: 'taxReportPurchaseDetail/updateState',
-        payload: {
-          selectedRowKeys: []
-        }
-      })
-    },
-    deleteItem (selectedRowKeys) {
-      dispatch({
-        type: 'taxReportPurchaseDetail/deleteItem',
         payload: {
           selectedRowKeys
         }
@@ -156,6 +126,103 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
       }
     }))
     dispatch({ type: 'taxReportPurchase/updateState', payload: { list: [] } })
+  }
+
+  const modalRestoreTableProps = {
+    list: listRestore,
+    dataSource: listRestore,
+    user,
+    storeInfo,
+    pagination: paginationDetail,
+    loading: loading.effects['taxReportPurchaseDetail/queryRestore'],
+    location
+  }
+
+  const modalRestoreProps = {
+    width: 700,
+    list: listRestore,
+    selectedRowKeys: selectedRowKeysRestore,
+    modalRestoreTableProps,
+    visible: modalRestoreVisible,
+    loading: loading.effects['taxReportPurchaseDetail/queryRestore'],
+    maskClosable: false,
+    title: 'Restore Transaction',
+    confirmLoading: loading.effects['taxReportPurchaseDetail/queryRestore'],
+    wrapClassName: 'vertical-center-modal',
+    onOk () {
+      if (selectedRowKeysRestore) {
+        dispatch({
+          type: 'taxReportPurchaseDetail/restoreDetail',
+          payload: {
+            id: selectedRowKeysRestore
+          }
+        })
+      }
+    },
+    onCancel () {
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          selectedRowKeysRestore: [],
+          listRestore: [],
+          modalRestoreVisible: false
+        }
+      })
+    },
+    updateSelectedKey (key) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          selectedRowKeysRestore: key
+        }
+      })
+    }
+  }
+
+  const filterDetailProps = {
+    modalRestoreProps,
+    selectedRowKeys: selectedRowKeysDetail,
+    loading: loading.effects['taxReportPurchaseDetail/query'],
+    listCategory,
+    listBrand,
+    listSupplier,
+    onRestoreModal (value) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/queryRestore',
+        payload: {
+          ...value
+        }
+      })
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          selectedRowKeysRestore: [],
+          modalRestoreVisible: true
+        }
+      })
+    },
+    onFilterChange (value) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/query',
+        payload: {
+          ...value
+        }
+      })
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          selectedRowKeys: []
+        }
+      })
+    },
+    deleteItem (selectedRowKeys) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/deleteItem',
+        payload: {
+          selectedRowKeys
+        }
+      })
+    }
   }
 
   return (

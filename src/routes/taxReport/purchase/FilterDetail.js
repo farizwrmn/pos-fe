@@ -4,6 +4,7 @@ import { Form, Row, Col, Button, Select, Icon, DatePicker, Modal } from 'antd'
 import { getVATPercentage } from 'utils/tax'
 import { DropOption } from 'components'
 import moment from 'moment'
+import ModalRestore from './ModalRestore'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -25,20 +26,28 @@ const Filter = ({
   listSupplier,
   onFilterChange,
   deleteItem,
+  modalRestoreProps,
+  onRestoreModal,
   form: {
     getFieldDecorator,
-    getFieldsValue
+    getFieldsValue,
+    validateFields
   }
 }) => {
   const handleSubmit = () => {
-    let field = getFieldsValue()
-    onFilterChange({
-      from: field.rangeDate[0].format('YYYY-MM-DD'),
-      to: field.rangeDate[1].format('YYYY-MM-DD'),
-      taxType: field.taxType,
-      categoryId: field.categoryId,
-      brandId: field.brandId,
-      supplierId: field.supplierId
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      let field = getFieldsValue()
+      onFilterChange({
+        from: field.rangeDate[0].format('YYYY-MM-DD'),
+        to: field.rangeDate[1].format('YYYY-MM-DD'),
+        taxType: field.taxType,
+        categoryId: field.categoryId,
+        brandId: field.brandId,
+        supplierId: field.supplierId
+      })
     })
   }
 
@@ -53,10 +62,35 @@ const Filter = ({
     }
   }
 
+  const handleRestore = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      let field = getFieldsValue()
+      if (field && field.rangeDate && field.rangeDate[0]) {
+        const from = field.rangeDate[0].format('YYYY-MM-DD')
+        const to = field.rangeDate[1].format('YYYY-MM-DD')
+        onRestoreModal({
+          from,
+          to,
+          taxType: field.taxType,
+          categoryId: field.categoryId,
+          brandId: field.brandId,
+          supplierId: field.supplierId
+        })
+      }
+    })
+  }
+
+  const modalRestoreOpts = {
+    ...modalRestoreProps
+  }
+
   return (
     <Row>
       <Col span={12}>
-        <FormItem>
+        <FormItem hasFeedback>
           {getFieldDecorator('rangeDate', {
             initialValue: [moment().add('-1', 'months'), moment()],
             rules: [
@@ -127,7 +161,16 @@ const Filter = ({
           </Select>)}
         </FormItem>
       </Col>
-      <Col {...searchBarLayout} >
+      <Col {...searchBarLayout}>
+        <Button
+          type="primary"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          onClick={() => handleRestore()}
+          loading={loading}
+        >
+          Restore
+        </Button>
         <Button
           type="primary"
           size="large"
@@ -154,6 +197,7 @@ const Filter = ({
           ) : null}
         </div>
       </Col>
+      <ModalRestore {...modalRestoreOpts} />
     </Row>
   )
 }

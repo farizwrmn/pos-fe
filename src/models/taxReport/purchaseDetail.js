@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/taxReport/purchaseDetail'
+import { query, queryRestore, restoreDetail, add, edit, remove } from 'services/taxReport/purchaseDetail'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -17,6 +17,9 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     selectedRowKeys: [],
+    modalRestoreVisible: false,
+    listRestore: [],
+    selectedRowKeysRestore: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -52,6 +55,39 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * queryRestore ({ payload = {} }, { call, put }) {
+      const data = yield call(queryRestore, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessRestore',
+          payload: {
+            listRestore: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * restoreDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(restoreDetail, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRowKeysRestore: [],
+            listRestore: [],
+            list: [],
+            selectedRowKeys: [],
+            modalRestoreVisible: false
+          }
+        })
+        message.success('Item Restored')
+      } else {
+        throw response
       }
     },
 
@@ -148,6 +184,14 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    querySuccessRestore (state, action) {
+      const { listRestore } = action.payload
+      return {
+        ...state,
+        listRestore
+      }
+    },
+
     querySuccess (state, action) {
       const { list, pagination } = action.payload
       return {
