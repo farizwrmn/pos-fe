@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
-import Form from './Form'
+import { Tabs } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import FilterDetail from './FilterDetail'
@@ -12,7 +11,7 @@ import ListDetail from './ListDetail'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, pagination, selectedRowKeys, modalType, currentItem, activeKey } = taxReportSales
+  const { list, pagination, selectedRowKeys, activeKey } = taxReportSales
   const { list: listDetail, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportSalesDetail
   const { user, storeInfo } = app
   const { listCategory } = productcategory
@@ -155,56 +154,9 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
     dispatch({ type: 'taxReportSales/updateState', payload: { list: [] } })
   }
 
-  const clickBrowse = () => {
-    dispatch({
-      type: 'taxReportSales/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
-  const formProps = {
-    modalType,
-    item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
-      dispatch({
-        type: `taxReportSales/${modalType}`,
-        payload: {
-          data,
-          reset
-        }
-      })
-    },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'taxReportSales/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    }
-  }
-
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
-
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
-          {activeKey === '0' && <Form {...formProps} />}
-        </TabPane>
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
@@ -217,7 +169,10 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
           {activeKey === '2' &&
             <div>
               <FilterDetail {...filterDetailProps} />
-              <ListDetail {...listDetailProps} />
+              {listDetailProps
+                && listDetailProps.dataSource
+                && listDetailProps.dataSource.length > 0
+                && <ListDetail {...listDetailProps} />}
             </div>
           }
         </TabPane>

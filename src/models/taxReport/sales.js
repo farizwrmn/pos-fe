@@ -15,7 +15,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     selectedRowKeys: [],
-    activeKey: '0',
+    activeKey: '1',
     list: [],
     pagination: {
       showSizeChanger: true,
@@ -33,7 +33,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'updateState',
             payload: {
-              activeKey: activeKey || '0'
+              activeKey: activeKey || '1'
             }
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })

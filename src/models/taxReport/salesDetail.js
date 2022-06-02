@@ -67,6 +67,7 @@ export default modelExtend(pageModel, {
             list: []
           }
         })
+        message.success('Items deleted')
       } else {
         throw data
       }
