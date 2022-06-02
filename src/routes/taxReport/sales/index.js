@@ -12,8 +12,8 @@ import ListDetail from './ListDetail'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = taxReportSales
-  const { list: listDetail, pagination: paginationDetail } = taxReportSalesDetail
+  const { list, pagination, selectedRowKeys, modalType, currentItem, activeKey } = taxReportSales
+  const { list: listDetail, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportSalesDetail
   const { user, storeInfo } = app
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -25,11 +25,25 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
           ...value
         }
       })
+      dispatch({
+        type: 'taxReportSales/updateState',
+        payload: {
+          selectedRowKeys: []
+        }
+      })
+    },
+    deleteItem (selectedRowKeys) {
+      dispatch({
+        type: 'taxReportSales/deleteItem',
+        payload: {
+          selectedRowKeys
+        }
+      })
     }
   }
 
-  console.log('listCategory', listCategory)
   const filterDetailProps = {
+    selectedRowKeys: selectedRowKeysDetail,
     listCategory,
     listBrand,
     onFilterChange (value) {
@@ -39,10 +53,26 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
           ...value
         }
       })
+      dispatch({
+        type: 'taxReportSalesDetail/updateState',
+        payload: {
+          selectedRowKeys: []
+        }
+      })
+    },
+    deleteItem (selectedRowKeys) {
+      dispatch({
+        type: 'taxReportSalesDetail/deleteItem',
+        payload: {
+          selectedRowKeys
+        }
+      })
     }
   }
 
   const listProps = {
+    list,
+    selectedRowKeys,
     dataSource: list,
     user,
     storeInfo,
@@ -71,12 +101,22 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
   }
 
   const listDetailProps = {
+    list: listDetail,
+    selectedRowKeys: selectedRowKeysDetail,
     dataSource: listDetail,
     user,
     storeInfo,
     pagination: paginationDetail,
     loading: loading.effects['taxReportSalesDetail/query'],
     location,
+    updateSelectedKey (key) {
+      dispatch({
+        type: 'taxReportSalesDetail/updateState',
+        payload: {
+          selectedRowKeys: key
+        }
+      })
+    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({

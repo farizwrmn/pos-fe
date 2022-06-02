@@ -14,6 +14,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     modalType: 'add',
+    selectedRowKeys: [],
     activeKey: '0',
     list: [],
     pagination: {

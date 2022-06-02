@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Button, Select, Icon, DatePicker } from 'antd'
+import { Form, Row, Col, Button, Select, Icon, DatePicker, Modal } from 'antd'
 import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
+import { DropOption } from 'components'
 import moment from 'moment'
 
 const { RangePicker } = DatePicker
@@ -17,9 +18,11 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  selectedRowKeys,
   listBrand,
   listCategory,
   onFilterChange,
+  deleteItem,
   form: {
     getFieldDecorator,
     getFieldsValue
@@ -34,6 +37,17 @@ const Filter = ({
       categoryId: field.categoryId,
       brandId: field.brandId
     })
+  }
+
+  const handleMenuClick = (event, selectedRowKeys) => {
+    if (event.key === '1') {
+      Modal.confirm({
+        title: `Are you sure delete ${selectedRowKeys.length} items ?`,
+        onOk () {
+          deleteItem(selectedRowKeys)
+        }
+      })
+    }
   }
 
   return (
@@ -104,6 +118,21 @@ const Filter = ({
         >
           <Icon type="search" className="icon-large" />
         </Button>
+        <div>
+          {selectedRowKeys && selectedRowKeys.length > 0 ? (
+            <div>
+              <div>{selectedRowKeys.length} Selected</div>
+              <div>
+                <DropOption
+                  onMenuClick={e => handleMenuClick(e, selectedRowKeys)}
+                  menuOptions={[
+                    { key: '1', name: 'Delete', disabled: false }
+                  ]}
+                />
+              </div>
+            </div>
+          ) : null}
+        </div>
       </Col>
     </Row>
   )

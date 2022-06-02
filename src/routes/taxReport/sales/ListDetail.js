@@ -11,7 +11,7 @@ class List extends Component {
   }
 
   render () {
-    const { editItem, deleteItem, ...tableProps } = this.props
+    const { selectedRowKeys, list, updateSelectedKey, ...tableProps } = this.props
 
     const { pagination } = this.state
 
@@ -73,9 +73,39 @@ class List extends Component {
       }
     ]
 
+    const rowSelection = {
+      selectedRowKeys,
+      hideDefaultSelections: false,
+      onChange: (selectedRowKeys) => {
+        updateSelectedKey(selectedRowKeys)
+      },
+      onSelectAll: (checked, tableData) => {
+        const { filters } = this.state
+        let listTable = [
+          ...list
+        ]
+        if (filters && filters.brandName && filters.brandName.length > 0) {
+          listTable = listTable.filter((filtered) => {
+            return filters.brandName.includes(filtered.brandName)
+          })
+        }
+        if (filters && filters.categoryName && filters.categoryName.length > 0) {
+          listTable = listTable.filter((filtered) => {
+            return filters.categoryName.includes(filtered.categoryName)
+          })
+        }
+        if (tableData.length === selectedRowKeys.length) {
+          updateSelectedKey([])
+        } else {
+          updateSelectedKey(listTable.map(item => item.id))
+        }
+      }
+    }
+
     return (
       <div>
         <Table {...tableProps}
+          rowSelection={rowSelection}
           onChange={(pagination) => {
             this.setState({
               pagination

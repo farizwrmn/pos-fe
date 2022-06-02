@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    selectedRowKeys: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -51,6 +52,23 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * deleteItem ({ payload }, { call, put }) {
+      const data = yield call(remove, {
+        id: payload.selectedRowKeys
+      })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRowKeys: [],
+            list: []
+          }
+        })
+      } else {
+        throw data
       }
     },
 
