@@ -10,6 +10,26 @@ export async function query (params) {
   })
 }
 
+export async function queryRestore (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/tax-report/pos-detail-restore',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function restoreDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/tax-report/pos-detail-restore',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
