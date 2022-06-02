@@ -41,6 +41,14 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (location.pathname === '/tools/transaction/purchase') {
+          dispatch({
+            type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
+        }
         if (pathname === '/master/supplier') {
           if (activeKey === '1') {
             dispatch({

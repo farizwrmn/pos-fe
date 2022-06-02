@@ -81,7 +81,6 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           showSizeChanger: true,
           showQuickJumper: true,
           showTotal: total => `Total ${total} Records`,
-          current: 1,
           pageSizeOptions: [
             '10',
             '20',

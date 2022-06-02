@@ -10,7 +10,8 @@ import ListDetail from './ListDetail'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
+const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
+  const { listSupplier } = supplier
   const { list, pagination, selectedRowKeys, activeKey } = taxReportPurchase
   const { list: listDetail, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
   const { user, storeInfo } = app
@@ -47,6 +48,7 @@ const Counter = ({ taxReportPurchase, taxReportPurchaseDetail, productcategory, 
     loading: loading.effects['taxReportPurchaseDetail/query'],
     listCategory,
     listBrand,
+    listSupplier,
     onFilterChange (value) {
       dispatch({
         type: 'taxReportPurchaseDetail/query',
@@ -184,6 +186,7 @@ const Counter = ({ taxReportPurchase, taxReportPurchaseDetail, productcategory, 
 }
 
 Counter.propTypes = {
+  supplier: PropTypes.object,
   taxReportPurchase: PropTypes.object,
   taxReportPurchaseDetail: PropTypes.object,
   loading: PropTypes.object,
@@ -192,4 +195,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, app }) => ({ taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, app }))(Counter)
+export default connect(({ supplier, taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, app }) => ({ supplier, taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, app }))(Counter)

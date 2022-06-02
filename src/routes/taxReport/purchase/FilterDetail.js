@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Row, Col, Button, Select, Icon, DatePicker, Modal } from 'antd'
-import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
+import { getVATPercentage } from 'utils/tax'
 import { DropOption } from 'components'
 import moment from 'moment'
 
@@ -22,6 +22,7 @@ const Filter = ({
   loading,
   listBrand,
   listCategory,
+  listSupplier,
   onFilterChange,
   deleteItem,
   form: {
@@ -36,7 +37,8 @@ const Filter = ({
       to: field.rangeDate[1].format('YYYY-MM-DD'),
       taxType: field.taxType,
       categoryId: field.categoryId,
-      brandId: field.brandId
+      brandId: field.brandId,
+      supplierId: field.supplierId
     })
   }
 
@@ -71,9 +73,25 @@ const Filter = ({
               message: 'Required'
             }]
           })(<Select allowClear style={{ width: '60%' }} placeholder="Tax Type">
+            <Option value="I">Include</Option>
             <Option value="E">Exclude (0%)</Option>
-            <Option value="I">Include ({getVATPercentage()}%)</Option>
-            <Option value="O">Include ({getCountryTaxPercentage()}%)</Option>
+            <Option value="S">Exclude ({getVATPercentage()}%)</Option>
+          </Select>)}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('supplierId', {
+            rules: [{
+              required: false,
+              message: 'Required'
+            }]
+          })(<Select
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            showSearch
+            allowClear
+            style={{ width: '60%' }}
+            placeholder="Supplier"
+          >
+            {listSupplier && listSupplier.map(item => (<Option value={item.id} title={item.supplierName}>{item.supplierName}</Option>))}
           </Select>)}
         </FormItem>
         <FormItem>
