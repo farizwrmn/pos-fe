@@ -76,6 +76,20 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   return (
     <div>
       <Table {...tableProps}
+        pagination={{
+          total: tableProps.dataSource.length,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: total => `Total ${total} Records`,
+          current: 1,
+          pageSizeOptions: [
+            '10',
+            '20',
+            '30',
+            '40',
+            `${tableProps.dataSource.length}`
+          ]
+        }}
         bordered
         columns={columns}
         simple

@@ -6,14 +6,17 @@ import { Button, Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import FilterDetail from './FilterDetail'
 import ListDetail from './ListDetail'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, location, app }) => {
+const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = taxReportSales
   const { list: listDetail, pagination: paginationDetail } = taxReportSalesDetail
   const { user, storeInfo } = app
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
   const filterProps = {
     onFilterChange (value) {
       dispatch({
@@ -24,7 +27,11 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, loca
       })
     }
   }
+
+  console.log('listCategory', listCategory)
   const filterDetailProps = {
+    listCategory,
+    listBrand,
     onFilterChange (value) {
       dispatch({
         type: 'taxReportSalesDetail/query',
@@ -42,17 +49,6 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, loca
     pagination,
     loading: loading.effects['taxReportSales/query'],
     location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({
@@ -81,17 +77,6 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, loca
     pagination: paginationDetail,
     loading: loading.effects['taxReportSalesDetail/query'],
     location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    },
     editItem (item) {
       const { pathname } = location
       dispatch(routerRedux.push({
@@ -123,6 +108,7 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, loca
       pathname,
       query: {
         ...query,
+        page: 1,
         activeKey: key
       }
     }))
@@ -190,7 +176,7 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, loading, dispatch, loca
         <TabPane tab="Detail" key="2" >
           {activeKey === '2' &&
             <div>
-              <Filter {...filterDetailProps} />
+              <FilterDetail {...filterDetailProps} />
               <ListDetail {...listDetailProps} />
             </div>
           }
@@ -209,4 +195,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ taxReportSales, taxReportSalesDetail, loading, app }) => ({ taxReportSales, taxReportSalesDetail, loading, app }))(Counter)
+export default connect(({ taxReportSales, taxReportSalesDetail, productcategory, productbrand, loading, app }) => ({ taxReportSales, taxReportSalesDetail, productcategory, productbrand, loading, app }))(Counter)

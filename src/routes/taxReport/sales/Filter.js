@@ -21,7 +21,6 @@ const Filter = ({
 }) => {
   const handleSubmit = () => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
     onFilterChange(field)
   }
 
