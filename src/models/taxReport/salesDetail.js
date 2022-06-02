@@ -184,6 +184,14 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    querySuccessRestore (state, action) {
+      const { listRestore } = action.payload
+      return {
+        ...state,
+        listRestore
+      }
+    },
+
     querySuccess (state, action) {
       const { list, pagination } = action.payload
       return {
