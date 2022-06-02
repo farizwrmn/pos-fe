@@ -19,6 +19,7 @@ const searchBarLayout = {
 
 const Filter = ({
   selectedRowKeys,
+  loading,
   listBrand,
   listCategory,
   onFilterChange,
@@ -115,6 +116,7 @@ const Filter = ({
           style={{ marginLeft: '5px', float: 'right' }}
           className="button-width02 button-extra-large"
           onClick={() => handleSubmit()}
+          loading={loading}
         >
           <Icon type="search" className="icon-large" />
         </Button>

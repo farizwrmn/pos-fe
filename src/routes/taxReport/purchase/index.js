@@ -17,6 +17,7 @@ const Counter = ({ taxReportPurchase, taxReportPurchaseDetail, productcategory, 
   const { listCategory } = productcategory
   const { listBrand } = productbrand
   const filterProps = {
+    loading: loading.effects['taxReportPurchase/query'],
     onFilterChange (value) {
       dispatch({
         type: 'taxReportPurchase/query',
@@ -43,6 +44,7 @@ const Counter = ({ taxReportPurchase, taxReportPurchaseDetail, productcategory, 
 
   const filterDetailProps = {
     selectedRowKeys: selectedRowKeysDetail,
+    loading: loading.effects['taxReportPurchaseDetail/query'],
     listCategory,
     listBrand,
     onFilterChange (value) {
