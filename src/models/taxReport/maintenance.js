@@ -29,7 +29,7 @@ export default modelExtend(pageModel, {
     * queryPos ({ payload = {} }, { call }) {
       const data = yield call(queryPos, payload)
       if (data.success) {
-        message.error('Sales success to generate')
+        message.success('Sales success to generate')
       } else {
         message.error('Sales failed to generate')
       }
@@ -38,7 +38,7 @@ export default modelExtend(pageModel, {
     * queryPurchase ({ payload = {} }, { call }) {
       const data = yield call(queryPurchase, payload)
       if (data.success) {
-        message.error('Purchase success to generate')
+        message.success('Purchase success to generate')
       } else {
         message.error('Purchase failed to generate')
       }
