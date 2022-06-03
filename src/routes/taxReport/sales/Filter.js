@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Row, Col, DatePicker, Button, Icon } from 'antd'
 import moment from 'moment'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
 
 const { RangePicker } = DatePicker
 const FormItem = Form.Item
@@ -14,6 +16,7 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  printHeaderOpts,
   onFilterChange,
   loading,
   form: {
@@ -54,6 +57,8 @@ const Filter = ({
         >
           <Icon type="search" className="icon-large" />
         </Button>
+        <PrintPDF {...printHeaderOpts} />
+        <PrintXLS {...printHeaderOpts} />
       </Col>
     </Row>
   )

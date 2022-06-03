@@ -95,6 +95,13 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         simple
         scroll={{ x: 1000 }}
         rowKey={record => record.id}
+        footer={() => (
+          <div>
+            <div>DPP : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.DPP || 0), 0).toLocaleString()}</div>
+            <div>PPN : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.PPN || 0), 0).toLocaleString()}</div>
+            <div>TOTAL : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0).toLocaleString()}</div>
+          </div>)
+        }
       />
     </div>
   )

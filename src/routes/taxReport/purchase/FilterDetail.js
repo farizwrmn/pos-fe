@@ -5,6 +5,8 @@ import { getVATPercentage } from 'utils/tax'
 import { DropOption } from 'components'
 import moment from 'moment'
 import ModalRestore from './ModalRestore'
+import PrintPDF from './PrintPDFDetail'
+import PrintXLS from './PrintXLSDetail'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -19,6 +21,7 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  printDetailOpts,
   selectedRowKeys,
   loading,
   listBrand,
@@ -165,12 +168,14 @@ const Filter = ({
         <Button
           type="primary"
           size="large"
-          style={{ marginLeft: '5px' }}
+          style={{ marginLeft: '5px', marginRight: '5px' }}
           onClick={() => handleRestore()}
           loading={loading}
         >
           Restore
         </Button>
+        <PrintPDF {...printDetailOpts} />
+        <PrintXLS {...printDetailOpts} />
         <Button
           type="primary"
           size="large"

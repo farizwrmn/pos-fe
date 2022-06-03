@@ -5,6 +5,8 @@ import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
 import { DropOption } from 'components'
 import moment from 'moment'
 import ModalRestore from './ModalRestore'
+import PrintPDF from './PrintPDFDetail'
+import PrintXLS from './PrintXLSDetail'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -18,7 +20,8 @@ const searchBarLayout = {
   xl: { span: 12 }
 }
 
-const Filter = ({
+const FilterDetail = ({
+  printDetailOpts,
   selectedRowKeys,
   listBrand,
   listCategory,
@@ -147,7 +150,7 @@ const Filter = ({
         <Button
           type="primary"
           size="large"
-          style={{ marginLeft: '5px' }}
+          style={{ marginLeft: '5px', marginRight: '5px' }}
           onClick={() => handleRestore()}
           loading={loading}
         >
@@ -156,13 +159,15 @@ const Filter = ({
         <Button
           type="primary"
           size="large"
-          style={{ marginLeft: '5px', float: 'right' }}
+          style={{ marginLeft: '5px', marginRight: '5px', float: 'right' }}
           className="button-width02 button-extra-large"
           onClick={() => handleSubmit()}
           loading={loading}
         >
           <Icon type="search" className="icon-large" />
         </Button>
+        <PrintPDF {...printDetailOpts} />
+        <PrintXLS {...printDetailOpts} />
         <div>
           {selectedRowKeys && selectedRowKeys.length > 0 ? (
             <div>
@@ -179,14 +184,14 @@ const Filter = ({
           ) : null}
         </div>
       </Col>
-      <ModalRestore {...modalRestoreOpts} />
+      {modalRestoreOpts.visible && <ModalRestore {...modalRestoreOpts} />}
     </Row>
   )
 }
 
-Filter.propTypes = {
+FilterDetail.propTypes = {
   form: PropTypes.object,
   onFilterChange: PropTypes.func
 }
 
-export default Form.create()(Filter)
+export default Form.create()(FilterDetail)

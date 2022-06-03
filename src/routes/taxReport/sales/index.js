@@ -16,7 +16,21 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
   const { user, storeInfo } = app
   const { listCategory } = productcategory
   const { listBrand } = productbrand
+
+  const printHeaderOpts = {
+    user,
+    list,
+    storeInfo
+  }
+
+  const printDetailOpts = {
+    user,
+    list: listDetail,
+    storeInfo
+  }
+
   const filterProps = {
+    printHeaderOpts,
     loading: loading.effects['taxReportSales/query'],
     onFilterChange (value) {
       dispatch({
@@ -179,6 +193,7 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
   }
 
   const filterDetailProps = {
+    printDetailOpts,
     modalRestoreProps,
     loading: loading.effects['taxReportSalesDetail/query'],
     selectedRowKeys: selectedRowKeysDetail,
