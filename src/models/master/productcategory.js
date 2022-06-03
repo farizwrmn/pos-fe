@@ -48,6 +48,8 @@ export default modelExtend(pageModel, {
           || pathname === '/master/product/stock/import'
           || pathname === '/inventory/transfer/out'
           || pathname === '/stock'
+          || pathname === '/tools/transaction/sales'
+          || pathname === '/tools/transaction/purchase'
           || pathname === '/tools/sellprice') {
           dispatch({ type: 'query', payload: { type: 'all' } })
         } else if (
