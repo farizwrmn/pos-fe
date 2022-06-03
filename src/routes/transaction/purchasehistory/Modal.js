@@ -9,7 +9,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
+const ModalEntry = ({
   ...modalProps,
   purchaseHistory
 }) => {
@@ -24,7 +24,7 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalEntry.propTypes = {
   form: PropTypes.object.isRequired,
   onOk: PropTypes.func,
   onChooseItem: PropTypes.func,
@@ -38,4 +38,4 @@ modal.propTypes = {
   company: PropTypes.object
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEntry)

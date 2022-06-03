@@ -173,7 +173,7 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
         if (text || record.paid) {
           return (
             <Tag color="green">
-              Ivoiced
+              Invoiced
             </Tag>
           )
         }

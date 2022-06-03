@@ -46,6 +46,7 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query' })
         } else if (pathname === '/marketing/promo'
           || pathname === '/master/product/stock/import'
+          || pathname === '/inventory/transfer/out'
           || pathname === '/stock'
           || pathname === '/tools/transaction/sales'
           || pathname === '/tools/transaction/purchase'

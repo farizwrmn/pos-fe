@@ -13,6 +13,11 @@ const Browse = ({ ...browseProps }) => {
       key: 'productCode'
     },
     {
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
+    },
+    {
       title: 'Begin',
       dataIndex: 'beginQty',
       key: 'beginQty',
@@ -53,6 +58,13 @@ const Browse = ({ ...browseProps }) => {
   return (
     <Table
       {...browseProps}
+      footer={() => (
+        <div>
+          <div>BeginCount : {browseProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.beginQty || 0), 0).toLocaleString()}</div>
+          <div>BeginValue : {browseProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.beginPrice || 0), 0).toLocaleString()}</div>
+          <div>TotalCount : {browseProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.count || 0), 0).toLocaleString()}</div>
+          <div>TotalValue : {browseProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0).toLocaleString()}</div>
+        </div>)}
       bordered
       columns={columns}
       simple

@@ -22,7 +22,7 @@ const formItemLayout = {
   }
 }
 
-const modal = ({
+const ModalEntry = ({
   item,
   transNo,
   storeId,
@@ -136,4 +136,4 @@ const modal = ({
   )
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEntry)

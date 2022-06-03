@@ -40,12 +40,13 @@ const ListTransfer = ({ ...tableProps, showAcceptModal, modalAcceptVisible, upda
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: text =>
-      (<span>
-        <Tag color={text === '0' ? 'blue' : text === '1' ? 'green' : 'red'}>
-          {text === '0' ? 'Not-updated' : text === '1' ? 'Updated' : 'Canceled'}
-        </Tag>
-      </span>)
+      render: (text) => {
+        return (<span>
+          <Tag color={text === '0' ? 'blue' : text === '1' ? 'green' : 'red'}>
+            {text === '0' ? 'Not-updated' : text === '1' ? 'Updated' : 'Canceled'}
+          </Tag>
+        </span>)
+      }
     },
     {
       title: 'Transaction No',

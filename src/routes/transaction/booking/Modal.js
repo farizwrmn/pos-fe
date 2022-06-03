@@ -22,7 +22,7 @@ const formItemLayout = {
   }
 }
 
-const modal = ({
+const ModalEntry = ({
   ...modalProps,
   onSearch,
   activeKey,
@@ -402,4 +402,4 @@ const modal = ({
   )
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalEntry)

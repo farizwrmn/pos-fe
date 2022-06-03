@@ -15,7 +15,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const modal = ({
+const ModalClose = ({
   onOk,
   onCancel,
   loading,
@@ -101,11 +101,11 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalClose.propTypes = {
   form: PropTypes.isRequired,
   periodDate: PropTypes.isRequired,
   onOk: PropTypes.func.isRequired,
   accountActive: PropTypes.string.isRequired
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalClose)
