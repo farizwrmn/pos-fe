@@ -77,7 +77,7 @@ class List extends Component {
               '20',
               '30',
               '40',
-              `${this.props.dataSource.length}`
+              '1000'
             ]
           }}
           bordered

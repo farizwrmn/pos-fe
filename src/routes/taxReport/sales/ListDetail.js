@@ -122,7 +122,7 @@ class List extends Component {
               '20',
               '30',
               '40',
-              `${tableProps.dataSource.length}`
+              '1000'
             ]
           }}
           bordered
