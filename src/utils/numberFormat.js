@@ -1,7 +1,7 @@
 const formatNumberInExcel = (value, decimal) => {
   if (value !== 0 && typeof value === 'number') {
     let defaultFormat = '#,##0'
-    if (decimal > 0) {
+    if (decimal > 0 && value % 1 !== 0) {
       defaultFormat += '.'
       for (let i = 0; i < decimal; i += 1) {
         defaultFormat += '0'
@@ -41,7 +41,7 @@ const numberToLetters = (num) => {
 
 const numberFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
-    return `${currency.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+    return `${(Math.ceil(parseFloat(currency || 0))).toLocaleString()}`
   }
   return '0'
 }

@@ -9,8 +9,8 @@ const LatestPrice = ({
   const columns = [
     {
       title: 'Date',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'transDate',
+      key: 'transDate',
       render: text => (text ? moment(text).format('DD-MM-YYYY') : '')
     },
     {

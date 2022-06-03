@@ -28,7 +28,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       }
       count += 1
     }
-    console.log('body', body)
     return body
   }
 

@@ -6,19 +6,20 @@ import moment from 'moment'
 import get from 'lodash/get'
 import { lstorage } from 'utils'
 import Form from './Form'
-import ModalItem from './Modal'
 import ListTransfer from './ListTransferOut'
 import FilterTransfer from './FilterTransferOut'
 
 const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
-const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading }) => {
-  const { listTransferOut, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+const Transfer = ({ location, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
+  const { listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { query } = location
   const { modalProductVisible, listProductData, searchText } = pos
   const { list } = employee
   let listEmployee = list
+  const { listCategory } = productcategory
+  const { listBrand } = productbrand
   const { user, storeInfo } = app
   const filterProps = {
     display,
@@ -40,6 +41,72 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         payload: `${isChecked ? 'none' : 'block'}`
       })
     }
+  }
+
+  function getQueueQuantity () {
+    const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
+    // const listQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
+    let tempQueue = []
+    let tempTrans = []
+    for (let n = 0; n < 10; n += 1) {
+      tempQueue = get(queue, `queue${n}`) ? get(queue, `queue${n}`) : []
+      if (tempQueue.length > 0) {
+        tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
+      }
+    }
+    if (tempTrans.length > 0) {
+      return tempTrans
+    }
+    console.log('queue is empty, nothing to check')
+    return []
+  }
+
+  const checkQuantityNewProduct = (e) => {
+    const { data } = e
+    const tempQueue = getQueueQuantity()
+    const tempCashier = getCashierTrans()
+    const Cashier = tempCashier.filter(el => el.productId === data.productId)
+    const Queue = tempQueue.filter(el => el.productId === data.productId)
+    // const item = listItem.filter(el => el.productId === data.productId)
+    let arrData = []
+    arrData.push({ ...data })
+    const totalData = arrData.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+    const totalLocal = (Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)) + Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+    const Quantity = (arrData.concat(Queue)).concat(Cashier)
+    const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+    const listProduct = listProductData
+    const tempListProduct = listProduct.filter(el => el.productId === data.productId)
+    const totalListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
+    if (totalQty > totalListProduct) {
+      Modal.warning({
+        title: 'No available stock',
+        content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`
+      })
+      return false
+    }
+    return true
+  }
+
+  const handleItemEdit = (item, event) => {
+    dispatch({
+      type: 'transferOut/updateQty',
+      payload: {
+        listItem,
+        item,
+        form: event ? event.target.form : null,
+        events: {
+          ...event
+        }
+      }
+    })
+    // if (event && event.target && event.target.form) {
+    //   const form = event.target.form
+    //   const index = [...form].indexOf(event.target)
+    //   if (form.elements[index + 1]) {
+    //     form.elements[index + 1].focus()
+    //     event.preventDefault()
+    //   }
+    // }
   }
 
   const listProps = {
@@ -98,50 +165,57 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     }
   }
 
-  function getQueueQuantity () {
-    const queue = localStorage.getItem('queue') ? JSON.parse(localStorage.getItem('queue')) : {}
-    // const listQueue = get(queue, `queue${curQueue}`) ? get(queue, `queue${curQueue}`) : []
-    let tempQueue = []
-    let tempTrans = []
-    for (let n = 0; n < 10; n += 1) {
-      tempQueue = get(queue, `queue${n}`) ? get(queue, `queue${n}`) : []
-      if (tempQueue.length > 0) {
-        tempTrans = tempTrans.concat(tempQueue[0].cashier_trans)
-      }
-    }
-    if (tempTrans.length > 0) {
-      return tempTrans
-    }
-    console.log('queue is empty, nothing to check')
-    return []
-  }
-
-
-  const checkQuantityNewProduct = (e) => {
-    const { data } = e
-    const tempQueue = getQueueQuantity()
-    const tempCashier = getCashierTrans()
-    const Cashier = tempCashier.filter(el => el.productId === data.productId)
-    const Queue = tempQueue.filter(el => el.productId === data.productId)
-    // const item = listItem.filter(el => el.productId === data.productId)
-    let arrData = []
-    arrData.push({ ...data })
-    const totalData = arrData.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-    const totalLocal = (Queue.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)) + Cashier.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-    const Quantity = (arrData.concat(Queue)).concat(Cashier)
-    const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-    const listProduct = listProductData
-    const tempListProduct = listProduct.filter(el => el.productId === data.productId)
-    const totalListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-    if (totalQty > totalListProduct) {
-      Modal.warning({
-        title: 'No available stock',
-        content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`
+  const modalProductDemandProps = {
+    listProductDemand,
+    listCategory,
+    listBrand,
+    width: 800,
+    loading,
+    selectedRowKeys,
+    visible: modalProductDemandVisible,
+    maskClosable: false,
+    title: 'Transfer demand',
+    confirmLoading: loading.effects['transferOut/submitProductDemand'],
+    wrapClassName: 'vertical-center-modal',
+    onOk () {
+      dispatch({
+        type: 'transferOut/submitProductDemand',
+        payload: {
+          listProductDemand,
+          selectedRowKeys
+        }
       })
-      return false
+    },
+    onCancel () {
+      dispatch({
+        type: 'transferOut/hideModalDemand',
+        payload: {
+          modalProductDemandVisible: false,
+          selectedRowKeys: []
+        }
+      })
+    },
+    handleGetAll (storeId) {
+      console.log('handleGetAll')
+      dispatch({
+        type: 'transferOut/showModalDemand',
+        payload: {
+          type: 'all',
+          modalProductDemandVisible: true,
+          storeId
+        }
+      })
+    },
+    updateSelectedKey (key) {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          selectedRowKeys: key
+        }
+      })
     }
-    return true
   }
+
   const modalProductProps = {
     location,
     loading,
@@ -180,6 +254,15 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
         type: 'transferOut/updateState',
         payload: {
           modalInvoiceVisible: false
+        }
+      })
+    },
+    handleProductDemandBrowse (storeId) {
+      dispatch({
+        type: 'transferOut/showModalDemand',
+        payload: {
+          modalProductDemandVisible: true,
+          storeId
         }
       })
     },
@@ -230,6 +313,9 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           categoryName: item.categoryName,
           productImage: item.productImage,
           productCode: item.productCode,
+          dimension: item.dimension,
+          dimensionBox: item.dimensionBox,
+          dimensionPack: item.dimensionPack,
           productId: item.id,
           transType: 'MUOUT',
           productName: item.productName,
@@ -288,30 +374,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     currentItemList,
     modalProductProps,
     onOkList (item) {
-      const check = {
-        data: item
-      }
-      // checkQuantityBeforeEdit
-      dispatch({
-        type: 'pos/queryProducts',
-        payload: {
-          outOfStock: 0
-        }
-      })
-      const checkQuantity = checkQuantityNewProduct(check)
-      if (!checkQuantity) {
-        return
-      }
-      listItem[item.no - 1] = item
-
-      dispatch({
-        type: 'transferOut/updateState',
-        payload: {
-          currentItemList: {},
-          modalVisible: false,
-          listItem
-        }
-      })
+      handleItemEdit(item)
     },
     onCancelList () {
       dispatch({
@@ -403,11 +466,14 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     ...listProps,
     ...formEditProps,
     ...formConfirmProps,
+    formEditProps,
+    dispatch,
     listTrans,
     listItem,
     listStore,
     listEmployee,
     item: currentItem,
+    modalProductDemandProps,
     modalProductProps,
     modalProductVisible,
     modalInvoiceVisible,
@@ -416,6 +482,7 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
     loading: loading.effects['transferOut/querySequence'],
     disabled: `${formType === 'edit' ? disable : ''}`,
     button: `${formType === 'add' ? 'Add' : 'Update'}`,
+    handleItemEdit,
     onSubmit (data, list, reset) {
       dispatch({
         type: `transferOut/${formType}`,
@@ -424,6 +491,14 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
           data,
           detail: list,
           reset
+        }
+      })
+    },
+    resetListItem () {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          listItem: []
         }
       })
     },
@@ -581,7 +656,6 @@ const Transfer = ({ location, transferOut, pos, employee, app, dispatch, loading
       <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
         <TabPane tab="Add" key="0">
           <Form {...formProps} />
-          {modalVisible && <ModalItem {...formEditProps} />}
         </TabPane>
         <TabPane tab="Archieve" key="1">
           <FilterTransfer {...filterTransferProps} />
@@ -596,10 +670,12 @@ Transfer.propTypes = {
   transferOut: PropTypes.object,
   pos: PropTypes.object,
   app: PropTypes.object,
+  productcategory: PropTypes.object,
+  productbrand: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object
 }
 
 
-export default connect(({ transferOut, pos, employee, app, loading }) => ({ transferOut, pos, employee, app, loading }))(Transfer)
+export default connect(({ transferOut, pos, productcategory, productbrand, employee, app, loading }) => ({ transferOut, pos, productcategory, productbrand, employee, app, loading }))(Transfer)

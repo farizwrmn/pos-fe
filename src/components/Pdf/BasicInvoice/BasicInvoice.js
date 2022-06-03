@@ -50,7 +50,6 @@ const BasicInvoice = ({
         content: 'No Data in Storage'
       })
     } else if (tableBody.length === 0) {
-      console.log('body', tableBody.length)
       Modal.warning({
         title: 'Empty Data',
         content: 'No Data in Storage'

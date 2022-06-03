@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Modal, Button, Select } from 'antd'
+import { Form, Input, InputNumber, Row, Col, Modal, Button, Select } from 'antd'
+import LatestPrice from './LatestPrice'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -29,6 +30,8 @@ class TransferModal extends Component {
       onCancelList,
       listStore,
       onDeleteItem,
+      listPurchaseLatestDetail,
+      loadingPurchaseLatest,
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...formEditProps
     } = this.props
@@ -89,8 +92,15 @@ class TransferModal extends Component {
       childrenStoreReceived.push(groupStore)
     }
 
+    const latestPriceProps = {
+      dataSource: listPurchaseLatestDetail,
+      loading: loadingPurchaseLatest
+    }
+
     return (
-      <Modal title={`${currentItemList.productCode} - ${currentItemList.productName}`}
+      <Modal
+        width="700px"
+        title={`${currentItemList.productCode} - ${currentItemList.productName}`}
         {...modalOpts}
         footer={[
           <Button size="large" key="delete" type="danger" onClick={handleDelete}>Delete</Button>,
@@ -100,72 +110,79 @@ class TransferModal extends Component {
           </Button>
         ]}
       >
-        <Form layout="horizontal">
-          <FormItem label="No" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('no', {
-              initialValue: currentItemList.no,
-              rules: [{
-                required: true
-              }]
-            })(<Input disabled maxLength={10} />)}
-          </FormItem>
-          <FormItem label="Store ID" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('transferStoreId', {
-              initialValue: currentItemList.transferStoreId,
-              rules: [{
-                required: true
-              }]
-            })(
-              <Select>
-                {childrenStoreReceived}
-              </Select>
-            )}
-          </FormItem>
-          <FormItem label="Qty" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('qty', {
-              initialValue: currentItemList.qty,
-              rules: [{
-                required: true
-              }]
-            })(
-              <InputNumber
-                value={0}
-                min={0}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    handleOk()
-                  }
-                }}
-              />
-            )}
-          </FormItem>
-          <FormItem label="Price" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('DPP', {
-              initialValue: currentItemList.DPP,
-              rules: [{
-                required: true
-              }]
-            })(
-              <InputNumber
-                value={0}
-                min={0}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    handleOk()
-                  }
-                }}
-              />
-            )}
-          </FormItem>
-          <FormItem label="Description" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('description', {
-              initialValue: currentItemList.description,
-              rules: [{
-                required: false
-              }]
-            })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
-          </FormItem>
-        </Form>
+        <Row>
+          <Col md={24} lg={12}>
+            <LatestPrice {...latestPriceProps} />
+          </Col>
+          <Col md={24} lg={12}>
+            <Form layout="horizontal">
+              <FormItem label="No" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('no', {
+                  initialValue: currentItemList.no,
+                  rules: [{
+                    required: true
+                  }]
+                })(<Input disabled maxLength={10} />)}
+              </FormItem>
+              <FormItem label="Store ID" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('transferStoreId', {
+                  initialValue: currentItemList.transferStoreId,
+                  rules: [{
+                    required: true
+                  }]
+                })(
+                  <Select>
+                    {childrenStoreReceived}
+                  </Select>
+                )}
+              </FormItem>
+              <FormItem label="Qty" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('qty', {
+                  initialValue: currentItemList.qty,
+                  rules: [{
+                    required: true
+                  }]
+                })(
+                  <InputNumber
+                    value={0}
+                    min={0}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13) {
+                        handleOk()
+                      }
+                    }}
+                  />
+                )}
+              </FormItem>
+              <FormItem label="Price" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('DPP', {
+                  initialValue: currentItemList.DPP,
+                  rules: [{
+                    required: true
+                  }]
+                })(
+                  <InputNumber
+                    value={0}
+                    min={0}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13) {
+                        handleOk()
+                      }
+                    }}
+                  />
+                )}
+              </FormItem>
+              <FormItem label="Description" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('description', {
+                  initialValue: currentItemList.description,
+                  rules: [{
+                    required: false
+                  }]
+                })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
+              </FormItem>
+            </Form>
+          </Col>
+        </Row>
       </Modal>
     )
   }

@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Button, Checkbox, Row, Col, Select } from 'antd'
+import { Modal, Form, Input, message, InputNumber, Button, Checkbox, Row, Col, Select } from 'antd'
+import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
+import ModalItem from './Modal'
 
 const { Option } = Select
 const FormItem = Form.Item
@@ -32,14 +34,17 @@ const FormAdd = ({
   // resetItem,
   modalProductVisible,
   modalInvoiceVisible,
+  formEditProps,
   button,
   loadingButton,
+  resetListItem,
   // handleCancel,
   listItem,
   listEmployee,
   listStore,
   getEmployee,
   hideEmployee,
+  modalProductDemandProps,
   ...listProps,
   // ...filterProps,
   // ...formProps,
@@ -50,12 +55,34 @@ const FormAdd = ({
     resetFields,
     getFieldDecorator,
     validateFields,
+    getFieldValue,
     getFieldsValue
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
-  const { handleProductBrowse, handleInvoiceBrowse } = modalProductProps
+  const { handleProductBrowse, handleInvoiceBrowse, handleProductDemandBrowse, loading } = modalProductProps
   let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
+
+  const onClickDemand = () => {
+    if (getFieldValue('storeIdReceiver')) {
+      handleProductDemandBrowse(getFieldValue('storeIdReceiver'))
+    } else {
+      message.warning('Choose destination store')
+      validateFields(['storeIdReceiver'])
+    }
+  }
+
+  const onGetAllDemand = () => {
+    console.log('onGetAll1')
+    if (getFieldValue('storeIdReceiver')) {
+      console.log('onGetAll', getFieldValue('storeIdReceiver'))
+      modalProductDemandProps.handleGetAll(getFieldValue('storeIdReceiver'))
+    } else {
+      message.warning('Choose destination store')
+      validateFields(['storeIdReceiver'])
+    }
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -66,7 +93,6 @@ const FormAdd = ({
       }
       data.employeeId = data.employeeId.key
       data.storeId = item.storeId
-      data.storeIdReceiver = data.storeIdReceiver.key
       data.reference = item.reference
       onSubmit(data, listItem, resetFields)
       // handleReset()
@@ -85,7 +111,7 @@ const FormAdd = ({
       let groupStore = []
       for (let id = 0; id < listStore.length; id += 1) {
         groupStore.push(
-          <Option disabled={item.storeId === listStore[id].value} value={listStore[id].value}>
+          <Option disabled={item.storeId === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
             {listStore[id].label}
           </Option>
         )
@@ -104,6 +130,18 @@ const FormAdd = ({
     modalProductProps,
     ...modalProductProps
   }
+
+  const onChangeStoreIdReceiver = () => {
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        modalProductDemandProps.updateSelectedKey([])
+        resetListItem()
+      }
+    })
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -168,7 +206,8 @@ const FormAdd = ({
                 </Select>
               )}
             </FormItem>
-            <Button size="large" type="default" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Invoice</Button>
+            <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Purchase</Button>
+            <Button disabled={loading.effects['transferOut/showModalDemand']} type="default" size="large" onClick={() => onClickDemand()} style={{ marginRight: '10px' }}>Demand</Button>
             <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
             {modalProductVisible && <Browse {...modalProductOpts} />}
             {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
@@ -183,7 +222,7 @@ const FormAdd = ({
                   }
                 ]
               })(<Select
-                labelInValue
+                onChange={() => onChangeStoreIdReceiver()}
               >
                 {childrenStoreReceived}
               </Select>)}
@@ -224,6 +263,15 @@ const FormAdd = ({
         <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
+        {modalProductDemandProps.visible && (
+          <ModalDemand
+            onGetAll={() => {
+              onGetAllDemand()
+            }}
+            {...modalProductDemandProps}
+          />
+        )}
+        {formEditProps.visible && <ModalItem {...formEditProps} />}
         {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>
     </div>

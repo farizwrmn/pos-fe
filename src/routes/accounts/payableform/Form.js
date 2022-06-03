@@ -41,7 +41,6 @@ const FormCounter = ({
   // modalShow,
   modalShowList,
   loadingPettyCash,
-  modalType,
   // onCancel,
   listItem,
   resetListItem,
@@ -113,7 +112,6 @@ const FormCounter = ({
         return
       }
       data.storeId = lstorage.getCurrentUserStore()
-      data.supplierId = data.supplierId ? data.supplierId.key : null
       data.discountAccountId = data.discountAccountId ? data.discountAccountId.key : null
       data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
       data.typeCode = data.typeCode ? data.typeCode.key : null
@@ -159,8 +157,8 @@ const FormCounter = ({
       }
       handleBrowseInvoice()
       const supplierId = getFieldValue('supplierId')
-      if (supplierId && supplierId.key) {
-        onInvoiceHeader(supplierId.key)
+      if (supplierId) {
+        onInvoiceHeader(supplierId)
       }
     })
   }
@@ -171,11 +169,11 @@ const FormCounter = ({
         return
       }
       const supplierId = getFieldValue('supplierId')
-      if (supplierId && supplierId.key) {
+      if (supplierId) {
         dispatch({
           type: 'returnPurchase/queryReturnDetailInvoice',
           payload: {
-            supplierId: supplierId.key
+            supplierId
           }
         })
 
@@ -211,8 +209,8 @@ const FormCounter = ({
         }
         handleBrowseInvoice()
         const supplierId = getFieldValue('supplierId')
-        if (supplierId && supplierId.key) {
-          onInvoiceHeader(period, supplierId.key)
+        if (supplierId) {
+          onInvoiceHeader(period, supplierId)
         }
       })
     }
@@ -247,16 +245,10 @@ const FormCounter = ({
         },
         onCancel () {
           setFieldsValue({
-            supplierId: {
-              key: oldSupplierId ? oldSupplierId.key : null,
-              label: oldSupplierId ? oldSupplierId.label : null
-            }
+            supplierId: oldSupplierId
           })
           updateCurrentItem({
-            supplierId: {
-              key: oldSupplierId ? oldSupplierId.key : null,
-              label: oldSupplierId ? oldSupplierId.label : null
-            },
+            supplierId: oldSupplierId,
             ...item
           })
         }
@@ -290,11 +282,7 @@ const FormCounter = ({
             </FormItem>
             <FormItem label={(<Link target="_blank" to={'/master/supplier'}>Supplier</Link>)} hasFeedback {...formItemLayout}>
               {getFieldDecorator('supplierId', {
-                initialValue: modalType === 'edit' && item.supplierId ? {
-                  key: item.supplierId,
-                  label: `${item.supplierName} (${item.supplierCode})`
-                }
-                  : undefined,
+                initialValue: item.supplierId,
                 rules: [
                   {
                     required: true
@@ -307,7 +295,6 @@ const FormCounter = ({
                 notFoundContent={loading.effects['supplier/query'] ? <Spin size="small" /> : null}
                 onSearch={value => showLov('supplier', { q: value })}
                 optionFilterProp="children"
-                labelInValue
                 filterOption={filterOption}
               >{supplierOpt}
               </Select>)}

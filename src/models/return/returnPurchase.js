@@ -7,7 +7,7 @@ import { prefix } from 'utils/config.main'
 import moment from 'moment'
 import { query, queryById, add, edit, approve, remove } from 'services/return/returnPurchase'
 import { query as querySequence } from 'services/sequence'
-import { queryDetail as queryPurchaseDetail } from 'services/purchase'
+import { queryDetail as queryPurchaseDetail, queryDetailByProductId } from 'services/purchase'
 import {
   query as queryProductStock,
   queryPOSproduct
@@ -27,6 +27,7 @@ export default modelExtend(pageModel, {
     searchText: '',
     listDetail: [],
     listItem: [],
+    listPurchaseLatestDetail: [],
     listProduct: [],
     listInvoice: [],
     list: [],
@@ -84,6 +85,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * getPurchaseLatestDetail ({ payload }, { call, put }) {
+      const response = yield call(queryDetailByProductId, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseLatestDetail: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * queryReturnPurchaseDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
@@ -293,10 +308,13 @@ export default modelExtend(pageModel, {
       const newData = {
         no: listItem.length + 1,
         transferStoreId: lstorage.getCurrentUserStore(),
-        ...payload.item,
+        id: payload.item.id,
+        qty: 1,
+        productCode: payload.item.productCode,
+        productName: payload.item.productName,
         initialQty: payload.item.qty,
-        DPP: payload.item.DPP / payload.item.qty || payload.item.costPrice, // Akan di simpan ke table
-        dpp: payload.item.DPP || payload.item.costPrice * payload.item.qty // Total qty * harga
+        DPP: (parseFloat(payload.item.DPP || 0) + parseFloat(payload.item.PPN || 0)) / payload.item.qty || (parseFloat(payload.item.costPrice || 0) + parseFloat(payload.item.PPN || 0)), // Akan di simpan ke table
+        dpp: (parseFloat(payload.item.DPP || 0) + parseFloat(payload.item.PPN || 0)) || (parseFloat(payload.item.costPrice || 0) + parseFloat(payload.item.PPN || 0)) * payload.item.qty // Total qty * harga
       }
       newListItem.push(newData)
       yield put({

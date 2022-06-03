@@ -372,17 +372,17 @@ export default connect(({
   loading,
   purchase,
   app }) => (
-    {
-      returnPurchase,
-      pettyExpense,
-      payableForm,
-      accountCode,
-      userStore,
-      paymentOpts,
-      paymentEdc,
-      bank,
-      supplier,
-      loading,
-      purchase,
-      app
-    }))(Cash)
+  {
+    returnPurchase,
+    pettyExpense,
+    payableForm,
+    accountCode,
+    userStore,
+    paymentOpts,
+    paymentEdc,
+    bank,
+    supplier,
+    loading,
+    purchase,
+    app
+  }))(Cash)

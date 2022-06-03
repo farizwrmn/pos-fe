@@ -22,7 +22,7 @@ const formItemLayout = {
   }
 }
 
-const modal = ({
+const ModalAccept = ({
   item,
   disableButton,
   sequenceNumber,
@@ -136,4 +136,4 @@ const modal = ({
   )
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalAccept)

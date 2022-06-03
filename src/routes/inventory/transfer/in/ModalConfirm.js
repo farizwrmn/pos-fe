@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Modal, Button } from 'antd'
 import PrintPDF from './PrintPDF'
 
-const modal = ({
+const ModalConfirm = ({
   currentItemList,
   onOkPrint,
   listItem,
@@ -56,7 +56,7 @@ const modal = ({
   )
 }
 
-modal.propTypes = {
+ModalConfirm.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -64,4 +64,4 @@ modal.propTypes = {
   enablePopover: PropTypes.func
 }
 
-export default Form.create()(modal)
+export default Form.create()(ModalConfirm)
