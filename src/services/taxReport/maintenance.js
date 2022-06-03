@@ -1,39 +1,20 @@
 import { request, crypt } from 'utils'
 
-export async function query (params) {
+export async function queryPos (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/tax-report/maintenance',
+    url: '/tax-report/maintenance-pos',
     method: 'get',
     data: params,
     headers: apiHeaderToken
   })
 }
 
-export async function add (params) {
+export async function queryPurchase (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/tax-report/maintenance',
-    method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function remove (id) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `/tax-report/maintenance/${id}`,
-    method: 'delete',
-    headers: apiHeaderToken
-  })
-}
-
-export async function edit (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `/tax-report/maintenance/${params.id}`,
-    method: 'put',
+    url: '/tax-report/maintenance-purchase',
+    method: 'get',
     data: params,
     headers: apiHeaderToken
   })

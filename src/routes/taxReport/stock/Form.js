@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Button, DatePicker, Row, Col, Modal } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
+
+const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
@@ -17,19 +20,9 @@ const formItemLayout = {
   }
 }
 
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
-}
-
 const FormCounter = ({
-  item = {},
+  loading,
   onSubmit,
-  onCancel,
-  modalType,
-  button,
   form: {
     getFieldDecorator,
     validateFields,
@@ -37,29 +30,6 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -81,32 +51,53 @@ const FormCounter = ({
   return (
     <Form layout="horizontal">
       <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('taxReportStock', {
-              initialValue: item.taxReportStock,
+        <Col span={12}>
+          <FormItem label="Sales" {...formItemLayout}>
+            {getFieldDecorator('rangeDateSalesHeader', {
+              initialValue: [moment().add('-1', 'months'), moment()],
               rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
+                { required: true }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(
+              <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
+            )}
           </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+        </Col>
+        <Col span={12}>
+          <Button
+            type="primary"
+            size="large"
+            style={{ marginLeft: '5px' }}
+            onClick={() => handleSubmit()}
+            loading={loading}
+          >
+            Submit
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="Purchase" {...formItemLayout}>
+            {getFieldDecorator('rangeDatePurchaseHeader', {
+              initialValue: [moment().add('-1', 'months'), moment()],
               rules: [
-                {
-                  required: true
-                }
+                { required: true }
               ]
-            })(<Input maxLength={50} />)}
+            })(
+              <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
+            )}
           </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
+        </Col>
+        <Col span={12}>
+          <Button
+            type="primary"
+            size="large"
+            style={{ marginLeft: '5px' }}
+            onClick={() => handleSubmit()}
+            loading={loading}
+          >
+            Submit
+          </Button>
         </Col>
       </Row>
     </Form>
