@@ -1727,6 +1727,45 @@ const Routers = function ({ history, app }) {
             }, 'marketing-voucher')
           }
         }, {
+          path: 'tools/transaction/sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/sales'))
+              registerModel(app, require('./models/taxReport/salesDetail'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
+              cb(null, require('./routes/taxReport/sales'))
+            }, 'tax-report-sales')
+          }
+        }, {
+          path: 'tools/transaction/purchase',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/purchase'))
+              registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/taxReport/purchaseDetail'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
+              cb(null, require('./routes/taxReport/purchase'))
+            }, 'tax-report-purchase')
+          }
+        }, {
+          path: 'tools/transaction/stock',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/stock'))
+              cb(null, require('./routes/taxReport/stock'))
+            }, 'tax-report-stock')
+          }
+        }, {
+          path: 'tools/transaction/maintenance',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/maintenance'))
+              cb(null, require('./routes/taxReport/maintenance'))
+            }, 'tax-report-maintenance')
+          }
+        }, {
           path: 'balance/finance/petty-cash',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

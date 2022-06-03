@@ -9,7 +9,6 @@ import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
-import { activeGrabCampaign } from 'services/grab/grabCampaign'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -134,22 +133,6 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: { listInventory: dataType.data }
         })
-      }
-    },
-
-    * showGrabmartCampaign ({ payload = {} }, { call, put }) {
-      if (payload && payload.productId) {
-        const response = yield call(activeGrabCampaign, payload)
-        if (response.success) {
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalGrabmartItem: response.data || {}
-            }
-          })
-        }
-      } else {
-        message.warning('Require Product ID')
       }
     },
 

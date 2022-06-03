@@ -1,26 +1,21 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/master/supplier'
-import { pageModel } from './../common'
+import { message } from 'antd'
+import { query, add, edit, remove } from 'services/taxReport/stock'
+import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Supplier has been saved')
+  message.success('Account Code has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'supplier',
+  namespace: 'taxReportStock',
 
   state: {
     currentItem: {},
     modalType: 'add',
-    display: 'none',
-    isChecked: false,
-    selectedRowKeys: [],
-    listSupplier: [],
     activeKey: '0',
-    disable: '',
-    show: 1,
+    list: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -33,36 +28,14 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/accounts/payable-form') {
-          dispatch({
-            type: 'query',
-            payload: {
-              pageSize: 5
-            }
-          })
-        }
-        if (location.pathname === '/tools/transaction/purchase') {
-          dispatch({
-            type: 'query',
-            payload: {
-              type: 'all'
-            }
-          })
-        }
-        if (pathname === '/master/supplier') {
-          if (activeKey === '1') {
-            dispatch({
-              type: 'query',
-              payload: other
-            })
-          }
-          if (!activeKey) dispatch({ type: 'refreshView' })
+        if (pathname === '/tools/transaction/stock') {
           dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
+          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -72,14 +45,14 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      if (data.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            listSupplier: data.data,
+            list: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
           }
@@ -87,11 +60,9 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put, select }) {
-      const data = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(models => models.supplier)
+    * delete ({ payload }, { call, put }) {
+      const data = yield call(remove, payload)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -99,9 +70,8 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, { id: payload.id, data: payload.data })
+      const data = yield call(add, payload.data)
       if (data.success) {
-        // yield put({ type: 'query' })
         success()
         yield put({
           type: 'updateState',
@@ -110,12 +80,17 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        yield put({
+          type: 'query'
+        })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
-        let current = Object.assign({}, payload.id, payload.data)
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: current
+            currentItem: payload
           }
         })
         throw data
@@ -123,9 +98,9 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ supplier }) => supplier.currentItem.supplierCode)
-      const newSupplier = { ...payload, id }
-      const data = yield call(edit, newSupplier)
+      const id = yield select(({ taxReportStock }) => taxReportStock.currentItem.id)
+      const newCounter = { ...payload.data, id }
+      const data = yield call(edit, newCounter)
       if (data.success) {
         success()
         yield put({
@@ -144,12 +119,14 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
-        let current = Object.assign({}, payload.id, payload.data)
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: current
+            currentItem: payload
           }
         })
         throw data
@@ -159,11 +136,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccess (state, action) {
-      const { listSupplier, pagination } = action.payload
+      const { list, pagination } = action.payload
       return {
         ...state,
-        list: listSupplier,
-        listSupplier,
+        list,
         pagination: {
           ...state.pagination,
           ...pagination
@@ -171,27 +147,27 @@ export default modelExtend(pageModel, {
       }
     },
 
-    switchIsChecked (state, { payload }) {
-      return { ...state, isChecked: !state.isChecked, display: payload }
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     },
 
     changeTab (state, { payload }) {
-      return { ...state, ...payload }
-    },
-
-    resetItem (state, { payload }) {
-      return { ...state, ...payload }
-    },
-
-    resetSupplierList (state) {
-      return { ...state, list: [], listSupplier: [], pagination: { total: 0 } }
-    },
-
-    refreshView (state) {
+      const { key } = payload
       return {
         ...state,
+        activeKey: key,
         modalType: 'add',
         currentItem: {}
+      }
+    },
+
+    editItem (state, { payload }) {
+      const { item } = payload
+      return {
+        ...state,
+        modalType: 'edit',
+        activeKey: '0',
+        currentItem: item
       }
     }
   }
