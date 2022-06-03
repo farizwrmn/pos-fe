@@ -1,12 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/taxReport/maintenance'
+import { queryPos, queryPurchase } from 'services/taxReport/maintenance'
 import { pageModel } from '../common'
-
-const success = () => {
-  message.success('Account Code has been saved')
-}
 
 export default modelExtend(pageModel, {
   namespace: 'taxReportMaintenance',
@@ -24,112 +19,28 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
-        const { activeKey, ...other } = location.query
-        const { pathname } = location
-        if (pathname === '/tools/transaction/maintenance') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-        }
-      })
+    setup ({ history }) {
+      history.listen(() => { })
     }
   },
 
   effects: {
 
-    * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+    * queryPos ({ payload = {} }, { call }) {
+      const data = yield call(queryPos, payload)
       if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: data.data,
-            pagination: {
-              current: Number(data.page) || 1,
-              pageSize: Number(data.pageSize) || 10,
-              total: data.total
-            }
-          }
-        })
+        message.error('Sales success to generate')
+      } else {
+        message.error('Sales failed to generate')
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
+    * queryPurchase ({ payload = {} }, { call }) {
+      const data = yield call(queryPurchase, payload)
       if (data.success) {
-        yield put({ type: 'query' })
+        message.error('Purchase success to generate')
       } else {
-        throw data
-      }
-    },
-
-    * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ taxReportMaintenance }) => taxReportMaintenance.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
+        message.error('Purchase failed to generate')
       }
     }
   },

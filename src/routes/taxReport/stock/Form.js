@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, DatePicker, Row, Col, Modal } from 'antd'
+import { Form, Button, DatePicker, Row, Col, Modal, message } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
@@ -22,30 +22,47 @@ const formItemLayout = {
 
 const FormCounter = ({
   loading,
-  onSubmit,
+  onSubmitSales,
+  onSubmitPurchase,
   form: {
     getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
+    getFieldsValue
   }
 }) => {
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
+  const handlePurchase = () => {
+    const data = getFieldsValue()
+    if (data.rangeDatePurchaseHeader && data.rangeDatePurchaseHeader.length === 2) {
       Modal.confirm({
-        title: 'Do you want to save this item?',
+        title: 'Do you want to reset this date?',
         onOk () {
-          onSubmit(data, resetFields)
+          onSubmitPurchase({
+            from: data.rangeDatePurchaseHeader[0].format('YYYY-MM-DD'),
+            to: data.rangeDatePurchaseHeader[1].format('YYYY-MM-DD')
+          })
         },
         onCancel () { }
       })
-    })
+    } else {
+      message.warning('Date is required')
+    }
+  }
+
+  const handleSales = () => {
+    const data = getFieldsValue()
+    if (data.rangeDateSalesHeader && data.rangeDateSalesHeader.length === 2) {
+      Modal.confirm({
+        title: 'Do you want to reset this date?',
+        onOk () {
+          onSubmitSales({
+            from: data.rangeDateSalesHeader[0].format('YYYY-MM-DD'),
+            to: data.rangeDateSalesHeader[1].format('YYYY-MM-DD')
+          })
+        },
+        onCancel () { }
+      })
+    } else {
+      message.warning('Date is required')
+    }
   }
 
   return (
@@ -54,10 +71,7 @@ const FormCounter = ({
         <Col span={12}>
           <FormItem label="Sales" {...formItemLayout}>
             {getFieldDecorator('rangeDateSalesHeader', {
-              initialValue: [moment().add('-1', 'months'), moment()],
-              rules: [
-                { required: true }
-              ]
+              initialValue: [moment().add('-1', 'months'), moment()]
             })(
               <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
             )}
@@ -68,7 +82,7 @@ const FormCounter = ({
             type="primary"
             size="large"
             style={{ marginLeft: '5px' }}
-            onClick={() => handleSubmit()}
+            onClick={() => handleSales()}
             loading={loading}
           >
             Submit
@@ -79,10 +93,7 @@ const FormCounter = ({
         <Col span={12}>
           <FormItem label="Purchase" {...formItemLayout}>
             {getFieldDecorator('rangeDatePurchaseHeader', {
-              initialValue: [moment().add('-1', 'months'), moment()],
-              rules: [
-                { required: true }
-              ]
+              initialValue: [moment().add('-1', 'months'), moment()]
             })(
               <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
             )}
@@ -93,7 +104,7 @@ const FormCounter = ({
             type="primary"
             size="large"
             style={{ marginLeft: '5px' }}
-            onClick={() => handleSubmit()}
+            onClick={() => handlePurchase()}
             loading={loading}
           >
             Submit

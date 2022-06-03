@@ -7,7 +7,7 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ taxReportMaintenance, dispatch, location }) => {
+const Counter = ({ taxReportMaintenance, dispatch, loading, location }) => {
   const { modalType, currentItem, activeKey } = taxReportMaintenance
 
   const changeTab = (key) => {
@@ -29,29 +29,18 @@ const Counter = ({ taxReportMaintenance, dispatch, location }) => {
   const formProps = {
     modalType,
     item: currentItem,
+    loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
+    onSubmitSales (data) {
       dispatch({
-        type: `taxReportMaintenance/${modalType}`,
-        payload: {
-          data,
-          reset
-        }
+        type: 'taxReportMaintenance/queryPos',
+        payload: data
       })
     },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
+    onSubmitPurchase (data) {
       dispatch({
-        type: 'taxReportMaintenance/updateState',
-        payload: {
-          currentItem: {}
-        }
+        type: 'taxReportMaintenance/queryPurchase',
+        payload: data
       })
     }
   }
