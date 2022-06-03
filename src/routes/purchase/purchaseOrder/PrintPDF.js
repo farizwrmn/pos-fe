@@ -1,5 +1,5 @@
 /**
- * Created by veirry on 31/01/2021.
+ * Created by veirry on 28/11/17.
  */
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -7,9 +7,9 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
 
-const numberFormatter = numberFormat.numberFormatter
+const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
+const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -22,7 +22,8 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.product.productCode || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.product.productName || '').toString(), alignment: 'left', fontSize: 11 })
-        row.push({ text: numberFormatter(parseFloat(data.qty)), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.qty || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -30,6 +31,8 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
     return body
   }
 
+  // Declare Variable
+  let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -61,7 +64,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
             alignment: 'right'
           },
           {
-            text: 'PURCHASE ORDER',
+            text: 'SURAT PENGANTAR',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -76,7 +79,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.createdAt).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}]
+            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment().format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}]
           ]
         },
         layout: 'noBorders'
@@ -184,24 +187,24 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' }
+      { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
   try {
     tableBody = createTableBody(listItem)
   } catch (e) {
-    console.log('error', e)
+    console.log(e)
   }
-
-  const qtyTotal = listItem.reduce((prev, next) => prev + next.qty, 0)
   const tableFooter = [
     [
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
       {},
       {},
-      { text: (parseFloat(qtyTotal) || 0).toLocaleString(), alignment: 'right', fontSize: 12 }
+      { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 12 },
+      {}
     ]
   ]
   const tableLayout = {
@@ -221,7 +224,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['12%', '30%', '30%', '28%'],
+    width: ['6%', '20%', '34%', '6%', '34%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
@@ -241,7 +244,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
   )
 }
 
-PrintPDFInvoice.propTypes = {
+PrintPDF.propTypes = {
   listItem: PropTypes.array,
   user: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired
@@ -249,4 +252,4 @@ PrintPDFInvoice.propTypes = {
   // toDate: PropTypes.string.isRequired,
 }
 
-export default PrintPDFInvoice
+export default PrintPDF

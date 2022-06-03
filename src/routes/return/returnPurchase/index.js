@@ -17,52 +17,20 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
   const {
     list: listReturnPurchase,
     pagination,
-    // listInvoice,
-    // tmpInvoiceList,
-    // isChecked,
-    // listProducts,
-    // listTransOut,
     activeKey,
     modalInvoiceVisible,
     modalProductVisible,
     listItem,
     currentItem,
-    // currentItemList,
     modalEditItemVisible,
     modalConfirmVisible,
-    reference,
-    referenceNo,
-    // formType,
-    // display,
-    // activeKey,
     currentItemList
-    // filter,
-    // sort,
-    // showPrintModal
   } = returnPurchase
-  const { listSupplier } = purchase
+  const {
+    listPurchaseLatestDetail,
+    listSupplier
+  } = purchase
   const { user, storeInfo } = app
-  // const filterProps = {
-  //   display,
-  //   filter: {
-  //     ...location.query
-  //   },
-  //   onFilterChange (value) {
-  //     dispatch({
-  //       type: 'returnPurchase/query',
-  //       payload: {
-  //         userName: value.cityName,
-  //         ...value
-  //       }
-  //     })
-  //   },
-  //   switchIsChecked () {
-  //     dispatch({
-  //       type: 'returnPurchase/switchIsChecked',
-  //       payload: `${isChecked ? 'none' : 'block'}`
-  //     })
-  //   }
-  // }
 
   const listProps = {
     dataSource: listItem,
@@ -85,6 +53,12 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
         payload: {
           currentItemList: record,
           modalEditItemVisible: true
+        }
+      })
+      dispatch({
+        type: 'purchase/getPurchaseLatestDetail',
+        payload: {
+          productId: record.id
         }
       })
     },
@@ -115,7 +89,6 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     visible: modalProductVisible || modalInvoiceVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
-    onChange (/* event */) { },
     showProductQty (data) {
       dispatch({
         type: 'purchase/showProductQty',
@@ -209,8 +182,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
 
   const formEditProps = {
     visible: modalEditItemVisible,
-    reference,
-    referenceNo,
+    listPurchaseLatestDetail,
+    loadingPurchaseLatest: loading.effects['purchase/getPurchaseLatestDetail'],
     item: currentItem,
     listStore: lstorage.getListUserStores(),
     currentItemList,
@@ -285,8 +258,6 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
   }
 
   const formProps = {
-    reference,
-    referenceNo,
     listProps,
     listSupplier,
     formConfirmProps,

@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Row, Col, Modal, Button, Select } from 'antd'
+import { Form, Input, InputNumber, Row, Col, Modal, Button } from 'antd'
 import LatestPrice from './LatestPrice'
 
 const FormItem = Form.Item
-const { TextArea } = Input
-const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -28,7 +26,6 @@ class TransferModal extends Component {
       currentItemList,
       onOkList,
       onCancelList,
-      listStore,
       onDeleteItem,
       listPurchaseLatestDetail,
       loadingPurchaseLatest,
@@ -46,17 +43,15 @@ class TransferModal extends Component {
           ...getFieldsValue()
         }
         if (Number(data.qty) > 0) {
-          data.transType = currentItemList.transType
-          data.description = (data.description === '' || data.description === null ? null : data.description)
           data.productId = currentItemList.productId
-          data.initialQty = currentItemList.initialQty
           data.productCode = currentItemList.productCode
           data.productName = currentItemList.productName
+          data.id = currentItemList.id
           onOkList(data)
         } else {
           Modal.warning({
             title: 'Message Error',
-            content: 'Price must greater than zero!'
+            content: 'Qty must greater than zero!'
           })
         }
       })
@@ -77,19 +72,6 @@ class TransferModal extends Component {
     const modalOpts = {
       ...formEditProps,
       onOk: handleOk
-    }
-
-    let childrenStoreReceived = []
-    if (listStore.length > 0) {
-      let groupStore = []
-      for (let id = 0; id < listStore.length; id += 1) {
-        groupStore.push(
-          <Option value={listStore[id].value}>
-            {listStore[id].label}
-          </Option>
-        )
-      }
-      childrenStoreReceived.push(groupStore)
     }
 
     const latestPriceProps = {
@@ -124,18 +106,6 @@ class TransferModal extends Component {
                   }]
                 })(<Input disabled maxLength={10} />)}
               </FormItem>
-              <FormItem label="Store ID" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('transferStoreId', {
-                  initialValue: currentItemList.transferStoreId,
-                  rules: [{
-                    required: true
-                  }]
-                })(
-                  <Select>
-                    {childrenStoreReceived}
-                  </Select>
-                )}
-              </FormItem>
               <FormItem label="Qty" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('qty', {
                   initialValue: currentItemList.qty,
@@ -153,32 +123,6 @@ class TransferModal extends Component {
                     }}
                   />
                 )}
-              </FormItem>
-              <FormItem label="Price" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('DPP', {
-                  initialValue: currentItemList.DPP,
-                  rules: [{
-                    required: true
-                  }]
-                })(
-                  <InputNumber
-                    value={0}
-                    min={0}
-                    onKeyDown={(e) => {
-                      if (e.keyCode === 13) {
-                        handleOk()
-                      }
-                    }}
-                  />
-                )}
-              </FormItem>
-              <FormItem label="Description" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('description', {
-                  initialValue: currentItemList.description,
-                  rules: [{
-                    required: false
-                  }]
-                })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
               </FormItem>
             </Form>
           </Col>

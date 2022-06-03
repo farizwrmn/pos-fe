@@ -10,7 +10,7 @@ import { BasicInvoice } from 'components'
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 const numberFormatter = numberFormat.numberFormatter
 
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
+const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -38,7 +38,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       }
       count += 1
     }
-    console.log('body', body)
     return body
   }
 
@@ -269,7 +268,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   )
 }
 
-PrintPDF.propTypes = {
+PrintPDFInvoice.propTypes = {
   listItem: PropTypes.array,
   user: PropTypes.object.isRequired,
   storeInfo: PropTypes.object.isRequired
@@ -277,4 +276,4 @@ PrintPDF.propTypes = {
   // toDate: PropTypes.string.isRequired,
 }
 
-export default PrintPDF
+export default PrintPDFInvoice

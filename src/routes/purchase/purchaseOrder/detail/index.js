@@ -12,17 +12,29 @@ import TransDetail from './TransDetail'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
 
-const Detail = ({ purchaseOrder, app, dispatch }) => {
+
+const Detail = ({ app, purchaseOrder, dispatch }) => {
   const { listDetail, data } = purchaseOrder
-  const { user, storeInfo } = app
+  const {
+    storeInfo,
+    user
+  } = app
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
-      if (key !== 'policeNoId' && key !== 'storeId' && key !== 'id' && key !== 'memberId') {
+      if (typeof key === 'string' && key !== 'purchase' && key !== 'policeNoId' && key !== 'storeId' && key !== 'id' && key !== 'memberId') {
         content.push(
           <div key={key} className={styles.item}>
             <div>{key}</div>
             <div>{String(data[key])}</div>
+          </div>
+        )
+      }
+      if (key && key === 'purchase' && data[key]) {
+        content.push(
+          <div key={key} className={styles.item}>
+            <div>{key}</div>
+            <div>{data[key].transNo}</div>
           </div>
         )
       }

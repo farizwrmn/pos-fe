@@ -10,12 +10,31 @@ export async function query (params) {
   })
 }
 
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/purchase-order/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/purchase-order',
     method: 'post',
     data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function approve (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/purchase-order/approve/${params.id}`,
+    method: 'post',
     headers: apiHeaderToken
   })
 }

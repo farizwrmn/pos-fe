@@ -1,39 +1,76 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
+import { Link } from 'dva/router'
+import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, deleteItem }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
-      editItem(record)
-    } else if (e.key === '2') {
-      confirm({
-        title: `Are you sure delete ${record.accountName} ?`,
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
+    switch (e.key) {
+      case '1': {
+        confirm({
+          title: `Are you sure delete ${record.transNo} ?`,
+          onOk () {
+            deleteItem(record.id)
+          }
+        })
+        break
+      }
+      default:
+        break
     }
   }
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      render: (text, record) => {
+        return (
+          <Link to={`/transaction/purchase/order/${record.id}`}>
+            {text}
+          </Link>
+        )
+      }
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: text => moment(text).format('lll')
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Approve Date',
+      dataIndex: 'approveDate',
+      key: 'approveDate'
+    },
+    {
+      title: 'Memo',
+      dataIndex: 'memo',
+      key: 'memo'
+    },
+    {
+      title: 'Status',
+      dataIndex: 'payableId',
+      key: 'payableId',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="grey">
+              Already Used
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="green">
+            Available
+          </Tag>
+        )
+      }
     },
     {
       title: 'Operation',
@@ -41,7 +78,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete', disabled: false }]} />
       }
     }
   ]

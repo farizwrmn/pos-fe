@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Switch, Select, Button, Row, Col, Modal } from 'antd'
-// import { lstorage } from 'utils'
 import ListItem from './ListItem'
-// import ModalConfirm from './ModalConfirm'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -248,7 +246,6 @@ const FormAdd = ({
         <FormItem>
           <Button disabled={loadingButton.effects['returnPurchase/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>
-        {/* {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />} */}
       </Form>
     </div>
   )
