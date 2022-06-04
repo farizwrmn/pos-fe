@@ -112,6 +112,7 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
     onChooseItem (item) {
       if (!item.productId) {
         item.productId = item.id
+        item.id = undefined
       }
       dispatch({
         type: 'returnPurchase/addItem',

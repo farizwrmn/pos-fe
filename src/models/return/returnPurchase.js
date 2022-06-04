@@ -309,6 +309,7 @@ export default modelExtend(pageModel, {
         no: listItem.length + 1,
         transferStoreId: lstorage.getCurrentUserStore(),
         id: payload.item.id,
+        productId: payload.item.productId,
         qty: 1,
         productCode: payload.item.productCode,
         productName: payload.item.productName,
