@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryRestore, restoreDetail, add, edit, remove } from 'services/taxReport/purchaseDetail'
+import { query, queryRestore, restoreDetail, add, edit, editTax, remove } from 'services/taxReport/purchaseDetail'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     list: [],
     selectedRowKeys: [],
     modalRestoreVisible: false,
+    modalTaxEditorVisible: false,
     listRestore: [],
     selectedRowKeysRestore: [],
     pagination: {
@@ -55,6 +56,27 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * editTax ({ payload = {} }, { call, put, select }) {
+      const selectedRowKeys = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.selectedRowKeys)
+      const response = yield call(editTax, {
+        id: selectedRowKeys,
+        taxType: payload.taxType
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalTaxEditorVisible: false,
+            selectedRowKeys: [],
+            list: []
+          }
+        })
+        message.success('Items updated')
+      } else {
+        throw response
       }
     },
 

@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane
 const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { listSupplier } = supplier
   const { list, pagination, selectedRowKeys, activeKey } = taxReportPurchase
-  const { list: listDetail, modalRestoreVisible, listRestore, selectedRowKeysRestore, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
+  const { list: listDetail, modalTaxEditorVisible, modalRestoreVisible, listRestore, selectedRowKeysRestore, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
   const { user, storeInfo } = app
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -152,6 +152,26 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
     location
   }
 
+  const modalTaxEditorProps = {
+    visible: modalTaxEditorVisible,
+    onOk (data) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/editTax',
+        payload: {
+          ...data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          modalTaxEditorVisible: false
+        }
+      })
+    }
+  }
+
   const modalRestoreProps = {
     width: 700,
     list: listRestore,
@@ -196,11 +216,20 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
   const filterDetailProps = {
     printDetailOpts,
     modalRestoreProps,
+    modalTaxEditorProps,
     selectedRowKeys: selectedRowKeysDetail,
     loading: loading.effects['taxReportPurchaseDetail/query'],
     listCategory,
     listBrand,
     listSupplier,
+    onShowTaxEditor () {
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          modalTaxEditorVisible: true
+        }
+      })
+    },
     onRestoreModal (value) {
       dispatch({
         type: 'taxReportPurchaseDetail/queryRestore',
