@@ -5,6 +5,7 @@ import { getVATPercentage } from 'utils/tax'
 import { DropOption } from 'components'
 import moment from 'moment'
 import ModalRestore from './ModalRestore'
+import ModalTax from './ModalTax'
 import PrintPDF from './PrintPDFDetail'
 import PrintXLS from './PrintXLSDetail'
 
@@ -23,6 +24,7 @@ const searchBarLayout = {
 const Filter = ({
   printDetailOpts,
   selectedRowKeys,
+  onShowTaxEditor,
   loading,
   listBrand,
   listCategory,
@@ -30,6 +32,7 @@ const Filter = ({
   onFilterChange,
   deleteItem,
   modalRestoreProps,
+  modalTaxEditorProps,
   onRestoreModal,
   form: {
     getFieldDecorator,
@@ -56,6 +59,9 @@ const Filter = ({
 
   const handleMenuClick = (event, selectedRowKeys) => {
     if (event.key === '1') {
+      onShowTaxEditor(selectedRowKeys)
+    }
+    if (event.key === '2') {
       Modal.confirm({
         title: `Are you sure delete ${selectedRowKeys.length} items ?`,
         onOk () {
@@ -84,10 +90,6 @@ const Filter = ({
         })
       }
     })
-  }
-
-  const modalRestoreOpts = {
-    ...modalRestoreProps
   }
 
   return (
@@ -194,7 +196,8 @@ const Filter = ({
                 <DropOption
                   onMenuClick={e => handleMenuClick(e, selectedRowKeys)}
                   menuOptions={[
-                    { key: '1', name: 'Delete', disabled: false }
+                    { key: '1', name: 'Tax Type', disabled: false },
+                    { key: '2', name: 'Delete', disabled: false }
                   ]}
                 />
               </div>
@@ -202,7 +205,8 @@ const Filter = ({
           ) : null}
         </div>
       </Col>
-      <ModalRestore {...modalRestoreOpts} />
+      {modalRestoreProps.visible && <ModalRestore {...modalRestoreProps} />}
+      {modalTaxEditorProps.visible && <ModalTax {...modalTaxEditorProps} />}
     </Row>
   )
 }
