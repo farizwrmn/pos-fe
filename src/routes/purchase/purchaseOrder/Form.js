@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import { lstorage } from 'utils'
 import ListItem from './ListItem'
 
@@ -82,6 +82,14 @@ const FormAdd = ({
                   }
                 ]
               })(<Input disabled maxLength={20} />)}
+            </FormItem>
+            <FormItem label="Deadline Receive" {...formItemLayout}>
+              {getFieldDecorator('deadlineDate', {
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
             </FormItem>
             <FormItem required label="Supplier" {...formItemLayout}>
               {getFieldDecorator('supplierId', {
