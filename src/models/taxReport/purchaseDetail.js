@@ -69,9 +69,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            modalTaxEditorVisible: false
+            modalTaxEditorVisible: false,
+            selectedRowKeys: [],
+            list: []
           }
         })
+        message.success('Items updated')
       } else {
         throw response
       }
