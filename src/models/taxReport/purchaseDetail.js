@@ -1,11 +1,10 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, queryRestore, restoreDetail, add, edit, editTax, remove } from 'services/taxReport/purchaseDetail'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Purchase detail has been saved')
 }
 
 export default modelExtend(pageModel, {
@@ -16,7 +15,9 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    filter: {},
     selectedRowKeys: [],
+    modalEditVisible: false,
     modalRestoreVisible: false,
     modalTaxEditorVisible: false,
     listRestore: [],
@@ -56,11 +57,18 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            filter: payload
+          }
+        })
       }
     },
 
     * editTax ({ payload = {} }, { call, put, select }) {
       const selectedRowKeys = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.selectedRowKeys)
+      const filter = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.filter)
       const response = yield call(editTax, {
         id: selectedRowKeys,
         taxType: payload.taxType
@@ -73,6 +81,10 @@ export default modelExtend(pageModel, {
             selectedRowKeys: [],
             list: []
           }
+        })
+        yield put({
+          type: 'query',
+          payload: filter
         })
         message.success('Items updated')
       } else {
@@ -94,7 +106,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * restoreDetail ({ payload = {} }, { call, put }) {
+    * restoreDetail ({ payload = {} }, { call, put, select }) {
+      const filter = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.filter)
       const response = yield call(restoreDetail, payload)
       if (response && response.success) {
         yield put({
@@ -107,13 +120,18 @@ export default modelExtend(pageModel, {
             modalRestoreVisible: false
           }
         })
+        yield put({
+          type: 'query',
+          payload: filter
+        })
         message.success('Item Restored')
       } else {
         throw response
       }
     },
 
-    * deleteItem ({ payload }, { call, put }) {
+    * deleteItem ({ payload }, { call, put, select }) {
+      const filter = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.filter)
       const data = yield call(remove, {
         id: payload.selectedRowKeys
       })
@@ -124,6 +142,10 @@ export default modelExtend(pageModel, {
             selectedRowKeys: [],
             list: []
           }
+        })
+        yield put({
+          type: 'query',
+          payload: filter
         })
         message.success('Items deleted')
       } else {
@@ -170,6 +192,7 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.currentItem.id)
+      const filter = yield select(({ taxReportPurchaseDetail }) => taxReportPurchaseDetail.filter)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -177,29 +200,17 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            modalType: 'add',
+            modalEditVisible: false,
             currentItem: {},
-            activeKey: '1'
+            selectedRowKeys: [],
+            list: []
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
         yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
+          type: 'query',
+          payload: filter
         })
+      } else {
         throw data
       }
     }

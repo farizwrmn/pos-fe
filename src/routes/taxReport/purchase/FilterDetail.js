@@ -8,6 +8,7 @@ import ModalRestore from './ModalRestore'
 import ModalTax from './ModalTax'
 import PrintPDF from './PrintPDFDetail'
 import PrintXLS from './PrintXLSDetail'
+import ModalEdit from './ModalEdit'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -22,6 +23,7 @@ const searchBarLayout = {
 }
 
 const Filter = ({
+  modalEditProps,
   printDetailOpts,
   selectedRowKeys,
   onShowTaxEditor,
@@ -205,6 +207,7 @@ const Filter = ({
           ) : null}
         </div>
       </Col>
+      {modalEditProps.visible && <ModalEdit {...modalEditProps} />}
       {modalRestoreProps.visible && <ModalRestore {...modalRestoreProps} />}
       {modalTaxEditorProps.visible && <ModalTax {...modalTaxEditorProps} />}
     </Row>
