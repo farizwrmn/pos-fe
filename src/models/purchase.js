@@ -137,7 +137,7 @@ export default modelExtend(pageModel, {
       const response = yield call(queryPurchaseOrder, payload)
       if (response.success) {
         yield put({
-          type: 'upateState',
+          type: 'updateState',
           payload: {
             listPurchaseOrder: response.data
           }

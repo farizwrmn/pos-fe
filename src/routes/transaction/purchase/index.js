@@ -37,6 +37,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
   const modalPurchaseOrderProps = {
     visible: modalPurchaseOrderVisible,
     listPurchaseOrder,
+    dataSource: listPurchaseOrder,
     location,
     purchase,
     dispatch,

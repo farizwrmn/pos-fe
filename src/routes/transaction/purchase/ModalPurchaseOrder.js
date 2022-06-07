@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Modal } from 'antd'
 import ListInvoice from './ListInvoice'
 
-const ModalPurchaseOrder = ({ location, purchase, dispatch, loading, onChooseInvoice, onInvoiceHeader, ...modalProps }) => {
-  const { listPurchaseOrder, itemPayment } = purchase
+const ModalPurchaseOrder = ({ listPurchaseOrder, location, purchase, dispatch, loading, onChooseInvoice, onInvoiceHeader, ...modalProps }) => {
+  const { itemPayment } = purchase
   const listProps = {
     dataSource: listPurchaseOrder,
     listPurchaseOrder,

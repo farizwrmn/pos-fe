@@ -109,7 +109,7 @@ const ListInvoice = ({ onInvoiceHeader, listPurchaseOrder, onChooseInvoice, purc
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
+        rowKey={record => record.id}
         onRowClick={_record => handleMenuClick(_record)}
       />
     </div>
