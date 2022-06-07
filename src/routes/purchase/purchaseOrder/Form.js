@@ -86,7 +86,7 @@ const FormAdd = ({
             </FormItem>
             <FormItem label="Deadline Receive" {...formItemLayout}>
               {getFieldDecorator('deadlineDate', {
-                initialValue: moment(),
+                initialValue: moment().add('14', 'days'),
                 rules: [{
                   required: true,
                   message: 'Required'

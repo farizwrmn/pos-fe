@@ -46,6 +46,7 @@ class TransferModal extends Component {
           data.productId = currentItemList.productId
           data.productCode = currentItemList.productCode
           data.productName = currentItemList.productName
+          data.total = data.qty * data.purchasePrice
           data.id = currentItemList.id
           onOkList(data)
         } else {
@@ -109,6 +110,24 @@ class TransferModal extends Component {
               <FormItem label="Qty" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('qty', {
                   initialValue: currentItemList.qty,
+                  rules: [{
+                    required: true
+                  }]
+                })(
+                  <InputNumber
+                    value={0}
+                    min={0}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13) {
+                        handleOk()
+                      }
+                    }}
+                  />
+                )}
+              </FormItem>
+              <FormItem label="Price" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('purchasePrice', {
+                  initialValue: currentItemList.purchasePrice,
                   rules: [{
                     required: true
                   }]

@@ -309,6 +309,8 @@ export default modelExtend(pageModel, {
         id: payload.item.id,
         productId: payload.item.id,
         qty: 1,
+        purchasePrice: payload.item.costPrice,
+        total: payload.item.costPrice,
         productCode: payload.item.productCode,
         productName: payload.item.productName
       }
