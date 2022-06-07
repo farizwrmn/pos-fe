@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Button, Input, Form, Row, Col } from 'antd'
+import { connect } from 'dva'
 import styles from 'themes/index.less'
 import { numberFormatter } from 'utils/string'
 
 const FormItem = Form.Item
 
-const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
+const ListInvoice = ({ onInvoiceHeader, listPurchaseOrder, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
   const { searchText, tmpInvoiceList } = purchase
 
   const handleMenuClick = (record) => {
@@ -102,7 +103,7 @@ const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, 
 
       <Table
         {...tableProps}
-        title={() => `Total: ${numberFormatter(listInvoice ? listInvoice.reduce((prev, next) => prev + next.paymentTotal, 0) : 0)}`}
+        title={() => `Total: ${numberFormatter(listPurchaseOrder ? listPurchaseOrder.reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0) : 0)}`}
         pagination={false}
         bordered
         columns={columns}
@@ -123,4 +124,4 @@ ListInvoice.propTypes = {
   dispatch: PropTypes.isRequired
 }
 
-export default ListInvoice
+export default connect(({ purchase }) => ({ purchase }))(ListInvoice)

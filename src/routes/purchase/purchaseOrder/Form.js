@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -85,6 +86,7 @@ const FormAdd = ({
             </FormItem>
             <FormItem label="Deadline Receive" {...formItemLayout}>
               {getFieldDecorator('deadlineDate', {
+                initialValue: moment(),
                 rules: [{
                   required: true,
                   message: 'Required'

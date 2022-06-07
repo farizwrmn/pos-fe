@@ -29,10 +29,37 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     curHead,
     listPurchaseLatestDetail,
     modalSupplierVisible,
-    lastTrans
+    lastTrans,
+    listPurchaseOrder,
+    modalPurchaseOrderVisible
   } = purchase
 
+  const modalPurchaseOrderProps = {
+    visible: modalPurchaseOrderVisible,
+    listPurchaseOrder,
+    location,
+    purchase,
+    dispatch,
+    loading,
+    onCancel () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalPurchaseOrderVisible: false,
+          listPurchaseOrder: []
+        }
+      })
+    },
+    onChooseInvoice () {
+
+    },
+    onInvoiceHeader () {
+
+    }
+  }
+
   const purchaseProps = {
+    modalPurchaseOrderProps,
     lastTrans,
     date,
     datePicker,
@@ -81,6 +108,19 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
           active: 1,
           q: searchText === '' ? null : searchText
         }
+      })
+    },
+    handlePurchaseOrder () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalPurchaseOrderVisible: true,
+          listPurchaseOrder: []
+        }
+      })
+
+      dispatch({
+        type: 'purchase/getPurchaseOrder'
       })
     },
     onChangeRounding (e) {

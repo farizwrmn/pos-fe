@@ -4,6 +4,7 @@ import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import moment from 'moment'
+import { queryPurchaseOrder } from 'services/purchaseOrder/purchaseOrder'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from '../services/sequence'
 import {
@@ -33,6 +34,8 @@ export default modelExtend(pageModel, {
     currentItem: {},
     date: '',
     readOnly: false,
+    modalPurchaseOrderVisible: false,
+    listPurchaseOrder: [],
     addItem: {},
     lastTrans: '',
     searchTextSupplier: '',
@@ -130,6 +133,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * getPurchaseOrder ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPurchaseOrder, payload)
+      if (response.success) {
+        yield put({
+          type: 'upateState',
+          payload: {
+            listPurchaseOrder: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * queryLastAdjust ({ payload = {} }, { call, put }) {
       const invoice = {
         seqCode: 'PRC',

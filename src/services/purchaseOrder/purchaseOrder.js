@@ -1,9 +1,21 @@
 import { request, crypt } from 'utils'
+import lstorage from 'utils/lstorage'
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/purchase-order',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPurchaseOrder (params) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/purchase-order-active',
     method: 'get',
     data: params,
     headers: apiHeaderToken
