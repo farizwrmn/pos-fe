@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane
 const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { listSupplier } = supplier
   const { list, pagination, selectedRowKeys, activeKey } = taxReportPurchase
-  const { list: listDetail, modalTaxEditorVisible, modalRestoreVisible, listRestore, selectedRowKeysRestore, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
+  const { list: listDetail, currentItem, modalEditVisible, modalTaxEditorVisible, modalRestoreVisible, listRestore, selectedRowKeysRestore, pagination: paginationDetail, selectedRowKeys: selectedRowKeysDetail } = taxReportPurchaseDetail
   const { user, storeInfo } = app
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -28,6 +28,28 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
     user,
     list: listDetail,
     storeInfo
+  }
+
+  const modalEditProps = {
+    visible: modalEditVisible,
+    item: currentItem,
+    onOkList (data) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/edit',
+        payload: {
+          data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          currentItem: {},
+          modalEditVisible: false
+        }
+      })
+    }
   }
 
   const filterProps = {
@@ -96,6 +118,15 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
     pagination: paginationDetail,
     loading: loading.effects['taxReportPurchaseDetail/query'],
     location,
+    onShowModalEdit (currentItem) {
+      dispatch({
+        type: 'taxReportPurchaseDetail/updateState',
+        payload: {
+          currentItem,
+          modalEditVisible: true
+        }
+      })
+    },
     updateSelectedKey (key) {
       dispatch({
         type: 'taxReportPurchaseDetail/updateState',
@@ -214,6 +245,7 @@ const Counter = ({ supplier, taxReportPurchase, taxReportPurchaseDetail, product
   }
 
   const filterDetailProps = {
+    modalEditProps,
     printDetailOpts,
     modalRestoreProps,
     modalTaxEditorProps,
