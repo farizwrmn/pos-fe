@@ -277,17 +277,7 @@ export default {
             type: 'getGrabmartOrder'
           })
         }
-        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment' || location.pathname === '/cash-entry' || location.pathname === '/journal-entry') {
-          let memberUnitInfo = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-          if (location.pathname !== '/transaction/pos/payment') {
-            dispatch({
-              type: 'showShiftModal',
-              payload: memberUnitInfo
-            })
-            dispatch({
-              type: 'getServiceReminder'
-            })
-          }
+        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
           dispatch({
             type: 'loadDataPos',
             payload: {

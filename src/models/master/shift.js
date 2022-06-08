@@ -31,13 +31,6 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
-        } else if (pathname === '/setting/store' || pathname === '/balance/current' || pathname === '/balance/closing' || pathname === '/transaction/pos' || pathname === '/cash-entry' || pathname === '/journal-entry') {
-          dispatch({
-            type: 'query',
-            payload: {
-              type: 'all'
-            }
-          })
         }
       })
     }

@@ -3,36 +3,28 @@ import { routerRedux } from 'dva/router'
 import { Modal, message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
-import { queryEntryList } from 'services/payment/bankentry'
-import {
-  VOUCHER,
-  VOUCHER_STORE_ID
-} from 'utils/variable'
-import { queryById, query, queryId, add, addPayment, edit, remove } from 'services/marketing/voucher'
+import { queryById, query, queryId, add, edit, remove } from 'services/taxReport/journalentry'
 import { pageModel } from 'common'
 import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
-  message.success('Voucher entry has been saved')
+  message.success('Journal entry has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'voucherdetail',
+  namespace: 'journalentry',
 
   state: {
     data: {},
     listDetail: [],
     listAccounting: [],
-    selectedRowKeys: [],
     currentItem: {},
     currentItemList: {},
-    match: {},
     modalType: 'add',
     modalItemType: 'add',
     inputType: null,
     activeKey: '0',
     listCash: [],
-    visiblePayment: false,
     modalVisible: false,
     listItem: [],
     pagination: {
@@ -45,7 +37,9 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const match = pathToRegexp('/marketing/voucher/:id').exec(location.pathname)
+        const { activeKey, edit, ...other } = location.query
+        const { pathname } = location
+        const match = pathToRegexp('/tools/transaction/journal-entry/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -55,81 +49,44 @@ export default modelExtend(pageModel, {
               match
             }
           })
+        }
+        if (pathname === '/tools/transaction/journal-entry') {
           dispatch({
             type: 'updateState',
             payload: {
-              match
+              activeKey: activeKey || '0'
             }
           })
+
+          if (activeKey === '1') {
+            dispatch({ type: 'query', payload: other })
+          }
+          if (edit && edit !== '' && edit !== '0') {
+            dispatch({
+              type: 'setEdit',
+              payload: {
+                edit
+              }
+            })
+          } else {
+            dispatch({ type: 'querySequence' })
+          }
         }
       })
     }
   },
 
   effects: {
-    * paymentVoucher ({ payload = {} }, { select, call, put }) {
-      const { data } = payload
-      const selectedRowKeys = yield select(({ voucherdetail }) => voucherdetail.selectedRowKeys)
-      const listDetail = yield select(({ voucherdetail }) => voucherdetail.listDetail)
-      const detailItem = yield select(({ voucherdetail }) => voucherdetail.data)
-      const match = yield select(({ voucherdetail }) => voucherdetail.match)
-      if (selectedRowKeys.length === 0) {
-        message.error('Select at least 1 row')
-        return
-      }
-      let listSelectedId = listDetail
-        .filter(filtered => selectedRowKeys.includes(filtered.no))
-        .map(detail => detail.id)
-      if (listSelectedId.length === 0) {
-        message.error('Select at least 1 row')
-        return
-      }
-      const response = yield call(addPayment, { item: { id: detailItem.id, description: data.description, accountId: data.accountId, storeId: VOUCHER_STORE_ID }, listSelectedId })
-      if (response && response.success) {
-        yield put({
-          type: 'queryDetail',
-          payload: {
-            id: detailItem.id,
-            storeId: lstorage.getCurrentUserStore(),
-            match
-          }
-        })
-        yield put({
-          type: 'updateState',
-          payload: {
-            selectedRowKeys: [],
-            visiblePayment: false
-          }
-        })
-        if (payload && payload.reset) {
-          payload.reset()
-        }
-      } else {
-        throw response
-      }
-    },
-
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
-        const { purchase, ...other } = data.data
-        const voucherDetail = data.detail
+        const { purchase, journalEntryDetail, ...other } = data.data
         let listAccounting = []
-        if (payload && payload.match && other && other.id) {
-          const reconData = yield call(queryEntryList, {
-            transactionId: other.id,
-            transactionType: VOUCHER,
-            type: 'all'
-          })
-          if (reconData && reconData.data) {
-            listAccounting = listAccounting.concat(reconData.data)
-          }
-        }
         yield put({
           type: 'updateState',
           payload: {
             data: other,
-            listDetail: voucherDetail.map((item, index) => ({ no: index + 1, ...item })),
+            listDetail: journalEntryDetail,
             listAccounting
           }
         })
@@ -158,12 +115,12 @@ export default modelExtend(pageModel, {
 
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
-        seqCode: 'VOU',
+        seqCode: 'JET',
         type: lstorage.getCurrentUserStore(),
         ...payload
       }
       const data = yield call(querySequence, invoice)
-      const currentItem = yield select(({ voucherdetail }) => voucherdetail.currentItem)
+      const currentItem = yield select(({ journalentry }) => journalentry.currentItem)
       const transNo = data.data
       yield put({
         type: 'updateState',
@@ -189,11 +146,7 @@ export default modelExtend(pageModel, {
               journalEntryDetail.map((item, index) => ({
                 no: index + 1,
                 ...item,
-                accountId: item.accountId,
-                accountCode: {
-                  key: item.accountId,
-                  label: `${item.accountCode.accountName} (${item.accountCode.accountCode})`
-                }
+                accountId: item.accountId
               }))
               : []
           }
@@ -257,7 +210,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ voucherdetail }) => voucherdetail.currentItem.id)
+      const id = yield select(({ journalentry }) => journalentry.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {

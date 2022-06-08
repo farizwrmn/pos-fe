@@ -18,11 +18,11 @@ const Report = ({ dispatch, location }) => {
   return (
     <div className="content-inner">
       <Tabs activeKey={pathname} onChange={pathname => changeTab(pathname)}>
-        <TabPane tab="Profit Loss" key="/report/accounting/profit-loss">
-          {pathname === '/report/accounting/profit-loss' && <ProfitLoss location={location} />}
+        <TabPane tab="Profit Loss" key="/tools/report/profit-loss">
+          {pathname === '/tools/report/profit-loss' && <ProfitLoss location={location} />}
         </TabPane>
-        <TabPane tab="Balance Sheet" key="/report/accounting/balance-sheet">
-          {pathname === '/report/accounting/balance-sheet' && <BalanceSheet location={location} />}
+        <TabPane tab="Balance Sheet" key="/tools/report/balance-sheet">
+          {pathname === '/tools/report/balance-sheet' && <BalanceSheet location={location} />}
         </TabPane>
       </Tabs>
     </div>
