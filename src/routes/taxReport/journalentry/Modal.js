@@ -110,7 +110,7 @@ class ModalList extends Component {
               rules: [{
                 required: true,
                 pattern: /^([0-9.]{0,19})$/i,
-                message: 'Quantity is not define'
+                message: 'Debit is required'
               }]
             })(<InputNumber
               min={0}
@@ -124,7 +124,7 @@ class ModalList extends Component {
               rules: [{
                 required: true,
                 pattern: /^([0-9.]{0,19})$/i,
-                message: 'Quantity is not define'
+                message: 'Credit is required'
               }]
             })(<InputNumber
               min={0}

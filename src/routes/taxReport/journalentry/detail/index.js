@@ -9,13 +9,11 @@ import {
   Button
 } from 'antd'
 import TransDetail from './TransDetail'
-import FormAccounting from './FormAccounting'
 import styles from './index.less'
 
 
-const Detail = ({ app, journalentry, dispatch }) => {
-  const { user } = app
-  const { listDetail, listAccounting, data } = journalentry
+const Detail = ({ journalentry, dispatch }) => {
+  const { listDetail, data } = journalentry
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -57,14 +55,6 @@ const Detail = ({ app, journalentry, dispatch }) => {
           </Row>
         </div>
 
-        {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-          <div className="content-inner-zero-min-height">
-            <h1>Accounting Journal</h1>
-            <Row style={{ padding: '10px', margin: '4px' }}>
-              <FormAccounting listAccounting={listAccounting} />
-            </Row>
-          </div>
-        )}
       </Col>
     </Row>
   </div>)
