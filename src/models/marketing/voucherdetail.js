@@ -158,7 +158,7 @@ export default modelExtend(pageModel, {
 
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
-        seqCode: 'JE',
+        seqCode: 'VOU',
         type: lstorage.getCurrentUserStore(),
         ...payload
       }

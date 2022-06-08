@@ -43,7 +43,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/journal-entry/:id').exec(location.pathname)
+        const match = pathToRegexp('/tools/transaction/journal-entry/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/journal-entry') {
+        if (pathname === '/tools/transaction/journal-entry') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -129,7 +129,7 @@ export default modelExtend(pageModel, {
 
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
-        seqCode: 'JE',
+        seqCode: 'JET',
         type: lstorage.getCurrentUserStore(),
         ...payload
       }
