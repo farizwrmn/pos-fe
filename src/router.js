@@ -1775,6 +1775,23 @@ const Routers = function ({ history, app }) {
             }, 'report-accounting-balance-sheet')
           }
         }, {
+          path: 'tools/transaction/journal-entry/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/journalentry'))
+              cb(null, require('./routes/taxReport/journalentry/detail'))
+            }, 'tools-transaction-journal-entry-detail')
+          }
+        }, {
+          path: 'tools/transaction/journal-entry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/journalentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/accounts/journalentry'))
+            }, 'tools-transaction-journal-entry')
+          }
+        }, {
           path: 'balance/finance/petty-cash',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
