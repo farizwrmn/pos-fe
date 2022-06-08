@@ -157,7 +157,8 @@ export default modelExtend(pageModel, {
         }
         if (
           pathname === '/master/account'
-          || pathname === '/journal-entry') {
+          || pathname === '/journal-entry'
+          || pathname === '/tools/transaction/journal-entry') {
           dispatch({
             type: 'updateState',
             payload: {

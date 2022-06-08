@@ -1788,7 +1788,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/journalentry'))
               registerModel(app, require('./models/master/accountCode'))
-              cb(null, require('./routes/accounts/journalentry'))
+              cb(null, require('./routes/taxReport/journalentry'))
             }, 'tools-transaction-journal-entry')
           }
         }, {

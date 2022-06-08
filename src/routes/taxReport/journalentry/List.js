@@ -33,7 +33,7 @@ const List = ({
       key: 'transNo',
       render: (text, record) => {
         return (
-          <Link to={`/journal-entry/${record.id}`}>
+          <Link to={`/tools/transaction/journal-entry/${record.id}`}>
             {text}
           </Link>
         )

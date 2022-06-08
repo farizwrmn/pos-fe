@@ -31,7 +31,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/journal-entry?activeKey=1'))
+    dispatch(routerRedux.push('/tools/transaction/journal-entry?activeKey=1'))
   }
 
   const formDetailProps = {

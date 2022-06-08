@@ -49,8 +49,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/cash-entry'
-          || pathname === '/journal-entry') {
+        if (pathname === '/cash-entry') {
           dispatch({
             type: 'updateState',
             payload: {
