@@ -24,24 +24,6 @@ export default modelExtend(pageModel, {
     }
   },
 
-  subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
-        const { activeKey, ...other } = location.query
-        const { pathname } = location
-        if (pathname === '/tools/transaction/sales') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '1'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
-        }
-      })
-    }
-  },
-
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
