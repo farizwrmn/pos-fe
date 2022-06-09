@@ -1,11 +1,10 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryRestore, restoreDetail, add, edit, remove } from 'services/taxReport/salesDetail'
+import { query, queryRestore, restoreDetail, add, edit, editTax, remove } from 'services/taxReport/salesDetail'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Sales detail has been saved')
 }
 
 export default modelExtend(pageModel, {
@@ -16,26 +15,17 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    filter: {},
     selectedRowKeys: [],
+    modalEditVisible: false,
     modalRestoreVisible: false,
+    modalTaxEditorVisible: false,
     listRestore: [],
     selectedRowKeysRestore: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
-    }
-  },
-
-  subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
-        const { activeKey, ...other } = location.query
-        const { pathname } = location
-        if (pathname === '/tools/transaction/sales') {
-          if (activeKey === '2') dispatch({ type: 'query', payload: other })
-        }
-      })
     }
   },
 
@@ -55,6 +45,38 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            filter: payload
+          }
+        })
+      }
+    },
+
+    * editTax ({ payload = {} }, { call, put, select }) {
+      const selectedRowKeys = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.selectedRowKeys)
+      const filter = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.filter)
+      const response = yield call(editTax, {
+        id: selectedRowKeys,
+        taxType: payload.taxType
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalTaxEditorVisible: false,
+            selectedRowKeys: [],
+            list: []
+          }
+        })
+        yield put({
+          type: 'query',
+          payload: filter
+        })
+        message.success('Items updated')
+      } else {
+        throw response
       }
     },
 
@@ -72,7 +94,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * restoreDetail ({ payload = {} }, { call, put }) {
+    * restoreDetail ({ payload = {} }, { call, put, select }) {
+      const filter = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.filter)
       const response = yield call(restoreDetail, payload)
       if (response && response.success) {
         yield put({
@@ -85,13 +108,18 @@ export default modelExtend(pageModel, {
             modalRestoreVisible: false
           }
         })
+        yield put({
+          type: 'query',
+          payload: filter
+        })
         message.success('Item Restored')
       } else {
         throw response
       }
     },
 
-    * deleteItem ({ payload }, { call, put }) {
+    * deleteItem ({ payload }, { call, put, select }) {
+      const filter = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.filter)
       const data = yield call(remove, {
         id: payload.selectedRowKeys
       })
@@ -102,6 +130,10 @@ export default modelExtend(pageModel, {
             selectedRowKeys: [],
             list: []
           }
+        })
+        yield put({
+          type: 'query',
+          payload: filter
         })
         message.success('Items deleted')
       } else {
@@ -148,6 +180,7 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.currentItem.id)
+      const filter = yield select(({ taxReportSalesDetail }) => taxReportSalesDetail.filter)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
@@ -155,29 +188,17 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            modalType: 'add',
+            modalEditVisible: false,
             currentItem: {},
-            activeKey: '1'
+            selectedRowKeys: [],
+            list: []
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
         yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
+          type: 'query',
+          payload: filter
         })
+      } else {
         throw data
       }
     }

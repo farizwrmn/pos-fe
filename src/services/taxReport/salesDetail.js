@@ -40,6 +40,16 @@ export async function add (params) {
   })
 }
 
+export async function editTax (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/tax-report/pos-detail-tax',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

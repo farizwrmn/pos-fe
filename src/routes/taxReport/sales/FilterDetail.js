@@ -5,8 +5,10 @@ import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
 import { DropOption } from 'components'
 import moment from 'moment'
 import ModalRestore from './ModalRestore'
+import ModalTax from './ModalTax'
 import PrintPDF from './PrintPDFDetail'
 import PrintXLS from './PrintXLSDetail'
+import ModalEdit from './ModalEdit'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -20,15 +22,18 @@ const searchBarLayout = {
   xl: { span: 12 }
 }
 
-const FilterDetail = ({
+const Filter = ({
+  modalEditProps,
   printDetailOpts,
   selectedRowKeys,
+  onShowTaxEditor,
   listBrand,
   listCategory,
   onFilterChange,
   loading,
   deleteItem,
   modalRestoreProps,
+  modalTaxEditorProps,
   onRestoreModal,
   form: {
     getFieldDecorator,
@@ -54,6 +59,9 @@ const FilterDetail = ({
 
   const handleMenuClick = (event, selectedRowKeys) => {
     if (event.key === '1') {
+      onShowTaxEditor(selectedRowKeys)
+    }
+    if (event.key === '2') {
       Modal.confirm({
         title: `Are you sure delete ${selectedRowKeys.length} items ?`,
         onOk () {
@@ -82,10 +90,6 @@ const FilterDetail = ({
         })
       }
     })
-  }
-
-  const modalRestoreOpts = {
-    ...modalRestoreProps
   }
 
   return (
@@ -176,7 +180,8 @@ const FilterDetail = ({
                 <DropOption
                   onMenuClick={e => handleMenuClick(e, selectedRowKeys)}
                   menuOptions={[
-                    { key: '1', name: 'Delete', disabled: false }
+                    { key: '1', name: 'Tax Type', disabled: false },
+                    { key: '2', name: 'Delete', disabled: false }
                   ]}
                 />
               </div>
@@ -184,14 +189,16 @@ const FilterDetail = ({
           ) : null}
         </div>
       </Col>
-      {modalRestoreOpts.visible && <ModalRestore {...modalRestoreOpts} />}
+      {modalEditProps.visible && <ModalEdit {...modalEditProps} />}
+      {modalRestoreProps.visible && <ModalRestore {...modalRestoreProps} />}
+      {modalTaxEditorProps.visible && <ModalTax {...modalTaxEditorProps} />}
     </Row>
   )
 }
 
-FilterDetail.propTypes = {
+Filter.propTypes = {
   form: PropTypes.object,
   onFilterChange: PropTypes.func
 }
 
-export default Form.create()(FilterDetail)
+export default Form.create()(Filter)

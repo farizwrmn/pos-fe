@@ -104,9 +104,7 @@ class List extends Component {
       },
       onSelectAll: (checked, tableData) => {
         const { filters } = this.state
-        let listTable = [
-          ...list
-        ]
+        let listTable = list
         if (filters && filters.brandName && filters.brandName.length > 0) {
           listTable = listTable.filter((filtered) => {
             return filters.brandName.includes(filtered.brandName)

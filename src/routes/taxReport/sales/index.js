@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 
 const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list, pagination, selectedRowKeys, activeKey } = taxReportSales
-  const { list: listDetail, pagination: paginationDetail, modalRestoreVisible, listRestore, selectedRowKeysRestore, selectedRowKeys: selectedRowKeysDetail } = taxReportSalesDetail
+  const { list: listDetail, pagination: paginationDetail, currentItem, modalEditVisible, modalTaxEditorVisible, modalRestoreVisible, listRestore, selectedRowKeysRestore, selectedRowKeys: selectedRowKeysDetail } = taxReportSalesDetail
   const { user, storeInfo } = app
   const { listCategory } = productcategory
   const { listBrand } = productbrand
@@ -27,6 +27,28 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
     user,
     list: listDetail,
     storeInfo
+  }
+
+  const modalEditProps = {
+    visible: modalEditVisible,
+    item: currentItem,
+    onOkList (data) {
+      dispatch({
+        type: 'taxReportSalesDetail/edit',
+        payload: {
+          data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'taxReportSalesDetail/updateState',
+        payload: {
+          currentItem: {},
+          modalEditVisible: false
+        }
+      })
+    }
   }
 
   const filterProps = {
@@ -95,6 +117,15 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
     pagination: paginationDetail,
     loading: loading.effects['taxReportSalesDetail/query'],
     location,
+    onShowModalEdit (currentItem) {
+      dispatch({
+        type: 'taxReportSalesDetail/updateState',
+        payload: {
+          currentItem,
+          modalEditVisible: true
+        }
+      })
+    },
     updateSelectedKey (key) {
       dispatch({
         type: 'taxReportSalesDetail/updateState',
@@ -151,6 +182,26 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
     location
   }
 
+  const modalTaxEditorProps = {
+    visible: modalTaxEditorVisible,
+    onOk (data) {
+      dispatch({
+        type: 'taxReportSalesDetail/editTax',
+        payload: {
+          ...data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'taxReportSalesDetail/updateState',
+        payload: {
+          modalTaxEditorVisible: false
+        }
+      })
+    }
+  }
+
   const modalRestoreProps = {
     width: 700,
     list: listRestore,
@@ -193,12 +244,22 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
   }
 
   const filterDetailProps = {
+    modalEditProps,
     printDetailOpts,
     modalRestoreProps,
     loading: loading.effects['taxReportSalesDetail/query'],
+    modalTaxEditorProps,
     selectedRowKeys: selectedRowKeysDetail,
     listCategory,
     listBrand,
+    onShowTaxEditor () {
+      dispatch({
+        type: 'taxReportSalesDetail/updateState',
+        payload: {
+          modalTaxEditorVisible: true
+        }
+      })
+    },
     onRestoreModal (value) {
       dispatch({
         type: 'taxReportSalesDetail/queryRestore',

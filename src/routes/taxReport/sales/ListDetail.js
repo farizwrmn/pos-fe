@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { DropOption } from 'components'
 import { Table } from 'antd'
 
 class List extends Component {
@@ -11,9 +12,15 @@ class List extends Component {
   }
 
   render () {
-    const { selectedRowKeys, list, updateSelectedKey, ...tableProps } = this.props
+    const { onShowModalEdit, selectedRowKeys, list, updateSelectedKey, ...tableProps } = this.props
 
     const { pagination } = this.state
+
+    const handleMenuClick = (record, e) => {
+      if (e.key === '1') {
+        onShowModalEdit(record)
+      }
+    }
 
     const columns = [
       {
@@ -70,6 +77,22 @@ class List extends Component {
         render: (text) => {
           return text.toLocaleString()
         }
+      },
+      {
+        title: 'Operation',
+        key: 'operation',
+        width: 100,
+        fixed: 'right',
+        render: (text, record) => {
+          return (
+            <DropOption
+              onMenuClick={e => handleMenuClick(record, e)}
+              menuOptions={[
+                { key: '1', name: 'Edit' }
+              ]}
+            />
+          )
+        }
       }
     ]
 
@@ -81,9 +104,7 @@ class List extends Component {
       },
       onSelectAll: (checked, tableData) => {
         const { filters } = this.state
-        let listTable = [
-          ...list
-        ]
+        let listTable = list
         if (filters && filters.brandName && filters.brandName.length > 0) {
           listTable = listTable.filter((filtered) => {
             return filters.brandName.includes(filtered.brandName)
