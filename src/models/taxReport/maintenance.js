@@ -18,12 +18,6 @@ export default modelExtend(pageModel, {
     }
   },
 
-  subscriptions: {
-    setup ({ history }) {
-      history.listen(() => { })
-    }
-  },
-
   effects: {
 
     * queryPos ({ payload = {} }, { call }) {

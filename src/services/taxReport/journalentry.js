@@ -1,30 +1,32 @@
-import { request, crypt } from 'utils'
+import { request, lstorage, crypt } from '../../utils'
+
+export async function queryId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/tax-report/journal-entry/${params.id}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `/tax-report/journal-entry/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.order = 'typeCode'
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
-    url: '/tax-report/pos-detail',
+    url: '/tax-report/journal-entry',
     method: 'get',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function queryRestore (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/tax-report/pos-detail-restore',
-    method: 'get',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function restoreDetail (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/tax-report/pos-detail-restore',
-    method: 'post',
     data: params,
     headers: apiHeaderToken
   })
@@ -33,28 +35,8 @@ export async function restoreDetail (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/tax-report/pos-detail',
+    url: '/tax-report/journal-entry',
     method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function editTax (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/tax-report/pos-detail-tax',
-    method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function remove (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/tax-report/pos-detail',
-    method: 'delete',
     data: params,
     headers: apiHeaderToken
   })
@@ -63,9 +45,19 @@ export async function remove (params) {
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/tax-report/pos-detail/${params.id}`,
+    url: `/tax-report/journal-entry/${params.id}`,
     method: 'put',
     data: params,
     headers: apiHeaderToken
   })
 }
+
+export async function remove (id) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/tax-report/journal-entry/${id}`,
+    method: 'delete',
+    headers: apiHeaderToken
+  })
+}
+

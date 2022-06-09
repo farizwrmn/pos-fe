@@ -1054,7 +1054,6 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/accountingStatement'))
               registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/report/fifo'))
               cb(null, require('./routes/report/accounting/statement'))
             }, 'report-accounting-balance-sheet')
           }
@@ -1750,20 +1749,47 @@ const Routers = function ({ history, app }) {
             }, 'tax-report-purchase')
           }
         }, {
-          path: 'tools/transaction/stock',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/taxReport/stock'))
-              cb(null, require('./routes/taxReport/stock'))
-            }, 'tax-report-stock')
-          }
-        }, {
           path: 'tools/transaction/maintenance',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/maintenance'))
               cb(null, require('./routes/taxReport/maintenance'))
             }, 'tax-report-maintenance')
+          }
+        }, {
+          path: 'tools/report/profit-loss',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/accountingStatement'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/taxReport/statement'))
+            }, 'report-accounting-profit-loss')
+          }
+        }, {
+          path: 'tools/report/balance-sheet',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/accountingStatement'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/taxReport/statement'))
+            }, 'report-accounting-balance-sheet')
+          }
+        }, {
+          path: 'tools/transaction/journal-entry/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/journalentry'))
+              cb(null, require('./routes/taxReport/journalentry/detail'))
+            }, 'tools-transaction-journal-entry-detail')
+          }
+        }, {
+          path: 'tools/transaction/journal-entry',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/journalentry'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/taxReport/journalentry'))
+            }, 'tools-transaction-journal-entry')
           }
         }, {
           path: 'balance/finance/petty-cash',
