@@ -58,22 +58,27 @@ const ListInvoice = ({ onInvoiceHeader, listPurchaseOrder, onChooseInvoice, purc
     },
     {
       title: 'Supplier Name',
-      dataIndex: 'supplierName',
-      key: 'supplierName'
+      dataIndex: 'supplier.supplierName',
+      key: 'supplier.supplierName'
     },
     {
-      title: 'Must Paid',
-      dataIndex: 'paymentTotal',
-      key: 'paymentTotal',
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'Qty',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Netto',
-      dataIndex: 'netto',
-      key: 'netto',
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     }
   ]
 
@@ -103,7 +108,7 @@ const ListInvoice = ({ onInvoiceHeader, listPurchaseOrder, onChooseInvoice, purc
 
       <Table
         {...tableProps}
-        title={() => `Total: ${numberFormatter(listPurchaseOrder ? listPurchaseOrder.reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0) : 0)}`}
+        title={() => `Total: ${numberFormatter(listPurchaseOrder ? listPurchaseOrder.reduce((prev, next) => prev + (next.total), 0) : 0)}`}
         pagination={false}
         bordered
         columns={columns}
