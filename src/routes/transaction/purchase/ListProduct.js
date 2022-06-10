@@ -1,56 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Button, Input, Form, Icon } from 'antd'
-import { connect } from 'dva'
 import { getDistPriceName } from 'utils/string'
 import styles from '../../../themes/index.less'
 
 const FormItem = Form.Item
 
-const ListProduct = ({ onChooseItem, purchase, dispatch, loadingProduct, ...tableProps }) => {
-  const { searchText } = purchase
-  const { pagination } = tableProps
+const ListProduct = ({
+  onChooseItem,
+  handleReset,
+  loadingProduct,
+  handleSearch,
+  handleChange,
+  searchText,
+  ...tableProps
+}) => {
   const handleMenuClick = (record) => {
     onChooseItem(record)
-  }
-
-  const handleChange = (e) => {
-    const { value } = e.target
-
-    dispatch({
-      type: 'purchase/updateState',
-      payload: {
-        searchText: value
-      }
-    })
-  }
-
-  const handleSearch = () => {
-    dispatch({
-      type: 'purchase/getProducts',
-      payload: {
-        page: 1,
-        pageSize: pagination.pageSize,
-        q: searchText
-      }
-    })
-  }
-
-  const handleReset = () => {
-    dispatch({
-      type: 'purchase/getProducts',
-      payload: {
-        page: 1,
-        pageSize: pagination.pageSize,
-        q: null
-      }
-    })
-    dispatch({
-      type: 'purchase/updateState',
-      payload: {
-        searchText: null
-      }
-    })
   }
 
   const columns = [
@@ -193,4 +159,4 @@ ListProduct.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchase }) => ({ purchase }))(ListProduct)
+export default ListProduct

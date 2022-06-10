@@ -1,10 +1,11 @@
 import modelExtend from 'dva-model-extend'
-import { Modal } from 'antd'
+import { message, Modal } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import moment from 'moment'
 import { queryPurchaseOrder } from 'services/purchaseOrder/purchaseOrder'
+import { query as queryPurchaseOrderDetail } from 'services/purchaseOrder/purchaseOrderDetail'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from '../services/sequence'
 import {
@@ -37,6 +38,7 @@ export default modelExtend(pageModel, {
     modalPurchaseOrderVisible: false,
     listPurchaseOrder: [],
     addItem: {},
+    listSelectedPurchaseOrder: [],
     lastTrans: '',
     searchTextSupplier: '',
     curHead: {
@@ -112,6 +114,7 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'modalEditHide' })
           dispatch({ type: 'changeRounding', payload: 0 })
           dispatch({ type: 'queryLastAdjust' })
+          dispatch({ type: 'updateState', payload: { listSelectedPurchaseOrder: [] } })
         } else if (location.pathname === '/transaction/purchase/edit') {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
@@ -269,26 +272,25 @@ export default modelExtend(pageModel, {
         let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
         let ppnType = localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E'
         const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
-        const x = dataProduct
-        for (let key = 0; key < (x || []).length; key += 1) {
-          const total = (x[key].qty * x[key].price)
-          const discPercentItem = (1 - ((x[key].disc1 / 100)))
-          const discNominalItem = x[key].discount
+        for (let key = 0; key < (dataProduct || []).length; key += 1) {
+          const total = (dataProduct[key].qty * dataProduct[key].price)
+          const discPercentItem = (1 - ((dataProduct[key].disc1 / 100)))
+          const discNominalItem = dataProduct[key].discount
           const discPercentInvoice = (1 - (data.discInvoicePercent / 100))
-          const totalSellingPrice = (x[key].qty * x[key].price)
+          const totalSellingPrice = (dataProduct[key].qty * dataProduct[key].price)
           const discItem = ((totalSellingPrice * discPercentItem) - discNominalItem) * discPercentInvoice
           const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-          x[key].portion = totalPrice > 0 ? total / totalPrice : 0
+          dataProduct[key].portion = totalPrice > 0 ? total / totalPrice : 0
           if (data.deliveryFee && data.deliveryFee !== '' && data.deliveryFee > 0) {
-            x[key].deliveryFee = x[key].portion * data.deliveryFee
+            dataProduct[key].deliveryFee = dataProduct[key].portion * data.deliveryFee
           } else {
-            x[key].deliveryFee = 0
+            dataProduct[key].deliveryFee = 0
           }
-          x[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
-          x[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (x[key].dpp * getDenominatorPPNExclude()) : 0))
-          x[key].total = x[key].dpp + x[key].ppn
+          dataProduct[key].dpp = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
+          dataProduct[key].ppn = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (dataProduct[key].dpp * getDenominatorPPNExclude()) : 0))
+          dataProduct[key].total = dataProduct[key].dpp + dataProduct[key].ppn
         }
-        localStorage.setItem('product_detail', JSON.stringify(x))
+        localStorage.setItem('product_detail', JSON.stringify(dataProduct))
       }
       let dataPos = (localStorage.getItem('product_detail') === null ? [] : JSON.parse(localStorage.getItem('product_detail')))
       dataPos[payload.data.no - 1] = payload.data
@@ -311,7 +313,6 @@ export default modelExtend(pageModel, {
       if ((purchase_detail || []).length !== 0) {
         let arrayProd = []
         for (let n = 0; n < purchase_detail.length; n += 1) {
-          console.log('purchase_detail[n]', purchase_detail[n])
           arrayProd.push({
             storeId,
             transNo: transData.transNo,
@@ -332,9 +333,8 @@ export default modelExtend(pageModel, {
         if (data.success) {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
-          yield put({
-            type: 'queryLastAdjust'
-          })
+          yield put({ type: 'updateState', payload: { listSelectedPurchaseOrder: [] } })
+          yield put({ type: 'queryLastAdjust' })
           yield put({ type: 'resetBrowse' })
           yield put({ type: 'changeRounding', payload: 0 })
           const modalMember = () => {
@@ -545,6 +545,65 @@ export default modelExtend(pageModel, {
         })
       }
     },
+
+    * addPurchaseOrder ({ payload = {} }, { call, put, select }) {
+      const listSelectedPurchaseOrder = yield select(({ purchase }) => purchase.listSelectedPurchaseOrder)
+      if (payload && payload.id) {
+        const exists = listSelectedPurchaseOrder.filter(filtered => filtered.id === payload.id)
+        if (exists && exists.length === 0) {
+          const response = yield call(queryPurchaseOrderDetail, {
+            id: payload.id,
+            storeId: lstorage.getCurrentUserStore(),
+            type: 'all'
+          })
+          if (response && response.success) {
+            if (response.data && response.data.length > 0) {
+              let newDataProductDetail = []
+              for (let key in response.data) {
+                const item = response.data[key]
+                const listByCode = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
+                const exists = listByCode.filter(filtered => filtered.productCode === item.product.productCode)
+                if (exists.length === 0) {
+                  const data = {
+                    no: newDataProductDetail.length + 1,
+                    code: item.product.id,
+                    productCode: item.product.productCode,
+                    name: item.product.productName,
+                    qty: item.qty,
+                    price: item.purchasePrice,
+                    discount: 0,
+                    disc1: 0,
+                    portion: 0,
+                    deliveryFee: 0,
+                    dpp: item.total,
+                    ppn: 0,
+                    ket: '',
+                    total: item.total
+                  }
+                  newDataProductDetail.push(data)
+                }
+              }
+              localStorage.setItem('product_detail', JSON.stringify(newDataProductDetail))
+              listSelectedPurchaseOrder.push(payload)
+              yield put({
+                type: 'updateState',
+                payload: {
+                  dataBrowse: newDataProductDetail,
+                  modalPurchaseOrderVisible: false,
+                  listPurchaseOrder: [],
+                  listSelectedPurchaseOrder
+                }
+              })
+            }
+          } else {
+            throw response
+          }
+        } else {
+          message.error('Already exists in this invoice')
+        }
+      }
+    },
+
     * getInvoicePayable ({ payload }, { call, put }) {
       const dataDetail = yield call(queryPayable, payload)
       let dataInvoice = dataDetail.data

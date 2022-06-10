@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
-const Browse = ({
-  modalShow, ...purchaseProps }) => {
+const ListDetail = ({
+  onModalShow,
+  ...listDetailProps
+}) => {
   const columns = [
     {
       title: 'No',
@@ -97,7 +99,7 @@ const Browse = ({
   ]
 
   const hdlModalShow = (record) => {
-    modalShow(record)
+    onModalShow(record)
   }
 
   return (
@@ -108,14 +110,14 @@ const Browse = ({
       simple
       size="small"
       pagination={{ pageSize: 5 }}
-      dataSource={purchaseProps.purchase.dataBrowse}
       onRowClick={_record => hdlModalShow(_record)}
+      {...listDetailProps}
     />
   )
 }
 
-Browse.propTypes = {
+ListDetail.propTypes = {
   modalShow: PropTypes.func
 }
 
-export default Browse
+export default ListDetail

@@ -6,8 +6,8 @@ import { numberFormat, alertModal } from 'utils'
 import { getVATPercentage, getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { prefix } from 'utils/config.main'
 import ModalPurchaseOrder from './ModalPurchaseOrder'
-import Browse from './Browse'
-import ModalBrowse from './ModalBrowse'
+import ListDetail from './ListDetail'
+import ModalProduct from './ModalProduct'
 import ModalSupplier from './ModalSupplier'
 
 const { checkPermissionMonthTransaction } = alertModal
@@ -27,10 +27,36 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ modalPurchaseOrderProps, lastTrans, handlePurchaseOrder, onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
-  modalProductVisible, modalSupplierVisible, modalPurchaseVisible, searchTextSupplier, supplierInformation, listSupplier, onGetSupplier,
-  onChooseItem, tmpSupplierData, onSearchSupplier, onSearchSupplierData, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
-  const { loading } = purchaseProps
+const PurchaseForm = ({
+  modalPurchaseOrderProps,
+  lastTrans,
+  handlePurchaseOrder,
+  onDiscPercent,
+  paginationSupplier,
+  disableButton,
+  rounding,
+  onChangeRounding,
+  listDetailProps,
+  onOk,
+  onChooseSupplier,
+  handleBrowseProduct,
+  modalProductVisible,
+  modalSupplierVisible,
+  searchTextSupplier,
+  supplierInformation,
+  listSupplier,
+  onGetSupplier,
+  tmpSupplierData,
+  onSearchSupplier,
+  onSearchSupplierData,
+  date,
+  tempo,
+  loading,
+  onChangeDate,
+  modalListProductProps,
+  form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue },
+  dispatch
+}) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -385,7 +411,7 @@ const PurchaseForm = ({ modalPurchaseOrderProps, lastTrans, handlePurchaseOrder,
         <Col span={24}>
           <Button type="default" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => handlePurchaseOrder()}>Purchase Order</Button>
           <Button type="primary" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => hdlBrowseProduct()}>Product</Button>
-          {modalProductVisible && <ModalBrowse {...purchaseProps} />}
+          {modalProductVisible && <ModalProduct {...modalListProductProps} />}
           {modalSupplierVisible && (
             <ModalSupplier {...modalSupplierProps}>
               <Table
@@ -405,7 +431,7 @@ const PurchaseForm = ({ modalPurchaseOrderProps, lastTrans, handlePurchaseOrder,
           )}
         </Col>
       </Row>
-      <Browse {...purchaseProps} />
+      <ListDetail {...listDetailProps} />
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
