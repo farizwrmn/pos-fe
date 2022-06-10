@@ -306,7 +306,8 @@ export default modelExtend(pageModel, {
       yield put({ type: 'modalEditHide' })
     },
 
-    * add ({ payload = {} }, { call, put }) {
+    * add ({ payload = {} }, { call, put, select }) {
+      const listSelectedPurchaseOrder = yield select(({ purchase }) => purchase.listSelectedPurchaseOrder)
       const { transData } = payload
       const storeId = lstorage.getCurrentUserStore()
       let purchase_detail = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
@@ -329,7 +330,7 @@ export default modelExtend(pageModel, {
             transType: transData.transType
           })
         }
-        const data = yield call(create, { id: transData.transNo, data: transData, add: arrayProd })
+        const data = yield call(create, { id: transData.transNo, data: transData, add: arrayProd, order: listSelectedPurchaseOrder })
         if (data.success) {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
