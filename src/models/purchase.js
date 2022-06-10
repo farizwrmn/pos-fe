@@ -553,8 +553,8 @@ export default modelExtend(pageModel, {
         const exists = listSelectedPurchaseOrder.filter(filtered => filtered.id === payload.id)
         if (exists && exists.length === 0) {
           const response = yield call(queryPurchaseOrderDetail, {
-            id: payload.id,
-            storeId: lstorage.getCurrentUserStore(),
+            transNo: payload.transNo,
+            storeId: payload.storeId,
             type: 'all'
           })
           if (response && response.success) {
