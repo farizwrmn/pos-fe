@@ -32,7 +32,8 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     lastTrans,
     listPurchaseOrder,
     modalPurchaseOrderVisible,
-    itemPayment
+    itemPayment,
+    listSelectedPurchaseOrder
   } = purchase
 
   const modalPurchaseOrderProps = {
@@ -53,7 +54,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
       })
     },
     onChooseInvoice (item) {
-      console.log('item', item)
       dispatch({
         type: 'purchase/addPurchaseOrder',
         payload: item
@@ -196,7 +196,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
   const listDetailProps = {
     dataSource: dataBrowse,
     onModalShow (data) {
-      console.log('onModalShow', data)
       dispatch({
         type: 'purchase/modalEditShow',
         payload: {
@@ -216,6 +215,7 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     listDetailProps,
     modalListProductProps,
     modalPurchaseOrderProps,
+    listSelectedPurchaseOrder,
     lastTrans,
     date,
     datePicker,
