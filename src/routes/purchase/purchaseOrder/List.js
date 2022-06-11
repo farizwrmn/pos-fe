@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal, Tag, message } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
@@ -11,7 +11,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     switch (e.key) {
       case '1': {
-        editItem(record)
+        if (record.purchaseId == null) {
+          editItem(record)
+        } else {
+          message.error('Purchase Order already received')
+        }
         break
       }
       case '2': {

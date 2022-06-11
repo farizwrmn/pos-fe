@@ -109,7 +109,8 @@ const ListItem = ({ ...tableProps, listItem, onModalVisible }) => {
         footer={() => {
           return (
             <div>
-              <div>Total Qty: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0)}</div>
+              <div>Qty: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0)}</div>
+              <div>Total: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) : 0)}</div>
             </div>
           )
         }}
