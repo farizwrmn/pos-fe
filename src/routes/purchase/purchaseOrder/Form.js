@@ -27,6 +27,8 @@ const col = {
 
 const FormAdd = ({
   item = {},
+  onCancel,
+  modalType,
   listSupplier,
   onSubmit,
   button,
@@ -64,6 +66,10 @@ const FormAdd = ({
     })
   }
 
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
+  }
 
   const supplierData = (listSupplier || []).length > 0 ?
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
@@ -127,7 +133,8 @@ const FormAdd = ({
         </Row>
         <ListItem {...listProps} style={{ marginTop: '10px' }} />
         <FormItem>
-          <Button disabled={loadingButton.effects['purchaseOrder/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          <Button disabled={loadingButton.effects['purchaseOrder/add'] || loadingButton.effects['purchaseOrder/edit']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
         </FormItem>
       </Form>
     </div>
