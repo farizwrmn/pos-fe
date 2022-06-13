@@ -1,16 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal, Tag, message } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, deleteItem }) => {
+const List = ({ ...tableProps, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     switch (e.key) {
       case '1': {
+        if (record.purchaseId == null) {
+          editItem(record)
+        } else {
+          message.error('Purchase Order already received')
+        }
+        break
+      }
+      case '2': {
         confirm({
           title: `Are you sure delete ${record.transNo} ?`,
           onOk () {
@@ -78,7 +86,7 @@ const List = ({ ...tableProps, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete', disabled: false }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit', disabled: false }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]

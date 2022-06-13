@@ -52,7 +52,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
+        const { activeKey, edit, ...other } = location.query
         const { pathname } = location
         const match = pathToRegexp('/transaction/purchase/order/:id').exec(location.pathname)
         if (match) {
@@ -68,16 +68,26 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'updateState',
             payload: {
+              listItem: [],
               activeKey: activeKey || '0'
             }
           })
-          dispatch({
-            type: 'querySequence',
-            payload: {
-              seqCode: 'PO',
-              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
-            }
-          })
+          if (edit && edit !== '' && edit !== '0') {
+            dispatch({
+              type: 'setEdit',
+              payload: {
+                edit
+              }
+            })
+          } else {
+            dispatch({
+              type: 'querySequence',
+              payload: {
+                seqCode: 'PO',
+                type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+              }
+            })
+          }
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
@@ -176,6 +186,31 @@ export default modelExtend(pageModel, {
           content: 'Product Not Found...!'
         })
         setTimeout(() => modal.destroy(), 1000)
+      }
+    },
+
+    * setEdit ({ payload }, { call, put }) {
+      const data = yield call(queryById, { id: payload.edit, relationship: 1 })
+      if (data.success) {
+        const { purchaseOrderDetail, ...currentItem } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem,
+            modalType: 'edit',
+            listItem: purchaseOrderDetail && purchaseOrderDetail.length > 0 ?
+              purchaseOrderDetail.map((item, index) => ({
+                no: index + 1,
+                ...item,
+                id: item.productId,
+                productCode: item.product.productCode,
+                productName: item.product.productName
+              }))
+              : []
+          }
+        })
+      } else {
+        throw data
       }
     },
 
@@ -309,6 +344,8 @@ export default modelExtend(pageModel, {
         id: payload.item.id,
         productId: payload.item.id,
         qty: 1,
+        purchasePrice: payload.item.costPrice,
+        total: payload.item.costPrice,
         productCode: payload.item.productCode,
         productName: payload.item.productName
       }
@@ -394,7 +431,9 @@ export default modelExtend(pageModel, {
             listProduct: []
           }
         })
-        payload.resetFields()
+        if (payload.resetFields) {
+          payload.resetFields()
+        }
         yield put({
           type: 'purchaseOrder/updateState',
           payload: {
@@ -418,16 +457,20 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const id = yield select(({ purchaseOrder }) => purchaseOrder.currentItem.id)
       const newCounter = { ...payload, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
+        if (payload.resetFields) {
+          payload.resetFields()
+        }
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
             currentItem: {},
+            listItem: [],
             activeKey: '1'
           }
         })
@@ -440,12 +483,6 @@ export default modelExtend(pageModel, {
         }))
         yield put({ type: 'query' })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     },

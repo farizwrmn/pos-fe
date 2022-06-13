@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Button, Input, Form, Row, Col } from 'antd'
+import { connect } from 'dva'
 import styles from 'themes/index.less'
 import { numberFormatter } from 'utils/string'
 
 const FormItem = Form.Item
 
-const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
+const ListInvoice = ({ onInvoiceHeader, listPurchaseOrder, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
   const { searchText, tmpInvoiceList } = purchase
 
   const handleMenuClick = (record) => {
@@ -57,22 +58,27 @@ const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, 
     },
     {
       title: 'Supplier Name',
-      dataIndex: 'supplierName',
-      key: 'supplierName'
+      dataIndex: 'supplier.supplierName',
+      key: 'supplier.supplierName'
     },
     {
-      title: 'Must Paid',
-      dataIndex: 'paymentTotal',
-      key: 'paymentTotal',
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'Qty',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
-      title: 'Netto',
-      dataIndex: 'netto',
-      key: 'netto',
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     }
   ]
 
@@ -102,13 +108,13 @@ const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, 
 
       <Table
         {...tableProps}
-        title={() => `Total: ${numberFormatter(listInvoice ? listInvoice.reduce((prev, next) => prev + next.paymentTotal, 0) : 0)}`}
+        title={() => `Total: ${numberFormatter(listPurchaseOrder ? listPurchaseOrder.reduce((prev, next) => prev + (next.total), 0) : 0)}`}
         pagination={false}
         bordered
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
+        rowKey={record => record.id}
         onRowClick={_record => handleMenuClick(_record)}
       />
     </div>
@@ -123,4 +129,4 @@ ListInvoice.propTypes = {
   dispatch: PropTypes.isRequired
 }
 
-export default ListInvoice
+export default connect(({ purchase }) => ({ purchase }))(ListInvoice)

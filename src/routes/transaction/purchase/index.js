@@ -29,10 +29,193 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     curHead,
     listPurchaseLatestDetail,
     modalSupplierVisible,
-    lastTrans
+    lastTrans,
+    listPurchaseOrder,
+    modalPurchaseOrderVisible,
+    itemPayment,
+    listSelectedPurchaseOrder
   } = purchase
 
+  const modalPurchaseOrderProps = {
+    visible: modalPurchaseOrderVisible,
+    listPurchaseOrder,
+    dataSource: listPurchaseOrder,
+    location,
+    purchase,
+    dispatch,
+    loading,
+    onCancel () {
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          modalPurchaseOrderVisible: false,
+          listPurchaseOrder: []
+        }
+      })
+    },
+    onChooseInvoice (item) {
+      dispatch({
+        type: 'purchase/addPurchaseOrder',
+        payload: item
+      })
+    },
+    onInvoiceHeader () {
+
+    }
+  }
+
+  const listProductProps = {
+    searchText,
+    dataSource: listProduct,
+    loading: loading.effects[(
+      'purchase/getProducts'
+    )],
+    loadingProduct: loading,
+    location,
+    item: itemPayment,
+    pagination,
+    handleChange (e) {
+      const { value } = e.target
+
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchText: value
+        }
+      })
+    },
+    handleSearch () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: searchText
+        }
+      })
+    },
+    handleReset () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: null
+        }
+      })
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChange (e) {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: e.current,
+          pageSize: e.pageSize,
+          active: 1,
+          q: searchText === '' ? null : searchText
+        }
+      })
+    },
+    onChooseItem (e) {
+      let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [])
+      let arrayProd
+      const checkExists = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')).filter(el => el.productCode === e.productCode) : []
+      if (checkExists.length === 0) {
+        if (JSON.stringify(listByCode) === '[]') {
+          arrayProd = listByCode.slice()
+        } else {
+          arrayProd = JSON.parse(listByCode.slice())
+        }
+        const data = {
+          no: arrayProd.length + 1,
+          code: e.id,
+          productCode: e.productCode,
+          name: e.productName,
+          qty: 0,
+          price: e.costPrice,
+          discount: discNML,
+          disc1: discPRC,
+          portion: 0,
+          deliveryFee: 0,
+          dpp: 0,
+          ppn: 0,
+          ket: '',
+          total: 0
+        }
+        arrayProd.push({
+          ...data
+        })
+        localStorage.setItem('product_detail', JSON.stringify(arrayProd))
+        dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
+        dispatch({ type: 'purchase/hideProductModal' })
+        dispatch({
+          type: 'purchase/modalEditShow',
+          payload: {
+            data: e
+          }
+        })
+        dispatch({
+          type: 'purchase/getPurchaseLatestDetail',
+          payload: {
+            productId: e.id
+          }
+        })
+        dispatch({
+          type: 'purchase/updateState',
+          payload: {
+            item: data,
+            modalPurchaseVisible: true
+          }
+        })
+      } else {
+        Modal.warning({
+          title: 'Cannot add product',
+          content: 'Already Exists in list'
+        })
+      }
+    }
+  }
+
+  const modalListProductProps = {
+    visible: modalProductVisible,
+    listProductProps,
+    location,
+    purchase,
+    loading,
+    pagination,
+    onCancel () {
+      dispatch({ type: 'purchase/hideProductModal' })
+    }
+  }
+
+  const listDetailProps = {
+    dataSource: dataBrowse,
+    onModalShow (data) {
+      dispatch({
+        type: 'purchase/modalEditShow',
+        payload: {
+          data
+        }
+      })
+      dispatch({
+        type: 'purchase/getPurchaseLatestDetail',
+        payload: {
+          productId: data.code
+        }
+      })
+    }
+  }
+
   const purchaseProps = {
+    listDetailProps,
+    modalListProductProps,
+    modalPurchaseOrderProps,
+    listSelectedPurchaseOrder,
     lastTrans,
     date,
     datePicker,
@@ -60,7 +243,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     disableButton: loading.effects['purchase/add'],
     loading,
     purchase,
-    visible: modalProductVisible,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onOk (data, reset) {
@@ -72,15 +254,17 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
         }
       })
     },
-    onChange (e) {
+    handlePurchaseOrder () {
       dispatch({
-        type: 'purchase/getProducts',
+        type: 'purchase/updateState',
         payload: {
-          page: e.current,
-          pageSize: e.pageSize,
-          active: 1,
-          q: searchText === '' ? null : searchText
+          modalPurchaseOrderVisible: true,
+          listPurchaseOrder: []
         }
+      })
+
+      dispatch({
+        type: 'purchase/getPurchaseOrder'
       })
     },
     onChangeRounding (e) {
@@ -159,10 +343,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     onDiscPercent (x, data) {
       dispatch({ type: 'purchase/returnState', payload: { dataBrowse: x, curHead: data } })
     },
-    // onChangePPN (data) {
-    //   localStorage.setItem('taxType', data)
-    //   dispatch({ type: 'purchase/editPurchase', payload: { value: 0, kodeUtil: data, effectedRecord: 0 } })
-    // },
     onChooseItem (data, head) {
       dispatch({ type: 'purchase/editPurchaseList', payload: { data, head } })
     },
@@ -177,79 +357,6 @@ const Purchase = ({ location, dispatch, purchase, loading }) => {
     },
     onCancel () {
       dispatch({ type: 'purchase/modalEditHide' })
-      dispatch({ type: 'purchase/hideProductModal' })
-    },
-    onChooseItemItem (e) {
-      let listByCode = (localStorage.getItem('product_detail') ? localStorage.getItem('product_detail') : [])
-      let arrayProd
-      const checkExists = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')).filter(el => el.productCode === e.productCode) : []
-      if (checkExists.length === 0) {
-        if (JSON.stringify(listByCode) === '[]') {
-          arrayProd = listByCode.slice()
-        } else {
-          arrayProd = JSON.parse(listByCode.slice())
-        }
-        const data = {
-          no: arrayProd.length + 1,
-          code: e.id,
-          productCode: e.productCode,
-          name: e.productName,
-          qty: 0,
-          price: e.costPrice,
-          discount: discNML,
-          disc1: discPRC,
-          portion: 0,
-          deliveryFee: 0,
-          dpp: 0,
-          ppn: 0,
-          ket: '',
-          total: 0
-        }
-        arrayProd.push({
-          ...data
-        })
-        localStorage.setItem('product_detail', JSON.stringify(arrayProd))
-        dispatch({ type: 'purchase/querySuccessByCode', payload: { listByCode: item } })
-        dispatch({ type: 'purchase/hideProductModal' })
-        dispatch({
-          type: 'purchase/modalEditShow',
-          payload: {
-            data: e
-          }
-        })
-        dispatch({
-          type: 'purchase/getPurchaseLatestDetail',
-          payload: {
-            productId: e.id
-          }
-        })
-        dispatch({
-          type: 'purchase/updateState',
-          payload: {
-            item: data,
-            modalPurchaseVisible: true
-          }
-        })
-      } else {
-        Modal.warning({
-          title: 'Cannot add product',
-          content: 'Already Exists in list'
-        })
-      }
-    },
-    modalShow (data) {
-      dispatch({
-        type: 'purchase/modalEditShow',
-        payload: {
-          data
-        }
-      })
-      dispatch({
-        type: 'purchase/getPurchaseLatestDetail',
-        payload: {
-          productId: data.code
-        }
-      })
     }
   }
 

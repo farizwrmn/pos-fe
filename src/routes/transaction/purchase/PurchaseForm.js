@@ -5,8 +5,9 @@ import moment from 'moment'
 import { numberFormat, alertModal } from 'utils'
 import { getVATPercentage, getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { prefix } from 'utils/config.main'
-import Browse from './Browse'
-import ModalBrowse from './ModalBrowse'
+import ModalPurchaseOrder from './ModalPurchaseOrder'
+import ListDetail from './ListDetail'
+import ModalProduct from './ModalProduct'
 import ModalSupplier from './ModalSupplier'
 
 const { checkPermissionMonthTransaction } = alertModal
@@ -16,7 +17,6 @@ const { formatNumberIndonesia } = numberFormat
 const Panel = Collapse.Panel
 const FormItem = Form.Item
 const Option = Select.Option
-const ButtonGroup = Button.Group
 
 const formItemLayout = {
   labelCol: { span: 10 },
@@ -27,10 +27,37 @@ const formItemLayout1 = {
   labelCol: { span: 10 },
   wrapperCol: { span: 11 }
 }
-const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableButton, rounding, onChangeRounding, dataBrowse, onResetBrowse, onOk, curDiscNominal, curDiscPercent, onChooseSupplier, onChangeDatePicker, handleBrowseProduct,
-  modalProductVisible, modalSupplierVisible, modalPurchaseVisible, searchTextSupplier, supplierInformation, listSupplier, onGetSupplier,
-  onChooseItem, tmpSupplierData, onSearchSupplier, onSearchSupplierData, date, tempo, datePicker, onChangeDate, form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue }, dispatch, ...purchaseProps }) => {
-  const { loading } = purchaseProps
+const PurchaseForm = ({
+  listSelectedPurchaseOrder,
+  modalPurchaseOrderProps,
+  lastTrans,
+  handlePurchaseOrder,
+  onDiscPercent,
+  paginationSupplier,
+  disableButton,
+  rounding,
+  onChangeRounding,
+  listDetailProps,
+  onOk,
+  onChooseSupplier,
+  handleBrowseProduct,
+  modalProductVisible,
+  modalSupplierVisible,
+  searchTextSupplier,
+  supplierInformation,
+  listSupplier,
+  onGetSupplier,
+  tmpSupplierData,
+  onSearchSupplier,
+  onSearchSupplierData,
+  date,
+  tempo,
+  loading,
+  onChangeDate,
+  modalListProductProps,
+  form: { getFieldDecorator, getFieldValue, getFieldsValue, validateFields, resetFields, setFieldsValue },
+  dispatch
+}) => {
   const getDiscTotal = (g) => {
     const data = {
       ...getFieldsValue()
@@ -288,17 +315,6 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
                       }]
                     })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
                   </FormItem>
-                  {/* <FormItem label="Payment Type" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('invoiceType', {
-                      rules: [{
-                        required: true,
-                        message: 'Required'
-                      }]
-                    })((<Select>
-                      <Option value="C">CASH</Option>
-                      <Option value="K">KREDIT</Option>
-                    </Select>))}
-                  </FormItem> */}
                 </Col>
                 <Col md={24} lg={10}>
                   <FormItem label="Invoice Date" hasFeedback {...formItemLayout}>
@@ -394,10 +410,9 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
       </Row>
       <Row style={{ padding: 1 }}>
         <Col span={24}>
-          <ButtonGroup size="large">
-            <Button type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
-          </ButtonGroup>
-          {modalProductVisible && <ModalBrowse {...purchaseProps} />}
+          {listSelectedPurchaseOrder && <Button type="default" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => handlePurchaseOrder()}>Purchase Order</Button>}
+          <Button type="primary" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => hdlBrowseProduct()}>Product</Button>
+          {modalProductVisible && <ModalProduct {...modalListProductProps} />}
           {modalSupplierVisible && (
             <ModalSupplier {...modalSupplierProps}>
               <Table
@@ -417,7 +432,7 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
           )}
         </Col>
       </Row>
-      <Browse {...purchaseProps} />
+      <ListDetail {...listDetailProps} />
       <div style={{ float: 'right' }}>
         <Row>
           <FormItem label="Total" {...formItemLayout1} style={{ marginRight: 2, marginBottom: 2, marginTop: 2 }}>
@@ -465,6 +480,7 @@ const PurchaseForm = ({ lastTrans, onDiscPercent, paginationSupplier, disableBut
       <div style={{ marginBottom: '150px' }}>
         <Button type="primary" size="large" onClick={confirmPurchase} disabled={disableButton || false} style={{ marginBottom: 2, marginTop: 10 }}>Submit</Button>
       </div>
+      {modalPurchaseOrderProps.visible && <ModalPurchaseOrder {...modalPurchaseOrderProps} />}
     </Form>
   )
 }
