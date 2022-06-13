@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -26,6 +27,8 @@ const col = {
 
 const FormAdd = ({
   item = {},
+  onCancel,
+  modalType,
   listSupplier,
   onSubmit,
   button,
@@ -63,6 +66,10 @@ const FormAdd = ({
     })
   }
 
+  const handleCancel = () => {
+    onCancel()
+    resetFields()
+  }
 
   const supplierData = (listSupplier || []).length > 0 ?
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
@@ -82,6 +89,15 @@ const FormAdd = ({
                   }
                 ]
               })(<Input disabled maxLength={20} />)}
+            </FormItem>
+            <FormItem label="Deadline Receive" {...formItemLayout}>
+              {getFieldDecorator('deadlineDate', {
+                initialValue: moment().add('14', 'days'),
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
             </FormItem>
             <FormItem required label="Supplier" {...formItemLayout}>
               {getFieldDecorator('supplierId', {
@@ -117,7 +133,8 @@ const FormAdd = ({
         </Row>
         <ListItem {...listProps} style={{ marginTop: '10px' }} />
         <FormItem>
-          <Button disabled={loadingButton.effects['purchaseOrder/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          <Button disabled={loadingButton.effects['purchaseOrder/add'] || loadingButton.effects['purchaseOrder/edit']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
         </FormItem>
       </Form>
     </div>

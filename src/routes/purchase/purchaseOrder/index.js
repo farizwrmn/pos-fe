@@ -17,6 +17,7 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
   const {
     list: listReturnPurchase,
     pagination,
+    modalType,
     // listInvoice,
     // tmpInvoiceList,
     // isChecked,
@@ -295,6 +296,7 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
   }
 
   const formProps = {
+    modalType,
     reference,
     referenceNo,
     listProps,
@@ -309,16 +311,32 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
     modalInvoiceVisible,
     loadingButton: loading,
     purchase,
-    loading: loading.effects['purchaseOrder/querySequence'],
     disabled: false,
-    button: 'Add',
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, listItem, resetFields) {
       dispatch({
-        type: 'purchaseOrder/add',
+        type: `purchaseOrder/${modalType}`,
         payload: {
           data,
           detail: listItem,
           resetFields
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'journalentry/updateState',
+        payload: {
+          modalType: 'add',
+          currentItem: {},
+          listItem: []
         }
       })
     },
@@ -372,13 +390,10 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
       dispatch(routerRedux.push({
         pathname,
         query: {
-          activeKey: 0
+          activeKey: 0,
+          edit: item.id
         }
       }))
-      dispatch({
-        type: 'purchaseOrder/editItem',
-        payload: { item }
-      })
     },
     deleteItem (id) {
       dispatch({
@@ -441,7 +456,7 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
   return (
     <div className="content-inner">
       <Tabs type="card" activeKey={activeKey} tabBarExtraContent={moreButtonTab} onChange={key => changeTab(key)}>
-        <TabPane tab="Form" key="0">
+        <TabPane tab={`Form ${modalType === 'add' ? 'Add' : 'Update'}`} key="0">
           <Form {...formProps} />
         </TabPane>
         <TabPane tab="Browse" key="1">
