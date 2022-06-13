@@ -410,7 +410,7 @@ const PurchaseForm = ({
       </Row>
       <Row style={{ padding: 1 }}>
         <Col span={24}>
-          {listSelectedPurchaseOrder && <Button type="default" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => handlePurchaseOrder()}>Purchase Order</Button>}
+          {listSelectedPurchaseOrder && listSelectedPurchaseOrder.length === 0 && <Button type="default" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => handlePurchaseOrder()}>Purchase Order</Button>}
           <Button type="primary" size="large" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={() => hdlBrowseProduct()}>Product</Button>
           {modalProductVisible && <ModalProduct {...modalListProductProps} />}
           {modalSupplierVisible && (

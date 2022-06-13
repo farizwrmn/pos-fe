@@ -119,6 +119,7 @@ export default modelExtend(pageModel, {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
+          dispatch({ type: 'updateState', payload: { listSelectedPurchaseOrder: [] } })
         } else if (location.pathname === '/transaction/purchase/history') {
           const { activeKey, ...other } = location.query
           dispatch({
@@ -594,6 +595,10 @@ export default modelExtend(pageModel, {
                   listPurchaseOrder: [],
                   listSelectedPurchaseOrder
                 }
+              })
+              yield put({
+                type: 'purchase/onChooseSupplier',
+                payload: payload.supplier
               })
             }
           } else {
