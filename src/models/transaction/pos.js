@@ -71,7 +71,7 @@ const { updateCashierTrans } = cashierService
 
 const getDiscountByProductCode = (currentGrabOrder, productCode) => {
   let discount = 0
-  const filteredCampaign = currentGrabOrder
+  const filteredCampaign = currentGrabOrder && currentGrabOrder.campaignItem ? currentGrabOrder
     .campaignItem
     .filter((filtered) => {
       if (!filtered) return false
@@ -82,7 +82,7 @@ const getDiscountByProductCode = (currentGrabOrder, productCode) => {
         return true
       }
       return false
-    })
+    }) : []
   if (filteredCampaign && filteredCampaign[0]) {
     const filteredCampaignOrder = currentGrabOrder
       .campaigns
