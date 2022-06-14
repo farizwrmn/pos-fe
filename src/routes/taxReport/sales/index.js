@@ -170,6 +170,7 @@ const Counter = ({ taxReportSales, taxReportSalesDetail, productcategory, produc
       }
     }))
     dispatch({ type: 'taxReportSales/updateState', payload: { list: [] } })
+    dispatch({ type: 'taxReportSalesDetail/updateState', payload: { list: [] } })
   }
 
   const modalRestoreTableProps = {

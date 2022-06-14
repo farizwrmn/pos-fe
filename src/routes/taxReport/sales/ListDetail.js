@@ -153,8 +153,10 @@ class List extends Component {
           rowKey={record => record.id}
           footer={() => (
             <div>
+              <div>QTY : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.qty || 0), 0).toLocaleString()}</div>
               <div>DPP : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.DPP || 0), 0).toLocaleString()}</div>
               <div>PPN : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.PPN || 0), 0).toLocaleString()}</div>
+              <div>COST : {this.props.dataSource.reduce((cnt, o) => cnt + parseFloat(o.cogsTotal || 0), 0).toLocaleString()}</div>
               <div>TOTAL : {tableProps.dataSource.reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0).toLocaleString()}</div>
             </div>)
           }

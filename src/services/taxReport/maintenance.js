@@ -19,3 +19,13 @@ export async function queryPurchase (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryCogs (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/tax-report/maintenance-cogs',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
