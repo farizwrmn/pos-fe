@@ -411,6 +411,8 @@ export default modelExtend(pageModel, {
           purchasePrice: dataArrayProdAddtMap.price,
           DPP: dataArrayProdAddtMap.dpp,
           PPN: dataArrayProdAddtMap.ppn,
+          deliveryFee: dataArrayProdAddtMap.deliveryFee,
+          portion: dataArrayProdAddtMap.portion,
           discPercent: dataArrayProdAddtMap.disc1,
           discNominal: dataArrayProdAddtMap.discount,
           void: dataArrayProdAddtMap.void
