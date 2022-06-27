@@ -211,6 +211,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              registerModel(app, require('./models/product/stockLocation'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
@@ -372,6 +373,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/shift'))
               cb(null, require('./routes/master/shift/'))
             }, 'master-shift')
+          }
+        }, {
+          path: 'master/product/location',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/stockLocation'))
+              cb(null, require('./models/product/stockLocation'))
+            }, 'master-product-location')
           }
         }, {
           path: 'master/account',
