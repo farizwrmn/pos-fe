@@ -75,6 +75,7 @@ window.leftScreenBoundry = FindLeftScreenBoundry
 
 const LovButton = ({
   onClickCash,
+  onFullscreen,
   memberInformation,
   // memberUnitInfo,
   mechanicInformation,
@@ -178,6 +179,13 @@ const LovButton = ({
         icon="wallet"
         style={{ marginLeft: '10px' }}
         onClick={() => onClickCash()}
+      />
+      <Button
+        type="default"
+        size="large"
+        icon="arrows-alt"
+        style={{ marginLeft: '10px' }}
+        onClick={() => onFullscreen()}
       />
     </div >
   )

@@ -1,18 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
-import { lstorage, calendar } from 'utils'
-import { Badge, Table, Tabs, Tag } from 'antd'
+import { lstorage } from 'utils'
+import { Badge, Table, Tabs } from 'antd'
 import styles from '../../../themes/index.less'
 import {
   groupProduct
 } from './utils'
 
-const { dayByNumber } = calendar
-
 const { getCashierTrans, getServiceTrans, getConsignment, getBundleTrans } = lstorage
 const TabPane = Tabs.TabPane
-const width = 1000
 
 function addHandler (ele, trigger, handler) {
   if (window.addEventListener) {
@@ -56,22 +52,8 @@ class TransactionDetail extends Component {
   render () {
     const {
       handleProductBrowse,
-      dispatch,
-      pos
+      dispatch
     } = this.props
-    const {
-      paymentListActiveKey = '5'
-    } = pos
-
-    const objectSize = (text) => {
-      let queue = []
-      if (text === 'bundle_promo') {
-        queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)) : []
-      } else {
-        queue = localStorage.getItem(text) ? JSON.parse(localStorage.getItem(text)).filter(filtered => !filtered.hide) : []
-      }
-      return (queue || []).length
-    }
 
     const modalEditPayment = (record) => {
       if (record && record.bundleId && record.replaceable) {
@@ -133,21 +115,31 @@ class TransactionDetail extends Component {
       })
     }
 
-    const changePaymentListTab = (key) => {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          paymentListActiveKey: key
-        }
-      })
-    }
-
     const product = getCashierTrans()
     const service = getServiceTrans()
     const consignment = getConsignment()
     const bundleItem = getBundleTrans()
     const bundle = groupProduct((product.filter(filtered => filtered.bundleId))
       .concat(service.filter(filtered => filtered.bundleId)), bundleItem)
+
+    const onModalClick = (record) => {
+      switch (record.typeTrans) {
+        case 'Product':
+          modalEditPayment(record)
+          break
+        case 'Service':
+          modalEditService(record)
+          break
+        case 'Bundle':
+          modalEditBundle(record)
+          break
+        case 'Consignment':
+          modalEditConsignment(record)
+          break
+        default:
+          break
+      }
+    }
 
     const listTrans = product
       .filter(filtered => !filtered.bundleId)
@@ -158,284 +150,8 @@ class TransactionDetail extends Component {
       .map((item, index) => ({ ...item, no: index + 1 }))
 
     return (
-      <Tabs activeKey={paymentListActiveKey} defaultActiveKey="5" onChange={key => changePaymentListTab(key)} >
-        <TabPane tab={<Badge count={objectSize('cashier_trans')}>Product   </Badge>} key="1">
-          <Table
-            rowKey={(record, key) => key}
-            bordered
-            size="small"
-            scroll={{ x: '580px', y: '780px' }}
-            locale={{
-              emptyText: 'Your Payment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '50px',
-                dataIndex: 'no',
-                sortOrder: 'descend',
-                sorter: (a, b) => a.no - b.no
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '290px',
-                render: (text, record) => {
-                  if (record && record.bundleId) {
-                    return (
-                      <div>
-                        <div><strong>{record.code}</strong>-{record.name} ({record.bundleName})</div>
-                      </div>
-                    )
-                  }
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => (text || 0).toLocaleString()
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '100px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  // const disc1 = record.disc1
-                  // const disc2 = record.disc2
-                  // const disc3 = record.disc3
-                  // const discount = record.discount
-                  const total = record.total
-                  return (
-                    <div>
-                      <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            onRowClick={record => modalEditPayment(record)}
-            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            dataSource={getCashierTrans().filter(filtered => (filtered.bundleId && !filtered.hide) || !filtered.bundleId)}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-        <TabPane tab={<Badge count={objectSize('service_detail')}>Service</Badge>} key="2">
-          <Table
-            rowKey={(record, key) => key}
-            bordered
-            size="small"
-            scroll={{ x: '580px', y: '780px' }}
-            locale={{
-              emptyText: 'Your Payment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '40px',
-                dataIndex: 'no',
-                sortOrder: 'descend',
-                sorter: (a, b) => a.no - b.no
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '300px',
-                render: (text, record) => {
-                  if (record && record.bundleId) {
-                    return (
-                      <div>
-                        <div><strong>{record.code}</strong>-{record.name} ({record.bundleName})</div>
-                      </div>
-                    )
-                  }
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => (text || 0).toLocaleString()
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '100px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  const total = record.total
-                  return (
-                    <div>
-                      <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            onRowClick={_record => modalEditService(_record)}
-            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            dataSource={getServiceTrans().filter(filtered => (filtered.bundleId && !filtered.hide) || !filtered.bundleId)}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-        <TabPane tab={<Badge count={objectSize('consignment')}>Consignment</Badge>} key="3">
-          <Table
-            rowKey={(record, key) => key}
-            bordered
-            size="small"
-            scroll={{ x: '580px', y: '780px' }}
-            locale={{
-              emptyText: 'Your Consignment List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '40px',
-                dataIndex: 'no',
-                sortOrder: 'descend',
-                sorter: (a, b) => a.no - b.no
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '300px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => (text || 0).toLocaleString()
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '100px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  // const disc1 = record.disc1
-                  // const disc2 = record.disc2
-                  // const disc3 = record.disc3
-                  // const discount = record.discount
-                  const total = record.total
-                  return (
-                    <div>
-                      <div>
-                        <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
-                      </div>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            onRowClick={_record => modalEditConsignment(_record)}
-            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            dataSource={getConsignment()}
-            pagination={false}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-        <TabPane tab={<Badge count={objectSize('bundle_promo')}>Bundle</Badge>} key="4">
-          <Table
-            rowKey={(record, key) => key}
-            bordered
-            size="small"
-            scroll={{ x: '1000px', y: '780px' }}
-            locale={{
-              emptyText: 'Your Bundle List'
-            }}
-            onRowClick={_record => modalEditBundle(_record)}
-            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            dataSource={getBundleTrans()}
-            style={{ marginBottom: 16 }}
-            columns={[
-              {
-                title: 'No',
-                dataIndex: 'no',
-                key: 'no',
-                width: '47px',
-                sortOrder: 'descend',
-                sorter: (a, b) => a.no - b.no
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '250px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Q',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignRight,
-                render: text => (text || '-').toLocaleString()
-              },
-              {
-                title: 'Period',
-                dataIndex: 'Date',
-                key: 'Date',
-                width: `${width * 0.15}px`,
-                render: (text, record) => {
-                  return `${moment(record.startDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.endDate, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
-                }
-              },
-              {
-                title: 'Available Date',
-                dataIndex: 'availableDate',
-                key: 'availableDate',
-                width: `${width * 0.15}px`,
-                render: (text) => {
-                  let date = text !== null ? text.split(',').sort() : <Tag color="green">{'Everyday'}</Tag>
-                  if (text !== null && (date || []).length === 7) {
-                    date = <Tag color="green">{'Everyday'}</Tag>
-                  }
-                  if (text !== null && (date || []).length < 7) {
-                    date = date.map(dateNumber => <Tag color="blue">{dayByNumber(dateNumber)}</Tag>)
-                  }
-                  return date
-                }
-              },
-              {
-                title: 'Available Hour',
-                dataIndex: 'availableHour',
-                key: 'availableHour',
-                width: `${width * 0.1}px`,
-                render: (text, record) => {
-                  return `${moment(record.startHour, 'HH:mm:ss').format('HH:mm')} ~ ${moment(record.endHour, 'HH:mm:ss').format('HH:mm')}`
-                }
-              }
-            ]}
-          />
-        </TabPane>
-        <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="5">
+      <Tabs activeKey="1">
+        <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="1">
           <Table
             rowKey={(record, key) => key}
             bordered
@@ -499,6 +215,7 @@ class TransactionDetail extends Component {
               }
             ]}
             rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
+            onRowClick={record => onModalClick(record)}
             dataSource={listTrans}
             pagination={false}
             style={{ marginBottom: 16 }}
@@ -510,7 +227,6 @@ class TransactionDetail extends Component {
 }
 
 TransactionDetail.propTypes = {
-  pos: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 }
 
