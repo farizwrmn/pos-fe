@@ -37,7 +37,8 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
-        if (pathname === '/stock') {
+        if (pathname === '/stock'
+          || pathname === '/inventory/transfer/out') {
           dispatch({
             type: 'query',
             payload: {

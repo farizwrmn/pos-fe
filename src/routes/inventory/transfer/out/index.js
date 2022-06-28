@@ -12,9 +12,10 @@ import FilterTransfer from './FilterTransferOut'
 const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
-const Transfer = ({ location, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
+const Transfer = ({ location, stockLocation, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
   const { listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { query } = location
+  const { list: listStockLocation } = stockLocation
   const { modalProductVisible, listProductData, searchText } = pos
   const { list } = employee
   let listEmployee = list
@@ -168,6 +169,7 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
   const modalProductDemandProps = {
     listProductDemand,
     listCategory,
+    listStockLocation,
     listBrand,
     width: 800,
     loading,
@@ -667,6 +669,7 @@ const Transfer = ({ location, transferOut, productcategory, productbrand, pos, e
 }
 
 Transfer.propTypes = {
+  stockLocation: PropTypes.object,
   transferOut: PropTypes.object,
   pos: PropTypes.object,
   app: PropTypes.object,
@@ -678,4 +681,4 @@ Transfer.propTypes = {
 }
 
 
-export default connect(({ transferOut, pos, productcategory, productbrand, employee, app, loading }) => ({ transferOut, pos, productcategory, productbrand, employee, app, loading }))(Transfer)
+export default connect(({ stockLocation, transferOut, pos, productcategory, productbrand, employee, app, loading }) => ({ stockLocation, transferOut, pos, productcategory, productbrand, employee, app, loading }))(Transfer)
