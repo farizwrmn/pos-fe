@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
@@ -268,6 +268,7 @@ class AdvancedForm extends Component {
       showProductModal,
       listShopeeCategoryRecommend,
       modalGrabmartCampaignProps,
+      listStockLocation,
       form: {
         getFieldDecorator,
         validateFields,
@@ -446,6 +447,7 @@ class AdvancedForm extends Component {
     // const variant = () => {
     //   showVariantId()
     // }
+    const productLocation = (listStockLocation || []).length > 0 ? listStockLocation.map(c => <Option value={c.id} key={c.id} title={`${c.locationName}`}>{`${c.locationName}`}</Option>) : []
     const productCountry = (listProductCountry || []).length > 0 ? listProductCountry.map(c => <Option value={c.countryName} key={c.countryName} title={`${c.countryCode} - ${c.countryName}`}>{`${c.countryCode} - ${c.countryName}`}</Option>) : []
     const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
     const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
@@ -1354,6 +1356,21 @@ class AdvancedForm extends Component {
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                 >{productCountry}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="__blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
+                {getFieldDecorator('locationId', {
+                  initialValue: modalType === 'add' ? undefined : item.locationId,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productLocation}
                 </Select>)}
               </FormItem>
               <FormItem label="Status" {...formItemLayout}>

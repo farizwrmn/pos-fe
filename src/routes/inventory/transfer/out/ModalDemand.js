@@ -14,6 +14,7 @@ class ModalDemand extends Component {
       loading,
       listBrand,
       listCategory,
+      listStockLocation,
       listProductDemand,
       selectedRowKeys,
       updateSelectedKey,
@@ -74,6 +75,19 @@ class ModalDemand extends Component {
         },
         filters: listCategory ? listCategory.map(item => ({ text: item.categoryName, value: item.categoryName })) : [],
         width: 100
+      },
+      {
+        title: 'Location',
+        dataIndex: 'locationName',
+        key: 'locationName',
+        onFilter: (value, record) => {
+          if (record.locationName) {
+            return record.locationName.includes(value)
+          }
+          return false
+        },
+        filters: listStockLocation ? listStockLocation.map(item => ({ text: item.locationName, value: item.locationName })) : [],
+        width: 150
       },
       {
         title: (<strong>Qty</strong>),
@@ -155,6 +169,11 @@ class ModalDemand extends Component {
         if (filters && filters.categoryName && filters.categoryName.length > 0) {
           listTable = listTable.filter((filtered) => {
             return filters.categoryName.includes(filtered.categoryName)
+          })
+        }
+        if (filters && filters.locationName && filters.locationName.length > 0) {
+          listTable = listTable.filter((filtered) => {
+            return filters.locationName.includes(filtered.locationName)
           })
         }
         if (tableData.length === selectedRowKeys.length) {

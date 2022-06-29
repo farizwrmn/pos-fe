@@ -42,6 +42,12 @@ const Counter = ({ taxReportMaintenance, dispatch, loading, location }) => {
         type: 'taxReportMaintenance/queryPurchase',
         payload: data
       })
+    },
+    onSubmitCogs (data) {
+      dispatch({
+        type: 'taxReportMaintenance/queryCogs',
+        payload: data
+      })
     }
   }
 

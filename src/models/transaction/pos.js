@@ -69,9 +69,24 @@ const {
 
 const { updateCashierTrans } = cashierService
 
+function requestFullScreen (element) {
+  // Supports most browsers and their versions.
+  let requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen
+
+  if (requestMethod) { // Native full screen.
+    requestMethod.call(element)
+  } else if (typeof window.ActiveXObject !== 'undefined') { // Older IE.
+    // eslint-disable-next-line no-undef
+    let wscript = new ActiveXObject('WScript.Shell')
+    if (wscript !== null) {
+      wscript.SendKeys('{F11}')
+    }
+  }
+}
+
 const getDiscountByProductCode = (currentGrabOrder, productCode) => {
   let discount = 0
-  const filteredCampaign = currentGrabOrder
+  const filteredCampaign = currentGrabOrder && currentGrabOrder.campaignItem ? currentGrabOrder
     .campaignItem
     .filter((filtered) => {
       if (!filtered) return false
@@ -82,7 +97,7 @@ const getDiscountByProductCode = (currentGrabOrder, productCode) => {
         return true
       }
       return false
-    })
+    }) : []
   if (filteredCampaign && filteredCampaign[0]) {
     const filteredCampaignOrder = currentGrabOrder
       .campaigns
@@ -264,6 +279,8 @@ export default {
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
+          let elem = document.body // Make the body go full screen.
+          requestFullScreen(elem)
           dispatch({
             type: 'setDefaultMember'
           })

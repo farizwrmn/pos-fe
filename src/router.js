@@ -211,6 +211,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              registerModel(app, require('./models/product/stockLocation'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
@@ -372,6 +373,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/shift'))
               cb(null, require('./routes/master/shift/'))
             }, 'master-shift')
+          }
+        }, {
+          path: 'master/product/location',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/stockLocation'))
+              cb(null, require('./routes/product/stockLocation'))
+            }, 'master-product-location')
           }
         }, {
           path: 'master/account',
@@ -1491,6 +1500,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/product/stockLocation'))
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/employee'))
@@ -1763,7 +1773,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/taxReport/accountingStatement'))
               registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/taxReport/statement'))
-            }, 'report-accounting-profit-loss')
+            }, 'tax-report-accounting-profit-loss')
           }
         }, {
           path: 'tools/report/balance-sheet',
@@ -1772,7 +1782,24 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/taxReport/accountingStatement'))
               registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/taxReport/statement'))
-            }, 'report-accounting-balance-sheet')
+            }, 'tax-report-accounting-balance-sheet')
+          }
+        }, {
+          path: 'tools/report/general-ledger',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/generalLedger'))
+              registerModel(app, require('./models/master/accountCode'))
+              cb(null, require('./routes/taxReport/generalLedger'))
+            }, 'tax-report-accounting-general-ledger-consolidation')
+          }
+        }, {
+          path: 'tools/report/trial-balance',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/taxReport/generalLedger'))
+              cb(null, require('./routes/taxReport/trialBalance'))
+            }, 'tax-report-accounting-trial-balance')
           }
         }, {
           path: 'tools/transaction/journal-entry/:id',

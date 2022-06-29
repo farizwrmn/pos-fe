@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { queryPos, queryPurchase } from 'services/taxReport/maintenance'
+import { queryPos, queryPurchase, queryCogs } from 'services/taxReport/maintenance'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -35,6 +35,15 @@ export default modelExtend(pageModel, {
         message.success('Purchase success to generate')
       } else {
         message.error('Purchase failed to generate')
+      }
+    },
+
+    * queryCogs ({ payload = {} }, { call }) {
+      const data = yield call(queryCogs, payload)
+      if (data.success) {
+        message.success('Cogs success to generate')
+      } else {
+        message.error('Cogs failed to generate')
       }
     }
   },

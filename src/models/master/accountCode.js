@@ -49,7 +49,8 @@ export default modelExtend(pageModel, {
           })
         }
         if (pathname === '/report/accounting/general-ledger'
-          || pathname === '/report/accounting/consolidation/general-ledger') {
+          || pathname === '/report/accounting/consolidation/general-ledger'
+          || pathname === '/tools/report/general-ledger') {
           dispatch({
             type: 'query',
             payload: {

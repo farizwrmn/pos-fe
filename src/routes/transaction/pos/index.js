@@ -66,6 +66,38 @@ const keyMap = {
   PRODUCT: 'f2'
 }
 
+function requestFullScreen (element) {
+  // Supports most browsers and their versions.
+  let requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen
+
+  let isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+    (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+    (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+    (document.msFullscreenElement && document.msFullscreenElement !== null)
+
+  if (!isInFullScreen) {
+    if (requestMethod) { // Native full screen.
+      requestMethod.call(element)
+    } else if (typeof window.ActiveXObject !== 'undefined') { // Older IE.
+      // eslint-disable-next-line no-undef
+      let wscript = new ActiveXObject('WScript.Shell')
+      if (wscript !== null) {
+        wscript.SendKeys('{F11}')
+      }
+    }
+    return
+  }
+  if (document.exitFullscreen) {
+    document.exitFullscreen()
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen()
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen()
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen()
+  }
+}
+
 const Pos = ({
   pospromo,
   location,
@@ -217,6 +249,10 @@ const Pos = ({
     memberInformation,
     memberUnitInfo,
     mechanicInformation,
+    onFullscreen () {
+      let elem = document.body // Make the body go full screen.
+      requestFullScreen(elem)
+    },
     onClickCash () {
       console.log('Open Cash Register')
       dispatch({

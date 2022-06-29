@@ -120,7 +120,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
       { text: formatNumberIndonesia((inAmount - outAmount)), alignment: 'right', fontSize: 12 }
     ]
     body.push(totalRow)
-    width.push(['3%', '7%', '7%', '12%', '4%', '5%', '9%', '9%', '5%', '9%', '9%', '9%', '5%', '9%'])
+    width.push(['3%', '7%', '7%', '13%', '4%', '5%', '9%', '9%', '5%', '9%', '9%', '9%', '5%', '9%'])
     return body
   }
 

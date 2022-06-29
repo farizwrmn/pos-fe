@@ -5,7 +5,7 @@ import moment from 'moment'
 
 const FormItem = Form.Item
 
-const { RangePicker } = DatePicker
+const { RangePicker, MonthPicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
@@ -24,6 +24,7 @@ const FormCounter = ({
   loading,
   onSubmitSales,
   onSubmitPurchase,
+  onSubmitCogs,
   form: {
     getFieldDecorator,
     getFieldsValue
@@ -38,6 +39,24 @@ const FormCounter = ({
           onSubmitPurchase({
             from: data.rangeDatePurchaseHeader[0].format('YYYY-MM-DD'),
             to: data.rangeDatePurchaseHeader[1].format('YYYY-MM-DD')
+          })
+        },
+        onCancel () { }
+      })
+    } else {
+      message.warning('Date is required')
+    }
+  }
+
+  const handleCogs = () => {
+    const data = getFieldsValue()
+    if (data.periodCostPrice) {
+      Modal.confirm({
+        title: 'Do you want to reset this date?',
+        onOk () {
+          onSubmitCogs({
+            from: data.periodCostPrice.format('M'),
+            to: data.periodCostPrice.format('YYYY')
           })
         },
         onCancel () { }
@@ -84,6 +103,7 @@ const FormCounter = ({
             style={{ marginLeft: '5px' }}
             onClick={() => handleSales()}
             loading={loading.effects['taxReportMaintenance/queryPos']}
+            disabled={loading.effects['taxReportMaintenance/queryPos'] || loading.effects['taxReportMaintenance/queryPurchase'] || loading.effects['taxReportMaintenance/queryCogs']}
           >
             Submit
           </Button>
@@ -106,6 +126,33 @@ const FormCounter = ({
             style={{ marginLeft: '5px' }}
             onClick={() => handlePurchase()}
             loading={loading.effects['taxReportMaintenance/queryPurchase']}
+            disabled={loading.effects['taxReportMaintenance/queryPos'] || loading.effects['taxReportMaintenance/queryPurchase'] || loading.effects['taxReportMaintenance/queryCogs']}
+          >
+            Submit
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <FormItem label="Cost Price" {...formItemLayout}>
+            {getFieldDecorator('periodCostPrice', {
+              initialValue: moment.utc(`${moment().format('M')}-${moment().format('YYYY')}`, 'M-YYYY'),
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<MonthPicker style={{ width: '189px' }} placeholder="Select Period" />)}
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <Button
+            type="primary"
+            size="large"
+            style={{ marginLeft: '5px' }}
+            onClick={() => handleCogs()}
+            loading={loading.effects['taxReportMaintenance/queryCogs']}
+            disabled={loading.effects['taxReportMaintenance/queryPos'] || loading.effects['taxReportMaintenance/queryPurchase'] || loading.effects['taxReportMaintenance/queryCogs']}
           >
             Submit
           </Button>

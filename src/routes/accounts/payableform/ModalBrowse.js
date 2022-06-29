@@ -15,6 +15,7 @@ const Browse = ({ location, pagination, purchase, dispatch, onChange, loading, o
   const listProps = {
     dataSource: modalType === 'browseInvoice' ? listInvoice : [],
     listInvoice,
+    purchase,
     loading: loading.effects['purchase/getInvoice'] || loading.effects['purchase/getInvoicePayable'],
     location,
     item: itemPayment,
