@@ -143,10 +143,10 @@ class TransactionDetail extends Component {
 
     const listTrans = product
       .filter(filtered => !filtered.bundleId)
-      .map(item => ({ ...item, typeTrans: 'Product' }))
-      .concat(bundle.map(item => ({ ...item, typeTrans: 'Bundle' })))
-      .concat(service.filter(filtered => !filtered.bundleId).map(item => ({ ...item, typeTrans: 'Service' })))
-      .concat(consignment.map(item => ({ ...item, typeTrans: 'Consignment' })))
+      .map(item => ({ ...item, posit: item.no, typeTrans: 'Product' }))
+      .concat(bundle.map(item => ({ ...item, posit: item.no, typeTrans: 'Bundle' })))
+      .concat(service.filter(filtered => !filtered.bundleId).map(item => ({ ...item, posit: item.no, typeTrans: 'Service' })))
+      .concat(consignment.map(item => ({ ...item, posit: item.no, typeTrans: 'Consignment' })))
       .map((item, index) => ({ ...item, no: index + 1 }))
 
     return (
@@ -215,7 +215,10 @@ class TransactionDetail extends Component {
               }
             ]}
             rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            onRowClick={record => onModalClick(record)}
+            onRowClick={record => onModalClick({
+              ...record,
+              no: record.posit
+            })}
             dataSource={listTrans}
             pagination={false}
             style={{ marginBottom: 16 }}
