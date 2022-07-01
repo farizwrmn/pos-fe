@@ -40,10 +40,6 @@ class ModalDemand extends Component {
       })
     }
 
-    const handleBlurQty = (productId, qty, event) => {
-      event.target.value = parseFloat(qty)
-    }
-
     const handleFocus = (event) => {
       event.target.select()
     }
@@ -89,7 +85,12 @@ class ModalDemand extends Component {
                   key={record.productId}
                   value={text}
                   max={record && record.stock > 0 ? record.stock : undefined}
-                  onBlur={event => handleBlurQty(record.productId, text, event)}
+                  onChange={(number) => {
+                    handleItemEdit({
+                      ...record,
+                      qty: parseFloat(number)
+                    })
+                  }}
                   onFocus={event => handleFocus(event)}
                   onKeyDown={(event) => {
                     if (event.keyCode === 13) {

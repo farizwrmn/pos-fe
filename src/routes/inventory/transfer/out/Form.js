@@ -56,7 +56,8 @@ const FormAdd = ({
     getFieldDecorator,
     validateFields,
     getFieldValue,
-    getFieldsValue
+    getFieldsValue,
+    setFieldsValue
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
@@ -138,6 +139,11 @@ const FormAdd = ({
       onOk () {
         modalProductDemandProps.updateSelectedKey([])
         resetListItem()
+      },
+      onCancel () {
+        setFieldsValue({
+          storeIdReceiver: getFieldValue('storeIdReceiver')
+        })
       }
     })
   }
@@ -222,7 +228,7 @@ const FormAdd = ({
                   }
                 ]
               })(<Select
-                onChange={() => onChangeStoreIdReceiver()}
+                onChange={value => onChangeStoreIdReceiver(value)}
               >
                 {childrenStoreReceived}
               </Select>)}
