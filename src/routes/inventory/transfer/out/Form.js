@@ -133,6 +133,7 @@ const FormAdd = ({
   }
 
   const onChangeStoreIdReceiver = () => {
+    const storeIdReceiver = getFieldValue('storeIdReceiver')
     Modal.confirm({
       title: 'Reset unsaved process',
       content: 'this action will reset your current process',
@@ -142,7 +143,7 @@ const FormAdd = ({
       },
       onCancel () {
         setFieldsValue({
-          storeIdReceiver: getFieldValue('storeIdReceiver')
+          storeIdReceiver
         })
       }
     })
