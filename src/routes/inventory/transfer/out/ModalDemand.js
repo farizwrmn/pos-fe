@@ -84,11 +84,12 @@ class ModalDemand extends Component {
                 <InputNumber
                   key={record.productId}
                   value={text}
+                  min={0}
                   max={record && record.stock > 0 ? record.stock : undefined}
                   onChange={(number) => {
                     handleItemEdit({
                       ...record,
-                      qty: parseFloat(number)
+                      qty: number > 0 ? number : 0
                     })
                   }}
                   onFocus={event => handleFocus(event)}

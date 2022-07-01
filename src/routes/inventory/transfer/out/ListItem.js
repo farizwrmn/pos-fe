@@ -20,7 +20,7 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
     const qty = event.target.value
     handleItemEdit({
       ...record,
-      qty: parseFloat(qty)
+      qty: parseFloat(qty) > 0 ? parseFloat(qty) : 0
     }, event)
   }
 
