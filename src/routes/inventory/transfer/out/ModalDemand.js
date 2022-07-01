@@ -104,6 +104,21 @@ class ModalDemand extends Component {
         }
       },
       {
+        title: 'Demand',
+        dataIndex: 'qtyDemand',
+        key: 'qtyDemand',
+        width: 80,
+        // render: text => (text || '-').toLocaleString()
+        render (text, record) {
+          return {
+            props: {
+              style: { background: record.color }
+            },
+            children: <div>{(text || '-').toLocaleString()}</div>
+          }
+        }
+      },
+      {
         title: 'Stock',
         dataIndex: 'stock',
         key: 'stock',

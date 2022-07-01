@@ -171,7 +171,7 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     listCategory,
     listStockLocation,
     listBrand,
-    width: 900,
+    width: 1000,
     loading,
     selectedRowKeys,
     visible: modalProductDemandVisible,
