@@ -171,7 +171,7 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     listCategory,
     listStockLocation,
     listBrand,
-    width: 800,
+    width: 1000,
     loading,
     selectedRowKeys,
     visible: modalProductDemandVisible,
@@ -185,6 +185,19 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
         payload: {
           listProductDemand,
           selectedRowKeys
+        }
+      })
+    },
+    handleItemEdit (item, event) {
+      dispatch({
+        type: 'transferOut/editDemandDetail',
+        payload: {
+          listProductDemand,
+          item,
+          form: event ? event.target.form : null,
+          events: {
+            ...event
+          }
         }
       })
     },
