@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Table, Form, Modal, Button } from 'antd'
+import { Table, Form, Modal, Button, InputNumber } from 'antd'
 
 class ModalDemand extends Component {
   state = {
@@ -18,6 +18,7 @@ class ModalDemand extends Component {
       listProductDemand,
       selectedRowKeys,
       updateSelectedKey,
+      handleItemEdit,
       onGetAll,
       form: { validateFields, getFieldsValue, resetFields },
       ...modalProps
@@ -39,6 +40,22 @@ class ModalDemand extends Component {
       })
     }
 
+    const handleBlurQty = (productId, qty, event) => {
+      event.target.value = parseFloat(qty)
+    }
+
+    const handleFocus = (event) => {
+      event.target.select()
+    }
+
+    const handleChangeQty = (record, event) => {
+      const qty = event.target.value
+      handleItemEdit({
+        ...record,
+        qty: parseFloat(qty)
+      }, event)
+    }
+
     const columns = [
 
       {
@@ -55,6 +72,49 @@ class ModalDemand extends Component {
             </div>
           )
         }
+      },
+      {
+        title: (<strong>Qty</strong>),
+        dataIndex: 'qty',
+        key: 'qty',
+        width: 80,
+        render (text, record) {
+          return {
+            props: {
+              style: { background: record.color }
+            },
+            children: (
+              <div>
+                <InputNumber
+                  key={record.productId}
+                  value={text}
+                  max={record && record.stock > 0 ? record.stock : undefined}
+                  onBlur={event => handleBlurQty(record.productId, text, event)}
+                  onFocus={event => handleFocus(event)}
+                  onKeyDown={(event) => {
+                    if (event.keyCode === 13) {
+                      handleChangeQty(record, event)
+                    }
+                  }}
+                />
+              </div>
+            )
+          }
+        }
+      },
+      {
+        title: 'Stock',
+        dataIndex: 'stock',
+        key: 'stock',
+        sorter: (a, b) => a.qty - b.qty,
+        width: 80
+      },
+      {
+        title: 'Stock in Destination',
+        dataIndex: 'qtyStore',
+        key: 'qtyStore',
+        sorter: (a, b) => a.qty - b.qty,
+        width: 130
       },
       {
         title: 'Brand',
@@ -88,58 +148,6 @@ class ModalDemand extends Component {
         },
         filters: listStockLocation ? listStockLocation.map(item => ({ text: item.locationName, value: item.locationName })) : [],
         width: 150
-      },
-      {
-        title: (<strong>Qty</strong>),
-        dataIndex: 'qty',
-        key: 'qty',
-        width: 80,
-        sorter: (a, b) => a.qty - b.qty,
-        render: (text) => {
-          return (<strong>{text}</strong>)
-        }
-      },
-      {
-        title: 'Stock',
-        dataIndex: 'stock',
-        key: 'stock',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
-      },
-      {
-        title: 'Demand',
-        dataIndex: 'qtyDemand',
-        key: 'qtyDemand',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
-      },
-      {
-        title: 'Current MUIN',
-        dataIndex: 'qtyTransferIn',
-        key: 'qtyTransferIn',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
-      },
-      {
-        title: 'Sales',
-        dataIndex: 'qtyOldSales',
-        key: 'qtyOldSales',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
-      },
-      {
-        title: 'Fulfill',
-        dataIndex: 'qtyOldFulfillment',
-        key: 'qtyOldFulfillment',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
-      },
-      {
-        title: 'Old MUIN',
-        dataIndex: 'qtyOldTransferIn',
-        key: 'qtyOldTransferIn',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
       }
     ]
 

@@ -229,6 +229,28 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * editDemandDetail ({ payload = {} }, { put }) {
+      const { listProductDemand, item, form, events } = payload
+      let newProductDemand = listProductDemand.map((record) => {
+        if (record.id === item.id) {
+          return item
+        }
+        return record
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listProductDemand: newProductDemand
+        }
+      })
+      if (form && events) {
+        const index = [...form].indexOf(events.target)
+        if (form.elements[index + 1]) {
+          form.elements[index + 1].focus()
+        }
+      }
+    },
+
     * showModalDemand ({ payload = {} }, { call, put }) {
       const response = yield call(queryActive, {
         storeId: lstorage.getCurrentUserStore(),

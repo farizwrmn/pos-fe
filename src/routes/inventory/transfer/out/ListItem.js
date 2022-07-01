@@ -118,7 +118,7 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
       }
     },
     {
-      title: 'QtyStore',
+      title: 'Stock in Destination',
       dataIndex: 'qtyStore',
       key: 'qtyStore',
       className: styles.alignRight,
