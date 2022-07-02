@@ -1764,7 +1764,7 @@ const Pos = ({
     }
   }
 
-  const handleChangeDineIn = (event, type, item) => {
+  const handleChangeDineIn = (dineInTax, consignmentPaymentType, item) => {
     if (item.typeCode === 'GM') {
       dispatch({
         type: 'pos/updateState',
@@ -1778,14 +1778,14 @@ const Pos = ({
         title: 'Ubah Tipe Transaksi',
         content: 'Anda yakin dengan transaksi ini ?',
         onOk () {
-          localStorage.setItem('dineInTax', event)
-          localStorage.setItem('typePembelian', type)
+          localStorage.setItem('dineInTax', consignmentPaymentType)
+          localStorage.setItem('typePembelian', consignmentPaymentType)
 
           dispatch({
             type: 'pos/changeDineIn',
             payload: {
-              dineInTax: event,
-              typePembelian: type,
+              dineInTax,
+              typePembelian: consignmentPaymentType,
               selectedPaymentShortcut: item
             }
           })
@@ -1793,8 +1793,8 @@ const Pos = ({
           dispatch({
             type: 'pos/updateState',
             payload: {
-              dineInTax: event,
-              typePembelian: type
+              dineInTax,
+              typePembelian: consignmentPaymentType
             }
           })
 

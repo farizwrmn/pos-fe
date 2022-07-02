@@ -488,25 +488,25 @@ export default {
       const currentGrabOrder = getGrabmartOrder()
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
-      const { typePembelian, selectedPaymentShortcut } = payload
+      const { selectedPaymentShortcut, typePembelian } = payload
+      const { sellPrice, memberId } = selectedPaymentShortcut
       let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-      if (selectedPaymentShortcut
-        && selectedPaymentShortcut.sellPrice
+      if (sellPrice
         // eslint-disable-next-line eqeqeq
-        && selectedPaymentShortcut.memberId == 0) {
+        && memberId == 0) {
         for (let key in dataPos) {
           const item = dataPos[key]
           if (!item.bundleId) {
             dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
           }
-          dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
-          dataPos[key].price = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
+          dataPos[key].sellPrice = item[sellPrice] ? item[sellPrice] : item.price
+          dataPos[key].price = item[sellPrice] ? item[sellPrice] : item.price
           dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
         }
       }
       // eslint-disable-next-line eqeqeq
-      if (selectedPaymentShortcut && selectedPaymentShortcut.memberId == 1) {
+      if (memberId == 1) {
         for (let key in dataPos) {
           const item = dataPos[key]
           if (memberInformation.memberSellPrice === 'sellPrice') {
@@ -1552,29 +1552,7 @@ export default {
     },
 
     * chooseMember ({ payload = {} }, { put }) {
-      const { item, defaultValue, chooseItem } = payload
-      const modalMember = () => {
-        return new Promise((resolve) => {
-          Modal.info({
-            title: 'Reset unsaved process',
-            content: 'this action will reset your current process',
-            onOk () {
-              resolve()
-            }
-          })
-        })
-      }
-      if (chooseItem) {
-        yield modalMember()
-      }
-      yield put({
-        type: 'pos/removeTrans',
-        payload: {
-          defaultValue
-        }
-      })
-      localStorage.removeItem('member')
-      localStorage.removeItem('memberUnit')
+      const { item } = payload
       let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
 
       let arrayProd
