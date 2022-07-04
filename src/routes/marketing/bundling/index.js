@@ -11,9 +11,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Master = ({ shopeeCategory, bundling, bank, paymentOpts, grabCategory, userStore, loading, dispatch, location, app }) => {
+const Master = ({ shopeeCategory, bundlingCategory, bundling, bank, paymentOpts, grabCategory, userStore, loading, dispatch, location, app }) => {
   const { list: listShopeeCategory, listAttribute: listShopeeAttribute, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
   const { typeModal, pagination, modalCancelVisible, invoiceCancel, listBundling, itemEditListRules, itemEditListReward, modalEditRulesVisible, modalEditRewardVisible, listRules, listReward, modalType, currentItem, activeKey, modalProductVisible } = bundling
+  const { list: listBundlingCategory } = bundlingCategory
   const { listAllStores } = userStore
   const { list: listGrabCategory } = grabCategory
   const { listOpts } = paymentOpts
@@ -173,6 +174,7 @@ const Master = ({ shopeeCategory, bundling, bank, paymentOpts, grabCategory, use
   }
 
   const formProps = {
+    listBundlingCategory,
     listPaymentOption: listOpts,
     listBank,
     mode: '',
@@ -486,6 +488,7 @@ const Master = ({ shopeeCategory, bundling, bank, paymentOpts, grabCategory, use
 }
 
 Master.propTypes = {
+  bundlingCategory: PropTypes.object,
   grabCategory: PropTypes.object,
   paymentOpts: PropTypes.object,
   bank: PropTypes.object,
@@ -499,4 +502,4 @@ Master.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ shopeeCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }) => ({ shopeeCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }))(Master)
+export default connect(({ bundlingCategory, shopeeCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }) => ({ bundlingCategory, shopeeCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }))(Master)
