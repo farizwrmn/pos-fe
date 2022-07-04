@@ -1778,7 +1778,7 @@ const Pos = ({
         title: 'Ubah Tipe Transaksi',
         content: 'Anda yakin dengan transaksi ini ?',
         onOk () {
-          localStorage.setItem('dineInTax', consignmentPaymentType)
+          localStorage.setItem('dineInTax', dineInTax)
           localStorage.setItem('typePembelian', consignmentPaymentType)
 
           dispatch({

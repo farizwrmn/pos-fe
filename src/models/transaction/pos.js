@@ -1553,18 +1553,8 @@ export default {
 
     * chooseMember ({ payload = {} }, { put }) {
       const { item } = payload
-      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-
-      let arrayProd
-      if (JSON.stringify(listByCode) === '[]') {
-        arrayProd = listByCode.slice()
-      } else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
       let newItem = reArrangeMember(item)
-      arrayProd.push(newItem)
-
-      localStorage.setItem('member', JSON.stringify(arrayProd))
+      localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
         type: 'pos/syncCustomerCashback',
         payload: {
@@ -3249,9 +3239,7 @@ export default {
           dataMember = dataMember ? JSON.parse(dataMember)[0] : null
           if (dataMember) {
             dataMember.cashback = data.data
-            const newDataMember = []
-            newDataMember.push(dataMember)
-            localStorage.setItem('member', JSON.stringify(newDataMember))
+            localStorage.setItem('member', JSON.stringify([dataMember]))
             yield put({
               type: 'updateState',
               payload: {

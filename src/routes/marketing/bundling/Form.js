@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import {
   Form,
   Card,
@@ -67,6 +68,7 @@ class FormCounter extends Component {
       listGrabCategory = [],
       listAllStores = [],
       listPaymentOption = [],
+      listBundlingCategory = [],
       listBank = [],
       onSubmit,
       showModal,
@@ -572,6 +574,8 @@ class FormCounter extends Component {
       }
     }
 
+    const categoryBundle = (listBundlingCategory || []).length > 0 ? listBundlingCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName}`}>{`${c.categoryName}`}</Option>) : []
+
     return (
       <Form layout="horizontal">
 
@@ -613,6 +617,21 @@ class FormCounter extends Component {
                     }
                   ]
                 })(<Input maxLength={60} />)}
+              </FormItem>
+              <FormItem label={(<Link target="__blank" to="/marketing/promo-category">Category</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bundlingCategoryId', {
+                  initialValue: modalType === 'add' ? undefined : item.bundlingCategoryId,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{categoryBundle}
+                </Select>)}
               </FormItem>
               <FormItem label="Publish on e-commerce" {...formItemLayout}>
                 {getFieldDecorator('activeShop', {
