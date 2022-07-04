@@ -5,7 +5,7 @@ import { query, add, edit, remove } from 'services/marketing/bundlingCategory'
 import { pageModel } from '../common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Bundling category has been saved')
 }
 
 export default modelExtend(pageModel, {
