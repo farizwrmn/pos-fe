@@ -105,6 +105,20 @@ class ModalDemand extends Component {
         }
       },
       {
+        title: 'Stock',
+        dataIndex: 'stock',
+        key: 'stock',
+        sorter: (a, b) => a.qty - b.qty,
+        width: 80
+      },
+      {
+        title: 'Stock in Destination',
+        dataIndex: 'qtyStore',
+        key: 'qtyStore',
+        sorter: (a, b) => a.qty - b.qty,
+        width: 130
+      },
+      {
         title: 'Demand',
         dataIndex: 'qtyDemand',
         key: 'qtyDemand',
@@ -118,20 +132,6 @@ class ModalDemand extends Component {
             children: <div>{(text || '-').toLocaleString()}</div>
           }
         }
-      },
-      {
-        title: 'Stock',
-        dataIndex: 'stock',
-        key: 'stock',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 80
-      },
-      {
-        title: 'Stock in Destination',
-        dataIndex: 'qtyStore',
-        key: 'qtyStore',
-        sorter: (a, b) => a.qty - b.qty,
-        width: 130
       },
       {
         title: 'Brand',
