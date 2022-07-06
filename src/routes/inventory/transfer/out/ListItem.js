@@ -88,21 +88,6 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
       }
     },
     {
-      title: 'Demand',
-      dataIndex: 'qtyDemand',
-      key: 'qtyDemand',
-      className: styles.alignRight,
-      // render: text => (text || '-').toLocaleString()
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{(text || '-').toLocaleString()}</div>
-        }
-      }
-    },
-    {
       title: 'Stock',
       dataIndex: 'stock',
       key: 'stock',
@@ -121,6 +106,21 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
       title: 'Stock in Destination',
       dataIndex: 'qtyStore',
       key: 'qtyStore',
+      className: styles.alignRight,
+      // render: text => (text || '-').toLocaleString()
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{(text || '-').toLocaleString()}</div>
+        }
+      }
+    },
+    {
+      title: 'Demand',
+      dataIndex: 'qtyDemand',
+      key: 'qtyDemand',
       className: styles.alignRight,
       // render: text => (text || '-').toLocaleString()
       render (text, record) {
