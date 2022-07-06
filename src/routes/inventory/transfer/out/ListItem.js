@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { Table, InputNumber } from 'antd'
 import styles from '../../../../themes/index.less'
 
-const ListItem = ({ ...tableProps, handleItemEdit }) => {
-  // const handleMenuClick = (record) => {
-  //   onModalVisible(record)
-  // }
+const ListItem = ({ ...tableProps, onModalVisible, handleItemEdit }) => {
+  const handleMenuClick = (record) => {
+    onModalVisible(record)
+  }
 
   const handleBlurQty = (productId, qty, event) => {
     event.target.value = parseFloat(qty)
@@ -42,6 +42,9 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
       title: 'Product',
       dataIndex: 'productCode',
       key: 'productCode',
+      onCellClick: (item) => {
+        handleMenuClick(item)
+      },
       render (text, record) {
         return {
           props: {
@@ -52,6 +55,7 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
               <div>{record.productCode}</div>
               <div>{record.productName}</div>
               <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
+              <div style={{ fontSize: '10px' }}>click to edit</div>
             </div>
           )
         }
@@ -145,7 +149,6 @@ const ListItem = ({ ...tableProps, handleItemEdit }) => {
           size="small"
           scroll={{ x: 1000 }}
           rowKey={record => record.no}
-        // onRowClick={item => handleMenuClick(item)}
         />
       </form>
     </div>
