@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
+import { Form, Input, InputNumber, Checkbox, Col, Row, Button, Modal, Select, DatePicker } from 'antd'
 import moment from 'moment'
 import { getVATPercentage, getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { lstorage, numberFormat, alertModal } from 'utils'
@@ -275,6 +275,12 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   <Option value="E">Exclude (0%)</Option>
                   <Option value="S">Exclude ({getVATPercentage()}%)</Option>
                 </Select>)}
+              </FormItem>
+              <FormItem label="Is Tax Invoice" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxInvoice', {
+                  initialValue: Boolean(transNo.taxInvoice),
+                  valuePropName: 'checked'
+                })(<Checkbox />)}
               </FormItem>
               <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxInvoiceNo', {
