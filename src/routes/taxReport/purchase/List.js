@@ -28,7 +28,7 @@ class List extends Component {
         dataIndex: 'taxInvoice',
         key: 'taxInvoice',
         render: (ket) => {
-          if (parseFloat(ket)) {
+          if (ket) {
             return (
               <span>
                 <Tag color={'green'}>
