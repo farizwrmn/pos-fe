@@ -147,7 +147,7 @@ const List = ({ ...tableProps,
       key: 'costPrice',
       className: styles.alignRight,
       width: '150px',
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => (record.costPrice + record.PPN || '-').toLocaleString()
     },
     {
       title: 'Margin',
@@ -156,7 +156,7 @@ const List = ({ ...tableProps,
       className: styles.alignRight,
       width: '70px',
       render: (text, record) => {
-        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
+        return `${Math.round(((parseFloat(record.sellPrice) - (parseFloat(record.costPrice) + parseFloat(record.PPN))) / parseFloat(record.sellPrice)) * 100)} %`
       }
     },
     {

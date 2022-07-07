@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 
 class List extends Component {
   state = {
@@ -32,6 +32,23 @@ class List extends Component {
         title: 'Trans Date',
         dataIndex: 'transDate',
         key: 'transDate'
+      },
+      {
+        title: 'Tax Invoice',
+        dataIndex: 'purchaseHeader.taxInvoice',
+        key: 'purchaseHeader.taxInvoice',
+        render: (ket) => {
+          if (parseFloat(ket)) {
+            return (
+              <span>
+                <Tag color={'green'}>
+                  {'Has Tax Invoice'}
+                </Tag>
+              </span>
+            )
+          }
+          return null
+        }
       },
       {
         title: 'Product',
