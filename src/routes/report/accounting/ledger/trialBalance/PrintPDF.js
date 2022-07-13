@@ -9,7 +9,7 @@ import { BasicReport } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
+const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -109,7 +109,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(period, 'MM').format('MMMM').concat('-', year)}`,
+                text: `\nPERIODE : ${from} - ${to}`,
                 fontSize: 12,
                 alignment: 'left'
               },

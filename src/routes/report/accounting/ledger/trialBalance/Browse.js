@@ -65,6 +65,12 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
       simple
       size="small"
       dataSource={dataSource}
+      footer={() => (
+        <div>
+          <div>Debit : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.debit || 0), 0).toLocaleString()}</div>
+          <div>Credit : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.credit || 0), 0).toLocaleString()}</div>
+        </div>)
+      }
     />
   )
 }
