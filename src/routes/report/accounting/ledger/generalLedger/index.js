@@ -10,7 +10,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
-  const { period, year, activeKey, listProduct } = generalLedger
+  const { from, to, activeKey, listProduct } = generalLedger
   const { listAccountCode } = accountCode
   let { listRekap } = generalLedger
   if (activeKey === '1') {
@@ -34,8 +34,8 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
     user,
     dispatch,
     storeInfo,
-    period,
-    year,
+    from,
+    to,
     onListReset () {
       if (activeKey === '3') {
         dispatch({

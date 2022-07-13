@@ -3,10 +3,9 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
+const PrintXLS = ({ listRekap, from, to, storeInfo }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -98,7 +97,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   const title = [
     { value: 'LAPORAN HISTORY BUKU BESAR', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
-    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: styles.alignmentCenter, font: styles.title }
+    { value: `PERIODE : ${from} - ${to}`, alignment: styles.alignmentCenter, font: styles.title }
   ]
 
   let tableBody = []
