@@ -36,11 +36,17 @@ export default {
           || location.pathname === '/report/accounting/general-ledger'
         )) {
           dispatch({
+            type: 'setNull'
+          })
+          dispatch({
             type: 'queryGeneralLedger',
             payload: location.query
           })
         }
         if (location.pathname === '/report/accounting/consolidation/trial-balance' && location.query.from && location.query.to) {
+          dispatch({
+            type: 'setNull'
+          })
           dispatch({
             type: 'queryTrialBalance',
             payload: location.query
