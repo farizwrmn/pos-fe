@@ -1766,7 +1766,6 @@ const Pos = ({
 
   const handleChangeDineIn = (dineInTax, consignmentPaymentType, item) => {
     if (item.typeCode === 'GM') {
-      localStorage.setItem('dineInTax', 0)
       dispatch({
         type: 'pos/updateState',
         payload: {
