@@ -3177,7 +3177,7 @@ export default {
             modalGrabmartCodeVisible: false
           }
         })
-        localStorage.setItem('dineInTax', event)
+        localStorage.setItem('dineInTax', 0)
         localStorage.setItem('typePembelian', type)
 
         yield put({
