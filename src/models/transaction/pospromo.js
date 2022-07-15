@@ -428,6 +428,7 @@ export default modelExtend(pageModel, {
         arrayProd = arrayProd.map((item) => {
           if (item.bundleCode) {
             item.discount = getDiscountByBundleCode(currentGrabOrder, item.bundleCode, arrayProd)
+            item.total = posTotal(item)
           }
           return item
         })
