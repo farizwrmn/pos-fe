@@ -126,7 +126,7 @@ const ListConsignment = ({ onChooseItem, pos, dispatch, ...tableProps }) => {
         columns={columns}
         simple
         size="small"
-        rowKey={record => record.productCode}
+        rowKey={record => record.id}
         onRowClick={record => handleMenuClick(record)}
       />
     </div>
