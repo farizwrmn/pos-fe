@@ -34,12 +34,14 @@ export default modelExtend(pageModel, {
         if (pathname === '/stock'
           || pathname === '/k3express/product-brand'
         ) {
-          dispatch({
-            type: 'queryLov',
-            payload: {
-              type: 'all'
-            }
-          })
+          if (activeKey !== '1') {
+            dispatch({
+              type: 'queryLov',
+              payload: {
+                type: 'all'
+              }
+            })
+          }
         }
         if (pathname === '/k3express/product-brand') {
           dispatch({

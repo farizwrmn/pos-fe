@@ -374,6 +374,10 @@ class AdvancedForm extends Component {
 
             data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
             data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
+            data.expressCategoryName = data.expressCategoryId ? data.expressCategoryId.label : null
+            data.expressCategoryId = data.expressCategoryId ? data.expressCategoryId.key : null
+            data.expressBrandName = data.expressBrandId ? data.expressBrandId.label : null
+            data.expressBrandId = data.expressBrandId ? data.expressBrandId.key : null
             data.categoryName = data.categoryId ? data.categoryId.label : null
             data.categoryId = data.categoryId ? data.categoryId.key : null
             data.brandName = data.brandId ? data.brandId.label : null
