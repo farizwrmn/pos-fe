@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ expressProductCategory, loading, dispatch, location, app }) => {
-  const { list, listLov: listCategory, pagination, modalType, currentItem, activeKey } = expressProductCategory
+  const { list, listLov: listK3ExpressCategory, pagination, modalType, currentItem, activeKey } = expressProductCategory
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -88,10 +88,25 @@ const Counter = ({ expressProductCategory, loading, dispatch, location, app }) =
   }
 
   const formProps = {
-    listCategory,
+    listK3ExpressCategory,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    queryEditItem (categoryCode, id) {
+      dispatch({
+        type: 'expressProductCategory/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+      dispatch({
+        type: 'expressProductCategory/queryEditItem',
+        payload: {
+          id,
+          categoryCode
+        }
+      })
+    },
     onSubmit (data, reset) {
       dispatch({
         type: `expressProductCategory/${modalType}`,

@@ -216,6 +216,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
               registerModel(app, require('./models/master/specification'))
               registerModel(app, require('./models/master/variantStock'))
               registerModel(app, require('./models/product/productcountry'))

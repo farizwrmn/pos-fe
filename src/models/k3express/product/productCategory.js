@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import FormData from 'form-data'
 import { uploadExpressCategoryImage } from 'services/utils/imageUploader'
-import { query, add, edit, remove } from 'services/k3express/product/productCategory'
+import { query, queryById, add, edit, remove } from 'services/k3express/product/productCategory'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -32,7 +32,7 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/stock'
-          && '/k3express/product-category'
+          || pathname === '/k3express/product-category'
         ) {
           dispatch({
             type: 'queryLov',
@@ -139,6 +139,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+        yield put({
+          type: 'queryLov',
+          payload: {
+            type: 'all'
+          }
+        })
         if (payload.reset) {
           payload.reset()
         }
@@ -210,6 +216,12 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
+        yield put({
+          type: 'queryLov',
+          payload: {
+            type: 'all'
+          }
+        })
         if (payload.reset) {
           payload.reset()
         }
@@ -220,6 +232,22 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
+        throw data
+      }
+    },
+
+    * queryEditItem ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data.data,
+            modalType: 'edit',
+            activeKey: '0'
+          }
+        })
+      } else {
         throw data
       }
     }

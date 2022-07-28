@@ -32,7 +32,7 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/stock'
-          && '/k3express/product-brand'
+          || pathname === '/k3express/product-brand'
         ) {
           dispatch({
             type: 'queryLov',

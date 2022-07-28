@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { IMAGEURL, rest } from 'utils/config.company'
-import { Form, Input, Button, Checkbox, Select, Row, Col, message, Upload, Icon, Modal } from 'antd'
+import { arrayToTree } from 'utils'
+import { Form, Input, Button, Tree, Checkbox, Select, Row, Col, message, Upload, Icon, Modal } from 'antd'
 
 const { apiCompanyURL } = rest
 const FormItem = Form.Item
 const { Option } = Select
+const TreeNode = Tree.TreeNode
 
 const formItemLayout = {
   labelCol: {
@@ -28,7 +30,8 @@ const column = {
 }
 
 const FormCounter = ({
-  listCategory,
+  listK3ExpressCategory,
+  queryEditItem,
   item = {},
   onSubmit,
   onCancel,
@@ -82,7 +85,44 @@ const FormCounter = ({
     })
   }
 
-  const productCategory = (listCategory || []).length > 0 ? (listCategory || []).map(c => <Option key={c.id}>{c.categoryName} ({c.categoryCode})</Option>) : []
+  const handleClickTree = (event, id) => {
+    Modal.confirm({
+      title: 'Edit item ?',
+      content: `You're gonna edit item ${event}`,
+      onOk () {
+        resetFields()
+        queryEditItem(event, id)
+      },
+      onCancel () {
+        console.log('cancel')
+      }
+    })
+  }
+
+  const productCategory = (listK3ExpressCategory || []).length > 0 ? (listK3ExpressCategory || []).map(c => <Option key={c.id}>{c.categoryName} ({c.categoryCode})</Option>) : []
+
+  const menuTree = arrayToTree((listK3ExpressCategory || []).filter(filtered => filtered.id !== null), 'id', 'categoryParentId')
+  const levelMap = {}
+  const getMenus = (menuTreeN) => {
+    return menuTreeN.map((item) => {
+      if (item.children) {
+        if (item.categoryParentId) {
+          levelMap[item.id] = item.categoryParentId
+        }
+        return (
+          <TreeNode key={item.categoryCode} title={(<div onClick={() => handleClickTree(item.categoryCode, item.id)} value={item.categoryCode}>{item.categoryName} ({item.categoryCode})</div>)}>
+            {getMenus(item.children)}
+          </TreeNode>
+        )
+      }
+      return (
+        <TreeNode key={item.categoryCode} title={(<div onClick={() => handleClickTree(item.categoryCode, item.id)} value={item.categoryCode}>{item.categoryName} ({item.categoryCode})</div>)}>
+          {(!menuTree.includes(item)) && item.name}
+        </TreeNode>
+      )
+    })
+  }
+  const categoryVisual = getMenus(menuTree)
 
   return (
     <Form layout="horizontal">
@@ -208,6 +248,23 @@ const FormCounter = ({
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </Col>
+        {(listK3ExpressCategory || []).length > 0 &&
+          <div>
+            <strong style={{ fontSize: '15' }}> Current Category </strong>
+            <br />
+            <br />
+            <Col {...column}>
+              <div style={{ margin: '0px', width: '100 %', overflowY: 'auto', height: '300px' }}>
+                <Tree
+                  showLine
+                  // onRightClick={handleChooseTree}
+                  defaultExpandAll
+                >
+                  {categoryVisual}
+                </Tree>
+              </div>
+            </Col>
+          </div>}
       </Row>
     </Form>
   )
