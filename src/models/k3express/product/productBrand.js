@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listLov: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -30,6 +31,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        if (pathname === '/stock'
+          && '/k3express/product-brand'
+        ) {
+          dispatch({
+            type: 'queryLov',
+            payload: {
+              type: 'all'
+            }
+          })
+        }
         if (pathname === '/k3express/product-brand') {
           dispatch({
             type: 'updateState',
@@ -57,6 +68,18 @@ export default modelExtend(pageModel, {
               pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+      }
+    },
+
+    * queryLov ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listLov: data.data
           }
         })
       }

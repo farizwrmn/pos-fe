@@ -110,7 +110,8 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Image" {...formItemLayout}>
             {getFieldDecorator('brandImage', {
-              initialValue: item.brandImage
+              initialValue: modalType === 'edit'
+                && item.brandImage
                 && item.brandImage != null ?
                 {
                   fileList: [
@@ -123,7 +124,7 @@ const FormCounter = ({
                     }
                   ]
                 }
-                : item.brandImage,
+                : undefined,
               rules: [
                 {
                   required: true
@@ -136,15 +137,16 @@ const FormCounter = ({
                 }}
                 listType="picture"
                 defaultFileList={
-                  [
-                    {
+                  modalType === 'edit'
+                    && item.brandImage
+                    && item.brandImage != null ? [{
                       uid: 0,
                       name: item.brandImage,
                       status: 'done',
                       url: `${IMAGEURL}/${item.brandImage}`,
                       thumbUrl: `${IMAGEURL}/${item.brandImage}`
-                    }
-                  ]
+                    }]
+                    : undefined
                 }
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}

@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ expressProductCategory, loading, dispatch, location, app }) => {
-  const { list, listCategory, pagination, modalType, currentItem, activeKey } = expressProductCategory
+  const { list, listLov: listCategory, pagination, modalType, currentItem, activeKey } = expressProductCategory
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
