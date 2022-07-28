@@ -192,6 +192,23 @@ const ListItem = ({ ...tableProps, activeKey, selectedRowKeys, updateSelectedKey
           </div>
         }
       }
+    },
+    {
+      title: getDistPriceName('distPrice09'),
+      dataIndex: 'distPrice09',
+      key: 'distPrice09',
+      render (text, record) {
+        const oldPriceHandler = (record.prevDistPrice09 === 0 ? (text === 0 ? 1 : text) : record.prevDistPrice09 || 0)
+        const oldPrice = (record.prevDistPrice09 || 0)
+        const diffPrice = ((text || 0) - oldPrice)
+        return {
+          children: <div style={{ textAlign: 'right' }}>
+            {`${(record.prevDistPrice09 || 0).toLocaleString()} to `}
+            <strong style={{ fontSize: '14px' }}>{`${(text || '-').toLocaleString()} `}</strong>
+            ({parseFloat((diffPrice / oldPriceHandler) * 100).toFixed(2)} %)
+          </div>
+        }
+      }
     }
   ]
 

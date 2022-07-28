@@ -216,6 +216,22 @@ const ListProduct = ({ onChooseItem, showProductQty, pos, loading, dispatch, ...
       }
     },
     {
+      title: getDistPriceName('distPrice09'),
+      dataIndex: 'distPrice09',
+      key: 'distPrice09',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice09
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
+    {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',

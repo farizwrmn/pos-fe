@@ -106,6 +106,13 @@ const ListProduct = ({
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: getDistPriceName('distPrice09'),
+      dataIndex: 'distPrice09',
+      key: 'distPrice09',
+      className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Qty',
       dataIndex: 'count',
       key: 'count',

@@ -1712,6 +1712,7 @@ export default {
         distPrice06: item.distPrice06,
         distPrice07: item.distPrice07,
         distPrice08: item.distPrice08,
+        distPrice09: item.distPrice09,
         qty: 1,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
@@ -2037,6 +2038,7 @@ export default {
               item.item.distPrice06 = currentReward.distPrice06
               item.item.distPrice07 = currentReward.distPrice07
               item.item.distPrice08 = currentReward.distPrice08
+              item.item.distPrice09 = currentReward.distPrice09
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
             if (selectedPaymentShortcut
@@ -2067,6 +2069,7 @@ export default {
               distPrice06: item.item.distPrice06,
               distPrice07: item.item.distPrice07,
               distPrice08: item.item.distPrice08,
+              distPrice09: item.item.distPrice09,
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
@@ -2209,6 +2212,7 @@ export default {
             item.item.distPrice06 = currentReward.distPrice06
             item.item.distPrice07 = currentReward.distPrice07
             item.item.distPrice08 = currentReward.distPrice08
+            item.item.distPrice09 = currentReward.distPrice09
           } else {
             item.item.sellPrice = item.item.serviceCost
             item.item.distPrice01 = item.item.serviceCost
@@ -2219,6 +2223,7 @@ export default {
             item.item.distPrice06 = item.item.serviceCost
             item.item.distPrice07 = item.item.serviceCost
             item.item.distPrice08 = item.item.serviceCost
+            item.item.distPrice09 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
           if (selectedPaymentShortcut
@@ -2250,6 +2255,7 @@ export default {
             distPrice06: item.item.distPrice06,
             distPrice07: item.item.distPrice07,
             distPrice08: item.item.distPrice08,
+            distPrice09: item.item.distPrice09,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'S',
@@ -2347,7 +2353,8 @@ export default {
           distPrice05: item.distPrice05,
           distPrice06: item.distPrice06,
           distPrice07: item.distPrice07,
-          distPrice08: item.distPrice08
+          distPrice08: item.distPrice08,
+          distPrice09: item.distPrice09
         },
         code: item.productCode,
         productId: item.id,
@@ -2411,6 +2418,7 @@ export default {
             distPrice06: price,
             distPrice07: price,
             distPrice08: price,
+            distPrice09: price,
             qty: 1,
             typeCode: 'S',
             sellPrice: price,
@@ -2460,6 +2468,7 @@ export default {
         payload.item.distPrice06 = price
         payload.item.distPrice07 = price
         payload.item.distPrice08 = price
+        payload.item.distPrice09 = price
         payload.item.sellPrice = price
         payload.item.price = price
         payload.item.total = price
@@ -2523,6 +2532,7 @@ export default {
           item.distPrice06 = price[0].distPrice06
           item.distPrice07 = price[0].distPrice07
           item.distPrice08 = price[0].distPrice08
+          item.distPrice09 = price[0].distPrice09
         }
       }
 
@@ -2541,6 +2551,7 @@ export default {
         item.distPrice06 = currentReward.distPrice06
         item.distPrice07 = currentReward.distPrice07
         item.distPrice08 = currentReward.distPrice08
+        item.distPrice09 = currentReward.distPrice09
         qty = currentReward.qty
       }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -2589,6 +2600,7 @@ export default {
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
@@ -2658,6 +2670,7 @@ export default {
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',

@@ -193,6 +193,7 @@ class FormCounter extends Component {
               distPrice06: categoryCode === null ? (type === 'P' ? item.distPrice06 : item.serviceCost) : 0,
               distPrice07: categoryCode === null ? (type === 'P' ? item.distPrice07 : item.serviceCost) : 0,
               distPrice08: categoryCode === null ? (type === 'P' ? item.distPrice08 : item.serviceCost) : 0,
+              distPrice09: categoryCode === null ? (type === 'P' ? item.distPrice09 : item.serviceCost) : 0,
               discount: 0,
               disc1: 0,
               disc2: 0,

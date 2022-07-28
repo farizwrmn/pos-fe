@@ -451,7 +451,9 @@ class AdvancedForm extends Component {
     const productCountry = (listProductCountry || []).length > 0 ? listProductCountry.map(c => <Option value={c.countryName} key={c.countryName} title={`${c.countryCode} - ${c.countryName}`}>{`${c.countryCode} - ${c.countryName}`}</Option>) : []
     const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
     const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
+    const k3expressCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
     const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
+    const k3expressBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productInventory = (listInventory || []).length > 0 ? listInventory.map(c => <Option value={c.code} key={c.code}>{c.type}</Option>) : []
     const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -811,7 +813,8 @@ class AdvancedForm extends Component {
           distPrice05: (1 + (getDistPricePercent('distPrice05') / 100)) * sellPrice,
           distPrice06: (1 + (getDistPricePercent('distPrice06') / 100)) * sellPrice,
           distPrice07: (1 + (getDistPricePercent('distPrice07') / 100)) * sellPrice,
-          distPrice08: (1 + (getDistPricePercent('distPrice08') / 100)) * sellPrice
+          distPrice08: (1 + (getDistPricePercent('distPrice08') / 100)) * sellPrice,
+          distPrice09: (1 + (getDistPricePercent('distPrice09') / 100)) * sellPrice
         })
       }
     }
@@ -1099,6 +1102,18 @@ class AdvancedForm extends Component {
                     ]
                   })(<InputNumber {...InputNumberProps} />)}
                 </FormItem>
+                <FormItem label={getDistPriceName('distPrice09')} help={getDistPriceDescription('distPrice09')} hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('distPrice09', {
+                    initialValue: item.distPrice09,
+                    rules: [
+                      {
+                        required: true,
+                        pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                        message: '0-9'
+                      }
+                    ]
+                  })(<InputNumber {...InputNumberProps} />)}
+                </FormItem>
                 <FormItem label="Cost Price" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('costPrice', {
                     initialValue: item.costPrice,
@@ -1114,6 +1129,74 @@ class AdvancedForm extends Component {
             </Card>
           </Col>
           <Col {...parentThreeDivision}>
+            <Card {...cardProps} title={<h3>K3Express</h3>}>
+              <FormItem label="Enable K3Express" {...formItemLayout}>
+                {getFieldDecorator('expressActive', {
+                  valuePropName: 'checked',
+                  initialValue: item.expressActive === undefined
+                    ? false
+                    : item.expressActive
+                })(<Checkbox
+                  disabled={modalType === 'edit' && item.expressActive}
+                >Publish</Checkbox>)}
+              </FormItem>
+              {getFieldValue('expressActive') ? (<div>
+                <FormItem label="K3Express Category" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('expressCategoryId', {
+                    initialValue: item.expressCategoryId ? {
+                      key: item.expressCategoryId,
+                      label: item.expressCategoryName
+                    } : {},
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    showSearch
+                    allowClear
+                    optionFilterProp="children"
+                    labelInValue
+                    onChange={onChangeShopeeCategory}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  >{k3expressCategory}
+                  </Select>)}
+                </FormItem>
+
+                {getFieldValue('expressCategoryId') && getFieldValue('expressCategoryId').key ? (
+                  <FormItem label="K3Express Brand" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('expressBrandId', {
+                      initialValue: item.expressBrandId ? {
+                        key: item.expressBrandId,
+                        label: item.expressBrandName
+                      } : {},
+                      rules: [
+                        {
+                          required: true
+                        }
+                      ]
+                    })(<Select
+                      showSearch
+                      allowClear
+                      onSearch={this.changeBrand}
+                      optionFilterProp="children"
+                      labelInValue
+                      notFoundContent={loadingButton.effects['k3expressCategory/queryBrand'] ? <Spin size="small" /> : null}
+                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                    >{k3expressBrand}
+                    </Select>)}
+                  </FormItem>
+                ) : null}
+                <FormItem label="Return Policy" {...formItemLayout}>
+                  {getFieldDecorator('returnPolicy', {
+                    valuePropName: 'checked',
+                    initialValue: item.returnPolicy === undefined
+                      ? false
+                      : item.returnPolicy
+                  })(<Checkbox>Sold item can be returned</Checkbox>)}
+                </FormItem>
+              </div>) : null}
+            </Card>
             <Card {...cardProps} title={<h3>Shopee</h3>}>
               <FormItem label="Enable Shopee" {...formItemLayout}>
                 {getFieldDecorator('enableShopee', {
@@ -1534,9 +1617,9 @@ class AdvancedForm extends Component {
                   initialValue: item.description,
                   rules: [
                     {
-                      pattern: getFieldValue('enableShopee') ? /^[\s\S]{20,65535}$/ : undefined,
-                      required: getFieldValue('enableShopee') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
-                      message: getFieldValue('enableShopee') ? 'Min 20 Character' : 'Required when product image is filled'
+                      pattern: getFieldValue('enableShopee') || getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
+                      required: getFieldValue('enableShopee') || getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
+                      message: getFieldValue('enableShopee') || getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
                     }
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}

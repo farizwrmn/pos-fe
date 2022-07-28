@@ -33,6 +33,7 @@ const createTableBody = async (tableBody) => {
           item.distPrice06 = price[0].distPrice06
           item.distPrice07 = price[0].distPrice07
           item.distPrice08 = price[0].distPrice08
+          item.distPrice09 = price[0].distPrice09
         }
       }
       for (let i = 0; i < tableBody[key].qty; i += 1) {

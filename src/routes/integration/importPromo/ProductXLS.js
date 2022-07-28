@@ -68,6 +68,7 @@ const PrintXLS = ({ data, storeInfo, name, listBrand, listCategory }) => {
       { value: getDistPriceName('distPrice06'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: getDistPriceName('distPrice07'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: getDistPriceName('distPrice08'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: getDistPriceName('distPrice09'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       {
         value: 'MEREK',
         alignment: { vertical: 'middle', horizontal: 'center' },

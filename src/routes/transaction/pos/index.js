@@ -1186,6 +1186,7 @@ const Pos = ({
             item.distPrice06 = currentReward.distPrice06
             item.distPrice07 = currentReward.distPrice07
             item.distPrice08 = currentReward.distPrice08
+            item.distPrice09 = currentReward.distPrice09
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
@@ -1196,6 +1197,7 @@ const Pos = ({
             item.distPrice06 = item.serviceCost
             item.distPrice07 = item.serviceCost
             item.distPrice08 = item.serviceCost
+            item.distPrice09 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
           if (selectedPaymentShortcut
@@ -1228,6 +1230,7 @@ const Pos = ({
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
             sellPrice: selectedPrice,
@@ -1308,6 +1311,7 @@ const Pos = ({
             item.distPrice06 = currentReward.distPrice06
             item.distPrice07 = currentReward.distPrice07
             item.distPrice08 = currentReward.distPrice08
+            item.distPrice09 = currentReward.distPrice09
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
@@ -1318,6 +1322,7 @@ const Pos = ({
             item.distPrice06 = item.serviceCost
             item.distPrice07 = item.serviceCost
             item.distPrice08 = item.serviceCost
+            item.distPrice09 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
           if (selectedPaymentShortcut
@@ -1350,6 +1355,7 @@ const Pos = ({
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             qty,
             typeCode: 'S',
             sellPrice: selectedPrice,
