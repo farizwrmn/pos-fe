@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/accountCode'
+import { query, add, edit, remove } from 'services/k3express/product/productBrand'
 import { pageModel } from 'models/common'
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('K3Express Brand has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'accountCode',
+  namespace: 'expressProductBrand',
 
   state: {
     currentItem: {},
@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/k3express/product-brand') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -98,7 +98,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const id = yield select(({ expressProductBrand }) => expressProductBrand.currentItem.id)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)
       if (data.success) {
