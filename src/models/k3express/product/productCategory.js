@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import FormData from 'form-data'
+import { uploadExpressCategoryImage } from 'services/utils/imageUploader'
 import { query, add, edit, remove } from 'services/k3express/product/productCategory'
 import { pageModel } from 'models/common'
 
@@ -70,6 +72,37 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.categoryImage
+        && payload.data.categoryImage.fileList
+        && payload.data.categoryImage.fileList.length > 0
+        && payload.data.categoryImage.fileList.length <= 5) {
+        for (let key in payload.data.categoryImage.fileList) {
+          const item = payload.data.categoryImage.fileList[key]
+          const formData = new FormData()
+          formData.append('file', item.originFileObj)
+          const responseUpload = yield call(uploadExpressCategoryImage, formData)
+          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+            uploadedImage.push(responseUpload.data.filename)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.categoryImage
+        && payload.data.categoryImage.fileList
+        && payload.data.categoryImage.fileList.length > 0
+        && payload.data.categoryImage.fileList.length > 5) {
+        throw new Error('Cannot upload more than 5 image')
+      }
+      // End - Upload Image
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.categoryImage = uploadedImage && uploadedImage[0] ? uploadedImage[0] : 'no_image.png'
+      } else {
+        payload.data.categoryImage = 'no_image.png'
+      }
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
@@ -98,6 +131,41 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      // Start - Upload Image
+      const uploadedImage = []
+      if (payload
+        && payload.data
+        && payload.data.categoryImage
+        && payload.data.categoryImage.fileList
+        && payload.data.categoryImage.fileList.length > 0
+        && payload.data.categoryImage.fileList.length <= 5) {
+        for (let key in payload.data.categoryImage.fileList) {
+          const item = payload.data.categoryImage.fileList[key]
+          if (item && item.originFileObj) {
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadExpressCategoryImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+          } else if (item && item.name) {
+            uploadedImage.push(item.name)
+          }
+        }
+      } else if (payload
+        && payload.data
+        && payload.data.categoryImage
+        && payload.data.categoryImage.fileList
+        && payload.data.categoryImage.fileList.length > 0
+        && payload.data.categoryImage.fileList.length > 1) {
+        throw new Error('Cannot upload more than 1 image')
+      }
+      // End - Upload Image
+      if (uploadedImage && uploadedImage.length) {
+        payload.data.categoryImage = uploadedImage && uploadedImage[0] ? uploadedImage[0] : 'no_image.png'
+      } else {
+        payload.data.categoryImage = 'no_image.png'
+      }
       const id = yield select(({ expressProductCategory }) => expressProductCategory.currentItem.id)
       const newCounter = { ...payload.data, id }
       const data = yield call(edit, newCounter)

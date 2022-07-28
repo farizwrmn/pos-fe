@@ -109,50 +109,42 @@ const FormCounter = ({
             })(<Input />)}
           </FormItem>
           <FormItem label="Image" {...formItemLayout}>
-            {getFieldDecorator('categoryImage', {
-              initialValue: item.categoryImage
-                && item.categoryImage != null
-                && item.categoryImage !== '"no_image.png"'
-                && item.categoryImage !== 'no_image.png' ?
+            {getFieldDecorator('brandImage', {
+              initialValue: item.brandImage
+                && item.brandImage != null ?
                 {
-                  fileList: JSON.parse(item.categoryImage).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
+                  fileList: [
+                    {
+                      uid: 0,
+                      name: item.brandImage,
                       status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
+                      url: `${IMAGEURL}/${item.brandImage}`,
+                      thumbUrl: `${IMAGEURL}/${item.brandImage}`
+                    }
+                  ]
                 }
-                : item.categoryImage,
+                : item.brandImage,
               rules: [
                 {
-                  required: false
+                  required: true
                 }
               ]
             })(
               <Upload
-                multiple
                 showUploadList={{
                   showPreviewIcon: true
                 }}
                 listType="picture"
                 defaultFileList={
-                  item.categoryImage
-                    && item.categoryImage != null
-                    && item.categoryImage !== '"no_image.png"'
-                    && item.categoryImage !== 'no_image.png' ?
-                    JSON.parse(item.categoryImage).map((detail, index) => {
-                      return ({
-                        uid: index + 1,
-                        name: detail,
-                        status: 'done',
-                        url: `${IMAGEURL}/${detail}`,
-                        thumbUrl: `${IMAGEURL}/${detail}`
-                      })
-                    })
-                    : []
+                  [
+                    {
+                      uid: 0,
+                      name: item.brandImage,
+                      status: 'done',
+                      url: `${IMAGEURL}/${item.brandImage}`,
+                      thumbUrl: `${IMAGEURL}/${item.brandImage}`
+                    }
+                  ]
                 }
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}

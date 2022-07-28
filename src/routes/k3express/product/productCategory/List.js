@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
+import { IMAGEURL } from 'utils/config.company'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -21,19 +22,34 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'ID',
+      dataIndex: 'categoryCode',
+      key: 'categoryCode'
     },
     {
       title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      dataIndex: 'categoryName',
+      key: 'categoryName'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Image',
+      dataIndex: 'categoryImage',
+      key: 'categoryImage',
+      width: '100px',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          return <img height="70px" src={`${IMAGEURL}/${text}`} alt="no_image" />
+        }
+        return null
+      }
+    },
+    {
+      title: 'Parent Category',
+      dataIndex: 'categoryParentName',
+      key: 'categoryParentName'
     },
     {
       title: 'Operation',
@@ -41,7 +57,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]
