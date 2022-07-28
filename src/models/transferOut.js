@@ -422,7 +422,7 @@ export default modelExtend(pageModel, {
       } else {
         error(response)
         if (response && typeof response.message === 'object') {
-          stockMinusAlert([response.message])
+          stockMinusAlert(response.message)
         }
         // throw data
       }

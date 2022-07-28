@@ -221,6 +221,8 @@ class AdvancedForm extends Component {
   render () {
     const {
       lastTrans,
+      listK3ExpressCategory,
+      listK3ExpressBrand,
       listShopeeCategory,
       listShopeeBrand,
       getShopeeBrand,
@@ -451,9 +453,9 @@ class AdvancedForm extends Component {
     const productCountry = (listProductCountry || []).length > 0 ? listProductCountry.map(c => <Option value={c.countryName} key={c.countryName} title={`${c.countryCode} - ${c.countryName}`}>{`${c.countryCode} - ${c.countryName}`}</Option>) : []
     const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
     const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
-    const k3expressCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
+    const k3expressCategory = (listK3ExpressCategory || []).length > 0 ? listK3ExpressCategory.filter(filtered => filtered.categoryParentId).map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.categoryCode}`}>{`${c.categoryName} | ${c.categoryName}`}</Option>) : []
     const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
-    const k3expressBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
+    const k3expressBrand = (listK3ExpressBrand || []).length > 0 ? listK3ExpressBrand.map(c => <Option value={c.id} key={c.id} title={`${c.brandName} | ${c.brandCode}`}>{`${c.brandName} | ${c.brandCode}`}</Option>) : []
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productInventory = (listInventory || []).length > 0 ? listInventory.map(c => <Option value={c.code} key={c.code}>{c.type}</Option>) : []
     const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -1141,7 +1143,7 @@ class AdvancedForm extends Component {
                 >Publish</Checkbox>)}
               </FormItem>
               {getFieldValue('expressActive') ? (<div>
-                <FormItem label="K3Express Category" hasFeedback {...formItemLayout}>
+                <FormItem label={(<Link target="_blank" to={'/k3express/product-category'}>Category</Link>)} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('expressCategoryId', {
                     initialValue: item.expressCategoryId ? {
                       key: item.expressCategoryId,
@@ -1157,14 +1159,13 @@ class AdvancedForm extends Component {
                     allowClear
                     optionFilterProp="children"
                     labelInValue
-                    onChange={onChangeShopeeCategory}
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                   >{k3expressCategory}
                   </Select>)}
                 </FormItem>
 
                 {getFieldValue('expressCategoryId') && getFieldValue('expressCategoryId').key ? (
-                  <FormItem label="K3Express Brand" hasFeedback {...formItemLayout}>
+                  <FormItem label={(<Link target="_blank" to={'/k3express/product-product'}>Brand</Link>)} hasFeedback {...formItemLayout}>
                     {getFieldDecorator('expressBrandId', {
                       initialValue: item.expressBrandId ? {
                         key: item.expressBrandId,
@@ -1181,7 +1182,7 @@ class AdvancedForm extends Component {
                       onSearch={this.changeBrand}
                       optionFilterProp="children"
                       labelInValue
-                      notFoundContent={loadingButton.effects['k3expressCategory/queryBrand'] ? <Spin size="small" /> : null}
+                      notFoundContent={loadingButton.effects['expressProductBrand/queryLove'] ? <Spin size="small" /> : null}
                       filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                     >{k3expressBrand}
                     </Select>)}
