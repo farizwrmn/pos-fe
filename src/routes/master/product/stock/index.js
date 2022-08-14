@@ -16,8 +16,10 @@ import ModalQuantity from './ModalQuantity'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPriceStore, shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ stockLocation, expressProductCategory, expressProductBrand, productcountry, userStore, stockExtraPriceStore, shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list: listShopeeCategory, listAttribute: listShopeeAttribute, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
+  const { listLov: listK3ExpressCategory } = expressProductCategory
+  const { listLov: listK3ExpressBrand } = expressProductBrand
   const { list: listProductCountry } = productcountry
   const { list: listStockLocation } = stockLocation
   const { list: listStoreQuantity } = stockExtraPriceStore
@@ -324,6 +326,8 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
 
   const formProps = {
     modalGrabmartCampaignProps,
+    listK3ExpressCategory,
+    listK3ExpressBrand,
     listShopeeCategoryRecommend,
     listShopeeLogistic,
     listShopeeCategory,
@@ -687,6 +691,8 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
 }
 
 ProductStock.propTypes = {
+  expressProductCategory: PropTypes.object,
+  expressProductBrand: PropTypes.object,
   productcountry: PropTypes.object,
   grabCategory: PropTypes.object,
   stockExtraPriceStore: PropTypes.object,
@@ -704,5 +710,5 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ stockLocation, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
-  ({ stockLocation, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ stockLocation, expressProductCategory, expressProductBrand, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
+  ({ stockLocation, expressProductCategory, expressProductBrand, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

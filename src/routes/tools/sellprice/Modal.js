@@ -140,6 +140,14 @@ const ModalEntry = ({
           }]
         })(<InputNumber min={0} style={{ width: '100%' }} />)}
       </FormItem>
+      <FormItem label={getDistPriceName('distPrice09')} hasFeedback {...formItemLayout}>
+        {getFieldDecorator('distPrice09', {
+          initialValue: currentItemList.distPrice09,
+          rules: [{
+            required: true
+          }]
+        })(<InputNumber min={0} style={{ width: '100%' }} />)}
+      </FormItem>
     </Modal>
   )
 }

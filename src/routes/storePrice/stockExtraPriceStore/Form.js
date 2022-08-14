@@ -121,7 +121,8 @@ const FormCounter = ({
           distPrice05: item.distPrice05,
           distPrice06: item.distPrice06,
           distPrice07: item.distPrice07,
-          distPrice08: item.distPrice08
+          distPrice08: item.distPrice08,
+          distPrice09: item.distPrice09
         })
       }
     }
@@ -283,6 +284,18 @@ const FormCounter = ({
           <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice08', {
               initialValue: item.distPrice08,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice09')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice09', {
+              initialValue: item.distPrice09,
               rules: [
                 {
                   required: true,

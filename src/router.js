@@ -216,6 +216,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
               registerModel(app, require('./models/master/specification'))
               registerModel(app, require('./models/master/variantStock'))
               registerModel(app, require('./models/product/productcountry'))
@@ -1252,6 +1254,22 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/consignment/rentRequest'))
               cb(null, require('./routes/consignment/rentRequest/detail'))
             }, 'consignment/rent/rent-request-detail')
+          }
+        }, {
+          path: 'k3express/product-brand',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              cb(null, require('./routes/k3express/product/productBrand'))
+            }, 'k3express/product/k3expressbrand')
+          }
+        }, {
+          path: 'k3express/product-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              cb(null, require('./routes/k3express/product/productCategory'))
+            }, 'k3express/product/k3expresscategory')
           }
         }, {
           path: 'cash-entry/:id',

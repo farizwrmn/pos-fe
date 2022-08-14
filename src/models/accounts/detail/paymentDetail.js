@@ -111,6 +111,7 @@ export default {
           distPrice06: data.pos[n].distPrice06 || 0,
           distPrice07: data.pos[n].distPrice07 || 0,
           distPrice08: data.pos[n].distPrice08 || 0,
+          distPrice09: data.pos[n].distPrice09 || 0,
           sellingPrice: data.pos[n].sellingPrice || 0,
           discountLoyalty: data.pos[n].discountLoyalty || 0,
           discount: data.pos[n].discount || 0,

@@ -128,6 +128,7 @@ const createTableBody = async (tableBody, aliases) => {
             item.distPrice06 = price[0].distPrice06
             item.distPrice07 = price[0].distPrice07
             item.distPrice08 = price[0].distPrice08
+            item.distPrice09 = price[0].distPrice09
           }
         }
         let background = '#ffffff'

@@ -75,3 +75,33 @@ export async function uploadCategoryImage (params) {
     usage: 'form'
   })
 }
+
+export async function uploadExpressCategoryImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/expresscategory?compress=1`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
+
+export async function uploadExpressBrandImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/expressbrand?compress=1`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
