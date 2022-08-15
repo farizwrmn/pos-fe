@@ -1682,16 +1682,25 @@ export default {
         disc3: 0,
         total: item[typePrice] == null ? item.price : item[typePrice]
       }
-      arrayProd.push(data)
-      yield put({
-        type: 'pos/checkQuantityNewConsignment',
-        payload: {
-          data,
-          arrayProd,
-          setting,
-          type: payload.type
-        }
-      })
+      let consignment = getConsignment()
+      const exists = consignment.filter(el => el.code === item.product.product_code)
+      if ((exists || []).length > 0) {
+        Modal.warning({
+          title: 'Already Exists',
+          content: 'Already Exists in list'
+        })
+      } else {
+        arrayProd.push(data)
+        yield put({
+          type: 'pos/checkQuantityNewConsignment',
+          payload: {
+            data,
+            arrayProd,
+            setting,
+            type: payload.type
+          }
+        })
+      }
     },
 
     // Add
