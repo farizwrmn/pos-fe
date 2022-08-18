@@ -1331,7 +1331,7 @@ class AdvancedForm extends Component {
                         if (attribute.date_format_type === 'YEAR_MONTH_DATE') {
                           return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
                             {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
-                              initialValue: attribute.initialValue,
+                              initialValue: attribute.initialValue && typeof attribute.initialValue === 'string' ? moment(attribute.initialValue) : moment().add(6, 'months'),
                               rules: [
                                 {
                                   required: attribute.is_mandatory
