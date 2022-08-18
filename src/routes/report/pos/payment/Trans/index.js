@@ -15,7 +15,7 @@ import Filter from './Filter'
 
 const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSalesDetail, loading, app }) => {
   const { list } = returnSalesDetail
-  const { listTrans, from, to, productCode } = posPaymentReport
+  const { listTrans, listBalance, from, to, productCode } = posPaymentReport
   const { listSalesCategory, listStockByCategory } = dashboard
   const { listOpts } = paymentOpts
   const { user, storeInfo } = app
@@ -48,7 +48,9 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSale
     listSalesCategory,
     listStockByCategory,
     listTrans,
+    listBalance,
     user,
+    loading,
     storeInfo,
     from,
     to,
@@ -58,7 +60,7 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSale
         type: 'posPaymentReport/setListNull'
       })
     },
-    onDateChange (from, to) {
+    onDateChange (from, to, balanceId) {
       // dispatch({
       //   type: 'posPaymentReport/query',
       //   payload: {
@@ -74,14 +76,33 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSale
       //   }
       // })
       const { pathname, query } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          from,
-          to
-        }
-      }))
+      if (balanceId && from && to) {
+        dispatch({
+          type: 'posPaymentReport/query',
+          payload: {
+            balanceId,
+            from,
+            to
+          }
+        })
+        dispatch({
+          type: 'dashboard/querySalesCategory',
+          payload: {
+            balanceId,
+            from,
+            to
+          }
+        })
+      } else {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            from,
+            to
+          }
+        }))
+      }
     }
   }
   let groupBy = (xs) => {

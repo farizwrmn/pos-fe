@@ -4,13 +4,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, Spin, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintDaily from './PrintDaily'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
+const { Option } = Select
 
 const leftColumn = {
   xs: 24,
@@ -29,7 +30,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ loading, onDateChange, listBalance, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
   const handleChange = (value) => {
     const from = value[0].format('YYYY-MM-DD')
@@ -53,14 +54,58 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
     onListReset()
   }
 
+  let listBalanceOpt = []
+  try {
+    listBalanceOpt = (listBalance || []).length > 0 ? listBalance.map((c) => {
+      return (
+        <Option
+          value={c.id}
+          key={c.id}
+          title={
+            `${c.user.userName} | ${moment(c.open).format('DD-MMM HH:mm')
+            } | ${c.closed ? moment(c.closed).format('DD-MMM HH:mm') : ''
+            }`
+          }
+        >{
+            `${c.user.userName} | ${moment(c.open).format('DD-MMM HH:mm')
+            } | ${c.closed ? moment(c.closed).format('DD-MMM HH:mm') : ''
+            }`
+          }</Option>
+      )
+    }) : []
+  } catch (error) {
+    console.log('error', error)
+  }
+
   return (
     <Row>
-      <Col {...leftColumn} >
+      <Col {...leftColumn}>
         <FilterItem label="Trans Date">
           {getFieldDecorator('rangePicker', {
-            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null
+            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
           })(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+            <RangePicker disabled={loading.effects['posPaymentReport/query'] || loading.effects['posPaymentReport/queryLovBalance']} size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+          )}
+        </FilterItem>
+        <FilterItem label="Balance">
+          {getFieldDecorator('balanceId')(
+            <Select
+              allowClear
+              onSelect={(item) => {
+                console.log('item', item)
+                onDateChange(from, to, item)
+              }}
+              disabled={loading.effects['posPaymentReport/query'] || loading.effects['posPaymentReport/queryLovBalance']}
+              style={{ width: '100%', marginTop: '10px' }}
+              notFoundContent={loading.effects['posPaymentReport/queryLovBalance'] ? <Spin size="small" /> : null}
+            >
+              {listBalanceOpt}
+            </Select>
           )}
         </FilterItem>
       </Col>
