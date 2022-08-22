@@ -96,10 +96,11 @@ const Filter = ({ loading, onDateChange, listBalance, onListReset, form: { getFi
           {getFieldDecorator('balanceId')(
             <Select
               allowClear
-              onSelect={(item) => {
+              onChange={(item) => {
                 console.log('item', item)
                 onDateChange(from, to, item)
               }}
+              multiple
               disabled={loading.effects['posPaymentReport/query'] || loading.effects['posPaymentReport/queryLovBalance']}
               style={{ width: '100%', marginTop: '10px' }}
               notFoundContent={loading.effects['posPaymentReport/queryLovBalance'] ? <Spin size="small" /> : null}
