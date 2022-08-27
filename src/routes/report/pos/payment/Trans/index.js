@@ -60,21 +60,16 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSale
         type: 'posPaymentReport/setListNull'
       })
     },
+    getBalanceId (from, to) {
+      dispatch({
+        type: 'posPaymentReport/queryLovBalance',
+        payload: {
+          from,
+          to
+        }
+      })
+    },
     onDateChange (from, to, balanceId) {
-      // dispatch({
-      //   type: 'posPaymentReport/query',
-      //   payload: {
-      //     from,
-      //     to
-      //   }
-      // })
-      // dispatch({
-      //   type: 'posPaymentReport/setDate',
-      //   payload: {
-      //     from,
-      //     to
-      //   }
-      // })
       const { pathname, query } = location
       if (balanceId && from && to) {
         dispatch({

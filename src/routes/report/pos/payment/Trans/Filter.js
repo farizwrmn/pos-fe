@@ -3,7 +3,6 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
 import { Button, Select, Spin, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintDaily from './PrintDaily'
@@ -12,6 +11,20 @@ import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
+const FormItem = Form.Item
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
+  },
+  wrapperCol: {
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
+}
 
 const leftColumn = {
   xs: 24,
@@ -30,12 +43,23 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ loading, onDateChange, listBalance, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ loading, getBalanceId, onDateChange, listBalance, onListReset, form: { validateFields, getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
-  const handleChange = (value) => {
+  const handleChangeDate = (value) => {
+    console.log('value', value)
     const from = value[0].format('YYYY-MM-DD')
     const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
+    getBalanceId(from, to)
+  }
+
+  const handleSearch = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getFieldsValue()
+      onDateChange(data.rangePicker[0].format('YYYY-MM-DD'), data.rangePicker[1].format('YYYY-MM-DD'), data.balanceId)
+    })
   }
 
   const handleReset = () => {
@@ -80,7 +104,7 @@ const Filter = ({ loading, onDateChange, listBalance, onListReset, form: { getFi
   return (
     <Row>
       <Col {...leftColumn}>
-        <FilterItem label="Trans Date">
+        <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
           {getFieldDecorator('rangePicker', {
             initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
             rules: [
@@ -89,28 +113,32 @@ const Filter = ({ loading, onDateChange, listBalance, onListReset, form: { getFi
               }
             ]
           })(
-            <RangePicker disabled={loading.effects['posPaymentReport/query'] || loading.effects['posPaymentReport/queryLovBalance']} size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+            <RangePicker onChange={value => handleChangeDate(value)} size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
-        <FilterItem label="Balance">
+        </FormItem>
+        <FormItem label="Balance" hasFeedback {...formItemLayout}>
           {getFieldDecorator('balanceId')(
             <Select
               allowClear
-              onChange={(item) => {
-                console.log('item', item)
-                onDateChange(from, to, item)
-              }}
               multiple
-              disabled={loading.effects['posPaymentReport/query'] || loading.effects['posPaymentReport/queryLovBalance']}
               style={{ width: '100%', marginTop: '10px' }}
               notFoundContent={loading.effects['posPaymentReport/queryLovBalance'] ? <Spin size="small" /> : null}
             >
               {listBalanceOpt}
             </Select>
           )}
-        </FilterItem>
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
