@@ -17,10 +17,11 @@ const PrintPDF = ({ user, list, storeInfo }) => {
           { text: count, alignment: 'center', fontSize: 11 },
           { text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 },
           { text: (data.transDate || '').toString(), alignment: 'left', fontSize: 11 },
-          { text: (data.product.productName || '').toString(), alignment: 'right', fontSize: 11 },
+          { text: (data.product.productName || '').toString(), alignment: 'left', fontSize: 11 },
           { text: formatNumbering(data.qty), alignment: 'right', fontSize: 11 },
           { text: formatNumbering(data.DPP), alignment: 'right', fontSize: 11 },
           { text: formatNumbering(data.PPN), alignment: 'right', fontSize: 11 },
+          { text: formatNumbering(data.cogsTotal), alignment: 'right', fontSize: 11 },
           { text: formatNumbering(data.total), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -34,6 +35,7 @@ const PrintPDF = ({ user, list, storeInfo }) => {
   const QTY = list.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   const DPP = list.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
   const PPN = list.reduce((cnt, o) => cnt + parseFloat(o.PPN), 0)
+  const cogsTotal = list.reduce((cnt, o) => cnt + parseFloat(o.cogsTotal), 0)
   const TOTAL = list.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
 
   const styles = {
@@ -118,6 +120,7 @@ const PrintPDF = ({ user, list, storeInfo }) => {
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PPN', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'COST', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -136,6 +139,7 @@ const PrintPDF = ({ user, list, storeInfo }) => {
       { text: formatNumbering(QTY), alignment: 'right', fontSize: 12 },
       { text: formatNumbering(DPP), alignment: 'right', fontSize: 12 },
       { text: formatNumbering(PPN), alignment: 'right', fontSize: 12 },
+      { text: formatNumbering(cogsTotal), alignment: 'right', fontSize: 12 },
       { text: formatNumbering(TOTAL), alignment: 'right', fontSize: 12 }
     ]
   ]
@@ -144,11 +148,12 @@ const PrintPDF = ({ user, list, storeInfo }) => {
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: [
+      '5%',
+      '10%',
       '7%',
-      '11%',
-      '11%',
-      '30%',
+      '23%',
       '7%',
+      '12%',
       '12%',
       '12%',
       '12%'
