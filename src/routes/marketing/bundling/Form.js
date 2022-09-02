@@ -619,7 +619,7 @@ class FormCounter extends Component {
                   ]
                 })(<Input maxLength={60} />)}
               </FormItem>
-              <FormItem label={(<Link target="__blank" to="/marketing/promo-category">Category</Link>)} hasFeedback {...formItemLayout}>
+              <FormItem label={(<Link target="_blank" to="/marketing/promo-category">Category</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('bundlingCategoryId', {
                   initialValue: modalType === 'add' ? undefined : item.bundlingCategoryId,
                   rules: [

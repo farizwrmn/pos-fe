@@ -28,7 +28,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
       key: 'transNo',
       render: (text, record) => {
         const link = getLinkName(record.transactionId, record.transNo, record.transactionType)
-        return <a target="__blank" href={link}>{text}</a>
+        return <a target="_blank" href={link}>{text}</a>
       }
     },
     {

@@ -1446,7 +1446,7 @@ class AdvancedForm extends Component {
                 >{productCountry}
                 </Select>)}
               </FormItem>
-              <FormItem label={(<Link target="__blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
+              <FormItem label={(<Link target="_blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
                 {getFieldDecorator('locationId', {
                   initialValue: modalType === 'add' ? undefined : item.locationId,
                   rules: [
