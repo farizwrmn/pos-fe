@@ -48,6 +48,14 @@ class List extends Component {
         }
       },
       {
+        title: 'Cost',
+        dataIndex: 'cogsTotal',
+        key: 'cogsTotal',
+        render: (text) => {
+          return text.toLocaleString()
+        }
+      },
+      {
         title: 'Total',
         dataIndex: 'total',
         key: 'total',

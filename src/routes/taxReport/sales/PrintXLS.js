@@ -9,6 +9,7 @@ const PrintXLS = ({ list, storeInfo }) => {
   let QTY = list.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
   let DPP = list.reduce((cnt, o) => cnt + parseFloat(o.DPP), 0)
   let PPN = list.reduce((cnt, o) => cnt + parseFloat(o.PPN), 0)
+  let cogsTotal = list.reduce((cnt, o) => cnt + parseFloat(o.cogsTotal), 0)
   let TOTAL = list.reduce((cnt, o) => cnt + parseFloat(o.total), 0)
 
   const styles = {
@@ -66,6 +67,7 @@ const PrintXLS = ({ list, storeInfo }) => {
         row.push({ value: (data.qty || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.DPP || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.PPN || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.cogsTotal || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.total || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         tableBody.push(row)
         start += 1
@@ -80,6 +82,7 @@ const PrintXLS = ({ list, storeInfo }) => {
         { value: QTY, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: DPP, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: PPN, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: cogsTotal, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: TOTAL, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
       ]
     )
@@ -92,6 +95,7 @@ const PrintXLS = ({ list, storeInfo }) => {
         { value: 'QTY', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'DPP', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'PPN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'COST', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'TOTAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
       ]
     )
