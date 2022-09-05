@@ -18,10 +18,10 @@ const formItemLayout = {
 }
 
 const searchBarLayout = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  xs: { span: 15 },
+  sm: { span: 7 },
+  md: { span: 7 },
+  lg: { span: 6 }
 }
 
 const Filter = ({
