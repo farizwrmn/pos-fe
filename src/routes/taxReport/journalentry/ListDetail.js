@@ -56,9 +56,9 @@ const Browse = ({
       bordered={false}
       scroll={{ x: 1000 }}
       columns={columns}
+      pagination={false}
       simple
       size="small"
-      pagination={{ pageSize: 5 }}
       onRowClick={_record => hdlModalShow(_record)}
       footer={() => (
         <div>
