@@ -17,7 +17,6 @@ const Cash = ({ journalentry, accountCode, loading, dispatch, location, app }) =
   const filterProps = {
     onFilterChange (value) {
       const { query, pathname } = location
-      console.log('query', query)
       dispatch(routerRedux.push({
         pathname,
         query: {
