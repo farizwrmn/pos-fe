@@ -5,7 +5,6 @@ import { ModalList } from '../../routes/components'
 
 
 const List = ({
-  ...modalProps,
   listCashier,
   searchText,
   pagination,
@@ -14,7 +13,8 @@ const List = ({
   onReset,
   onClickRow,
   changeText,
-  onChange
+  onChange,
+  ...modalProps
 }) => {
   const width = '80%'
   const modalOpts = {
@@ -35,21 +35,21 @@ const List = ({
       dataIndex: 'isCashierActive',
       key: 'isCashierActive',
       render: text =>
-        (<span>
-          <Tag color={text ? 'blue' : 'red'}>
-            {text ? 'Active' : 'Non-Active'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text ? 'blue' : 'red'}>
+          {text ? 'Active' : 'Non-Active'}
+        </Tag>
+      </span>)
     }, {
       title: 'Employee',
       dataIndex: 'isEmployeeActive',
       key: 'isEmployeeActive',
       render: text =>
-        (<span>
-          <Tag color={text ? 'blue' : 'red'}>
-            {text ? 'Active' : 'Non-Active'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={text ? 'blue' : 'red'}>
+          {text ? 'Active' : 'Non-Active'}
+        </Tag>
+      </span>)
     }
   ]
 

@@ -16,12 +16,16 @@ const Cash = ({ journalentry, accountCode, loading, dispatch, location, app }) =
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
-      dispatch({
-        type: 'journalentry/query',
-        payload: {
-          ...value
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: pagination.current,
+          pageSize: pagination.pageSize
         }
-      })
+      }))
     }
   }
 
@@ -72,11 +76,10 @@ const Cash = ({ journalentry, accountCode, loading, dispatch, location, app }) =
             type: 'journalentry/changeTab',
             payload: { key }
           })
-          const { query, pathname } = location
+          const { pathname } = location
           dispatch(routerRedux.push({
             pathname,
             query: {
-              ...query,
               activeKey: key
             }
           }))

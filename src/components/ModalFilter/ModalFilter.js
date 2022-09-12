@@ -27,7 +27,6 @@ const ModalFilter = ({
   dispatch,
   fields,
   onSubmitFilter,
-  ...modalProps,
   addOn,
   form: {
     getFieldDecorator,
@@ -35,7 +34,8 @@ const ModalFilter = ({
     getFieldValue,
     resetFields,
     validateFields
-  }
+  },
+  ...modalProps
 }) => {
   const { listCashier, modalVisible, searchText, pagination } = cashier
   const modalListProps = {
@@ -153,9 +153,9 @@ const ModalFilter = ({
         </FormItem>
         {fields}
         {addOn.map(data =>
-          (<FormItem label={data.label} {...formItemLayout}>
-            {getFieldDecorator(data.decorator)(data.component)}
-          </FormItem>))}
+        (<FormItem label={data.label} {...formItemLayout}>
+          {getFieldDecorator(data.decorator)(data.component)}
+        </FormItem>))}
       </Form>
     </Modal>
   )
