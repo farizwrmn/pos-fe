@@ -241,7 +241,7 @@ const AdjustForm = ({
               rules: [{
                 required: true
               }]
-            })(<DatePicker format={dateFormat} />)}
+            })(<DatePicker disabled format={dateFormat} />)}
           </FormItem>
         </Col>
         <Col md={24} lg={12}>
