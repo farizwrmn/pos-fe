@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import moment from 'moment'
+import { Form, Input, Button, DatePicker, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -30,6 +31,8 @@ const FormCounter = ({
   onCancel,
   modalType,
   button,
+  storeInfo,
+  listActive,
   form: {
     getFieldDecorator,
     validateFields,
@@ -37,6 +40,7 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  console.log('listActive', listActive)
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -82,31 +86,45 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
+          <FormItem label="Store" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('storeName', {
+              initialValue: storeInfo.storeName,
               rules: [
                 {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  required: false
                 }
               ]
-            })(<Input maxLength={50} autoFocus />)}
+            })(<Input disabled maxLength={255} />)}
           </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Start Time" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transDate', {
+              initialValue: moment(),
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<DatePicker disabled format="YYYY-MM-DD HH:mm" />)}
+          </FormItem>
+          <FormItem label="Description" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Input maxLength={255} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>
+        </Col>
+        <Col {...column}>
+          {listActive && listActive.map((item) => {
+            return item.store.storeName
+          })}
         </Col>
       </Row>
     </Form>

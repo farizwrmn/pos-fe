@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/inventory/stockOpname'
+import { query, queryActive, add, edit, remove } from 'services/inventory/stockOpname'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listActive: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -35,7 +36,13 @@ export default modelExtend(pageModel, {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          if (activeKey === '1') {
+            dispatch({ type: 'query', payload: other })
+          } else {
+            dispatch({
+              type: 'queryActive'
+            })
+          }
         }
       })
     }
@@ -60,6 +67,18 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryActive ({ payload = {} }, { call, put }) {
+      const data = yield call(queryActive, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listActive: data.data
+          }
+        })
+      }
+    },
+
     * delete ({ payload }, { call, put }) {
       const data = yield call(remove, payload)
       if (data.success) {
@@ -73,6 +92,9 @@ export default modelExtend(pageModel, {
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
+        yield put({
+          type: 'queryActive'
+        })
         yield put({
           type: 'updateState',
           payload: {

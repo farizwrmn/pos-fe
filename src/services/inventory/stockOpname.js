@@ -1,4 +1,4 @@
-import { request, crypt } from 'utils'
+import { request, crypt, lstorage } from 'utils'
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -10,7 +10,18 @@ export async function query (params) {
   })
 }
 
+export async function queryActive (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-active',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/stock-opname',
