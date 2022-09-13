@@ -2114,10 +2114,13 @@ const Pos = ({
               ))}
               {listMinimumPayment
                 && listMinimumPayment.length > 0
-                && (curNetto + dineIn) >= listMinimumPayment[0].minimumPayment
-                && listMinimumPayment.map(item => (
-                  <Tag style={{ marginBottom: '10px' }} key={item.id} closable={false} color="green" onClick={() => onChooseOffering(item)}>{item && item.description ? item.description : item.name}</Tag>
-                ))}
+                ? listMinimumPayment
+                  .filter((filtered) => {
+                    return (curNetto + dineIn) >= filtered.minimumPayment
+                  })
+                  .map(item => (
+                    <Tag style={{ marginBottom: '10px' }} key={item.id} closable={false} color="green" onClick={() => onChooseOffering(item)}>{item && item.description ? item.description : item.name}</Tag>
+                  )) : null}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />
