@@ -53,14 +53,9 @@ const Bookmark = ({
                                 }
                               }}
                             >
-                              {/* <div>
-                                <Avatar size="large" src="/product-placeholder.jpg" />
-                              </div> */}
-                              {/* <div>{item && item.product ? item.product.productCode : item.bundle.code}</div> */}
                               <div>
                                 <h4>{item && item.product ? item.product.productName : item.bundle.name}</h4>
                               </div>
-                              {/* <div>{item && item.product ? currencyFormatter(item.product.sellPrice) : null}</div> */}
                             </Card.Grid>
                           )
                         }) : (

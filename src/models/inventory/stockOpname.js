@@ -71,7 +71,7 @@ export default modelExtend(pageModel, {
       const data = yield call(queryActive, payload)
       if (data.success) {
         yield put({
-          type: 'querySuccess',
+          type: 'updateState',
           payload: {
             listActive: data.data
           }

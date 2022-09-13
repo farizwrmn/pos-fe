@@ -1,9 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, Button, DatePicker, Row, Col, Modal } from 'antd'
+import { routerRedux } from 'dva/router'
+import { Form, Input, Button, DatePicker, Row, Col, Card, Modal } from 'antd'
+import styles from './form.less'
 
 const FormItem = Form.Item
+
+const gridStyle = {
+  width: '100%',
+  textAlign: 'center'
+}
 
 const formItemLayout = {
   labelCol: {
@@ -27,6 +34,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  dispatch,
   onSubmit,
   onCancel,
   modalType,
@@ -40,7 +48,6 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  console.log('listActive', listActive)
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -122,8 +129,24 @@ const FormCounter = ({
           </FormItem>
         </Col>
         <Col {...column}>
-          {listActive && listActive.map((item) => {
-            return item.store.storeName
+          {listActive && listActive.map((item, index) => {
+            return (
+              <Card.Grid
+                style={gridStyle}
+                key={index}
+                className={styles.card}
+                onClick={() => {
+                  dispatch(routerRedux.push({
+                    pathname: `stock-opname/${item.id}`
+                  }))
+                }}
+              >
+                <div>
+                  <h4>{item && item.store ? item.store.storeName : ''}</h4>
+                  <h4>{item && item.startDate ? moment(item.startDate).format('YYYY-MM-DD HH:mm:ss') : ''}</h4>
+                </div>
+              </Card.Grid>
+            )
           })}
         </Col>
       </Row>
