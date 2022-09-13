@@ -238,6 +238,7 @@ const AdjustForm = ({
           </FormItem>
           <FormItem label="Date" {...formItemLayout}>
             {getFieldDecorator('transDate', {
+              initialValue: moment(),
               rules: [{
                 required: true
               }]
