@@ -129,6 +129,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
         <Col {...column}>
+          <h1>Active Stock Opname</h1>
           {listActive && listActive.map((item, index) => {
             return (
               <Card.Grid
