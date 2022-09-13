@@ -1296,6 +1296,22 @@ const Routers = function ({ history, app }) {
             }, 'accounts-journal-entry-detail')
           }
         }, {
+          path: 'stock-opname/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
+            }, 'stock-opname-detail')
+          }
+        }, {
+          path: 'stock-opname',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpname'))
+            }, 'stock-opname')
+          }
+        }, {
           path: 'journal-entry',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
