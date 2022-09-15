@@ -13,15 +13,15 @@ import styles from './index.less'
 
 
 const Detail = ({ stockOpname, dispatch }) => {
-  const { listDetail, data } = stockOpname
+  const { listDetail, detailData } = stockOpname
   const content = []
-  for (let key in data) {
-    if ({}.hasOwnProperty.call(data, key)) {
+  for (let key in detailData) {
+    if ({}.hasOwnProperty.call(detailData, key)) {
       if (key !== 'policeNoId' && key !== 'storeId' && key !== 'id' && key !== 'memberId') {
         content.push(
           <div key={key} className={styles.item}>
             <div>{key}</div>
-            <div>{String(data[key])}</div>
+            <div>{String(detailData[key])}</div>
           </div>
         )
       }

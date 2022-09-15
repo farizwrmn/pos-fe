@@ -10,6 +10,26 @@ export async function query (params) {
   })
 }
 
+export async function queryListDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-detail',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/stock-opname/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryActive (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

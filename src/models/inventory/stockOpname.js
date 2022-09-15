@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryActive, add, edit, remove } from 'services/inventory/stockOpname'
+import { lstorage } from 'utils'
+import { query, queryActive, queryById, queryListDetail, add, edit, remove } from 'services/inventory/stockOpname'
 import { pageModel } from 'models/common'
+import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
   message.success('Stock Opname has been saved')
@@ -17,6 +19,13 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listActive: [],
+    listDetail: [],
+    detailData: {},
+    detailPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -29,6 +38,17 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore(),
+              match
+            }
+          })
+        }
         if (pathname === '/stock-opname') {
           dispatch({
             type: 'updateState',
@@ -49,6 +69,43 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { detail, ...other } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            detailData: other
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * queryDetailData ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListDetail, payload)
+      if (data.success && data.data) {
+        const { detail } = data.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetail: detail,
+            detailPagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
