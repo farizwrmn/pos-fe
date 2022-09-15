@@ -53,7 +53,7 @@ const Detail = ({ stockOpname, dispatch }) => {
 
   return (<div className="wrapper">
     <Row>
-      <Col lg={6}>
+      <Col lg={8}>
         <div className="content-inner-zero-min-height">
           <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
           <h1>Detail Info</h1>

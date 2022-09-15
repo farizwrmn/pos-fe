@@ -54,8 +54,8 @@ const List = ({ editList, ...tableProps }) => {
     },
     {
       title: 'Selisih',
-      dataIndex: 'diff',
-      key: 'diff',
+      dataIndex: 'qtyDiff',
+      key: 'qtyDiff',
       width: '100px',
       render: text => formatNumberIndonesia(text || 0)
     },
