@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
-import styles from '../../../../themes/index.less'
+import moment from 'moment'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
@@ -13,38 +13,65 @@ const List = ({ editList, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 40
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '100px'
     },
     {
-      title: 'Account Code',
-      dataIndex: 'accountCode.accountCode',
-      key: 'accountCode.accountCode',
-      width: 100
+      title: 'Product',
+      dataIndex: 'productName',
+      key: 'productName',
+      width: '200px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div><strong>{record.productCode}</strong> - {record.productName}</div>
+          </div>
+        )
+      }
     },
     {
-      title: 'Account Name',
-      dataIndex: 'accountCode.accountName',
-      key: 'accountCode.accountName',
-      width: 200
-    },
-    {
-      title: 'Debit',
-      dataIndex: 'amountIn',
-      key: 'amountIn',
-      width: 120,
-      className: styles.alignRight,
+      title: 'Stock Awal',
+      dataIndex: 'qtyAwal',
+      key: 'qtyAwal',
+      width: '100px',
       render: text => formatNumberIndonesia(text || 0)
     },
     {
-      title: 'Credit',
-      dataIndex: 'amountOut',
-      key: 'amountOut',
-      width: 120,
-      className: styles.alignRight,
+      title: 'Input',
+      dataIndex: 'qty',
+      key: 'qty',
+      width: '100px',
       render: text => formatNumberIndonesia(text || 0)
+    },
+    {
+      title: 'Penjualan',
+      dataIndex: 'qtySales',
+      key: 'qtySales',
+      width: '100px',
+      render: text => formatNumberIndonesia(text || 0)
+    },
+    {
+      title: 'Selisih',
+      dataIndex: 'diff',
+      key: 'diff',
+      width: '100px',
+      render: text => formatNumberIndonesia(text || 0)
+    },
+    {
+      title: 'Input Time',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: '150px',
+      render: text => (text ? moment(text).format('HH:mm:ss') : '')
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      width: '150px',
+      render: text => (text ? moment(text).format('HH:mm:ss') : '')
     }
   ]
 

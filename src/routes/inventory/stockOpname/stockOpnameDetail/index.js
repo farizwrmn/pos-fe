@@ -5,7 +5,8 @@ import { routerRedux } from 'dva/router'
 import {
   Row,
   Col,
-  // Tag,
+  Tag,
+  Spin,
   Button
 } from 'antd'
 import TransDetail from './TransDetail'
@@ -28,6 +29,20 @@ const Detail = ({ stockOpname, dispatch }) => {
     }
   }
 
+  const getTag = (record) => {
+    console.log('record', record)
+    if (record.status === 1) {
+      return <Tag color="green">Finish</Tag>
+    }
+    return <Tag color="yellow">In Progress</Tag>
+  }
+
+  console.log('detailData', detailData)
+
+  if (!detailData.id) {
+    return <Spin size="large" />
+  }
+
   const BackToList = () => {
     dispatch(routerRedux.push('/stock-opname?activeKey=0'))
   }
@@ -41,13 +56,24 @@ const Detail = ({ stockOpname, dispatch }) => {
       <Col lg={6}>
         <div className="content-inner-zero-min-height">
           <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
-          <h1>Invoice Info</h1>
+          <h1>Detail Info</h1>
           <div className={styles.content}>
-            {content}
+            <Row>
+              <Col span={12}><strong>STORE</strong></Col>
+              <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
+            </Row>
+            <Row>
+              <Col span={12}>BATCH NUMBER</Col>
+              <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
+            </Row>
+            <Row>
+              <Col span={12}>Status</Col>
+              <Col span={12}>{getTag(detailData)}</Col>
+            </Row>
           </div>
         </div>
       </Col>
-      <Col lg={18}>
+      <Col lg={24}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
           <Row style={{ padding: '10px', margin: '4px' }}>
@@ -60,8 +86,9 @@ const Detail = ({ stockOpname, dispatch }) => {
 }
 
 Detail.propTypes = {
+  loading: PropTypes.object,
   app: PropTypes.object,
   stockOpname: PropTypes.object
 }
 
-export default connect(({ app, stockOpname }) => ({ app, stockOpname }))(Detail)
+export default connect(({ loading, app, stockOpname }) => ({ loading, app, stockOpname }))(Detail)

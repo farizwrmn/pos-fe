@@ -44,8 +44,7 @@ export default modelExtend(pageModel, {
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1]),
-              storeId: lstorage.getCurrentUserStore(),
-              match
+              storeId: lstorage.getCurrentUserStore()
             }
           })
         }

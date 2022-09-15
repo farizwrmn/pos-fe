@@ -11,14 +11,15 @@ import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps,
+const List = ({
   user,
   dispatch,
   loadingModel,
   editItem,
   deleteItem,
   listCategory,
-  listBrand
+  listBrand,
+  ...tableProps
 }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
