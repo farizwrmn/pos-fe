@@ -30,14 +30,11 @@ const Detail = ({ stockOpname, dispatch }) => {
   }
 
   const getTag = (record) => {
-    console.log('record', record)
     if (record.status === 1) {
       return <Tag color="green">Finish</Tag>
     }
     return <Tag color="yellow">In Progress</Tag>
   }
-
-  console.log('detailData', detailData)
 
   if (!detailData.id) {
     return <Spin size="large" />

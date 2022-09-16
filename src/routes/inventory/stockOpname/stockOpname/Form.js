@@ -138,7 +138,7 @@ const FormCounter = ({
                 className={styles.card}
                 onClick={() => {
                   dispatch(routerRedux.push({
-                    pathname: `stock-opname/${item.id}`
+                    pathname: `/stock-opname/${item.id}`
                   }))
                 }}
               >

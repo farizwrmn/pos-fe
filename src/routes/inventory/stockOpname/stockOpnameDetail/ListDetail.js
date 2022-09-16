@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import { numberFormat } from 'utils'
 import moment from 'moment'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const numberFormatter = numberFormat.numberFormatter
 
 const List = ({ editList, ...tableProps }) => {
   const handleMenuClick = (record) => {
@@ -36,28 +36,35 @@ const List = ({ editList, ...tableProps }) => {
       dataIndex: 'qtyAwal',
       key: 'qtyAwal',
       width: '100px',
-      render: text => formatNumberIndonesia(text || 0)
+      render: text => numberFormatter(text || 0)
+    },
+    {
+      title: 'Stock Live',
+      dataIndex: 'qtyLive',
+      key: 'qtyLive',
+      width: '100px',
+      render: text => numberFormatter(text || 0)
     },
     {
       title: 'Input',
       dataIndex: 'qty',
       key: 'qty',
       width: '100px',
-      render: text => formatNumberIndonesia(text || 0)
+      render: text => numberFormatter(text || 0)
     },
     {
       title: 'Penjualan',
       dataIndex: 'qtySales',
       key: 'qtySales',
       width: '100px',
-      render: text => formatNumberIndonesia(text || 0)
+      render: text => numberFormatter(text || 0)
     },
     {
       title: 'Selisih',
       dataIndex: 'qtyDiff',
       key: 'qtyDiff',
       width: '100px',
-      render: text => formatNumberIndonesia(text || 0)
+      render: text => numberFormatter(text || 0)
     },
     {
       title: 'Input Time',
