@@ -22,6 +22,7 @@ const List = ({ editList, ...tableProps }) => {
         return (
           <div>
             <div>{record.status}</div>
+            <div>Input By: {record.user.employeeName}</div>
             <div>{moment(record.createdAt).format('HH:mm:ss')}</div>
           </div>
         )
