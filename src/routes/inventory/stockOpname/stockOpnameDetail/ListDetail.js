@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
 import moment from 'moment'
+import styles from '../../../../themes/index.less'
 
 const numberFormatter = numberFormat.numberFormatter
 
@@ -16,7 +17,15 @@ const List = ({ editList, ...tableProps }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: '100px'
+      width: '100px',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>{record.status}</div>
+            <div>{moment(record.createdAt).format('HH:mm:ss')}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Product',
@@ -26,22 +35,17 @@ const List = ({ editList, ...tableProps }) => {
       render: (text, record) => {
         return (
           <div>
-            <div><strong>{record.productCode}</strong> - {record.productName}</div>
+            <div><strong>{record.productCode}</strong></div>
+            <div>{record.productName}</div>
           </div>
         )
       }
     },
     {
-      title: 'Stock Awal',
-      dataIndex: 'qtyAwal',
-      key: 'qtyAwal',
-      width: '100px',
-      render: text => numberFormatter(text || 0)
-    },
-    {
       title: 'Stock Live',
       dataIndex: 'qtyLive',
       key: 'qtyLive',
+      className: styles.alignCenter,
       width: '100px',
       render: text => numberFormatter(text || 0)
     },
@@ -49,13 +53,7 @@ const List = ({ editList, ...tableProps }) => {
       title: 'Input',
       dataIndex: 'qty',
       key: 'qty',
-      width: '100px',
-      render: text => numberFormatter(text || 0)
-    },
-    {
-      title: 'Penjualan',
-      dataIndex: 'qtySales',
-      key: 'qtySales',
+      className: styles.alignCenter,
       width: '100px',
       render: text => numberFormatter(text || 0)
     },
@@ -63,22 +61,9 @@ const List = ({ editList, ...tableProps }) => {
       title: 'Selisih',
       dataIndex: 'qtyDiff',
       key: 'qtyDiff',
+      className: styles.alignCenter,
       width: '100px',
       render: text => numberFormatter(text || 0)
-    },
-    {
-      title: 'Input Time',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: '150px',
-      render: text => (text ? moment(text).format('HH:mm:ss') : '')
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      width: '150px',
-      render: text => (text ? moment(text).format('HH:mm:ss') : '')
     }
   ]
 
@@ -89,7 +74,15 @@ const List = ({ editList, ...tableProps }) => {
         scroll={{ x: 500, y: 270 }}
         columns={columns}
         simple
-        rowKey={record => record.no}
+        rowClassName={(record) => {
+          if (record.status === 'DIFF' || record.status === 'CONFLICT') {
+            if (record.qtyDiff < 0) {
+              return 'table-row-danger'
+            }
+            return 'table-row-dark'
+          }
+        }}
+        rowKey={record => record.id}
         onRowClick={record => handleMenuClick(record)}
       />
     </div>

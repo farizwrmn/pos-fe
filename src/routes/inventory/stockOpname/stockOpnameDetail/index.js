@@ -14,7 +14,7 @@ import styles from './index.less'
 
 
 const Detail = ({ stockOpname, dispatch }) => {
-  const { listDetail, detailData } = stockOpname
+  const { listDetail, detailData, detailPagination } = stockOpname
   const content = []
   for (let key in detailData) {
     if ({}.hasOwnProperty.call(detailData, key)) {
@@ -45,7 +45,8 @@ const Detail = ({ stockOpname, dispatch }) => {
   }
 
   const formDetailProps = {
-    dataSource: listDetail
+    dataSource: listDetail,
+    pagination: detailPagination
   }
 
   return (<div className="wrapper">

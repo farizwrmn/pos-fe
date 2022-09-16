@@ -79,6 +79,16 @@ export default modelExtend(pageModel, {
             detailData: other
           }
         })
+        if (other && other.activeBatch && other.activeBatch.id) {
+          yield put({
+            type: 'queryDetailData',
+            payload: {
+              transId: other.id,
+              storeId: other.storeId,
+              batchId: other.activeBatch.id
+            }
+          })
+        }
       } else {
         throw data
       }
@@ -87,11 +97,10 @@ export default modelExtend(pageModel, {
     * queryDetailData ({ payload = {} }, { call, put }) {
       const data = yield call(queryListDetail, payload)
       if (data.success && data.data) {
-        const { detail } = data.data
         yield put({
           type: 'updateState',
           payload: {
-            listDetail: detail,
+            listDetail: data.data,
             detailPagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
