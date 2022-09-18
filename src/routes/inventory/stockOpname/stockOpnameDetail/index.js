@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import {
+  Modal,
   Row,
   Col,
   Tag,
@@ -49,6 +50,19 @@ const Detail = ({ stockOpname, dispatch }) => {
     pagination: detailPagination
   }
 
+  const onBatch2 = () => {
+    Modal.confirm({
+      title: 'Finish batch',
+      content: 'This process cannot be undone',
+      onOk () {
+
+      },
+      onCancel () {
+
+      }
+    })
+  }
+
   return (<div className="wrapper">
     <Row>
       <Col lg={8}>
@@ -73,6 +87,7 @@ const Detail = ({ stockOpname, dispatch }) => {
       </Col>
       <Col lg={24}>
         <div className="content-inner-zero-min-height">
+          <Button type="primary" icon="save" onClick={() => onBatch2()}>Save</Button>
           <h1>Items</h1>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
