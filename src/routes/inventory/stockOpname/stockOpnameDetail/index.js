@@ -14,6 +14,7 @@ import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
 import TransDetail from './TransDetail'
 import styles from './index.less'
+import ModalEdit from './ModalEdit'
 
 const options = {
   upgrade: true,
@@ -65,8 +66,8 @@ class Detail extends Component {
   }
 
   render () {
-    const { stockOpname, dispatch } = this.props
-    const { listDetail, detailData, detailPagination } = stockOpname
+    const { stockOpname, loading, dispatch } = this.props
+    const { listDetail, modalEditVisible, modalEditItem, detailData, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -100,7 +101,16 @@ class Detail extends Component {
       listDetail,
       dispatch,
       detailData,
-      pagination: detailPagination
+      pagination: detailPagination,
+      onRowClick (record) {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalEditItem: record,
+            modalEditVisible: true
+          }
+        })
+      }
     }
 
     const onBatch2 = () => {
@@ -114,6 +124,35 @@ class Detail extends Component {
 
         }
       })
+    }
+
+    const modalEditProps = {
+      visible: modalEditVisible,
+      item: modalEditItem,
+      detailData,
+      loading: loading.effects['pos/queryPosDetail'],
+      maskClosable: false,
+      title: 'Update as finish?',
+      confirmLoading: loading.effects['stockOpname/finishLine'] || loading.effects['stockOpname/editQty'],
+      wrapClassName: 'vertical-center-modal',
+      onOk (data) {
+        dispatch({
+          type: 'stockOpname/finishLine',
+          payload: data
+        })
+        dispatch({
+          type: 'stockOpname/editQty',
+          payload: data
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalEditVisible: false
+          }
+        })
+      }
     }
 
     return (<div className="wrapper">
@@ -144,6 +183,7 @@ class Detail extends Component {
             <h1>Items</h1>
             <Row style={{ padding: '10px', margin: '4px' }}>
               <TransDetail {...formDetailProps} />
+              {modalEditVisible && <ModalEdit {...modalEditProps} />}
             </Row>
           </div>
         </Col>

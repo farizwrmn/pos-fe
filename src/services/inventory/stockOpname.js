@@ -30,6 +30,16 @@ export async function queryById (params) {
   })
 }
 
+export async function updateFinishLine (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/stock-opname-detail-finish/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryActive (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

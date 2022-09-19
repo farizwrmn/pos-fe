@@ -11,15 +11,13 @@ const TransDetail = ({
   listDetail,
   dispatch,
   detailData,
-  form: {
-    resetFields
-  }
+  onRowClick
 }) => {
   const listProps = {
     pagination: false,
     dataSource: listDetail,
-    editList () {
-      resetFields()
+    editList (record) {
+      onRowClick(record)
     },
     onChange (page) {
       dispatch({

@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, queryListDetail, add, edit, remove } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, updateFinishLine, queryListDetail, add, edit, remove } from 'services/inventory/stockOpname'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -21,6 +21,8 @@ export default modelExtend(pageModel, {
     listActive: [],
     listDetail: [],
     detailData: {},
+    modalEditVisible: false,
+    modalEditItem: {},
     detailPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -68,6 +70,38 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * finishLine ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditVisible: false
+        }
+      })
+      const response = yield call(updateFinishLine, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditItem: {}
+          }
+        })
+        yield put({
+          type: 'queryDetailData',
+          payload: {
+            page: 1,
+            pageSize: 40,
+            status: ['DIFF', 'CONFLICT'],
+            order: '-updatedAt',
+            transId: payload.id,
+            storeId: payload.storeId,
+            batchId: payload.batchId
+          }
+        })
+      } else {
+        throw response
+      }
+    },
 
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)

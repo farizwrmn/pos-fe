@@ -25,6 +25,7 @@ class ModalEntry extends Component {
       onOk,
       item = {},
       data,
+      detailData,
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...modalProps
     } = this.props
@@ -33,7 +34,11 @@ class ModalEntry extends Component {
       validateFields((errors) => {
         if (errors) return
         const record = {
-          id: item ? item.id : '',
+          userId: 1,
+          transId: detailData ? detailData.id : '',
+          batchId: detailData ? detailData.batchId : '',
+          storeId: detailData ? detailData.storeId : '',
+          productCode: item.productCode,
           ...getFieldsValue()
         }
         onOk(record, resetFields)
@@ -46,11 +51,11 @@ class ModalEntry extends Component {
     return (
       <Modal {...modalOpts}
         footer={[
-          <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
+          <Button key="submit" onClick={() => handleOk()} type="primary" >Finish</Button>
         ]}
       >
         <Form>
-          <FormItem {...formItemLayout} label="Amount In">
+          <FormItem {...formItemLayout} label="Qty">
             {getFieldDecorator('Qty', {
               initialValue: item.qty,
               rules: [{
