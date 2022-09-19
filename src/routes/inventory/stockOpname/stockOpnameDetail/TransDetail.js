@@ -6,16 +6,36 @@ import {
 } from 'antd'
 import List from './ListDetail'
 
-const FormPayment = ({
-  dataSource,
+
+const TransDetail = ({
+  listDetail,
+  dispatch,
+  detailData,
   form: {
     resetFields
   }
 }) => {
+  console.log('FormPayment', listDetail)
+
   const listProps = {
-    dataSource,
+    pagination: false,
+    dataSource: listDetail,
     editList () {
       resetFields()
+    },
+    onChange (page) {
+      dispatch({
+        type: 'stockOpname/queryDetailData',
+        payload: {
+          page: page.current,
+          pageSize: 40,
+          status: ['DIFF', 'CONFLICT'],
+          order: '-updatedAt',
+          transId: detailData.id,
+          storeId: detailData.storeId,
+          batchId: detailData.activeBatch.id
+        }
+      })
     }
   }
 
@@ -28,15 +48,20 @@ const FormPayment = ({
   )
 }
 
-FormPayment.propTypes = {
+TransDetail.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
   changeTab: PropTypes.func,
+  listDetail: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired
+    })
+  ).isRequired,
   clickBrowse: PropTypes.func,
   activeKey: PropTypes.string,
   button: PropTypes.string
 }
 
-export default Form.create()(FormPayment)
+export default Form.create()(TransDetail)

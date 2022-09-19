@@ -83,6 +83,10 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'queryDetailData',
             payload: {
+              page: 1,
+              pageSize: 40,
+              status: ['DIFF', 'CONFLICT'],
+              order: '-updatedAt',
               transId: other.id,
               storeId: other.storeId,
               batchId: other.activeBatch.id
@@ -100,7 +104,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listDetail: data.data,
+            listDetail: data.data.map((item, index) => ({ ...item, no: index + 1 })),
             detailPagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,

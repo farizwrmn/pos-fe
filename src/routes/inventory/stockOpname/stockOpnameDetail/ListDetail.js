@@ -14,6 +14,12 @@ const List = ({ editList, ...tableProps }) => {
 
   const columns = [
     {
+      title: 'No',
+      dataIndex: 'no',
+      key: 'no',
+      width: '100px'
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
@@ -72,7 +78,7 @@ const List = ({ editList, ...tableProps }) => {
     <div>
       <Table {...tableProps}
         bordered={false}
-        scroll={{ x: 500, y: 270 }}
+        scroll={{ x: 500 }}
         columns={columns}
         simple
         rowClassName={(record) => {
