@@ -42,7 +42,6 @@ class Detail extends Component {
   setSocket = () => {
     const { stockOpname } = this.props
     const { detailData } = stockOpname
-    console.log('setSocket', detailData.id)
     if (detailData && detailData.id) {
       socket.on(`stock-opname/${detailData.id}`, this.handleData)
     }
@@ -67,7 +66,7 @@ class Detail extends Component {
 
   render () {
     const { stockOpname, loading, dispatch } = this.props
-    const { listDetail, modalEditVisible, modalEditItem, detailData, detailPagination } = stockOpname
+    const { listDetail, listDetailFinish, modalEditVisible, modalEditItem, detailData, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -98,7 +97,8 @@ class Detail extends Component {
     }
 
     const formDetailProps = {
-      listDetail,
+      dataSource: listDetail,
+      loading: loading.effects['stockOpname/queryDetailData'],
       dispatch,
       detailData,
       pagination: detailPagination,
@@ -110,6 +110,16 @@ class Detail extends Component {
             modalEditVisible: true
           }
         })
+      }
+    }
+
+    const formDetailFinishProps = {
+      dataSource: listDetailFinish,
+      loading: loading.effects['stockOpname/queryDetailDataFinished'],
+      dispatch,
+      detailData,
+      onRowClick () {
+
       }
     }
 
@@ -138,10 +148,6 @@ class Detail extends Component {
       onOk (data) {
         dispatch({
           type: 'stockOpname/finishLine',
-          payload: data
-        })
-        dispatch({
-          type: 'stockOpname/editQty',
           payload: data
         })
       },
@@ -183,6 +189,9 @@ class Detail extends Component {
             <h1>Items</h1>
             <Row style={{ padding: '10px', margin: '4px' }}>
               <TransDetail {...formDetailProps} />
+              <br />
+              <br />
+              <TransDetail {...formDetailFinishProps} />
               {modalEditVisible && <ModalEdit {...modalEditProps} />}
             </Row>
           </div>

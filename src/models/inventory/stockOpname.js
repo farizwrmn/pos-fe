@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
     list: [],
     listActive: [],
     listDetail: [],
+    listDetailFinish: [],
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
@@ -71,21 +72,18 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * finishLine ({ payload = {} }, { call, put }) {
+    * finishLine ({ payload = {} }, { select, call, put }) {
+      const listDetail = yield select(({ stockOpname }) => stockOpname.listDetail)
       yield put({
         type: 'updateState',
         payload: {
-          modalEditVisible: false
+          modalEditItem: {},
+          modalEditVisible: false,
+          listDetail: listDetail.filter(filtered => filtered.productCode !== payload.productCode)
         }
       })
       const response = yield call(updateFinishLine, payload)
       if (response.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalEditItem: {}
-          }
-        })
         yield put({
           type: 'queryDetailData',
           payload: {
@@ -93,7 +91,7 @@ export default modelExtend(pageModel, {
             pageSize: 40,
             status: ['DIFF', 'CONFLICT'],
             order: '-updatedAt',
-            transId: payload.id,
+            transId: payload.transId,
             storeId: payload.storeId,
             batchId: payload.batchId
           }
@@ -146,6 +144,24 @@ export default modelExtend(pageModel, {
               showSizeChanger: true,
               showQuickJumper: true
             }
+          }
+        })
+        yield put({
+          type: 'queryDetailDataFinished',
+          payload
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * queryDetailDataFinished ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListDetail, { ...payload, status: 'FINISHED' })
+      if (data.success && data.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetailFinish: data.data.map((item, index) => ({ ...item, no: index + 1 }))
           }
         })
       } else {

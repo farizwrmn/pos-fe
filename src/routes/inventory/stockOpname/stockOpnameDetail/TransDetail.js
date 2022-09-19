@@ -8,14 +8,16 @@ import List from './ListDetail'
 
 
 const TransDetail = ({
-  listDetail,
+  dataSource,
   dispatch,
+  loading,
   detailData,
   onRowClick
 }) => {
   const listProps = {
     pagination: false,
-    dataSource: listDetail,
+    dataSource,
+    loading,
     editList (record) {
       onRowClick(record)
     },

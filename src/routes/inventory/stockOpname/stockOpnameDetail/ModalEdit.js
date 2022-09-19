@@ -35,8 +35,9 @@ class ModalEntry extends Component {
         if (errors) return
         const record = {
           userId: 1,
+          id: item ? item.id : '',
           transId: detailData ? detailData.id : '',
-          batchId: detailData ? detailData.batchId : '',
+          batchId: detailData && detailData.activeBatch ? detailData.activeBatch.id : '',
           storeId: detailData ? detailData.storeId : '',
           productCode: item.productCode,
           ...getFieldsValue()
@@ -48,6 +49,13 @@ class ModalEntry extends Component {
       ...modalProps,
       onOk: handleOk
     }
+
+    const hdlClickKeyDown = (e) => {
+      if (e.keyCode === 13) {
+        handleOk()
+      }
+    }
+
     return (
       <Modal {...modalOpts}
         footer={[
@@ -56,7 +64,7 @@ class ModalEntry extends Component {
       >
         <Form>
           <FormItem {...formItemLayout} label="Qty">
-            {getFieldDecorator('Qty', {
+            {getFieldDecorator('qty', {
               initialValue: item.qty,
               rules: [{
                 required: true,
@@ -64,7 +72,7 @@ class ModalEntry extends Component {
                 message: 'Qty is not required'
               }]
             })(<InputNumber
-
+              onKeyDown={e => hdlClickKeyDown(e)}
               min={0}
               max={99999}
               style={{ width: '100%' }}
