@@ -8,13 +8,17 @@ import {
   Col,
   Tag,
   Spin,
-  Button
+  Button,
+  Form,
+  Select
 } from 'antd'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 import ModalEdit from './ModalEdit'
+
+const { Option } = Select
 
 const options = {
   upgrade: true,
@@ -23,8 +27,18 @@ const options = {
   pingInterval: 4000
 }
 
+const formItemLayout = {
+  labelCol: {
+    span: 10
+  },
+  wrapperCol: {
+    span: 14
+  }
+}
+
 const socket = io(APISOCKET, options)
 
+const FormItem = Form.Item
 
 class Detail extends Component {
   componentDidMount () {
@@ -65,8 +79,13 @@ class Detail extends Component {
   }
 
   render () {
-    const { stockOpname, loading, dispatch } = this.props
-    const { listDetail, listDetailFinish, modalEditVisible, modalEditItem, detailData, detailPagination } = stockOpname
+    const {
+      stockOpname,
+      loading,
+      form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+      dispatch
+    } = this.props
+    const { listDetail, listDetailFinish, listEmployee, modalEditVisible, modalEditItem, detailData, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -124,15 +143,25 @@ class Detail extends Component {
     }
 
     const onBatch2 = () => {
-      Modal.confirm({
-        title: 'Finish batch',
-        content: 'This process cannot be undone',
-        onOk () {
+      validateFields((errors) => {
+        if (errors) return
+        const data = getFieldsValue()
+        Modal.confirm({
+          title: 'Finish batch',
+          content: 'This process cannot be undone',
+          onOk () {
+            dispatch({
+              type: 'stockOpname/insertBatchTwo',
+              payload: {
+                userId: data.userId,
+                reset: resetFields
+              }
+            })
+          },
+          onCancel () {
 
-        },
-        onCancel () {
-
-        }
+          }
+        })
       })
     }
 
@@ -161,6 +190,8 @@ class Detail extends Component {
       }
     }
 
+    const childrenEmployee = listEmployee && listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
+
     return (<div className="wrapper">
       <Row>
         <Col lg={8}>
@@ -180,12 +211,36 @@ class Detail extends Component {
                 <Col span={12}>Status</Col>
                 <Col span={12}>{getTag(detailData)}</Col>
               </Row>
+              <Row>
+                <Form layout="horizontal">
+                  <FormItem label="PIC" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('userId', {
+                      rules: [
+                        {
+                          required: true
+                        }
+                      ]
+                    })(
+                      <Select
+                        showSearch
+                        allowClear
+                        multiple
+                        optionFilterProp="children"
+                        placeholder="Choose Employee"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                      >
+                        {childrenEmployee}
+                      </Select>
+                    )}
+                  </FormItem>
+                </Form>
+              </Row>
             </div>
           </div>
         </Col>
         <Col lg={24}>
           <div className="content-inner-zero-min-height">
-            <Button type="primary" icon="save" onClick={() => onBatch2()}>Save</Button>
+            {detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>Go To Batch Two</Button> : null}
             <h1>Items</h1>
             <Row style={{ padding: '10px', margin: '4px' }}>
               <TransDetail {...formDetailProps} />
@@ -207,4 +262,4 @@ Detail.propTypes = {
   stockOpname: PropTypes.object
 }
 
-export default connect(({ loading, app, stockOpname }) => ({ loading, app, stockOpname }))(Detail)
+export default connect(({ loading, app, stockOpname }) => ({ loading, app, stockOpname }))(Form.create()(Detail))

@@ -2,7 +2,8 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, updateFinishLine, queryListDetail, add, edit, remove } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, addBatch, updateFinishLine, queryListDetail, add, edit, remove } from 'services/inventory/stockOpname'
+import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -18,6 +19,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listEmployee: [],
     listActive: [],
     listDetail: [],
     listDetailFinish: [],
@@ -105,6 +107,7 @@ export default modelExtend(pageModel, {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
         const { detail, ...other } = data.data
+        yield put({ type: 'queryEmployee' })
         yield put({
           type: 'updateState',
           payload: {
@@ -127,6 +130,34 @@ export default modelExtend(pageModel, {
         }
       } else {
         throw data
+      }
+    },
+
+    * queryEmployee ({ payload = {} }, { call, put }) {
+      const data = yield call(queryEmployee, payload)
+      if (data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEmployee: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+
+    * insertBatchTwo ({ payload = {} }, { call, put }) {
+      const response = yield call(addBatch, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+          }
+        })
+      } else {
+        throw response
       }
     },
 
