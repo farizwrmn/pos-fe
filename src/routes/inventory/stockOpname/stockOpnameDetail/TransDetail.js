@@ -27,7 +27,7 @@ const TransDetail = ({
         payload: {
           page: page.current,
           pageSize: 40,
-          status: ['DIFF', 'CONFLICT'],
+          status: ['DIFF', 'CONFLICT', 'MISS'],
           order: '-updatedAt',
           transId: detailData.id,
           storeId: detailData.storeId,

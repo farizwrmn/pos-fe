@@ -82,7 +82,7 @@ const List = ({ editList, ...tableProps }) => {
         columns={columns}
         simple
         rowClassName={(record) => {
-          if (record.status === 'DIFF' || record.status === 'CONFLICT') {
+          if (record.status === 'DIFF' || record.status === 'CONFLICT' || record.status === 'MISS') {
             if (record.qtyDiff < 0) {
               return 'table-row-danger'
             }

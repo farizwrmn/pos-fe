@@ -89,7 +89,7 @@ export default modelExtend(pageModel, {
           payload: {
             page: 1,
             pageSize: 40,
-            status: ['DIFF', 'CONFLICT'],
+            status: ['DIFF', 'CONFLICT', 'MISS'],
             order: '-updatedAt',
             transId: payload.transId,
             storeId: payload.storeId,
@@ -117,7 +117,7 @@ export default modelExtend(pageModel, {
             payload: {
               page: 1,
               pageSize: 40,
-              status: ['DIFF', 'CONFLICT'],
+              status: ['DIFF', 'CONFLICT', 'MISS'],
               order: '-updatedAt',
               transId: other.id,
               storeId: other.storeId,

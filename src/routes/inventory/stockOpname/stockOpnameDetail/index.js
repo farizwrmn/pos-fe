@@ -55,7 +55,7 @@ class Detail extends Component {
       payload: {
         page: 1,
         pageSize: 40,
-        status: ['DIFF', 'CONFLICT'],
+        status: ['DIFF', 'CONFLICT', 'MISS'],
         order: '-updatedAt',
         transId: detailData.id,
         storeId: detailData.storeId,
