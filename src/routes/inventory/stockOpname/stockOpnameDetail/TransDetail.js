@@ -15,8 +15,6 @@ const TransDetail = ({
     resetFields
   }
 }) => {
-  console.log('FormPayment', listDetail)
-
   const listProps = {
     pagination: false,
     dataSource: listDetail,

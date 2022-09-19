@@ -27,25 +27,29 @@ const socket = io(APISOCKET, options)
 
 class Detail extends Component {
   componentDidMount () {
-    this.setEndpoint()
+    this.setSocket()
   }
 
   componentWillUnmount () {
-    const { detailData } = this.props
+    const { stockOpname } = this.props
+    const { detailData } = stockOpname
     if (detailData && detailData.id) {
       socket.off(`stock-opname/${detailData.id}`)
     }
   }
 
   setSocket = () => {
-    const { detailData } = this.props
+    const { stockOpname } = this.props
+    const { detailData } = stockOpname
+    console.log('setSocket', detailData.id)
     if (detailData && detailData.id) {
       socket.on(`stock-opname/${detailData.id}`, this.handleData)
     }
   }
 
   handleData = () => {
-    const { dispatch, detailData } = this.props
+    const { dispatch, stockOpname } = this.props
+    const { detailData } = stockOpname
     dispatch({
       type: 'stockOpname/queryDetailData',
       payload: {
@@ -93,6 +97,7 @@ class Detail extends Component {
     }
 
     const formDetailProps = {
+      listDetail,
       dispatch,
       detailData,
       pagination: detailPagination
@@ -138,7 +143,7 @@ class Detail extends Component {
             <Button type="primary" icon="save" onClick={() => onBatch2()}>Save</Button>
             <h1>Items</h1>
             <Row style={{ padding: '10px', margin: '4px' }}>
-              <TransDetail listDetail={listDetail} {...formDetailProps} />
+              <TransDetail {...formDetailProps} />
             </Row>
           </div>
         </Col>

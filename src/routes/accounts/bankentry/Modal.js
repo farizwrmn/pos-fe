@@ -16,7 +16,7 @@ const formItemLayout = {
 class ModalList extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('amountOut')
+      const selector = document.getElementById('amountIn')
       if (selector) {
         selector.focus()
         selector.select()
