@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 
@@ -21,19 +22,31 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'Store Name',
+      dataIndex: 'store.storeName',
+      key: 'store.storeName'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Start',
+      dataIndex: 'startDate',
+      key: 'startDate',
+      render: (text, item) => {
+        if (text) {
+          return moment(item.startDate).format('YYYY-MM-DD HH:mm:ss')
+        }
+        return null
+      }
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'End',
+      dataIndex: 'endDate',
+      key: 'endDate',
+      render: (text, item) => {
+        if (text) {
+          return moment(item.endDate).format('YYYY-MM-DD HH:mm:ss')
+        }
+        return null
+      }
     },
     {
       title: 'Operation',

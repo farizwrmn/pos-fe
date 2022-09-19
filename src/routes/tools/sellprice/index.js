@@ -475,8 +475,7 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
         }
       })
     },
-    onModalVisible (record) {
-      console.log('record', record)
+    onModalVisible () {
       // dispatch({
       //   type: 'sellprice/updateState',
       //   payload: {
