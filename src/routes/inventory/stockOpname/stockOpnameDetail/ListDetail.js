@@ -17,6 +17,7 @@ const List = ({ editList, ...tableProps }) => {
       title: 'No',
       dataIndex: 'no',
       key: 'no',
+      className: styles.alignCenter,
       width: '100px'
     },
     {
@@ -83,7 +84,7 @@ const List = ({ editList, ...tableProps }) => {
         simple
         rowClassName={(record) => {
           if (record.status === 'DIFF' || record.status === 'CONFLICT' || record.status === 'MISS') {
-            if (record.qtyDiff < 0) {
+            if (record.qtyDiff > 0) {
               return 'table-row-danger'
             }
             return 'table-row-dark'

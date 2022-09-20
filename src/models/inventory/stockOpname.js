@@ -149,7 +149,13 @@ export default modelExtend(pageModel, {
 
 
     * insertBatchTwo ({ payload = {} }, { call, put }) {
-      const response = yield call(addBatch, payload)
+      const response = yield call(addBatch, {
+        transId: payload.transId,
+        storeId: payload.storeId,
+        userId: payload.userId,
+        batchNumber: payload.batchNumber,
+        description: payload.description
+      })
       if (response && response.success) {
         yield put({
           type: 'queryDetail',
@@ -158,6 +164,9 @@ export default modelExtend(pageModel, {
             storeId: lstorage.getCurrentUserStore()
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         throw response
       }

@@ -29,10 +29,10 @@ const options = {
 
 const formItemLayout = {
   labelCol: {
-    span: 10
+    span: 12
   },
   wrapperCol: {
-    span: 14
+    span: 12
   }
 }
 
@@ -142,6 +142,33 @@ class Detail extends Component {
       }
     }
 
+    const onBatch1 = () => {
+      validateFields((errors) => {
+        if (errors) return
+        const data = getFieldsValue()
+        Modal.confirm({
+          title: 'Start Batch 1',
+          content: 'This process cannot be undone',
+          onOk () {
+            dispatch({
+              type: 'stockOpname/insertBatchTwo',
+              payload: {
+                transId: detailData.id,
+                storeId: detailData.storeId,
+                userId: data.userId,
+                batchNumber: 1,
+                description: null,
+                reset: resetFields
+              }
+            })
+          },
+          onCancel () {
+
+          }
+        })
+      })
+    }
+
     const onBatch2 = () => {
       validateFields((errors) => {
         if (errors) return
@@ -154,6 +181,7 @@ class Detail extends Component {
               type: 'stockOpname/insertBatchTwo',
               payload: {
                 transId: detailData.id,
+                storeId: detailData.storeId,
                 userId: data.userId,
                 batchNumber: 2,
                 description: null,
@@ -165,6 +193,15 @@ class Detail extends Component {
 
           }
         })
+      })
+    }
+
+    const onShowAdjustDialog = () => {
+      dispatch({
+        type: 'stockOpname/updateState',
+        payload: {
+          modalAdjustVisible: true
+        }
       })
     }
 
@@ -197,7 +234,7 @@ class Detail extends Component {
 
     return (<div className="wrapper">
       <Row>
-        <Col lg={8}>
+        <Col lg={12}>
           <div className="content-inner-zero-min-height">
             <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
             <h1>Detail Info</h1>
@@ -243,13 +280,16 @@ class Detail extends Component {
         </Col>
         <Col lg={24}>
           <div className="content-inner-zero-min-height">
-            {detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>Go To Batch Two</Button> : null}
-            <h1>Items</h1>
+            {detailData && detailData.batch && detailData.batch.length === 0
+              ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
+                ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
+                  ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Create Adjustment (Phase 3)'}</Button> : null}
+            {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Items</h1> : null}
             <Row style={{ padding: '10px', margin: '4px' }}>
-              <TransDetail {...formDetailProps} />
+              {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}
               <br />
               <br />
-              <TransDetail {...formDetailFinishProps} />
+              {listDetailFinish && listDetailFinish.length > 0 ? <TransDetail {...formDetailFinishProps} /> : null}
               {modalEditVisible && <ModalEdit {...modalEditProps} />}
             </Row>
           </div>
