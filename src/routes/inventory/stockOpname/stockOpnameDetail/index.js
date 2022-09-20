@@ -251,30 +251,32 @@ class Detail extends Component {
                 <Col span={12}>Status</Col>
                 <Col span={12}>{getTag(detailData)}</Col>
               </Row>
-              <Row>
-                <Form layout="horizontal">
-                  <FormItem label="PIC" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('userId', {
-                      rules: [
-                        {
-                          required: true
-                        }
-                      ]
-                    })(
-                      <Select
-                        showSearch
-                        allowClear
-                        multiple
-                        optionFilterProp="children"
-                        placeholder="Choose Employee"
-                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                      >
-                        {childrenEmployee}
-                      </Select>
-                    )}
-                  </FormItem>
-                </Form>
-              </Row>
+              {detailData && detailData.batch && detailData.activeBatch && (detailData.activeBatch.batchNumber === 2 || detailData.activeBatch.batchNumber === 3) && !detailData.activeBatch.status ? null : (
+                <Row>
+                  <Form layout="horizontal">
+                    <FormItem label="PIC" hasFeedback {...formItemLayout}>
+                      {getFieldDecorator('userId', {
+                        rules: [
+                          {
+                            required: true
+                          }
+                        ]
+                      })(
+                        <Select
+                          showSearch
+                          allowClear
+                          multiple
+                          optionFilterProp="children"
+                          placeholder="Choose Employee"
+                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                        >
+                          {childrenEmployee}
+                        </Select>
+                      )}
+                    </FormItem>
+                  </Form>
+                </Row>
+              )}
             </div>
           </div>
         </Col>

@@ -129,6 +129,12 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            detailData: {}
+          }
+        })
         throw data
       }
     },
