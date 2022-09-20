@@ -153,7 +153,10 @@ class Detail extends Component {
             dispatch({
               type: 'stockOpname/insertBatchTwo',
               payload: {
+                transId: detailData.id,
                 userId: data.userId,
+                batchNumber: 2,
+                description: null,
                 reset: resetFields
               }
             })

@@ -40,6 +40,16 @@ export async function updateFinishLine (params) {
   })
 }
 
+export async function addBatch (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-batch',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryActive (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -152,8 +152,10 @@ export default modelExtend(pageModel, {
       const response = yield call(addBatch, payload)
       if (response && response.success) {
         yield put({
-          type: 'updateState',
+          type: 'queryDetail',
           payload: {
+            id: payload.transId,
+            storeId: lstorage.getCurrentUserStore()
           }
         })
       } else {
