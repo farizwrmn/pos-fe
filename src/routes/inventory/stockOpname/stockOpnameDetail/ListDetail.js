@@ -72,6 +72,14 @@ const List = ({ editList, ...tableProps }) => {
       className: styles.alignCenter,
       width: '100px',
       render: text => numberFormatter(text || 0)
+    },
+    {
+      title: 'Biaya',
+      dataIndex: 'value',
+      key: 'value',
+      className: styles.alignCenter,
+      width: '100px',
+      render: (text, record) => numberFormatter(record.qtyDiff * record.product.costPrice)
     }
   ]
 
@@ -84,7 +92,7 @@ const List = ({ editList, ...tableProps }) => {
         simple
         rowClassName={(record) => {
           if (record.status === 'DIFF' || record.status === 'CONFLICT' || record.status === 'MISS') {
-            if (record.qtyDiff > 0) {
+            if (record.qtyDiff <= 0) {
               return 'table-row-danger'
             }
             return 'table-row-dark'
