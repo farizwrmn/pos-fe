@@ -85,7 +85,7 @@ class Detail extends Component {
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       dispatch
     } = this.props
-    const { listDetail, listDetailFinish, listEmployee, modalEditVisible, modalEditItem, detailData, detailPagination } = stockOpname
+    const { listDetail, listDetailFinish, listEmployee, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -286,11 +286,12 @@ class Detail extends Component {
               ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
                 ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
                   ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Create Adjustment (Phase 3)'}</Button> : null}
-            {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Items</h1> : null}
             <Row style={{ padding: '10px', margin: '4px' }}>
+              {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Items ({detailPagination ? detailPagination.total : 0})</h1> : null}
               {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}
               <br />
               <br />
+              {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Finished ({finishPagination ? finishPagination.total : 0})</h1> : null}
               {listDetailFinish && listDetailFinish.length > 0 ? <TransDetail {...formDetailFinishProps} /> : null}
               {modalEditVisible && <ModalEdit {...modalEditProps} />}
             </Row>

@@ -26,6 +26,11 @@ export default modelExtend(pageModel, {
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
+    finishPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
     detailPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -209,7 +214,14 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listDetailFinish: data.data.map((item, index) => ({ ...item, no: index + 1 }))
+            listDetailFinish: data.data.map((item, index) => ({ ...item, no: index + 1 })),
+            finishPagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            }
           }
         })
       } else {
