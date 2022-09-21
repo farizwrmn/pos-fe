@@ -26,6 +26,11 @@ export default modelExtend(pageModel, {
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
+    finishPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
     detailPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -129,6 +134,12 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            detailData: {}
+          }
+        })
         throw data
       }
     },
@@ -149,13 +160,24 @@ export default modelExtend(pageModel, {
 
 
     * insertBatchTwo ({ payload = {} }, { call, put }) {
-      const response = yield call(addBatch, payload)
+      const response = yield call(addBatch, {
+        transId: payload.transId,
+        storeId: payload.storeId,
+        userId: payload.userId,
+        batchNumber: payload.batchNumber,
+        description: payload.description
+      })
       if (response && response.success) {
         yield put({
-          type: 'updateState',
+          type: 'queryDetail',
           payload: {
+            id: payload.transId,
+            storeId: lstorage.getCurrentUserStore()
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         throw response
       }
@@ -192,7 +214,14 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listDetailFinish: data.data.map((item, index) => ({ ...item, no: index + 1 }))
+            listDetailFinish: data.data.map((item, index) => ({ ...item, no: index + 1 })),
+            finishPagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            }
           }
         })
       } else {
