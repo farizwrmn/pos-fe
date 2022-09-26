@@ -2,7 +2,7 @@ import React from 'react'
 // import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Table } from 'antd'
+import { Table, Button } from 'antd'
 
 const ListTransfer = (tableProps) => {
   const columns = [
@@ -43,6 +43,13 @@ const ListTransfer = (tableProps) => {
       title: 'Transaction No',
       dataIndex: 'transNo',
       key: 'transNo'
+    },
+    {
+      title: 'Operation',
+      key: 'operation',
+      render: (record) => {
+        return <Button onClick={() => tableProps.onRowClick(record)}>Approve</Button>
+      }
     }
   ]
 
