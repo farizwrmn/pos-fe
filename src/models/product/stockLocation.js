@@ -39,12 +39,14 @@ export default modelExtend(pageModel, {
         }
         if (pathname === '/stock'
           || pathname === '/inventory/transfer/out') {
-          dispatch({
-            type: 'query',
-            payload: {
-              type: 'all'
-            }
-          })
+          if (activeKey !== '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                type: 'all'
+              }
+            })
+          }
         }
       })
     }

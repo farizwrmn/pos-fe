@@ -35,21 +35,21 @@ const List = ({
       dataIndex: 'isCashierActive',
       key: 'isCashierActive',
       render: text =>
-      (<span>
-        <Tag color={text ? 'blue' : 'red'}>
-          {text ? 'Active' : 'Non-Active'}
-        </Tag>
-      </span>)
+        (<span>
+          <Tag color={text ? 'blue' : 'red'}>
+            {text ? 'Active' : 'Non-Active'}
+          </Tag>
+        </span>)
     }, {
       title: 'Employee',
       dataIndex: 'isEmployeeActive',
       key: 'isEmployeeActive',
       render: text =>
-      (<span>
-        <Tag color={text ? 'blue' : 'red'}>
-          {text ? 'Active' : 'Non-Active'}
-        </Tag>
-      </span>)
+        (<span>
+          <Tag color={text ? 'blue' : 'red'}>
+            {text ? 'Active' : 'Non-Active'}
+          </Tag>
+        </span>)
     }
   ]
 

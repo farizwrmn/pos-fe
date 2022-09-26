@@ -49,7 +49,7 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
   }
 
   const handleChange = (pagination, filters, sorter) => {
-    updateFilter(filters, sorter)
+    updateFilter(pagination, filters, sorter)
   }
 
   const { dataSource } = tableProps

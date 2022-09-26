@@ -324,7 +324,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     storeInfo,
     showPrintModal,
     user,
-    updateFilter (filters, sorts) {
+    updateFilter (page, filters, sorts) {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
