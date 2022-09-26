@@ -47,10 +47,13 @@ export default modelExtend(pageModel, {
           || pathname === '/marketing/target'
           || pathname === '/tools/transaction/sales'
           || pathname === '/tools/transaction/purchase'
-          || pathname === '/inventory/transfer/out'
           || pathname === '/master/product/stock/import'
         ) {
           dispatch({ type: 'query', payload: { type: 'all' } })
+        } else if (pathname === '/inventory/transfer/out') {
+          if (activeKey !== '1') {
+            dispatch({ type: 'query', payload: { type: 'all' } })
+          }
         }
       })
     }

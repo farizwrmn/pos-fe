@@ -2,7 +2,6 @@ import React from 'react'
 import uniq from 'lodash/uniq'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import { Row, Col, Button, Modal } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
@@ -46,7 +45,7 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/inventory/transfer/out'))
+    window.history.back()
   }
 
   const voidTrans = () => {

@@ -57,7 +57,7 @@ const ListTransfer = ({ ...tableProps, filter, sort, updateFilter, onShowPrint, 
   }
 
   const handleChange = (pagination, filters, sorter) => {
-    updateFilter(filters, sorter)
+    updateFilter(pagination, filters, sorter)
   }
 
   const { dataSource } = tableProps
