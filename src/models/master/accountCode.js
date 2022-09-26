@@ -73,6 +73,18 @@ export default modelExtend(pageModel, {
               order: 'accountCode'
             }
           })
+          dispatch({
+            type: 'queryExpense',
+            payload: {
+              accountType: pathname === '/bank-entry' ? undefined : [
+                'COGS',
+                'EXPS',
+                'OEXP'
+              ],
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
         }
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
