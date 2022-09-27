@@ -99,6 +99,12 @@ class ProductStock extends Component {
             }
           })
         },
+        onSearchBarcodeConsignment (payload) {
+          dispatch({
+            type: 'productstock/queryConsignmentBarcodeForPriceTag',
+            payload
+          })
+        },
         onCloseModalProduct () {
           dispatch({
             type: 'productstock/updateState',
