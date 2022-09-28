@@ -32,7 +32,7 @@ const cardStyle = {
 }
 
 const gridStyle = {
-  width: `${(1 / 2) * 100}%`,
+  width: `${(1 / 3) * 100}%`,
   padding: '10px 8px 5px 8px',
   textAlign: 'center'
 }
@@ -155,6 +155,7 @@ const Sticker = ({
             Products
             {totalQty !== 0 && <span style={{ fontSize: 12, margin: '0 10px' }}>{totalQty} stiker(s)</span>}
             <a onClick={() => onShowModalProduct('all')}><Icon style={iconStyle} type="plus-circle-o" /></a>
+            <a onClick={() => onShowModalProduct('consignment')}><Icon title="Consignment" style={iconStyle} type="tag" /></a>
             <a onClick={() => onShowModalProduct('update')} > <Icon style={iconStyle} type="clock-circle-o" /></a>
           </h2>
         </div>

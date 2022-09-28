@@ -9,6 +9,7 @@ import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
+import { queryProductByCode } from 'services/consignment/products'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -163,6 +164,36 @@ export default modelExtend(pageModel, {
           type: 'querySuccessItem',
           payload: data.data
         })
+      }
+    },
+
+    * queryConsignmentBarcodeForPriceTag ({ payload = {} }, { call, put, select }) {
+      const { productCode } = payload
+      const response = yield call(queryProductByCode, { productCode: productCode ? productCode.trim() : null })
+      const listSticker = yield select(({ productstock }) => productstock.listSticker)
+      if (response.success && response.data) {
+        const newListSticker = listSticker.concat([
+          {
+            info: {
+              productCode: response.data.product_code,
+              productName: response.data.product_name,
+              barCode01: response.data.barcode,
+              categoryColor: '#33BBFF',
+              brandName: 'CONSIGNMENT',
+              sellPrice: response.data.stock.price
+            },
+            name: response.data.product_name,
+            qty: Number(payload.qty)
+          }
+        ])
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSticker: newListSticker
+          }
+        })
+      } else {
+        throw response
       }
     },
 

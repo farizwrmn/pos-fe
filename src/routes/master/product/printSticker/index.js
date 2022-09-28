@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Tabs } from 'antd'
+import { Button, Tabs } from 'antd'
+import { onPrintZebra } from './utils'
 import Sticker from './Sticker'
 import Shelf from './Shelf'
 import PrintShelf from './PrintShelf'
@@ -52,6 +53,7 @@ class ProductStock extends Component {
       case '0':
         moreButtonTab = (
           <span>
+            <Button style={{ marginRight: '10px' }} onClick={() => onPrintZebra(listSticker)}>Zebra ZD203</Button>
             <PrintSticker stickers={listSticker} user={user} {...printProps} />
           </span>
         )
@@ -97,6 +99,12 @@ class ProductStock extends Component {
               update: true,
               selectedSticker: sticker
             }
+          })
+        },
+        onSearchBarcodeConsignment (payload) {
+          dispatch({
+            type: 'productstock/queryConsignmentBarcodeForPriceTag',
+            payload
           })
         },
         onCloseModalProduct () {
