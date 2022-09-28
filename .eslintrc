@@ -118,6 +118,7 @@
     "navigator": true,
     "alert": true,
     "screen": true,
+    "BrowserPrint": true,
     "location": true,
     "Element": true,
     "Image": true,

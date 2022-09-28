@@ -101,7 +101,6 @@ class ModalSticker extends Component {
           ...getFieldsValue()
         }
         if (modalProductType === 'consignment' && !update) {
-          console.log('data', data)
           onSearchBarcodeConsignment({
             productCode: data.name,
             qty: data.qty

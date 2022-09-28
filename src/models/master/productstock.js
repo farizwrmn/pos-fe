@@ -170,15 +170,14 @@ export default modelExtend(pageModel, {
     * queryConsignmentBarcodeForPriceTag ({ payload = {} }, { call, put, select }) {
       const { productCode } = payload
       const response = yield call(queryProductByCode, { productCode: productCode ? productCode.trim() : null })
-      console.log('response', response)
       const listSticker = yield select(({ productstock }) => productstock.listSticker)
-      console.log('listSticker', listSticker)
       if (response.success && response.data) {
         const newListSticker = listSticker.concat([
           {
             info: {
               productCode: response.data.product_code,
               productName: response.data.product_name,
+              barCode01: response.data.barcode,
               categoryColor: '#33BBFF',
               brandName: 'CONSIGNMENT',
               sellPrice: response.data.stock.price
