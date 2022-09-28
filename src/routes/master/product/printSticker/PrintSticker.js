@@ -4,7 +4,7 @@ import { BasicReportCard } from 'components'
 import { lstorage } from 'utils'
 // import bwipjs from 'bwip-js'
 
-const NUMBER_OF_COLUMN = 2
+const NUMBER_OF_COLUMN = 3
 const HEIGHTWITHMARGIN = 86.9291338593
 const HEIGHT = 75.590551182
 const WIDTH = 151.181102364
@@ -138,9 +138,9 @@ class PrintSticker extends React.PureComponent {
 
     const pdfProps = {
       name: 'Print',
-      width: [WIDTH, WIDTH],
+      width: [WIDTH, WIDTH, WIDTH],
       height: HEIGHT,
-      pageSize: { width: (WIDTH * 2) + (MARGIN * 4), height: HEIGHTWITHMARGIN * 10 },
+      pageSize: { width: (WIDTH * 3) + (MARGIN * 4), height: HEIGHTWITHMARGIN * 10 },
       pageOrientation: 'portrait',
       pageMargins: [MARGIN, MARGIN],
       tableStyle: styles,

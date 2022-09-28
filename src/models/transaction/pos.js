@@ -13,6 +13,7 @@ import {
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
@@ -1450,17 +1451,6 @@ export default {
       }
     },
 
-    * checkQuantityNewConsignment ({ payload }, { put }) {
-      const { data } = payload
-      insertConsignment(data)
-      yield put({
-        type: 'pos/setUtil',
-        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
-      })
-      yield put({ type: 'pos/hideConsignmentModal' })
-      message.success('Success add product')
-    },
-
     * getListProductData (payload, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: '' })
@@ -1606,16 +1596,7 @@ export default {
         })
         return
       }
-      let listByCode = getConsignment()
-      let arrayProd = listByCode
-      const checkExists = listByCode.filter(el => el.code === item.product.product_code)
-      if ((checkExists || []).length > 0) {
-        Modal.warning({
-          title: 'Already Exists',
-          content: 'Already Exists in list'
-        })
-        return
-      }
+      let arrayProd = getConsignment()
       const setting = yield select(({ app }) => app.setting)
 
       let typePrice = 'price'
@@ -1685,11 +1666,59 @@ export default {
       let consignment = getConsignment()
       const exists = consignment.filter(el => el.code === item.product.product_code)
       if ((exists || []).length > 0) {
-        Modal.warning({
-          title: 'Already Exists',
-          content: 'Already Exists in list'
+        if (payload.qty) {
+          const qty = exists[0].qty + Number(payload.qty)
+          if (qty > item.quantity) {
+            Modal.warning({
+              title: 'Stok tidak mencukupi',
+              content: `Stok ${item.product.product_name} tersisa ${item.quantity}`
+            })
+            return
+          }
+        } else {
+          const qty = exists[0].qty + 1
+          if (qty > item.quantity) {
+            Modal.warning({
+              title: 'Stok tidak mencukupi',
+              content: `Stok ${item.product.product_name} tersisa ${item.quantity}`
+            })
+            return
+          }
+        }
+        arrayProd = arrayProd.map((filtered) => {
+          if (filtered.code === item.product.product_code) {
+            filtered.no = exists[0].no
+            if (payload.qty) {
+              filtered.qty = exists[0].qty + Number(payload.qty)
+            } else {
+              filtered.qty = exists[0].qty + 1
+            }
+            filtered.total = filtered.price * filtered.qty
+            return filtered
+          }
+          return filtered
+        })
+        yield put({
+          type: 'pos/checkQuantityEditConsignment',
+          payload: {
+            data,
+            arrayProd,
+            setting,
+            type: payload.type
+          }
         })
       } else {
+        if (payload.qty) {
+          data.qty = Number(payload.qty)
+          if (data.qty > item.quantity) {
+            Modal.warning({
+              title: 'Stok tidak mencukupi',
+              content: `Stok ${item.product.product_name} tersisa ${item.quantity}`
+            })
+            return
+          }
+        }
+        data.total = data.price * data.qty
         arrayProd.push(data)
         yield put({
           type: 'pos/checkQuantityNewConsignment',
@@ -1701,6 +1730,28 @@ export default {
           }
         })
       }
+    },
+
+    * checkQuantityEditConsignment ({ payload }, { put }) {
+      const { arrayProd } = payload
+      setConsignment(JSON.stringify(arrayProd))
+      yield put({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
+      })
+      yield put({ type: 'pos/hideConsignmentModal' })
+      message.success('Success add product')
+    },
+
+    * checkQuantityNewConsignment ({ payload }, { put }) {
+      const { data } = payload
+      insertConsignment(data)
+      yield put({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
+      })
+      yield put({ type: 'pos/hideConsignmentModal' })
+      message.success('Success add product')
     },
 
     // Add
@@ -2747,6 +2798,58 @@ export default {
     * getProductByBarcode ({ payload }, { call, put }) {
       // ONLINE
       let startOnline = window.performance.now()
+      const barcode = payload.id
+      if (barcode && barcode[0] && barcode[0] === '0') {
+        console.log('barcode', barcode[0])
+        const response = yield call(queryProductBarcode, { barcode: payload.id })
+        if (response && response.success && response.data && response.data.stock) {
+          yield put({
+            type: 'pos/chooseConsignment',
+            payload: {
+              qty: payload.qty,
+              item: {
+                created_at: response.data.stock.created_at,
+                id: response.data.stock.id,
+                outlet_id: response.data.stock.outlet_id,
+                price: response.data.stock.price,
+                price_grabfood_gofood: response.data.stock.price_grabfood_gofood,
+                price_grabmart: response.data.stock.price_grabmart,
+                price_shopee: response.data.stock.price_shopee,
+                product: {
+                  barcode: response.data.barcode,
+                  capital: response.data.capital,
+                  category_id: response.data.category_id,
+                  created_at: response.data.created_at,
+                  deleted_at: response.data.deleted_at,
+                  grabCategoryId: response.data.grabCategoryId,
+                  grabCategoryName: response.data.grabCategoryName,
+                  grabmartPublished: response.data.grabmartPublished,
+                  id: response.data.id,
+                  noLicense: response.data.noLicense,
+                  photo: response.data.photo,
+                  productImage: response.data.productImage,
+                  product_code: response.data.product_code,
+                  product_name: response.data.product_name,
+                  subcategory_id: response.data.product_name,
+                  updated_at: response.data.product_name,
+                  vendor: {
+                    id: response.data.vendor.id,
+                    name: response.data.vendor.name,
+                    vendor_code: response.data.vendor.vendor_code
+                  },
+                  vendor_id: response.data.vendor_id,
+                  weight: response.data.weight
+                },
+                product_id: response.data.stock.weight,
+                quantity: response.data.stock.quantity,
+                quantityTotal: response.data.stock.quantityTotal,
+                updated_at: response.data.stock.updated_at
+              }
+            }
+          })
+          return
+        }
+      }
       const response = yield call(queryByBarcode, payload)
       let endOnline = window.performance.now()
       const timeToExecuteOnline = endOnline - startOnline

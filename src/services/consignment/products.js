@@ -17,3 +17,20 @@ export async function queryProductByCode (params) {
     message: 'Missing outlet_id'
   })
 }
+
+export async function queryProductBarcode (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.outlet_id = lstorage.getCurrentUserConsignment()
+  if (params && params.outlet_id) {
+    return request({
+      fullUrl: `${rest.apiConsignmentURL}/product-barcode`,
+      method: 'get',
+      data: params,
+      headers: apiHeaderToken
+    })
+  }
+  return ({
+    success: false,
+    message: 'Missing outlet_id'
+  })
+}
