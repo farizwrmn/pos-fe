@@ -18,7 +18,7 @@ const writeToSelectedPrinter = (dataToWrite) => {
 }
 
 export const onPrintZebra = (listSticker) => {
-  const CENTER_SPACE = 240
+  const CENTER_SPACE = 265
   console.log('onPrintZebra', listSticker)
   const stickers = []
   for (let key in listSticker) {
@@ -37,7 +37,7 @@ export const onPrintZebra = (listSticker) => {
       const currentIndex = (row * 3) + (column)
       if (currentIndex < listLength) {
         const product = stickers[currentIndex]
-        const marginLeft = 25 + (CENTER_SPACE * column)
+        const marginLeft = 0 + (CENTER_SPACE * column)
         finalString += `
         ^BY1,1,50
         ^CFA,16
@@ -60,7 +60,7 @@ export const onPrintZebra = (listSticker) => {
       const currentIndex = (numberOfRow * 3) + (column)
       if (currentIndex < listLength) {
         const product = stickers[currentIndex]
-        const marginLeft = 65 + (CENTER_SPACE * column)
+        const marginLeft = 0 + (CENTER_SPACE * column)
         finalString += `
         ^BY1,1,40
         ^CFA,16
