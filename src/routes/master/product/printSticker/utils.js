@@ -18,7 +18,7 @@ const writeToSelectedPrinter = (dataToWrite) => {
 }
 
 export const onPrintZebra = (listSticker) => {
-  const CENTER_SPACE = 250
+  const CENTER_SPACE = 240
   console.log('onPrintZebra', listSticker)
   const stickers = []
   for (let key in listSticker) {
@@ -39,7 +39,7 @@ export const onPrintZebra = (listSticker) => {
         const product = stickers[currentIndex]
         const marginLeft = 25 + (CENTER_SPACE * column)
         finalString += `
-        ^BY1,1,40
+        ^BY1,1,50
         ^CFA,16
         ^FO${marginLeft},20^FDRp ${numberFormatter(parseInt(product.info.sellPrice, 0))}^FS
         ^FO${marginLeft},40^FD${product.info.productCode}^FS
