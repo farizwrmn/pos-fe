@@ -18,7 +18,7 @@ const writeToSelectedPrinter = (dataToWrite) => {
 }
 
 export const onPrintZebra = (listSticker) => {
-  const CENTER_SPACE = 265
+  const CENTER_SPACE = 250
   console.log('onPrintZebra', listSticker)
   const stickers = []
   for (let key in listSticker) {
