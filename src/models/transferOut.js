@@ -500,6 +500,14 @@ export default modelExtend(pageModel, {
       const { type, ...otherPayload } = payload
       const listTransferOut = yield select(({ transferOut }) => transferOut.listTransferOut)
       if (type === 'load' && listTransferOut.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            current: Number(payload.page) || 1,
+            pageSize: Number(payload.pageSize) || 10,
+            total: listTransferOut.length
+          }
+        })
         return
       }
       const data = yield call(queryTransferOut, otherPayload)

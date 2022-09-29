@@ -580,13 +580,6 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     showPrintModal,
     user,
     updateFilter (page, filters, sorts) {
-      dispatch({
-        type: 'transferOut/updateState',
-        payload: {
-          filter: filters,
-          sort: sorts
-        }
-      })
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,
@@ -596,6 +589,20 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
           pageSize: page.pageSize
         }
       }))
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          filter: filters,
+          sort: sorts,
+          pagination: {
+            payload: {
+              current: Number(page.current) || 1,
+              pageSize: Number(page.pageSize) || 10,
+              total: listTransferOut.length
+            }
+          }
+        }
+      })
     },
     getProducts (transNo) {
       dispatch({
