@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { lstorage } from 'utils'
-import { prefix } from 'utils/config.main'
 import { Modal, Button, Input, Form, Row, Col, DatePicker, Select } from 'antd'
 import moment from 'moment'
 import ModalBrowse from './ModalBrowse'
@@ -27,11 +26,10 @@ const FormEdit = ({
   modalType,
   onChangePeriod,
   setFormItem,
-  setItem,
-  onShowModal,
   onHideModal,
   optionPos,
   period,
+  loading,
   modalVisible,
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields, setFieldsValue },
   ...formEditProps
@@ -41,13 +39,6 @@ const FormEdit = ({
       ...e
     })
     // setItem()
-  }
-  const setPoliceNo = () => {
-    setFieldsValue({
-      lastMeter: null,
-      policeNo: null,
-      policeNoId: null
-    })
   }
   const modalProps = {
     visible: modalVisible,
@@ -76,13 +67,12 @@ const FormEdit = ({
         content: 'Action cannot be undone',
         onOk () {
           data.storeId = lstorage.getCurrentUserStore()
-          data.transNo = item.transNo
-          data.memberCode = data.memberId
-          data.woReference = data.woReference === null || data.woReference === '' ? null : data.woReference
-          data.usingWo = !(data.woReference === null || data.woReference === '')
-          onOk(data)
-          setFormItem({})
-          resetFields()
+          data.transDate = moment(data.transDate).format('YYYY-MM-DD')
+          onOk({
+            id: data.transNo,
+            storeId: data.storeId,
+            transDate: data.transDate
+          }, resetFields, setFormItem)
         },
         onCancel () {
           console.log('cancel')
@@ -109,29 +99,13 @@ const FormEdit = ({
     setFormItem(selectedTrans[0])
     resetFields()
   }
-  const handleShowModal = (e) => {
-    const data = {
-      ...getFieldsValue()
-    }
-    let memberId = ''
-    switch (e) {
-      case 'unit': memberId = data.memberCode
-        break
-      default:
-    }
-    onShowModal(e, memberId)
-  }
+
   const onChange = (date, dateString) => {
     let dateFormat = moment(dateString).format('YYYY-MM-DD')
     let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
     onChangePeriod(dateFormat, lastDate)
     setFormItem({})
     resetFields()
-  }
-  let defaultRole = ''
-  const localId = localStorage.getItem(`${prefix}udi`)
-  if (localId && localId.indexOf('#') > -1) {
-    defaultRole = localId.split(/[# ]+/).pop()
   }
 
   return (
@@ -143,34 +117,21 @@ const FormEdit = ({
             })(<MonthPicker defaultValue={moment.utc(`${period.period}-${period.year}`, 'MM-YYYY')} onChange={onChange} placeholder="Select Period" />)}
           </FormItem>
           <FormItem label="Transaction No" hasFeedback {...formItemLayout}>
-            <Row>
-              <Col span={12}>
-                {getFieldDecorator('transNoId', {
-                  rules: [{
-                    required: true,
-                    message: 'Required'
-                  }]
-                })(
-                  <Select
-                    mode="combobox"
-                    style={{ width: '100%', height: '32px' }}
-                    placeholder="Select Trans"
-                    onChange={onSelectTrans}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    {optionPos}
-                  </Select>)}
-              </Col>
-              <Col span={12}>
-                {getFieldDecorator('transNo', {
-                  initialValue: item.transNo,
-                  rules: [{
-                    required: true,
-                    message: 'Required'
-                  }]
-                })(<Input style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} disabled />)}
-              </Col>
-            </Row>
+            {getFieldDecorator('transNo', {
+              initialValue: item.transNo,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select
+              mode="combobox"
+              style={{ width: '100%', height: '32px' }}
+              placeholder="Select Trans"
+              onChange={onSelectTrans}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {optionPos}
+            </Select>)}
           </FormItem>
         </Col>
         <Col md={12}>
@@ -185,7 +146,7 @@ const FormEdit = ({
                   }]
                 })(<Input style={{ backgroundColor: '#ffffff', width: '100%' }} disabled />)}
               </Col>
-              <Col span={8}>
+              <Col span={12}>
                 {getFieldDecorator('technicianId', {
                   initialValue: item.technicianId,
                   rules: [{
@@ -193,9 +154,6 @@ const FormEdit = ({
                     message: 'Required'
                   }]
                 })(<Input style={{ width: '100%', backgroundColor: '#ffffff' }} disabled />)}
-              </Col>
-              <Col span={4}>
-                <Button type="dashed" className="bgcolor-green" icon="edit" onClick={() => handleShowModal('mechanic')} style={{ width: '100%', height: '32px' }} />
               </Col>
             </Row>
           </FormItem>
@@ -213,7 +171,7 @@ const FormEdit = ({
                 )}
 
               </Col>
-              <Col span={8}>
+              <Col span={12}>
                 {getFieldDecorator('memberId', {
                   initialValue: item.memberId,
                   rules: [{
@@ -224,9 +182,6 @@ const FormEdit = ({
                   <Input disabled style={{ backgroundColor: '#ffffff', width: '100%', height: '32px' }} />
                 )}
 
-              </Col>
-              <Col span={4}>
-                <Button type="dashed" className="bgcolor-green" icon="edit" onClick={() => handleShowModal('member')} style={{ width: '100%', height: '32px' }} />
               </Col>
             </Row>
           </FormItem>
@@ -239,25 +194,6 @@ const FormEdit = ({
               }]
             })(<Input disabled style={{ backgroundColor: '#ffffff', width: '100%', height: '32px' }} />)}
           </FormItem>
-          <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('taxInvoiceNo', {
-              initialValue: item.taxInvoiceNo,
-              rules: [{
-                required: false,
-                message: 'Required',
-                pattern: /^[a-z0-9./-]{6,25}$/i
-              }]
-            })(<Input maxLength={25} placeholder="Tax Invoice No" />)}
-          </FormItem>
-          <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('taxDate', {
-              initialValue: item && item.taxDate ? moment.utc(item.taxDate, 'YYYY-MM-DD') : null,
-              rules: [{
-                required: false,
-                message: 'Required'
-              }]
-            })(<DatePicker placeholder="Tax Date" />)}
-          </FormItem>
           <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('transDate', {
               initialValue: moment.utc(item.transDate, 'YYYY-MM-DD'),
@@ -265,55 +201,12 @@ const FormEdit = ({
                 required: true,
                 message: 'Required'
               }]
-            })(<DatePicker disabled style={{ background: '#ffffff', width: '100%' }} />)}
-          </FormItem>
-          <FormItem label="Last Meter" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('lastMeter', {
-              initialValue: item.lastMeter
-            })(<Input style={{ backgroundColor: '#ffffff' }} />)}
-          </FormItem>
-          <FormItem label="Payment Via" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('paymentVia', {
-              initialValue: item.paymentVia,
-              rules: [{
-                required: true,
-                message: 'Required'
-              }]
-            })(<Input disabled style={{ backgroundColor: '#ffffff' }} />)}
-          </FormItem>
-          <FormItem label="Police No" hasFeedback {...formItemLayout}>
-            <Row>
-              <Col span={20}>
-                {getFieldDecorator('policeNo', {
-                  initialValue: item.policeNo
-                })(<Input disabled style={{ backgroundColor: '#ffffff', width: '100%', height: '32px' }} />)}
-              </Col>
-              <Col span={4}>
-                <Button type="dashed" className="bgcolor-green" icon="edit" onClick={() => handleShowModal('unit')} style={{ width: '100%', height: '32px' }} />
-              </Col>
-            </Row>
-          </FormItem>
-          <FormItem label="Police Id" hasFeedback {...formItemLayout}>
-            <Row>
-              <Col span={12}>
-                {getFieldDecorator('policeNoId', {
-                  initialValue: item.policeNoId
-                })(<Input disabled style={{ backgroundColor: '#ffffff', width: '100%', height: '32px' }} />)}
-              </Col>
-              <Col span={12}>
-                <Button onClick={() => setPoliceNo()} type="dashed" className="bgcolor-red" icon="close" style={{ width: '100%', height: '32px' }} >No Unit</Button>
-              </Col>
-            </Row>
-          </FormItem>
-          <FormItem label="Ref" help={item.woReference === '' || item.woReference === null || item.woReference === undefined ? 'you are not using Work Order' : 'you are using Work Order'} {...formItemLayout}>
-            {getFieldDecorator('woReference', {
-              initialValue: item.woReference
-            })(<Input disabled={defaultRole !== 'OWN'} style={{ width: '100%', height: '32px', backgroundColor: '#ffffff' }} />)}
+            })(<DatePicker dateFormat="YYYY-MM-DD" style={{ background: '#ffffff', width: '100%' }} />)}
           </FormItem>
         </Col>
       </Row>
       {modalVisible && <ModalBrowse {...modalProps} />}
-      <Button style={{ float: 'right' }} type="primary" size="large" onClick={() => handleOk()}>Submit</Button>
+      <Button disabled={loading.effects['maintenance/queryPos'] || loading.effects['maintenance/update']} style={{ float: 'right' }} type="primary" size="large" onClick={() => handleOk()}>Submit</Button>
     </Form >
   )
 }

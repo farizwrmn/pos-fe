@@ -46,7 +46,7 @@ export default modelExtend(pageModel, {
       let optionSelect = []
       if ((data.data.length || 0) > 0) {
         for (let i = 0; i < data.data.length; i += 1) {
-          optionSelect.push(<Option key={data.data[i].id}>{data.data[i].transNo.toString(36)}</Option>)
+          optionSelect.push(<Option value={data.data[i].id}>{data.data[i].transNo}</Option>)
         }
         yield put({
           type: 'querySuccess',
@@ -81,11 +81,14 @@ export default modelExtend(pageModel, {
             endPeriod: infoStore.endPeriod
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
+        if (payload.setFields) {
+          payload.setFields({})
+        }
       } else {
-        Modal.warning({
-          title: 'Warning',
-          content: 'Something went wrong...!'
-        })
+        throw data
       }
     },
     * addCustomerUnitLog ({ payload = {} }, { call, put }) {
