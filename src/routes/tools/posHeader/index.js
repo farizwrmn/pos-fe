@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import FormEdit from './FormEdit'
 
-const Maintenance = ({ dispatch, maintenance, pos, payment }) => {
+const Maintenance = ({ loading, dispatch, maintenance, pos, payment }) => {
   const { optionPos, listTrans, period, item, modalVisible, modalType } = maintenance
   const { listMember, listMechanic, listUnit } = pos
   const { usingWo, woNumber } = payment
@@ -40,6 +40,7 @@ const Maintenance = ({ dispatch, maintenance, pos, payment }) => {
     optionPos,
     item,
     modalType,
+    loading,
     listUnit,
     listMember,
     listMechanic,
@@ -116,12 +117,14 @@ const Maintenance = ({ dispatch, maintenance, pos, payment }) => {
         type: 'maintenance/hideModal'
       })
     },
-    onOk (data) {
+    onOk (data, reset, setFields) {
       dispatch({
         type: 'maintenance/update',
         payload: {
           id: data.transNoId,
-          data
+          data,
+          reset,
+          setFields
         }
       })
     }
