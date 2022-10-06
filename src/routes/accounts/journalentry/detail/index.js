@@ -11,10 +11,11 @@ import {
 import TransDetail from './TransDetail'
 import FormAccounting from './FormAccounting'
 import styles from './index.less'
+import PrintPDFInvoice from './PrintPDFInvoice'
 
 
 const Detail = ({ app, journalentry, dispatch }) => {
-  const { user } = app
+  const { user, storeInfo } = app
   const { listDetail, listAccounting, data } = journalentry
   const content = []
   for (let key in data) {
@@ -38,6 +39,18 @@ const Detail = ({ app, journalentry, dispatch }) => {
     dataSource: listDetail
   }
 
+  const printProps = {
+    // listItem: listProducts,
+    // itemPrint: transHeader,
+    // itemHeader: transHeader,
+    listItem: listDetail,
+    itemPrint: data,
+    itemHeader: data,
+    storeInfo,
+    user,
+    printNo: 1
+  }
+
   return (<div className="wrapper">
     <Row>
       <Col lg={6}>
@@ -52,6 +65,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
+          {listDetail && listDetail.length && <PrintPDFInvoice {...printProps} />}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
