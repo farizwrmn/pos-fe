@@ -22,6 +22,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: `${data.accountCode.accountCode}`, alignment: 'left', fontSize: 11 })
         row.push({ text: `${data.accountCode.accountName}`, alignment: 'left', fontSize: 11 })
+        row.push({ text: formatNumberIndonesia(parseFloat(data.amountIn)), alignment: 'right', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(parseFloat(data.amountOut)), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         body.push(row)
@@ -31,9 +32,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
     return body
   }
 
-  // Declare Variable
-  // let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -81,7 +79,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
-            [{ text: 'BANK', fontSize: 11 }, ':', { text: (itemPrint && itemPrint.accountCode && itemPrint.accountCode.accountCode ? itemPrint.accountCode.accountName : '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'MEMO', fontSize: 11 }, {}, { text: (itemPrint.description || '').toString(), fontSize: 11 }, {}, {}, {}, {}]
           ]
         },
@@ -192,7 +189,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'AKUN', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAMA AKUN', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 12, text: 'DEBIT', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 12, text: 'CREDIT', style: 'tableHeader', alignment: 'right' },
       { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -203,13 +201,6 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
     console.log('error', e)
   }
   const tableFooter = [
-    [
-      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 12 },
-      {},
-      {},
-      { text: formatNumberIndonesia(parseFloat(amountTotal)), alignment: 'right', fontSize: 12 },
-      {}
-    ]
   ]
   const tableLayout = {
     hLineWidth: (i, node) => {
@@ -228,7 +219,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '15%', '24%', '35%'],
+    width: ['5%', '15%', '20%', '15%', '15%', '30%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
