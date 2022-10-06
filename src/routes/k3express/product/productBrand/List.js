@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
-import { IMAGEURL } from 'utils/config.company'
+import { S3URL } from 'utils/config.company'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -40,7 +40,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           && text != null
           && text !== '"no_image.png"'
           && text !== 'no_image.png') {
-          return <img height="70px" src={`${IMAGEURL}/${text}`} alt="no_image" />
+          return <img height="70px" src={`${S3URL}/${text}`} alt="no_image" />
         }
         return null
       }
@@ -49,7 +49,6 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Operation',
       key: 'operation',
       width: 100,
-      fixed: 'right',
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
