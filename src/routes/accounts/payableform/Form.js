@@ -300,7 +300,13 @@ const FormCounter = ({
               </Select>)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description')(<Input />)}
+              {getFieldDecorator('description', {
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col {...column}>
