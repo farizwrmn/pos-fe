@@ -1169,7 +1169,7 @@ class AdvancedForm extends Component {
                 </FormItem>
 
                 {getFieldValue('expressCategoryId') && getFieldValue('expressCategoryId').key ? (
-                  <FormItem label={(<Link target="_blank" to={'/k3express/product-product'}>Brand</Link>)} hasFeedback {...formItemLayout}>
+                  <FormItem label={(<Link target="_blank" to={'/k3express/product-brand'}>Brand</Link>)} hasFeedback {...formItemLayout}>
                     {getFieldDecorator('expressBrandId', {
                       initialValue: item.expressBrandId ? {
                         key: item.expressBrandId,

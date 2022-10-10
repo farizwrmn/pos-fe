@@ -87,7 +87,12 @@ const ModalList = ({
         </FormItem>
         <FormItem {...formItemLayout} label="Description">
           {getFieldDecorator('description', {
-            initialValue: item.description
+            initialValue: item.description,
+            rules: [
+              {
+                required: true
+              }
+            ]
           })(<Input />)}
         </FormItem>
         <FormItem label="Disc Invoice 1 (N)" hasFeedback {...formItemLayout}>

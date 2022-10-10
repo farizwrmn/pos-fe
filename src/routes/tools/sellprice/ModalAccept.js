@@ -124,7 +124,12 @@ const ModalAccept = ({
             <Col lg={12} md={24}>
               <FormItem label="Description" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('description', {
-                  initialValue: item.description
+                  initialValue: item.description,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
                 })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} disabled />)}
               </FormItem>
             </Col>
