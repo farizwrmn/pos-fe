@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, addBatch, updateFinishLine, queryListDetail, add, edit, remove } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listReport: [],
     listEmployee: [],
     listActive: [],
     listDetail: [],
@@ -132,6 +133,12 @@ export default modelExtend(pageModel, {
               batchId: other.activeBatch.id
             }
           })
+          yield put({
+            type: 'queryDetailReport',
+            payload: {
+              batchId: other.activeBatch.id
+            }
+          })
         }
       } else {
         yield put({
@@ -141,6 +148,20 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+
+    * queryDetailReport ({ payload = {} }, { call, put }) {
+      const response = yield call(queryReportOpname, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listReport: response.data
+          }
+        })
+      } else {
+        throw response
       }
     },
 
