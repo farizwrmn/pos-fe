@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function queryReportOpname (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-report/finish',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryListDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
