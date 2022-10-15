@@ -58,6 +58,13 @@ export default modelExtend(pageModel, {
               storeId: lstorage.getCurrentUserStore()
             }
           })
+          dispatch({
+            type: 'queryDetailReport',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
         }
         if (pathname === '/stock-opname') {
           dispatch({
@@ -93,15 +100,9 @@ export default modelExtend(pageModel, {
       const response = yield call(updateFinishLine, payload)
       if (response.success) {
         yield put({
-          type: 'queryDetailData',
+          type: 'queryDetail',
           payload: {
-            page: 1,
-            pageSize: 40,
-            status: ['DIFF', 'CONFLICT', 'MISS'],
-            order: '-updatedAt',
-            transId: payload.transId,
-            storeId: payload.storeId,
-            batchId: payload.batchId
+            id: payload.transId
           }
         })
       } else {
@@ -125,18 +126,14 @@ export default modelExtend(pageModel, {
             type: 'queryDetailData',
             payload: {
               page: 1,
-              pageSize: 40,
-              status: ['DIFF', 'CONFLICT', 'MISS'],
+              pageSize: 20,
+              status: other && other.batch && other.activeBatch && other.activeBatch.batchNumber === 1 && !other.activeBatch.status ?
+                ['CONFLICT'] : ['DIFF', 'CONFLICT', 'MISS'],
               order: '-updatedAt',
               transId: other.id,
               storeId: other.storeId,
-              batchId: other.activeBatch.id
-            }
-          })
-          yield put({
-            type: 'queryDetailReport',
-            payload: {
-              batchId: other.activeBatch.id
+              batchId: other.activeBatch.id,
+              detailData: other
             }
           })
         }
@@ -152,16 +149,31 @@ export default modelExtend(pageModel, {
     },
 
     * queryDetailReport ({ payload = {} }, { call, put }) {
-      const response = yield call(queryReportOpname, payload)
-      if (response.success) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { detail, ...other } = data.data
+        yield put({ type: 'queryEmployee' })
         yield put({
           type: 'updateState',
           payload: {
-            listReport: response.data
+            detailData: other
           }
         })
+        const response = yield call(queryReportOpname, {
+          batchId: other.activeBatch.id
+        })
+        if (response.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listReport: response.data
+            }
+          })
+        } else {
+          throw response
+        }
       } else {
-        throw response
+        throw data
       }
     },
 
@@ -205,7 +217,8 @@ export default modelExtend(pageModel, {
     },
 
     * queryDetailData ({ payload = {} }, { call, put }) {
-      const data = yield call(queryListDetail, payload)
+      const { detailData, ...other } = payload
+      const data = yield call(queryListDetail, other)
       if (data.success && data.data) {
         yield put({
           type: 'updateState',
@@ -222,7 +235,11 @@ export default modelExtend(pageModel, {
         })
         yield put({
           type: 'queryDetailDataFinished',
-          payload
+          payload: {
+            ...other,
+            status: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
+              ['MISS', 'DIFF', 'FINISHED'] : ['FINISHED']
+          }
         })
       } else {
         throw data
@@ -230,7 +247,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryDetailDataFinished ({ payload = {} }, { call, put }) {
-      const data = yield call(queryListDetail, { ...payload, status: 'FINISHED' })
+      const data = yield call(queryListDetail, payload)
       if (data.success && data.data) {
         yield put({
           type: 'updateState',

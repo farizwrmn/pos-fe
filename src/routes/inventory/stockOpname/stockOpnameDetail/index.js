@@ -66,15 +66,9 @@ class Detail extends Component {
     const { dispatch, stockOpname } = this.props
     const { detailData } = stockOpname
     dispatch({
-      type: 'stockOpname/queryDetailData',
+      type: 'stockOpname/queryDetail',
       payload: {
-        page: 1,
-        pageSize: 40,
-        status: ['DIFF', 'CONFLICT', 'MISS'],
-        order: '-updatedAt',
-        transId: detailData.id,
-        storeId: detailData.storeId,
-        batchId: detailData.activeBatch.id
+        id: detailData.id
       }
     })
   }
@@ -145,8 +139,14 @@ class Detail extends Component {
       loading: loading.effects['stockOpname/queryDetailDataFinished'],
       dispatch,
       detailData,
-      onRowClick () {
-
+      onRowClick (record) {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalEditItem: record,
+            modalEditVisible: true
+          }
+        })
       }
     }
 
@@ -296,11 +296,11 @@ class Detail extends Component {
                 ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
                   ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Create Adjustment (Phase 3)'}</Button> : null}
             <Row style={{ padding: '10px', margin: '4px' }}>
-              {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Items ({detailPagination ? detailPagination.total : 0})</h1> : null}
+              {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Conflict ({detailPagination ? detailPagination.total : 0})</h1> : null}
               {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}
               <br />
               <br />
-              {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Finished ({finishPagination ? finishPagination.total : 0})</h1> : null}
+              {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Checked ({finishPagination ? finishPagination.total : 0})</h1> : null}
               {listDetailFinish && listDetailFinish.length > 0 ? <TransDetail {...formDetailFinishProps} /> : null}
               {modalEditVisible && <ModalEdit {...modalEditProps} />}
             </Row>
