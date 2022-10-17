@@ -40,6 +40,16 @@ export async function insertEmployee (params) {
   })
 }
 
+export async function updateFinishBatch2 (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-finish',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryListDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

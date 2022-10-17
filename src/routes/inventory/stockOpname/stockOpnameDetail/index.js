@@ -197,10 +197,16 @@ class Detail extends Component {
     }
 
     const onShowAdjustDialog = () => {
-      dispatch({
-        type: 'stockOpname/updateState',
-        payload: {
-          modalAdjustVisible: true
+      Modal.confirm({
+        title: 'Finish Batch 2',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'stockOpname/updateFinishBatch2',
+            payload: {
+              detailData
+            }
+          })
         }
       })
     }
@@ -269,13 +275,13 @@ class Detail extends Component {
       <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
-            <Button type="primary" icon="rollback" style={{ marginRight: '10px' }} onClick={() => BackToList()}>Back</Button>
+            <Button type="default" icon="rollback" style={{ marginRight: '10px' }} onClick={() => BackToList()}>Back</Button>
             {detailData && detailData.batch && detailData.batch.length === 0
               ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button>
               : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
                 ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button>
                 : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
-                  ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Create Adjustment (Phase 3)'}</Button> : null}
+                  ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Finish (Phase 2)'}</Button> : null}
             <PrintXLS {...printProps} />
             <h1>Detail Info</h1>
             <div className={styles.content}>

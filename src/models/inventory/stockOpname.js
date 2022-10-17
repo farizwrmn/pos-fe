@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, insertEmployee, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -88,6 +88,28 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * updateFinishBatch2 ({ payload = {} }, { call, put }) {
+      const response = yield call(updateFinishBatch2, payload)
+      if (response.success) {
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            id: payload.detailData.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        yield put({
+          type: 'queryDetailReport',
+          payload: {
+            id: payload.detailData.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * insertEmployee ({ payload = {} }, { call, put }) {
       const { data, detailData, reset } = payload
       const response = yield call(insertEmployee, {
