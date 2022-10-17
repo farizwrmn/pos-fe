@@ -280,18 +280,18 @@ export default modelExtend(pageModel, {
     },
 
     * insertBatchTwo ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalPhaseTwoVisible: false
+        }
+      })
       const response = yield call(addBatch, {
         transId: payload.transId,
         storeId: payload.storeId,
         userId: payload.userId,
         batchNumber: payload.batchNumber,
         description: payload.description
-      })
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalPhaseTwoVisible: false
-        }
       })
       if (response && response.success) {
         yield put({

@@ -256,6 +256,12 @@ class Detail extends Component {
       visible: modalPhaseTwoVisible,
       onOk (data, resetFields) {
         dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalPhaseTwoVisible: false
+          }
+        })
+        dispatch({
           type: 'stockOpname/insertBatchTwo',
           payload: {
             transId: detailData.id,
