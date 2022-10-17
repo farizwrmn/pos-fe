@@ -89,7 +89,12 @@ export default modelExtend(pageModel, {
 
   effects: {
     * updateFinishBatch2 ({ payload = {} }, { call, put }) {
-      const response = yield call(updateFinishBatch2, payload)
+      const { detailData } = payload
+      const response = yield call(updateFinishBatch2, {
+        transId: detailData.id,
+        batchId: detailData.activeBatch.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
       if (response.success) {
         yield put({
           type: 'queryDetail',
