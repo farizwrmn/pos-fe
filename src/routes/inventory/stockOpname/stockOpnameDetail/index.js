@@ -21,6 +21,7 @@ import ModalEdit from './ModalEdit'
 import ModalEmployee from './ModalEmployee'
 import ModalPhaseTwo from './ModalPhaseTwo'
 import ListEmployee from './ListEmployee'
+import ListEmployeePhase2 from './ListEmployeePhase2'
 import PrintXLS from './PrintXLS'
 
 const { numberFormatter } = numberFormat
@@ -76,7 +77,7 @@ class Detail extends Component {
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { modalPhaseTwoVisible, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
+    const { modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -98,6 +99,10 @@ class Detail extends Component {
 
     const listEmployeeProps = {
       dataSource: listEmployeeOnCharge
+    }
+
+    const listEmployeePhase2Props = {
+      dataSource: listEmployeePhase2
     }
 
     const getTag = (record) => {
@@ -356,14 +361,21 @@ class Detail extends Component {
       <Row>
         <Col lg={24}>
           <div className="content-inner-zero-min-height">
-            <Row style={{ padding: '10px', margin: '4px' }}>
-              {detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ? (
+            {detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ? (
+              <Row style={{ padding: '10px', margin: '4px' }}>
                 <div>
                   <Col md={24} lg={24}><Button disabled={loading.effects['stockOpname/insertEmployeePhase1']} type="primary" icon="save" onClick={() => onAddEmployee()}>Add Employee</Button></Col>
                   <Col md={24} lg={12}><ListEmployee {...listEmployeeProps} /></Col>
                 </div>
-              ) : null}
-            </Row>
+              </Row>
+            ) : null}
+            {detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status ? (
+              <Row style={{ padding: '10px', margin: '4px' }}>
+                <div>
+                  <Col md={24} lg={12}><ListEmployeePhase2 {...listEmployeePhase2Props} /></Col>
+                </div>
+              </Row>
+            ) : null}
             <Row style={{ padding: '10px', margin: '4px' }}>
               {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Conflict ({detailPagination ? detailPagination.total : 0})</h1> : null}
               {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}

@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -27,6 +27,7 @@ export default modelExtend(pageModel, {
     listActive: [],
     listDetail: [],
     listDetailFinish: [],
+    listEmployeePhase2: [],
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
@@ -181,6 +182,15 @@ export default modelExtend(pageModel, {
           }
         })
         if (other && other.activeBatch && other.activeBatch.id) {
+          if (other && other.activeBatch && other.activeBatch.id && other.activeBatch.batchNumber === 2) {
+            yield put({
+              type: 'queryEmployeePhaseTwo',
+              payload: {
+                transId: other.transId || other.id,
+                batchId: other && other.activeBatch && other.activeBatch.id ? other.activeBatch.id : null
+              }
+            })
+          }
           yield put({
             type: 'queryDetailData',
             payload: {
@@ -212,11 +222,11 @@ export default modelExtend(pageModel, {
       if (data.success && data.data) {
         const { detail, ...other } = data.data
         yield put({ type: 'queryEmployee' })
-        if (other && other.activeBatch && other.activeBatch.id) {
+        if (other && other.activeBatch && other.activeBatch.id && other.activeBatch.batchNumber === 1) {
           yield put({
             type: 'queryEmployeeOnCharge',
             payload: {
-              transId: other.transId,
+              transId: other.transId || other.id,
               batchId: other && other.activeBatch && other.activeBatch.id ? other.activeBatch.id : null
             }
           })
@@ -252,6 +262,26 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listEmployee: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * queryEmployeePhaseTwo ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listEmployeePhase2: []
+        }
+      })
+      const data = yield call(queryListEmployeePhaseTwo, payload)
+      if (data && data.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEmployeePhase2: data.data.map((item, index) => ({ no: index + 1, ...item }))
           }
         })
       } else {

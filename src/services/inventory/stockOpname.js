@@ -30,6 +30,16 @@ export async function queryListEmployeeOnCharge (params) {
   })
 }
 
+export async function queryListEmployeePhaseTwo (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-user-phase-two',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function insertEmployee (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
