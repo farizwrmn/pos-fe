@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    modalAddEmployeeVisible: false,
     list: [],
     listReport: [],
     listEmployee: [],
@@ -87,6 +88,35 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * insertEmployee ({ payload = {} }, { call, put }) {
+      const { data, detailData, reset } = payload
+      const response = yield call(insertEmployee, {
+        userId: data.userId,
+        transId: detailData.id,
+        batchId: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
+          ? detailData.activeBatch.id : null
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalAddEmployeeVisible: false
+          }
+        })
+        yield put({
+          type: 'queryEmployeeOnCharge',
+          payload: {
+            transId: detailData.id,
+            batchId: detailData && detailData.activeBatch && detailData.activeBatch.id ? detailData.activeBatch.id : null
+          }
+        })
+        if (reset) {
+          payload.reset()
+        }
+      } else {
+        throw response
+      }
+    },
 
     * finishLine ({ payload = {} }, { select, call, put }) {
       const listDetail = yield select(({ stockOpname }) => stockOpname.listDetail)
@@ -158,7 +188,7 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'queryEmployeeOnCharge',
             payload: {
-              id: other.transId,
+              transId: other.transId,
               batchId: other && other.activeBatch && other.activeBatch.id ? other.activeBatch.id : null
             }
           })
