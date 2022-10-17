@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     modalAddEmployeeVisible: false,
+    modalPhaseTwoVisible: false,
     list: [],
     listReport: [],
     listEmployee: [],

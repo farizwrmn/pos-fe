@@ -62,6 +62,7 @@ export async function queryListDetail (params) {
 
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `/stock-opname/${params.id}`,
     method: 'get',

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import {
   Modal,
   Row,
@@ -17,6 +18,7 @@ import TransDetail from './TransDetail'
 import styles from './index.less'
 import ModalEdit from './ModalEdit'
 import ModalEmployee from './ModalEmployee'
+import ModalPhaseTwo from './ModalPhaseTwo'
 import ListEmployee from './ListEmployee'
 import PrintXLS from './PrintXLS'
 
@@ -56,7 +58,8 @@ class Detail extends Component {
     dispatch({
       type: 'stockOpname/queryDetail',
       payload: {
-        id: detailData.id
+        id: detailData.id,
+        storeId: lstorage.getCurrentUserStore()
       }
     })
   }
@@ -70,7 +73,7 @@ class Detail extends Component {
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
+    const { modalPhaseTwoVisible, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -170,29 +173,11 @@ class Detail extends Component {
     }
 
     const onBatch2 = () => {
-      validateFields((errors) => {
-        if (errors) return
-        const data = getFieldsValue()
-        Modal.confirm({
-          title: 'Finish batch',
-          content: 'This process cannot be undone',
-          onOk () {
-            dispatch({
-              type: 'stockOpname/insertBatchTwo',
-              payload: {
-                transId: detailData.id,
-                storeId: detailData.storeId,
-                userId: data.userId,
-                batchNumber: 2,
-                description: null,
-                reset: resetFields
-              }
-            })
-          },
-          onCancel () {
-
-          }
-        })
+      dispatch({
+        type: 'stockOpname/updateState',
+        payload: {
+          modalPhaseTwoVisible: true
+        }
       })
     }
 
@@ -239,6 +224,7 @@ class Detail extends Component {
     const modalAddEmployeeProps = {
       listEmployee,
       detailData,
+      title: 'Modal Add Employee',
       visible: modalAddEmployeeVisible,
       onOk (data, reset) {
         dispatch({
@@ -255,6 +241,34 @@ class Detail extends Component {
           type: 'stockOpname/updateState',
           payload: {
             modalAddEmployeeVisible: false
+          }
+        })
+      }
+    }
+
+    const modalPhaseTwoProps = {
+      listEmployee,
+      detailData,
+      title: 'Modal Phase 2',
+      visible: modalPhaseTwoVisible,
+      onOk (data, resetFields) {
+        dispatch({
+          type: 'stockOpname/insertBatchTwo',
+          payload: {
+            transId: detailData.id,
+            storeId: detailData.storeId,
+            userId: data.userId,
+            batchNumber: 2,
+            description: null,
+            reset: resetFields
+          }
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalPhaseTwoVisible: false
           }
         })
       }
@@ -349,6 +363,7 @@ class Detail extends Component {
         </Col>
       </Row>
       {modalAddEmployeeVisible && <ModalEmployee {...modalAddEmployeeProps} />}
+      {modalPhaseTwoVisible && <ModalPhaseTwo {...modalPhaseTwoProps} />}
     </div>)
   }
 }
