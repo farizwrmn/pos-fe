@@ -335,11 +335,11 @@ class Detail extends Component {
                 <Col span={12}>Total Checked</Col>
                 <Col span={12}>{detailData && detailData.totalChecked ? numberFormatter(detailData.totalChecked) : 0}</Col>
               </Row>
-              <Row>
+              <Row style={{ color: 'red' }}>
                 <Col span={12}>Total Biaya</Col>
                 <Col span={12}>{detailData && detailData.totalCost ? `Rp ${numberFormatter(detailData.totalCost)}` : 0}</Col>
               </Row>
-              <Row>
+              <Row style={{ color: 'green' }}>
                 <Col span={12}>Plus</Col>
                 <Col span={12}>{detailData && detailData.totalPlus ? `Rp ${numberFormatter(detailData.totalPlus)}` : 0}</Col>
               </Row>
