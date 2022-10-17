@@ -20,6 +20,16 @@ export async function queryReportOpname (params) {
   })
 }
 
+export async function queryListEmployeeOnCharge (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-user',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryListDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

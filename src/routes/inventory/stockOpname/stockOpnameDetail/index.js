@@ -9,17 +9,15 @@ import {
   Tag,
   Spin,
   Button,
-  Form,
-  Select
+  Form
 } from 'antd'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 import ModalEdit from './ModalEdit'
+import ListEmployee from './ListEmployee'
 import PrintXLS from './PrintXLS'
-
-const { Option } = Select
 
 const options = {
   upgrade: true,
@@ -28,18 +26,7 @@ const options = {
   pingInterval: 4000
 }
 
-const formItemLayout = {
-  labelCol: {
-    span: 12
-  },
-  wrapperCol: {
-    span: 12
-  }
-}
-
 const socket = io(APISOCKET, options)
-
-const FormItem = Form.Item
 
 class Detail extends Component {
   componentDidMount () {
@@ -78,11 +65,11 @@ class Detail extends Component {
       stockOpname,
       loading,
       app,
-      form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+      form: { validateFields, getFieldsValue, resetFields },
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { listDetail, listReport, listDetailFinish, listEmployee, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
+    const { listEmployeeOnCharge, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -100,6 +87,10 @@ class Detail extends Component {
     const printProps = {
       listTrans: listReport,
       storeInfo
+    }
+
+    const listEmployeeProps = {
+      dataSource: listEmployeeOnCharge
     }
 
     const getTag = (record) => {
@@ -238,13 +229,18 @@ class Detail extends Component {
       }
     }
 
-    const childrenEmployee = listEmployee && listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
+    // const childrenEmployee = listEmployee && listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
 
     return (<div className="wrapper">
       <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
             <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
+            {detailData && detailData.batch && detailData.batch.length === 0
+              ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
+                ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
+                  ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Create Adjustment (Phase 3)'}</Button> : null}
+            <PrintXLS {...printProps} />
             <h1>Detail Info</h1>
             <div className={styles.content}>
               <Row>
@@ -259,7 +255,7 @@ class Detail extends Component {
                 <Col span={12}>Status</Col>
                 <Col span={12}>{getTag(detailData)}</Col>
               </Row>
-              {detailData && detailData.batch && detailData.activeBatch && (detailData.activeBatch.batchNumber === 2 || detailData.activeBatch.batchNumber === 3) && !detailData.activeBatch.status ? null : (
+              {/* {detailData && detailData.batch && detailData.activeBatch && (detailData.activeBatch.batchNumber === 2 || detailData.activeBatch.batchNumber === 3) && !detailData.activeBatch.status ? null : (
                 <Row>
                   <Form layout="horizontal">
                     <FormItem label="PIC" hasFeedback {...formItemLayout}>
@@ -284,17 +280,15 @@ class Detail extends Component {
                     </FormItem>
                   </Form>
                 </Row>
-              )}
+              )} */}
             </div>
           </div>
         </Col>
         <Col lg={24}>
           <div className="content-inner-zero-min-height">
-            <PrintXLS {...printProps} />
-            {detailData && detailData.batch && detailData.batch.length === 0
-              ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
-                ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button> : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
-                  ? <Button disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Create Adjustment (Phase 3)'}</Button> : null}
+            <Row style={{ padding: '10px', margin: '4px' }}>
+              <Col md={24} lg={12}><ListEmployee {...listEmployeeProps} /></Col>
+            </Row>
             <Row style={{ padding: '10px', margin: '4px' }}>
               {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Conflict ({detailPagination ? detailPagination.total : 0})</h1> : null}
               {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}
