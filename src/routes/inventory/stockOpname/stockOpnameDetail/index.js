@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
+import numberFormat from 'utils/numberFormat'
 import {
   Modal,
   Row,
@@ -21,6 +22,8 @@ import ModalEmployee from './ModalEmployee'
 import ModalPhaseTwo from './ModalPhaseTwo'
 import ListEmployee from './ListEmployee'
 import PrintXLS from './PrintXLS'
+
+const { numberFormatter } = numberFormat
 
 const options = {
   upgrade: true,
@@ -287,59 +290,64 @@ class Detail extends Component {
 
     return (<div className="wrapper">
       <Row>
+        <div className="content-inner-zero-min-height">
+          <Button type="default" icon="rollback" style={{ marginRight: '10px' }} onClick={() => BackToList()}>Back</Button>
+          {detailData && detailData.batch && detailData.batch.length === 0
+            ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button>
+            : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
+              ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button>
+              : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
+                ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Finish (Phase 2)'}</Button> : null}
+          <PrintXLS {...printProps} />
+        </div>
+      </Row>
+      <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
-            <Button type="default" icon="rollback" style={{ marginRight: '10px' }} onClick={() => BackToList()}>Back</Button>
-            {detailData && detailData.batch && detailData.batch.length === 0
-              ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch1()}>{'Start Massive Checking (Phase 1)'}</Button>
-              : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
-                ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button>
-                : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
-                  ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Finish (Phase 2)'}</Button> : null}
-            <PrintXLS {...printProps} />
-            <h1>Detail Info</h1>
+            <Col lg={12}>
+              <h1>Detail Info</h1>
+              <div className={styles.content}>
+                <Row>
+                  <Col span={12}><strong>STORE</strong></Col>
+                  <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
+                </Row>
+                <Row>
+                  <Col span={12}>BATCH NUMBER</Col>
+                  <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
+                </Row>
+                <Row>
+                  <Col span={12}>Status</Col>
+                  <Col span={12}>{getTag(detailData)}</Col>
+                </Row>
+              </div>
+            </Col>
+          </div>
+        </Col>
+        <Col lg={12}>
+          <div className="content-inner-zero-min-height">
+            <h1>Product Info</h1>
             <div className={styles.content}>
               <Row>
-                <Col span={12}><strong>STORE</strong></Col>
-                <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
+                <Col span={12}>Total Balance</Col>
+                <Col span={12}>{detailData && detailData.totalBalance ? numberFormatter(detailData.totalBalance) : 0}</Col>
               </Row>
               <Row>
-                <Col span={12}>BATCH NUMBER</Col>
-                <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
+                <Col span={12}>Total Checked</Col>
+                <Col span={12}>{detailData && detailData.totalChecked ? numberFormatter(detailData.totalChecked) : 0}</Col>
               </Row>
               <Row>
-                <Col span={12}>Status</Col>
-                <Col span={12}>{getTag(detailData)}</Col>
+                <Col span={12}>Total Biaya</Col>
+                <Col span={12}>{detailData && detailData.totalCost ? `Rp ${numberFormatter(detailData.totalCost)}` : 0}</Col>
               </Row>
-              {/* {detailData && detailData.batch && detailData.activeBatch && (detailData.activeBatch.batchNumber === 2 || detailData.activeBatch.batchNumber === 3) && !detailData.activeBatch.status ? null : (
-                <Row>
-                  <Form layout="horizontal">
-                    <FormItem label="PIC" hasFeedback {...formItemLayout}>
-                      {getFieldDecorator('userId', {
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(
-                        <Select
-                          showSearch
-                          allowClear
-                          multiple
-                          optionFilterProp="children"
-                          placeholder="Choose Employee"
-                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                        >
-                          {childrenEmployee}
-                        </Select>
-                      )}
-                    </FormItem>
-                  </Form>
-                </Row>
-              )} */}
+              <Row>
+                <Col span={12}>Plus</Col>
+                <Col span={12}>{detailData && detailData.totalPlus ? `Rp ${numberFormatter(detailData.totalPlus)}` : 0}</Col>
+              </Row>
             </div>
           </div>
         </Col>
+      </Row>
+      <Row>
         <Col lg={24}>
           <div className="content-inner-zero-min-height">
             <Row style={{ padding: '10px', margin: '4px' }}>
@@ -364,7 +372,7 @@ class Detail extends Component {
       </Row>
       {modalAddEmployeeVisible && <ModalEmployee {...modalAddEmployeeProps} />}
       {modalPhaseTwoVisible && <ModalPhaseTwo {...modalPhaseTwoProps} />}
-    </div>)
+    </div >)
   }
 }
 
