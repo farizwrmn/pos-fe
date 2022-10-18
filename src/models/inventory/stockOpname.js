@@ -19,6 +19,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     modalAddEmployeeVisible: false,
+    modalPhaseOneVisible: false,
     modalPhaseTwoVisible: false,
     list: [],
     listReport: [],
@@ -323,6 +324,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
+          modalPhaseOneVisible: false,
           modalPhaseTwoVisible: false
         }
       })

@@ -10,8 +10,7 @@ import {
   Col,
   Tag,
   Spin,
-  Button,
-  Form
+  Button
 } from 'antd'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
@@ -73,11 +72,10 @@ class Detail extends Component {
       stockOpname,
       loading,
       app,
-      form: { validateFields, getFieldsValue, resetFields },
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
+    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -154,29 +152,11 @@ class Detail extends Component {
     }
 
     const onBatch1 = () => {
-      validateFields((errors) => {
-        if (errors) return
-        const data = getFieldsValue()
-        Modal.confirm({
-          title: 'Start Batch 1',
-          content: 'This process cannot be undone',
-          onOk () {
-            dispatch({
-              type: 'stockOpname/insertBatchTwo',
-              payload: {
-                transId: detailData.id,
-                storeId: detailData.storeId,
-                userId: data.userId,
-                batchNumber: 1,
-                description: null,
-                reset: resetFields
-              }
-            })
-          },
-          onCancel () {
-
-          }
-        })
+      dispatch({
+        type: 'stockOpname/updateState',
+        payload: {
+          modalPhaseOneVisible: true
+        }
       })
     }
 
@@ -254,9 +234,45 @@ class Detail extends Component {
       }
     }
 
+    const modalPhaseOneProps = {
+      listEmployee,
+      detailData,
+      phaseNumber: 1,
+      title: 'Modal Phase 1',
+      visible: modalPhaseTwoVisible,
+      onOk (data, resetFields) {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalPhaseOneVisible: false
+          }
+        })
+        dispatch({
+          type: 'stockOpname/insertBatchTwo',
+          payload: {
+            transId: detailData.id,
+            storeId: detailData.storeId,
+            userId: data.userId,
+            batchNumber: 1,
+            description: null,
+            reset: resetFields
+          }
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalPhaseOneVisible: false
+          }
+        })
+      }
+    }
+
     const modalPhaseTwoProps = {
       listEmployee,
       detailData,
+      phaseNumber: 2,
       title: 'Modal Phase 2',
       visible: modalPhaseTwoVisible,
       onOk (data, resetFields) {
@@ -391,6 +407,7 @@ class Detail extends Component {
         </Col>
       </Row>
       {modalAddEmployeeVisible && <ModalEmployee {...modalAddEmployeeProps} />}
+      {modalPhaseOneVisible && <ModalPhaseTwo {...modalPhaseOneProps} />}
       {modalPhaseTwoVisible && <ModalPhaseTwo {...modalPhaseTwoProps} />}
     </div >)
   }
@@ -402,4 +419,4 @@ Detail.propTypes = {
   stockOpname: PropTypes.object
 }
 
-export default connect(({ loading, app, stockOpname }) => ({ loading, app, stockOpname }))(Form.create()(Detail))
+export default connect(({ loading, app, stockOpname }) => ({ loading, app, stockOpname }))(Detail)

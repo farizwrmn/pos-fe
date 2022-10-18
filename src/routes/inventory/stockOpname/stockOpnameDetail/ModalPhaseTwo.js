@@ -13,6 +13,7 @@ const formItemLayout = {
 const ModalEntry = ({
   onOk,
   listEmployee,
+  phaseNumber,
   detailData,
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...modalProps
@@ -22,7 +23,7 @@ const ModalEntry = ({
       if (errors) return
       const data = getFieldsValue()
       Modal.confirm({
-        title: `Total ${data.userId.length} As Phase 2 PIC`,
+        title: `Total ${data.userId.length} As Phase ${phaseNumber} PIC`,
         content: 'Are you sure ?',
         onOk () {
           onOk(data, resetFields)
