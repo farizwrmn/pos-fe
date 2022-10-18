@@ -121,11 +121,11 @@ const BrowseGroup = ({
       key: 'status',
       width: 100,
       render: text =>
-        (<span>
-          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
-          </Tag>
-        </span>),
+      (<span>
+        <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
+          {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+        </Tag>
+      </span>),
       filters: [{
         text: 'Active',
         value: 'A'
@@ -147,15 +147,16 @@ const BrowseGroup = ({
           menuOptions={(
             user.permissions.role === 'OWN'
             || user.permissions.role === 'SPR'
+            || user.permissions.role === 'ADF'
             || user.permissions.role === 'ADM'
           ) ? [
-              { key: '1', name: 'Print', icon: 'printer' },
-              { key: '2', name: 'Payment', icon: 'pay-circle-o' },
-              { key: '3', name: 'Void', icon: 'delete' }
-            ] : [
-              { key: '1', name: 'Print', icon: 'printer' },
-              { key: '3', name: 'Void', icon: 'delete' }
-            ]}
+            { key: '1', name: 'Print', icon: 'printer' },
+            { key: '2', name: 'Payment', icon: 'pay-circle-o' },
+            { key: '3', name: 'Void', icon: 'delete' }
+          ] : [
+            { key: '1', name: 'Print', icon: 'printer' },
+            { key: '3', name: 'Void', icon: 'delete' }
+          ]}
         />)
       }
     }
@@ -200,10 +201,12 @@ const BrowseGroup = ({
         columns={columns}
         dataSource={user.permissions.role === 'OWN'
           || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADF'
           || user.permissions.role === 'ADM' ? dataSource.sort((a, b) => b.id - a.id) : dataSource.sort((a, b) => a.id - b.id).slice(dataSource.length - 5, dataSource.length).sort((a, b) => b.id - a.id)}
         loading={loading}
         pagination={user.permissions.role === 'OWN'
           || user.permissions.role === 'SPR'
+          || user.permissions.role === 'ADF'
           || user.permissions.role === 'ADM'}
       />
     </Form>
