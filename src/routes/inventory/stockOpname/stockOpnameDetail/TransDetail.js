@@ -26,8 +26,11 @@ const TransDetail = ({
         type: 'stockOpname/queryDetailData',
         payload: {
           page: page.current,
-          pageSize: 40,
-          status: ['DIFF', 'CONFLICT', 'MISS'],
+          pageSize: 20,
+          status: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
+            ['CONFLICT'] : undefined,
+          batchNumber: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
+            1 : 2,
           order: '-updatedAt',
           transId: detailData.id,
           storeId: detailData.storeId,

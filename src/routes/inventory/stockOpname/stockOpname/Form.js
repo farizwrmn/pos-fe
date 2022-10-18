@@ -113,6 +113,21 @@ const FormCounter = ({
               ]
             })(<DatePicker disabled format="YYYY-MM-DD HH:mm" />)}
           </FormItem>
+          <FormItem label="Schedule For" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('scheduleStart', {
+              initialValue: moment().add(1, 'd'),
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<DatePicker
+              disabledDate={(current) => {
+                return current <= moment().add(1, 'd').startOf('day')
+              }}
+              format="YYYY-MM-DD"
+            />)}
+          </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: item.description,

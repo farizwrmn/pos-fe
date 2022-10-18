@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -18,12 +18,17 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    modalAddEmployeeVisible: false,
+    modalPhaseOneVisible: false,
+    modalPhaseTwoVisible: false,
     list: [],
     listReport: [],
     listEmployee: [],
+    listEmployeeOnCharge: [],
     listActive: [],
     listDetail: [],
     listDetailFinish: [],
+    listEmployeePhase2: [],
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
@@ -58,6 +63,13 @@ export default modelExtend(pageModel, {
               storeId: lstorage.getCurrentUserStore()
             }
           })
+          dispatch({
+            type: 'queryDetailReport',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
         }
         if (pathname === '/stock-opname') {
           dispatch({
@@ -67,7 +79,13 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query', payload: other })
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                order: '-id'
+              }
+            })
           } else {
             dispatch({
               type: 'queryActive'
@@ -79,6 +97,62 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * updateFinishBatch2 ({ payload = {} }, { call, put }) {
+      const { detailData } = payload
+      const response = yield call(updateFinishBatch2, {
+        transId: detailData.id,
+        batchId: detailData.activeBatch.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response.success && payload.detailData) {
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            id: payload.detailData.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        yield put({
+          type: 'queryDetailReport',
+          payload: {
+            id: payload.detailData.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * insertEmployee ({ payload = {} }, { call, put }) {
+      const { data, detailData, reset } = payload
+      const response = yield call(insertEmployee, {
+        userId: data.userId,
+        transId: detailData.id,
+        batchId: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
+          ? detailData.activeBatch.id : null
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalAddEmployeeVisible: false
+          }
+        })
+        yield put({
+          type: 'queryEmployeeOnCharge',
+          payload: {
+            transId: detailData.id,
+            batchId: detailData && detailData.activeBatch && detailData.activeBatch.id ? detailData.activeBatch.id : null
+          }
+        })
+        if (reset) {
+          payload.reset()
+        }
+      } else {
+        throw response
+      }
+    },
 
     * finishLine ({ payload = {} }, { select, call, put }) {
       const listDetail = yield select(({ stockOpname }) => stockOpname.listDetail)
@@ -93,15 +167,10 @@ export default modelExtend(pageModel, {
       const response = yield call(updateFinishLine, payload)
       if (response.success) {
         yield put({
-          type: 'queryDetailData',
+          type: 'queryDetail',
           payload: {
-            page: 1,
-            pageSize: 40,
-            status: ['DIFF', 'CONFLICT', 'MISS'],
-            order: '-updatedAt',
-            transId: payload.transId,
-            storeId: payload.storeId,
-            batchId: payload.batchId
+            id: payload.transId,
+            storeId: lstorage.getCurrentUserStore()
           }
         })
       } else {
@@ -113,7 +182,6 @@ export default modelExtend(pageModel, {
       const data = yield call(queryById, payload)
       if (data.success && data.data) {
         const { detail, ...other } = data.data
-        yield put({ type: 'queryEmployee' })
         yield put({
           type: 'updateState',
           payload: {
@@ -121,22 +189,29 @@ export default modelExtend(pageModel, {
           }
         })
         if (other && other.activeBatch && other.activeBatch.id) {
+          if (other && other.activeBatch && other.activeBatch.id && other.activeBatch.batchNumber === 2) {
+            yield put({
+              type: 'queryEmployeePhaseTwo',
+              payload: {
+                transId: other.transId || other.id,
+                batchId: other && other.activeBatch && other.activeBatch.id ? other.activeBatch.id : null
+              }
+            })
+          }
           yield put({
             type: 'queryDetailData',
             payload: {
               page: 1,
-              pageSize: 40,
-              status: ['DIFF', 'CONFLICT', 'MISS'],
+              pageSize: 20,
+              status: other && other.batch && other.activeBatch && other.activeBatch.batchNumber === 1 && !other.activeBatch.status ?
+                ['CONFLICT'] : ['MISS'],
               order: '-updatedAt',
+              batchNumber: other && other.batch && other.activeBatch && other.activeBatch.batchNumber === 1 && !other.activeBatch.status ?
+                1 : 2,
               transId: other.id,
               storeId: other.storeId,
-              batchId: other.activeBatch.id
-            }
-          })
-          yield put({
-            type: 'queryDetailReport',
-            payload: {
-              batchId: other.activeBatch.id
+              batchId: other.activeBatch.id,
+              detailData: other
             }
           })
         }
@@ -152,16 +227,42 @@ export default modelExtend(pageModel, {
     },
 
     * queryDetailReport ({ payload = {} }, { call, put }) {
-      const response = yield call(queryReportOpname, payload)
-      if (response.success) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { detail, ...other } = data.data
+        yield put({ type: 'queryEmployee' })
+        if (other && other.activeBatch && other.activeBatch.id && other.activeBatch.batchNumber === 1) {
+          yield put({
+            type: 'queryEmployeeOnCharge',
+            payload: {
+              transId: other.transId || other.id,
+              batchId: other && other.activeBatch && other.activeBatch.id ? other.activeBatch.id : null
+            }
+          })
+        }
         yield put({
           type: 'updateState',
           payload: {
-            listReport: response.data
+            detailData: other
           }
         })
+        if (other && other.activeBatch) {
+          const response = yield call(queryReportOpname, {
+            batchId: other.activeBatch.id
+          })
+          if (response.success) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                listReport: response.data
+              }
+            })
+          } else {
+            throw response
+          }
+        }
       } else {
-        throw response
+        throw data
       }
     },
 
@@ -179,8 +280,54 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryEmployeePhaseTwo ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listEmployeePhase2: []
+        }
+      })
+      const data = yield call(queryListEmployeePhaseTwo, payload)
+      if (data && data.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEmployeePhase2: data.data.map((item, index) => ({ no: index + 1, ...item }))
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * queryEmployeeOnCharge ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listEmployeeOnCharge: []
+        }
+      })
+      const data = yield call(queryListEmployeeOnCharge, payload)
+      if (data && data.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEmployeeOnCharge: data.data.map((item, index) => ({ no: index + 1, ...item }))
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * insertBatchTwo ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalPhaseOneVisible: false,
+          modalPhaseTwoVisible: false
+        }
+      })
       const response = yield call(addBatch, {
         transId: payload.transId,
         storeId: payload.storeId,
@@ -192,7 +339,14 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'queryDetail',
           payload: {
-            id: payload.transId,
+            id: payload.transId || payload.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        yield put({
+          type: 'queryDetailReport',
+          payload: {
+            id: payload.transId || payload.id,
             storeId: lstorage.getCurrentUserStore()
           }
         })
@@ -205,7 +359,8 @@ export default modelExtend(pageModel, {
     },
 
     * queryDetailData ({ payload = {} }, { call, put }) {
-      const data = yield call(queryListDetail, payload)
+      const { detailData, ...other } = payload
+      const data = yield call(queryListDetail, other)
       if (data.success && data.data) {
         yield put({
           type: 'updateState',
@@ -222,7 +377,11 @@ export default modelExtend(pageModel, {
         })
         yield put({
           type: 'queryDetailDataFinished',
-          payload
+          payload: {
+            ...other,
+            status: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
+              ['MISS', 'DIFF', 'FINISHED'] : ['DIFF', 'CONFICT', 'FINISHED']
+          }
         })
       } else {
         throw data
@@ -230,7 +389,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryDetailDataFinished ({ payload = {} }, { call, put }) {
-      const data = yield call(queryListDetail, { ...payload, status: 'FINISHED' })
+      const data = yield call(queryListDetail, payload)
       if (data.success && data.data) {
         yield put({
           type: 'updateState',
