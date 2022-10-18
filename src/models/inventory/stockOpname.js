@@ -343,6 +343,13 @@ export default modelExtend(pageModel, {
             storeId: lstorage.getCurrentUserStore()
           }
         })
+        yield put({
+          type: 'queryDetailReport',
+          payload: {
+            id: payload.transId || payload.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
         if (payload.reset) {
           payload.reset()
         }

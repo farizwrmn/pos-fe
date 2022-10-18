@@ -239,7 +239,7 @@ class Detail extends Component {
       detailData,
       phaseNumber: 1,
       title: 'Modal Phase 1',
-      visible: modalPhaseTwoVisible,
+      visible: modalPhaseOneVisible,
       onOk (data, resetFields) {
         dispatch({
           type: 'stockOpname/updateState',
