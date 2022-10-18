@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { Link } from 'dva/router'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 
@@ -24,7 +25,10 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
     {
       title: 'Store Name',
       dataIndex: 'store.storeName',
-      key: 'store.storeName'
+      key: 'store.storeName',
+      render: (text, record) => {
+        return <Link to={`/stock-opname/${record.id}`}>{text}</Link>
+      }
     },
     {
       title: 'Start',

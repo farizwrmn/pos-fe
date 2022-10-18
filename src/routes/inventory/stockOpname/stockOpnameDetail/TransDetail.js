@@ -28,7 +28,9 @@ const TransDetail = ({
           page: page.current,
           pageSize: 20,
           status: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
-            ['CONFLICT'] : ['DIFF', 'CONFLICT', 'MISS'],
+            ['CONFLICT'] : undefined,
+          batchNumber: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
+            1 : 2,
           order: '-updatedAt',
           transId: detailData.id,
           storeId: detailData.storeId,

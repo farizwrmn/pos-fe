@@ -210,7 +210,7 @@ class Detail extends Component {
       detailData,
       loading: loading.effects['pos/queryPosDetail'],
       maskClosable: false,
-      title: 'Update as finish?',
+      title: modalEditItem ? modalEditItem.productCode : 'Update as finish?',
       confirmLoading: loading.effects['stockOpname/finishLine'] || loading.effects['stockOpname/editQty'],
       wrapClassName: 'vertical-center-modal',
       onOk (data) {
@@ -338,10 +338,12 @@ class Detail extends Component {
           <div className="content-inner-zero-min-height">
             <h1>Product Info</h1>
             <div className={styles.content}>
-              <Row>
-                <Col span={12}>Total Balance</Col>
-                <Col span={12}>{detailData && detailData.totalBalance ? numberFormatter(detailData.totalBalance) : 0}</Col>
-              </Row>
+              {detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ? (
+                <Row>
+                  <Col span={12}>Total Balance</Col>
+                  <Col span={12}>{detailData && detailData.totalBalance ? numberFormatter(detailData.totalBalance) : 0}</Col>
+                </Row>) : null
+              }
               <Row>
                 <Col span={12}>Total Checked</Col>
                 <Col span={12}>{detailData && detailData.totalChecked ? numberFormatter(detailData.totalChecked) : 0}</Col>

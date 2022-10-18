@@ -78,7 +78,13 @@ export default modelExtend(pageModel, {
             }
           })
           if (activeKey === '1') {
-            dispatch({ type: 'query', payload: other })
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                order: '-id'
+              }
+            })
           } else {
             dispatch({
               type: 'queryActive'
@@ -97,7 +103,7 @@ export default modelExtend(pageModel, {
         batchId: detailData.activeBatch.id,
         storeId: lstorage.getCurrentUserStore()
       })
-      if (response.success) {
+      if (response.success && payload.detailData) {
         yield put({
           type: 'queryDetail',
           payload: {
@@ -197,8 +203,10 @@ export default modelExtend(pageModel, {
               page: 1,
               pageSize: 20,
               status: other && other.batch && other.activeBatch && other.activeBatch.batchNumber === 1 && !other.activeBatch.status ?
-                ['CONFLICT'] : ['DIFF', 'CONFLICT', 'MISS'],
+                ['CONFLICT'] : ['MISS'],
               order: '-updatedAt',
+              batchNumber: other && other.batch && other.activeBatch && other.activeBatch.batchNumber === 1 && !other.activeBatch.status ?
+                1 : 2,
               transId: other.id,
               storeId: other.storeId,
               batchId: other.activeBatch.id,
@@ -237,18 +245,20 @@ export default modelExtend(pageModel, {
             detailData: other
           }
         })
-        const response = yield call(queryReportOpname, {
-          batchId: other.activeBatch.id
-        })
-        if (response.success) {
-          yield put({
-            type: 'updateState',
-            payload: {
-              listReport: response.data
-            }
+        if (other && other.activeBatch) {
+          const response = yield call(queryReportOpname, {
+            batchId: other.activeBatch.id
           })
-        } else {
-          throw response
+          if (response.success) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                listReport: response.data
+              }
+            })
+          } else {
+            throw response
+          }
         }
       } else {
         throw data
@@ -361,7 +371,7 @@ export default modelExtend(pageModel, {
           payload: {
             ...other,
             status: detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status ?
-              ['MISS', 'DIFF', 'FINISHED'] : ['FINISHED']
+              ['MISS', 'DIFF', 'FINISHED'] : ['DIFF', 'CONFICT', 'FINISHED']
           }
         })
       } else {
