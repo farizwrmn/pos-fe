@@ -276,7 +276,7 @@ const AdjustForm = ({
           <FormItem label="Memo" {...formItemLayout1}>
             {getFieldDecorator('memo', {
               rules: [{
-                required: false
+                required: true
               }]
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
           </FormItem>
