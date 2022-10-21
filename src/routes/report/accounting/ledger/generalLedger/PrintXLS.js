@@ -63,16 +63,22 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
   for (let i = 0; i < listRekap.length; i += 1) {
     let master = listRekap[i]
     let tableTitle = [
-      { value: `${master.accountCode} ${master.accountName}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle }
+      [
+        { value: 'AKUN', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${master.accountCode}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${master.accountName}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle }
+      ]
     ]
     tableTitles.push(tableTitle)
 
     const diffData = master.items.reduce((group, item) => {
-      (group[item.typeCode] = group[item.typeCode] || []).push(item)
+      (group[item.accountId] = group[item.accountId] || []).push(item)
       return group
     }, [])
 
     let group = []
+    let amount = 0
     for (let key in diffData) {
       let header = []
       header.push([
@@ -100,12 +106,13 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
           { value: `${data.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: `${data.accountCode}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: `${data.accountName}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: `${data.description}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: `${data.description || ''}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.debit) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: (parseFloat(data.credit) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (parseFloat(data.balance) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+          { value: (parseFloat(data.amount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
         ]
         group.push(tableBody)
+        amount = data.amount
         count += 1
       }
     }
@@ -113,7 +120,6 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
 
     let debit = master.items.reduce((cnt, o) => cnt + (parseFloat(o.debit) || 0), 0)
     let credit = master.items.reduce((cnt, o) => cnt + (parseFloat(o.credit) || 0), 0)
-    let amount = master.items.reduce((cnt, o) => cnt + (parseFloat(o.amount) || 0), 0)
 
     let tableFooter = [
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
@@ -169,7 +175,7 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
         { value: (item.accountName || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.description || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (parseFloat(item.debit) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
-        { value: (parseFloat(item.credit)), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
+        { value: (parseFloat(item.credit) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody },
         { value: (parseFloat(item.amount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody }
       ])
       count += 1
@@ -187,7 +193,7 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
     tableFooter: tableFooters,
     data: listRekap,
     tableFilter: tableFilters,
-    fileName: 'POS-Detail-Summary'
+    fileName: 'POS-General-Ledger'
   }
 
   return (
