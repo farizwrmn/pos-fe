@@ -25,6 +25,7 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
   }
 
   const filterProps = {
+    loading,
     listAccountCode,
     activeKey,
     // productCode,

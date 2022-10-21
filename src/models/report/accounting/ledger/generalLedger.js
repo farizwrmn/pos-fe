@@ -33,7 +33,6 @@ export default {
       history.listen((location) => {
         if (location.query.from && location.query.to && (
           location.pathname === '/report/accounting/consolidation/general-ledger'
-          || location.pathname === '/report/accounting/general-ledger'
         )) {
           dispatch({
             type: 'setNull'
