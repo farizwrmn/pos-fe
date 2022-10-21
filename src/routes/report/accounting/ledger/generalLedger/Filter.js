@@ -4,11 +4,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { routerRedux } from 'dva/router'
 import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Select, Col, Icon, Form } from 'antd'
 import PrintXLS from './PrintXLS'
-import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -38,8 +36,8 @@ const Filter = ({
   onListReset,
   onShowCategories,
   onShowBrands,
+  loading,
   form: {
-    resetFields,
     getFieldDecorator,
     getFieldsValue,
     validateFields
@@ -47,18 +45,6 @@ const Filter = ({
   activeKey,
   ...otherProps
 }) => {
-  const handleReset = () => {
-    const { pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        activeKey
-      }
-    }))
-    resetFields()
-    onListReset()
-  }
-
   const handleSearch = () => {
     validateFields((errors) => {
       if (errors) {
@@ -105,6 +91,7 @@ const Filter = ({
   let childrenTransNo = listAccountCode.length > 0 ? listAccountCode.map(x => (<Option value={x.id} key={x.id} title={`${x.accountName} (${x.accountCode})`}>{`${x.accountName} (${x.accountCode})`}</Option>)) : []
   const { from, to } = query
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  console.log('printProps.listRekap', printProps.listRekap)
   return (
     <Row>
       <Col {...leftColumn} >
@@ -144,20 +131,13 @@ const Filter = ({
           type="dashed"
           size="large"
           style={{ marginLeft: '5px' }}
+          disabled={loading.effects['generalLedger/queryGeneralLedger']}
           className="button-width02 button-extra-large"
           onClick={() => handleSearch()}
         >
           <Icon type="search" className="icon-large" />
         </Button>
-        <Button type="dashed"
-          size="large"
-          className="button-width02 button-extra-large bgcolor-lightgrey"
-          onClick={() => handleReset()}
-        >
-          <Icon type="rollback" className="icon-large" />
-        </Button>
-        {<PrintPDF {...printProps} />}
-        {<PrintXLS {...printProps} />}
+        {printProps.listRekap && printProps.listRekap.length > 0 && <PrintXLS {...printProps} />}
       </Col>
     </Row>
   )
