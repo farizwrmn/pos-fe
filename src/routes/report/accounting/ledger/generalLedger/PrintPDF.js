@@ -113,7 +113,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
           {
             columns: [
               {
-                text: `\nPERIODE : ${from} - ${to}}`,
+                text: `\nPERIODE : ${from} - ${to}`,
                 fontSize: 12,
                 alignment: 'left'
               },
