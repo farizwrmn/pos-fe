@@ -54,7 +54,7 @@ const Filter = ({
         ...getFieldsValue()
       }
       if (data.accountCode) {
-        data.accountId = data.accountCode.key
+        data.accountId = data.accountCode.map(item => item.key)
       }
       if (data.rangePicker) {
         onChangePeriod(data)
@@ -91,7 +91,7 @@ const Filter = ({
   let childrenTransNo = listAccountCode.length > 0 ? listAccountCode.map(x => (<Option value={x.id} key={x.id} title={`${x.accountName} (${x.accountCode})`}>{`${x.accountName} (${x.accountCode})`}</Option>)) : []
   const { from, to } = query
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  console.log('printProps.listRekap', printProps.listRekap)
+
   return (
     <Row>
       <Col {...leftColumn} >
@@ -117,6 +117,7 @@ const Filter = ({
               style={{ width: '100%' }}
               placeholder="Choose Account Code"
               showSearch
+              multiple
               optionFilterProp="children"
               labelInValue
               filterOption={filterOption}

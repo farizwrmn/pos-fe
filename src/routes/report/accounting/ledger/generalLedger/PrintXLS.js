@@ -192,7 +192,7 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: listRekap,
-    tableFilter: tableFilters,
+    tableFilter: [],
     fileName: 'POS-General-Ledger'
   }
 
