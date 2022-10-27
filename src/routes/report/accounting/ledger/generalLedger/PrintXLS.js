@@ -93,6 +93,21 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
         { value: 'CREDIT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'SALDO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
       ])
+      if (diffData[key] && diffData[key][0] && diffData[key][0].amount != null) {
+        const beginValue = diffData[key][0].amount - ((diffData[key][0].debit || 0) - (diffData[key][0].credit || 0))
+        header.push([
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: 'SALDO AWAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: parseFloat(beginValue), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+        ])
+      }
       for (let i = 0; i < header.length; i += 1) {
         group.push(header[i])
       }
@@ -118,19 +133,19 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
     }
     tableBodies.push(group)
 
-    let debit = master.items.reduce((cnt, o) => cnt + (parseFloat(o.debit) || 0), 0)
-    let credit = master.items.reduce((cnt, o) => cnt + (parseFloat(o.credit) || 0), 0)
+    // let debit = master.items.reduce((cnt, o) => cnt + (parseFloat(o.debit) || 0), 0)
+    // let credit = master.items.reduce((cnt, o) => cnt + (parseFloat(o.credit) || 0), 0)
 
     let tableFooter = [
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
+      { value: 'SALDO AKHIR', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: debit, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: credit, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
       { value: amount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
     tableFooters.push(tableFooter)
