@@ -63,7 +63,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'right'
           },
           {
-            text: 'EXPENSE ENTRY',
+            text: 'JOURNAL ENTRY',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
