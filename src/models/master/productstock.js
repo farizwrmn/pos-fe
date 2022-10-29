@@ -192,6 +192,13 @@ export default modelExtend(pageModel, {
             listSticker: newListSticker
           }
         })
+        const { resetChild, resetChildShelf } = payload
+        if (resetChild) {
+          resetChild(listSticker)
+        }
+        if (resetChildShelf) {
+          resetChildShelf(listSticker)
+        }
       } else {
         throw response
       }
