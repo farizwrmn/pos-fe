@@ -104,7 +104,11 @@ class ProductStock extends Component {
         onSearchBarcodeConsignment (payload) {
           dispatch({
             type: 'productstock/queryConsignmentBarcodeForPriceTag',
-            payload
+            payload: {
+              ...payload,
+              resetChild: parentProps ? parentProps.clickChild : undefined,
+              resetChildShelf: parentProps ? parentProps.clickChildShelf : undefined
+            }
           })
         },
         onCloseModalProduct () {
