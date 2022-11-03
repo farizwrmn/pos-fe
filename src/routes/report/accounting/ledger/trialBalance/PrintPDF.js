@@ -58,9 +58,12 @@ const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
           { text: count, style: 'textCenter' },
           { text: (data.accountCode || '').toString(), style: 'textLeft' },
           { text: (data.accountName || '').toString(), style: 'textLeft' },
-          { text: formatNumberIndonesia(data.debit || 0), style: 'textRight' },
-          { text: formatNumberIndonesia(data.credit || 0), style: 'textRight' },
-          { text: formatNumberIndonesia(data.balance || 0), style: 'textRight' }
+          { text: data.startBalance > 0 ? formatNumberIndonesia(data.startBalance || 0) : formatNumberIndonesia(0), style: 'textRight' },
+          { text: data.startBalance < 0 ? formatNumberIndonesia(data.startBalance * -1 || 0) : formatNumberIndonesia(0), style: 'textRight' },
+          { text: data.movingBalance > 0 ? formatNumberIndonesia(data.movingBalance || 0) : formatNumberIndonesia(0), style: 'textRight' },
+          { text: data.movingBalance < 0 ? formatNumberIndonesia(data.movingBalance * -1 || 0) : formatNumberIndonesia(0), style: 'textRight' },
+          { text: data.balance > 0 ? formatNumberIndonesia(data.balance || 0) : formatNumberIndonesia(0), style: 'textRight' },
+          { text: data.balance < 0 ? formatNumberIndonesia(data.balance * -1 || 0) : formatNumberIndonesia(0), style: 'textRight' }
         ]
         body.push(row)
       }
@@ -77,16 +80,32 @@ const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
   let pageSize
   headerTitle = 'LAPORAN NERACA SALDO'
   underline = 1050
-  widths.push('2%', '13%', '25%', '20%', '20%', '20%')
+  widths.push('2%', '12%', '20%', '11%', '11%', '11%', '11%', '11%', '11%')
   pageSize = { width: 842, height: 1150 }
   tableHeader.push(
     [
-      { fontSize: 12, text: 'NO', alignment: 'center' },
-      { fontSize: 12, text: 'KODE', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA PERKIRAAN', alignment: 'center' },
+      { fontSize: 12, text: 'NO', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'KODE', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'NAMA PERKIRAAN', rowSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: 'SALDO AWAL', colSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: '', alignment: 'center' },
+      { fontSize: 12, text: 'SALDO BERGERAK', colSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: '', alignment: 'center' },
+      { fontSize: 12, text: 'SALDO AKHIR', colSpan: 2, alignment: 'center' },
+      { fontSize: 12, text: '', alignment: 'center' }
+    ]
+  )
+  tableHeader.push(
+    [
+      { fontSize: 12, text: '', alignment: 'center' },
+      { fontSize: 12, text: '', alignment: 'center' },
+      { fontSize: 12, text: '', alignment: 'center' },
       { fontSize: 12, text: 'DEBIT', alignment: 'center' },
       { fontSize: 12, text: 'CREDIT', alignment: 'center' },
-      { fontSize: 12, text: 'BALANCE', alignment: 'center' }
+      { fontSize: 12, text: 'DEBIT', alignment: 'center' },
+      { fontSize: 12, text: 'CREDIT', alignment: 'center' },
+      { fontSize: 12, text: 'DEBIT', alignment: 'center' },
+      { fontSize: 12, text: 'CREDIT', alignment: 'center' }
     ]
   )
 
