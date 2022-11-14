@@ -29,6 +29,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     listCash: [],
     modalVisible: false,
+    selectedRowKeys: [],
     listItem: [],
     pagination: {
       showSizeChanger: true,
@@ -57,7 +58,8 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/bank-history') {
+        if (pathname === '/bank-history'
+          || pathname === '/bank-recon') {
           dispatch({
             type: 'bankentry/queryBankRecon',
             payload: other
@@ -136,7 +138,7 @@ export default modelExtend(pageModel, {
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('cashierNo')
         yield put({ type: 'app/query', payload: { userid: user.userid, role: data.data.storeId } })
-        yield put(routerRedux.push(`/accounts/payment/${encodeURIComponent(data.data.transNo)}`))
+        yield put(routerRedux.push(`/accounts/payment/${encodeURIComponent(data.data.transNo)}`, { target: '_blank' }))
       } else {
         throw data
       }
@@ -215,6 +217,12 @@ export default modelExtend(pageModel, {
     },
 
     * queryBankRecon ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          selectedRowKeys: []
+        }
+      })
       const response = yield call(queryBankRecon, {
         ...payload,
         type: 'all',
@@ -251,11 +259,18 @@ export default modelExtend(pageModel, {
       const response = yield call(updateBankRecon, payload)
       if (response.success) {
         yield put({
+          type: 'updateState',
+          payload: {
+            selectedRowKeys: []
+          }
+        })
+        yield put({
           type: 'queryBankRecon',
           payload: {
             accountId,
             from,
-            to
+            to,
+            recon: 0
           }
         })
         message.success('Bank reconciliation successfully updated')

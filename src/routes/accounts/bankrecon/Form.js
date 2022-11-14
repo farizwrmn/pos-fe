@@ -22,11 +22,12 @@ const formItemLayout = {
 
 const column = {
   xs: { span: 24 },
-  md: { span: 10 }
+  md: { span: 24 },
+  lg: { span: 10 }
 }
 
 const FormCounter = ({
-  item = {},
+  accountId,
   loading,
   onSubmit,
   listAccountCode,
@@ -49,7 +50,7 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       onSubmit({
-        accountId: data.accountId ? data.accountId.key : null,
+        accountId: data.accountId,
         from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
         to: moment(data.rangePicker[1]).format('YYYY-MM-DD'),
         recon: 0
@@ -64,7 +65,7 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem {...formItemLayout} label="Account">
               {getFieldDecorator('accountId', {
-                initialValue: item.accountId,
+                initialValue: accountId ? Number(accountId) : (listAccountCode && listAccountCode.length > 0 ? listAccountCode[0].id : undefined),
                 rules: [{
                   required: true,
                   message: 'Required'
@@ -73,7 +74,6 @@ const FormCounter = ({
                 showSearch
                 allowClear
                 optionFilterProp="children"
-                labelInValue
                 filterOption={filterOption}
               >{listAccountOpt}
               </Select>)}
