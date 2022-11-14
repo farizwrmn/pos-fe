@@ -1357,6 +1357,14 @@ const Routers = function ({ history, app }) {
             }, 'finance-bank-recon')
           }
         }, {
+          path: 'accounting-overview',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/accountingOverview'))
+              cb(null, require('./routes/accounts/accountingOverview'))
+            }, 'accounting-overview-report')
+          }
+        }, {
           path: 'bank-history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
