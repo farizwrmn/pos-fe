@@ -31,6 +31,7 @@ const Report = ({ dispatch, accountPayableReport }) => {
       }
     })
   }
+
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={callback} type="card">

@@ -18,6 +18,12 @@ const Browse = ({ ...browseProps }) => {
       width: '155px'
     },
     {
+      title: 'Supplier',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
+      width: '155px'
+    },
+    {
       title: 'TRANS',
       dataIndex: 'transNo',
       key: 'transNo',

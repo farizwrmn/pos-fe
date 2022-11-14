@@ -4,7 +4,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { formatDate } from 'utils'
 import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ listTrans, to, storeInfo }) => {
@@ -70,11 +69,7 @@ const PrintXLS = ({ listTrans, to, storeInfo }) => {
         let row = [
           { value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.storeName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.supplierName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: formatDate(data.transDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: formatDate(data.dueDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
 
           { value: (data.payable || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
@@ -86,30 +81,22 @@ const PrintXLS = ({ listTrans, to, storeInfo }) => {
       [
         { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-        { value: 'STORE', alignment: styles.alignmentCenter, font: styles.tableHeader },
-        { value: 'TRANS', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: 'SUPPLIER', alignment: styles.alignmentCenter, font: styles.tableHeader },
-        { value: 'DATE', alignment: styles.alignmentCenter, font: styles.tableHeader },
-        { value: 'DUE DATE', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: 'TERHUTANG', alignment: styles.alignmentCenter, font: styles.tableHeader }
       ]
     )
     tableFooter.push(
       [
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: 'SUBTOTAL', alignment: styles.alignmentCenter, font: styles.tableBody },
-        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
         { value: '', isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: 'SUBTOTAL', isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: payableTotal, alignment: styles.alignmentCenter, font: styles.tableBody }
       ]
     )
     return tableBody
   }
   const title = [
-    { value: 'LAPORAN HUTANG', alignment: styles.alignmentCenter, font: styles.title },
+    { value: 'LAPORAN HUTANG SUPPLIER', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
     { value: `PERIODE : ${moment(to, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`, alignment: styles.alignmentCenter, font: styles.title }
   ]
@@ -123,7 +110,7 @@ const PrintXLS = ({ listTrans, to, storeInfo }) => {
     tableHeader,
     tableBody: createTableBody(listTrans),
     tableFooter,
-    fileName: 'LAPORAN-HUTANG'
+    fileName: 'LAPORAN-HUTANG-SUPPLIER'
   }
 
   return (

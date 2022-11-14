@@ -23,11 +23,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
         let data = rows[key]
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
-          { text: (data.storeName || ''), alignment: 'left', fontSize: 11 },
-          { text: (data.transNo || ''), alignment: 'left', fontSize: 11 },
           { text: (data.supplierName || ''), alignment: 'left', fontSize: 11 },
-          { text: formatDate(data.transDate), alignment: 'left', fontSize: 11 },
-          { text: formatDate(data.dueDate), alignment: 'left', fontSize: 11 },
           { text: formatNumberIndonesia(data.payable || 0), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
@@ -67,7 +63,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN HUTANG',
+            text: 'LAPORAN HUTANG SUPPLIER',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -134,11 +130,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'STORE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'TRANS', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'SUPPLIER', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'DATE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'DUE DATE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TERHUTANG', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -152,10 +144,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     [
       { text: 'SUBTOTAL', colSpan: 6, alignment: 'center', fontSize: 12 },
       {},
-      {},
-      {},
-      {},
-      {},
       { text: `${(payableTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
@@ -164,12 +152,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: [
-      '5%', '14%', '18%', '22%', '13%',
-      '13%', '15%'
+      '10%', '45%', '45%'
     ],
     pageMargins: [50, 130, 50, 60],
     pageSize: { width: 813, height: 530 },
-    pageOrientation: 'landscape',
+    pageOrientation: 'portrait',
     tableStyle: styles,
     layout: 'noBorder',
     tableHeader,

@@ -3,12 +3,9 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, DatePicker, Row, Col, Icon, Form, message } from 'antd'
-import moment from 'moment'
+import { Button, Row, Col, Icon, Form } from 'antd'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
-
-const FormItem = Form.Item
 
 const leftColumn = {
   xs: 24,
@@ -27,20 +24,14 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, loading, onListReset, form: { getFieldValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ onDateChange, loading, onListReset, form: { resetFields }, ...printProps }) => {
   // const handleChange = (value) => {
   //   const from = moment(value, 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
   //   const to = moment(value, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
   //   onDateChange(from, to)
   // }
   const handleSearch = () => {
-    const dateString = getFieldValue('to')
-    if (!dateString) {
-      message.warning('Require Date')
-      return
-    }
-    const to = moment(dateString).format('YYYY-MM-DD')
-    onDateChange(to)
+    onDateChange()
   }
 
   const handleReset = () => {
@@ -49,15 +40,7 @@ const Filter = ({ onDateChange, loading, onListReset, form: { getFieldValue, res
 
   return (
     <Row >
-      <Col {...leftColumn} >
-        <Form>
-          <FormItem label="Trans Date">
-            {getFieldDecorator('to')(
-              <DatePicker size="large" style={{ width: '189px' }} />
-            )}
-          </FormItem>
-        </Form>
-      </Col>
+      <Col {...leftColumn} />
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button
           type="dashed"

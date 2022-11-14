@@ -4,7 +4,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import moment from 'moment'
 import { numberFormat } from 'utils'
 
 const { formatNumberIndonesia } = numberFormat
@@ -13,29 +12,9 @@ const Browse = ({ ...browseProps }) => {
   const columns = [
     {
       title: 'Store',
-      dataIndex: 'storeName',
-      key: 'storeName',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
       width: '155px'
-    },
-    {
-      title: 'TRANS',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      width: '155px'
-    },
-    {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      width: '175px',
-      render: text => `${moment(text).format('DD-MMM-YYYY')}`
-    },
-    {
-      title: 'Due Date',
-      dataIndex: 'dueDate',
-      key: 'dueDate',
-      width: '175px',
-      render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
       title: 'Payable',
