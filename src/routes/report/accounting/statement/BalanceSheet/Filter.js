@@ -115,8 +115,10 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
           <Icon type="rollback" className="icon-large" />
         </Button>
         {((printProps.listTrans && printProps.listTrans.length > 0) || (printProps.listProfit && printProps.listProfit.length > 0))
+          && !loading.effects['accountingStatementReport/queryBalanceSheet'] && !loading.effects['accountingStatementReport/query']
           && <PrintPDF {...printProps} />}
         {((printProps.listTrans && printProps.listTrans.length > 0) || (printProps.listProfit && printProps.listProfit.length > 0))
+          && !loading.effects['accountingStatementReport/queryBalanceSheet'] && !loading.effects['accountingStatementReport/query']
           && <PrintXLS {...printProps} />}
       </Col>
     </Row>
