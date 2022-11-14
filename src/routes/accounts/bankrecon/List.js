@@ -52,6 +52,7 @@ const List = ({
             <Button
               type="primary"
               loading={loading.effects['bankentry/updateBankRecon']}
+              disabled={loading.effects['bankentry/updateBankRecon']}
               icon="check"
               onClick={() => {
                 Modal.confirm({
@@ -104,6 +105,7 @@ const List = ({
                         shape="circle"
                         type="primary"
                         loading={loading.effects['bankentry/updateBankRecon']}
+                        disabled={loading.effects['bankentry/updateBankRecon']}
                         icon="check"
                         onClick={() => {
                           Modal.confirm({
