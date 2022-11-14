@@ -3,11 +3,13 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
+import { formatDate } from 'utils'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ listTrans, storeInfo }) => {
+const PrintXLS = ({ listTrans, to, storeInfo }) => {
   // Declare Variable
-  let total = (listTrans || []).reduce((cnt, o) => cnt + o.payable, 0)
+  let payableTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.payable || 0), 0)
 
   const styles = {
     merchant: {
@@ -60,16 +62,21 @@ const PrintXLS = ({ listTrans, storeInfo }) => {
   const createTableBody = (list) => {
     let tableBody = []
     let start = 1
+    let countQtyValue = 0
     for (let key in list) {
       if (list.hasOwnProperty(key)) {
         let data = list[key]
-        const totalValue = data.payable
+        countQtyValue = ((parseFloat(countQtyValue) || 0) + (parseFloat(data.pQty) || 0)) - (parseFloat(data.sQty) || 0)
         let row = [
           { value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data['supplier.supplierName'] || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data['supplier.supplierTaxId'] || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (totalValue || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+          { value: (data.storeName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.transNo || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: (data.supplierName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: formatDate(data.transDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+          { value: formatDate(data.dueDate), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
+
+          { value: (data.payable || 0), isNumber: true, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
         tableBody.push(row)
       }
@@ -79,27 +86,32 @@ const PrintXLS = ({ listTrans, storeInfo }) => {
       [
         { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
-        { value: 'NAMA SUPPLIER', alignment: styles.alignmentCenter, font: styles.tableHeader },
-        { value: 'NPWP', alignment: styles.alignmentCenter, font: styles.tableHeader },
-
-        { value: 'SISA HUTANG', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+        { value: 'STORE', alignment: styles.alignmentCenter, font: styles.tableHeader },
+        { value: 'TRANS', alignment: styles.alignmentCenter, font: styles.tableHeader },
+        { value: 'SUPPLIER', alignment: styles.alignmentCenter, font: styles.tableHeader },
+        { value: 'DATE', alignment: styles.alignmentCenter, font: styles.tableHeader },
+        { value: 'DUE DATE', alignment: styles.alignmentCenter, font: styles.tableHeader },
+        { value: 'TERHUTANG', alignment: styles.alignmentCenter, font: styles.tableHeader }
       ]
     )
     tableFooter.push(
       [
         { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-        { value: '', alignment: styles.alignmentCenter, font: styles.tableBody },
         { value: 'SUBTOTAL', alignment: styles.alignmentCenter, font: styles.tableBody },
-
-        { value: total, isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody }
+        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+        { value: '', isNumber: true, alignment: styles.alignmentCenter, font: styles.tableBody },
+        { value: payableTotal, alignment: styles.alignmentCenter, font: styles.tableBody }
       ]
     )
     return tableBody
   }
   const title = [
-    { value: 'LAPORAN SISA HUTANG', alignment: styles.alignmentCenter, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant }
+    { value: 'LAPORAN HUTANG', alignment: styles.alignmentCenter, font: styles.title },
+    { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
+    { value: `PERIODE : ${moment(to, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`, alignment: styles.alignmentCenter, font: styles.title }
   ]
   // Declare additional Props
   const XLSProps = {
@@ -111,7 +123,7 @@ const PrintXLS = ({ listTrans, storeInfo }) => {
     tableHeader,
     tableBody: createTableBody(listTrans),
     tableFooter,
-    fileName: 'LAPORAN-SISA-HUTANG'
+    fileName: 'LAPORAN-HUTANG'
   }
 
   return (

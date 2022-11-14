@@ -3,11 +3,11 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Select, Row, Col, Icon, Form } from 'antd'
+import { Button, DatePicker, Row, Col, Icon, Form, message } from 'antd'
+import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
-const { Option } = Select
 const FormItem = Form.Item
 
 const leftColumn = {
@@ -27,72 +27,34 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, listSupplier, listAllStores, loading, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, validateFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ onDateChange, loading, onListReset, form: { getFieldValue, resetFields, getFieldDecorator }, ...printProps }) => {
+  // const handleChange = (value) => {
+  //   const from = moment(value, 'YYYY-MM').startOf('month').format('YYYY-MM-DD')
+  //   const to = moment(value, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
+  //   onDateChange(from, to)
+  // }
   const handleSearch = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = getFieldsValue()
-      onDateChange(data)
-    })
+    const dateString = getFieldValue('to')
+    if (!dateString) {
+      message.warning('Require Date')
+      return
+    }
+    const to = moment(dateString).format('YYYY-MM-DD')
+    onDateChange(to)
   }
 
   const handleReset = () => {
-    const fields = getFieldsValue()
-    for (let item in fields) {
-      if ({}.hasOwnProperty.call(fields, item)) {
-        if (fields[item] instanceof Array) {
-          fields[item] = []
-        } else {
-          fields[item] = undefined
-        }
-      }
-    }
-    setFieldsValue(fields)
     resetFields()
-    onListReset()
   }
-
-  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
-
-  const supplierData = (listSupplier || []).length > 0 ?
-    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
-    : []
 
   return (
     <Row >
       <Col {...leftColumn} >
         <Form>
-          <FormItem
-            label="Store"
-          >
-            {getFieldDecorator('storeId')(
-              <Select
-                mode="multiple"
-                allowClear
-                size="large"
-                style={{ width: '189px' }}
-                placeholder="Choose Store"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {childrenTransNo}
-              </Select>
+          <FormItem label="Trans Date">
+            {getFieldDecorator('to')(
+              <DatePicker size="large" style={{ width: '189px' }} />
             )}
-          </FormItem>
-          <FormItem label="Supplier">
-            {getFieldDecorator('supplierId')(<Select
-              showSearch
-              optionFilterProp="children"
-              multiple
-              allowClear
-              maxTagCount={5}
-              // onChange={handleChange}
-              style={{ width: '100%' }}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-            >
-              {supplierData}
-            </Select>)}
           </FormItem>
         </Form>
       </Col>

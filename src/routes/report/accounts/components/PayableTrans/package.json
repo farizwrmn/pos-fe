@@ -1,6 +1,6 @@
 {
-  "name": "PayableTrans",
+  "name": "PayableSupplier",
   "version": "0.0.0",
   "private": true,
-  "main": "./PayableTrans.js"
+  "main": "./PayableSupplier.js"
 }

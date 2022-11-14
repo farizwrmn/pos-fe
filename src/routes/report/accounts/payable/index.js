@@ -11,8 +11,8 @@ import PayableTrans from '../components/PayableTrans'
 
 const TabPane = Tabs.TabPane
 
-const Report = ({ dispatch, accountsReport }) => {
-  const { activeKey } = accountsReport
+const Report = ({ dispatch, accountPayableReport }) => {
+  const { activeKey } = accountPayableReport
   const callback = (key) => {
     const { pathname } = location
     dispatch(routerRedux.push({
@@ -22,10 +22,10 @@ const Report = ({ dispatch, accountsReport }) => {
       }
     }))
     dispatch({
-      type: 'accountsReport/setListNull'
+      type: 'accountPayableReport/setListNull'
     })
     dispatch({
-      type: 'accountsReport/updateState',
+      type: 'accountPayableReport/updateState',
       payload: {
         activeKey: key
       }
@@ -34,8 +34,8 @@ const Report = ({ dispatch, accountsReport }) => {
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={callback} type="card">
-        <TabPane tab="By Date" key="1">{activeKey === '1' && <PayableTrans />}</TabPane>
-        <TabPane tab="By Supplier" key="2">{activeKey === '2' && <PayableSupplier />}</TabPane>
+        <TabPane tab="By Date" key="0">{activeKey === '0' && <PayableTrans />}</TabPane>
+        <TabPane tab="By Supplier" key="1">{activeKey === '1' && <PayableSupplier />}</TabPane>
       </Tabs>
     </div>
   )
@@ -43,7 +43,7 @@ const Report = ({ dispatch, accountsReport }) => {
 
 Report.propTypes = {
   dispatch: PropTypes.func,
-  accountsReport: PropTypes.object
+  accountPayableReport: PropTypes.object
 }
 
-export default connect(({ loading, posReport, accountsReport }) => ({ loading, posReport, accountsReport }))(Report)
+export default connect(({ loading, accountPayableReport }) => ({ loading, accountPayableReport }))(Report)
