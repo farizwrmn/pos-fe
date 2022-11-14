@@ -142,7 +142,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
   }
   const tableFooter = [
     [
-      { text: 'SUBTOTAL', colSpan: 6, alignment: 'center', fontSize: 12 },
+      { text: 'SUBTOTAL', colSpan: 2, alignment: 'center', fontSize: 12 },
       {},
       { text: `${(payableTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
