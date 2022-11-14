@@ -29,7 +29,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
   const handleChange = () => {
     validateFields((errors) => {
@@ -103,6 +103,8 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
           size="large"
           style={{ marginLeft: '5px' }}
           className="button-width02 button-extra-large"
+          disabled={loading.effects['accountingStatementReport/query']}
+          loading={loading.effects['accountingStatementReport/query']}
           onClick={() => handleChange()}
         >
           <Icon type="search" className="icon-large" />
@@ -110,12 +112,14 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
+          disabled={loading.effects['accountingStatementReport/query']}
+          loading={loading.effects['accountingStatementReport/query']}
           onClick={() => handleReset()}
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        <PrintPDF {...printProps} />
-        <PrintXLS {...printProps} />
+        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintPDF {...printProps} />}
+        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintXLS {...printProps} />}
       </Col>
     </Row>
   )

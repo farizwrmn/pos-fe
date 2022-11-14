@@ -114,8 +114,8 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        <PrintPDF {...printProps} />
-        <PrintXLS {...printProps} />
+        {printProps.listTrans && printProps.listTrans.length > 0 && <PrintPDF {...printProps} />}
+        {printProps.listTrans && printProps.listTrans.length > 0 && <PrintXLS {...printProps} />}
       </Col>
     </Row>
   )

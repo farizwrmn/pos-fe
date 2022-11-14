@@ -5,29 +5,30 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import Browse from './Browse'
+// import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }) => {
   const { listBalanceSheet: listTrans, listProfit, from, to, productCode } = accountingStatementReport
   const { listAllStores } = userStore
   const { user, storeInfo } = app
-  const browseProps = {
-    loading: loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query'],
-    dataSource: listTrans,
-    listTrans,
-    listProfit,
-    storeInfo,
-    user,
-    from,
-    to,
-    productCode
-  }
+  // const browseProps = {
+  //   loading: loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query'],
+  //   dataSource: listTrans,
+  //   listTrans,
+  //   listProfit,
+  //   storeInfo,
+  //   user,
+  //   from,
+  //   to,
+  //   productCode
+  // }
 
   const filterProps = {
     listAllStores,
     listTrans,
     listProfit,
+    loading,
     user,
     storeInfo,
     from,
@@ -53,7 +54,7 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
-      <Browse {...browseProps} />
+      {/* <Browse {...browseProps} /> */}
     </div>
   )
 }
