@@ -1,21 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
-
-const FormItem = Form.Item
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
-  },
-  wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
-  }
-}
+import { Row, Col } from 'antd'
+import ReportItem from './components/ReportItem'
+import {
+  BALANCE_SHEET,
+  PROFIT_LOSS,
+  LEDGER,
+  GENERAL_LEDGER,
+  TRIAL_BALANCE
+} from './constant'
 
 const column = {
   sm: { span: 24 },
@@ -25,91 +18,85 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
-  onSubmit,
-  onCancel,
-  modalType,
-  button,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
-  }
+  dispatch
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
+  const ledgerReportProps = {
+    content: 'Laporan ini menampilkan semua transaksi yang telah dilakukan untuk suatu periode. Laporan ini bermanfaat jika Anda memerlukan daftar kronologis untuk semua transaksi yang telah dilakukan oleh perusahaan Anda.',
+    onClick () {
+      dispatch({
+        type: 'accountingOverview/updateState',
+        payload: {
+          modalParamVisible: true,
+          modalType: LEDGER
+        }
+      })
     }
   }
 
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
+  const balanceSheetReportProps = {
+    content: 'Menampilan apa yang anda miliki (aset), apa yang anda hutang (liabilitas), dan apa yang anda sudah investasikan pada perusahaan anda (ekuitas).',
+    onClick () {
+      dispatch({
+        type: 'accountingOverview/updateState',
+        payload: {
+          modalParamVisible: true,
+          modalType: BALANCE_SHEET
+        }
+      })
+    }
   }
 
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
+  const profitLossReportProps = {
+    content: 'Menampilkan setiap tipe transaksi dan jumlah total untuk pendapatan dan pengeluaran anda.',
+    onClick () {
+      dispatch({
+        type: 'accountingOverview/updateState',
+        payload: {
+          modalParamVisible: true,
+          modalType: PROFIT_LOSS
+        }
       })
-    })
+    }
+  }
+
+  const generalLedgerReportProps = {
+    content: 'Daftar semua jurnal per transaksi yang terjadi dalam periode waktu. Hal ini berguna untuk melacak di mana transaksi Anda masuk ke masing-masing rekening.',
+    onClick () {
+      dispatch({
+        type: 'accountingOverview/updateState',
+        payload: {
+          modalParamVisible: true,
+          modalType: GENERAL_LEDGER
+        }
+      })
+    }
+  }
+
+  const trialBalanceReportProps = {
+    content: 'Menampilkan saldo dari setiap akun, termasuk saldo awal, pergerakan, dan saldo akhir dari periode yang ditentukan.',
+    onClick () {
+      dispatch({
+        type: 'accountingOverview/updateState',
+        payload: {
+          modalParamVisible: true,
+          modalType: TRIAL_BALANCE
+        }
+      })
+    }
   }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <Row>
+      <Col {...column}>
+        <ReportItem title="Balance Sheet" {...balanceSheetReportProps} />
+        <ReportItem title="Profit/Loss" {...profitLossReportProps} />
+      </Col>
+      <Col {...column}>
+        <ReportItem title="Ledger" {...ledgerReportProps} />
+        <ReportItem title="General Ledger" {...generalLedgerReportProps} />
+        <ReportItem title="Trial Balance" {...trialBalanceReportProps} />
+      </Col>
+    </Row>
   )
 }
 
@@ -120,4 +107,4 @@ FormCounter.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(FormCounter)
+export default FormCounter
