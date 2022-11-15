@@ -1,18 +1,15 @@
 import React from 'react'
+import { APPNAME } from 'utils/config.company'
 import styles from './index.less'
 
 const Footer = () => {
   return (
     <div>
-      <div className={styles.reward}>
-        <div>Redeem your reward at</div>
-        <div>
-          <strong>{window.location.hostname.replace('pos.', 'www.')}</strong>
+      {APPNAME === 'k3mart' && (
+        <div className={styles.reward}>
+          <img src="/invoice-k3mart-express.svg" width="100%" alt="" />
         </div>
-      </div>
-      <div className={styles.amountSection}>
-        <div>THANK YOU - SEE YOU AGAIN SOON!</div>
-      </div>
+      )}
     </div>
   )
 }
