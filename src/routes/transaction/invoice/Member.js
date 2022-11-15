@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
 import { numberFormatter } from 'utils/string'
-import { rest } from 'utils/config.company'
 import styles from './index.less'
 
 const Member = ({
@@ -40,26 +39,6 @@ const Member = ({
           </Col>
         </Row>
       )}
-
-      <Row>
-        <Col span={24} className={styles.center}>
-          <div>
-            <strong>
-              Gratis Delivery
-            </strong>
-          </div>
-          <div>
-            <strong>
-              pesan langsung di
-            </strong>
-          </div>
-          <div>
-            <strong>
-              {rest.apiCompanyHost.replace('pos', 'www')}
-            </strong>
-          </div>
-        </Col>
-      </Row>
     </div>
   )
 }
