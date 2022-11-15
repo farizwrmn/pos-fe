@@ -1,21 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
-
-const FormItem = Form.Item
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
-  },
-  wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
-  }
-}
+import { Row, Col } from 'antd'
+import { routerRedux } from 'dva/router'
+import ReportItem from './components/ReportItem'
 
 const column = {
   sm: { span: 24 },
@@ -25,91 +12,37 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
-  onSubmit,
-  onCancel,
-  modalType,
-  button,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
-  }
+  dispatch
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
+  const inventorySummaryReportProps = {
+    content: 'Menampilkan daftar kuantitas dan nilai seluruh barang persediaan per tanggal yg ditentukan.',
+    onClick () {
+      dispatch(routerRedux.push('/report/fifo/summary'))
     }
   }
 
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
+  const inventoryValuationReportProps = {
+    content: 'Rangkuman informasi penting seperti sisa stok yg tersedia, nilai, dan biaya rata-rata, untuk setiap barang persediaan.',
+    onClick () {
+      dispatch(routerRedux.push('/report/fifo/value'))
+    }
   }
 
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
-    })
+  const inventoryDetailsReportProps = {
+    content: 'Menampilkan daftar transaksi yg terkait dengan setiap Barang dan Jasa, dan menjelaskan bagaimana transaksi tersebut mempengaruhi jumlah stok barang, nilai, dan harga biaya nya.',
+    onClick () {
+      dispatch(routerRedux.push('/report/fifo/card'))
+    }
   }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <Row>
+      <Col {...column}>
+        <ReportItem title="Inventory Summary" {...inventorySummaryReportProps} />
+        <ReportItem title="Inventory Valuation" {...inventoryValuationReportProps} />
+        <ReportItem title="Inventory Details" {...inventoryDetailsReportProps} />
+      </Col>
+    </Row>
   )
 }
 
@@ -120,4 +53,4 @@ FormCounter.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(FormCounter)
+export default FormCounter

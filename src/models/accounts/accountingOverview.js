@@ -20,10 +20,19 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        const { activeKey } = location.query
         if (pathname === '/accounting-overview') {
           dispatch({
             type: 'resetState'
           })
+          if (activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey
+              }
+            })
+          }
         }
       })
     }

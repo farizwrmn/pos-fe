@@ -1,21 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
-
-const FormItem = Form.Item
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
-  },
-  wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
-  }
-}
+import { Row, Col } from 'antd'
+import { routerRedux } from 'dva/router'
+import ReportItem from './components/ReportItem'
 
 const column = {
   sm: { span: 24 },
@@ -25,91 +12,48 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
-  onSubmit,
-  onCancel,
-  modalType,
-  button,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
-  }
+  dispatch
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
+  const purchaseSummaryReportProps = {
+    content: 'Menampilkan daftar kronologis untuk semua pembelian dan pembayaran Anda untuk rentang tanggal yang dipilih.',
+    onClick () {
+      dispatch(routerRedux.push('/report/purchase/summary'))
     }
   }
 
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
+  const vendorBalanceReportProps = {
+    content: 'Menampilkan jumlah nilai yang Anda hutang pada setiap Supplier.',
+    onClick () {
+      dispatch(routerRedux.push('/report/accounts/payable?activeKey=1'))
+    }
   }
 
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
-    })
+  const agedPayableReportProps = {
+    content: 'Laporan ini memberikan ringkasan hutang Anda, menunjukkan setiap vendor Anda secara bulanan, serta jumlah total dari waktu ke waktu. Hal ini praktis untuk membantu melacak hutang Anda.',
+    onClick () {
+      dispatch(routerRedux.push('/report/accounts/payable?activeKey=1'))
+    }
+  }
+
+  const purchaseProductReportProps = {
+    content: 'Menampilkan daftar kuantitas pembelian per produk, termasuk jumlah retur, net pembelian, dan harga pembelian rata-rata.',
+    onClick () {
+      dispatch(routerRedux.push('/report/purchase/summary?activeKey=3'))
+    }
   }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <Row>
+      <Col {...column}>
+        <ReportItem title="Purchase Summary" {...purchaseSummaryReportProps} />
+        <ReportItem title="Vendor Balance" {...vendorBalanceReportProps} />
+      </Col>
+      <Col {...column}>
+        {/* <ReportItem title="Purchase By Supplier" {...purchaseSupplierReportProps} /> */}
+        <ReportItem title="Aged Payable" {...agedPayableReportProps} />
+        <ReportItem title="Purchase by Product" {...purchaseProductReportProps} />
+      </Col>
+    </Row>
   )
 }
 
@@ -120,4 +64,4 @@ FormCounter.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(FormCounter)
+export default FormCounter

@@ -40,6 +40,7 @@ const Counter = ({ accountingOverview, dispatch, location }) => {
   }
 
   const formProps = {
+    dispatch,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
