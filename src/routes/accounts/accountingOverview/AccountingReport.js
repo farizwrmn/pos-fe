@@ -1,14 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
+import { routerRedux } from 'dva/router'
 import ReportItem from './components/ReportItem'
-import {
-  BALANCE_SHEET,
-  PROFIT_LOSS,
-  LEDGER,
-  GENERAL_LEDGER,
-  TRIAL_BALANCE
-} from './constant'
 
 const column = {
   sm: { span: 24 },
@@ -23,65 +17,35 @@ const FormCounter = ({
   const ledgerReportProps = {
     content: 'Laporan ini menampilkan semua transaksi yang telah dilakukan untuk suatu periode. Laporan ini bermanfaat jika Anda memerlukan daftar kronologis untuk semua transaksi yang telah dilakukan oleh perusahaan Anda.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: LEDGER
-        }
-      })
+      dispatch(routerRedux.push('/report/accounting/general-ledger'))
     }
   }
 
   const balanceSheetReportProps = {
     content: 'Menampilan apa yang anda miliki (aset), apa yang anda hutang (liabilitas), dan apa yang anda sudah investasikan pada perusahaan anda (ekuitas).',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: BALANCE_SHEET
-        }
-      })
+      dispatch(routerRedux.push('/report/accounting/balance-sheet'))
     }
   }
 
   const profitLossReportProps = {
     content: 'Menampilkan setiap tipe transaksi dan jumlah total untuk pendapatan dan pengeluaran anda.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: PROFIT_LOSS
-        }
-      })
+      dispatch(routerRedux.push('/report/accounting/profit-loss'))
     }
   }
 
   const generalLedgerReportProps = {
     content: 'Daftar semua jurnal per transaksi yang terjadi dalam periode waktu. Hal ini berguna untuk melacak di mana transaksi Anda masuk ke masing-masing rekening.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: GENERAL_LEDGER
-        }
-      })
+      dispatch(routerRedux.push('/report/accounting/consolidation/general-ledger'))
     }
   }
 
   const trialBalanceReportProps = {
     content: 'Menampilkan saldo dari setiap akun, termasuk saldo awal, pergerakan, dan saldo akhir dari periode yang ditentukan.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: TRIAL_BALANCE
-        }
-      })
+      dispatch(routerRedux.push('/report/accounting/consolidation/trial-balance'))
     }
   }
 

@@ -1,12 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
+import { routerRedux } from 'dva/router'
 import ReportItem from './components/ReportItem'
-import {
-  INVENTORY_SUMMARY,
-  INVENTORY_VALUATION,
-  INVENTORY_DETAILS
-} from './constant'
 
 const column = {
   sm: { span: 24 },
@@ -21,39 +17,21 @@ const FormCounter = ({
   const inventorySummaryReportProps = {
     content: 'Menampilkan daftar kuantitas dan nilai seluruh barang persediaan per tanggal yg ditentukan.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: INVENTORY_SUMMARY
-        }
-      })
+      dispatch(routerRedux.push('/report/fifo/summary'))
     }
   }
 
   const inventoryValuationReportProps = {
     content: 'Rangkuman informasi penting seperti sisa stok yg tersedia, nilai, dan biaya rata-rata, untuk setiap barang persediaan.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: INVENTORY_VALUATION
-        }
-      })
+      dispatch(routerRedux.push('/report/fifo/value'))
     }
   }
 
   const inventoryDetailsReportProps = {
     content: 'Menampilkan daftar transaksi yg terkait dengan setiap Barang dan Jasa, dan menjelaskan bagaimana transaksi tersebut mempengaruhi jumlah stok barang, nilai, dan harga biaya nya.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: INVENTORY_DETAILS
-        }
-      })
+      dispatch(routerRedux.push('/report/fifo/card'))
     }
   }
 

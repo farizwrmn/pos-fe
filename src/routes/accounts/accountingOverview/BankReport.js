@@ -1,11 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
+import { routerRedux } from 'dva/router'
 import ReportItem from './components/ReportItem'
-import {
-  BANK_RECON_SUMMARY,
-  BANK_STATEMENT
-} from './constant'
 
 const column = {
   sm: { span: 24 },
@@ -20,26 +17,14 @@ const FormCounter = ({
   const bankReconSummaryReportProps = {
     content: 'Menampilkan ringkasan rekonsiliasi bank yang sudah tercatat, dan juga perubahan saldo yang belum di catat atau identifikasi.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: BANK_RECON_SUMMARY
-        }
-      })
+      dispatch(routerRedux.push('/bank-recon'))
     }
   }
 
   const bankStatementReportProps = {
     content: 'Daftar seluruh transaksi rekening bank dalam suatu periode.',
     onClick () {
-      dispatch({
-        type: 'accountingOverview/updateState',
-        payload: {
-          modalParamVisible: true,
-          modalType: BANK_STATEMENT
-        }
-      })
+      dispatch(routerRedux.push('/bank-history'))
     }
   }
 
