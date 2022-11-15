@@ -11,13 +11,13 @@ const { formatNumberIndonesia } = numberFormat
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
-      title: 'Supplier',
-      dataIndex: 'supplier.supplierName',
-      key: 'supplier.supplierName',
+      title: 'Store',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
       width: '155px'
     },
     {
-      title: 'Owing',
+      title: 'Payable',
       dataIndex: 'payable',
       key: 'payable',
       width: '100px',

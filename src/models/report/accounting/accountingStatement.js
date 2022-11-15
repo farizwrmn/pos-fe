@@ -49,6 +49,13 @@ export default {
             type: 'queryBalanceSheet',
             payload: location.query
           })
+          dispatch({
+            type: 'query',
+            payload: {
+              storeId: location.query.storeId || undefined,
+              to: location.query.to
+            }
+          })
         }
         if (location.pathname === '/report/accounting/cash-flow') {
           dispatch({
@@ -80,13 +87,6 @@ export default {
     * queryBalanceSheet ({ payload }, { call, put }) {
       const data = yield call(queryBalanceSheet, payload)
       if (data.success) {
-        yield put({
-          type: 'query',
-          payload: {
-            storeId: payload.storeId || undefined,
-            to: payload.to
-          }
-        })
         yield put({
           type: 'querySuccessTrans',
           payload: {

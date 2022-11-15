@@ -12,7 +12,7 @@ const Report = ({ dispatch, accountPayableReport, app, loading }) => {
   const { user, storeInfo } = app
   const browseProps = {
     dataSource: listTrans,
-    loading: loading.effects['accountPayableReport/queryTrans'],
+    loading: loading.effects['accountPayableReport/querySupplier'],
     listTrans,
     storeInfo,
     user
@@ -31,7 +31,7 @@ const Report = ({ dispatch, accountPayableReport, app, loading }) => {
     },
     onDateChange (to) {
       dispatch({
-        type: 'accountPayableReport/queryTrans',
+        type: 'accountPayableReport/querySupplier',
         payload: {
           to
         }

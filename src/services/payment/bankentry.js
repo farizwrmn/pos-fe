@@ -77,7 +77,7 @@ export async function queryEntryList (params) {
 export async function updateBankRecon (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/accounting/bank-recon/${params.id}`,
+    url: '/accounting/bank-recon',
     method: 'put',
     data: params,
     headers: apiHeaderToken

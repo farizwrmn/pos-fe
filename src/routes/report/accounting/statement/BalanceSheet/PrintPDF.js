@@ -16,10 +16,11 @@ const createTableBody = (tabledata, bodyStruct) => {
     const item = bodyStruct[key]
     const depth = 15 * (item.level != null ? item.level : 3)
     if (item.accountName) {
+      let total = item.debit ? (item.debit * -1) : item.credit || 0
       groupBody.push([
         { text: '', alignment: 'left', fontSize: 11 },
         { text: (item.accountName || '').toString(), margin: [depth, 0, 0, 0], alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
+        { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'left', fontSize: 11 }
       ])
     } else {
@@ -36,7 +37,7 @@ const createTableBody = (tabledata, bodyStruct) => {
       groupBody.push([
         { text: '', alignment: 'left', fontSize: 11 },
         { text: (item.totalTitle || '').toString(), style: 'tableFooter', margin: [depth, 0, 0, 0], alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'left', fontSize: 11 }
       ])
       grandTotal += total
@@ -49,7 +50,7 @@ const createTableBody = (tabledata, bodyStruct) => {
       groupBody.push([
         { text: '', alignment: 'left', fontSize: 11 },
         { text: (item.totalTitle || '').toString(), style: 'tableFooter', margin: [depth, 0, 0, 0], alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'left', fontSize: 11 }
       ])
       grandTotal += parseFloat(total || 0)
@@ -75,10 +76,11 @@ const createTableBodyProfit = (tabledata, {
   for (let key in rows) {
     if (rows.hasOwnProperty(key)) {
       let item = rows[key]
+      let total = item.debit ? (item.debit * -1) : item.credit || 0
       let row = [
         { text: '', alignment: 'left', fontSize: 11 },
         { text: `${item.accountCode} - ${item.accountName}`, alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
+        { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'left', fontSize: 11 }
       ]
       groupBody.push(row)
@@ -88,13 +90,13 @@ const createTableBodyProfit = (tabledata, {
   groupBody.push([
     { text: '', alignment: 'left', fontSize: 11 },
     { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
-    { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+    { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
     { text: '', alignment: 'left', fontSize: 11 }
   ])
   return { total, groupBody }
 }
 
-const PrintPDF = ({ user, listTrans, listProfit, storeInfo, from, to }) => {
+const PrintPDF = ({ user, listTrans, listProfit, storeInfo, to }) => {
   // Declare Variable
   const styles = {
     header: {
@@ -148,7 +150,7 @@ const PrintPDF = ({ user, listTrans, listProfit, storeInfo, from, to }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`,
+                text: `\nPERIODE: ${moment(to).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

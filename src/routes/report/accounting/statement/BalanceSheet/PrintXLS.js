@@ -135,11 +135,11 @@ const groupByType = (
   }
 }
 
-const PrintXLS = ({ listTrans, listProfit, storeInfo, fromDate, toDate }) => {
+const PrintXLS = ({ listTrans, listProfit, storeInfo, to }) => {
   const title = [
     { value: 'LAPORAN NERACA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
+    { value: `PERIODE : TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
   ]
 
   let tableTitle = []

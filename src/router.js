@@ -1099,10 +1099,7 @@ const Routers = function ({ history, app }) {
           path: 'report/accounts/payable',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/purchase'))
-              registerModel(app, require('./models/report/accounts'))
-              registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/report/accountPayableReport'))
               cb(null, require('./routes/report/accounts/payable'))
             }, 'report-account-payable')
           }
@@ -1353,8 +1350,16 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
               registerModel(app, require('./models/master/accountCode'))
-              cb(null, require('./routes/accounts/bankrecon/'))
+              cb(null, require('./routes/accounts/bankrecon'))
             }, 'finance-bank-recon')
+          }
+        }, {
+          path: 'accounting-overview',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/accountingOverview'))
+              cb(null, require('./routes/accounts/accountingOverview'))
+            }, 'accounting-overview-report')
           }
         }, {
           path: 'bank-history',

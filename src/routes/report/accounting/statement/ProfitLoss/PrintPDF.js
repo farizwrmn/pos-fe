@@ -27,10 +27,11 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let item = rows[key]
+        const total = item.debit ? (item.debit * -1) : item.credit || 0
         let row = [
           { text: '', alignment: 'left', fontSize: 11 },
           { text: `${item.accountCode} - ${item.accountName}`, alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
+          { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, alignment: 'right', fontSize: 11 },
           { text: '', alignment: 'left', fontSize: 11 }
         ]
         groupBody.push(row)
@@ -40,7 +41,7 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
     groupBody.push([
       { text: '', alignment: 'left', fontSize: 11 },
       { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
-      { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+      { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
       { text: '', alignment: 'left', fontSize: 11 }
     ])
     return { total, groupBody }
@@ -229,19 +230,19 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       [
         { text: '', alignment: 'right', fontSize: 11 },
         { text: 'Jumlah Pendapatan dan Beban Non Operasional', style: 'tableFooter', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(nonOperationalRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: nonOperationalRevenue >= 0 ? formatNumberIndonesia(nonOperationalRevenue) : `(${formatNumberIndonesia(nonOperationalRevenue * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ],
       [
         { text: '', alignment: 'right', fontSize: 11 },
         { text: 'LABA BERSIH (SEBELUM PAJAK)', style: 'tableHeader', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(fixRevenue), style: 'tableHeader', alignment: 'right', fontSize: 11 },
+        { text: fixRevenue >= 0 ? formatNumberIndonesia(fixRevenue) : `(${formatNumberIndonesia(fixRevenue * -1)})`, style: 'tableHeader', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ],
       [
         { text: '', alignment: 'right', fontSize: 11 },
         { text: 'LABA BERSIH (SETELAH PAJAK)', style: 'tableFooter', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(fixRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: fixRevenue >= 0 ? formatNumberIndonesia(fixRevenue) : `(${formatNumberIndonesia(fixRevenue * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ]
     ])
