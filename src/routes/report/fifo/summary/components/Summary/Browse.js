@@ -30,6 +30,12 @@ const Browse = ({ ...browseProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Transfer IN',
+      dataIndex: 'transferInQty',
+      key: 'transferInQty',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Adjust IN',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
@@ -39,6 +45,12 @@ const Browse = ({ ...browseProps }) => {
       title: 'POS Qty',
       dataIndex: 'posQty',
       key: 'posQty',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Transfer OUT',
+      dataIndex: 'transferOutQty',
+      key: 'transferOutQty',
       render: text => (text || '-').toLocaleString()
     },
     {
