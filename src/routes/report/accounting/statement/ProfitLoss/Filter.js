@@ -29,7 +29,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
   const handleChange = () => {
     validateFields((errors) => {
@@ -70,6 +70,19 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
         <FilterItem label="Trans Date">
           {getFieldDecorator('rangePicker', {
             initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(
+            <RangePicker size="large" format="DD-MMM-YYYY" />
+          )}
+        </FilterItem>
+
+        <FilterItem label="Compare To">
+          {getFieldDecorator('comparePicker', {
+            initialValue: compareFrom && compareTo ? [moment.utc(compareFrom, 'YYYY-MM-DD'), moment.utc(compareTo, 'YYYY-MM-DD')] : null,
             rules: [
               {
                 required: true

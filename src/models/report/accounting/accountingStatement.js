@@ -21,6 +21,8 @@ export default {
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
+    compareFrom: '',
+    compareTo: '',
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -40,6 +42,12 @@ export default {
             type: 'query',
             payload: location.query
           })
+          if (location.query && location.query.compareFrom && location.query.compareTo) {
+            // dispatch({
+            //   type: 'query',
+            //   payload: location.query
+            // })
+          }
         }
         if (location.pathname === '/report/accounting/balance-sheet') {
           dispatch({

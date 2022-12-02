@@ -9,7 +9,7 @@ import { connect } from 'dva'
 import Filter from './Filter'
 
 const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }) => {
-  const { listProfit: listTrans, from, to, productCode } = accountingStatementReport
+  const { listProfit: listTrans, from, to, compareFrom, compareTo, productCode } = accountingStatementReport
   const { listAllStores } = userStore
   const { user, storeInfo } = app
   // const browseProps = {
@@ -28,6 +28,8 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
     listAllStores,
     listTrans,
     user,
+    compareFrom,
+    compareTo,
     storeInfo,
     from,
     to,
