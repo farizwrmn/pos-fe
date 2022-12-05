@@ -3,14 +3,19 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
 import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
+const FormItem = Form.Item
 const { Option } = Select
 const { RangePicker } = DatePicker
+
+const formItemLayout = {
+  labelCol: { span: 4, textAlign: 'left' },
+  wrapperCol: { span: 20 }
+}
 
 const leftColumn = {
   xs: 24,
@@ -42,6 +47,10 @@ const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, 
         to: data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') : null,
         storeId: data.storeId
       }
+      if (data.comparePicker && data.comparePicker[0] && data.comparePicker[1]) {
+        params.compareFrom = data.comparePicker ? data.comparePicker[0].format('YYYY-MM-DD') : null
+        params.compareTo = data.comparePicker ? data.comparePicker[1].format('YYYY-MM-DD') : null
+      }
       onDateChange(params)
     })
   }
@@ -67,7 +76,7 @@ const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, 
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
+        <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
           {getFieldDecorator('rangePicker', {
             initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
             rules: [
@@ -78,23 +87,25 @@ const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, 
           })(
             <RangePicker size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
+        </FormItem>
 
-        <FilterItem label="Compare To">
+        <FormItem label="Compare To" hasFeedback {...formItemLayout}>
           {getFieldDecorator('comparePicker', {
             initialValue: compareFrom && compareTo ? [moment.utc(compareFrom, 'YYYY-MM-DD'), moment.utc(compareTo, 'YYYY-MM-DD')] : null,
             rules: [
               {
-                required: true
+                required: false
               }
             ]
           })(
             <RangePicker size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
-        <FilterItem
+        </FormItem>
+        <FormItem
           label="Store"
           help="clear it if available all stores"
+          hasFeedback
+          {...formItemLayout}
         >
           {getFieldDecorator('storeId')(
             <Select
@@ -108,7 +119,7 @@ const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, 
               {childrenTransNo}
             </Select>
           )}
-        </FilterItem>
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button

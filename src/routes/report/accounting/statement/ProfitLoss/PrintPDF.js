@@ -6,47 +6,11 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 import { numberFormat } from 'utils'
+import { createTableBody } from './utils'
 
 const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
-  // Declare Function
-  const createTableBody = (tabledata, {
-    type,
-    bodyTitle,
-    totalTitle
-  }) => {
-    let groupBody = []
-    const rows = tabledata[type]
-    groupBody.push([
-      { text: '', alignment: 'right', fontSize: 11 },
-      { text: bodyTitle, style: 'tableHeader', alignment: 'left', fontSize: 11 },
-      { text: '', alignment: 'right', fontSize: 11 },
-      { text: '', alignment: 'right', fontSize: 11 }
-    ])
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let item = rows[key]
-        const total = item.debit ? (item.debit * -1) : item.credit || 0
-        let row = [
-          { text: '', alignment: 'left', fontSize: 11 },
-          { text: `${item.accountCode} - ${item.accountName}`, alignment: 'left', fontSize: 11 },
-          { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, alignment: 'right', fontSize: 11 },
-          { text: '', alignment: 'left', fontSize: 11 }
-        ]
-        groupBody.push(row)
-      }
-    }
-    const total = rows.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
-    groupBody.push([
-      { text: '', alignment: 'left', fontSize: 11 },
-      { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
-      { text: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
-      { text: '', alignment: 'left', fontSize: 11 }
-    ])
-    return { total, groupBody }
-  }
-
   // Declare Variable
   const styles = {
     header: {

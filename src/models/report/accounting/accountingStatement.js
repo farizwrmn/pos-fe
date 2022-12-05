@@ -12,7 +12,9 @@ export default {
 
   state: {
     listProfit: [],
+    listProfitCompare: [],
     listBalanceSheet: [],
+    listBalanceSheetCompare: [],
     listCashflow: [],
     from: '',
     to: '',
@@ -43,10 +45,10 @@ export default {
             payload: location.query
           })
           if (location.query && location.query.compareFrom && location.query.compareTo) {
-            // dispatch({
-            //   type: 'query',
-            //   payload: location.query
-            // })
+            dispatch({
+              type: 'queryProfitCompare',
+              payload: location.query
+            })
           }
         }
         if (location.pathname === '/report/accounting/balance-sheet') {
@@ -79,7 +81,11 @@ export default {
   },
   effects: {
     * query ({ payload }, { call, put }) {
-      const data = yield call(queryProfitLoss, payload)
+      const data = yield call(queryProfitLoss, {
+        storeId: payload.storeId,
+        from: payload.from,
+        to: payload.to
+      })
       yield put({
         type: 'querySuccessTrans',
         payload: {
@@ -92,6 +98,22 @@ export default {
         }
       })
     },
+    * queryProfitCompare ({ payload }, { call, put }) {
+      const data = yield call(queryProfitLoss, {
+        storeId: payload.storeId,
+        from: payload.compareFrom,
+        to: payload.compareTo
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listProfitCompare: data.data,
+          compareFrom: payload.compareFrom,
+          compareTo: payload.compareTo
+        }
+      })
+    },
+
     * queryBalanceSheet ({ payload }, { call, put }) {
       const data = yield call(queryBalanceSheet, payload)
       if (data.success) {
@@ -147,6 +169,10 @@ export default {
         listBalanceSheet: [],
         listProfit: [],
         listCashflow: [],
+        from: '',
+        to: '',
+        compareFrom: '',
+        compareTo: '',
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,
