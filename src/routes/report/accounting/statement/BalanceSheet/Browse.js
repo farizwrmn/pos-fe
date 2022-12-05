@@ -20,6 +20,7 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
       }, {})
   }
   const groubedByTeam = groupBy(listTrans, 'accountType')
+  const groubedByTeamCompare = groupBy(listCompare, 'accountType')
   const group = {
     BANK: [],
     AREC: [],
@@ -38,7 +39,26 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
     INTR: [],
     ...groubedByTeam
   }
+  const groupCompare = {
+    BANK: [],
+    AREC: [],
+    OCAS: [],
+
+    FASS: [],
+    DEPR: [],
+    OASS: [],
+
+    APAY: [],
+    OCLY: [],
+    LTLY: [],
+
+    EQTY: [],
+    PRFT: [],
+    INTR: [],
+    ...groubedByTeamCompare
+  }
   const groubedByTeamProfit = groupBy(listProfit, 'accountType')
+  const groubedByTeamProfitCompare = groupBy(listProfitCompare, 'accountType')
 
   const groupProfit = {
     REVE: [],
@@ -48,19 +68,30 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
     OEXP: [],
     ...groubedByTeamProfit
   }
+
+  const groupProfitCompare = {
+    REVE: [],
+    COGS: [],
+    EXPS: [],
+    OINC: [],
+    OEXP: [],
+    ...groubedByTeamProfitCompare
+  }
   try {
     // Start - REVE
-    const { total: totalREVE } = createTableBodyProfit(groupProfit, { type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
+    const { total: totalREVE, totalCompare: totalCompareREVE } = createTableBodyProfit(groupProfit, { groupCompare: groupProfitCompare, type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
     // End - REVE
 
     // Start - COGS
-    const { total: totalCOGS } = createTableBodyProfit(groupProfit, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
+    const { total: totalCOGS, totalCompare: totalCompareCOGS } = createTableBodyProfit(groupProfit, { groupCompare: groupProfitCompare, type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
     // End - COGS
 
     const labaKotor = totalREVE + totalCOGS
+    const labaKotorCompare = totalCompareREVE + totalCompareCOGS
 
     // Start - EXPS
-    const { total: totalEXPS } = createTableBodyProfit(groupProfit, {
+    const { total: totalEXPS, totalCompare: totalCompareEXPS } = createTableBodyProfit(groupProfit, {
+      groupCompare: groupProfitCompare,
       type: 'EXPS',
       totalTitle: 'Jumlah Beban Operasional',
       bodyTitle: 'BEBAN OPERASIONAL'
@@ -68,20 +99,24 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
     // End - EXPS
 
     const operationalRevenue = labaKotor + totalEXPS
+    const operationalRevenueCompare = labaKotorCompare + totalCompareEXPS
 
     // Start - OINC
-    const { total: totalOINC } = createTableBodyProfit(groupProfit, { type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
+    const { total: totalOINC, totalCompare: totalCompareOINC } = createTableBodyProfit(groupProfit, { groupCompare: groupProfitCompare, type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
     // End - OINC
 
     // Start - OEXP
-    const { total: totalOXPS } = createTableBodyProfit(groupProfit, {
+    const { total: totalOXPS, totalCompare: totalCompareOXPS } = createTableBodyProfit(groupProfit, {
+      groupCompare: groupProfitCompare,
       type: 'OEXP',
       bodyTitle: 'BEBAN NON OPERASIONAL',
       totalTitle: 'Jumlah Beban Non Operasional'
     })
     // End - OEXP
     const nonOperationalRevenue = totalOINC + totalOXPS
+    const nonOperationalRevenueCompare = totalCompareOINC + totalCompareOXPS
     const fixRevenue = operationalRevenue + nonOperationalRevenue
+    const fixRevenueCompare = operationalRevenueCompare + nonOperationalRevenueCompare
 
     group.PRFT = [
       {
@@ -98,8 +133,24 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
       }
     ]
 
+    groupCompare.PRFT = [
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Laba Ditahan',
+        accountParentId: null,
+        accountType: 'APAY',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: fixRevenueCompare,
+        entryType: 'C',
+        transactionType: 'PRFT'
+      }
+    ]
+
     const { dataSource: groupBANKBody } = createTableBodyBrowse(
       group,
+      groupCompare,
       [
         {
           bodyTitle: 'ASET',
@@ -235,8 +286,6 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
       }
     ])
   }
-
-  console.log('dataSource', dataSource)
 
   return (
     <Table

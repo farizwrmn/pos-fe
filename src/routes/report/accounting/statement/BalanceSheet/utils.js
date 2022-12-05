@@ -2,11 +2,14 @@ import { numberFormat } from 'utils'
 
 const { formatNumberIndonesia } = numberFormat
 
-export const createTableBodyBrowse = (tabledata, bodyStruct) => {
+export const createTableBodyBrowse = (tabledata, groupCompare, bodyStruct) => {
   let finalDataSource = []
+  let finalDataSourceCompare = []
   let allTotal = 0
+  let allTotalCompare = 0
   for (let key in bodyStruct) {
     let grandTotal = 0
+    let grandTotalCompare = 0
     let dataSource = []
     const item = bodyStruct[key]
     let browseParent = {}
@@ -17,10 +20,18 @@ export const createTableBodyBrowse = (tabledata, bodyStruct) => {
         accountName: (item.accountName || '').toString(),
         value: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`
       }
+      const listCompare = groupCompare[item.accountType]
+      let compare = 0
+      if (listCompare.length > 0) {
+        compare = listCompare.filter(filtered => filtered.accountCode === item.accountCode)
+          .reduce((prev, next) => prev + (next.debit ? (next.debit * -1) : next.credit || 0), 0)
+        grandTotalCompare += compare
+      }
       dataSource.push({
         key: item.accountName,
         accountName: (item.accountName || '').toString(),
-        value: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`
+        value: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`,
+        compare: compare >= 0 ? formatNumberIndonesia(compare) : `(${formatNumberIndonesia(compare * -1)})`
       })
     } else {
       browseParent = {
@@ -30,29 +41,36 @@ export const createTableBodyBrowse = (tabledata, bodyStruct) => {
       }
     }
     if (item.child) {
-      const { dataSource: dataSourceChild, total } = createTableBodyBrowse(tabledata, item.child)
+      const { dataSource: dataSourceChild, total, totalCompare } = createTableBodyBrowse(tabledata, groupCompare, item.child)
       if (browseParent && browseParent.accountName) {
         browseParent.value = total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`
+        browseParent.compare = totalCompare >= 0 ? formatNumberIndonesia(totalCompare) : `(${formatNumberIndonesia(totalCompare * -1)})`
         browseParent.children = dataSourceChild
         dataSource.push(browseParent)
       }
       grandTotal += total
+      grandTotalCompare += totalCompare
       dataSource = dataSource.concat(dataSourceChild)
     }
     if (item.type) {
       const accountData = tabledata[item.type]
+      const accountDataCompare = groupCompare[item.type]
       const total = accountData.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
-      const { dataSource: dataSourceChild } = createTableBodyBrowse(tabledata, accountData)
+      const totalCompare = accountDataCompare.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
+      const { dataSource: dataSourceChild } = createTableBodyBrowse(tabledata, groupCompare, accountData)
       browseParent.children = dataSourceChild
       browseParent.value = total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`
+      browseParent.compare = totalCompare >= 0 ? formatNumberIndonesia(totalCompare) : `(${formatNumberIndonesia(totalCompare * -1)})`
       grandTotal += parseFloat(total || 0)
+      grandTotalCompare += parseFloat(totalCompare || 0)
       dataSource = dataSource.concat(browseParent)
     }
     allTotal += parseFloat(grandTotal)
+    allTotalCompare += parseFloat(grandTotalCompare)
     finalDataSource = finalDataSource.concat(dataSource)
   }
 
-  return { dataSource: finalDataSource, total: allTotal }
+  return { dataSource: finalDataSource, dataSourceCompare: finalDataSourceCompare, total: allTotal, totalCompare: allTotalCompare }
 }
 
 export const createTableBody = (tabledata, bodyStruct) => {
