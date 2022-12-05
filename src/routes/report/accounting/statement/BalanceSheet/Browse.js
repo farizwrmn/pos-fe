@@ -5,11 +5,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
+import moment from 'moment'
 
 const { formatNumberIndonesia } = numberFormat
 
-const Browse = ({ ...browseProps }) => {
-  const columns = [
+const Browse = ({ from, to, compareFrom, compareTo, ...browseProps }) => {
+  let columns = [
     {
       title: 'Account',
       dataIndex: 'accountName',
@@ -17,20 +18,25 @@ const Browse = ({ ...browseProps }) => {
       width: '175px'
     },
     {
-      title: 'Debit',
-      dataIndex: 'debit',
-      key: 'debit',
-      width: '155px',
-      render: text => formatNumberIndonesia(text)
-    },
-    {
-      title: 'Credit',
-      dataIndex: 'credit',
-      key: 'credit',
+      title: `${moment(from).format('ll')} - ${moment(to).format('ll')}`,
+      dataIndex: 'value',
+      key: 'value',
       width: '155px',
       render: text => formatNumberIndonesia(text)
     }
   ]
+
+  if (compareFrom && compareTo) {
+    columns = columns.concat([
+      {
+        title: `${moment(compareFrom).format('ll')} - ${moment(compareTo).format('ll')}`,
+        dataIndex: 'compare',
+        key: 'compare',
+        width: '155px',
+        render: text => formatNumberIndonesia(text)
+      }
+    ])
+  }
 
   return (
     <Table
