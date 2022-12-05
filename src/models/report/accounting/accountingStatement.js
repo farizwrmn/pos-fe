@@ -66,6 +66,19 @@ export default {
               to: location.query.to
             }
           })
+          if (location.query && location.query.compareTo) {
+            dispatch({
+              type: 'queryBalanceSheetCompare',
+              payload: location.query
+            })
+            dispatch({
+              type: 'queryProfitCompare',
+              payload: {
+                storeId: location.query.storeId || undefined,
+                compareTo: location.query.compareTo
+              }
+            })
+          }
         }
         if (location.pathname === '/report/accounting/cash-flow') {
           dispatch({
@@ -129,6 +142,24 @@ export default {
         })
       }
     },
+    * queryBalanceSheetCompare ({ payload }, { call, put }) {
+      const data = yield call(queryBalanceSheet, {
+        to: payload.compareTo,
+        storeId: payload.storeId
+      })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBalanceSheetCompare: data.data,
+            pagination: {
+              total: data.total
+            },
+            compareTo: payload.compareTo
+          }
+        })
+      }
+    },
     * queryCashFlow ({ payload }, { call, put }) {
       const data = yield call(queryCashFlow, payload)
       yield put({
@@ -169,6 +200,8 @@ export default {
         listBalanceSheet: [],
         listProfit: [],
         listCashflow: [],
+        listBalanceSheetCompare: [],
+        listProfitCompare: [],
         from: '',
         to: '',
         compareFrom: '',

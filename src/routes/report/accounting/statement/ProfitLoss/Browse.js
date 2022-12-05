@@ -139,7 +139,7 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, ...b
     }
   ]
 
-  if (compareFrom && compareTo) {
+  if (compareFrom && compareTo && compareFrom !== '' && compareTo !== '') {
     columns = columns.concat([
       {
         title: `${moment(compareFrom).format('ll')} - ${moment(compareTo).format('ll')}`,
@@ -155,6 +155,7 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, ...b
     <Table
       {...browseProps}
       dataSource={dataSource}
+      pagination={false}
       bordered
       columns={columns}
       simple
