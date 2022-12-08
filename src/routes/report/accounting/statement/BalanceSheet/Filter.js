@@ -3,13 +3,18 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
 import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
+const FormItem = Form.Item
 const { Option } = Select
+
+const formItemLayout = {
+  labelCol: { span: 4, textAlign: 'left' },
+  wrapperCol: { span: 20 }
+}
 
 const leftColumn = {
   xs: 24,
@@ -28,7 +33,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
+const Filter = ({ listAllStores, compareTo, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
   const { to } = printProps
   const handleChange = () => {
     validateFields((errors) => {
@@ -38,6 +43,7 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
       const data = getFieldsValue()
       const params = {
         storeId: data.storeId,
+        compareTo: data.compareTo ? data.compareTo.format('YYYY-MM-DD') : undefined,
         to: data.to.format('YYYY-MM-DD')
       }
       onDateChange(params)
@@ -65,7 +71,7 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
+        <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
           {getFieldDecorator('to', {
             initialValue: to ? moment.utc(to, 'YYYY-MM-DD') : null,
             rules: [
@@ -76,10 +82,24 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
           })(
             <DatePicker size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
-        <FilterItem
+        </FormItem>
+        <FormItem label="Compare To" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('compareTo', {
+            initialValue: compareTo ? moment.utc(compareTo, 'YYYY-MM-DD') : null,
+            rules: [
+              {
+                required: false
+              }
+            ]
+          })(
+            <DatePicker size="large" format="DD-MMM-YYYY" />
+          )}
+        </FormItem>
+        <FormItem
           label="Store"
           help="clear it if available all stores"
+          hasFeedback
+          {...formItemLayout}
         >
           {getFieldDecorator('storeId')(
             <Select
@@ -93,7 +113,7 @@ const Filter = ({ listAllStores, loading, onDateChange, onListReset, form: { get
               {childrenTransNo}
             </Select>
           )}
-        </FilterItem>
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button

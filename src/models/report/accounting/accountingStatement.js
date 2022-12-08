@@ -12,7 +12,9 @@ export default {
 
   state: {
     listProfit: [],
+    listProfitCompare: [],
     listBalanceSheet: [],
+    listBalanceSheetCompare: [],
     listCashflow: [],
     from: '',
     to: '',
@@ -21,6 +23,8 @@ export default {
     category: 'ALL CATEGORY',
     brand: 'ALL BRAND',
     productCode: 'ALL TYPE',
+    compareFrom: '',
+    compareTo: '',
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -40,6 +44,12 @@ export default {
             type: 'query',
             payload: location.query
           })
+          if (location.query && location.query.compareFrom && location.query.compareTo) {
+            dispatch({
+              type: 'queryProfitCompare',
+              payload: location.query
+            })
+          }
         }
         if (location.pathname === '/report/accounting/balance-sheet') {
           dispatch({
@@ -56,6 +66,19 @@ export default {
               to: location.query.to
             }
           })
+          if (location.query && location.query.compareTo) {
+            dispatch({
+              type: 'queryBalanceSheetCompare',
+              payload: location.query
+            })
+            dispatch({
+              type: 'queryProfitCompare',
+              payload: {
+                storeId: location.query.storeId || undefined,
+                compareTo: location.query.compareTo
+              }
+            })
+          }
         }
         if (location.pathname === '/report/accounting/cash-flow') {
           dispatch({
@@ -71,7 +94,11 @@ export default {
   },
   effects: {
     * query ({ payload }, { call, put }) {
-      const data = yield call(queryProfitLoss, payload)
+      const data = yield call(queryProfitLoss, {
+        storeId: payload.storeId,
+        from: payload.from,
+        to: payload.to
+      })
       yield put({
         type: 'querySuccessTrans',
         payload: {
@@ -84,6 +111,22 @@ export default {
         }
       })
     },
+    * queryProfitCompare ({ payload }, { call, put }) {
+      const data = yield call(queryProfitLoss, {
+        storeId: payload.storeId,
+        from: payload.compareFrom,
+        to: payload.compareTo
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listProfitCompare: data.data,
+          compareFrom: payload.compareFrom,
+          compareTo: payload.compareTo
+        }
+      })
+    },
+
     * queryBalanceSheet ({ payload }, { call, put }) {
       const data = yield call(queryBalanceSheet, payload)
       if (data.success) {
@@ -95,6 +138,24 @@ export default {
               total: data.total
             },
             to: payload.to
+          }
+        })
+      }
+    },
+    * queryBalanceSheetCompare ({ payload }, { call, put }) {
+      const data = yield call(queryBalanceSheet, {
+        to: payload.compareTo,
+        storeId: payload.storeId
+      })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBalanceSheetCompare: data.data,
+            pagination: {
+              total: data.total
+            },
+            compareTo: payload.compareTo
           }
         })
       }
@@ -139,6 +200,12 @@ export default {
         listBalanceSheet: [],
         listProfit: [],
         listCashflow: [],
+        listBalanceSheetCompare: [],
+        listProfitCompare: [],
+        from: '',
+        to: '',
+        compareFrom: '',
+        compareTo: '',
         pagination: {
           showSizeChanger: true,
           showQuickJumper: true,

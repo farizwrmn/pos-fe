@@ -5,11 +5,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import moment from 'moment'
+import { message } from 'antd'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, generalLedger, app, loading }) => {
+const Report = ({ dispatch, userStore, generalLedger, app, loading }) => {
   const { period, year, from, to, activeKey, listProduct } = generalLedger
+  const { listAllStores } = userStore
   let { listRekap } = generalLedger
   if (activeKey === '1') {
     listRekap = listRekap.filter(el => el.count !== 0)
@@ -26,6 +29,7 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
     activeKey,
     // productCode,
     // productName,
+    listAllStores,
     listProduct,
     listRekap,
     user,
@@ -33,6 +37,7 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
     to,
     dispatch,
     storeInfo,
+    loading,
     period,
     year,
     onListReset () {
@@ -73,16 +78,23 @@ const Report = ({ dispatch, generalLedger, app, loading }) => {
         }
       }))
     },
-    onDateChange (from, to) {
-      const { pathname, query } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          from,
-          to
-        }
-      }))
+    onDateChange (from, to, storeId) {
+      const fromPeriod = moment(from, 'YYYY-MM-DD').format('YYYY-MM')
+      const toPeriod = moment(to, 'YYYY-MM-DD').format('YYYY-MM')
+      if (fromPeriod === toPeriod) {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            storeId: storeId || undefined,
+            from,
+            to
+          }
+        }))
+      } else {
+        message.warning('Validation: Only access one month period')
+      }
     },
     onShowCategories () {
       dispatch({ type: 'productcategory/query' })
@@ -108,4 +120,4 @@ Report.propTypes = {
   productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ generalLedger, productcategory, productbrand, app, loading }) => ({ generalLedger, productcategory, productbrand, app, loading }))(Report)
+export default connect(({ generalLedger, userStore, productcategory, productbrand, app, loading }) => ({ generalLedger, userStore, productcategory, productbrand, app, loading }))(Report)
