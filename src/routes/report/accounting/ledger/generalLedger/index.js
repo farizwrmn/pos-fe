@@ -10,8 +10,9 @@ import moment from 'moment'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
+const Report = ({ dispatch, generalLedger, userStore, accountCode, app, loading }) => {
   const { from, to, activeKey, listProduct } = generalLedger
+  const { listAllStores } = userStore
   const { listAccountCode } = accountCode
   let { listRekap } = generalLedger
   if (activeKey === '1') {
@@ -28,6 +29,7 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
   const filterProps = {
     loading,
     listAccountCode,
+    listAllStores,
     activeKey,
     // productCode,
     // productName,
@@ -71,7 +73,8 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
             payload: {
               accountId: data.accountId,
               from,
-              to
+              to,
+              storeId: data.storeId || undefined
             }
           })
           dispatch(routerRedux.push({
@@ -79,7 +82,8 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
             query: {
               accountId: data.accountId,
               from,
-              to
+              to,
+              storeId: data.storeId || undefined
             }
           }))
         } else {
@@ -106,4 +110,4 @@ Report.propTypes = {
   productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ generalLedger, accountCode, productcategory, productbrand, app, loading }) => ({ generalLedger, accountCode, productcategory, productbrand, app, loading }))(Report)
+export default connect(({ generalLedger, userStore, accountCode, productcategory, productbrand, app, loading }) => ({ generalLedger, userStore, accountCode, productcategory, productbrand, app, loading }))(Report)

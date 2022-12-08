@@ -46,6 +46,7 @@ const Filter = ({
   onChangePeriod,
   dispatch,
   listAccountCode = [],
+  listAllStores = [],
   onListReset,
   onShowCategories,
   onShowBrands,
@@ -102,6 +103,7 @@ const Filter = ({
   }
 
   let childrenTransNo = listAccountCode.length > 0 ? listAccountCode.map(x => (<Option value={x.id} key={x.id} title={`${x.accountName} (${x.accountCode})`}>{`${x.accountName} (${x.accountCode})`}</Option>)) : []
+  let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
   const { from, to } = query
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
 
@@ -142,6 +144,25 @@ const Filter = ({
               filterOption={filterOption}
             >
               {childrenTransNo}
+            </Select>
+          )}
+        </FormItem>
+        <FormItem
+          label="Store"
+          help="clear it if available all stores"
+          hasFeedback
+          {...formItemLayout}
+        >
+          {getFieldDecorator('storeId')(
+            <Select
+              mode="multiple"
+              allowClear
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose Store"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenStore}
             </Select>
           )}
         </FormItem>

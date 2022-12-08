@@ -61,7 +61,7 @@ const Filter = ({ listAllStores, loading, onDateChange, from, to, form: { getFie
     })
   }
 
-  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+  let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
 
   return (
     <Row>
@@ -88,7 +88,7 @@ const Filter = ({ listAllStores, loading, onDateChange, from, to, form: { getFie
               placeholder="Choose Store"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
-              {childrenTransNo}
+              {childrenStore}
             </Select>
           )}
         </FormItem>
