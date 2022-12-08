@@ -746,6 +746,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/accounting/ledger/trialBalance/'))
             }, 'report-accounting-trial-balance')
           }

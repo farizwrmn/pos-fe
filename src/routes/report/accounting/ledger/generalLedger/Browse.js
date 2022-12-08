@@ -63,6 +63,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
     <Table
       {...browseProps}
       bordered
+      pagination={false}
       columns={columns}
       simple
       size="small"

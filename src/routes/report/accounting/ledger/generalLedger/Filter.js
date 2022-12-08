@@ -4,12 +4,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Select, Col, Icon, Form } from 'antd'
-import PrintXLS from './PrintXLS'
+import PrintCSV from './PrintCSV'
 
+const FormItem = Form.Item
 const { RangePicker } = DatePicker
 const { Option } = Select
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
+  },
+  wrapperCol: {
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
+}
 
 const leftColumn = {
   xs: 24,
@@ -95,7 +108,11 @@ const Filter = ({
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Period">
+        <FormItem
+          label="Period"
+          hasFeedback
+          {...formItemLayout}
+        >
           {getFieldDecorator('rangePicker', {
             initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : [moment().startOf('month'), moment().endOf('month')],
             rules: [
@@ -106,9 +123,11 @@ const Filter = ({
           })(
             <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
-        <FilterItem
+        </FormItem>
+        <FormItem
           label="Account Code"
+          hasFeedback
+          {...formItemLayout}
         >
           {getFieldDecorator('accountCode')(
             <Select
@@ -125,7 +144,7 @@ const Filter = ({
               {childrenTransNo}
             </Select>
           )}
-        </FilterItem>
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button
@@ -138,7 +157,7 @@ const Filter = ({
         >
           <Icon type="search" className="icon-large" />
         </Button>
-        {printProps.listRekap && printProps.listRekap.length > 0 && <PrintXLS {...printProps} />}
+        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintCSV {...printProps} />)}
       </Col>
     </Row>
   )

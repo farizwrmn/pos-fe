@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import Browse from './Browse'
@@ -59,28 +60,32 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
       })
     },
     onChangePeriod (data) {
-      dispatch({
-        type: 'generalLedger/setPeriod',
-        payload: {
-          accountId: data.accountId,
-          from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
-          to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
+      if (data.rangePicker && data.rangePicker[0]) {
+        const from = moment(data.rangePicker[0]).format('YYYY-MM-DD')
+        const fromPeriod = moment(data.rangePicker[0]).format('YYYY-MM')
+        const to = moment(data.rangePicker[1]).format('YYYY-MM-DD')
+        const toPeriod = moment(data.rangePicker[1]).format('YYYY-MM')
+        if (fromPeriod === toPeriod) {
+          dispatch({
+            type: 'generalLedger/setPeriod',
+            payload: {
+              accountId: data.accountId,
+              from,
+              to
+            }
+          })
+          dispatch(routerRedux.push({
+            pathname: location.pathname,
+            query: {
+              accountId: data.accountId,
+              from,
+              to
+            }
+          }))
+        } else {
+          message.warning('Validation: Only access one month period')
         }
-      })
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          accountId: data.accountId,
-          from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
-          to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
-        }
-      }))
-    },
-    onShowCategories () {
-      dispatch({ type: 'productcategory/query' })
-    },
-    onShowBrands () {
-      dispatch({ type: 'productbrand/query' })
+      }
     }
   }
 
