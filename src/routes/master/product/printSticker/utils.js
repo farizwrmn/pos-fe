@@ -37,7 +37,8 @@ export const onPrintZebra = (listSticker) => {
       const currentIndex = (row * 3) + (column)
       if (currentIndex < listLength) {
         const product = stickers[currentIndex]
-        const marginLeft = 0 + (CENTER_SPACE * column)
+        const MARGIN_LEFT = 20
+        const marginLeft = MARGIN_LEFT + (CENTER_SPACE * column)
         finalString += `
         ^BY1,1,50
         ^CFA,16
@@ -60,7 +61,8 @@ export const onPrintZebra = (listSticker) => {
       const currentIndex = (numberOfRow * 3) + (column)
       if (currentIndex < listLength) {
         const product = stickers[currentIndex]
-        const marginLeft = 0 + (CENTER_SPACE * column)
+        const MARGIN_LEFT = 20
+        const marginLeft = MARGIN_LEFT + (CENTER_SPACE * column)
         finalString += `
         ^BY1,1,40
         ^CFA,16
