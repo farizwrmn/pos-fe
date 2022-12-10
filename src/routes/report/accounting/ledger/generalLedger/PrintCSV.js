@@ -20,7 +20,7 @@ class PrintCSV extends Component {
         numberOfRow += 1
         for (let index in rekap.items) {
           const csvData = rekap.items[index]
-          csvContent += `"${csvData.transDate}","${csvData.transNo}","${csvData.accountCode}","${csvData.accountName}","${csvData.description ? csvData.description.substring(0, 80) : ''}",${Number(csvData.debit) || 0},${Number(csvData.credit) || 0},${Number(csvData.amount) || 0}\n`
+          csvContent += `"${csvData.transDate}","${csvData.transNo}","${csvData.accountCode}","${csvData.accountName}","${csvData.description ? csvData.description.substring(0, 80) : ''}",${csvData.debit || 0},${csvData.credit || 0},${csvData.amount || 0}\n`
           numberOfRow += 1
           if (numberOfRow > 200000) {
             console.log(`Rendering ${numberOfRow} rows`)
