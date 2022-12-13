@@ -9,10 +9,12 @@ import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 3
 const PRODUCT_NAME_SIZE_IN_POINT = 7
-const PRICE_SIZE_IN_POINT = 18
+const PRICE_SIZE_IN_POINT = 14
+const HALAL_TEXT_SIZE_IN_POINT = 5
+const HALAL_TEXT_SIZE = HALAL_TEXT_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
-const NUMBER_OF_PRODUCT_NAME = 27
+const NUMBER_OF_PRODUCT_NAME = 20
 const WIDTH_TABLE_IN_CENTI = 8
 const HEIGHT_TABLE_IN_CENTI = 4.5
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
@@ -32,6 +34,15 @@ const HEIGHT_IMAGE_IN_CENTI_BARCODE = 1
 const WIDTH_IMAGE_BARCODE = (WIDTH_IMAGE_IN_CENTI_BARCODE / 2.54) * 72
 const HEIGHT_IMAGE_BARCODE = (HEIGHT_IMAGE_IN_CENTI_BARCODE / 2.54) * 72
 
+const WIDTH_IMAGE_SCANME_IN_CENTI = 1.4
+const HEIGHT_IMAGE_SCANME_IN_CENTI = 1
+const WIDTH_IMAGE_SCANME = (WIDTH_IMAGE_SCANME_IN_CENTI / 2.54) * 72
+const HEIGHT_IMAGE_SCANME = (HEIGHT_IMAGE_SCANME_IN_CENTI / 2.54) * 72
+const WIDTH_IMAGE_HALAL_IN_CENTI = 0.6
+const HEIGHT_IMAGE_HALAL_IN_CENTI = 0.6
+const WIDTH_IMAGE_HALAL = (WIDTH_IMAGE_HALAL_IN_CENTI / 2.54) * 72
+const HEIGHT_IMAGE_HALAL = (HEIGHT_IMAGE_HALAL_IN_CENTI / 2.54) * 72
+
 const styles = {
   info: {
     alignment: 'left',
@@ -43,7 +54,21 @@ const styles = {
     alignment: 'right',
     fontSize: PRICE_SIZE,
     width: '100%',
-    margin: [0, 10, 0, 0]
+    margin: [0, 0, 10, 0]
+  },
+  sellPriceHalal: {
+    bold: true,
+    alignment: 'right',
+    fontSize: PRICE_SIZE,
+    width: '100%',
+    margin: [0, 15, 10, 0]
+  },
+  sellPriceNoImage: {
+    bold: true,
+    alignment: 'right',
+    fontSize: PRICE_SIZE,
+    width: '100%',
+    margin: [0, 10, 10, 10]
   },
   productName1: {
     alignment: 'center',
@@ -63,6 +88,12 @@ const styles = {
   productCode: {
     fontSize: PRODUCT_NAME_SIZE,
     margin: [10, 0],
+    alignment: 'left'
+  },
+  halalText: {
+    fontSize: HALAL_TEXT_SIZE,
+    bold: true,
+    margin: [0, 0, 10, 0],
     alignment: 'left'
   },
   printDate: {
@@ -102,8 +133,12 @@ const createTableBody = async (tableBody, aliases) => {
   let images
   const storeId = lstorage.getCurrentUserStore()
   const base = await getBase64FromUrl(`/invoice-logo-white-${APPNAME}.png`)
+  const scanMe = await getBase64FromUrl('/scan-me-icon.png')
+  const pigIcon = await getBase64FromUrl('/pig-icon.png')
   images = {
-    AppLogo: base
+    AppLogo: base,
+    ScanMe: scanMe,
+    PigIcon: pigIcon
   }
   for (let key in tableBody) {
     if (tableBody.hasOwnProperty(key)) {
@@ -143,16 +178,27 @@ const createTableBody = async (tableBody, aliases) => {
           maxStringPerRow2 = tableBody[key].info.productName.slice(NUMBER_OF_PRODUCT_NAME, 68).toString()
         }
 
+        let background = '#ffffff'
+        if (tableBody[key].info.categoryColor) {
+          background = tableBody[key].info.categoryColor
+        }
+        let color = '#000000'
+        let isHalal = true
+        if (tableBody[key].info.isHalal === 3) {
+          isHalal = false
+          background = '#F05555'
+          color = '#ffffff'
+        }
+
         row.push({
           columns: [
             {
-              width: '80%',
+              width: '60%',
               stack: [
                 {
                   text: maxStringPerRow1,
                   style: 'productName1',
-                  alignment: 'left',
-                  width: WIDTH_TABLE
+                  alignment: 'left'
                 },
                 {
                   text: maxStringPerRow2,
@@ -160,6 +206,15 @@ const createTableBody = async (tableBody, aliases) => {
                   alignment: 'left'
                 }
               ]
+            },
+            {
+              image: 'ScanMe',
+              width: WIDTH_IMAGE_SCANME,
+              alignment: 'left',
+              height: HEIGHT_IMAGE_SCANME,
+              margin: [0, 0],
+              fillColor: background,
+              background
             },
             {
               image: `barcode-${item.productCode}`,
@@ -186,11 +241,6 @@ const createTableBody = async (tableBody, aliases) => {
           ]
 
         })
-        let background = '#ffffff'
-        if (tableBody[key].info.categoryColor) {
-          background = tableBody[key].info.categoryColor
-        }
-        const color = '#000000'
         // row.push({
         //   canvas: [{ type: 'line', x1: 0, y1: 5, x2: WIDTH_TABLE, y2: 5, lineWidth: 0.5 }]
         // })
@@ -224,26 +274,50 @@ const createTableBody = async (tableBody, aliases) => {
         }
         if (aliases.check1) {
           if (imageBase && item.productCode) {
-            row.push({
-              columns: [
-                {
-                  image: `${item.productCode}`,
-                  width: WIDTH_IMAGE,
-                  height: HEIGHT_IMAGE,
-                  margin: [10, 0],
-                  fillColor: background,
-                  background
-                },
+            const columnProduct = []
+            columnProduct.push({
+              image: `${item.productCode}`,
+              width: WIDTH_IMAGE,
+              height: HEIGHT_IMAGE,
+              margin: [10, 0],
+              fillColor: background,
+              background
+            })
 
-                {
-                  text: numberFormatter(tableBody[key].info[aliases.price1]),
-                  width: '70%',
-                  fillColor: background,
-                  background,
-                  color,
-                  style: 'sellPrice'
-                }
-              ],
+            const stackProduct = []
+            stackProduct.push({
+              text: numberFormatter(tableBody[key].info[aliases.price1]),
+              width: '70%',
+              fillColor: background,
+              background,
+              color,
+              style: isHalal ? 'sellPriceHalal' : 'sellPrice'
+            })
+            if (!isHalal) {
+              stackProduct.push({
+                text: 'PRODUK INI MENGANDUNG BABI',
+                width: '100%',
+                fillColor: background,
+                background,
+                alignment: 'right',
+                color,
+                style: 'halalText'
+              })
+              stackProduct.push({
+                image: 'PigIcon',
+                width: WIDTH_IMAGE_HALAL,
+                alignment: 'right',
+                height: HEIGHT_IMAGE_HALAL,
+                margin: [0, 0, 5, 0],
+                fillColor: background,
+                background
+              })
+            }
+            columnProduct.push({
+              stack: stackProduct
+            })
+            row.push({
+              columns: columnProduct,
               fillColor: background,
               background
             })
@@ -254,8 +328,28 @@ const createTableBody = async (tableBody, aliases) => {
               fillColor: background,
               background,
               color,
-              style: 'sellPrice'
+              style: 'sellPriceNoImage'
             })
+            if (!isHalal) {
+              row.push({
+                text: 'PRODUK INI MENGANDUNG BABI',
+                width: '100%',
+                fillColor: background,
+                alignment: 'right',
+                background,
+                color,
+                style: 'halalText'
+              })
+              row.push({
+                image: 'PigIcon',
+                width: WIDTH_IMAGE_HALAL,
+                alignment: 'right',
+                height: HEIGHT_IMAGE_HALAL,
+                margin: [0, 0, 5, 0],
+                fillColor: background,
+                background
+              })
+            }
           }
         }
         if (aliases.check2) {
