@@ -8,7 +8,7 @@ import QRCode from 'qrcode'
 import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
 const NUMBER_OF_COLUMN = 5
-const BRAND_NAME_SIZE_IN_POINT = 6
+const BRAND_NAME_SIZE_IN_POINT = 4
 const BRAND_NAME_SIZE = BRAND_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const PRODUCT_NAME_SIZE_IN_POINT = 5
 const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
@@ -16,21 +16,29 @@ const PRODUCT_NAME_SIZE = PRODUCT_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe p
 const PRODUCT_CODE_SIZE_IN_POINT = 4
 const PRODUCT_CODE_SIZE = PRODUCT_CODE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 
-const PRICE_SIZE_IN_POINT = 14
+const PRICE_SIZE_IN_POINT = 12
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const NUMBER_OF_PRODUCT_NAME = 32
 const WIDTH_TABLE_IN_CENTI = 5
 const HEIGHT_TABLE_IN_CENTI = 3.8
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
-const WIDTH_LOGO_IMAGE_IN_CENTI = 2.6
-const HEIGHT_LOGO_IMAGE_IN_CENTI = 0.5
+const WIDTH_LOGO_IMAGE_IN_CENTI = 2
+const HEIGHT_LOGO_IMAGE_IN_CENTI = 0.3
 const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const WIDTH_IMAGE_IN_CENTI = 1
 const HEIGHT_IMAGE_IN_CENTI = 1
 const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
+const WIDTH_IMAGE_SCANME_IN_CENTI = 1.4
+const HEIGHT_IMAGE_SCANME_IN_CENTI = 1
+const WIDTH_IMAGE_SCANME = (WIDTH_IMAGE_SCANME_IN_CENTI / 2.54) * 72
+const HEIGHT_IMAGE_SCANME = (HEIGHT_IMAGE_SCANME_IN_CENTI / 2.54) * 72
+const WIDTH_IMAGE_HALAL_IN_CENTI = 0.6
+const HEIGHT_IMAGE_HALAL_IN_CENTI = 0.6
+const WIDTH_IMAGE_HALAL = (WIDTH_IMAGE_HALAL_IN_CENTI / 2.54) * 72
+const HEIGHT_IMAGE_HALAL = (HEIGHT_IMAGE_HALAL_IN_CENTI / 2.54) * 72
 
 const styles = {
   info: {
@@ -71,6 +79,12 @@ const styles = {
     margin: [5, 0],
     alignment: 'left'
   },
+  halalText: {
+    fontSize: PRODUCT_CODE_SIZE,
+    margin: [5, 0],
+    bold: true,
+    alignment: 'left'
+  },
   printDate: {
     fontSize: PRODUCT_NAME_SIZE,
     margin: [3, 0],
@@ -109,8 +123,12 @@ const createTableBody = async (tableBody, aliases) => {
   let images
   const storeId = lstorage.getCurrentUserStore()
   const base = await getBase64FromUrl(`/invoice-logo-${APPNAME}.png`)
+  const scanMe = await getBase64FromUrl('/scan-me-icon.png')
+  const pigIcon = await getBase64FromUrl('/pig-icon.png')
   images = {
-    AppLogo: base
+    AppLogo: base,
+    ScanMe: scanMe,
+    PigIcon: pigIcon
   }
   for (let key in tableBody) {
     if (tableBody.hasOwnProperty(key)) {
@@ -135,7 +153,13 @@ const createTableBody = async (tableBody, aliases) => {
         if (tableBody[key].info.categoryColor) {
           background = tableBody[key].info.categoryColor
         }
-        const color = '#000000'
+        let color = '#000000'
+        let isHalal = true
+        if (tableBody[key].info.isHalal === 3) {
+          isHalal = false
+          background = '#F05555'
+          color = '#ffffff'
+        }
         // eslint-disable-next-line no-await-in-loop
         const imageBase = await getQRCode(tableBody[key].info.productCode)
         images[`${item.productCode}`] = imageBase
@@ -160,6 +184,15 @@ const createTableBody = async (tableBody, aliases) => {
                     width: WIDTH_TABLE
                   }
                 ]
+              },
+              {
+                image: 'ScanMe',
+                width: WIDTH_IMAGE_SCANME,
+                alignment: 'left',
+                height: HEIGHT_IMAGE_SCANME,
+                margin: [0, 0],
+                fillColor: background,
+                background
               },
               {
                 image: `${item.productCode}`,
@@ -220,22 +253,52 @@ const createTableBody = async (tableBody, aliases) => {
             ]
           })
         }
+
+        const stackProduct = []
+        stackProduct.push({
+          text: tableBody[key].info.productCode,
+          style: 'productCode',
+          margin: [0, 0],
+          alignment: 'left',
+          width: '60%'
+        })
+        if (!isHalal) {
+          stackProduct.push({
+            text: 'PRODUK INI MENGANDUNG BABI',
+            style: 'halalText',
+            margin: [0, 0],
+            alignment: 'left',
+            width: '60%'
+          })
+        }
+        stackProduct.push({
+          text: moment().format('YYYY-MM-DD'),
+          style: 'productCode',
+          margin: [0, 0],
+          alignment: 'left',
+          width: '60%'
+        })
+
+        const columnProduct = []
+
+        columnProduct.push({
+          stack: stackProduct
+        })
+
+        if (!isHalal) {
+          columnProduct.push({
+            image: 'PigIcon',
+            width: WIDTH_IMAGE_HALAL,
+            alignment: 'left',
+            height: HEIGHT_IMAGE_HALAL,
+            margin: [0, 0],
+            fillColor: background,
+            background
+          })
+        }
+
         row.push({
-          columns: [
-            {
-              text: (tableBody[key].info.productCode || '').toString(),
-              style: 'productCode',
-              margin: [0, 0],
-              alignment: 'left',
-              width: '60%'
-            },
-            {
-              text: moment().format('YYYY-MM-DD'),
-              style: 'printDate',
-              alignment: 'right',
-              width: '40%'
-            }
-          ]
+          columns: columnProduct
         })
         body.push(row)
       }
