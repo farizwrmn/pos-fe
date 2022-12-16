@@ -1,17 +1,17 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
-import { message } from 'antd'
 import FormData from 'form-data'
-import { uploadExpressCategoryImage } from 'services/utils/imageUploader'
-import { query, queryById, add, edit, remove } from 'services/k3express/product/productCategory'
+import { query, getProductDetail, add, edit, remove } from 'services/k3express/product/productConsignment'
 import { pageModel } from 'models/common'
+import { message } from 'antd'
+import { uploadExpressConsignmentProductImage } from 'services/utils/imageUploader'
+import { routerRedux } from 'dva/router'
 
 const success = () => {
-  message.success('K3Express Category has been saved')
+  message.success('K3Express Consignment has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'expressProductCategory',
+  namespace: 'expressProductConsignment',
 
   state: {
     currentItem: {},
@@ -23,7 +23,9 @@ export default modelExtend(pageModel, {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
-    }
+    },
+
+    productDetail: []
   },
 
   subscriptions: {
@@ -32,7 +34,6 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/stock'
-          || pathname === '/k3express/product-category'
           || pathname === '/k3express/product-consignment'
         ) {
           if (activeKey !== '1') {
@@ -44,8 +45,7 @@ export default modelExtend(pageModel, {
             })
           }
         }
-        if (pathname === '/k3express/product-category'
-          || pathname === '/k3express/product-consignment') {
+        if (pathname === '/k3express/product-consignment') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -89,12 +89,15 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
+    * queryProduct ({ payload = {} }, { call, put }) {
+      const data = yield call(getProductDetail, payload)
       if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
+        yield put({
+          type: 'updateState',
+          payload: {
+            productDetail: data.data
+          }
+        })
       }
     },
 
@@ -103,41 +106,36 @@ export default modelExtend(pageModel, {
       const uploadedImage = []
       if (payload
         && payload.data
-        && payload.data.categoryImage
-        && payload.data.categoryImage.fileList
-        && payload.data.categoryImage.fileList.length > 0
-        && payload.data.categoryImage.fileList.length <= 5) {
-        for (let key in payload.data.categoryImage.fileList) {
-          const item = payload.data.categoryImage.fileList[key]
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
           const formData = new FormData()
           formData.append('file', item.originFileObj)
-          const responseUpload = yield call(uploadExpressCategoryImage, formData)
+          const responseUpload = yield call(uploadExpressConsignmentProductImage, formData)
           if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
             uploadedImage.push(responseUpload.data.filename)
           }
         }
       } else if (payload
         && payload.data
-        && payload.data.categoryImage
-        && payload.data.categoryImage.fileList
-        && payload.data.categoryImage.fileList.length > 0
-        && payload.data.categoryImage.fileList.length > 5) {
-        throw new Error('Cannot upload more than 5 image')
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 1) {
+        throw new Error('Cannot upload more than 1 image')
       }
       // End - Upload Image
-      if (uploadedImage && uploadedImage.length) {
-        payload.data.categoryImage = uploadedImage && uploadedImage[0] ? uploadedImage[0] : 'no_image.png'
-      } else {
-        payload.data.categoryImage = 'no_image.png'
-      }
-      const data = yield call(add, payload.data)
+      const data = yield call(add, { ...payload.data, uploadedImage })
       if (data.success) {
         success()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            productDetail: []
           }
         })
         yield put({
@@ -162,22 +160,21 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
-
     * edit ({ payload }, { select, call, put }) {
       // Start - Upload Image
       const uploadedImage = []
       if (payload
         && payload.data
-        && payload.data.categoryImage
-        && payload.data.categoryImage.fileList
-        && payload.data.categoryImage.fileList.length > 0
-        && payload.data.categoryImage.fileList.length <= 5) {
-        for (let key in payload.data.categoryImage.fileList) {
-          const item = payload.data.categoryImage.fileList[key]
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
+        for (let key in payload.data.productImage.fileList) {
+          const item = payload.data.productImage.fileList[key]
           if (item && item.originFileObj) {
             const formData = new FormData()
             formData.append('file', item.originFileObj)
-            const responseUpload = yield call(uploadExpressCategoryImage, formData)
+            const responseUpload = yield call(uploadExpressConsignmentProductImage, formData)
             if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
               uploadedImage.push(responseUpload.data.filename)
             }
@@ -187,20 +184,20 @@ export default modelExtend(pageModel, {
         }
       } else if (payload
         && payload.data
-        && payload.data.categoryImage
-        && payload.data.categoryImage.fileList
-        && payload.data.categoryImage.fileList.length > 0
-        && payload.data.categoryImage.fileList.length > 1) {
+        && payload.data.productImage
+        && payload.data.productImage.fileList
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length > 1) {
         throw new Error('Cannot upload more than 1 image')
       }
       // End - Upload Image
       if (uploadedImage && uploadedImage.length) {
-        payload.data.categoryImage = uploadedImage && uploadedImage[0] ? uploadedImage[0] : 'no_image.png'
+        payload.data.productImage = uploadedImage && uploadedImage[0] ? uploadedImage[0] : 'no_image.png'
       } else {
         payload.data.categoryImage = 'no_image.png'
       }
-      const id = yield select(({ expressProductCategory }) => expressProductCategory.currentItem.id)
-      const newCounter = { ...payload.data, id }
+      const id = yield select(({ expressProductConsignment }) => expressProductConsignment.currentItem.id)
+      const newCounter = { ...payload.data, id, uploadedImage }
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
@@ -240,17 +237,10 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * queryEditItem ({ payload = {} }, { call, put }) {
-      const data = yield call(queryById, payload)
+    * delete ({ payload }, { call, put }) {
+      const data = yield call(remove, payload)
       if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: data.data,
-            modalType: 'edit',
-            activeKey: '0'
-          }
-        })
+        yield put({ type: 'query' })
       } else {
         throw data
       }
@@ -272,16 +262,6 @@ export default modelExtend(pageModel, {
 
     updateState (state, { payload }) {
       return { ...state, ...payload }
-    },
-
-    changeTab (state, { payload }) {
-      const { key } = payload
-      return {
-        ...state,
-        activeKey: key,
-        modalType: 'add',
-        currentItem: {}
-      }
     },
 
     editItem (state, { payload }) {

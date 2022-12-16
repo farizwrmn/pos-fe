@@ -1269,6 +1269,16 @@ const Routers = function ({ history, app }) {
             }, 'k3express/product/k3expresscategory')
           }
         }, {
+          path: 'k3express/product-consignment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productConsignment'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              cb(null, require('./routes/k3express/product/productConsignment'))
+            }, 'k3express/product/k3expressconsignment')
+          }
+        }, {
           path: 'cash-entry/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
