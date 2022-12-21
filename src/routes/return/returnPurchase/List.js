@@ -1,19 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Tag } from 'antd'
+import { Table, Modal, Tag, message } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, approveItem, deleteItem }) => {
+const List = ({ storeInfo, approveItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     switch (e.key) {
       case '2': {
         confirm({
           title: `Are you sure delete ${record.transNo} ?`,
           onOk () {
+            const transDate = moment(record.createdAt).format('YYYY-MM-DD')
+            if (transDate < storeInfo.startPeriod) {
+              message.error('This period has been closed')
+              return
+            }
             deleteItem(record.id)
           }
         })
@@ -23,6 +28,11 @@ const List = ({ ...tableProps, approveItem, deleteItem }) => {
         confirm({
           title: `Are you sure approve ${record.transNo} ?`,
           onOk () {
+            const transDate = moment(record.createdAt).format('YYYY-MM-DD')
+            if (transDate < storeInfo.startPeriod) {
+              message.error('This period has been closed')
+              return
+            }
             approveItem(record.id)
           }
         })
