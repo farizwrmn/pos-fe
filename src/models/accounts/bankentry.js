@@ -186,6 +186,12 @@ export default modelExtend(pageModel, {
       yield put(routerRedux.push(`/cash-entry/${payload.id}`))
     },
 
+    * linkAdjust ({ payload = {} }, { select, put }) {
+      const user = yield select(({ app }) => app.user)
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })
+      yield put(routerRedux.push(`/transaction/adjust/${payload.id}`))
+    },
+
     * linkBankEntry ({ payload = {} }, { select, put }) {
       const user = yield select(({ app }) => app.user)
       yield put({ type: 'app/query', payload: { userid: user.userid, role: payload.storeId } })

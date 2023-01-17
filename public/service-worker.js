@@ -4,17 +4,15 @@ const filesToCache = [
 ]
 const CACHE_NAME = 'smiPOS1'
 
-// self.addEventListener('activate', (event) => {
-//   event.waitUntil(
-//     caches.keys().then((keyList) => {
-//       return Promise.all(keyList.map((key) => {
-//         if (CACHE_NAME.indexOf(key) === -1) {
-//           return caches.delete(key)
-//         }
-//       }))
-//     })
-//   )
-// })
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => {
+        return caches.delete(key)
+      }))
+    })
+  )
+})
 
 self.addEventListener('push', (event) => {
   const data = event.data.json()
@@ -29,7 +27,9 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(filesToCache)
+        cache.delete('index.html')
+        cache.delete('.')
+        // return cache.addAll(filesToCache)
       })
   )
 })

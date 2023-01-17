@@ -49,6 +49,7 @@ export default modelExtend(pageModel, {
           })
         }
         if (pathname === '/report/accounting/consolidation/general-ledger'
+          || pathname === '/bank-history'
           || pathname === '/tools/report/general-ledger') {
           dispatch({
             type: 'query',
@@ -90,7 +91,6 @@ export default modelExtend(pageModel, {
           || pathname === '/bank-recon'
           || pathname === '/balance/finance/petty-cash'
           || pathname === '/balance/finance/history'
-          || pathname === '/bank-history'
           || pathname === '/master/paymentoption'
           || pathname === '/bank-entry'
           || matchEdc) {

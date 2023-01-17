@@ -19,6 +19,7 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
         pathname,
         query: {
           ...query,
+          page: 1,
           startPeriod: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
           endPeriod: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
         }
@@ -30,7 +31,8 @@ const PurchaseHistory = ({ purchase, loading, dispatch, location, app }) => {
         pathname,
         query: {
           ...query,
-          ...data
+          ...data,
+          page: 1
         }
       }))
     }
