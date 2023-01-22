@@ -56,10 +56,22 @@ export default modelExtend(pageModel, {
         ...payload
       })
       if (data && data.data) {
+        console.log('data', data.data, data.storePrice)
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null),
+            list: data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null)
+              .map((item) => {
+                if (item.product != null) {
+                  if (data && data.storePrice && data.storePrice.length > 0) {
+                    const filteredProduct = data.storePrice.filter(filtered => filtered.productId === item.productId)
+                    if (filteredProduct && filteredProduct.length > 0) {
+                      item.product.storePrice = filteredProduct
+                    }
+                  }
+                }
+                return item
+              }),
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 14,
