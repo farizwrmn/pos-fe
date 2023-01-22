@@ -192,12 +192,15 @@ export default modelExtend(pageModel, {
             listSticker: newListSticker
           }
         })
-        const { resetChild, resetChildShelf } = payload
+        const { resetChild, resetChildShelf, resetChildLong } = payload
         if (resetChild) {
           resetChild(newListSticker)
         }
         if (resetChildShelf) {
           resetChildShelf(newListSticker)
+        }
+        if (resetChildLong) {
+          resetChildLong(newListSticker)
         }
       } else {
         throw response
@@ -580,7 +583,7 @@ export default modelExtend(pageModel, {
 
     * addSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild, resetChildShelf } = payload
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
       listSticker.push(sticker)
       yield put({
         type: 'updateState',
@@ -594,11 +597,14 @@ export default modelExtend(pageModel, {
       if (resetChildShelf) {
         resetChildShelf(listSticker)
       }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
     },
 
     * deleteSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild, resetChildShelf } = payload
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
       listSticker = listSticker.filter(x => x.name !== sticker.name)
       yield put({
         type: 'updateState',
@@ -612,11 +618,14 @@ export default modelExtend(pageModel, {
       if (resetChildShelf) {
         resetChildShelf(listSticker)
       }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
     },
 
     * updateSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { selectedRecord, changedRecord, resetChild, resetChildShelf } = payload
+      const { selectedRecord, changedRecord, resetChild, resetChildShelf, resetChildLong } = payload
       let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
       listSticker[selected] = changedRecord
 
@@ -631,6 +640,9 @@ export default modelExtend(pageModel, {
       }
       if (resetChildShelf) {
         resetChildShelf(listSticker)
+      }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
       }
     }
   },
