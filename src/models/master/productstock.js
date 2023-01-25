@@ -10,6 +10,8 @@ import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { queryProductByCode } from 'services/consignment/products'
+import { query as queryProductCost } from 'services/product/productCost'
+import { lstorage } from 'utils'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -278,7 +280,22 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const { stockQuery, ...otherPayload } = payload
       const data = yield call(query, otherPayload)
-      if (data) {
+      if (data && data.data) {
+        if (data.data.length > 0) {
+          const productCost = yield call(queryProductCost, {
+            productId: data.data.map(item => item.id),
+            storeId: lstorage.getCurrentUserStore()
+          })
+          if (productCost && productCost.data && productCost.data.length > 0) {
+            data.data = data.data.map((item) => {
+              const filteredProduct = productCost.data.filter(filtered => filtered.productId === item.id)
+              if (filteredProduct && filteredProduct[0]) {
+                item.costPrice = filteredProduct[0].costPrice
+              }
+              return item
+            })
+          }
+        }
         yield put({
           type: 'querySuccess',
           payload: {
