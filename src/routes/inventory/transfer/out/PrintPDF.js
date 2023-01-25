@@ -7,7 +7,7 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const formatNumber = numberFormat.numberFormatter
 
 const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   // Declare Function
@@ -36,7 +36,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   const styles = {
     header: {
       fontSize: 16,
-      bold: true,
+      bold: false,
       margin: [0, 0, 0, 10]
     },
     subheader: {
@@ -237,7 +237,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 11 },
       {},
       {},
-      { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 11 },
+      { text: formatNumber(parseFloat(productTotal)), alignment: 'right', fontSize: 11 },
       {}
     ]
   ]
@@ -260,8 +260,8 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: ['6%', '20%', '38%', '6%', '30%'],
     pageMargins: [40, 160, 40, 150],
-    pageSize: { width: 813, height: 530 },
-    pageOrientation: 'landscape',
+    pageSize: { width: 612, height: 792 },
+    pageOrientation: 'portrait',
     tableStyle: styles,
     layout: tableLayout,
     tableHeader,
