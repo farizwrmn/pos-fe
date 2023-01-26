@@ -415,6 +415,7 @@ export default {
               if (filteredSupplier && filteredSupplier.length > 0) {
                 item.supplierCode = filteredSupplier[0].supplierCode
                 item.supplierName = filteredSupplier[0].supplierName
+                item.costPrice = filteredSupplier[0].costPrice
               }
             }
             return ({
