@@ -3,7 +3,9 @@
  */
 import { Modal, message } from 'antd'
 import moment from 'moment'
-import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoCard, queryFifoHistory, queryFifoTransfer } from '../../services/report/fifo'
+import { lstorage } from 'utils'
+import { queryFifo, queryFifoValue, queryFifoSupplier, queryFifoCard, queryFifoHistory, queryFifoTransfer } from 'services/report/fifo'
+import { querySupplier } from 'services/product/productCost'
 
 export default {
   namespace: 'fifoReport',
@@ -402,9 +404,19 @@ export default {
       const data = yield call(queryFifoSupplier, payload)
       if (data.success) {
         if (data.data) {
+          const listSupplier = yield call(querySupplier, {
+            productId: data.data.listProduct.map(item => item.id),
+            storeId: lstorage.getCurrentUserStore()
+          })
           const newData = data.data.listProduct.map((item) => {
+            let filteredSupplier = []
+            if (listSupplier && listSupplier.data && listSupplier.data.length > 0) {
+              filteredSupplier = listSupplier.data.filter(filtered => filtered.productId === item.id)
+            }
             return ({
               ...item,
+              supplierCode: filteredSupplier[0].supplierCode,
+              supplierName: filteredSupplier[0].supplierName,
               listStore: data.data.listIn
                 .filter(filtered => filtered.productId === item.id)
                 .concat(data.data.listOut.filter(filtered => filtered.productId === item.id))
