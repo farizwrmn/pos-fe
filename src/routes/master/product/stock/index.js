@@ -13,6 +13,7 @@ import PrintXLSSpecification from './PrintXLSSpecification'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
 import ModalQuantity from './ModalQuantity'
+import ModalPrice from './ModalPrice'
 
 const TabPane = Tabs.TabPane
 
@@ -60,7 +61,9 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
     lastTrans,
     listInventory,
     modalGrabmartCampaignVisible,
-    modalGrabmartItem
+    modalGrabmartItem,
+    modalStorePriceVisible,
+    modalStorePriceItem
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -160,7 +163,7 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
     listCategory,
     listBrand,
     loadingModel: loading,
-    loading: loading.effects['productstock/query'] || loading.effects['productstock/queryInventory'],
+    loading: loading.effects['productstock/query'] || loading.effects['productstock/queryInventory'] || loading.effects['productstock/showModalStorePrice'],
     location,
     onChange (page, filters) {
       const { brandId, categoryId } = filters
@@ -671,12 +674,33 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
       break
   }
 
+  const modalPriceProps = {
+    item: modalStorePriceItem,
+    visible: modalStorePriceVisible,
+    onOk (data, resetFields) {
+      dispatch({
+        type: 'stockExtraPriceStore/add',
+        payload: {
+          data,
+          resetFields
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'productstock/hideModalStorePrice'
+      })
+    }
+  }
+
   return (
     <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'} >
       {modalQuantityVisible && <ModalQuantity {...modalQuantityProps} />}
-      {showPDFModal && <Modal {...PDFModalProps}>
-        {printmode}
-      </Modal>}
+      {showPDFModal && (
+        <Modal {...PDFModalProps}>
+          {printmode}
+        </Modal>
+      )}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <AdvancedForm {...formProps} />}
@@ -684,6 +708,7 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
           <List {...listProps} />
+          {modalStorePriceVisible && <ModalPrice {...modalPriceProps} />}
         </TabPane>
       </Tabs>
     </div >

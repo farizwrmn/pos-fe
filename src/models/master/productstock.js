@@ -11,6 +11,7 @@ import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { queryProductByCode } from 'services/consignment/products'
 import { query as queryProductCost } from 'services/product/productCost'
+import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
 import { lstorage } from 'utils'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
@@ -52,6 +53,8 @@ export default modelExtend(pageModel, {
     listSticker: [],
     update: false,
     selectedSticker: {},
+    modalStorePriceItem: {},
+    modalStorePriceVisible: false,
     period: [],
     showPDFModal: false,
     mode: '',
@@ -137,6 +140,68 @@ export default modelExtend(pageModel, {
           payload: { listInventory: dataType.data }
         })
       }
+    },
+
+    * hideModalStorePrice (payload, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStorePriceVisible: false,
+          modalStorePriceItem: {}
+        }
+      })
+    },
+
+    * showModalStorePrice ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStorePriceVisible: false,
+          modalStorePriceItem: {}
+        }
+      })
+
+      const listStorePrice = yield call(queryStorePrice, {
+        productId: payload.modalStorePriceItem.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+
+      console.log('listStorePrice', listStorePrice)
+      if (listStorePrice && listStorePrice.data && listStorePrice.data.length > 0) {
+        const item = listStorePrice.data[0]
+        payload.modalStorePriceItem.sellPrice = item.sellPrice
+        payload.modalStorePriceItem.distPrice01 = item.distPrice01
+        payload.modalStorePriceItem.distPrice02 = item.distPrice02
+        payload.modalStorePriceItem.distPrice03 = item.distPrice03
+        payload.modalStorePriceItem.distPrice04 = item.distPrice04
+        payload.modalStorePriceItem.distPrice05 = item.distPrice05
+        payload.modalStorePriceItem.distPrice06 = item.distPrice06
+        payload.modalStorePriceItem.distPrice07 = item.distPrice07
+        payload.modalStorePriceItem.distPrice08 = item.distPrice08
+        payload.modalStorePriceItem.distPrice09 = item.distPrice09
+      }
+
+      const productCost = yield call(queryProductCost, {
+        productId: payload.modalStorePriceItem.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+
+      if (productCost && productCost.data && productCost.data[0]) {
+        const item = productCost.data[0]
+        payload.modalStorePriceItem.costPrice = item.costPrice
+      }
+
+      payload.modalStorePriceItem.productId = payload.modalStorePriceItem.id
+      payload.modalStorePriceItem.storeId = lstorage.getCurrentUserStore()
+      payload.modalStorePriceItem.storeName = lstorage.getCurrentUserStoreName()
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStorePriceVisible: true,
+          modalStorePriceItem: payload.modalStorePriceItem
+        }
+      })
     },
 
     * hideGrabmartCampaign (payload, { put }) {
@@ -290,6 +355,8 @@ export default modelExtend(pageModel, {
             data.data = data.data.map((item) => {
               const filteredProduct = productCost.data.filter(filtered => filtered.productId === item.id)
               if (filteredProduct && filteredProduct[0]) {
+                item.storeSupplierCode = filteredProduct[0].supplierCode
+                item.storeSupplierName = filteredProduct[0].supplierName
                 item.costPrice = filteredProduct[0].costPrice
               }
               return item
