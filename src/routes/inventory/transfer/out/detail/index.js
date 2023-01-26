@@ -228,6 +228,7 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
             <Col lg={10} md={10} offset={2}>
               {!showPrint && <Button onClick={() => clickPrint()}>Print</Button>}
               {showPrint && <PrintPDF {...printProps} />}
+              {showPrint && <PrintPDF {...printProps} />}
             </Col>
           </Row>
           <h1>Invoice Info</h1>

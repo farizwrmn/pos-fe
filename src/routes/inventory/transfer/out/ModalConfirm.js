@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Button } from 'antd'
 import PrintPDF from './PrintPDF'
+import PrintPDFv2 from './PrintPDFv2'
 
 const ModalConfirm = ({
   currentItemList,
@@ -54,6 +55,7 @@ const ModalConfirm = ({
       {...modalOpts}
     >
       {<PrintPDF listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
+      {<PrintPDFv2 listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
     </Modal>
   )
 }

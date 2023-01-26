@@ -78,7 +78,7 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const { data, resetFields } = payload
-      if (data && data.storeId && data.storeId.length > 0) {
+      if (data && typeof data.storeId === 'object' && data.storeId && data.storeId.length > 0) {
         for (let key in data.storeId) {
           const storeId = data.storeId[key]
           yield call(add, {
@@ -86,19 +86,31 @@ export default modelExtend(pageModel, {
             storeId
           })
         }
-      }
-      success()
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
+
+        yield put({
+          type: 'query'
+        })
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
+        resetFields()
+        success()
+      } else {
+        const response = yield call(add, data)
+        if (response && response.success) {
+          yield put({
+            type: 'productstock/hideModalStorePrice'
+          })
+          success()
+        } else {
+          throw response
         }
-      })
-      yield put({
-        type: 'query'
-      })
-      resetFields()
+      }
     },
 
     * edit ({ payload }, { select, call, put }) {

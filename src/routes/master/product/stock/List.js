@@ -24,11 +24,18 @@ const List = ({
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
-    } if (e.key === '2') {
+    } else if (e.key === '2') {
       dispatch(routerRedux.push('/transaction/purchase/add'))
-    } if (e.key === '3') {
+    } else if (e.key === '3') {
       dispatch(routerRedux.push('/report/fifo/card'))
     } else if (e.key === '4') {
+      dispatch({
+        type: 'productstock/showModalStorePrice',
+        payload: {
+          modalStorePriceItem: record
+        }
+      })
+    } else if (e.key === '5') {
       confirm({
         title: `Are you sure delete ${record.productName} ?`,
         onOk () {
@@ -119,6 +126,14 @@ const List = ({
       dataIndex: 'supplierId',
       key: 'supplierId',
       render: (text, record) => {
+        if (record && record.storeSupplierCode && record.storeSupplierName) {
+          return (
+            <div>
+              <div><strong>{record.storeSupplierCode}</strong></div>
+              <div>{record.storeSupplierName}</div>
+            </div>
+          )
+        }
         return (
           <div>
             <div><strong>{record.supplierCode}</strong></div>
@@ -383,7 +398,8 @@ const List = ({
               { key: '1', name: 'Edit' },
               { key: '2', name: 'Purchase' },
               { key: '3', name: 'History' },
-              { key: '4', name: 'Delete' }
+              { key: '4', name: 'Store Price' },
+              { key: '5', name: 'Delete' }
             ]}
           />
         )
