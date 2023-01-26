@@ -9,7 +9,7 @@ import { BasicInvoice } from 'components'
 
 const formatNumber = numberFormat.numberFormatter
 
-const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
+const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -69,7 +69,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
             alignment: 'center'
           },
           {
-            stack: storeInfo.stackHeader02
+            stack: []
           }
         ]
       },
@@ -117,7 +117,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
         layout: 'noBorders'
       },
       {
-        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+        canvas: [{ type: 'line', x1: 0, y1: 5, x2: 572, y2: 5, lineWidth: 0.5 }]
       }
     ],
     margin: [30, 12, 12, 30]
@@ -129,7 +129,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
         height: 160,
         stack: [
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 572, y2: 5, lineWidth: 0.5 }]
           },
           {
             // columns: [
@@ -183,7 +183,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
       height: 160,
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 572, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -254,7 +254,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   }
   // Declare additional Props
   const pdfProps = {
-    className: 'button-width02 button-extra-large bgcolor-blue',
+    className: 'button-width02 button-extra-large bgcolor-green',
     width: ['6%', '20%', '62%', '12%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 612, height: 792 },
