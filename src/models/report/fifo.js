@@ -412,11 +412,13 @@ export default {
             let filteredSupplier = []
             if (listSupplier && listSupplier.data && listSupplier.data.length > 0) {
               filteredSupplier = listSupplier.data.filter(filtered => filtered.productId === item.id)
+              if (filteredSupplier && filteredSupplier.length > 0) {
+                item.supplierCode = filteredSupplier[0].supplierCode
+                item.supplierName = filteredSupplier[0].supplierName
+              }
             }
             return ({
               ...item,
-              supplierCode: filteredSupplier[0].supplierCode,
-              supplierName: filteredSupplier[0].supplierName,
               listStore: data.data.listIn
                 .filter(filtered => filtered.productId === item.id)
                 .concat(data.data.listOut.filter(filtered => filtered.productId === item.id))
