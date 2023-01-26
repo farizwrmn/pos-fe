@@ -7,7 +7,7 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const formatNumber = numberFormat.numberFormatter
 
 const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   // Declare Function
@@ -23,7 +23,6 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
         row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 9 })
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 9 })
         row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 9 })
-        row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 9 })
         body.push(row)
       }
       count += 1
@@ -36,7 +35,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   const styles = {
     header: {
       fontSize: 16,
-      bold: true,
+      bold: false,
       margin: [0, 0, 0, 10]
     },
     subheader: {
@@ -222,8 +221,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
       { fontSize: 10, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 10, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 10, text: 'NAME', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 10, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 10, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 10, text: 'QTY', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
@@ -237,8 +235,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 11 },
       {},
       {},
-      { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 11 },
-      {}
+      { text: formatNumber(parseFloat(productTotal)), alignment: 'right', fontSize: 11 }
     ]
   ]
   const tableLayout = {
@@ -258,10 +255,10 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '38%', '6%', '30%'],
+    width: ['6%', '20%', '62%', '12%'],
     pageMargins: [40, 160, 40, 150],
-    pageSize: { width: 813, height: 530 },
-    pageOrientation: 'landscape',
+    pageSize: { width: 612, height: 792 },
+    pageOrientation: 'portrait',
     tableStyle: styles,
     layout: tableLayout,
     tableHeader,

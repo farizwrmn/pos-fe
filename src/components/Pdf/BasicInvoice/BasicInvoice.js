@@ -4,6 +4,8 @@ import pdfMake from 'pdfmake/build/pdfmake.min.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import defaultFont from 'utils/defaultFont'
 
+// Dot Matrix Recommeded Setting 240x72dpi (Otherwise the font changed to draft by the driver)
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 pdfMake.fonts = defaultFont
 const BasicInvoice = ({
@@ -57,6 +59,9 @@ const BasicInvoice = ({
     } else {
       const content = createPdfLineItems(data)
       let docDefinition = {
+        defaultStyle: {
+          font: 'Helvetica'
+        },
         pageSize,
         pageOrientation,
         pageMargins,

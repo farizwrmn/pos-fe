@@ -10,6 +10,8 @@ import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { queryProductByCode } from 'services/consignment/products'
+import { query as queryProductCost } from 'services/product/productCost'
+import { lstorage } from 'utils'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -192,12 +194,15 @@ export default modelExtend(pageModel, {
             listSticker: newListSticker
           }
         })
-        const { resetChild, resetChildShelf } = payload
+        const { resetChild, resetChildShelf, resetChildLong } = payload
         if (resetChild) {
           resetChild(newListSticker)
         }
         if (resetChildShelf) {
           resetChildShelf(newListSticker)
+        }
+        if (resetChildLong) {
+          resetChildLong(newListSticker)
         }
       } else {
         throw response
@@ -275,7 +280,22 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const { stockQuery, ...otherPayload } = payload
       const data = yield call(query, otherPayload)
-      if (data) {
+      if (data && data.data) {
+        if (data.data.length > 0) {
+          const productCost = yield call(queryProductCost, {
+            productId: data.data.map(item => item.id),
+            storeId: lstorage.getCurrentUserStore()
+          })
+          if (productCost && productCost.data && productCost.data.length > 0) {
+            data.data = data.data.map((item) => {
+              const filteredProduct = productCost.data.filter(filtered => filtered.productId === item.id)
+              if (filteredProduct && filteredProduct[0]) {
+                item.costPrice = filteredProduct[0].costPrice
+              }
+              return item
+            })
+          }
+        }
         yield put({
           type: 'querySuccess',
           payload: {
@@ -580,7 +600,7 @@ export default modelExtend(pageModel, {
 
     * addSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild, resetChildShelf } = payload
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
       listSticker.push(sticker)
       yield put({
         type: 'updateState',
@@ -594,11 +614,14 @@ export default modelExtend(pageModel, {
       if (resetChildShelf) {
         resetChildShelf(listSticker)
       }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
     },
 
     * deleteSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild, resetChildShelf } = payload
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
       listSticker = listSticker.filter(x => x.name !== sticker.name)
       yield put({
         type: 'updateState',
@@ -612,11 +635,14 @@ export default modelExtend(pageModel, {
       if (resetChildShelf) {
         resetChildShelf(listSticker)
       }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
     },
 
     * updateSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { selectedRecord, changedRecord, resetChild, resetChildShelf } = payload
+      const { selectedRecord, changedRecord, resetChild, resetChildShelf, resetChildLong } = payload
       let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
       listSticker[selected] = changedRecord
 
@@ -631,6 +657,9 @@ export default modelExtend(pageModel, {
       }
       if (resetChildShelf) {
         resetChildShelf(listSticker)
+      }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
       }
     }
   },
