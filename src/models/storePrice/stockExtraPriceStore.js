@@ -98,18 +98,11 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        yield put({
+          type: 'productstock/hideModalStorePrice'
+        })
         resetFields()
         success()
-      } else {
-        const response = yield call(add, data)
-        if (response && response.success) {
-          yield put({
-            type: 'productstock/hideModalStorePrice'
-          })
-          success()
-        } else {
-          throw response
-        }
       }
     },
 
