@@ -1,4 +1,25 @@
 @import "../../../../themes/vars.less";
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.child {
+  flex: 1 0 21%; /* explanation below */
+  margin: 5px;
+  height: 120px;
+
+  text-align: center;
+  padding: 1em 0;
+  border-bottom: rgb(65, 65, 65);
+  &:hover {
+    // color: @primary-color
+    background-color: @blue;
+    color: #fff;
+  }
+}
+
 .card {
   text-align: center;
   padding: 1em 0.5em;
