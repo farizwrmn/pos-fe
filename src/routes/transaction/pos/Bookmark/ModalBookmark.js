@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Pagination, Spin } from 'antd'
+import { Form, Modal, Pagination, Spin } from 'antd'
 import styles from './bookmark.less'
 import EmptyBookmark from './EmptyBookmark'
 import ImageBookmark from './ImageBookmark'
 
-const FormItem = Form.Item
+// const FormItem = Form.Item
 
-const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 14 }
-}
+// const formItemLayout = {
+//   labelCol: { span: 8 },
+//   wrapperCol: { span: 14 }
+// }
 
 class ModalBookmark extends Component {
   componentDidMount () {
@@ -33,7 +33,7 @@ class ModalBookmark extends Component {
       onChoose,
       onChooseBundle,
       productBookmarkGroup,
-      form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+      // form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...modalProps
     } = this.props
 
@@ -43,37 +43,37 @@ class ModalBookmark extends Component {
       onChange(filter.groupId, page)
     }
 
-    const handleOk = () => {
-      validateFields((errors) => {
-        if (errors) return
-        const record = {
-          ...getFieldsValue()
-        }
-        Modal.confirm({
-          title: `Applying ${record.shortcutCode}`,
-          content: 'Are you sure ?',
-          onOk () {
-            onSubmit(record)
-          }
-        })
-        resetFields()
-      })
-    }
-    const hdlClickKeyDown = (e) => {
-      if (e.keyCode === 13) {
-        handleOk()
-      }
-    }
+    // const handleOk = () => {
+    //   validateFields((errors) => {
+    //     if (errors) return
+    //     const record = {
+    //       ...getFieldsValue()
+    //     }
+    //     Modal.confirm({
+    //       title: `Applying ${record.shortcutCode}`,
+    //       content: 'Are you sure ?',
+    //       onOk () {
+    //         onSubmit(record)
+    //       }
+    //     })
+    //     resetFields()
+    //   })
+    // }
+    // const hdlClickKeyDown = (e) => {
+    //   if (e.keyCode === 13) {
+    //     handleOk()
+    //   }
+    // }
     const modalOpts = {
-      ...modalProps,
-      onOk: handleOk
+      ...modalProps
+      // onOk: handleOk
     }
     return (
       <Modal {...modalOpts}
         footer={null}
       >
         <Form>
-          <FormItem label="Shortcut Code" help="input 3 nomor shortcut yang tersedia" {...formItemLayout}>
+          {/* <FormItem label="Shortcut Code" help="input 3 nomor shortcut yang tersedia" {...formItemLayout}>
             {getFieldDecorator('shortcutCode', {
               rules: [
                 {
@@ -83,7 +83,7 @@ class ModalBookmark extends Component {
                 }
               ]
             })(<Input maxLength={10} placeholder="Shortcut Code" onKeyDown={e => hdlClickKeyDown(e)} />)}
-          </FormItem>
+          </FormItem> */}
           <Pagination pageSize={14} onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
           <div className={styles.container}>
             {loading ? (

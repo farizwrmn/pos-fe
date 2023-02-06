@@ -56,7 +56,6 @@ export default modelExtend(pageModel, {
         ...payload
       })
       if (data && data.data) {
-        console.log('data', data.data, data.storePrice)
         yield put({
           type: 'querySuccess',
           payload: {

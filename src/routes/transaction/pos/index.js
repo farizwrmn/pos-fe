@@ -1841,7 +1841,7 @@ const Pos = ({
         groupId: key,
         relationship: 1,
         page,
-        pageSize: 20
+        pageSize: 25
       }
     })
   }

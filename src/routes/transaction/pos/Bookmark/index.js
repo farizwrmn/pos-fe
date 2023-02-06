@@ -18,7 +18,7 @@ const Bookmark = ({
   return (
     <div>
       {listBookmark && listBookmark.length > 0 ? (
-        <Card title={null}>
+        <div className={styles.container} title={null}>
           {listBookmark.map((item => (
             <Card.Grid
               style={gridStyle}
@@ -34,7 +34,7 @@ const Bookmark = ({
             </Card.Grid>
           )))}
           {listBookmark && listBookmark.length === 0 && (<EmptyBookmarkGroup />)}
-        </Card>
+        </div>
       ) : null}
     </div>
   )
