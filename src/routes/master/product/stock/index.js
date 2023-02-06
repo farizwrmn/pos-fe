@@ -675,6 +675,8 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
   }
 
   const modalPriceProps = {
+    listAllStores,
+    loading,
     item: modalStorePriceItem,
     visible: modalStorePriceVisible,
     onOk (data, resetFields) {

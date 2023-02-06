@@ -192,7 +192,10 @@ export default {
     paymentListActiveKey: '5',
     modalAddUnit: false,
     modalAddMember: false,
-    currentCashier: {}
+    currentCashier: {},
+    modalBookmarkVisible: false,
+    modalBookmarkList: [],
+    modalBookmarkItem: {}
   },
 
   subscriptions: {

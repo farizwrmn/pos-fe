@@ -44,6 +44,7 @@ import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
+import ModalBookmark from './Bookmark/ModalBookmark'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -143,6 +144,9 @@ const Pos = ({
     modalLoginVisible,
     mechanicInformation,
     curRecord,
+    modalBookmarkVisible,
+    modalBookmarkItem,
+    modalBookmarkList,
     // modalShiftVisible,
     // listCashier,
     // dataCashierTrans,
@@ -1823,6 +1827,13 @@ const Pos = ({
 
   const handleChangeBookmark = (key = 1, page = 1) => {
     dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalBookmarkVisible: true,
+        modalBookmarkList: []
+      }
+    })
+    dispatch({
       type: 'productBookmark/query',
       payload: {
         day: moment().isoWeekday(),
@@ -1830,7 +1841,7 @@ const Pos = ({
         groupId: key,
         relationship: 1,
         page,
-        pageSize: 14
+        pageSize: 25
       }
     })
   }
@@ -2076,28 +2087,58 @@ const Pos = ({
     })
   }
 
+  const modalBookmarkProps = {
+    visible: modalBookmarkVisible,
+    list: modalBookmarkList,
+    item: modalBookmarkItem,
+    width: 700,
+    loading: (
+      loading.effects['productBookmark/query']
+      || loading.effects['pos/chooseProduct']
+      || loading.effects['pos/checkQuantityEditProduct']
+      || loading.effects['pos/checkQuantityNewProduct']
+      || loading.effects['pospromo/addPosPromo']
+      || loading.effects['pos/getProductByBarcode']),
+    productBookmarkGroup,
+    productBookmark,
+    onChange: handleChangeBookmark,
+    onChoose (item) {
+      chooseProduct(item)
+    },
+    onChooseBundle (item) {
+      chooseBundle(item)
+    },
+    onSubmit (data) {
+      dispatch({
+        type: 'pos/shortcutBookmark',
+        payload: {
+          shortcutCode: data.shortcutCode
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalBookmarkVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
         keyMap={keyMap}
         handlers={hotKeysHandler}
       />
+      {modalBookmarkVisible && <ModalBookmark {...modalBookmarkProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
             <Bookmark
-              loading={
-                loading.effects['productBookmark/query']
-                || loading.effects['pos/chooseProduct']
-                || loading.effects['pos/checkQuantityEditProduct']
-                || loading.effects['pos/checkQuantityNewProduct']
-                || loading.effects['pospromo/addPosPromo']
-                || loading.effects['pos/getProductByBarcode']}
               onChange={handleChangeBookmark}
-              onChoose={chooseProduct}
-              onChooseBundle={chooseBundle}
               productBookmarkGroup={productBookmarkGroup}
-              productBookmark={productBookmark}
             />
             <Advertising list={listAdvertising} />
           </Col>

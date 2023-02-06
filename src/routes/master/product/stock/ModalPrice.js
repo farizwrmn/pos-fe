@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { Modal, Button, Form, InputNumber } from 'antd'
+import { Modal, Button, Form, InputNumber, Select, Spin } from 'antd'
 import { getDistPriceName, getDistPricePercent } from 'utils/string'
 
 const FormItem = Form.Item
+
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -12,6 +14,8 @@ const formItemLayout = {
 class ModalPrice extends Component {
   render () {
     const {
+      loading,
+      listAllStores,
       form: { getFieldDecorator, getFieldValue, setFieldsValue, validateFields, getFieldsValue, resetFields },
       onOk,
       onCancel,
@@ -69,6 +73,9 @@ class ModalPrice extends Component {
       }
     }
 
+    const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+    let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option title={`${x.storeName} (${x.storeCode})`} key={x.id} value={x.id}>{`${x.storeName} (${x.storeCode})`}</Option>)) : []
+
     return (
       <Modal
         {...modalOpts}
@@ -82,6 +89,35 @@ class ModalPrice extends Component {
         ]}
       >
         <Form layout="horizontal">
+          <FormItem
+            label="Store"
+            hasFeedback
+            {...formItemLayout}
+          >
+            {getFieldDecorator('storeId', {
+              initialValue: item.storeId,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Select
+                size="large"
+                placeholder="Select Store"
+
+                showSearch
+                allowClear
+                optionFilterProp="children"
+
+                multiple
+                notFoundContent={loading.effects['userStore/getAllListStores'] ? <Spin size="small" /> : null}
+                filterOption={filterOption}
+              >
+                {childrenTransNo}
+              </Select>
+            )}
+          </FormItem>
           <FormItem label="Cost Price" hasFeedback {...formItemLayout}>
             {getFieldDecorator('costPrice', {
               initialValue: item.costPrice,
