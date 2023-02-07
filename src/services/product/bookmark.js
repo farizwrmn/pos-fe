@@ -55,11 +55,11 @@ export async function remove (params) {
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = `${bookmark}/${params.id}`
+  const url = bookmark
   return request({
     url,
     method: 'put',
-    data: params.data,
+    data: params,
     headers: apiHeaderToken
   })
 }

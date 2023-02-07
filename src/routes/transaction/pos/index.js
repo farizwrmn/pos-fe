@@ -2110,9 +2110,10 @@ const Pos = ({
     },
     onSubmit (data) {
       dispatch({
-        type: 'pos/shortcutBookmark',
+        type: 'pos/queryShortcut',
         payload: {
-          shortcutCode: data.shortcutCode
+          shortcutCode: data.shortcutCode,
+          groupShortcutCode: data.groupShortcutCode
         }
       })
     },

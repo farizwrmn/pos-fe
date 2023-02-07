@@ -1066,6 +1066,12 @@ export default {
             }
           })
         }
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalBookmarkVisible: false
+          }
+        })
       } else {
         throw response
       }
@@ -1080,6 +1086,7 @@ export default {
           type: 'updateState',
           payload: {
             modalBookmarkVisible: true,
+            modalBookmarkItem: payload,
             modalBookmarkList: []
           }
         })
@@ -2865,6 +2872,15 @@ export default {
       let startOnline = window.performance.now()
       const barcode = payload.id
       if (barcode && barcode[0] && barcode[0] === '0') {
+        if (barcode.length === 3) {
+          yield put({
+            type: 'queryShortcutGroup',
+            payload: {
+              shortcutCode: barcode
+            }
+          })
+          return
+        }
         console.log('barcode', barcode[0])
         const response = yield call(queryProductBarcode, { barcode: payload.id })
         if (response && response.success && response.data && response.data.stock) {
