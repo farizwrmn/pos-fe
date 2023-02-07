@@ -108,7 +108,8 @@ export default modelExtend(pageModel, {
         && payload.data
         && payload.data.productImage
         && payload.data.productImage.fileList
-        && payload.data.productImage.fileList.length > 0) {
+        && payload.data.productImage.fileList.length > 0
+        && payload.data.productImage.fileList.length <= 5) {
         for (let key in payload.data.productImage.fileList) {
           const item = payload.data.productImage.fileList[key]
           const formData = new FormData()
@@ -123,8 +124,8 @@ export default modelExtend(pageModel, {
         && payload.data.productImage
         && payload.data.productImage.fileList
         && payload.data.productImage.fileList.length > 0
-        && payload.data.productImage.fileList.length > 1) {
-        throw new Error('Cannot upload more than 1 image')
+        && payload.data.productImage.fileList.length > 3) {
+        throw new Error('Cannot upload more than 3 image')
       }
       // End - Upload Image
       const data = yield call(add, { ...payload.data, uploadedImage })
