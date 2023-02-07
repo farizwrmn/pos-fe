@@ -74,7 +74,6 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app }) {
     },
     updateSelectedProduct (value) {
       const product = selectedVendorProduct.filter(filtered => filtered.id === value)[0]
-      console.log('product', product)
       dispatch({
         type: 'consignmentStockFlowReport/updateState',
         payload: {
@@ -84,7 +83,6 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app }) {
     },
     onSelectVendor (value) {
       const vendor = vendorList.filter(filtered => filtered.id === value)[0]
-      console.log('vendor', vendor)
       dispatch({
         type: 'consignmentStockFlowReport/queryProductByVendorId',
         payload: {

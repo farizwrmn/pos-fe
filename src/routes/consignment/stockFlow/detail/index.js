@@ -118,7 +118,7 @@ function Detail ({ consignmentStockFlow, dispatch }) {
               </Row>
               <Row>
                 <Col span={12}>Dipegang pada</Col>
-                <Col span={12}>{currentItem && currentItem.handled_at ? moment(currentItem.handled_at).format('DD MMM YYYY, HH:mm:dd') : '-'}</Col>
+                <Col span={12}>{currentItem && currentItem.updated_at ? moment(currentItem.updated_at).format('DD MMM YYYY, HH:mm:dd') : '-'}</Col>
               </Row>
 
               <List {...listProps} />

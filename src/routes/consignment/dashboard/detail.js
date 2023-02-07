@@ -14,9 +14,6 @@ function Detail ({
 }) {
   const todayDate = moment().format('DD MMMM YYYY')
 
-  console.log('boxList', boxList)
-  console.log('salesSummary', salesSummary)
-
   const columns = [
     {
       title: `Penjualan ${todayDate}`,

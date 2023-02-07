@@ -52,7 +52,6 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
       })
     },
     changeTime (time) {
-      console.log('time', time)
       dispatch({
         type: 'consignmentProfitReport/updateState',
         payload: {
@@ -73,7 +72,6 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
       })
     },
     onSearchVendor (value) {
-      console.log('onSearchVendor', value)
       dispatch({
         type: 'consignmentVendor/query',
         payload: {

@@ -41,7 +41,6 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
 
   const showModalDetail = (item) => {
     const id = `00000000${item.id}`
-    console.log('item', item)
     const columns = [
       {
         title: 'ID Permintaan Sewa',
@@ -95,7 +94,7 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
       },
       {
         name: 'Dipegang Oleh',
-        value: item.adminName || '-'
+        value: item['handled.name'] || '-'
       },
       {
         name: 'Dipegang Pada',

@@ -64,7 +64,6 @@ const FormCounter = ({
       }
 
       const fields = getFieldsValue()
-      console.log('fields', fields)
       Confirm({
         title: 'Simpan Perubahan',
         content: 'Kamu yakin ingin menyimpan perubahan?',
@@ -90,8 +89,6 @@ const FormCounter = ({
       onCancel () { }
     })
   }
-
-  console.log('currentOutlet', currentOutlet)
 
   return (
     <Form layout="horizontal">

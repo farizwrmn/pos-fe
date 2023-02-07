@@ -30,7 +30,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/vendor'
           || location.pathname === '/integration/consignment/return-report'
           || location.pathname === '/integration/consignment/stock-report'
@@ -63,7 +62,6 @@ export default modelExtend(pageModel, {
       }
       const response = yield call(query, params)
       const vendors = response.data
-      console.log('vendors', vendors)
       yield put({
         type: 'querySuccess',
         payload: {
@@ -81,7 +79,6 @@ export default modelExtend(pageModel, {
     },
     * queryLast (_, { call, put }) {
       const response = yield call(queryLast)
-      console.log('data.data', response.data)
       yield put({ type: 'querySuccess', payload: { lastVendor: response.data } })
     },
     * add ({ payload = {} }, { call, put }) {

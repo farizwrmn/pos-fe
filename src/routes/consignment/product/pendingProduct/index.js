@@ -76,7 +76,6 @@ function PendingProduct ({ consignmentPendingProduct, dispatch }) {
 
   const filterProps = {
     onFilterChange (value) {
-      console.log('value', value)
       dispatch({
         type: 'consignmentPendingProduct/query',
         payload: {

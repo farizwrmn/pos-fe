@@ -34,7 +34,6 @@ const Filter = ({
   let searchTimeOut
   const onSearchVendor = (value) => {
     if (value.length > 0) {
-      console.log('value selectVendorSearch', value)
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
         searchTimeOut = null
@@ -49,8 +48,6 @@ const Filter = ({
   const handleDateRange = (value) => {
     updateDateRange(value)
   }
-
-  console.log('selectedVendorProduct', selectedVendorProduct)
 
   const vendorOption = vendorList.length > 0 ? vendorList.map(record => <Option key={record.id} value={record.id}>{`${record.vendor_code} - ${record.name}`}</Option>) : []
   const productOption = selectedVendorProduct.length > 0 ? selectedVendorProduct.map(record => <Option key={record.id} value={record.id}>{record.product_code} - {record.product_name}</Option>) : []

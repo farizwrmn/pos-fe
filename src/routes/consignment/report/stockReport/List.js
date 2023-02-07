@@ -21,8 +21,6 @@ const List = ({ ...tableProps, onFilterChange }) => {
       dataIndex: 'product.product_name',
       key: 'product.product_name',
       render: (value, record) => {
-        console.log('record', record)
-        console.log('record', record['product.product_code'])
         return (
           <div>
             {record['product.product_code']} - {value}

@@ -43,7 +43,6 @@ export default modelExtend(pageModel, {
           outletId: consignmentId
         }
         const response = yield call(queryByOutletId, params)
-        console.log('response', response)
         if (response.success) {
           yield put({
             type: 'querySuccess',
@@ -71,7 +70,6 @@ export default modelExtend(pageModel, {
           feeNonFood: payload.feeNonFood,
           code: payload.code
         }
-        console.log('params', params)
         const response = yield call(queryAdd, params)
         if (response && response.meta && response.meta.success) {
           message.success('Berhasil')

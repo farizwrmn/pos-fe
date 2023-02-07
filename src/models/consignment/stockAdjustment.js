@@ -91,7 +91,6 @@ export default modelExtend(pageModel, {
           pagination: payload.pagination || { current: 1, pageSize: 10 }
         }
         const response = yield call(query, params)
-        console.log('query data', response)
         yield put({
           type: 'querySuccess',
           payload: {
@@ -150,7 +149,6 @@ export default modelExtend(pageModel, {
     },
     * queryProductById ({ payload = {} }, { call, put }) {
       const data = yield call(queryProductById, payload)
-      console.log('query data', data)
       yield put({ type: 'querySuccess', payload: { currentItem: data.data, ...payload } })
     },
     * queryVendor ({ payload = {} }, { call, put }) {

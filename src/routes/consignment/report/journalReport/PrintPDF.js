@@ -57,8 +57,6 @@ const PrintPDF = ({ dataSource, summary, paymentMethod, user, storeInfo }) => {
 
     paymentMethod.map((record) => {
       let row = []
-      console.log('summary', summary[`${record.typeCode}`])
-
       row.push({ text: '-', alignment: 'center' })
       row.push({ text: '-', alignment: 'center' })
       row.push({ text: '-', alignment: 'center' })

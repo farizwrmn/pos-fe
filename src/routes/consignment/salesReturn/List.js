@@ -51,7 +51,7 @@ const List = ({
       },
       {
         column1: 'Ubah Status oleh',
-        column2: record.updateBy || '-'
+        column2: record.adminName || '-'
       },
       {
         column1: 'Ubah Status pada',
@@ -144,7 +144,6 @@ const List = ({
         <Row type="flex" justify="center">
           <a href={null}
             onClick={() => {
-              console.log('record', record)
               getDetail({
                 returnId: record.id,
                 salesNumber: record['salesOrder.salesNumber']
@@ -199,8 +198,8 @@ const List = ({
     },
     {
       title: 'Ubah Status oleh',
-      dataIndex: 'changestatus_at',
-      key: 'changestatus_at',
+      dataIndex: 'admin.name',
+      key: 'changestatus.name',
       width: '150px',
       minWidth: '150px',
       render: (text) => {
@@ -213,14 +212,14 @@ const List = ({
     },
     {
       title: 'Ubah Status pada',
-      dataIndex: 'changestatusby_id',
-      key: 'changestatusby_id',
+      dataIndex: 'changestatus_at',
+      key: 'changestatus_at',
       width: '140px',
       minWidth: '140px',
       render: (text) => {
         return (
           <div>
-            {text || '-'}
+            {text ? moment(text).format('DD MMMM YYYY') : '-'}
           </div>
         )
       }

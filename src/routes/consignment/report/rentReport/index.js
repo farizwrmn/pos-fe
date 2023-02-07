@@ -40,7 +40,6 @@ function RentReport ({ consignmentRentReport, dispatch, app }) {
   const filterProps = {
     dateRange,
     changeTime (time) {
-      console.log('time', time)
       dispatch({
         type: 'consignmentRentReport/updateState',
         payload: {

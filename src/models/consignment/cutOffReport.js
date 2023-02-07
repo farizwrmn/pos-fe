@@ -27,7 +27,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/cut-off-report') {
           dispatch({
             type: 'queryPeriodList',
@@ -46,9 +45,7 @@ export default modelExtend(pageModel, {
           period: payload.period,
           outletId: consignmentId
         }
-        console.log('params', params)
         const response = yield call(query, params)
-        console.log('response', response.data)
         yield put({ type: 'querySuccess', payload: { list: response.data, ...payload } })
       } else {
         yield put({ type: 'querySuccess', payload: { list: [], ...payload } })
@@ -56,7 +53,6 @@ export default modelExtend(pageModel, {
     },
     * queryPeriodList ({ payload = {} }, { call, put }) {
       const response = yield call(queryPeriodList)
-      console.log('response', response.data)
       yield put({ type: 'querySuccess', payload: { periodList: response.data, ...payload } })
     },
     * setCutOffReadyForEmail ({ payload = {} }, { call, put }) {

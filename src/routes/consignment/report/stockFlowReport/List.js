@@ -73,7 +73,6 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
       dataIndex: 'quantity',
       key: 'quantity',
       render: (value, record) => {
-        console.log('record === dataSource[dataSource.length - 1]', record === dataSource[dataSource.length - 1])
         if (record !== dataSource[dataSource.length - 1]) {
           return {
             children: <div style={{ color: record.stock_type === 0 ? '#FF0000' : '#000000' }}>{value}</div>,

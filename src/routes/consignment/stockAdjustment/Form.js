@@ -68,7 +68,6 @@ const FormCounter = ({
       if (errors) {
         return
       }
-      console.log('getFieldsValue', getFieldsValue())
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -102,7 +101,6 @@ const FormCounter = ({
       return false
     })
     list.map((record, index) => {
-      console.log('record', record)
       setFieldsValue({
         [`productName-${index}`]: record.product_name,
         [`qty-${index}`]: record.quantity,
@@ -119,8 +117,6 @@ const FormCounter = ({
   const changeQty = (event, index) => {
     const value = event.target.value
     const list = productList
-    console.log('list changeqty', list)
-    console.log('productList[index]', productList[index])
     list[index] = {
       id: productList[index].id,
       product_name: productList[index].product_name,
@@ -137,7 +133,6 @@ const FormCounter = ({
   const changePrice = (event, index, type) => {
     const value = event.target.value
     const list = productList
-    console.log('list changeprice', list)
     list[index] = {
       id: productList[index].id,
       product_name: productList[index].product_name,
@@ -155,7 +150,6 @@ const FormCounter = ({
   const changeProductName = (value, index) => {
     const list = productList
     const product = selectedVendorProductList.filter(filtered => filtered.id === value)[0]
-    console.log('product', product)
     list[index] = {
       id: value,
       product_name: product.product_name,
@@ -166,14 +160,12 @@ const FormCounter = ({
       grabMartPrice: product.price_grabmart || 0,
       commercePrice: product.price_shopee || 0
     }
-    console.log('list changeproductname', list)
     updateProductList(list)
   }
 
   let searchTimeOut
   const selectVendorSearch = (value) => {
     if (value.length > 0) {
-      console.log('value selectVendorSearch', value)
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
         searchTimeOut = null

@@ -33,7 +33,6 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch }) {
     dataSource: list,
     pagination,
     editUser (record) {
-      console.log('record', record)
       dispatch({
         type: 'consignmentUsers/updateState',
         payload: {
@@ -75,7 +74,6 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch }) {
       })
     },
     edit (data, resetFields) {
-      console.log('selectedUser', selectedUser)
       dispatch({
         type: 'consignmentUsers/queryEdit',
         payload: {

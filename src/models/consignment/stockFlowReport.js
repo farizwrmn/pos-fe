@@ -38,7 +38,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/stock-flow-report') {
           dispatch({
             type: 'queryVendor',
@@ -63,7 +62,6 @@ export default modelExtend(pageModel, {
         if (data.length > 1) {
           data.push(stock)
         }
-        console.log('response', response)
         yield put({
           type: 'querySuccess',
           payload: {
@@ -101,7 +99,6 @@ export default modelExtend(pageModel, {
           outletId: consignmentId
         }
         const response = yield call(queryProductByVendorId, params)
-        console.log('data.data', response.data)
         yield put({ type: 'querySuccess', payload: { selectedVendorProduct: response.data, selectedVendor } })
       } else {
         yield put({ type: 'querySuccess', payload: { selectedVendorProduct: [] } })

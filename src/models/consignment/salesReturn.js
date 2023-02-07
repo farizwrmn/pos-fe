@@ -79,7 +79,6 @@ export default modelExtend(pageModel, {
           pagination: payload.pagination || { current: 1, pageSize: 10 }
         }
         const response = yield call(query, params)
-        console.log('response', response)
         yield put({
           type: 'querySuccess',
           payload: {

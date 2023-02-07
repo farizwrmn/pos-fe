@@ -27,7 +27,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         const match = pathToRegexp('/integration/consignment/product/:id').exec(location.pathname)
         if (match) {
           dispatch({
@@ -55,7 +54,6 @@ export default modelExtend(pageModel, {
         pagination: pagination || { current: 1, pageSize: 10 }
       }
       const response = yield call(query, params)
-      console.log('response', response.data)
       yield put({
         type: 'querySuccess',
         payload: {
@@ -74,7 +72,6 @@ export default modelExtend(pageModel, {
     * queryDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryById, payload)
       const product = response.data[0]
-      console.log('product', product)
       yield put({
         type: 'querySuccess',
         payload: {
@@ -109,12 +106,9 @@ export default modelExtend(pageModel, {
         throw new Error('Cannot upload more than 1 image')
       }
       // End - Upload Image
-      console.log('payload1', payload)
       if (uploadedImage.length > 0) {
-        console.log('uploadedImage', uploadedImage[0])
         payload.data.photo = uploadedImage[0]
       }
-      console.log('payload2', payload)
       const response = yield call(queryEdit, payload.data)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')

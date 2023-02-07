@@ -13,7 +13,6 @@ const construct = (dataSales, startDate, toDate) => {
   const end = moment(toDate, 'YYYY-MM-DD')
   const date = moment(toDate, 'YYYY-MM-DD').add(diffDay - 1, 'days')
   let formatSales = (dataSales || [])
-  console.log('formatSales', formatSales)
   for (let key = 0; key <= end.diff(start, 'days'); key += 1) {
     const dateExists = (e) => {
       return formatSales.some((el) => {

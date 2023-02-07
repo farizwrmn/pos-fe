@@ -56,7 +56,6 @@ export default modelExtend(pageModel, {
           q,
           pagination: pagination || { current: 1, pageSize: 10 }
         }
-        console.log('params', params)
         const data = yield call(query, params)
         const outlets = data.data.list
         const selectedOutlet = outlets.filter(filtered => filtered.id === parseInt(consignmentId, 10))[0]

@@ -56,7 +56,6 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   const createTableBody = (tableBody) => {
     let body = []
     let count = 1
-    console.log('tableBody', tableBody)
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         let row = []

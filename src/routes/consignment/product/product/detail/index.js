@@ -22,7 +22,6 @@ function Detail ({ consignmentProduct, consignmentCategory, dispatch }) {
     formType,
     selectedProduct,
     onSubmit (data) {
-      console.log('selectedProduct', selectedProduct)
       dispatch({
         type: 'consignmentProduct/queryEdit',
         payload: {

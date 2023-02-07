@@ -96,7 +96,6 @@ const FormCounter = ({
         return
       }
       const fields = getFieldsValue()
-      console.log('fields', fields)
       Confirm({
         title: 'Save Change?',
         content: 'Are you sure to save this change?',

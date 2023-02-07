@@ -25,7 +25,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/sales-return') {
           dispatch({
             type: 'query',
@@ -47,7 +46,6 @@ export default modelExtend(pageModel, {
           to: payload.to
         }
         const response = yield call(queryReport, params)
-        console.log('response', response)
         yield put({
           type: 'querySuccess',
           payload: {

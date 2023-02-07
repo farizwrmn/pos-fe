@@ -27,8 +27,6 @@ const DetailList = ({
     }
   ]
 
-  console.log('list', list)
-
   return (
     <Table
       dataSource={list}

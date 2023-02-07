@@ -31,7 +31,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/sales-report' ||
           location.pathname === '/integration/consignment/dashboard') {
           dispatch({
@@ -89,7 +88,6 @@ export default modelExtend(pageModel, {
       }
     },
     updateState (state, action) {
-      console.log('action.payload', action.payload)
       return {
         ...state,
         ...action.payload

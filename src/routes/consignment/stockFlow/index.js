@@ -62,8 +62,6 @@ function Detail ({ consignmentStockFlow, consignmentOutlet, dispatch }) {
     }
   }
 
-  console.log('listProps', listProps)
-
   const filterProps = {
     onFilterChange (value) {
       const query = value.q

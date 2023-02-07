@@ -48,7 +48,6 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
 
   const detailInformation = () => {
     const dataSample = currentItem.map((record) => {
-      console.log('record', record)
       return {
         productName: (
           <div>
@@ -138,7 +137,6 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       })
     },
     searchVendor (query) {
-      console.log('query searchVendor', query)
       dispatch({
         type: 'consignmentStockAdjustment/querySearchVendor',
         payload: {
@@ -147,9 +145,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       })
     },
     selectVendor (vendorId) {
-      console.log('vendorId', vendorId)
       const selectedVendor = vendorList.filter(filtered => filtered.id === parseInt(vendorId, 10))[0]
-      console.log('selectedVendor', selectedVendor)
       dispatch({
         type: 'consignmentStockAdjustment/queryByVendorId',
         payload: {
@@ -158,7 +154,6 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       })
     },
     submitAdjustment (data) {
-      console.log('data submitAdjustment', data)
       const dataHeader = {
         outletId: consignmentId,
         vendorId: selectedVendor.id,
@@ -195,9 +190,6 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       })
     },
     onFilterChange ({ pagination, status, type }) {
-      console.log('pagination', pagination)
-      console.log('status', status)
-      console.log('type', type)
       dispatch({
         type: 'consignmentStockAdjustment/query',
         payload: {

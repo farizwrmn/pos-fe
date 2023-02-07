@@ -31,7 +31,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/vendor'
           || location.pathname === '/integration/consignment/product'
           || location.pathname === '/integration/consignment/product-category') {
@@ -75,7 +74,6 @@ export default modelExtend(pageModel, {
     },
     * queryAdd ({ payload = {} }, { call, put }) {
       const response = yield call(queryAdd, payload)
-      console.log('response', response)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
         yield put({
@@ -105,7 +103,6 @@ export default modelExtend(pageModel, {
       }
     },
     * subQueryAdd ({ payload = {} }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(subQueryAdd, payload)
       if (data.success) {
         yield put({
@@ -118,7 +115,6 @@ export default modelExtend(pageModel, {
       }
     },
     * subQueryEdit ({ payload = {} }, { call, put }) {
-      console.log('payload', payload)
       const data = yield call(subQueryEdit, payload)
       if (data.success) {
         yield put({

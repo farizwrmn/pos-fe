@@ -34,7 +34,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/sales-return') {
           dispatch({
             type: 'query',
@@ -88,14 +87,12 @@ export default modelExtend(pageModel, {
       if (storeId) {
         const from = moment(payload.dateRange[0]).format('YYYY-MM-DD')
         const to = moment(payload.dateRange[1]).format('YYYY-MM-DD')
-        console.log('payload.outletId', payload.outletId)
         const params = {
           from,
           to,
           storeId: Number(storeId)
         }
         const response = yield call(queryLovBalance, params)
-        console.log('response', response)
         yield put({ type: 'querySuccess', payload: { balanceList: response.data, ...payload } })
       } else {
         yield put({ type: 'querySuccess', payload: { balanceList: [], ...payload } })

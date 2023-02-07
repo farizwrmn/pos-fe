@@ -6,7 +6,6 @@ import { IMAGEURL } from 'utils/config.company'
 
 const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
   const handleMenuClick = (record, e) => {
-    console.log('record', record)
     if (e.key === '1') {
       showConfirm({ type: 'Approve', id: record.id })
     }

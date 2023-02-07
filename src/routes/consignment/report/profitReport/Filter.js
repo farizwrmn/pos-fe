@@ -18,7 +18,6 @@ const Filter = ({
     getFieldDecorator
   }
 }) => {
-  console.log('vendorList', vendorList)
   let vendorOption = vendorList.length > 0 ? vendorList.map(record => (<Option key={record.id} value={record.id}>{record.vendor_code} - {record.name}</Option>)) : []
 
   let searchTimeOut
@@ -40,7 +39,6 @@ const Filter = ({
       }
     ]
   }
-  console.log('selectedVendor', selectedVendor)
   if (selectedVendor && selectedVendor.id) {
     vendorProps = {
       ...vendorProps,

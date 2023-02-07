@@ -33,7 +33,6 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history }) {
       history.listen((location) => {
-        console.log('location.pathname', location.pathname)
         if (location.pathname === '/integration/consignment/return-report') {
           return true
         }

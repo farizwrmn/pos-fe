@@ -75,8 +75,6 @@ const FormCounter = ({
     })
   }
 
-  console.log('selectedVendor', selectedVendor)
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {

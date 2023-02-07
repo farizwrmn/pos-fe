@@ -78,9 +78,7 @@ function JournalReport ({ consignmentJournalReport, dispatch, app }) {
       })
     },
     updateCurrentBalance (value) {
-      console.log('value', value)
       const balance = balanceList.filter(filtered => filtered.id === value)[0]
-      console.log('balance', balance)
       dispatch({
         type: 'consignmentJournalReport/updateState',
         payload: {
@@ -102,7 +100,6 @@ function JournalReport ({ consignmentJournalReport, dispatch, app }) {
     detailActiveKey,
     numberFormatter,
     changeTab (key) {
-      console.log('key', key)
       dispatch({
         type: 'consignmentJournalReport/updateState',
         payload: {
