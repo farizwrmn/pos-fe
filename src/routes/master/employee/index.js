@@ -56,7 +56,8 @@ const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch,
   }
 
   const listProps = {
-    dataSource: list,
+    dataSource: list.filter(filtered => filtered.employeeId !== 'ownerPOS'
+      && filtered.employeeId !== '000001'),
     user,
     storeInfo,
     loading: loading.effects['employee/query'],

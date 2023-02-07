@@ -3,14 +3,28 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
-import { Button, DatePicker, Row, Col, Icon, Form } from 'antd'
+import { Button, Select, Spin, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintDaily from './PrintDaily'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const { RangePicker } = DatePicker
+const { Option } = Select
+const FormItem = Form.Item
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
+  },
+  wrapperCol: {
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
+}
 
 const leftColumn = {
   xs: 24,
@@ -29,12 +43,23 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ loading, getBalanceId, onDateChange, listBalance, onListReset, form: { validateFields, getFieldsValue, setFieldsValue, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
-  const handleChange = (value) => {
+  const handleChangeDate = (value) => {
+    console.log('value', value)
     const from = value[0].format('YYYY-MM-DD')
     const to = value[1].format('YYYY-MM-DD')
-    onDateChange(from, to)
+    getBalanceId(from, to)
+  }
+
+  const handleSearch = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = getFieldsValue()
+      onDateChange(data.rangePicker[0].format('YYYY-MM-DD'), data.rangePicker[1].format('YYYY-MM-DD'), data.balanceId)
+    })
   }
 
   const handleReset = () => {
@@ -53,18 +78,67 @@ const Filter = ({ onDateChange, onListReset, form: { getFieldsValue, setFieldsVa
     onListReset()
   }
 
+  let listBalanceOpt = []
+  try {
+    listBalanceOpt = (listBalance || []).length > 0 ? listBalance.map((c) => {
+      return (
+        <Option
+          value={c.id}
+          key={c.id}
+          title={
+            `${c.user.userName} | ${moment(c.open).format('DD-MMM HH:mm')
+            } | ${c.closed ? moment(c.closed).format('DD-MMM HH:mm') : ''
+            }`
+          }
+        >{
+            `${c.user.userName} | ${moment(c.open).format('DD-MMM HH:mm')
+            } | ${c.closed ? moment(c.closed).format('DD-MMM HH:mm') : ''
+            }`
+          }</Option>
+      )
+    }) : []
+  } catch (error) {
+    console.log('error', error)
+  }
+
   return (
     <Row>
-      <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
+      <Col {...leftColumn}>
+        <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
           {getFieldDecorator('rangePicker', {
-            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null
+            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
+            rules: [
+              {
+                required: true
+              }
+            ]
           })(
-            <RangePicker size="large" onChange={value => handleChange(value)} format="DD-MMM-YYYY" />
+            <RangePicker onChange={value => handleChangeDate(value)} size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
+        </FormItem>
+        <FormItem label="Balance" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('balanceId')(
+            <Select
+              allowClear
+              multiple
+              style={{ width: '100%', marginTop: '10px' }}
+              notFoundContent={loading.effects['posPaymentReport/queryLovBalance'] ? <Spin size="small" /> : null}
+            >
+              {listBalanceOpt}
+            </Select>
+          )}
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
+        <Button
+          type="dashed"
+          size="large"
+          style={{ marginLeft: '5px' }}
+          className="button-width02 button-extra-large"
+          onClick={() => handleSearch()}
+        >
+          <Icon type="search" className="icon-large" />
+        </Button>
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"

@@ -13,11 +13,14 @@ import PrintXLSSpecification from './PrintXLSSpecification'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
 import ModalQuantity from './ModalQuantity'
+import ModalPrice from './ModalPrice'
 
 const TabPane = Tabs.TabPane
 
-const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPriceStore, shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
+const ProductStock = ({ stockLocation, expressProductCategory, expressProductBrand, productcountry, userStore, stockExtraPriceStore, shopeeCategory, specification, grabCategory, purchase, store, specificationStock, variant, variantStock, productstock, productcategory, productbrand, loading, dispatch, location, app }) => {
   const { list: listShopeeCategory, listAttribute: listShopeeAttribute, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
+  const { listLov: listK3ExpressCategory } = expressProductCategory
+  const { listLov: listK3ExpressBrand } = expressProductBrand
   const { list: listProductCountry } = productcountry
   const { list: listStockLocation } = stockLocation
   const { list: listStoreQuantity } = stockExtraPriceStore
@@ -58,7 +61,9 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
     lastTrans,
     listInventory,
     modalGrabmartCampaignVisible,
-    modalGrabmartItem
+    modalGrabmartItem,
+    modalStorePriceVisible,
+    modalStorePriceItem
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -158,7 +163,7 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
     listCategory,
     listBrand,
     loadingModel: loading,
-    loading: loading.effects['productstock/query'] || loading.effects['productstock/queryInventory'],
+    loading: loading.effects['productstock/query'] || loading.effects['productstock/queryInventory'] || loading.effects['productstock/showModalStorePrice'],
     location,
     onChange (page, filters) {
       const { brandId, categoryId } = filters
@@ -324,6 +329,8 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
 
   const formProps = {
     modalGrabmartCampaignProps,
+    listK3ExpressCategory,
+    listK3ExpressBrand,
     listShopeeCategoryRecommend,
     listShopeeLogistic,
     listShopeeCategory,
@@ -667,12 +674,35 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
       break
   }
 
+  const modalPriceProps = {
+    listAllStores,
+    loading,
+    item: modalStorePriceItem,
+    visible: modalStorePriceVisible,
+    onOk (data, resetFields) {
+      dispatch({
+        type: 'stockExtraPriceStore/add',
+        payload: {
+          data,
+          resetFields
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'productstock/hideModalStorePrice'
+      })
+    }
+  }
+
   return (
     <div className={(activeKey === '0' && !advancedForm) || activeKey === '1' ? 'content-inner' : 'content-inner-no-color'} >
       {modalQuantityVisible && <ModalQuantity {...modalQuantityProps} />}
-      {showPDFModal && <Modal {...PDFModalProps}>
-        {printmode}
-      </Modal>}
+      {showPDFModal && (
+        <Modal {...PDFModalProps}>
+          {printmode}
+        </Modal>
+      )}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <AdvancedForm {...formProps} />}
@@ -680,6 +710,7 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
         <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
           <List {...listProps} />
+          {modalStorePriceVisible && <ModalPrice {...modalPriceProps} />}
         </TabPane>
       </Tabs>
     </div >
@@ -687,6 +718,8 @@ const ProductStock = ({ stockLocation, productcountry, userStore, stockExtraPric
 }
 
 ProductStock.propTypes = {
+  expressProductCategory: PropTypes.object,
+  expressProductBrand: PropTypes.object,
   productcountry: PropTypes.object,
   grabCategory: PropTypes.object,
   stockExtraPriceStore: PropTypes.object,
@@ -704,5 +737,5 @@ ProductStock.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ stockLocation, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
-  ({ stockLocation, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)
+export default connect(({ stockLocation, expressProductCategory, expressProductBrand, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }) =>
+  ({ stockLocation, expressProductCategory, expressProductBrand, productcountry, userStore, stockExtraPriceStore, purchase, shopeeCategory, grabCategory, specification, store, specificationStock, productstock, variantStock, productcategory, productbrand, variant, loading, app }))(ProductStock)

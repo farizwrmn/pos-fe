@@ -10,7 +10,7 @@ import {
   Col,
   Modal
 } from 'antd'
-import { getDistPriceName } from 'utils/string'
+import { getDistPriceName, getDistPricePercent } from 'utils/string'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -47,6 +47,7 @@ const FormCounter = ({
   optionSelect = (list || []).length > 0 ? list.map(c => <Option value={c.id} key={c.id} title={`${c.productName} (${c.productCode})`}>{`${c.productName} (${c.productCode})`}</Option>) : [],
   button,
   form: {
+    getFieldValue,
     getFieldDecorator,
     validateFields,
     setFieldsValue,
@@ -121,9 +122,27 @@ const FormCounter = ({
           distPrice05: item.distPrice05,
           distPrice06: item.distPrice06,
           distPrice07: item.distPrice07,
-          distPrice08: item.distPrice08
+          distPrice08: item.distPrice08,
+          distPrice09: item.distPrice09
         })
       }
+    }
+  }
+
+  const onDistPrice = () => {
+    const sellPrice = getFieldValue('sellPrice')
+    if (sellPrice > 0) {
+      setFieldsValue({
+        distPrice01: (1 + (getDistPricePercent('distPrice01') / 100)) * sellPrice,
+        distPrice02: (1 + (getDistPricePercent('distPrice02') / 100)) * sellPrice,
+        distPrice03: (1 + (getDistPricePercent('distPrice03') / 100)) * sellPrice,
+        distPrice04: (1 + (getDistPricePercent('distPrice04') / 100)) * sellPrice,
+        distPrice05: (1 + (getDistPricePercent('distPrice05') / 100)) * sellPrice,
+        distPrice06: (1 + (getDistPricePercent('distPrice06') / 100)) * sellPrice,
+        distPrice07: (1 + (getDistPricePercent('distPrice07') / 100)) * sellPrice,
+        distPrice08: (1 + (getDistPricePercent('distPrice08') / 100)) * sellPrice,
+        distPrice09: (1 + (getDistPricePercent('distPrice09') / 100)) * sellPrice
+      })
     }
   }
 
@@ -196,6 +215,9 @@ const FormCounter = ({
               ]
             })(<InputNumber {...InputNumberProps} />)}
           </FormItem>
+
+          <Button type="primary" size="small" onClick={() => onDistPrice()}>Auto Fill</Button>
+
           <FormItem label={getDistPriceName('distPrice01')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice01', {
               initialValue: item.distPrice01,
@@ -283,6 +305,18 @@ const FormCounter = ({
           <FormItem label={getDistPriceName('distPrice08')} hasFeedback {...formItemLayout}>
             {getFieldDecorator('distPrice08', {
               initialValue: item.distPrice08,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
+                  message: '0-9'
+                }
+              ]
+            })(<InputNumber {...InputNumberProps} />)}
+          </FormItem>
+          <FormItem label={getDistPriceName('distPrice09')} hasFeedback {...formItemLayout}>
+            {getFieldDecorator('distPrice09', {
+              initialValue: item.distPrice09,
               rules: [
                 {
                   required: true,

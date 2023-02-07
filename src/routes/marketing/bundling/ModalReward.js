@@ -154,6 +154,14 @@ const ModalReward = ({
             }]
           })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
         </FormItem>
+        <FormItem label={getDistPriceName('distPrice09')} hasFeedback {...formItemLayout}>
+          {getFieldDecorator('distPrice09', {
+            initialValue: item.distPrice09,
+            rules: [{
+              required: true
+            }]
+          })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+        </FormItem>
         <FormItem label="Can Be Replace" {...formItemLayout}>
           {getFieldDecorator('replaceable', {
             valuePropName: 'checked',

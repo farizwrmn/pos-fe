@@ -13,6 +13,8 @@ import {
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
+import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
@@ -57,6 +59,7 @@ import {
 import { query as queryService, queryById as queryServiceById } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
+import { getDiscountByProductCode } from './utils'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -68,66 +71,6 @@ const {
 } = lstorage
 
 const { updateCashierTrans } = cashierService
-
-function requestFullScreen (element) {
-  // Supports most browsers and their versions.
-  let requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen
-
-  if (requestMethod) { // Native full screen.
-    requestMethod.call(element)
-  } else if (typeof window.ActiveXObject !== 'undefined') { // Older IE.
-    // eslint-disable-next-line no-undef
-    let wscript = new ActiveXObject('WScript.Shell')
-    if (wscript !== null) {
-      wscript.SendKeys('{F11}')
-    }
-  }
-}
-
-const getDiscountByProductCode = (currentGrabOrder, productCode) => {
-  let discount = 0
-  const filteredCampaign = currentGrabOrder && currentGrabOrder.campaignItem ? currentGrabOrder
-    .campaignItem
-    .filter((filtered) => {
-      if (!filtered) return false
-      const splitTheObject = filtered.split('-')
-      if (splitTheObject
-        && splitTheObject.length === 3
-        && splitTheObject[2] === productCode) {
-        return true
-      }
-      return false
-    }) : []
-  if (filteredCampaign && filteredCampaign[0]) {
-    const filteredCampaignOrder = currentGrabOrder
-      .campaigns
-      .filter((filtered) => {
-        if (filtered && filtered.appliedItemIDs && filtered.appliedItemIDs.length > 0) {
-          const selectedAppliedItems = filtered.appliedItemIDs.filter((filtered) => {
-            if (!filtered) return false
-            const splitTheObject = filtered.split('-')
-            if (splitTheObject
-              && splitTheObject.length === 3
-              && splitTheObject[2] === productCode) {
-              return true
-            }
-            return false
-          })
-          if (selectedAppliedItems && selectedAppliedItems[0]) {
-            return true
-          }
-          return false
-        }
-        return false
-      })
-    if (filteredCampaignOrder
-      && filteredCampaignOrder[0]
-      && filteredCampaignOrder[0].deductedAmount > 0) {
-      discount = filteredCampaignOrder[0].deductedAmount / 100
-    }
-  }
-  return discount
-}
 
 export default {
 
@@ -250,7 +193,10 @@ export default {
     paymentListActiveKey: '5',
     modalAddUnit: false,
     modalAddMember: false,
-    currentCashier: {}
+    currentCashier: {},
+    modalBookmarkVisible: false,
+    modalBookmarkList: [],
+    modalBookmarkItem: {}
   },
 
   subscriptions: {
@@ -279,8 +225,6 @@ export default {
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
-          let elem = document.body // Make the body go full screen.
-          requestFullScreen(elem)
           dispatch({
             type: 'setDefaultMember'
           })
@@ -505,25 +449,25 @@ export default {
       const currentGrabOrder = getGrabmartOrder()
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
-      const { typePembelian, selectedPaymentShortcut } = payload
+      const { selectedPaymentShortcut, typePembelian } = payload
+      const { sellPrice, memberId } = selectedPaymentShortcut
       let dataConsignment = localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
       let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
-      if (selectedPaymentShortcut
-        && selectedPaymentShortcut.sellPrice
+      if (sellPrice
         // eslint-disable-next-line eqeqeq
-        && selectedPaymentShortcut.memberId == 0) {
+        && memberId == 0) {
         for (let key in dataPos) {
           const item = dataPos[key]
           if (!item.bundleId) {
             dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
           }
-          dataPos[key].sellPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
-          dataPos[key].price = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.price
+          dataPos[key].sellPrice = item[sellPrice] ? item[sellPrice] : item.price
+          dataPos[key].price = item[sellPrice] ? item[sellPrice] : item.price
           dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
         }
       }
       // eslint-disable-next-line eqeqeq
-      if (selectedPaymentShortcut && selectedPaymentShortcut.memberId == 1) {
+      if (memberId == 1) {
         for (let key in dataPos) {
           const item = dataPos[key]
           if (memberInformation.memberSellPrice === 'sellPrice') {
@@ -1095,6 +1039,73 @@ export default {
       }
     },
 
+    * queryShortcut ({ payload = {} }, { call, put }) {
+      const response = yield call(queryShortcut, {
+        day: moment().isoWeekday(),
+        storeId: lstorage.getCurrentUserStore(),
+        shortcutCode: payload.shortcutCode,
+        groupShortcutCode: payload.groupShortcutCode
+      })
+      if (response && response.success && response.data) {
+        if (response.data && response.data.type === 'BUNDLE' && response.data.bundle) {
+          yield put({
+            type: 'pospromo/addPosPromo',
+            payload: {
+              bundleId: response.data.bundle.id,
+              currentBundle: getBundleTrans(),
+              currentProduct: getCashierTrans(),
+              currentService: getServiceTrans()
+            }
+          })
+        }
+        if (response.data && response.data.type === 'PRODUCT' && response.data.product) {
+          yield put({
+            type: 'chooseProduct',
+            payload: {
+              item: response.data.product
+            }
+          })
+        }
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalBookmarkVisible: false
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * queryShortcutGroup ({ payload = {} }, { call, put }) {
+      const response = yield call(queryShortcutGroup, {
+        shortcutCode: payload.shortcutCode
+      })
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalBookmarkVisible: true,
+            modalBookmarkItem: payload,
+            modalBookmarkList: []
+          }
+        })
+        yield put({
+          type: 'productBookmark/query',
+          payload: {
+            day: moment().isoWeekday(),
+            storeId: lstorage.getCurrentUserStore(),
+            groupId: response.data.id,
+            relationship: 1,
+            page: 1,
+            pageSize: 25
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * getMembers ({ payload }, { call, put }) {
       const data = yield call(queryMembers, payload)
       let newData = data.data
@@ -1294,6 +1305,7 @@ export default {
         throw listProductData
       }
     },
+
     * checkQuantityEditProduct ({ payload = {} }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
@@ -1511,17 +1523,6 @@ export default {
       }
     },
 
-    * checkQuantityNewConsignment ({ payload }, { put }) {
-      const { data } = payload
-      insertConsignment(data)
-      yield put({
-        type: 'pos/setUtil',
-        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
-      })
-      yield put({ type: 'pos/hideConsignmentModal' })
-      message.success('Success add product')
-    },
-
     * getListProductData (payload, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const data = yield call(queryProductsInStock, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: '' })
@@ -1569,41 +1570,9 @@ export default {
     },
 
     * chooseMember ({ payload = {} }, { put }) {
-      const { item, defaultValue, chooseItem } = payload
-      const modalMember = () => {
-        return new Promise((resolve) => {
-          Modal.info({
-            title: 'Reset unsaved process',
-            content: 'this action will reset your current process',
-            onOk () {
-              resolve()
-            }
-          })
-        })
-      }
-      if (chooseItem) {
-        yield modalMember()
-      }
-      yield put({
-        type: 'pos/removeTrans',
-        payload: {
-          defaultValue
-        }
-      })
-      localStorage.removeItem('member')
-      localStorage.removeItem('memberUnit')
-      let listByCode = (localStorage.getItem('member') === null ? [] : localStorage.getItem('member'))
-
-      let arrayProd
-      if (JSON.stringify(listByCode) === '[]') {
-        arrayProd = listByCode.slice()
-      } else {
-        arrayProd = JSON.parse(listByCode.slice())
-      }
+      const { item } = payload
       let newItem = reArrangeMember(item)
-      arrayProd.push(newItem)
-
-      localStorage.setItem('member', JSON.stringify(arrayProd))
+      localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
         type: 'pos/syncCustomerCashback',
         payload: {
@@ -1699,16 +1668,7 @@ export default {
         })
         return
       }
-      let listByCode = getConsignment()
-      let arrayProd = listByCode
-      const checkExists = listByCode.filter(el => el.code === item.product.product_code)
-      if ((checkExists || []).length > 0) {
-        Modal.warning({
-          title: 'Already Exists',
-          content: 'Already Exists in list'
-        })
-        return
-      }
+      let arrayProd = getConsignment()
       const setting = yield select(({ app }) => app.setting)
 
       let typePrice = 'price'
@@ -1761,6 +1721,7 @@ export default {
         distPrice06: item.distPrice06,
         distPrice07: item.distPrice07,
         distPrice08: item.distPrice08,
+        distPrice09: item.distPrice09,
         qty: 1,
         sellPrice: item[typePrice] == null ? item.price : item[typePrice],
         otherSellPrice: item.price_grabfood_gofood,
@@ -1774,16 +1735,95 @@ export default {
         disc3: 0,
         total: item[typePrice] == null ? item.price : item[typePrice]
       }
-      arrayProd.push(data)
-      yield put({
-        type: 'pos/checkQuantityNewConsignment',
-        payload: {
-          data,
-          arrayProd,
-          setting,
-          type: payload.type
+      let consignment = getConsignment()
+      const exists = consignment.filter(el => el.code === item.product.product_code)
+      if ((exists || []).length > 0) {
+        if (payload.qty) {
+          const qty = exists[0].qty + Number(payload.qty)
+          if (qty > item.quantity) {
+            Modal.warning({
+              title: 'Stok tidak mencukupi',
+              content: `Stok ${item.product.product_name} tersisa ${item.quantity}`
+            })
+            return
+          }
+        } else {
+          const qty = exists[0].qty + 1
+          if (qty > item.quantity) {
+            Modal.warning({
+              title: 'Stok tidak mencukupi',
+              content: `Stok ${item.product.product_name} tersisa ${item.quantity}`
+            })
+            return
+          }
         }
+        arrayProd = arrayProd.map((filtered) => {
+          if (filtered.code === item.product.product_code) {
+            filtered.no = exists[0].no
+            if (payload.qty) {
+              filtered.qty = exists[0].qty + Number(payload.qty)
+            } else {
+              filtered.qty = exists[0].qty + 1
+            }
+            filtered.total = filtered.price * filtered.qty
+            return filtered
+          }
+          return filtered
+        })
+        yield put({
+          type: 'pos/checkQuantityEditConsignment',
+          payload: {
+            data,
+            arrayProd,
+            setting,
+            type: payload.type
+          }
+        })
+      } else {
+        if (payload.qty) {
+          data.qty = Number(payload.qty)
+          if (data.qty > item.quantity) {
+            Modal.warning({
+              title: 'Stok tidak mencukupi',
+              content: `Stok ${item.product.product_name} tersisa ${item.quantity}`
+            })
+            return
+          }
+        }
+        data.total = data.price * data.qty
+        arrayProd.push(data)
+        yield put({
+          type: 'pos/checkQuantityNewConsignment',
+          payload: {
+            data,
+            arrayProd,
+            setting,
+            type: payload.type
+          }
+        })
+      }
+    },
+
+    * checkQuantityEditConsignment ({ payload }, { put }) {
+      const { arrayProd } = payload
+      setConsignment(JSON.stringify(arrayProd))
+      yield put({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
       })
+      yield put({ type: 'pos/hideConsignmentModal' })
+      message.success('Success add product')
+    },
+
+    * checkQuantityNewConsignment ({ payload }, { put }) {
+      const { data } = payload
+      insertConsignment(data)
+      yield put({
+        type: 'pos/setUtil',
+        payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
+      })
+      yield put({ type: 'pos/hideConsignmentModal' })
+      message.success('Success add product')
     },
 
     // Add
@@ -2086,6 +2126,7 @@ export default {
               item.item.distPrice06 = currentReward.distPrice06
               item.item.distPrice07 = currentReward.distPrice07
               item.item.distPrice08 = currentReward.distPrice08
+              item.item.distPrice09 = currentReward.distPrice09
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
             if (selectedPaymentShortcut
@@ -2116,6 +2157,7 @@ export default {
               distPrice06: item.item.distPrice06,
               distPrice07: item.item.distPrice07,
               distPrice08: item.item.distPrice08,
+              distPrice09: item.item.distPrice09,
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
@@ -2258,6 +2300,7 @@ export default {
             item.item.distPrice06 = currentReward.distPrice06
             item.item.distPrice07 = currentReward.distPrice07
             item.item.distPrice08 = currentReward.distPrice08
+            item.item.distPrice09 = currentReward.distPrice09
           } else {
             item.item.sellPrice = item.item.serviceCost
             item.item.distPrice01 = item.item.serviceCost
@@ -2268,6 +2311,7 @@ export default {
             item.item.distPrice06 = item.item.serviceCost
             item.item.distPrice07 = item.item.serviceCost
             item.item.distPrice08 = item.item.serviceCost
+            item.item.distPrice09 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
           if (selectedPaymentShortcut
@@ -2299,6 +2343,7 @@ export default {
             distPrice06: item.item.distPrice06,
             distPrice07: item.item.distPrice07,
             distPrice08: item.item.distPrice08,
+            distPrice09: item.item.distPrice09,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'S',
@@ -2396,7 +2441,8 @@ export default {
           distPrice05: item.distPrice05,
           distPrice06: item.distPrice06,
           distPrice07: item.distPrice07,
-          distPrice08: item.distPrice08
+          distPrice08: item.distPrice08,
+          distPrice09: item.distPrice09
         },
         code: item.productCode,
         productId: item.id,
@@ -2460,6 +2506,7 @@ export default {
             distPrice06: price,
             distPrice07: price,
             distPrice08: price,
+            distPrice09: price,
             qty: 1,
             typeCode: 'S',
             sellPrice: price,
@@ -2509,6 +2556,7 @@ export default {
         payload.item.distPrice06 = price
         payload.item.distPrice07 = price
         payload.item.distPrice08 = price
+        payload.item.distPrice09 = price
         payload.item.sellPrice = price
         payload.item.price = price
         payload.item.total = price
@@ -2572,6 +2620,7 @@ export default {
           item.distPrice06 = price[0].distPrice06
           item.distPrice07 = price[0].distPrice07
           item.distPrice08 = price[0].distPrice08
+          item.distPrice09 = price[0].distPrice09
         }
       }
 
@@ -2590,6 +2639,7 @@ export default {
         item.distPrice06 = currentReward.distPrice06
         item.distPrice07 = currentReward.distPrice07
         item.distPrice08 = currentReward.distPrice08
+        item.distPrice09 = currentReward.distPrice09
         qty = currentReward.qty
       }
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -2638,6 +2688,7 @@ export default {
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
@@ -2707,6 +2758,7 @@ export default {
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'P',
@@ -2818,6 +2870,67 @@ export default {
     * getProductByBarcode ({ payload }, { call, put }) {
       // ONLINE
       let startOnline = window.performance.now()
+      const barcode = payload.id
+      if (barcode && barcode[0] && barcode[0] === '0') {
+        if (barcode.length === 3) {
+          yield put({
+            type: 'queryShortcutGroup',
+            payload: {
+              shortcutCode: barcode
+            }
+          })
+          return
+        }
+        console.log('barcode', barcode[0])
+        const response = yield call(queryProductBarcode, { barcode: payload.id })
+        if (response && response.success && response.data && response.data.stock) {
+          yield put({
+            type: 'pos/chooseConsignment',
+            payload: {
+              qty: payload.qty,
+              item: {
+                created_at: response.data.stock.created_at,
+                id: response.data.stock.id,
+                outlet_id: response.data.stock.outlet_id,
+                price: response.data.stock.price,
+                price_grabfood_gofood: response.data.stock.price_grabfood_gofood,
+                price_grabmart: response.data.stock.price_grabmart,
+                price_shopee: response.data.stock.price_shopee,
+                product: {
+                  barcode: response.data.barcode,
+                  capital: response.data.capital,
+                  category_id: response.data.category_id,
+                  created_at: response.data.created_at,
+                  deleted_at: response.data.deleted_at,
+                  grabCategoryId: response.data.grabCategoryId,
+                  grabCategoryName: response.data.grabCategoryName,
+                  grabmartPublished: response.data.grabmartPublished,
+                  id: response.data.id,
+                  noLicense: response.data.noLicense,
+                  photo: response.data.photo,
+                  productImage: response.data.productImage,
+                  product_code: response.data.product_code,
+                  product_name: response.data.product_name,
+                  subcategory_id: response.data.product_name,
+                  updated_at: response.data.product_name,
+                  vendor: {
+                    id: response.data.vendor.id,
+                    name: response.data.vendor.name,
+                    vendor_code: response.data.vendor.vendor_code
+                  },
+                  vendor_id: response.data.vendor_id,
+                  weight: response.data.weight
+                },
+                product_id: response.data.stock.weight,
+                quantity: response.data.stock.quantity,
+                quantityTotal: response.data.stock.quantityTotal,
+                updated_at: response.data.stock.updated_at
+              }
+            }
+          })
+          return
+        }
+      }
       const response = yield call(queryByBarcode, payload)
       let endOnline = window.performance.now()
       const timeToExecuteOnline = endOnline - startOnline
@@ -3226,7 +3339,7 @@ export default {
             modalGrabmartCodeVisible: false
           }
         })
-        localStorage.setItem('dineInTax', event)
+        localStorage.setItem('dineInTax', 0)
         localStorage.setItem('typePembelian', type)
 
         yield put({
@@ -3288,9 +3401,7 @@ export default {
           dataMember = dataMember ? JSON.parse(dataMember)[0] : null
           if (dataMember) {
             dataMember.cashback = data.data
-            const newDataMember = []
-            newDataMember.push(dataMember)
-            localStorage.setItem('member', JSON.stringify(newDataMember))
+            localStorage.setItem('member', JSON.stringify([dataMember]))
             yield put({
               type: 'updateState',
               payload: {

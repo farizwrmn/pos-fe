@@ -44,6 +44,7 @@ import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
+import ModalBookmark from './Bookmark/ModalBookmark'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -143,6 +144,9 @@ const Pos = ({
     modalLoginVisible,
     mechanicInformation,
     curRecord,
+    modalBookmarkVisible,
+    modalBookmarkItem,
+    modalBookmarkList,
     // modalShiftVisible,
     // listCashier,
     // dataCashierTrans,
@@ -1186,6 +1190,7 @@ const Pos = ({
             item.distPrice06 = currentReward.distPrice06
             item.distPrice07 = currentReward.distPrice07
             item.distPrice08 = currentReward.distPrice08
+            item.distPrice09 = currentReward.distPrice09
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
@@ -1196,6 +1201,7 @@ const Pos = ({
             item.distPrice06 = item.serviceCost
             item.distPrice07 = item.serviceCost
             item.distPrice08 = item.serviceCost
+            item.distPrice09 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
           if (selectedPaymentShortcut
@@ -1228,6 +1234,7 @@ const Pos = ({
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             qty: checkExists[0].qty + qty,
             typeCode: 'S',
             sellPrice: selectedPrice,
@@ -1308,6 +1315,7 @@ const Pos = ({
             item.distPrice06 = currentReward.distPrice06
             item.distPrice07 = currentReward.distPrice07
             item.distPrice08 = currentReward.distPrice08
+            item.distPrice09 = currentReward.distPrice09
           } else {
             item.sellPrice = item.serviceCost
             item.distPrice01 = item.serviceCost
@@ -1318,6 +1326,7 @@ const Pos = ({
             item.distPrice06 = item.serviceCost
             item.distPrice07 = item.serviceCost
             item.distPrice08 = item.serviceCost
+            item.distPrice09 = item.serviceCost
           }
           let selectedPrice = (memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.serviceCost)
           if (selectedPaymentShortcut
@@ -1350,6 +1359,7 @@ const Pos = ({
             distPrice06: item.distPrice06,
             distPrice07: item.distPrice07,
             distPrice08: item.distPrice08,
+            distPrice09: item.distPrice09,
             qty,
             typeCode: 'S',
             sellPrice: selectedPrice,
@@ -1764,7 +1774,7 @@ const Pos = ({
     }
   }
 
-  const handleChangeDineIn = (event, type, item) => {
+  const handleChangeDineIn = (dineInTax, consignmentPaymentType, item) => {
     if (item.typeCode === 'GM') {
       dispatch({
         type: 'pos/updateState',
@@ -1778,14 +1788,14 @@ const Pos = ({
         title: 'Ubah Tipe Transaksi',
         content: 'Anda yakin dengan transaksi ini ?',
         onOk () {
-          localStorage.setItem('dineInTax', event)
-          localStorage.setItem('typePembelian', type)
+          localStorage.setItem('dineInTax', dineInTax)
+          localStorage.setItem('typePembelian', consignmentPaymentType)
 
           dispatch({
             type: 'pos/changeDineIn',
             payload: {
-              dineInTax: event,
-              typePembelian: type,
+              dineInTax,
+              typePembelian: consignmentPaymentType,
               selectedPaymentShortcut: item
             }
           })
@@ -1793,8 +1803,8 @@ const Pos = ({
           dispatch({
             type: 'pos/updateState',
             payload: {
-              dineInTax: event,
-              typePembelian: type
+              dineInTax,
+              typePembelian: consignmentPaymentType
             }
           })
 
@@ -1817,6 +1827,13 @@ const Pos = ({
 
   const handleChangeBookmark = (key = 1, page = 1) => {
     dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalBookmarkVisible: true,
+        modalBookmarkList: []
+      }
+    })
+    dispatch({
       type: 'productBookmark/query',
       payload: {
         day: moment().isoWeekday(),
@@ -1824,7 +1841,7 @@ const Pos = ({
         groupId: key,
         relationship: 1,
         page,
-        pageSize: 14
+        pageSize: 25
       }
     })
   }
@@ -2070,28 +2087,59 @@ const Pos = ({
     })
   }
 
+  const modalBookmarkProps = {
+    visible: modalBookmarkVisible,
+    list: modalBookmarkList,
+    item: modalBookmarkItem,
+    width: 700,
+    loading: (
+      loading.effects['productBookmark/query']
+      || loading.effects['pos/chooseProduct']
+      || loading.effects['pos/checkQuantityEditProduct']
+      || loading.effects['pos/checkQuantityNewProduct']
+      || loading.effects['pospromo/addPosPromo']
+      || loading.effects['pos/getProductByBarcode']),
+    productBookmarkGroup,
+    productBookmark,
+    onChange: handleChangeBookmark,
+    onChoose (item) {
+      chooseProduct(item)
+    },
+    onChooseBundle (item) {
+      chooseBundle(item)
+    },
+    onSubmit (data) {
+      dispatch({
+        type: 'pos/queryShortcut',
+        payload: {
+          shortcutCode: data.shortcutCode,
+          groupShortcutCode: data.groupShortcutCode
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalBookmarkVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
         keyMap={keyMap}
         handlers={hotKeysHandler}
       />
+      {modalBookmarkVisible && <ModalBookmark {...modalBookmarkProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
             <Bookmark
-              loading={
-                loading.effects['productBookmark/query']
-                || loading.effects['pos/chooseProduct']
-                || loading.effects['pos/checkQuantityEditProduct']
-                || loading.effects['pos/checkQuantityNewProduct']
-                || loading.effects['pospromo/addPosPromo']
-                || loading.effects['pos/getProductByBarcode']}
               onChange={handleChangeBookmark}
-              onChoose={chooseProduct}
-              onChooseBundle={chooseBundle}
               productBookmarkGroup={productBookmarkGroup}
-              productBookmark={productBookmark}
             />
             <Advertising list={listAdvertising} />
           </Col>
@@ -2108,10 +2156,13 @@ const Pos = ({
               ))}
               {listMinimumPayment
                 && listMinimumPayment.length > 0
-                && (curNetto + dineIn) >= listMinimumPayment[0].minimumPayment
-                && listMinimumPayment.map(item => (
-                  <Tag style={{ marginBottom: '10px' }} key={item.id} closable={false} color="green" onClick={() => onChooseOffering(item)}>{item && item.description ? item.description : item.name}</Tag>
-                ))}
+                ? listMinimumPayment
+                  .filter((filtered) => {
+                    return (curNetto + dineIn) >= filtered.minimumPayment
+                  })
+                  .map(item => (
+                    <Tag style={{ marginBottom: '10px' }} key={item.id} closable={false} color="green" onClick={() => onChooseOffering(item)}>{item && item.description ? item.description : item.name}</Tag>
+                  )) : null}
               <Row>
                 <Col lg={10} md={24}>
                   <BarcodeInput onEnter={handleKeyPress} />

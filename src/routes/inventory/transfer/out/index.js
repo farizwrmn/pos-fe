@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Tabs } from 'antd'
+import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import moment from 'moment'
 import get from 'lodash/get'
@@ -171,7 +172,7 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     listCategory,
     listStockLocation,
     listBrand,
-    width: 800,
+    width: 1000,
     loading,
     selectedRowKeys,
     visible: modalProductDemandVisible,
@@ -185,6 +186,19 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
         payload: {
           listProductDemand,
           selectedRowKeys
+        }
+      })
+    },
+    handleItemEdit (item, event) {
+      dispatch({
+        type: 'transferOut/editDemandDetail',
+        payload: {
+          listProductDemand,
+          item,
+          form: event ? event.target.form : null,
+          events: {
+            ...event
+          }
         }
       })
     },
@@ -554,6 +568,7 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     dataSource: listTransferOut,
     listTransferOut,
     listProducts,
+    pagination,
     listTransOut,
     itemPrint: currentItemPrint,
     loading: loading.effects['transferOut/queryTransferOut'],
@@ -564,12 +579,28 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     storeInfo,
     showPrintModal,
     user,
-    updateFilter (filters, sorts) {
+    updateFilter (page, filters, sorts) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
       dispatch({
         type: 'transferOut/updateState',
         payload: {
           filter: filters,
-          sort: sorts
+          sort: sorts,
+          pagination: {
+            payload: {
+              current: Number(page.current) || 1,
+              pageSize: Number(page.pageSize) || 10,
+              total: listTransferOut.length
+            }
+          }
         }
       })
     },
@@ -615,6 +646,7 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
       ...location.query
     },
     filterChange (date) {
+      const { query, pathname } = location
       dispatch({
         type: 'transferOut/queryTransferOut',
         payload: {
@@ -622,6 +654,16 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
           end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD')
         }
       })
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          start: moment(date, 'YYYY-MM').startOf('month').format('YYYY-MM-DD'),
+          end: moment(date, 'YYYY-MM').endOf('month').format('YYYY-MM-DD'),
+          page: 1,
+          pageSize: 10
+        }
+      }))
       dispatch({
         type: 'transferOut/updateState',
         payload: {
@@ -639,10 +681,9 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     }
   }
 
-  let activeTabKey = '0'
   const changeTab = (key) => {
-    activeTabKey = key
-    if (activeTabKey === '1') {
+    const { query, pathname } = location
+    if (key === '1') {
       dispatch({
         type: 'transferOut/queryTransferOut',
         payload: {
@@ -651,11 +692,20 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
         }
       })
     }
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        page: 1,
+        pageSize: 10,
+        activeKey: key
+      }
+    }))
   }
 
   return (
     <div className="content-inner">
-      <Tabs type="card" defaultActiveKey={activeTabKey} onChange={key => changeTab(key)}>
+      <Tabs activeKey={activeKey} type="card" onChange={key => changeTab(key)}>
         <TabPane tab="Add" key="0">
           <Form {...formProps} />
         </TabPane>

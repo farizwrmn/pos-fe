@@ -10,7 +10,7 @@ import { getLinkName } from 'utils/string'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
+const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -73,7 +73,6 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   }
 
   let tableHeader = []
-  let tableFooter = []
   let headerTitle
   let widths = []
   let underline
@@ -114,7 +113,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(period, 'MM').format('MMMM').concat('-', year)}`,
+                text: `\nPERIODE : ${from} - ${to}`,
                 fontSize: 12,
                 alignment: 'left'
               },
@@ -175,6 +174,32 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
   } catch (e) {
     console.log(e)
   }
+
+  let debit = listRekap.reduce((cnt, o) => cnt + o.debit, 0)
+  let credit = listRekap.reduce((cnt, o) => cnt + o.credit, 0)
+
+  const tableFooter = [
+    [
+      { text: 'Total', colSpan: 6, alignment: 'center', fontSize: 12 },
+      {},
+      {},
+      {},
+      {},
+      {},
+      { text: formatNumberIndonesia(parseFloat(debit || 0)), alignment: 'right', fontSize: 12 },
+      { text: formatNumberIndonesia(credit || 0), alignment: 'right', fontSize: 12 }
+    ],
+    [
+      { text: 'Balance', colSpan: 7, alignment: 'center', fontSize: 12 },
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      { text: formatNumberIndonesia(parseFloat(debit || 0) - parseFloat(credit || 0)), alignment: 'right', fontSize: 12 }
+    ]
+  ]
 
   // Declare additional Props
   const pdfProps = {

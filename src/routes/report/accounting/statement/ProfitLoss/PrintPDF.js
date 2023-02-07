@@ -6,46 +6,11 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 import { numberFormat } from 'utils'
+import { createTableBody } from './utils'
 
 const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
-  // Declare Function
-  const createTableBody = (tabledata, {
-    type,
-    bodyTitle,
-    totalTitle
-  }) => {
-    let groupBody = []
-    const rows = tabledata[type]
-    groupBody.push([
-      { text: '', alignment: 'right', fontSize: 11 },
-      { text: bodyTitle, style: 'tableHeader', alignment: 'left', fontSize: 11 },
-      { text: '', alignment: 'right', fontSize: 11 },
-      { text: '', alignment: 'right', fontSize: 11 }
-    ])
-    for (let key in rows) {
-      if (rows.hasOwnProperty(key)) {
-        let item = rows[key]
-        let row = [
-          { text: '', alignment: 'left', fontSize: 11 },
-          { text: `${item.accountCode} - ${item.accountName}`, alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(item.debit ? (item.debit * -1) : item.credit || 0)), alignment: 'right', fontSize: 11 },
-          { text: '', alignment: 'left', fontSize: 11 }
-        ]
-        groupBody.push(row)
-      }
-    }
-    const total = rows.reduce((prev, next) => (prev - parseFloat(next.debit || 0)) + parseFloat(next.credit || 0), 0)
-    groupBody.push([
-      { text: '', alignment: 'left', fontSize: 11 },
-      { text: totalTitle, style: 'tableFooter', alignment: 'left', fontSize: 11 },
-      { text: formatNumberIndonesia(total), style: 'tableFooter', alignment: 'right', fontSize: 11 },
-      { text: '', alignment: 'left', fontSize: 11 }
-    ])
-    return { total, groupBody }
-  }
-
   // Declare Variable
   const styles = {
     header: {
@@ -229,19 +194,19 @@ const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
       [
         { text: '', alignment: 'right', fontSize: 11 },
         { text: 'Jumlah Pendapatan dan Beban Non Operasional', style: 'tableFooter', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(nonOperationalRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: nonOperationalRevenue >= 0 ? formatNumberIndonesia(nonOperationalRevenue) : `(${formatNumberIndonesia(nonOperationalRevenue * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ],
       [
         { text: '', alignment: 'right', fontSize: 11 },
         { text: 'LABA BERSIH (SEBELUM PAJAK)', style: 'tableHeader', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(fixRevenue), style: 'tableHeader', alignment: 'right', fontSize: 11 },
+        { text: fixRevenue >= 0 ? formatNumberIndonesia(fixRevenue) : `(${formatNumberIndonesia(fixRevenue * -1)})`, style: 'tableHeader', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ],
       [
         { text: '', alignment: 'right', fontSize: 11 },
         { text: 'LABA BERSIH (SETELAH PAJAK)', style: 'tableFooter', alignment: 'left', fontSize: 11 },
-        { text: formatNumberIndonesia(fixRevenue), style: 'tableFooter', alignment: 'right', fontSize: 11 },
+        { text: fixRevenue >= 0 ? formatNumberIndonesia(fixRevenue) : `(${formatNumberIndonesia(fixRevenue * -1)})`, style: 'tableFooter', alignment: 'right', fontSize: 11 },
         { text: '', alignment: 'right', fontSize: 11 }
       ]
     ])

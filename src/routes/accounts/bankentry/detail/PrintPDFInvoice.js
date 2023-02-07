@@ -81,6 +81,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
+            [{ text: 'BANK', fontSize: 11 }, ':', { text: (itemPrint && itemPrint.accountCode && itemPrint.accountCode.accountCode ? itemPrint.accountCode.accountName : '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'MEMO', fontSize: 11 }, {}, { text: (itemPrint.description || '').toString(), fontSize: 11 }, {}, {}, {}, {}]
           ]
         },

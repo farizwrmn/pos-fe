@@ -25,6 +25,7 @@ const error = (err) => {
 export default modelExtend(pageModel, {
   namespace: 'transferOut',
   state: {
+    listTransferOut: [],
     listTrans: [],
     listItem: [],
     listTransGroup: [],
@@ -68,20 +69,58 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         if (location.pathname === '/inventory/transfer/out') {
-          dispatch({
-            type: 'querySequence',
-            payload: {
-              seqCode: 'MUOUT',
-              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+          const { activeKey, start, end, page, pageSize } = location.query
+          if (activeKey === '1') {
+            if (start && end) {
+              dispatch({
+                type: 'transferOut/queryTransferOut',
+                payload: {
+                  type: 'load',
+                  start,
+                  end,
+                  page,
+                  pageSize
+                }
+              })
+            } else {
+              dispatch({
+                type: 'transferOut/queryTransferOut',
+                payload: {
+                  type: 'load',
+                  start: moment().startOf('month').format('YYYY-MM-DD'),
+                  end: moment().endOf('month').format('YYYY-MM-DD'),
+                  page,
+                  pageSize
+                }
+              })
             }
-          })
+          }
+          if (activeKey !== '1') {
+            dispatch({
+              type: 'querySequence',
+              payload: {
+                seqCode: 'MUOUT',
+                type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+              }
+            })
+          }
           const { deliveryOrderNo } = location.query
-          dispatch({
-            type: 'queryTransferOut',
-            payload: {
-              deliveryOrderNo
-            }
-          })
+          if (deliveryOrderNo) {
+            dispatch({
+              type: 'queryTransferOut',
+              payload: {
+                deliveryOrderNo
+              }
+            })
+          }
+          if (activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: activeKey || '0'
+              }
+            })
+          }
         }
         // else if (location.pathname === '/inventory/transfer/in') {
         //   dispatch({
@@ -107,6 +146,17 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        if (payload.page && payload.pageSize) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 10
+              }
+            }
+          })
+        }
       }
     },
 
@@ -219,6 +269,28 @@ export default modelExtend(pageModel, {
           currentItemList: {},
           modalVisible: false,
           listItem
+        }
+      })
+      if (form && events) {
+        const index = [...form].indexOf(events.target)
+        if (form.elements[index + 1]) {
+          form.elements[index + 1].focus()
+        }
+      }
+    },
+
+    * editDemandDetail ({ payload = {} }, { put }) {
+      const { listProductDemand, item, form, events } = payload
+      let newProductDemand = listProductDemand.map((record) => {
+        if (record.id === item.id) {
+          return item
+        }
+        return record
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listProductDemand: newProductDemand
         }
       })
       if (form && events) {
@@ -400,7 +472,7 @@ export default modelExtend(pageModel, {
       } else {
         error(response)
         if (response && typeof response.message === 'object') {
-          stockMinusAlert([response.message])
+          stockMinusAlert(response.message)
         }
         // throw data
       }
@@ -424,8 +496,21 @@ export default modelExtend(pageModel, {
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })
     },
 
-    * queryTransferOut ({ payload = {} }, { call, put }) {
-      const data = yield call(queryTransferOut, payload)
+    * queryTransferOut ({ payload = {} }, { call, put, select }) {
+      const { type, ...otherPayload } = payload
+      const listTransferOut = yield select(({ transferOut }) => transferOut.listTransferOut)
+      if (type === 'load' && listTransferOut.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            current: Number(payload.page) || 1,
+            pageSize: Number(payload.pageSize) || 10,
+            total: listTransferOut.length
+          }
+        })
+        return
+      }
+      const data = yield call(queryTransferOut, otherPayload)
       if (data && data.success && data.data.length > 0) {
         yield put({
           type: 'querySuccessListTransferOut',
@@ -438,6 +523,17 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        if (payload.page && payload.pageSize) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              pagination: {
+                current: Number(payload.page) || 1,
+                pageSize: Number(payload.pageSize) || 10
+              }
+            }
+          })
+        }
       }
       if (payload.transNo && data && data.success && data.data.length === 0) {
         const response = yield call(queryTransferOut, {
@@ -681,7 +777,6 @@ export default modelExtend(pageModel, {
         searchVisible: false,
         formType: 'add',
         display: 'none',
-        activeKey: '0',
         disable: '',
         pagination: {
           // showSizeChanger: true,

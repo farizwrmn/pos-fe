@@ -56,7 +56,8 @@ const FormAdd = ({
     getFieldDecorator,
     validateFields,
     getFieldValue,
-    getFieldsValue
+    getFieldsValue,
+    setFieldsValue
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
@@ -132,12 +133,18 @@ const FormAdd = ({
   }
 
   const onChangeStoreIdReceiver = () => {
+    const storeIdReceiver = getFieldValue('storeIdReceiver')
     Modal.confirm({
       title: 'Reset unsaved process',
       content: 'this action will reset your current process',
       onOk () {
         modalProductDemandProps.updateSelectedKey([])
         resetListItem()
+      },
+      onCancel () {
+        setFieldsValue({
+          storeIdReceiver
+        })
       }
     })
   }
@@ -222,7 +229,7 @@ const FormAdd = ({
                   }
                 ]
               })(<Select
-                onChange={() => onChangeStoreIdReceiver()}
+                onChange={value => onChangeStoreIdReceiver(value)}
               >
                 {childrenStoreReceived}
               </Select>)}
@@ -252,7 +259,7 @@ const FormAdd = ({
                 initialValue: item.description,
                 rules: [
                   {
-                    required: false
+                    required: true
                   }
                 ]
               })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 3 }} />)}

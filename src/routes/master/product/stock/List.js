@@ -11,23 +11,31 @@ import styles from '../../../../themes/index.less'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps,
+const List = ({
   user,
   dispatch,
   loadingModel,
   editItem,
   deleteItem,
   listCategory,
-  listBrand
+  listBrand,
+  ...tableProps
 }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
-    } if (e.key === '2') {
+    } else if (e.key === '2') {
       dispatch(routerRedux.push('/transaction/purchase/add'))
-    } if (e.key === '3') {
+    } else if (e.key === '3') {
       dispatch(routerRedux.push('/report/fifo/card'))
     } else if (e.key === '4') {
+      dispatch({
+        type: 'productstock/showModalStorePrice',
+        payload: {
+          modalStorePriceItem: record
+        }
+      })
+    } else if (e.key === '5') {
       confirm({
         title: `Are you sure delete ${record.productName} ?`,
         onOk () {
@@ -118,6 +126,14 @@ const List = ({ ...tableProps,
       dataIndex: 'supplierId',
       key: 'supplierId',
       render: (text, record) => {
+        if (record && record.storeSupplierCode && record.storeSupplierName) {
+          return (
+            <div>
+              <div><strong>{record.storeSupplierCode}</strong></div>
+              <div>{record.storeSupplierName}</div>
+            </div>
+          )
+        }
         return (
           <div>
             <div><strong>{record.supplierCode}</strong></div>
@@ -147,7 +163,7 @@ const List = ({ ...tableProps,
       key: 'costPrice',
       className: styles.alignRight,
       width: '150px',
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => (record.costPrice + record.PPN || '-').toLocaleString()
     },
     {
       title: 'Margin',
@@ -156,7 +172,7 @@ const List = ({ ...tableProps,
       className: styles.alignRight,
       width: '70px',
       render: (text, record) => {
-        return `${Math.round(((parseFloat(record.sellPrice) - parseFloat(record.costPrice)) / parseFloat(record.sellPrice)) * 100)} %`
+        return `${Math.round(((parseFloat(record.sellPrice) - (parseFloat(record.costPrice) + parseFloat(record.PPN))) / parseFloat(record.sellPrice)) * 100)} %`
       }
     },
     {
@@ -303,6 +319,22 @@ const List = ({ ...tableProps,
         return (currentPrice || '-').toLocaleString()
       }
     },
+    {
+      title: getDistPriceName('distPrice09'),
+      dataIndex: 'distPrice09',
+      key: 'distPrice09',
+      className: styles.alignRight,
+      render: (text, record) => {
+        let currentPrice = text
+        if (record && record.storePrice && record.storePrice[0]) {
+          const price = record.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
+          if (price && price[0]) {
+            currentPrice = price[0].distPrice09
+          }
+        }
+        return (currentPrice || '-').toLocaleString()
+      }
+    },
     // {
     //   title: 'Track Qty',
     //   dataIndex: 'trackQty',
@@ -366,7 +398,8 @@ const List = ({ ...tableProps,
               { key: '1', name: 'Edit' },
               { key: '2', name: 'Purchase' },
               { key: '3', name: 'History' },
-              { key: '4', name: 'Delete' }
+              { key: '4', name: 'Store Price' },
+              { key: '5', name: 'Delete' }
             ]}
           />
         )

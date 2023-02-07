@@ -1,0 +1,26 @@
+export const exampleString = `
+^XA
+
+^FX Third section with bar code.
+^BY1,1,40
+^CFA,16
+^FO65,20^FDRp 20.000^FS
+^FO65,40^FDF00847-P0001^FS
+^FO65,60^A,20,20^BC^FD0008470001^FS
+
+^FX Third section with bar code.
+^BY1,1,40
+^CFA,16
+^FO330,20^FDRp 20.000^FS
+^FO330,40^FDF00847-P0002^FS
+^FO330,60^A,20,20^BC^FD0008470002^FS
+
+^FX Third section with bar code.
+^BY1,1,40
+^CFA,16
+^FO590,20^FDRp 120.000^FS
+^FO590,40^FDF00847-P0003^FS
+^FO590,60^A,20,20^BC^FD0008470003^FS
+
+^XZ
+`

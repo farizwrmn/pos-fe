@@ -28,7 +28,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
       key: 'transNo',
       render: (text, record) => {
         const link = getLinkName(record.transactionId, record.transNo, record.transactionType)
-        return <a target="__blank" href={link}>{text}</a>
+        return <a target="_blank" href={link}>{text}</a>
       }
     },
     {
@@ -63,10 +63,18 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
     <Table
       {...browseProps}
       bordered
+      pagination={false}
       columns={columns}
       simple
       size="small"
       dataSource={dataSource}
+      footer={() => (
+        <div>
+          <div>Debit : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.debit || 0), 0).toLocaleString()}</div>
+          <div>Credit : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.credit || 0), 0).toLocaleString()}</div>
+          <div>Balance : {dataSource.reduce((cnt, o) => cnt + (parseFloat(o.debit || 0) - parseFloat(o.credit || 0)), 0).toLocaleString()}</div>
+        </div>)
+      }
     />
   )
 }

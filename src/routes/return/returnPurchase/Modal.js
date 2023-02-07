@@ -176,7 +176,7 @@ class TransferModal extends Component {
                 {getFieldDecorator('description', {
                   initialValue: currentItemList.description,
                   rules: [{
-                    required: false
+                    required: true
                   }]
                 })(<TextArea maxLength={200} autosize={{ minRows: 2, maxRows: 6 }} />)}
               </FormItem>

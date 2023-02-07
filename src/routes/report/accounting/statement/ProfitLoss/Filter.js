@@ -3,14 +3,19 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FilterItem } from 'components'
 import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
 import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
+const FormItem = Form.Item
 const { Option } = Select
 const { RangePicker } = DatePicker
+
+const formItemLayout = {
+  labelCol: { span: 4, textAlign: 'left' },
+  wrapperCol: { span: 20 }
+}
 
 const leftColumn = {
   xs: 24,
@@ -29,7 +34,7 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator }, ...printProps }) => {
+const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, validateFields, resetFields, getFieldDecorator }, ...printProps }) => {
   const { from, to } = printProps
   const handleChange = () => {
     validateFields((errors) => {
@@ -41,6 +46,10 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
         from: data.rangePicker ? data.rangePicker[0].format('YYYY-MM-DD') : null,
         to: data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') : null,
         storeId: data.storeId
+      }
+      if (data.comparePicker && data.comparePicker[0] && data.comparePicker[1]) {
+        params.compareFrom = data.comparePicker ? data.comparePicker[0].format('YYYY-MM-DD') : null
+        params.compareTo = data.comparePicker ? data.comparePicker[1].format('YYYY-MM-DD') : null
       }
       onDateChange(params)
     })
@@ -67,7 +76,7 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Trans Date">
+        <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
           {getFieldDecorator('rangePicker', {
             initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
             rules: [
@@ -78,10 +87,25 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
           })(
             <RangePicker size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
-        <FilterItem
+        </FormItem>
+
+        <FormItem label="Compare To" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('comparePicker', {
+            initialValue: compareFrom && compareTo ? [moment.utc(compareFrom, 'YYYY-MM-DD'), moment.utc(compareTo, 'YYYY-MM-DD')] : null,
+            rules: [
+              {
+                required: false
+              }
+            ]
+          })(
+            <RangePicker size="large" format="DD-MMM-YYYY" />
+          )}
+        </FormItem>
+        <FormItem
           label="Store"
           help="clear it if available all stores"
+          hasFeedback
+          {...formItemLayout}
         >
           {getFieldDecorator('storeId')(
             <Select
@@ -95,7 +119,7 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
               {childrenTransNo}
             </Select>
           )}
-        </FilterItem>
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button
@@ -103,6 +127,8 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
           size="large"
           style={{ marginLeft: '5px' }}
           className="button-width02 button-extra-large"
+          disabled={loading.effects['accountingStatementReport/query']}
+          loading={loading.effects['accountingStatementReport/query']}
           onClick={() => handleChange()}
         >
           <Icon type="search" className="icon-large" />
@@ -110,12 +136,14 @@ const Filter = ({ listAllStores, onDateChange, onListReset, form: { getFieldsVal
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
+          disabled={loading.effects['accountingStatementReport/query']}
+          loading={loading.effects['accountingStatementReport/query']}
           onClick={() => handleReset()}
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        <PrintPDF {...printProps} />
-        <PrintXLS {...printProps} />
+        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintPDF {...printProps} />}
+        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintXLS {...printProps} />}
       </Col>
     </Row>
   )

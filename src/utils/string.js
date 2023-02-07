@@ -5,7 +5,8 @@ import {
   SALES,
   SALESPAY,
   PURCHASE,
-  PPAY
+  PPAY,
+  TRANSFERINVOICE
 } from 'utils/variable'
 import lstorage from './lstorage'
 
@@ -61,6 +62,8 @@ const getLinkName = (id, transNo, transType) => {
     case PURCHASE:
     case PPAY:
       return `${window.location.origin}/accounts/payable/${encodeURIComponent(transNo)}`
+    case TRANSFERINVOICE:
+      return `${window.location.origin}/inventory/transfer/invoice/${encodeURIComponent(id)}`
     default:
       return undefined
   }

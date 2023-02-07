@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag } from 'antd'
+import { Table } from 'antd'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 
@@ -12,51 +12,43 @@ const { formatNumberIndonesia } = numberFormat
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
-      title: 'Invoice',
+      title: 'Store',
+      dataIndex: 'storeName',
+      key: 'storeName',
+      width: '155px'
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplierName',
+      key: 'supplierName',
+      width: '155px'
+    },
+    {
+      title: 'TRANS',
       dataIndex: 'transNo',
       key: 'transNo',
       width: '155px'
     },
     {
       title: 'Date',
-      dataIndex: 'invoiceDate',
-      key: 'invoiceDate',
+      dataIndex: 'transDate',
+      key: 'transDate',
       width: '175px',
       render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
-      title: 'Total',
-      dataIndex: 'nettoTotal',
-      key: 'nettoTotal',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
+      title: 'Due Date',
+      dataIndex: 'dueDate',
+      key: 'dueDate',
+      width: '175px',
+      render: text => `${moment(text).format('DD-MMM-YYYY')}`
     },
     {
-      title: 'Paid',
-      dataIndex: 'paid',
-      key: 'paid',
+      title: 'Payable',
+      dataIndex: 'payable',
+      key: 'payable',
       width: '100px',
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
-    },
-    {
-      title: 'Change',
-      dataIndex: 'change',
-      key: 'change',
-      width: '100px',
-      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(text || 0)}</p>
-    },
-    {
-      title: 'Status',
-      dataIndex: 'statusPaid',
-      key: 'statusPaid',
-      width: '100px',
-      render: text => (
-        <span>
-          <Tag color={text === 'PAID' ? 'green' : text === 'PARTIAL' ? 'yellow' : 'red'}>
-            {(text || '')}
-          </Tag>
-        </span>
-      )
     }
   ]
 

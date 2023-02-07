@@ -9,16 +9,19 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }) => {
-  const { listBalanceSheet: listTrans, listProfit, from, to, productCode } = accountingStatementReport
+  const { listBalanceSheet: listTrans, listBalanceSheetCompare: listCompare, listProfit, listProfitCompare, compareFrom, compareTo, from, to, productCode } = accountingStatementReport
   const { listAllStores } = userStore
   const { user, storeInfo } = app
   const browseProps = {
     loading: loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query'],
-    dataSource: listTrans,
     listTrans,
+    listCompare,
     listProfit,
+    listProfitCompare,
     storeInfo,
     user,
+    compareFrom,
+    compareTo,
     from,
     to,
     productCode
@@ -28,10 +31,15 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
     listAllStores,
     listTrans,
     listProfit,
+    listProfitCompare,
+    loading,
     user,
     storeInfo,
     from,
     to,
+    listCompare,
+    compareFrom,
+    compareTo,
     productCode,
     onListReset () {
       dispatch({
@@ -40,6 +48,9 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
     },
     onDateChange (value) {
       const { pathname, query } = location
+      dispatch({
+        type: 'accountingStatementReport/setListNull'
+      })
       dispatch(routerRedux.push({
         pathname,
         query: {

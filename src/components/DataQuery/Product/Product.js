@@ -97,6 +97,12 @@ const Product = ({
       key: 'distPrice08',
       width: '120px',
       render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice09'),
+      dataIndex: 'distPrice09',
+      key: 'distPrice09',
+      width: '120px',
+      render: text => formatNumberIndonesia(text)
     }
   ]
 

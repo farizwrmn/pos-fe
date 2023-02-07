@@ -115,6 +115,7 @@ const insertCashierTrans = (dataObject) => {
       distPrice06: dataObject.distPrice06,
       distPrice07: dataObject.distPrice07,
       distPrice08: dataObject.distPrice08,
+      distPrice09: dataObject.distPrice09,
       price: dataObject.price,
       discount: dataObject.discount,
       disc1: dataObject.disc1,

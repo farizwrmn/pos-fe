@@ -2,6 +2,7 @@
  * Created by Veirry on 07/07/2020.
  */
 import { queryPosPayment } from 'services/report/posPayment'
+import { queryLovBalance } from 'services/balance/balance'
 import moment from 'moment'
 
 export default {
@@ -9,6 +10,7 @@ export default {
 
   state: {
     listTrans: [],
+    listBalance: [],
     from: '',
     to: '',
     date: null,
@@ -48,11 +50,37 @@ export default {
               to: location.query.to || moment().format('YYYY-MM-DD')
             }
           })
+          dispatch({
+            type: 'queryLovBalance',
+            payload: {
+              from: location.query.from,
+              to: location.query.to
+            }
+          })
         }
       })
     }
   },
   effects: {
+    * queryLovBalance ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listBalance: []
+        }
+      })
+      const data = yield call(queryLovBalance, payload)
+      if (data && data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBalance: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
     * query ({ payload }, { call, put }) {
       const data = yield call(queryPosPayment, payload)
       yield put({

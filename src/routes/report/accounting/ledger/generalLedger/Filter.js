@@ -4,14 +4,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { routerRedux } from 'dva/router'
-import { FilterItem } from 'components'
 import { Button, DatePicker, Row, Select, Col, Icon, Form } from 'antd'
-import PrintXLS from './PrintXLS'
-import PrintPDF from './PrintPDF'
+import PrintCSV from './PrintCSV'
 
+const FormItem = Form.Item
 const { RangePicker } = DatePicker
 const { Option } = Select
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
+  },
+  wrapperCol: {
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
+}
 
 const leftColumn = {
   xs: 24,
@@ -35,11 +46,12 @@ const Filter = ({
   onChangePeriod,
   dispatch,
   listAccountCode = [],
+  listAllStores = [],
   onListReset,
   onShowCategories,
   onShowBrands,
+  loading,
   form: {
-    resetFields,
     getFieldDecorator,
     getFieldsValue,
     validateFields
@@ -47,18 +59,6 @@ const Filter = ({
   activeKey,
   ...otherProps
 }) => {
-  const handleReset = () => {
-    const { pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        activeKey
-      }
-    }))
-    resetFields()
-    onListReset()
-  }
-
   const handleSearch = () => {
     validateFields((errors) => {
       if (errors) {
@@ -68,7 +68,7 @@ const Filter = ({
         ...getFieldsValue()
       }
       if (data.accountCode) {
-        data.accountId = data.accountCode.key
+        data.accountId = data.accountCode.map(item => item.key)
       }
       if (data.rangePicker) {
         onChangePeriod(data)
@@ -103,12 +103,18 @@ const Filter = ({
   }
 
   let childrenTransNo = listAccountCode.length > 0 ? listAccountCode.map(x => (<Option value={x.id} key={x.id} title={`${x.accountName} (${x.accountCode})`}>{`${x.accountName} (${x.accountCode})`}</Option>)) : []
+  let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
   const { from, to } = query
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+
   return (
     <Row>
       <Col {...leftColumn} >
-        <FilterItem label="Period">
+        <FormItem
+          label="Period"
+          hasFeedback
+          {...formItemLayout}
+        >
           {getFieldDecorator('rangePicker', {
             initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : [moment().startOf('month'), moment().endOf('month')],
             rules: [
@@ -119,9 +125,11 @@ const Filter = ({
           })(
             <RangePicker allowClear={false} size="large" format="DD-MMM-YYYY" />
           )}
-        </FilterItem>
-        <FilterItem
+        </FormItem>
+        <FormItem
           label="Account Code"
+          hasFeedback
+          {...formItemLayout}
         >
           {getFieldDecorator('accountCode')(
             <Select
@@ -130,6 +138,7 @@ const Filter = ({
               style={{ width: '100%' }}
               placeholder="Choose Account Code"
               showSearch
+              multiple
               optionFilterProp="children"
               labelInValue
               filterOption={filterOption}
@@ -137,27 +146,39 @@ const Filter = ({
               {childrenTransNo}
             </Select>
           )}
-        </FilterItem>
+        </FormItem>
+        <FormItem
+          label="Store"
+          help="clear it if available all stores"
+          hasFeedback
+          {...formItemLayout}
+        >
+          {getFieldDecorator('storeId')(
+            <Select
+              mode="multiple"
+              allowClear
+              size="large"
+              style={{ width: '100%' }}
+              placeholder="Choose Store"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenStore}
+            </Select>
+          )}
+        </FormItem>
       </Col>
       <Col {...rightColumn} style={{ float: 'right', textAlign: 'right' }}>
         <Button
           type="dashed"
           size="large"
           style={{ marginLeft: '5px' }}
+          disabled={loading.effects['generalLedger/queryGeneralLedger']}
           className="button-width02 button-extra-large"
           onClick={() => handleSearch()}
         >
           <Icon type="search" className="icon-large" />
         </Button>
-        <Button type="dashed"
-          size="large"
-          className="button-width02 button-extra-large bgcolor-lightgrey"
-          onClick={() => handleReset()}
-        >
-          <Icon type="rollback" className="icon-large" />
-        </Button>
-        {<PrintPDF {...printProps} />}
-        {<PrintXLS {...printProps} />}
+        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintCSV {...printProps} />)}
       </Col>
     </Row>
   )

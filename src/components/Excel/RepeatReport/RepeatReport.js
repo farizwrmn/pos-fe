@@ -147,7 +147,7 @@ const RepeatReport = ({
         })
       }
 
-      position += (3 + (tableBody[i] || []).length)
+      position += (1 + (tableBody[i] || []).length)
       if ((tableTotal || []).length > 0) {
         for (let i = 0; i < (tableTotal[0] || []).length; i += 1) {
           let line = position + 1

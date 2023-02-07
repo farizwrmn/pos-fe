@@ -3,13 +3,14 @@ import { message, Modal } from 'antd'
 import { posTotal, numberFormat } from 'utils'
 import {
   getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
+  // getGrabmartOrder,
   setCashierTrans, setServiceTrans, setBundleTrans
 } from 'utils/lstorage'
 import reduce from 'lodash/reduce'
 import { query } from '../../services/marketing/bundling'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
-
+// import { getDiscountByBundleCode } from './utils'
 
 const numberFormatter = numberFormat.numberFormatter
 
@@ -102,7 +103,6 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        console.log('addPosPromoItem', currentService)
         yield put({
           type: 'updateState',
           payload: {
@@ -356,6 +356,7 @@ export default modelExtend(pageModel, {
               distPrice06: reward.distPrice06,
               distPrice07: reward.distPrice07,
               distPrice08: reward.distPrice08,
+              distPrice09: reward.distPrice09,
               categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
               bundleCode: reward.bundleCode,
@@ -408,6 +409,7 @@ export default modelExtend(pageModel, {
               distPrice06: reward.distPrice06,
               distPrice07: reward.distPrice07,
               distPrice08: reward.distPrice08,
+              distPrice09: reward.distPrice09,
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               name: reward.productName,
@@ -425,6 +427,14 @@ export default modelExtend(pageModel, {
             arrayProd.push(data)
           }
         }
+        // const currentGrabOrder = getGrabmartOrder()
+        // arrayProd = arrayProd.map((item) => {
+        //   if (item.bundleCode) {
+        //     item.discount = getDiscountByBundleCode(currentGrabOrder, item.bundleCode, arrayProd)
+        //     item.total = posTotal(item)
+        //   }
+        //   return item
+        // })
         console.log('setProductPos', arrayProd)
         setCashierTrans(JSON.stringify(arrayProd))
       }

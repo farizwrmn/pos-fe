@@ -3,12 +3,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Tabs } from 'antd'
+import { Button, Tabs } from 'antd'
+import { onPrintZebra } from './utils'
 import Sticker from './Sticker'
 import Shelf from './Shelf'
 import PrintShelf from './PrintShelf'
 import PrintSticker from './PrintSticker'
 import PrintAvancedShelf from './PrintAvancedShelf'
+import PrintLongShelf from './PrintLongShelf'
 
 const TabPane = Tabs.TabPane
 
@@ -52,6 +54,7 @@ class ProductStock extends Component {
       case '0':
         moreButtonTab = (
           <span>
+            <Button style={{ marginRight: '10px' }} onClick={() => onPrintZebra(listSticker)}>Zebra ZD203</Button>
             <PrintSticker stickers={listSticker} user={user} {...printProps} />
           </span>
         )
@@ -61,6 +64,7 @@ class ProductStock extends Component {
           <span>
             <PrintShelf setClick={click => this.clickChildShelf = click} stickers={listSticker} user={user} {...printProps} />
             <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printProps} />
+            <PrintLongShelf setClick={click => this.clickLongChild = click} stickers={listSticker} user={user} {...printProps} />
           </span>
         )
         break
@@ -99,6 +103,17 @@ class ProductStock extends Component {
             }
           })
         },
+        onSearchBarcodeConsignment (payload) {
+          dispatch({
+            type: 'productstock/queryConsignmentBarcodeForPriceTag',
+            payload: {
+              ...payload,
+              resetChild: parentProps ? parentProps.clickChild : undefined,
+              resetChildShelf: parentProps ? parentProps.clickChildShelf : undefined,
+              resetChildLong: parentProps ? parentProps.clickLongChild : undefined
+            }
+          })
+        },
         onCloseModalProduct () {
           dispatch({
             type: 'productstock/updateState',
@@ -134,7 +149,8 @@ class ProductStock extends Component {
             payload: {
               sticker,
               resetChild: parentProps.clickChild,
-              resetChildShelf: parentProps.clickChildShelf
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         },
@@ -144,7 +160,8 @@ class ProductStock extends Component {
             payload: {
               sticker,
               resetChild: parentProps.clickChild,
-              resetChildShelf: parentProps.clickChildShelf
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         },
@@ -155,7 +172,8 @@ class ProductStock extends Component {
               selectedRecord,
               changedRecord,
               resetChild: parentProps.clickChild,
-              resetChildShelf: parentProps.clickChildShelf
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         },

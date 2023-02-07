@@ -7,15 +7,15 @@ import variables from './variables'
 const { getSetting } = variables
 // const { getPermission } = variables
 
-const stockMinusAlert = (data) => {
+const stockMinusAlert = (message) => {
   const content = []
-  for (let key in data.data[0]) {
-    if ({}.hasOwnProperty.call(data.data[0], key)) {
+  for (let key in message.data[0]) {
+    if ({}.hasOwnProperty.call(message.data[0], key)) {
       if (key === 'productId' || key === 'productCode' || key === 'productName' || key === 'count') {
         content.push(
           <div key={key} className={styles.item}>
             <div>{key}</div>
-            <div>:  {String(data.data[0][key])}</div>
+            <div>:  {String(message.data[0][key])}</div>
           </div>
         )
       }
@@ -24,10 +24,10 @@ const stockMinusAlert = (data) => {
 
   return (
     Modal.warning({
-      title: data.message,
+      title: message.message,
       content: (
         <div className={styles.content}>
-          {data.detail}
+          {message.detail}
           {content}
         </div>
       )

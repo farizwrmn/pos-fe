@@ -13,47 +13,123 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
     {
       title: 'Account Code',
       dataIndex: 'accountCode',
-      key: 'accountCode',
-      width: '25%'
+      key: 'accountCode'
     },
     {
       title: 'Account Name',
       dataIndex: 'accountName',
-      key: 'accountName',
-      width: '25%'
+      key: 'accountName'
     },
     {
-      title: 'Debit',
-      dataIndex: 'debit',
-      key: 'debit',
-      render: text => (
-        <div>
-          {formatNumberIndonesia(parseFloat(text || 0))}
-        </div>
-      ),
-      width: '15%'
+      title: 'Start',
+      dataIndex: 'startBalance',
+      key: 'startBalance',
+      children: [
+        {
+          title: 'Debit',
+          dataIndex: 'startBalanceDebit',
+          key: 'startBalanceDebit',
+          render: (text, record) => {
+            if (record.startBalance > 0) {
+              return (
+                <div>
+                  {formatNumberIndonesia(parseFloat(record.startBalance || 0))}
+                </div>
+              )
+            }
+            return '-'
+          }
+        },
+        {
+          title: 'Credit',
+          dataIndex: 'startBalanceCredit',
+          key: 'startBalanceCredit',
+          render: (text, record) => {
+            if (record.startBalance < 0) {
+              return (
+                <div>
+                  {formatNumberIndonesia(parseFloat(record.startBalance || 0) * -1)}
+                </div>
+              )
+            }
+            return '-'
+          }
+        }
+      ]
     },
     {
-      title: 'Credit',
-      dataIndex: 'credit',
-      key: 'credit',
-      render: text => (
-        <div>
-          {formatNumberIndonesia(parseFloat(text || 0))}
-        </div>
-      ),
-      width: '15%'
+      title: 'Moving',
+      dataIndex: 'movingBalance',
+      key: 'movingBalance',
+      children: [
+        {
+          title: 'Debit',
+          dataIndex: 'movingBalanceDebit',
+          key: 'movingBalanceDebit',
+          render: (text, record) => {
+            if (record.movingBalance > 0) {
+              return (
+                <div>
+                  {formatNumberIndonesia(parseFloat(record.movingBalance || 0))}
+                </div>
+              )
+            }
+            return '-'
+          }
+        },
+        {
+          title: 'Credit',
+          dataIndex: 'movingBalanceCredit',
+          key: 'movingBalanceCredit',
+          render: (text, record) => {
+            if (record.movingBalance < 0) {
+              return (
+                <div>
+                  {formatNumberIndonesia(parseFloat(record.movingBalance || 0) * -1)}
+                </div>
+              )
+            }
+            return '-'
+          }
+        }
+      ]
     },
     {
       title: 'Balance',
       dataIndex: 'balance',
       key: 'balance',
-      render: text => (
-        <div>
-          {formatNumberIndonesia(parseFloat(text || 0))}
-        </div>
-      ),
-      width: '15%'
+      children: [
+        {
+          title: 'Debit',
+          dataIndex: 'balanceDebit',
+          key: 'balanceDebit',
+          render: (text, record) => {
+            if (record.balance > 0) {
+              return (
+                <div>
+                  {formatNumberIndonesia(parseFloat(record.balance || 0))}
+                </div>
+              )
+            }
+            return '-'
+          }
+        },
+        {
+          title: 'Credit',
+          dataIndex: 'balanceCredit',
+          key: 'balanceCredit',
+          render: (text, record) => {
+            if (record.balance < 0) {
+              return (
+                <div>
+                  {formatNumberIndonesia(parseFloat(record.balance || 0) * -1)}
+                </div>
+              )
+            }
+            return '-'
+          }
+        }
+      ]
     }
   ]
 
@@ -61,6 +137,7 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
     <Table
       {...browseProps}
       bordered
+      pagination={false}
       columns={columns}
       simple
       size="small"

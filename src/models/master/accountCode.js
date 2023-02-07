@@ -48,8 +48,8 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/report/accounting/general-ledger'
-          || pathname === '/report/accounting/consolidation/general-ledger'
+        if (pathname === '/report/accounting/consolidation/general-ledger'
+          || pathname === '/bank-history'
           || pathname === '/tools/report/general-ledger') {
           dispatch({
             type: 'query',
@@ -73,13 +73,24 @@ export default modelExtend(pageModel, {
               order: 'accountCode'
             }
           })
+          dispatch({
+            type: 'queryExpense',
+            payload: {
+              accountType: pathname === '/bank-entry' ? undefined : [
+                'COGS',
+                'EXPS',
+                'OEXP'
+              ],
+              type: 'all',
+              order: 'accountCode'
+            }
+          })
         }
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'
           || pathname === '/balance/finance/petty-cash'
           || pathname === '/balance/finance/history'
-          || pathname === '/bank-history'
           || pathname === '/master/paymentoption'
           || pathname === '/bank-entry'
           || matchEdc) {

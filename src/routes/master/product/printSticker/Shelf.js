@@ -253,8 +253,9 @@ const Shelf = ({
           <h2 style={{ padding: '10px 0 0 15px' }}>
             Products
             {totalQty !== 0 && <span style={{ fontSize: 12, margin: '0 10px' }}>{totalQty} stiker(s)</span>}
-            <a onClick={() => onShowModalProduct('all')}><Icon style={iconStyle} type="plus-circle-o" /></a>
-            <a onClick={() => onShowModalProduct('update')} > <Icon style={iconStyle} type="clock-circle-o" /></a>
+            <a onClick={() => onShowModalProduct('all')}><Icon title="Basic Product" style={iconStyle} type="plus-circle-o" /></a>
+            <a onClick={() => onShowModalProduct('consignment')}><Icon title="Consignment" style={iconStyle} type="tag" /></a>
+            <a onClick={() => onShowModalProduct('update')} > <Icon title="History" style={iconStyle} type="clock-circle-o" /></a>
           </h2>
         </div>
         <Table {...tableProps} />

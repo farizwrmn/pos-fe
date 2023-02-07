@@ -130,7 +130,10 @@ class ModalList extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="Memo">
             {getFieldDecorator('memo', {
-              initialValue: item.memo
+              initialValue: item.memo,
+              rules: [{
+                required: true
+              }]
             })(<Input
               onKeyDown={(e) => {
                 if (e.keyCode === 13) {

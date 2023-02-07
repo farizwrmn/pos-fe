@@ -31,6 +31,13 @@ const Browse = ({ dataSource, ...browseProps }) => {
       render: text => (text || '-').toLocaleString()
     },
     {
+      title: 'Transfer IN',
+      dataIndex: 'transferInQty',
+      key: 'transferInQty',
+      width: '150px',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
       title: 'Adjust IN',
       dataIndex: 'adjInQty',
       key: 'adjInQty',
@@ -44,6 +51,13 @@ const Browse = ({ dataSource, ...browseProps }) => {
       key: 'posQty',
       width: '150px',
       className: styles.alignRight,
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Transfer OUT',
+      dataIndex: 'transferOutQty',
+      key: 'transferOutQty',
+      width: '150px',
       render: text => (text || '-').toLocaleString()
     },
     {
@@ -67,12 +81,19 @@ const Browse = ({ dataSource, ...browseProps }) => {
   return (
     <Table
       {...browseProps}
+      footer={() => (
+        <div>
+          <div>BeginCount : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.beginQty || 0), 0).toLocaleString()}</div>
+          <div>BeginValue : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.beginPrice || 0), 0).toLocaleString()}</div>
+          <div>TotalCount : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.count || 0), 0).toLocaleString()}</div>
+          <div>TotalValue : {dataSource.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0).toLocaleString()}</div>
+        </div>)}
       bordered
       scroll={{ x: 1000, y: 300 }}
       columns={columns}
       simple
       size="small"
-      rowKey={record => record.transNo}
+      rowKey={record => record.productCode}
       dataSource={dataSource}
     />
   )

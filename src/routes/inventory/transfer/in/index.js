@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Row, Col, Button, Tabs, message } from 'antd'
+import { Row, Tabs, message } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
-import CardIn from './CardIn'
 import Filter from './Filter'
 import Modal from './Modal'
 import ModalAccept from './ModalAccept'
 import ListTransfer from './ListTransferIn'
 import FilterTransfer from './FilterTransferIn'
+import ListTransferPending from './ListTransferPending'
 
 const TabPane = Tabs.TabPane
 
@@ -117,8 +117,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     }
   }
 
-  const clickedItem = (e) => {
-    const { value } = e.target
+  const clickedItem = (transNo) => {
     // dispatch({
     //   type: 'employee/query',
     //   payload: {}
@@ -126,49 +125,19 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     dispatch({
       type: 'transferIn/queryOutDetail',
       payload: {
-        transNo: value,
+        transNo,
         storeIdReceiver: lstorage.getCurrentUserStore()
       }
     })
   }
 
-  const getComponentCard = (list) => {
-    let card = []
-    let then = ''
-    let now = moment().format('DD/MM/YYYY HH:mm:ss')
-    for (let key = 0; key < list.length; key += 1) {
-      then = moment(list[key].transDate).format('dddd, DD-MM-YYYY')
-      // let ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"))
-      // let d = moment.duration(ms)
-      // let duration = Math.floor(d.asHours()) + moment.utc(ms).format(":mm:ss")
-      let duration = moment(moment(now, 'DD/MM/YYYY HH:mm:ss')).diff(moment(then, 'DD/MM/YYYY HH:mm:ss'), 'd')
-      const cardProps = {
-        title: list[key].transNo,
-        style: {
-          margin: '5px 5px'
-        },
-        extra: (<Button type="primary" onClick={value => clickedItem(value)} value={list[key].transNo}>Detail</Button>),
-        item: (
-          <div>
-            <p>from: {list[key].storeName}/{list[key].employeeName}</p>
-            <p>to: {list[key].storeNameReceiver}</p>
-            <p>Send: {then}</p>
-            <p>Duration: {duration} {duration > 1 ? 'days ago' : 'day ago'}</p>
-          </div>
-        )
-      }
-      card.push(
-        <Col lg={8} md={24}>
-          <CardIn {...cardProps} />
-        </Col>
-      )
+  const listTransferPendingProps = {
+    dataSource: listTrans,
+    onRowClick (record) {
+      clickedItem(record.transNo)
     }
-    return (
-      <Row>
-        {card}
-      </Row>
-    )
   }
+
   const formConfirmProps = {
     visible: modalConfirmVisible,
     modalConfirmVisible,
@@ -324,7 +293,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     storeInfo,
     showPrintModal,
     user,
-    updateFilter (filters, sorts) {
+    updateFilter (page, filters, sorts) {
       dispatch({
         type: 'transferIn/updateState',
         payload: {
@@ -376,7 +345,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
           </Row>
           {modalVisible && <Modal {...modalProps} />}
           {modalAcceptVisible && <ModalAccept {...modalAcceptProps} />}
-          {getComponentCard(listTrans)}
+          <ListTransferPending {...listTransferPendingProps} />
         </TabPane>
         <TabPane tab="Archieve" key="1">
           <FilterTransfer {...filterTransferProps} />

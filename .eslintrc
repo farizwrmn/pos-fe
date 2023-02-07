@@ -109,6 +109,8 @@
   },
   "parser": "babel-eslint",
   "globals": {
+    "self": true,
+    "caches": true,
     "window": true,
     "document": true,
     "foo": true,
@@ -118,6 +120,7 @@
     "navigator": true,
     "alert": true,
     "screen": true,
+    "BrowserPrint": true,
     "location": true,
     "Element": true,
     "Image": true,

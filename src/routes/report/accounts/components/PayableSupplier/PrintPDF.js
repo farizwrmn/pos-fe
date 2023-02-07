@@ -5,12 +5,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
-import { numberFormat } from 'utils'
+import { numberFormat, formatDate } from 'utils'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listTrans, storeInfo }) => {
-  let total = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.payable), 0)
+const PrintPDF = ({ user, listTrans, storeInfo, from, to }) => {
+  // Declare Variable
+  let payableTotal = (listTrans || []).reduce((cnt, o) => cnt + parseFloat(o.payable || 0), 0)
 
   // Declare Function
   const createTableBody = (tabledata) => {
@@ -22,9 +23,8 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
         let data = rows[key]
         let row = [
           { text: count, alignment: 'center', fontSize: 11 },
-          { text: (data['supplier.supplierName'] || ''), alignment: 'left', fontSize: 11 },
-          { text: (data['supplier.supplierTaxId'] || ''), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(data.payable), alignment: 'right', fontSize: 11 }
+          { text: (data.supplierName || ''), alignment: 'left', fontSize: 11 },
+          { text: formatNumberIndonesia(data.payable || 0), alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
@@ -63,13 +63,32 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
             stack: storeInfo.stackHeader01
           },
           {
-            text: 'LAPORAN SISA HUTANG',
+            text: 'LAPORAN HUTANG SUPPLIER',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
           },
           {
-            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 742, y2: 5, lineWidth: 0.5 }]
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
+          },
+          {
+            columns: [
+              {
+                text: `\nPERIODE: ${formatDate(from)}  TO  ${formatDate(to)}`,
+                fontSize: 12,
+                alignment: 'left'
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'center'
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'right'
+              }
+            ]
           }
         ]
       }
@@ -81,7 +100,7 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
       margin: [50, 30, 50, 0],
       stack: [
         {
-          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 742, y2: 5, lineWidth: 0.5 }]
+          canvas: [{ type: 'line', x1: 0, y1: 5, x2: 733, y2: 5, lineWidth: 0.5 }]
         },
         {
           columns: [
@@ -111,12 +130,10 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NAMA SUPPLIER', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'NPWP', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SISA HUTANG', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'SUPPLIER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'TERHUTANG', style: 'tableHeader', alignment: 'center' }
     ]
   ]
-
   let tableBody = []
   try {
     tableBody = createTableBody(listTrans)
@@ -125,21 +142,21 @@ const PrintPDF = ({ user, listTrans, storeInfo }) => {
   }
   const tableFooter = [
     [
-      { text: 'SUBTOTAL', colSpan: 3, alignment: 'center', fontSize: 12 },
+      { text: 'SUBTOTAL', colSpan: 2, alignment: 'center', fontSize: 12 },
       {},
-      {},
-
-      { text: `${(total || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
+      { text: `${(payableTotal || 0).toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, alignment: 'right', fontSize: 12 }
     ]
   ]
 
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['10%', '30%', '30%', '30%'],
+    width: [
+      '10%', '45%', '45%'
+    ],
     pageMargins: [50, 130, 50, 60],
-    pageSize: 'A4',
-    pageOrientation: 'landscape',
+    pageSize: { width: 813, height: 530 },
+    pageOrientation: 'portrait',
     tableStyle: styles,
     layout: 'noBorder',
     tableHeader,

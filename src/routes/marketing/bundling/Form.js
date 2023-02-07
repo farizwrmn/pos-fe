@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import {
   Form,
   Card,
@@ -67,6 +68,7 @@ class FormCounter extends Component {
       listGrabCategory = [],
       listAllStores = [],
       listPaymentOption = [],
+      listBundlingCategory = [],
       listBank = [],
       onSubmit,
       showModal,
@@ -191,6 +193,7 @@ class FormCounter extends Component {
               distPrice06: categoryCode === null ? (type === 'P' ? item.distPrice06 : item.serviceCost) : 0,
               distPrice07: categoryCode === null ? (type === 'P' ? item.distPrice07 : item.serviceCost) : 0,
               distPrice08: categoryCode === null ? (type === 'P' ? item.distPrice08 : item.serviceCost) : 0,
+              distPrice09: categoryCode === null ? (type === 'P' ? item.distPrice09 : item.serviceCost) : 0,
               discount: 0,
               disc1: 0,
               disc2: 0,
@@ -572,6 +575,8 @@ class FormCounter extends Component {
       }
     }
 
+    const categoryBundle = (listBundlingCategory || []).length > 0 ? listBundlingCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName}`}>{`${c.categoryName}`}</Option>) : []
+
     return (
       <Form layout="horizontal">
 
@@ -613,6 +618,21 @@ class FormCounter extends Component {
                     }
                   ]
                 })(<Input maxLength={60} />)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/marketing/promo-category">Category</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bundlingCategoryId', {
+                  initialValue: modalType === 'add' ? undefined : item.bundlingCategoryId,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{categoryBundle}
+                </Select>)}
               </FormItem>
               <FormItem label="Publish on e-commerce" {...formItemLayout}>
                 {getFieldDecorator('activeShop', {

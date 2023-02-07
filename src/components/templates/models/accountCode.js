@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/master/accountCode'
-import { pageModel } from '../common'
+import { pageModel } from 'models/common'
 
 const success = () => {
   message.success('Account Code has been saved')

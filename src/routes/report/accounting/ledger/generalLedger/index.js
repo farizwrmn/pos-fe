@@ -4,13 +4,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
-  const { period, year, activeKey, listProduct } = generalLedger
+const Report = ({ dispatch, generalLedger, userStore, accountCode, app, loading }) => {
+  const { from, to, activeKey, listProduct } = generalLedger
+  const { listAllStores } = userStore
   const { listAccountCode } = accountCode
   let { listRekap } = generalLedger
   if (activeKey === '1') {
@@ -25,7 +27,9 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
   }
 
   const filterProps = {
+    loading,
     listAccountCode,
+    listAllStores,
     activeKey,
     // productCode,
     // productName,
@@ -34,8 +38,8 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
     user,
     dispatch,
     storeInfo,
-    period,
-    year,
+    from,
+    to,
     onListReset () {
       if (activeKey === '3') {
         dispatch({
@@ -58,28 +62,34 @@ const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
       })
     },
     onChangePeriod (data) {
-      dispatch({
-        type: 'generalLedger/setPeriod',
-        payload: {
-          accountId: data.accountId,
-          from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
-          to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
+      if (data.rangePicker && data.rangePicker[0]) {
+        const from = moment(data.rangePicker[0]).format('YYYY-MM-DD')
+        const fromPeriod = moment(data.rangePicker[0]).format('YYYY-MM')
+        const to = moment(data.rangePicker[1]).format('YYYY-MM-DD')
+        const toPeriod = moment(data.rangePicker[1]).format('YYYY-MM')
+        if (fromPeriod === toPeriod) {
+          dispatch({
+            type: 'generalLedger/setPeriod',
+            payload: {
+              accountId: data.accountId,
+              from,
+              to,
+              storeId: data.storeId || undefined
+            }
+          })
+          dispatch(routerRedux.push({
+            pathname: location.pathname,
+            query: {
+              accountId: data.accountId,
+              from,
+              to,
+              storeId: data.storeId || undefined
+            }
+          }))
+        } else {
+          message.warning('Validation: Only access one month period')
         }
-      })
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
-          accountId: data.accountId,
-          from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
-          to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
-        }
-      }))
-    },
-    onShowCategories () {
-      dispatch({ type: 'productcategory/query' })
-    },
-    onShowBrands () {
-      dispatch({ type: 'productbrand/query' })
+      }
     }
   }
 
@@ -100,4 +110,4 @@ Report.propTypes = {
   productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ generalLedger, accountCode, productcategory, productbrand, app, loading }) => ({ generalLedger, accountCode, productcategory, productbrand, app, loading }))(Report)
+export default connect(({ generalLedger, userStore, accountCode, productcategory, productbrand, app, loading }) => ({ generalLedger, userStore, accountCode, productcategory, productbrand, app, loading }))(Report)

@@ -3,10 +3,9 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
+const PrintXLS = ({ listRekap, from, to, storeInfo }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -68,9 +67,12 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
           { value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.accountCode || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
           { value: (data.accountName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.debit || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.credit || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.balance || 0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
+          { value: data.startBalance > 0 ? (data.startBalance || 0) : (0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.startBalance < 0 ? (data.startBalance * -1 || 0) : (0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.movingBalance > 0 ? (data.movingBalance || 0) : (0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.movingBalance < 0 ? (data.movingBalance * -1 || 0) : (0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.balance > 0 ? (data.balance || 0) : (0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder },
+          { value: data.balance < 0 ? (data.balance * -1 || 0) : (0), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder }
         ]
 
         tableBody.push(row)
@@ -83,9 +85,26 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
         { value: 'KODE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA PERKIRAAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'SALDO AWAL', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'SALDO BERGERAK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'SALDO AKHIR', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+      ],
+    )
+    tableHeader.push(
+      [
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'DEBIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'CREDIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'BALANCE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+        { value: 'DEBIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'CREDIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'DEBIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'CREDIT', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
       ],
     )
     return tableBody
@@ -94,7 +113,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   const title = [
     { value: 'LAPORAN NERACA SALDO', alignment: styles.alignmentCenter, font: styles.title },
     { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
-    { value: `PERIODE : ${moment(period, 'MM').format('MMMM').concat('-', year)}`, alignment: styles.alignmentCenter, font: styles.title }
+    { value: `PERIODE : ${from} - ${to}`, alignment: styles.alignmentCenter, font: styles.title }
   ]
 
   let tableBody = []

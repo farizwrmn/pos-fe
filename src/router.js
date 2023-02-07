@@ -216,6 +216,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
               registerModel(app, require('./models/master/specification'))
               registerModel(app, require('./models/master/variantStock'))
               registerModel(app, require('./models/product/productcountry'))
@@ -735,6 +737,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/report/accounting/ledger/generalLedger'))
             }, 'report-accounting-general-ledger-consolidation')
@@ -744,6 +747,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/accounting/ledger/trialBalance/'))
             }, 'report-accounting-trial-balance')
           }
@@ -955,6 +959,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/product/productCost'))
               registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/report/fifo/summary/'))
             }, 'report-purchase-summary-trans')
@@ -1097,10 +1102,7 @@ const Routers = function ({ history, app }) {
           path: 'report/accounts/payable',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/purchase'))
-              registerModel(app, require('./models/report/accounts'))
-              registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/report/accountPayableReport'))
               cb(null, require('./routes/report/accounts/payable'))
             }, 'report-account-payable')
           }
@@ -1254,6 +1256,22 @@ const Routers = function ({ history, app }) {
             }, 'consignment/rent/rent-request-detail')
           }
         }, {
+          path: 'k3express/product-brand',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              cb(null, require('./routes/k3express/product/productBrand'))
+            }, 'k3express/product/k3expressbrand')
+          }
+        }, {
+          path: 'k3express/product-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              cb(null, require('./routes/k3express/product/productCategory'))
+            }, 'k3express/product/k3expresscategory')
+          }
+        }, {
           path: 'cash-entry/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1276,6 +1294,22 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/journalentry'))
               cb(null, require('./routes/accounts/journalentry/detail'))
             }, 'accounts-journal-entry-detail')
+          }
+        }, {
+          path: 'stock-opname/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
+            }, 'stock-opname-detail')
+          }
+        }, {
+          path: 'stock-opname',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpname'))
+            }, 'stock-opname')
           }
         }, {
           path: 'journal-entry',
@@ -1319,8 +1353,16 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
               registerModel(app, require('./models/master/accountCode'))
-              cb(null, require('./routes/accounts/bankrecon/'))
+              cb(null, require('./routes/accounts/bankrecon'))
             }, 'finance-bank-recon')
+          }
+        }, {
+          path: 'accounting-overview',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/accountingOverview'))
+              cb(null, require('./routes/accounts/accountingOverview'))
+            }, 'accounting-overview-report')
           }
         }, {
           path: 'bank-history',
@@ -1713,6 +1755,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/marketing/bundlingCategory'))
               registerModel(app, require('./models/shopee/shopeeCategory'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
@@ -1725,6 +1768,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/specification'))
               cb(null, require('./routes/marketing/bundling'))
             }, 'marketing-bundling')
+          }
+        }, {
+          path: 'marketing/promo-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/bundlingCategory'))
+              cb(null, require('./routes/marketing/bundlingCategory'))
+            }, 'marketing-bundling-category')
           }
         }, {
           path: 'marketing/voucher',

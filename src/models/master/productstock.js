@@ -9,6 +9,10 @@ import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
+import { queryProductByCode } from 'services/consignment/products'
+import { query as queryProductCost } from 'services/product/productCost'
+import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
+import { lstorage } from 'utils'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -49,6 +53,8 @@ export default modelExtend(pageModel, {
     listSticker: [],
     update: false,
     selectedSticker: {},
+    modalStorePriceItem: {},
+    modalStorePriceVisible: false,
     period: [],
     showPDFModal: false,
     mode: '',
@@ -136,6 +142,68 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * hideModalStorePrice (payload, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStorePriceVisible: false,
+          modalStorePriceItem: {}
+        }
+      })
+    },
+
+    * showModalStorePrice ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStorePriceVisible: false,
+          modalStorePriceItem: {}
+        }
+      })
+
+      const listStorePrice = yield call(queryStorePrice, {
+        productId: payload.modalStorePriceItem.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+
+      console.log('listStorePrice', listStorePrice)
+      if (listStorePrice && listStorePrice.data && listStorePrice.data.length > 0) {
+        const item = listStorePrice.data[0]
+        payload.modalStorePriceItem.sellPrice = item.sellPrice
+        payload.modalStorePriceItem.distPrice01 = item.distPrice01
+        payload.modalStorePriceItem.distPrice02 = item.distPrice02
+        payload.modalStorePriceItem.distPrice03 = item.distPrice03
+        payload.modalStorePriceItem.distPrice04 = item.distPrice04
+        payload.modalStorePriceItem.distPrice05 = item.distPrice05
+        payload.modalStorePriceItem.distPrice06 = item.distPrice06
+        payload.modalStorePriceItem.distPrice07 = item.distPrice07
+        payload.modalStorePriceItem.distPrice08 = item.distPrice08
+        payload.modalStorePriceItem.distPrice09 = item.distPrice09
+      }
+
+      const productCost = yield call(queryProductCost, {
+        productId: payload.modalStorePriceItem.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+
+      if (productCost && productCost.data && productCost.data[0]) {
+        const item = productCost.data[0]
+        payload.modalStorePriceItem.costPrice = item.costPrice
+      }
+
+      payload.modalStorePriceItem.productId = payload.modalStorePriceItem.id
+      payload.modalStorePriceItem.storeId = lstorage.getCurrentUserStore()
+      payload.modalStorePriceItem.storeName = lstorage.getCurrentUserStoreName()
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStorePriceVisible: true,
+          modalStorePriceItem: payload.modalStorePriceItem
+        }
+      })
+    },
+
     * hideGrabmartCampaign (payload, { put }) {
       yield put({
         type: 'updateState',
@@ -163,6 +231,46 @@ export default modelExtend(pageModel, {
           type: 'querySuccessItem',
           payload: data.data
         })
+      }
+    },
+
+    * queryConsignmentBarcodeForPriceTag ({ payload = {} }, { call, put, select }) {
+      const { productCode } = payload
+      const response = yield call(queryProductByCode, { productCode: productCode ? productCode.trim() : null })
+      const listSticker = yield select(({ productstock }) => productstock.listSticker)
+      if (response.success && response.data) {
+        const newListSticker = listSticker.concat([
+          {
+            info: {
+              productCode: response.data.product_code,
+              productName: response.data.product_name,
+              barCode01: response.data.barcode,
+              categoryColor: '#33BBFF',
+              brandName: 'CONSIGNMENT',
+              sellPrice: response.data.stock.price
+            },
+            name: response.data.product_name,
+            qty: Number(payload.qty)
+          }
+        ])
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSticker: newListSticker
+          }
+        })
+        const { resetChild, resetChildShelf, resetChildLong } = payload
+        if (resetChild) {
+          resetChild(newListSticker)
+        }
+        if (resetChildShelf) {
+          resetChildShelf(newListSticker)
+        }
+        if (resetChildLong) {
+          resetChildLong(newListSticker)
+        }
+      } else {
+        throw response
       }
     },
 
@@ -237,7 +345,24 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const { stockQuery, ...otherPayload } = payload
       const data = yield call(query, otherPayload)
-      if (data) {
+      if (data && data.data) {
+        if (data.data.length > 0) {
+          const productCost = yield call(queryProductCost, {
+            productId: data.data.map(item => item.id),
+            storeId: lstorage.getCurrentUserStore()
+          })
+          if (productCost && productCost.data && productCost.data.length > 0) {
+            data.data = data.data.map((item) => {
+              const filteredProduct = productCost.data.filter(filtered => filtered.productId === item.id)
+              if (filteredProduct && filteredProduct[0]) {
+                item.storeSupplierCode = filteredProduct[0].supplierCode
+                item.storeSupplierName = filteredProduct[0].supplierName
+                item.costPrice = filteredProduct[0].costPrice
+              }
+              return item
+            })
+          }
+        }
         yield put({
           type: 'querySuccess',
           payload: {
@@ -542,7 +667,7 @@ export default modelExtend(pageModel, {
 
     * addSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild, resetChildShelf } = payload
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
       listSticker.push(sticker)
       yield put({
         type: 'updateState',
@@ -556,11 +681,14 @@ export default modelExtend(pageModel, {
       if (resetChildShelf) {
         resetChildShelf(listSticker)
       }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
     },
 
     * deleteSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { sticker, resetChild, resetChildShelf } = payload
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
       listSticker = listSticker.filter(x => x.name !== sticker.name)
       yield put({
         type: 'updateState',
@@ -574,11 +702,14 @@ export default modelExtend(pageModel, {
       if (resetChildShelf) {
         resetChildShelf(listSticker)
       }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
     },
 
     * updateSticker ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
-      const { selectedRecord, changedRecord, resetChild, resetChildShelf } = payload
+      const { selectedRecord, changedRecord, resetChild, resetChildShelf, resetChildLong } = payload
       let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
       listSticker[selected] = changedRecord
 
@@ -593,6 +724,9 @@ export default modelExtend(pageModel, {
       }
       if (resetChildShelf) {
         resetChildShelf(listSticker)
+      }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
       }
     }
   },

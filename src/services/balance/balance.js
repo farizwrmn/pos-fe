@@ -1,3 +1,4 @@
+import lstorage from 'utils/lstorage'
 import { request, config, crypt } from '../../utils'
 
 const { balance } = config.api
@@ -6,6 +7,17 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: balance,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryLovBalance (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: '/lov-balance',
     method: 'get',
     data: params,
     headers: apiHeaderToken

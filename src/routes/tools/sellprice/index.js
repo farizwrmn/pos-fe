@@ -145,6 +145,7 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
           prevDistPrice06: item.distPrice06,
           prevDistPrice07: item.distPrice07,
           prevDistPrice08: item.distPrice08,
+          prevDistPrice09: item.distPrice09,
           sellPrice: item.sellPrice,
           distPrice01: item.distPrice01,
           distPrice02: item.distPrice02,
@@ -153,7 +154,8 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
           distPrice05: item.distPrice05,
           distPrice06: item.distPrice06,
           distPrice07: item.distPrice07,
-          distPrice08: item.distPrice08
+          distPrice08: item.distPrice08,
+          distPrice09: item.distPrice09
         }
         arrayProd.push(data)
         dispatch({
@@ -473,8 +475,7 @@ const Sellprice = ({ location, transferOut, sellprice, pos, employee, app, dispa
         }
       })
     },
-    onModalVisible (record) {
-      console.log('record', record)
+    onModalVisible () {
       // dispatch({
       //   type: 'sellprice/updateState',
       //   payload: {

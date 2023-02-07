@@ -124,7 +124,7 @@ const FormAdd = ({
                 initialValue: item.description,
                 rules: [
                   {
-                    required: false
+                    required: true
                   }
                 ]
               })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)}

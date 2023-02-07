@@ -1,15 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Form from './Form'
 import List from './List'
 
-const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
+const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
   const {
     listBankRecon,
     summaryBankRecon,
+    selectedRowKeys,
     currentItem,
     pagination,
+    accountId,
     from,
     to
   } = bankentry
@@ -18,14 +21,20 @@ const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
   const formProps = {
     loading,
     item: currentItem,
+    accountId,
     from,
     to,
     listAccountCode,
     onSubmit (data) {
-      dispatch({
-        type: 'bankentry/queryBankRecon',
-        payload: data
-      })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...data,
+          page: 1
+        }
+      }))
     }
   }
 
@@ -33,9 +42,11 @@ const Cash = ({ bankentry, accountCode, loading, dispatch }) => {
     loading,
     listBankRecon,
     summaryBankRecon,
+    selectedRowKeys,
     pagination,
     dispatch,
     onSubmit (item) {
+      console.log('item', item)
       dispatch({
         type: 'bankentry/updateBankRecon',
         payload: {

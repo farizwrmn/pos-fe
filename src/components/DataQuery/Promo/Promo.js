@@ -103,7 +103,7 @@ const Promo = ({
         page: 1,
         pageSize: 10,
         storeId: lstorage.getCurrentUserStore(),
-        name: searchText
+        q: searchText
       }
     })
   }
@@ -124,7 +124,7 @@ const Promo = ({
         page: 1,
         pageSize: pagination.pageSize,
         storeId: lstorage.getCurrentUserStore(),
-        name: null
+        q: null
       }
     })
     dispatch({
@@ -138,7 +138,7 @@ const Promo = ({
     dispatch({
       type: 'promo/query',
       payload: {
-        name: searchText,
+        q: searchText,
         storeId: lstorage.getCurrentUserStore(),
         page: page.current,
         pageSize: page.pageSize

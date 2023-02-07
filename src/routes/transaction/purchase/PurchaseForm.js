@@ -369,6 +369,11 @@ const PurchaseForm = ({
                   <Option value="S">Exclude ({getVATPercentage()}%)</Option>
                 </Select>)}
               </FormItem>
+              <FormItem label="Is Tax Invoice" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('taxInvoice', {
+                  valuePropName: 'checked'
+                })(<Checkbox />)}
+              </FormItem>
               <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('taxInvoiceNo', {
                   rules: [{

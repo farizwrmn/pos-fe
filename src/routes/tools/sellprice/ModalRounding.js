@@ -57,6 +57,7 @@ const ModalRounding = ({
           listItem[selectedRowKeys[i] - 1].distPrice06 = listItem[selectedRowKeys[i] - 1].prevDistPrice06
           listItem[selectedRowKeys[i] - 1].distPrice07 = listItem[selectedRowKeys[i] - 1].prevDistPrice07
           listItem[selectedRowKeys[i] - 1].distPrice08 = listItem[selectedRowKeys[i] - 1].prevDistPrice08
+          listItem[selectedRowKeys[i] - 1].distPrice09 = listItem[selectedRowKeys[i] - 1].prevDistPrice09
         }
         onOkList(listItem)
       }

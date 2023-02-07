@@ -7,48 +7,32 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, accountsReport, userStore, app, loading }) => {
-  const { listTrans, from, to, productCode } = accountsReport
+const Report = ({ dispatch, accountPayableReport, app, loading }) => {
+  const { listTrans, to } = accountPayableReport
   const { user, storeInfo } = app
-  const { listAllStores } = userStore
   const browseProps = {
     dataSource: listTrans,
-    loading: loading.effects['accountsReport/queryPayableTrans'],
+    loading: loading.effects['accountPayableReport/queryTrans'],
     listTrans,
     storeInfo,
-    user,
-    from,
-    to,
-    productCode
+    user
   }
 
   const filterProps = {
-    listAllStores,
     listTrans,
     user,
+    to,
     storeInfo,
     loading,
-    from,
-    to,
-    productCode,
     onListReset () {
       dispatch({
-        type: 'accountsReport/setListNull'
+        type: 'accountPayableReport/setListNull'
       })
     },
-    onDateChange (from, to, storeId) {
+    onDateChange (to) {
       dispatch({
-        type: 'accountsReport/queryPayableTrans',
+        type: 'accountPayableReport/queryTrans',
         payload: {
-          from,
-          to,
-          storeId
-        }
-      })
-      dispatch({
-        type: 'accountsReport/setDate',
-        payload: {
-          from,
           to
         }
       })
@@ -66,9 +50,9 @@ const Report = ({ dispatch, accountsReport, userStore, app, loading }) => {
 Report.propTyps = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object,
-  accountsReport: PropTypes.object,
+  accountPayableReport: PropTypes.object,
   userStore: PropTypes.object,
   loading: PropTypes.object
 }
 
-export default connect(({ loading, userStore, accountsReport, app }) => ({ loading, userStore, accountsReport, app }))(Report)
+export default connect(({ loading, accountPayableReport, app }) => ({ loading, accountPayableReport, app }))(Report)

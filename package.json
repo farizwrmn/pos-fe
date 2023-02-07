@@ -78,6 +78,7 @@
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "lint": "eslint --fix --ext .js src",
     "build": "set NODE_ENV=production && set NODE_OPTIONS=--max_old_space_size=4096 && node ./scripts/create-env.js && roadhog build",
+    "build:k3bike": "set NODE_ENV=production && set NODE_OPTIONS=--max_old_space_size=4096 && node ./scripts/create-env-k3bike.js && roadhog build",
     "babel-build": "babel src -d dist",
     "profile": "node --prof dist/bin/www.js",
     "test": "set NODE_ENV=test && jest --coverage",

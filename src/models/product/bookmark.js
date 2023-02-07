@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/product/bookmark'
-import { pageModel } from './../common'
+import { query, add, edit, remove } from 'services/product/bookmark'
+import { pageModel } from '../common'
 
 const success = () => {
   message.success('Bookmark has been saved')
@@ -59,7 +59,18 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null),
+            list: data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null)
+              .map((item) => {
+                if (item.product != null) {
+                  if (data && data.storePrice && data.storePrice.length > 0) {
+                    const filteredProduct = data.storePrice.filter(filtered => filtered.productId === item.productId)
+                    if (filteredProduct && filteredProduct.length > 0) {
+                      item.product.storePrice = filteredProduct
+                    }
+                  }
+                }
+                return item
+              }),
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 14,

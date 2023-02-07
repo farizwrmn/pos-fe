@@ -47,7 +47,6 @@ const Browse = ({ modalShow, item, dataBrowse, changeDisabledItem, templistType,
   ]
 
   const hdlModalShow = (rec) => {
-    console.log('record', rec)
     if (modalProductVisible) {
       const value = item.transType
       const variable = templistType.filter(x => x.code === value)

@@ -5,13 +5,13 @@ import { DropOption } from 'components'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.accountName} ?`,
+        title: 'Are you sure to delete this record ?',
         onOk () {
           deleteItem(record.id)
         }

@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import moment from 'moment'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
 // import { APPNAME, couchdb } from 'utils/config.company'
@@ -275,6 +275,26 @@ export default {
     * logout ({
       payload
     }, { call, put }) {
+      const listPos = lstorage.getCashierTrans()
+      if (listPos && listPos.length > 0) {
+        const modalMember = () => {
+          return new Promise((resolve, reject) => {
+            Modal.confirm({
+              title: 'Unfinished transaction',
+              content: 'You have transaction in POS Menu',
+              onOk () {
+                resolve()
+              },
+              onCancel () {
+                reject()
+              }
+            })
+          })
+        }
+        yield modalMember()
+        yield put(routerRedux.push('/transaction/pos'))
+        return
+      }
       const data = yield call(logout, parse(payload))
       lstorage.removeItemKeys()
 

@@ -3,7 +3,9 @@ import {
   PPAY,
   EXPENSE,
   DEPOSITE,
-  JOURNALENTRY
+  JOURNALENTRY,
+  AJOUT,
+  AJIN
 } from './variable'
 
 export const getLink = (dispatch, { transactionId, storeId, transactionType }) => {
@@ -19,6 +21,22 @@ export const getLink = (dispatch, { transactionId, storeId, transactionType }) =
     case PPAY:
       dispatch({
         type: 'bankentry/linkPurchase',
+        payload: {
+          id: transactionId
+        }
+      })
+      break
+    case AJOUT:
+      dispatch({
+        type: 'bankentry/linkAdjust',
+        payload: {
+          id: transactionId
+        }
+      })
+      break
+    case AJIN:
+      dispatch({
+        type: 'bankentry/linkAdjust',
         payload: {
           id: transactionId
         }

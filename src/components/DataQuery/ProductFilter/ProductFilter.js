@@ -120,6 +120,12 @@ const ProductFilter = ({
       key: 'distPrice08',
       width: '100px',
       render: text => formatNumberIndonesia(text)
+    }, {
+      title: getDistPriceName('distPrice09'),
+      dataIndex: 'distPrice09',
+      key: 'distPrice09',
+      width: '100px',
+      render: text => formatNumberIndonesia(text)
     }
   ]
 

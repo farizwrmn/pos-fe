@@ -109,6 +109,7 @@ export default {
       })
       const responseSales = yield call(queryByDate, {
         from: payload.from,
+        balanceId: payload.balanceId,
         to: payload.to
       })
       if (responseSales && responseSales.success) {

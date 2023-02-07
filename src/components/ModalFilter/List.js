@@ -5,7 +5,6 @@ import { ModalList } from '../../routes/components'
 
 
 const List = ({
-  ...modalProps,
   listCashier,
   searchText,
   pagination,
@@ -14,7 +13,8 @@ const List = ({
   onReset,
   onClickRow,
   changeText,
-  onChange
+  onChange,
+  ...modalProps
 }) => {
   const width = '80%'
   const modalOpts = {
