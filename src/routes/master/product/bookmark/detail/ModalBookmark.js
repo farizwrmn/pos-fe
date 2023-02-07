@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Pagination, Spin, Input } from 'antd'
-import styles from './bookmark.less'
-import EmptyBookmark from './EmptyBookmark'
-import ImageBookmark from './ImageBookmark'
+import { Form, Modal, Input } from 'antd'
 
 const FormItem = Form.Item
 
@@ -27,21 +24,9 @@ class ModalBookmark extends Component {
     const {
       item,
       onSubmit,
-      loading,
-      productBookmark,
-      onChange,
-      onChoose,
-      onChooseBundle,
-      productBookmarkGroup,
-      form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+      form: { getFieldDecorator, validateFields, getFieldsValue },
       ...modalProps
     } = this.props
-
-    const { filter, list, pagination } = productBookmark
-
-    const handleChangePagination = (page) => {
-      onChange(filter.groupId, page)
-    }
 
     const handleOk = () => {
       validateFields((errors) => {
@@ -53,11 +38,13 @@ class ModalBookmark extends Component {
           title: `Applying ${record.shortcutCode}`,
           content: 'Are you sure ?',
           onOk () {
-            record.groupShortcutCode = item.shortcutCode
+            record.id = item.id
+            record.groupId = item.groupId
+            record.productId = item.productId
+            record.type = item.type
             onSubmit(record)
           }
         })
-        resetFields()
       })
     }
     const hdlClickKeyDown = (e) => {
@@ -69,7 +56,6 @@ class ModalBookmark extends Component {
       ...modalProps,
       onOk: handleOk
     }
-
     return (
       <Modal {...modalOpts}
         footer={null}
@@ -77,6 +63,7 @@ class ModalBookmark extends Component {
         <Form>
           <FormItem label="Shortcut Code" help="input 3 nomor shortcut yang tersedia" {...formItemLayout}>
             {getFieldDecorator('shortcutCode', {
+              initialValue: item.shortcutCode,
               rules: [
                 {
                   required: true,
@@ -86,36 +73,6 @@ class ModalBookmark extends Component {
               ]
             })(<Input maxLength={10} placeholder="Shortcut Code" onKeyDown={e => hdlClickKeyDown(e)} />)}
           </FormItem>
-          <Pagination pageSize={14} onChange={handleChangePagination} {...pagination} showQuickJumper={false} showSizeChanger={false} />
-          <div className={styles.container}>
-            {loading ? (
-              <Spin className={styles.spin} />
-            )
-              : list && list.length > 0 ?
-                list.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={styles.child}
-                      onClick={() => {
-                        if (item.type === 'PRODUCT') {
-                          onChoose(item.product)
-                        }
-                        if (item.type === 'BUNDLE') {
-                          onChooseBundle(item.bundle)
-                        }
-                      }}
-                    >
-                      <div>
-                        <ImageBookmark item={item} />
-                        <h4 height="36px">{item && item.product ? item.product.productName : item.bundle.name}</h4>
-                      </div>
-                    </div>
-                  )
-                }) : (
-                  <EmptyBookmark id={item.id} />
-                )}
-          </div>
         </Form>
       </Modal>
     )
