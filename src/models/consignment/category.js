@@ -1,5 +1,6 @@
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { query, queryAdd, queryEdit } from 'services/consignment/category'
 import {
   query as subQuery,
@@ -31,9 +32,12 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
+        const match = pathToRegexp('/integration/consignment/product/:id').exec(location.pathname)
         if (location.pathname === '/integration/consignment/vendor'
           || location.pathname === '/integration/consignment/product'
-          || location.pathname === '/integration/consignment/product-category') {
+          || location.pathname === '/integration/consignment/product/:id'
+          || location.pathname === '/integration/consignment/product-category'
+          || match) {
           dispatch({
             type: 'query',
             payload: {}

@@ -78,8 +78,8 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
     },
     {
       title: 'Sub Kategori',
-      dataIndex: 'subCategory.name',
-      key: 'subCategory.name',
+      dataIndex: 'subcategory.name',
+      key: 'subcategory.name',
       render: value => value || '-'
     },
     {
