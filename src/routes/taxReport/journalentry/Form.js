@@ -33,7 +33,7 @@ const column = {
 const FormCounter = ({
   item = {},
   listAccountCode,
-  storeInfo,
+  // storeInfo,
   showLov,
   onSubmit,
   modalShow,
@@ -71,10 +71,10 @@ const FormCounter = ({
       data.storeId = lstorage.getCurrentUserStore()
       const transDate = moment(data.transDate).format('YYYY-MM-DD')
       data.transDate = transDate
-      if (transDate < storeInfo.startPeriod) {
-        message.error('This period has been closed')
-        return
-      }
+      // if (transDate < storeInfo.startPeriod) {
+      //   message.error('This period has been closed')
+      //   return
+      // }
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {

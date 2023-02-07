@@ -737,6 +737,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/report/accounting/ledger/generalLedger'))
             }, 'report-accounting-general-ledger-consolidation')
@@ -746,6 +747,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/accounting/ledger/trialBalance/'))
             }, 'report-accounting-trial-balance')
           }
@@ -957,6 +959,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/product/productCost'))
               registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/report/fifo/summary/'))
             }, 'report-purchase-summary-trans')

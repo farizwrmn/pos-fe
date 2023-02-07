@@ -14,13 +14,6 @@ const column = {
 const FormCounter = ({
   dispatch
 }) => {
-  const ledgerReportProps = {
-    content: 'Laporan ini menampilkan semua transaksi yang telah dilakukan untuk suatu periode. Laporan ini bermanfaat jika Anda memerlukan daftar kronologis untuk semua transaksi yang telah dilakukan oleh perusahaan Anda.',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounting/general-ledger'))
-    }
-  }
-
   const balanceSheetReportProps = {
     content: 'Menampilan apa yang anda miliki (aset), apa yang anda hutang (liabilitas), dan apa yang anda sudah investasikan pada perusahaan anda (ekuitas).',
     onClick () {
@@ -56,7 +49,6 @@ const FormCounter = ({
         <ReportItem title="Profit/Loss" {...profitLossReportProps} />
       </Col>
       <Col {...column}>
-        <ReportItem title="Ledger" {...ledgerReportProps} />
         <ReportItem title="General Ledger" {...generalLedgerReportProps} />
         <ReportItem title="Trial Balance" {...trialBalanceReportProps} />
       </Col>

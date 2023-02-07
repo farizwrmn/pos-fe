@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, message, Input, Button, Row, Col, Modal, Select, Spin, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
+import { prefix } from 'utils/config.main'
 import moment from 'moment'
 import ListDetail from './ListDetail'
 import ModalList from './Modal'
@@ -116,13 +117,23 @@ const FormCounter = ({
       data.accountId = data.accountId && data.accountId.key ? data.accountId.key : null
       data.typeCode = data.typeCode ? data.typeCode.key : null
       data.bankId = data.bankId ? data.bankId.key : null
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, listItem, getFieldsValue(), resetFields)
-        },
-        onCancel () { }
-      })
+      const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
+      const formattedStartPeriod = moment(startPeriod).format('YYYY-MM-DD')
+      if (transDate >= formattedStartPeriod) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data, listItem, getFieldsValue(), resetFields)
+          },
+          onCancel () { }
+        })
+      } else {
+        Modal.warning({
+          title: 'Period has been closed',
+          content: 'This period has been closed'
+        })
+      }
     })
   }
 

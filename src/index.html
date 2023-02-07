@@ -4,6 +4,7 @@
 <head>
   <!-- <title>Pos App</title> -->
   <meta charset="UTF-8">
+  <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="shortcut icon" href="favicon.ico">
@@ -57,7 +58,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/service-worker.js?v=9', {
+        navigator.serviceWorker.register('/service-worker.js?v=10', {
           scope: '/'
         }).then(function (registration) {
           console.log('Worker registration successful', registration.scope);

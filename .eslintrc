@@ -109,6 +109,8 @@
   },
   "parser": "babel-eslint",
   "globals": {
+    "self": true,
+    "caches": true,
     "window": true,
     "document": true,
     "foo": true,

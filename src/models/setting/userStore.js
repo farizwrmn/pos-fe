@@ -33,6 +33,8 @@ export default modelExtend(pageModel, {
           || location.pathname === '/balance/finance/petty-expense'
           || location.pathname === '/balance/finance/petty-cash'
           || location.pathname === '/accounts/payable-form'
+          || location.pathname === '/report/accounting/consolidation/trial-balance'
+          || location.pathname === '/report/accounting/consolidation/general-ledger'
           || location.pathname === '/inventory/transfer/invoice'
           || location.pathname === '/master/store-price'
           || location.pathname === '/stock'
