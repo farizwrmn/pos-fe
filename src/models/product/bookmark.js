@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
-import { query, add, edit, remove } from '../../services/product/bookmark'
-import { pageModel } from './../common'
+import { query, add, edit, remove } from 'services/product/bookmark'
+import { pageModel } from '../common'
 
 const success = () => {
   message.success('Bookmark has been saved')

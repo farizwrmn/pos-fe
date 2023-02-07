@@ -13,6 +13,7 @@ import {
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
@@ -1038,6 +1039,66 @@ export default {
       }
     },
 
+    * queryShortcut ({ payload = {} }, { call, put }) {
+      const response = yield call(queryShortcut, {
+        day: moment().isoWeekday(),
+        storeId: lstorage.getCurrentUserStore(),
+        shortcutCode: payload.shortcutCode,
+        groupShortcutCode: payload.groupShortcutCode
+      })
+      if (response && response.success && response.data) {
+        if (response.data && response.data.type === 'BUNDLE' && response.data.bundle) {
+          yield put({
+            type: 'pospromo/addPosPromo',
+            payload: {
+              bundleId: response.data.bundle.id,
+              currentBundle: getBundleTrans(),
+              currentProduct: getCashierTrans(),
+              currentService: getServiceTrans()
+            }
+          })
+        }
+        if (response.data && response.data.type === 'PRODUCT' && response.data.product) {
+          yield put({
+            type: 'chooseProduct',
+            payload: {
+              item: response.data.product
+            }
+          })
+        }
+      } else {
+        throw response
+      }
+    },
+
+    * queryShortcutGroup ({ payload = {} }, { call, put }) {
+      const response = yield call(queryShortcutGroup, {
+        shortcutCode: payload.shortcutCode
+      })
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalBookmarkVisible: true,
+            modalBookmarkList: []
+          }
+        })
+        yield put({
+          type: 'productBookmark/query',
+          payload: {
+            day: moment().isoWeekday(),
+            storeId: lstorage.getCurrentUserStore(),
+            groupId: response.data.id,
+            relationship: 1,
+            page: 1,
+            pageSize: 25
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * getMembers ({ payload }, { call, put }) {
       const data = yield call(queryMembers, payload)
       let newData = data.data
@@ -1237,6 +1298,7 @@ export default {
         throw listProductData
       }
     },
+
     * checkQuantityEditProduct ({ payload = {} }, { call, put }) {
       const { data } = payload
       function getQueueQuantity () {
