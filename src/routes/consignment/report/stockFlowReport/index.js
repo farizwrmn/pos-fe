@@ -1,0 +1,152 @@
+import React from 'react'
+import { connect } from 'dva'
+import { Button, Dropdown, Icon, Menu, Tabs } from 'antd'
+import { routerRedux } from 'dva/router'
+import Filter from './Filter'
+import List from './List'
+import PrintPDF from './PrintPDF'
+import PrintXLS from './PrintXLS'
+
+const TabPane = Tabs.TabPane
+
+function StockFlowReport ({ consignmentStockFlowReport, dispatch, app }) {
+  const {
+    activeKey,
+    list,
+    pagination,
+
+    vendorList,
+    selectedVendor,
+    selectedVendorProduct,
+    selectedProduct,
+    consignmentId
+  } = consignmentStockFlowReport
+  const { user, storeInfo } = app
+
+  const changeTab = (key) => {
+    dispatch({
+      type: 'consignmentStockReport/updateState',
+      payload: {
+        activeKey: key
+      }
+    })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        activeKey: key
+      }
+    }))
+  }
+
+  if (!consignmentId) {
+    return (
+      <div>Consignment not linked to this store, please contact your administrator</div>
+    )
+  }
+
+  const listProps = {
+    dataSource: list,
+    pagination,
+    onFilterChange ({ pagination }) {
+      dispatch({
+        type: 'consignmentStockFlowReport/updateState',
+        payload: {
+          pagination
+        }
+      })
+    }
+  }
+
+  const filterProps = {
+    vendorList,
+    selectedVendor,
+    selectedVendorProduct,
+    selectedProduct,
+    getStockFlowByProduct () {
+      dispatch({
+        type: 'consignmentStockFlowReport/query',
+        payload: {
+          stockId: selectedProduct.id
+        }
+      })
+    },
+    updateSelectedProduct (value) {
+      const product = selectedVendorProduct.filter(filtered => filtered.id === value)[0]
+      dispatch({
+        type: 'consignmentStockFlowReport/updateState',
+        payload: {
+          selectedProduct: product
+        }
+      })
+    },
+    onSelectVendor (value) {
+      const vendor = vendorList.filter(filtered => filtered.id === value)[0]
+      dispatch({
+        type: 'consignmentStockFlowReport/queryProductByVendorId',
+        payload: {
+          selectedVendor: vendor,
+          selectedProduct: {},
+          selectedVendorProduct: []
+        }
+      })
+    },
+    searchVendor (value) {
+      dispatch({
+        type: 'consignmentStockFlowReport/queryVendor',
+        payload: {
+          q: value,
+          selectedProduct: {},
+          selectedVendorProduct: []
+        }
+      })
+    },
+    updateDateRange (value) {
+      dispatch({
+        type: 'consignmentStockFlowReport/updateState',
+        payload: {
+          dateRange: value
+        }
+      })
+    }
+  }
+
+  const printProps = {
+    dataSource: list,
+    user,
+    storeInfo
+  }
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
+      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+    </Menu>
+  )
+
+  const moreButtonTab = (<div>
+    <Dropdown overlay={menu}>
+      <Button style={{ marginLeft: 8 }}>
+        <Icon type="printer" /> Print
+      </Button>
+    </Dropdown>
+  </div>)
+
+  return (
+    <div className="content-inner">
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={moreButtonTab}>
+        <TabPane tab="Report" key="0" >
+          {activeKey === '0' &&
+            <div style={{ marginTop: '20px' }}>
+              <Filter {...filterProps} />
+              <List {...listProps} />
+            </div>
+          }
+        </TabPane>
+      </Tabs>
+    </div>
+  )
+}
+
+export default connect(({ consignmentStockFlowReport, dispatch, app }) => ({ consignmentStockFlowReport, dispatch, app }))(StockFlowReport)

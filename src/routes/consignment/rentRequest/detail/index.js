@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { IMAGEURL, IMAGECONSIGNMENTURL } from 'utils/config.company'
+import { IMAGEURL } from 'utils/config.company'
 import {
   Row,
   Col,
@@ -190,7 +190,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
                 <Col span={12}>Upload by Vendor</Col>
                 <Col span={12}>
                   {data.payment_proof ?
-                    <img height="180px" src={`${IMAGECONSIGNMENTURL}/${data.payment_proof}`} alt="no_image" />
+                    <img height="180px" src={`${IMAGEURL}/${data.payment_proof}`} alt="no_image" />
                     : null}
                 </Col>
               </Row>
