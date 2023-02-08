@@ -111,6 +111,7 @@ const Detail = ({
         type: 'productBookmark/add',
         payload: {
           data: {
+            type: 'PRODUCT',
             productId: record.id,
             groupId: data.id
           }
