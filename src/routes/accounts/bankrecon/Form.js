@@ -15,15 +15,15 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    sm: { span: 17 },
+    md: { span: 17 }
   }
 }
 
 const column = {
   xs: { span: 24 },
   md: { span: 24 },
-  lg: { span: 10 }
+  lg: { span: 6 }
 }
 
 const FormCounter = ({
@@ -58,6 +58,96 @@ const FormCounter = ({
     })
   }
 
+  const csvFileToArray = (string) => {
+    const csvHeader = [
+      'approvalCode',
+      'cardNumber',
+      'cardType',
+      'indicator',
+      'grossAmount',
+      'groupId',
+      'MDR',
+      'merchantId',
+      'EDCBatchNumber',
+      'merchantName',
+      'nettAmount',
+      'originalAmount',
+      'transDate',
+      'merchantPaymentDate',
+      'recordSource',
+      'redeemAmount',
+      'rewardAmount',
+      'MDRAmount',
+      'merchantPaymentStatus',
+      'reportDate',
+      'merchantSettleDate',
+      'terminalId',
+      'transactionDate',
+      'transactionTime',
+      'sequenceNumber',
+      'traceNumber',
+      'transactionCode'
+    ]
+    const csvRows = String(string).slice(String(string).indexOf('\n') + 1).split('\n')
+
+    const array = csvRows.map((record) => {
+      const values = record.split(';')
+      const obj = csvHeader.reduce((object, header, index) => {
+        object[header] = values[index]
+        return object
+      }, {})
+      return obj
+    })
+
+    console.log('array', array)
+    const reformatArray = array.map((record) => {
+      return ({
+        EDCBatchNumber: Number(record.EDCBatchNumber),
+        MDR: Number(record.MDR),
+        MDRAmount: Number(record.MDRAmount),
+        approvalCode: record.approvalCode,
+        cardNumber: record.cardNumber,
+        cardType: record.cardType,
+        transDate: record.transDate,
+        grossAmount: Number(record.grossAmount),
+        groupId: record.groupId,
+        indicator: record.indicator,
+        merchantId: Number(record.merchantId),
+        merchantName: record.merchantName,
+        merchantPaymentDate: record.merchantPaymentDate,
+        merchantPaymentStatus: record.merchantPaymentStatus,
+        merchantSettleDate: record.merchantSettleDate,
+        nettAmount: Number(record.nettAmount),
+        originalAmount: Number(record.originalAmount),
+        recordSource: record.recordSource,
+        redeemAmount: Number(record.redeemAmount),
+        reportDate: record.reportDate,
+        rewardAmount: Number(record.rewardAmount),
+        sequenceNumber: Number(record.sequenceNumber),
+        terminalId: Number(record.terminalId),
+        traceNumber: Number(record.traceNumber),
+        transactionCode: record.transactionCode,
+        transactionDate: record.transactionDate,
+        transactionTime: record.transactionTime
+      })
+    })
+    console.log('reformatArray', reformatArray)
+  }
+
+  const fileReader = new FileReader()
+  const handleOnChange = (event) => {
+    const file = event.target.files[0]
+    console.log('file', file)
+
+    fileReader.onload = function (event) {
+      const text = event.target.result
+      console.log('text', text)
+      csvFileToArray(text)
+    }
+
+    fileReader.readAsText(file)
+  }
+
   return (
     <div>
       <Form layout="horizontal">
@@ -89,6 +179,19 @@ const FormCounter = ({
                 }]
               })(
                 <RangePicker size="large" format="DD-MMM-YYYY" />
+              )}
+            </FormItem>
+          </Col>
+          <Col {...column} style={{ alignSelf: 'center' }}>
+            <FormItem label="Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('rangePicker', {
+                initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(
+                <input type="file" onChange={handleOnChange} />
               )}
             </FormItem>
           </Col>
