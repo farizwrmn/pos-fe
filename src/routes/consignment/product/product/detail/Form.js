@@ -72,10 +72,6 @@ const FormCounter = ({
     })
   }
 
-  const changeCategory = (value) => {
-    console.log('value', value)
-  }
-
   const categoryOption = categoryList.length > 0 ? categoryList.map(record => <Option key={record.id} value={record.id}>{record.name}</Option>) : []
 
   const subCategoryOption = subCategoryList.length > 0 ? subCategoryList.map(record => <Option key={record.id} value={record.id}>{record.name}</Option>) : []
@@ -117,7 +113,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select onChange={changeCategory}>
+              <Select >
                 {categoryOption}
               </Select>
             )}
@@ -131,7 +127,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select onChange={changeCategory}>
+              <Select >
                 {subCategoryOption}
               </Select>
             )}

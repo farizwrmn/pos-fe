@@ -173,10 +173,10 @@ const List = ({
       key: 'admin.name',
       width: '150px',
       minWidth: '150px',
-      render: (text) => {
+      render: (text, record) => {
         return (
           <div>
-            {text || '-'}
+            {record.createdby_pos ? record.createdby_pos : (text || '-')}
           </div>
         )
       }
@@ -202,10 +202,10 @@ const List = ({
       key: 'changestatus.name',
       width: '150px',
       minWidth: '150px',
-      render: (text) => {
+      render: (text, record) => {
         return (
           <div>
-            {text || '-'}
+            {record.createdby_pos ? record.createdby_pos : (text || '-')}
           </div>
         )
       }

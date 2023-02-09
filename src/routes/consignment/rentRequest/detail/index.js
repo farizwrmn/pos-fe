@@ -161,7 +161,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Dibuat oleh</Col>
-              <Col span={12}>{data.created ? data.created.name : ''}</Col>
+              <Col span={12}>{data.createdby_pos ? data.createdby_pos : (data.created ? data.created.name : '')}</Col>
             </Row>
             <Row>
               <Col span={12}>Dibuat pada</Col>
@@ -169,7 +169,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Dipegang oleh</Col>
-              <Col span={12}>{data.handled ? data.handled.name : ''}</Col>
+              <Col span={12}>{data.handledby_pos ? data.handledby_pos : (data.handled ? data.handled.name : '-')}</Col>
             </Row>
             <Row>
               <Col span={12}>Dipegang pada</Col>

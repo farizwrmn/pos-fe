@@ -119,7 +119,14 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
     {
       title: 'Dipegang oleh',
       dataIndex: 'admin.name',
-      key: 'admin.name'
+      key: 'admin.name',
+      render: (value, record) => {
+        return (
+          <div>
+            {record.handledby_pos ? record.handledby_pos : (value || '-')}
+          </div>
+        )
+      }
     },
     {
       title: 'Dipegang pada',
