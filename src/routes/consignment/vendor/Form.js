@@ -230,7 +230,7 @@ const FormCounter = ({
               ]
             })(
               formType === 'add' ? (
-                <Input type="password" />
+                <Input type="password" autoComplete="new-password" />
               ) : (
                 <Button type="primary" onClick={() => changePassword()}>Edit Password</Button>
               )
@@ -246,7 +246,7 @@ const FormCounter = ({
                   }
                 ]
               })(
-                <Input type="password" />
+                <Input type="password" autoComplete="new-password" />
               )}
             </FormItem>
           )}

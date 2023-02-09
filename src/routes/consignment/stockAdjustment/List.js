@@ -62,7 +62,14 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
     {
       title: 'Dipegang oleh',
       dataIndex: 'admin.name',
-      key: 'admin.name'
+      key: 'admin.name',
+      render: (text, record) => {
+        return (
+          <div>
+            {record.handledby_pos ? record.handledby_pos : (text || '-')}
+          </div>
+        )
+      }
     },
     {
       title: 'Dipegang pada',
