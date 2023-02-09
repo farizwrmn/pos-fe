@@ -10,7 +10,7 @@ import PrintPDF from './PrintPDF'
 
 const TabPane = Tabs.TabPane
 
-function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, app }) {
+function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, app, loading }) {
   const { list, activeKey, range, pagination, consignmentId } = consignmentReturnReport
   const { list: vendorList, selectedVendor } = consignmentVendor
   const { user, storeInfo } = app
@@ -41,6 +41,7 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentReturnReport/query'],
     onFilterChange () {
       dispatch({
         type: 'consignmentReturnReport/updateState',
@@ -143,5 +144,6 @@ export default connect(({
   consignmentReturnReport,
   consignmentVendor,
   dispatch,
-  app
-}) => ({ consignmentReturnReport, consignmentVendor, dispatch, app }))(ReturnReport)
+  app,
+  loading
+}) => ({ consignmentReturnReport, consignmentVendor, dispatch, app, loading }))(ReturnReport)

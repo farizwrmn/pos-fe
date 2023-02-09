@@ -7,7 +7,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-function Detail ({ consignmentStockFlow, consignmentOutlet, dispatch }) {
+function Detail ({ consignmentStockFlow, consignmentOutlet, dispatch, loading }) {
   const {
     list,
     activeKey,
@@ -49,6 +49,7 @@ function Detail ({ consignmentStockFlow, consignmentOutlet, dispatch }) {
     dispatch,
     pagination,
     selectedOutlet,
+    loading: loading.effects['consignmentStockFlow/query'],
     onFilterChange ({ status, type, pagination }) {
       dispatch({
         type: 'consignmentStockFlow/query',
@@ -95,5 +96,6 @@ function Detail ({ consignmentStockFlow, consignmentOutlet, dispatch }) {
 export default connect(({
   consignmentStockFlow,
   consignmentOutlet,
-  dispatch
-}) => ({ consignmentStockFlow, consignmentOutlet, dispatch }))(Detail)
+  dispatch,
+  loading
+}) => ({ consignmentStockFlow, consignmentOutlet, dispatch, loading }))(Detail)

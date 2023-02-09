@@ -9,7 +9,7 @@ const TabPane = Tabs.TabPane
 
 const confirm = Modal.confirm
 
-function Product ({ consignmentProduct, dispatch }) {
+function Product ({ consignmentProduct, dispatch, loading }) {
   const {
     list,
     activeKey,
@@ -37,6 +37,7 @@ function Product ({ consignmentProduct, dispatch }) {
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentProduct/query'],
     showConfirm ({ type, id }) {
       confirm({
         title: `Are you sure to ${type}?`,
@@ -99,5 +100,6 @@ function Product ({ consignmentProduct, dispatch }) {
 
 export default connect(({
   consignmentProduct,
-  dispatch
-}) => ({ consignmentProduct, dispatch }))(Product)
+  dispatch,
+  loading
+}) => ({ consignmentProduct, loading, dispatch }))(Product)

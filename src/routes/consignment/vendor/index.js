@@ -8,7 +8,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-function Vendor ({ consignmentVendor, consignmentCategory, dispatch }) {
+function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) {
   const { list, selectedVendor, lastVendor, activeKey, formType, pagination, q } = consignmentVendor
   const { list: categoryList } = consignmentCategory
 
@@ -33,6 +33,7 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch }) {
     formType,
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentVendor/query'],
     edit (record) {
       dispatch({
         type: 'consignmentVendor/updateState',
@@ -135,5 +136,6 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch }) {
 export default connect(({
   consignmentVendor,
   consignmentCategory,
-  dispatch
-}) => ({ consignmentVendor, consignmentCategory, dispatch }))(Vendor)
+  dispatch,
+  loading
+}) => ({ consignmentVendor, consignmentCategory, dispatch, loading }))(Vendor)

@@ -5,6 +5,7 @@ import { Button, Modal, Table, Tooltip } from 'antd'
 const numberFormatter = numberFormat.numberFormatter
 
 const List = ({
+  ...tableProps,
   list,
   setCutOffReadyForEmail
 }) => {
@@ -105,17 +106,16 @@ const List = ({
 
   return (
     <div>
-      {list && list.length > 0 && (
-        <Table
-          dataSource={list}
-          bordered
-          columns={columns}
-          simple
-          pagination={false}
-          scroll={{ x: 1500 }}
-          rowKey={record => record.id}
-        />
-      )}
+      <Table
+        {...tableProps}
+        dataSource={list}
+        bordered
+        columns={columns}
+        simple
+        pagination={false}
+        scroll={{ x: 1500 }}
+        rowKey={record => record.id}
+      />
     </div>
   )
 }

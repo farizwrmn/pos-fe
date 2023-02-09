@@ -8,7 +8,7 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-function PendingProduct ({ consignmentOutlet, dispatch }) {
+function Outlet ({ consignmentOutlet, dispatch, loading }) {
   const { list, currentOutlet, activeKey, formType, q, pagination } = consignmentOutlet
 
   const changeTab = (key) => {
@@ -31,6 +31,7 @@ function PendingProduct ({ consignmentOutlet, dispatch }) {
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentOutlet/query'],
     showConfirmation (record) {
       const columns = [
         {
@@ -246,4 +247,4 @@ function PendingProduct ({ consignmentOutlet, dispatch }) {
   )
 }
 
-export default connect(({ consignmentOutlet, dispatch }) => ({ consignmentOutlet, dispatch }))(PendingProduct)
+export default connect(({ consignmentOutlet, dispatch, loading }) => ({ consignmentOutlet, dispatch, loading }))(Outlet)

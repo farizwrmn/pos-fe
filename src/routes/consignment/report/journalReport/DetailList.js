@@ -3,6 +3,7 @@ import { Table } from 'antd'
 import moment from 'moment'
 
 const DetailList = ({
+  ...tableProps,
   list,
   numberFormatter
 }) => {
@@ -29,6 +30,7 @@ const DetailList = ({
 
   return (
     <Table
+      {...tableProps}
       dataSource={list}
       bordered
       columns={columns}

@@ -10,7 +10,7 @@ import List from './List'
 const TabPane = Tabs.TabPane
 const numberFormatter = numberFormat.numberFormatter
 
-function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispatch }) {
+function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispatch, loading }) {
   const {
     activeKey,
     vendorList,
@@ -181,6 +181,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
   const listProps = {
     pagination,
     dataSource: list,
+    loading: loading.effects['consignmentStockAdjustment/query'],
     openDetail (id) {
       dispatch({
         type: 'consignmentStockAdjustment/queryProductById',
@@ -240,5 +241,6 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
 export default connect(({
   consignmentStockAdjustment,
   consignmentOutlet,
-  dispatch
-}) => ({ consignmentStockAdjustment, consignmentOutlet, dispatch }))(StockAdjustment)
+  dispatch,
+  loading
+}) => ({ consignmentStockAdjustment, consignmentOutlet, dispatch, loading }))(StockAdjustment)

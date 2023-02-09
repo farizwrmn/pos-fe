@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Dropdown, Icon, Menu, message, Tabs } from 'antd'
+import { Button, Dropdown, Icon, Menu, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import { numberFormat } from 'utils'
 import Filter from './Filter'
@@ -12,7 +12,7 @@ import PrintPDF from './PrintPDF'
 const numberFormatter = numberFormat.numberFormatter
 const TabPane = Tabs.TabPane
 
-function JournalReport ({ consignmentJournalReport, dispatch, app }) {
+function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
   const {
     list,
     summary,
@@ -54,7 +54,6 @@ function JournalReport ({ consignmentJournalReport, dispatch, app }) {
     selectedBalance,
     dateRange,
     getData (from, to) {
-      message.info('Loading!')
       dispatch({
         type: 'consignmentJournalReport/querySummary',
         payload: {
@@ -91,6 +90,7 @@ function JournalReport ({ consignmentJournalReport, dispatch, app }) {
   const summaryProps = {
     summary,
     numberFormatter,
+    loading: loading.effects['consignmentJournalReport/querySummary'],
     paymentMethod
   }
 
@@ -98,6 +98,7 @@ function JournalReport ({ consignmentJournalReport, dispatch, app }) {
     list,
     paymentMethod,
     detailActiveKey,
+    loading: loading.effects['consignmentJournalReport/querySummary'],
     numberFormatter,
     changeTab (key) {
       dispatch({
@@ -154,5 +155,6 @@ export default connect(({
   consignmentJournalReport,
   consignmentOutlet,
   dispatch,
-  app
-}) => ({ consignmentJournalReport, consignmentOutlet, dispatch, app }))(JournalReport)
+  app,
+  loading
+}) => ({ consignmentJournalReport, consignmentOutlet, dispatch, app, loading }))(JournalReport)

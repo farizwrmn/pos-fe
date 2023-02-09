@@ -10,7 +10,7 @@ const TextArea = Input.TextArea
 
 const confirm = Modal.confirm
 
-function PendingProduct ({ consignmentPendingProduct, dispatch }) {
+function PendingProduct ({ consignmentPendingProduct, dispatch, loading }) {
   const { list, activeKey, pagination, q } = consignmentPendingProduct
 
   const changeTab = (key) => {
@@ -33,6 +33,7 @@ function PendingProduct ({ consignmentPendingProduct, dispatch }) {
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentPendingProduct/query'],
     showConfirm ({ type, id }) {
       let note
       confirm({
@@ -101,4 +102,4 @@ function PendingProduct ({ consignmentPendingProduct, dispatch }) {
   )
 }
 
-export default connect(({ consignmentPendingProduct, dispatch }) => ({ consignmentPendingProduct, dispatch }))(PendingProduct)
+export default connect(({ consignmentPendingProduct, dispatch, loading }) => ({ consignmentPendingProduct, dispatch, loading }))(PendingProduct)

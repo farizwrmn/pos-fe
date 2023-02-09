@@ -4,7 +4,7 @@ import { numberFormat } from 'utils'
 
 const numberFormatter = numberFormat.numberFormatter
 
-const Summary = ({ list }) => {
+const Summary = ({ ...tableProps, list }) => {
   const columns = [
     {
       title: (
@@ -74,6 +74,7 @@ const Summary = ({ list }) => {
 
   return (
     <Table
+      {...tableProps}
       bordered
       dataSource={dataSummary(list)}
       columns={columns}
