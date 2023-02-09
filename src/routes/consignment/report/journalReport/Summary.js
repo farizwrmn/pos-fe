@@ -2,6 +2,7 @@ import React from 'react'
 import { Table } from 'antd'
 
 const List = ({
+  ...tableProps,
   summary,
   numberFormatter,
   paymentMethod
@@ -39,6 +40,7 @@ const List = ({
   return (
     <div>
       <Table
+        {...tableProps}
         dataSource={summary}
         bordered
         columns={columns}

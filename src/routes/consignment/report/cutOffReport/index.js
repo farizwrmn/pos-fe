@@ -8,7 +8,7 @@ import PrintPDF from './PrintPDF'
 
 const TabPane = Tabs.TabPane
 
-function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, app }) {
+function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, app, loading }) {
   const { activeKey, list, periodList, consignmentId } = consignmentCutOffReport
   const { list: outletList } = consignmentOutlet
   const { storeInfo, user } = app
@@ -25,6 +25,7 @@ function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, a
   const listProps = {
     list,
     outletList,
+    loading: loading.effects['consignmentCutOffReport/query'],
     setCutOffReadyForEmail (cutOffDetailId) {
       dispatch({
         type: 'consignmentCutOffReport/setCutOffReadyForEmail',
@@ -88,5 +89,6 @@ export default connect(({
   consignmentCutOffReport,
   consignmentOutlet,
   dispatch,
-  app
-}) => ({ consignmentCutOffReport, consignmentOutlet, dispatch, app }))(CutOffReport)
+  app,
+  loading
+}) => ({ consignmentCutOffReport, consignmentOutlet, dispatch, app, loading }))(CutOffReport)

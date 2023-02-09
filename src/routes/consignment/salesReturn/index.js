@@ -7,7 +7,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-function SalesReturn ({ consignmentSalesReturn, dispatch }) {
+function SalesReturn ({ consignmentSalesReturn, dispatch, loading }) {
   const {
     activeKey,
     q,
@@ -54,6 +54,7 @@ function SalesReturn ({ consignmentSalesReturn, dispatch }) {
     returnDetail,
     filter,
     pagination,
+    loading: loading.effects['consignmentSalesReturn/query'],
     clearDetail () {
       dispatch({
         type: 'consignmentSalesReturn/updateState', payload: { returnDetail: {} }
@@ -107,5 +108,6 @@ function SalesReturn ({ consignmentSalesReturn, dispatch }) {
 
 export default connect(({
   consignmentSalesReturn,
-  dispatch
-}) => ({ consignmentSalesReturn, dispatch }))(SalesReturn)
+  dispatch,
+  loading
+}) => ({ consignmentSalesReturn, dispatch, loading }))(SalesReturn)

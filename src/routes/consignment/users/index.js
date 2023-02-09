@@ -8,7 +8,7 @@ import List from './List'
 
 const TabPane = Tabs.TabPane
 
-function Users ({ consignmentUsers, consignmentOutlet, dispatch }) {
+function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
   const { activeKey, formType, list, selectedUser, q, pagination } = consignmentUsers
   const { list: outletList } = consignmentOutlet
 
@@ -32,6 +32,7 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch }) {
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentUsers/query'],
     editUser (record) {
       dispatch({
         type: 'consignmentUsers/updateState',
@@ -131,5 +132,6 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch }) {
 export default connect(({
   consignmentUsers,
   consignmentOutlet,
-  dispatch
-}) => ({ consignmentUsers, consignmentOutlet, dispatch }))(Users)
+  dispatch,
+  loading
+}) => ({ consignmentUsers, consignmentOutlet, dispatch, loading }))(Users)

@@ -9,7 +9,8 @@ const Detail = ({
   paymentMethod,
   detailActiveKey,
   changeTab,
-  numberFormatter
+  numberFormatter,
+  loading
 }) => {
   return (
     <div style={{ marginTop: '10px' }}>
@@ -21,6 +22,7 @@ const Detail = ({
                 <DetailList
                   list={list.filter(filtered => filtered.paymentmethod_id === record.id)}
                   numberFormatter={numberFormatter}
+                  loading={loading}
                 />
               }
             </TabPane>

@@ -11,7 +11,7 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-function SalesReport ({ consignmentSalesReport, dispatch, app }) {
+function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
   const {
     list,
     activeKey,
@@ -51,6 +51,7 @@ function SalesReport ({ consignmentSalesReport, dispatch, app }) {
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentSalesReport/query'],
     onFilterChange ({ pagination }) {
       dispatch({
         type: 'consignmentSalesReport/updateState',
@@ -106,7 +107,8 @@ function SalesReport ({ consignmentSalesReport, dispatch, app }) {
 
   const summaryProps = {
     list,
-    pagination
+    pagination,
+    loading: loading.effects['consignmentSalesReport/query']
   }
 
   const printProps = {
@@ -163,5 +165,6 @@ function SalesReport ({ consignmentSalesReport, dispatch, app }) {
 export default connect(({
   consignmentSalesReport,
   dispatch,
-  app
-}) => ({ consignmentSalesReport, dispatch, app }))(SalesReport)
+  app,
+  loading
+}) => ({ consignmentSalesReport, dispatch, app, loading }))(SalesReport)

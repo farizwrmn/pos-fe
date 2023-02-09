@@ -9,7 +9,7 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app }) {
+function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app, loading }) {
   const {
     activeKey,
     list,
@@ -49,6 +49,7 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
   const listProps = {
     dataSource: list,
     pagination,
+    loading: loading.effects['consignmentStockReport/query'],
     onFilterChange ({ pagination }) {
       dispatch({
         type: 'consignmentStockReport/updateState',
@@ -138,4 +139,4 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
   )
 }
 
-export default connect(({ consignmentStockReport, consignmentVendor, dispatch, app }) => ({ consignmentStockReport, consignmentVendor, dispatch, app }))(StockReport)
+export default connect(({ consignmentStockReport, consignmentVendor, dispatch, app, loading }) => ({ consignmentStockReport, consignmentVendor, dispatch, app, loading }))(StockReport)
