@@ -8,7 +8,6 @@ import {
 import pathToRegexp from 'path-to-regexp'
 import { getConsignmentId } from 'utils/lstorage'
 import { message } from 'antd'
-import { routerRedux } from 'dva/router'
 import { pageModel } from '../common'
 
 
@@ -95,8 +94,7 @@ export default modelExtend(pageModel, {
       const response = yield call(approve, payload)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
-        yield put(routerRedux.push('/integration/consignment/stock-flow'))
-        yield put({ type: 'querySuccess', payload: { currentItem: {}, ...payload } })
+        yield put({ type: 'queryDetail', payload: { ...payload } })
       } else {
         message.error(`Gagal: ${response.message}`)
       }
@@ -105,8 +103,7 @@ export default modelExtend(pageModel, {
       const response = yield call(reject, payload)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
-        yield put(routerRedux.push('/integration/consignment/stock-flow'))
-        yield put({ type: 'querySuccess', payload: { currentItem: {}, ...payload } })
+        yield put({ type: 'queryDetail', payload: { ...payload } })
       } else {
         message.error(`Gagal: ${response.message}`)
       }
