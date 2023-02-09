@@ -114,7 +114,7 @@ function Detail ({ consignmentStockFlow, dispatch }) {
               </Row>
               <Row>
                 <Col span={12}>Dipegang oleh</Col>
-                <Col span={12}>{currentItem && (currentItem.adminName || '-')}</Col>
+                <Col span={12}>{currentItem.handledby_pos ? currentItem.handledby_pos : (currentItem && (currentItem.adminName || '-'))}</Col>
               </Row>
               <Row>
                 <Col span={12}>Dipegang pada</Col>
