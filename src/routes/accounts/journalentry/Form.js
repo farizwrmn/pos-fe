@@ -138,7 +138,7 @@ const FormCounter = ({
                     required: true
                   }
                 ]
-              })(<Input maxLength={255} autoFocus />)}
+              })(<Input maxLength={1000} autoFocus />)}
             </FormItem>
             <FormItem {...formItemLayout} label="Trans Date">
               {getFieldDecorator('transDate', {
