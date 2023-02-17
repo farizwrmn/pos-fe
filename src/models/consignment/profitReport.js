@@ -31,6 +31,14 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
+          })
+        }
       })
     }
   },
