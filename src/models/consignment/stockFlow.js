@@ -67,15 +67,16 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
-      const { current, pageSize } = payload
+      const { current, pageSize, typeFilter, statusFilter, q } = payload
       if (consignmentId) {
         const params = {
           outletId: consignmentId,
-          q: payload.q,
-          typeFilter: payload.typeFilter,
-          statusFilter: payload.statusFilter,
+          q,
+          typeFilter,
+          statusFilter,
           page: current,
-          pageSize
+          pageSize,
+          order: 'status,-created_at'
         }
         const response = yield call(query, params)
         yield put({

@@ -69,13 +69,14 @@ function SalesReturn ({ consignmentSalesReturn, dispatch, loading }) {
       })
     },
     onFilterChange ({ filter, pagination }) {
-      console.log('pagination', pagination)
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentSalesReturn/query',
         payload: {
           filter,
           q: q || '',
-          pagination
+          current,
+          pageSize
         }
       })
     }

@@ -2,6 +2,7 @@ import { message } from 'antd'
 import FormData from 'form-data'
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
+import { getConsignmentId } from 'utils/lstorage'
 import { uploadExpressConsignmentProductImage } from 'services/utils/imageUploader'
 import { query, queryDelete, queryEdit, queryDestroy, queryById } from 'services/consignment/products'
 import { routerRedux } from 'dva/router'
@@ -60,26 +61,39 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const { q, current, pageSize } = payload
-      const params = {
-        q,
-        page: current,
-        pageSize
-      }
-      const response = yield call(query, params)
-      yield put({
-        type: 'querySuccess',
-        payload: {
-          ...payload,
-          list: response.data.list,
-          pagination: {
-            showSizeChanger: true,
-            showQuickJumper: true,
-            current: Number(response.data.page || 1),
-            pageSize: Number(response.data.pageSize || 10),
-            total: Number(response.data.count)
-          }
+      const consignmentId = getConsignmentId()
+      if (consignmentId) {
+        const params = {
+          outletId: consignmentId,
+          q,
+          page: current,
+          pageSize,
+          order: '-id'
         }
-      })
+        const response = yield call(query, params)
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            list: response.data.list,
+            pagination: {
+              showSizeChanger: true,
+              showQuickJumper: true,
+              current: Number(response.data.page || 1),
+              pageSize: Number(response.data.pageSize || 10),
+              total: Number(response.data.count)
+            }
+          }
+        })
+      } else {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            list: []
+          }
+        })
+      }
     },
     * queryDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryById, payload)

@@ -74,12 +74,13 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
-      const { current, pageSize } = payload
+      const { current, pageSize, q, filter } = payload
       if (consignmentId) {
         const params = {
           outletId: consignmentId,
-          q: payload.q || '',
-          filter: payload.filter || '',
+          q: q || '',
+          filter: filter || '',
+          order: '-created_at',
           page: current,
           pageSize
         }
