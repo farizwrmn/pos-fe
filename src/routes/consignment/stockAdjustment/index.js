@@ -191,13 +191,16 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       })
     },
     onFilterChange ({ pagination, status, type }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentStockAdjustment/query',
         payload: {
           pagination,
           statusFilter: status,
           typeFilter: type,
-          q: q || ''
+          q: q || '',
+          current,
+          pageSize
         }
       })
     }

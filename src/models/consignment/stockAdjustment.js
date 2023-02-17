@@ -101,7 +101,8 @@ export default modelExtend(pageModel, {
           typeFilter: payload.typeFilter,
           statusFilter: payload.statusFilter,
           page: current,
-          pageSize
+          pageSize,
+          order: '-id'
         }
         const response = yield call(query, params)
         yield put({
