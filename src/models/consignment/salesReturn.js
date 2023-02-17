@@ -25,7 +25,7 @@ export default modelExtend(pageModel, {
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
-      current: 2,
+      current: 1,
       pageSize: 10,
       total: 0
     }
@@ -53,7 +53,10 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              current: 1,
+              pageSize: 10
+            }
           })
         }
         if (location.query && location.query.activeKey) {
@@ -71,12 +74,15 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
+      const { current, pageSize, q, filter } = payload
       if (consignmentId) {
         const params = {
           outletId: consignmentId,
-          q: payload.q || '',
-          filter: payload.filter || '',
-          pagination: payload.pagination || { current: 1, pageSize: 10 }
+          q: q || '',
+          filter: filter || '',
+          order: '-created_at',
+          page: current,
+          pageSize
         }
         const response = yield call(query, params)
         yield put({
@@ -86,8 +92,8 @@ export default modelExtend(pageModel, {
             pagination: {
               showSizeChanger: true,
               showQuickJumper: true,
-              current: Number(response.data.page) || 1,
-              pageSize: Number(response.data.pageSize) || 10,
+              current: Number(response.data.page || 1),
+              pageSize: Number(response.data.pageSize || 10),
               total: response.data.count
             }
           }

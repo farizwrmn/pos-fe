@@ -51,12 +51,14 @@ function Detail ({ consignmentStockFlow, consignmentOutlet, dispatch, loading })
     selectedOutlet,
     loading: loading.effects['consignmentStockFlow/query'],
     onFilterChange ({ status, type, pagination }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentStockFlow/query',
         payload: {
           statusFilter: status,
           typeFilter: type,
-          pagination,
+          current,
+          pageSize,
           q: q || ''
         }
       })

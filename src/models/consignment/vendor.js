@@ -42,11 +42,22 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              current: 1,
+              pageSize: 10
+            }
           })
           dispatch({
             type: 'queryLast',
             payload: {}
+          })
+        }
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
           })
         }
       })
@@ -55,10 +66,12 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, pagination } = payload
+      const { q, current, pageSize } = payload
       const params = {
         q,
-        pagination: pagination || { current: 1, pageSize: 10 }
+        page: current,
+        pageSize,
+        order: '-id'
       }
       const response = yield call(query, params)
       const vendors = response.data
@@ -70,9 +83,9 @@ export default modelExtend(pageModel, {
           pagination: {
             showSizeChanger: true,
             showQuickJumper: true,
-            current: vendors.page || 1,
-            pageSize: vendors.pageSize || 10,
-            total: vendors.count || 0
+            current: Number(vendors.page || 1),
+            pageSize: Number(vendors.pageSize || 10),
+            total: Number(vendors.count)
           }
         }
       })
@@ -122,7 +135,7 @@ export default modelExtend(pageModel, {
       if (response && response.meta && response.success) {
         message.success('Berhasil')
         payload.resetFields()
-        yield put({ type: 'query', payload: { selectedVendor: {}, formType: 'add' } })
+        yield put({ type: 'query', payload: { selectedVendor: {}, formType: 'add', current: 1, pageSize: 10 } })
       } else {
         message.error(`Gagal : ${response.message}`)
       }

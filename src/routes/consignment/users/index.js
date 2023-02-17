@@ -43,12 +43,13 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
         }
       })
     },
-    onFilterChange ({ pagination }) {
+    onFilterChange ({ current, pageSize }) {
       dispatch({
         type: 'consignmentUsers/query',
         payload: {
           q,
-          pagination
+          current,
+          pageSize
         }
       })
     }

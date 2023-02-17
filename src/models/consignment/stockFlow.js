@@ -46,7 +46,18 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/integration/consignment/stock-flow') {
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              current: 1,
+              pageSize: 10
+            }
+          })
+        }
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
           })
         }
       })
@@ -56,13 +67,16 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
+      const { current, pageSize, typeFilter, statusFilter, q } = payload
       if (consignmentId) {
         const params = {
           outletId: consignmentId,
-          q: payload.q,
-          typeFilter: payload.typeFilter,
-          statusFilter: payload.statusFilter,
-          pagination: payload.pagination || { current: 1, pageSize: 10 }
+          q,
+          typeFilter,
+          statusFilter,
+          page: current,
+          pageSize,
+          order: 'status,-created_at'
         }
         const response = yield call(query, params)
         yield put({
@@ -72,8 +86,8 @@ export default modelExtend(pageModel, {
             pagination: {
               showSizeChanger: true,
               showQuickJumper: true,
-              current: Number(response.data.page) || 1,
-              pageSize: Number(response.data.pageSize) || 10,
+              current: Number(response.data.page || 1),
+              pageSize: Number(response.data.pageSize || 10),
               total: response.data.count
             },
             statusFilter: params.statusFilter,

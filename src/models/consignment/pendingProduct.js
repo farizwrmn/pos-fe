@@ -24,7 +24,18 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/integration/consignment/pending-product') {
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              current: 1,
+              pageSize: 10
+            }
+          })
+        }
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
           })
         }
       })
@@ -33,10 +44,12 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, pagination } = payload
+      const { q, current, pageSize } = payload
       const params = {
         q,
-        pagination: pagination || { current: 1, pageSize: 10 }
+        page: current,
+        pageSize,
+        order: '-id'
       }
       const response = yield call(query, params)
       yield put({
@@ -47,9 +60,9 @@ export default modelExtend(pageModel, {
           pagination: {
             showSizeChanger: true,
             showQuickJumper: true,
-            current: Number(response.data.page) || 1,
-            pageSize: Number(response.data.pageSize) || 10,
-            total: Number(response.data.count) || 0
+            current: Number(response.data.page || 1),
+            pageSize: Number(response.data.pageSize || 10),
+            total: Number(response.data.count)
           }
         }
       })
@@ -64,7 +77,10 @@ export default modelExtend(pageModel, {
         message.success('Berhasil')
         yield put({
           type: 'query',
-          payload: {}
+          payload: {
+            current: 1,
+            pageSize: 10
+          }
         })
       } else {
         message.error(`Gagal : ${response.message}`)
@@ -80,7 +96,10 @@ export default modelExtend(pageModel, {
         message.success('Berhasil')
         yield put({
           type: 'query',
-          payload: {}
+          payload: {
+            current: 1,
+            pageSize: 10
+          }
         })
       } else {
         message.error(`Gagal : ${response.message}`)

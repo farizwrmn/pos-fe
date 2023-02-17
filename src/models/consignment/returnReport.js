@@ -31,10 +31,18 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup ({ history }) {
+    setup ({ history, dispatch }) {
       history.listen((location) => {
         if (location.pathname === '/integration/consignment/return-report') {
           return true
+        }
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
+          })
         }
       })
     }

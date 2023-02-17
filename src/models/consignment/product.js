@@ -2,6 +2,7 @@ import { message } from 'antd'
 import FormData from 'form-data'
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
+import { getConsignmentId } from 'utils/lstorage'
 import { uploadExpressConsignmentProductImage } from 'services/utils/imageUploader'
 import { query, queryDelete, queryEdit, queryDestroy, queryById } from 'services/consignment/products'
 import { routerRedux } from 'dva/router'
@@ -39,7 +40,18 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/integration/consignment/product') {
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              current: 1,
+              pageSize: 10
+            }
+          })
+        }
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
           })
         }
       })
@@ -48,26 +60,40 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, pagination } = payload
-      const params = {
-        q,
-        pagination: pagination || { current: 1, pageSize: 10 }
-      }
-      const response = yield call(query, params)
-      yield put({
-        type: 'querySuccess',
-        payload: {
-          ...payload,
-          list: response.data.list,
-          pagination: {
-            showSizeChanger: true,
-            showQuickJumper: true,
-            current: Number(response.data.page) || 1,
-            pageSize: Number(response.data.pageSize) || 10,
-            total: Number(response.data.count) || 0
-          }
+      const { q, current, pageSize } = payload
+      const consignmentId = getConsignmentId()
+      if (consignmentId) {
+        const params = {
+          outletId: consignmentId,
+          q,
+          page: current,
+          pageSize,
+          order: '-id'
         }
-      })
+        const response = yield call(query, params)
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            list: response.data.list,
+            pagination: {
+              showSizeChanger: true,
+              showQuickJumper: true,
+              current: Number(response.data.page || 1),
+              pageSize: Number(response.data.pageSize || 10),
+              total: Number(response.data.count)
+            }
+          }
+        })
+      } else {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            list: []
+          }
+        })
+      }
     },
     * queryDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryById, payload)
@@ -124,7 +150,13 @@ export default modelExtend(pageModel, {
       const response = yield call(queryDelete, params)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
-        yield put({ type: 'query', payload: {} })
+        yield put({
+          type: 'query',
+          payload: {
+            current: 1,
+            pageSize: 10
+          }
+        })
       } else {
         message.success(`Gagal : ${response.message}`)
       }
@@ -136,7 +168,13 @@ export default modelExtend(pageModel, {
       const response = yield call(queryDestroy, params)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
-        yield put({ type: 'query', payload: {} })
+        yield put({
+          type: 'query',
+          payload: {
+            current: 1,
+            pageSize: 10
+          }
+        })
       } else {
         message.error(`Gagal : ${response.message}`)
       }

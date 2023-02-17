@@ -23,7 +23,17 @@ export default modelExtend(pageModel, {
   },
 
   subscriptions: {
-    setup () {
+    setup ({ history, dispatch }) {
+      history.listen((location) => {
+        if (location.query && location.query.activeKey) {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: location.query.activeKey
+            }
+          })
+        }
+      })
     }
   },
 
