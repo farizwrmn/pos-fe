@@ -65,11 +65,13 @@ function PendingProduct ({ consignmentPendingProduct, dispatch, loading }) {
       })
     },
     onFilterChange ({ pagination }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentPendingProduct/query',
         payload: {
           q,
-          pagination
+          current,
+          pageSize
         }
       })
     }
