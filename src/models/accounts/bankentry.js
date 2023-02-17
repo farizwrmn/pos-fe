@@ -9,6 +9,7 @@ import { queryById, query, queryId, add, edit, remove, transfer, queryBankRecon,
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { queryById as queryPaymentById } from '../../services/payment/payment'
 import { queryById as queryPayableById } from '../../services/payment/payable'
+import { add as importCsv, autoRecon } from '../../services/payment/paymentValidationImport'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -249,7 +250,24 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-
+    * importCsv ({ payload = {} }, { call }) {
+      console.log('payload', payload)
+      const response = yield call(importCsv, payload)
+      if (response && response.success) {
+        message.success('Berhasil import')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * autoRecon ({ payload = {} }, { call }) {
+      const response = yield call(autoRecon, payload)
+      console.log('response', response)
+      if (response && response.success) {
+        message.success('Berhasil import')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
     * updateBankRecon ({ payload = {} }, { call, put, select }) {
       let {
         accountId,

@@ -108,6 +108,7 @@ module.exports = {
     role: '/role',
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
+    paymentValidationImport: '/payment-validation-import',
     paymentMachine: '/payment-machine',
     paymentCost: '/payment-cost',
     workOrder: '/wo',

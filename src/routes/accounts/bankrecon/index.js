@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Modal, Row } from 'antd'
+import FormImport from './FormImport'
 import Form from './Form'
 import List from './List'
 
@@ -18,7 +20,13 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
   } = bankentry
   const { listAccountCode } = accountCode
 
+  const formImportProps = {
+    loading,
+    dispatch
+  }
+
   const formProps = {
+    listBankRecon,
     loading,
     item: currentItem,
     accountId,
@@ -35,6 +43,23 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
           page: 1
         }
       }))
+    },
+    showImportDialog () {
+      Modal.info({
+        title: 'Import CSV File',
+        content: (
+          <FormImport {...formImportProps} />
+        ),
+        okText: 'Close'
+      })
+    },
+    autoRecon () {
+      dispatch({
+        type: 'bankentry/autoRecon',
+        payload: {
+          list: listBankRecon
+        }
+      })
     }
   }
 
@@ -58,7 +83,9 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
 
   return (
     <div className="content-inner">
-      <Form {...formProps} />
+      <Row>
+        <Form {...formProps} />
+      </Row>
       <List {...listProps} />
     </div>
   )
