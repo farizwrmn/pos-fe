@@ -43,10 +43,8 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              pagination: {
-                current: 1,
-                pageSize: 10
-              }
+              current: 1,
+              pageSize: 10
             }
           })
           dispatch({
@@ -60,8 +58,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, pagination } = payload
-      const { current, pageSize } = pagination
+      const { q, current, pageSize } = payload
       const params = {
         q,
         page: current,
@@ -69,7 +66,6 @@ export default modelExtend(pageModel, {
       }
       const response = yield call(query, params)
       const vendors = response.data
-      console.log('vendors', vendors)
       yield put({
         type: 'querySuccess',
         payload: {
@@ -78,8 +74,8 @@ export default modelExtend(pageModel, {
           pagination: {
             showSizeChanger: true,
             showQuickJumper: true,
-            current: Number(vendors.page),
-            pageSize: Number(vendors.pageSize),
+            current: Number(vendors.page || 1),
+            pageSize: Number(vendors.pageSize || 10),
             total: Number(vendors.count)
           }
         }
@@ -130,7 +126,7 @@ export default modelExtend(pageModel, {
       if (response && response.meta && response.success) {
         message.success('Berhasil')
         payload.resetFields()
-        yield put({ type: 'query', payload: { selectedVendor: {}, formType: 'add' } })
+        yield put({ type: 'query', payload: { selectedVendor: {}, formType: 'add', current: 1, pageSize: 10 } })
       } else {
         message.error(`Gagal : ${response.message}`)
       }

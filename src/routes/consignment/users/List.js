@@ -28,7 +28,8 @@ const List = ({ ...tableProps, editUser, onFilterChange }) => {
     {
       title: 'Outlet',
       dataIndex: 'outlet.outlet_name',
-      key: 'outlet.outlet_name'
+      key: 'outlet.outlet_name',
+      render: value => value || '-'
     },
     {
       title: 'Status',
@@ -40,7 +41,8 @@ const List = ({ ...tableProps, editUser, onFilterChange }) => {
       title: 'Peran',
       dataIndex: 'role',
       key: 'role',
-      align: 'center'
+      align: 'center',
+      render: value => value || '-'
     },
     {
       title: 'Action',
@@ -58,7 +60,8 @@ const List = ({ ...tableProps, editUser, onFilterChange }) => {
   ]
 
   const onChange = (pagination) => {
-    onFilterChange({ pagination })
+    const { current, pageSize } = pagination
+    onFilterChange({ current, pageSize })
   }
 
   return (

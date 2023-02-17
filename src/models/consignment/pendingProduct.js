@@ -25,10 +25,8 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              pagination: {
-                current: 1,
-                pageSize: 10
-              }
+              current: 1,
+              pageSize: 10
             }
           })
         }
@@ -38,8 +36,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, pagination } = payload
-      const { current, pageSize } = pagination
+      const { q, current, pageSize } = payload
       const params = {
         q,
         page: current,
@@ -54,8 +51,8 @@ export default modelExtend(pageModel, {
           pagination: {
             showSizeChanger: true,
             showQuickJumper: true,
-            current: Number(response.data.page),
-            pageSize: Number(response.data.pageSize),
+            current: Number(response.data.page || 1),
+            pageSize: Number(response.data.pageSize || 10),
             total: Number(response.data.count)
           }
         }
@@ -71,7 +68,10 @@ export default modelExtend(pageModel, {
         message.success('Berhasil')
         yield put({
           type: 'query',
-          payload: {}
+          payload: {
+            current: 1,
+            pageSize: 10
+          }
         })
       } else {
         message.error(`Gagal : ${response.message}`)
@@ -87,7 +87,10 @@ export default modelExtend(pageModel, {
         message.success('Berhasil')
         yield put({
           type: 'query',
-          payload: {}
+          payload: {
+            current: 1,
+            pageSize: 10
+          }
         })
       } else {
         message.error(`Gagal : ${response.message}`)

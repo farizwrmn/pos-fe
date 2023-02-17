@@ -41,10 +41,8 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              pagination: {
-                current: 1,
-                pageSize: 10
-              }
+              current: 1,
+              pageSize: 10
             }
           })
         }
@@ -55,8 +53,7 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
-      const { q, pagination } = payload
-      const { current, pageSize } = pagination
+      const { q, current, pageSize } = payload
       const params = {
         q,
         page: current,
@@ -76,8 +73,8 @@ export default modelExtend(pageModel, {
               pagination: {
                 showSizeChanger: true,
                 showQuickJumper: true,
-                current: Number(data.data.page),
-                pageSize: Number(data.data.pageSize),
+                current: Number(data.data.page || 1),
+                pageSize: Number(data.data.pageSize || 10),
                 total: data.data.count
               }
             }
@@ -93,8 +90,8 @@ export default modelExtend(pageModel, {
             pagination: {
               showSizeChanger: true,
               showQuickJumper: true,
-              current: Number(data.data.page),
-              pageSize: Number(data.data.pageSize),
+              current: Number(data.data.page || 1),
+              pageSize: Number(data.data.pageSize || 10),
               total: data.data.count
             }
           }
@@ -109,7 +106,9 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query',
           payload: {
-            activeKey: '0'
+            activeKey: '0',
+            current: 1,
+            pageSize: 10
           }
         })
       } else {
@@ -126,7 +125,9 @@ export default modelExtend(pageModel, {
           payload: {
             currentOutlet: {},
             formType: 'add',
-            activeKey: '0'
+            activeKey: '0',
+            current: 1,
+            pageSize: 10
           }
         })
       } else {
@@ -142,7 +143,9 @@ export default modelExtend(pageModel, {
           payload: {
             currentOutlet: {},
             formType: 'add',
-            activeKey: '0'
+            activeKey: '0',
+            current: 1,
+            pageSize: 10
           }
         })
       } else {

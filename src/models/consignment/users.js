@@ -27,10 +27,8 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              pagination: {
-                current: 1,
-                pageSize: 10
-              }
+              current: 1,
+              pageSize: 10
             }
           })
         }
@@ -40,12 +38,12 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, pagination } = payload
-      const { current, pageSize } = pagination
+      const { q, current, pageSize } = payload
       const params = {
         q,
         page: current,
-        pageSize
+        pageSize,
+        order: '-status'
       }
       const response = yield call(query, params)
       yield put({
@@ -56,8 +54,8 @@ export default modelExtend(pageModel, {
           pagination: {
             showSizeChanger: true,
             showQuickJumper: true,
-            current: Number(response.data.page),
-            pageSize: Number(response.data.pageSize),
+            current: Number(response.data.page || 1),
+            pageSize: Number(response.data.pageSize || 10),
             total: Number(response.data.count)
           }
         }
