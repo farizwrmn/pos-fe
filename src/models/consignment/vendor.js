@@ -70,7 +70,8 @@ export default modelExtend(pageModel, {
       const params = {
         q,
         page: current,
-        pageSize
+        pageSize,
+        order: '-id'
       }
       const response = yield call(query, params)
       const vendors = response.data
