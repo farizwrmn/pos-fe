@@ -40,7 +40,12 @@ export default modelExtend(pageModel, {
           location.pathname === '/integration/consignment/users') {
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              pagination: {
+                current: 1,
+                pageSize: 10
+              }
+            }
           })
         }
       })
@@ -51,11 +56,13 @@ export default modelExtend(pageModel, {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
       const { q, pagination } = payload
+      const { current, pageSize } = pagination
+      const params = {
+        q,
+        page: current,
+        pageSize
+      }
       if (consignmentId) {
-        const params = {
-          q,
-          pagination: pagination || { current: 1, pageSize: 10 }
-        }
         const data = yield call(query, params)
         const outlets = data.data.list
         const selectedOutlet = outlets.filter(filtered => filtered.id === parseInt(consignmentId, 10))[0]
@@ -69,20 +76,27 @@ export default modelExtend(pageModel, {
               pagination: {
                 showSizeChanger: true,
                 showQuickJumper: true,
-                current: data.data.page || 1,
-                pageSize: data.data.pageSize || 10,
-                total: data.data.count || 0
+                current: Number(data.data.page),
+                pageSize: Number(data.data.pageSize),
+                total: data.data.count
               }
             }
           })
         }
       } else {
-        const data = yield call(query, payload)
-        const outlets = data.data
+        const data = yield call(query, params)
+        const outlets = data.data.list
         yield put({
           type: 'querySuccess',
           payload: {
-            list: outlets
+            list: outlets,
+            pagination: {
+              showSizeChanger: true,
+              showQuickJumper: true,
+              current: Number(data.data.page),
+              pageSize: Number(data.data.pageSize),
+              total: data.data.count
+            }
           }
         })
       }

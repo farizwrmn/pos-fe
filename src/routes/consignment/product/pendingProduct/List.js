@@ -34,41 +34,49 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
     {
       title: 'Vendor',
       dataIndex: 'vendor.name',
+      width: 80,
       key: 'vendor.name'
     },
     {
       title: 'Kode Produk',
       dataIndex: 'product_code',
+      width: 110,
       key: 'product_code'
     },
     {
       title: 'Nama Produk',
+      width: 150,
       dataIndex: 'product_name',
       key: 'product_name'
     },
     {
       title: 'Barcode',
+      width: 110,
       dataIndex: 'barcode',
       key: 'barcode'
     },
     {
       title: 'No. BPOM/PIRT',
       dataIndex: 'noLicense',
+      width: 110,
       key: 'noLicense'
     },
     {
       title: 'Berat',
       dataIndex: 'weight',
+      width: 60,
       key: 'weight'
     },
     {
       title: 'Kategori Utama',
       dataIndex: 'category.name',
+      width: 110,
       key: 'category.name'
     },
     {
       title: 'Sub Kategori',
       dataIndex: 'subcategory.name',
+      width: 110,
       key: 'subcategory.name'
     },
     {

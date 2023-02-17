@@ -63,6 +63,7 @@ const List = ({ ...tableProps, showConfirmation, editItem, deleteItem, onFilterC
     }
   ]
 
+  console.log('tableProps', tableProps)
   return (
     <Table {...tableProps}
       bordered

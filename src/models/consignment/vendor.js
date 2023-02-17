@@ -42,7 +42,12 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'query',
-            payload: {}
+            payload: {
+              pagination: {
+                current: 1,
+                pageSize: 10
+              }
+            }
           })
           dispatch({
             type: 'queryLast',
@@ -56,12 +61,15 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const { q, pagination } = payload
+      const { current, pageSize } = pagination
       const params = {
         q,
-        pagination: pagination || { current: 1, pageSize: 10 }
+        page: current,
+        pageSize
       }
       const response = yield call(query, params)
       const vendors = response.data
+      console.log('vendors', vendors)
       yield put({
         type: 'querySuccess',
         payload: {
@@ -70,9 +78,9 @@ export default modelExtend(pageModel, {
           pagination: {
             showSizeChanger: true,
             showQuickJumper: true,
-            current: vendors.page || 1,
-            pageSize: vendors.pageSize || 10,
-            total: vendors.count || 0
+            current: Number(vendors.page),
+            pageSize: Number(vendors.pageSize),
+            total: Number(vendors.count)
           }
         }
       })
