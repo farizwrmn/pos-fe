@@ -85,7 +85,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
           }
           }
           >
-            {text}
+            {String(text).at(0).toUpperCase() + String(text).slice(1)}
           </div >
         )
       },
