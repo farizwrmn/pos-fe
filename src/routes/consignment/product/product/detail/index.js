@@ -43,7 +43,7 @@ function Detail ({ consignmentProduct, consignmentCategory, dispatch }) {
             <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
             <h1>Form</h1>
 
-            <Form {...formProps} />
+            {selectedProduct && selectedProduct.id && <Form {...formProps} />}
           </div>
         </Col>
       </Row>

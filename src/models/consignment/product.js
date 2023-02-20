@@ -36,23 +36,25 @@ export default modelExtend(pageModel, {
               id: decodeURIComponent(match[1])
             }
           })
-        }
-        if (location.pathname === '/integration/consignment/product') {
-          dispatch({
-            type: 'query',
-            payload: {
-              current: 1,
-              pageSize: 10
-            }
-          })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+        } else {
+          if (location.pathname === '/integration/consignment/product') {
+            dispatch({
+              type: 'query',
+              payload: {
+                current: 1,
+                pageSize: 10
+              }
+            })
+          }
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey,
+                selectedProduct: {}
+              }
+            })
+          }
         }
       })
     }

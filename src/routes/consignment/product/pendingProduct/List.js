@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { DropOption } from 'components'
-import { IMAGEURL } from 'utils/config.company'
+import { CONSIGNMENTIMAGEURL, IMAGEURL } from 'utils/config.company'
 
 const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
   const handleMenuClick = (record, e) => {
@@ -29,7 +29,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       dataIndex: 'productImage',
       key: 'productImage',
       width: '200px',
-      render: value => <img alt="example" width="100%" style={{ maxWidth: '200px' }} src={value ? `${IMAGEURL}/${value}` : null} />
+      render: (value, record) => <img alt={record.product_code} width="100%" style={{ maxWidth: '200px' }} src={value ? `${IMAGEURL}/${value}` : record.photo ? `${CONSIGNMENTIMAGEURL}/${record.photo}` : 'null'} />
     },
     {
       title: 'Vendor',
