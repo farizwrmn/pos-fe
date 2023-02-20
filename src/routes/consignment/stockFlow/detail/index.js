@@ -59,9 +59,9 @@ function Detail ({ consignmentStockFlow, dispatch }) {
   const showConfirmation = (type) => {
     Modal.confirm({
       title: type,
-      content: 'apakah kamu yakin?',
+      content: 'Apakah kamu yakin?',
       onOk () {
-        if (type === 'approve') {
+        if (String(type).toLowerCase() === 'approve') {
           approveTrans()
         } else {
           voidTrans()
@@ -81,8 +81,8 @@ function Detail ({ consignmentStockFlow, dispatch }) {
           <div className="content-inner-zero-min-height">
             <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
             <h1>Detail</h1>
-            <Button type="primary" icon="check" disabled={currentItem && currentItem.status !== 'pending'} onClick={() => showConfirmation('approve')}>Approve</Button>
-            <Button type="danger" style={{ marginLeft: '20px' }} icon="delete" disabled={currentItem && currentItem.status !== 'pending'} onClick={() => showConfirmation('void')}>Void</Button>
+            <Button type="primary" icon="check" disabled={currentItem && currentItem.status !== 'pending'} onClick={() => showConfirmation('Approve')}>Approve</Button>
+            <Button type="danger" style={{ marginLeft: '20px' }} icon="delete" disabled={currentItem && currentItem.status !== 'pending'} onClick={() => showConfirmation('Void')}>Void</Button>
             <div className={styles.content}>
               <Row>
                 <Col span={12}><strong>ID Permintaan Mutasi</strong></Col>
