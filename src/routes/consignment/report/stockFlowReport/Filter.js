@@ -17,7 +17,6 @@ const Filter = ({
   form: {
     getFieldDecorator,
     getFieldsValue,
-    setFieldsValue,
     validateFields
   }
 }) => {
@@ -71,7 +70,12 @@ const Filter = ({
     ]
   }
   if (selectedProduct && selectedProduct.product_name) {
-    productProps = `${selectedProduct.product_code} - ${selectedProduct.product_name}`
+    console.log('selectedProduct', selectedProduct)
+    console.log('selectedProduct.product_name', selectedProduct.product_name)
+    productProps = {
+      ...productProps,
+      initialValue: `${selectedProduct.product_code} - ${selectedProduct.product_name}`
+    }
   }
 
   let dateRangeProps = {
@@ -95,9 +99,6 @@ const Filter = ({
               placeholder="Select vendor"
               optionFilterProp="children"
               onChange={(value) => {
-                setFieldsValue({
-                  product: null
-                })
                 onSelectVendor(value)
               }}
               onSearch={onSearchVendor}
@@ -133,7 +134,7 @@ const Filter = ({
         </FormItem>
         <FormItem>
           {getFieldDecorator('dateRange', dateRangeProps)(
-            <DatePicker.RangePicker disabled={!getFieldsValue().vendor} onChange={handleDateRange} />
+            <DatePicker.RangePicker disabled={!getFieldsValue().product} onChange={handleDateRange} />
           )}
         </FormItem>
         <FormItem>
