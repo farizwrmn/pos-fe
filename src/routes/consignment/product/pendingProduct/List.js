@@ -82,7 +82,8 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
     {
       title: 'Description',
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      render: value => value || '-'
     }
   ]
 
