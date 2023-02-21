@@ -47,7 +47,6 @@ export default modelExtend(pageModel, {
             payload: {}
           })
         }
-        console.log(location.query.activeKey)
         if (location.query && location.query.activeKey) {
           dispatch({
             type: 'updateState',
