@@ -152,7 +152,7 @@ const FormCounter = ({
     const product = selectedVendorProductList.filter(filtered => filtered.id === value)[0]
     list[index] = {
       id: value,
-      product_name: product.product_name,
+      product_name: `${value} - ${product.product_name}`,
       stockId: product['stocks.stock_id'],
       quantity: 1,
       normalPrice: product.price,
