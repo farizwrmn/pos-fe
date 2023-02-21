@@ -5,6 +5,7 @@ import { numberFormat } from 'utils'
 import moment from 'moment'
 
 const numberFormatter = numberFormat.numberFormatter
+let modalDetail
 
 const List = ({
   ...tableProps,
@@ -59,7 +60,7 @@ const List = ({
       },
       {
         column1: 'Status',
-        column2: record.return_status || '-'
+        column2: record.return_status ? String(record.return_status).at(0).toUpperCase() + String(record.return_status).slice(1) : '-'
       },
       {
         column1: 'Alasan',
@@ -90,7 +91,7 @@ const List = ({
       }
     ]
 
-    const modalDetail = Modal.info({
+    modalDetail = Modal.info({
       title: 'Return Detail',
       width: '600px',
       iconType: 'exclamation-circle',
@@ -124,9 +125,11 @@ const List = ({
       okText: 'Close',
       cancelText: 'Close',
       onCancel () {
+        modalDetail = false
         clearDetail()
       },
       onOk () {
+        modalDetail = false
         clearDetail()
       }
     })
@@ -244,7 +247,7 @@ const List = ({
       render: (text) => {
         return (
           <div>
-            {text || '-'}
+            {String(text).at(0).toUpperCase() + String(text).slice(1)}
           </div>
         )
       }
@@ -267,7 +270,7 @@ const List = ({
 
   return (
     <div>
-      {returnDetail.id && <ShowDetail record={returnDetail} />}
+      {returnDetail && returnDetail.id && !modalDetail && <ShowDetail record={returnDetail} />}
       <Table {...tableProps}
         size="default"
         bordered
