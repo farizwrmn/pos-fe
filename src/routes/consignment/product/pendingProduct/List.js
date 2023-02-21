@@ -53,13 +53,15 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       title: 'Barcode',
       width: 110,
       dataIndex: 'barcode',
-      key: 'barcode'
+      key: 'barcode',
+      render: value => value || '-'
     },
     {
       title: 'No. BPOM/PIRT',
       dataIndex: 'noLicense',
       width: 110,
-      key: 'noLicense'
+      key: 'noLicense',
+      render: value => value || '-'
     },
     {
       title: 'Berat',
