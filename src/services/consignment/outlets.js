@@ -3,7 +3,6 @@ import { rest } from 'utils/config.company'
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
-  console.log('query outlet service')
   return request({
     fullUrl: `${rest.apiConsignmentURL}/outlet/get`,
     method: 'get',
