@@ -194,6 +194,8 @@ function Outlet ({ consignmentOutlet, dispatch, loading }) {
   }
 
   const formProps = {
+    loadingAdd: loading.effects['consignmentOutlet/queryAdd'],
+    loadingEdit: loading.effects['consignmentOutlet/queryEdit'],
     formType,
     currentOutlet,
     insertData (data, resetFields) {

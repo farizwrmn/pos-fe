@@ -27,6 +27,8 @@ const column = {
 }
 
 const FormCounter = ({
+  loadingEdit,
+  loadingAdd,
   formType,
   currentOutlet,
   editData,
@@ -411,7 +413,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()}>Cancel</Button>}
-            <Button type="primary" onClick={() => handleSubmit()}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
+            <Button type="primary" onClick={() => handleSubmit()} loading={loadingAdd || loadingEdit}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
           </FormItem>
         </Col>
       </Row>
