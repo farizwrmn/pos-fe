@@ -28,7 +28,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       title: 'Photo',
       dataIndex: 'productPhoto',
       key: 'productImage',
-      width: '200px',
+      width: '150px',
       render: (value, record) => {
         return (
           <img alt={record.product_code} width="100%" style={{ maxWidth: '200px' }} src={value ? `${IMAGEURL}/${value}` : record.photo ? `${CONSIGNMENTIMAGEURL}/${record.photo}` : 'null'} />

@@ -61,11 +61,13 @@ function Product ({ consignmentProduct, dispatch, loading }) {
       })
     },
     onFilterChange ({ pagination }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentProduct/query',
         payload: {
           q,
-          pagination
+          current,
+          pageSize
         }
       })
     }
