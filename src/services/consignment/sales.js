@@ -12,7 +12,6 @@ export function query (data) {
 }
 
 export function queryChart (data) {
-  console.log('data', data)
   const apiHeaderToken = crypt.apiheader()
   return request({
     fullUrl: `${rest.apiConsignmentURL}/dashboard/sales`,

@@ -101,7 +101,8 @@ export default modelExtend(pageModel, {
           storeId: Number(storeId)
         }
         const response = yield call(queryLovBalance, params)
-        yield put({ type: 'querySuccess', payload: { balanceList: response.data, ...payload } })
+        const list = response.data
+        yield put({ type: 'querySuccess', payload: { balanceList: list.filter(filtered => filtered.closed), ...payload } })
       } else {
         yield put({ type: 'querySuccess', payload: { balanceList: [], ...payload } })
       }
