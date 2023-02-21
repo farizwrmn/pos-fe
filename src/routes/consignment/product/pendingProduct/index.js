@@ -37,7 +37,7 @@ function PendingProduct ({ consignmentPendingProduct, dispatch, loading }) {
     showConfirm ({ type, id }) {
       let note
       confirm({
-        title: `do you want to ${type}?`,
+        title: `${type} product`,
         content: (
           <TextArea onChange={(event) => { note = event.target.value }} />
         ),

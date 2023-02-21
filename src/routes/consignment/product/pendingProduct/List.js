@@ -10,7 +10,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       showConfirm({ type: 'Approve', id: record.id })
     }
     if (e.key === '2') {
-      showConfirm({ type: 'reject', id: record.id })
+      showConfirm({ type: 'Reject', id: record.id })
     }
   }
 
