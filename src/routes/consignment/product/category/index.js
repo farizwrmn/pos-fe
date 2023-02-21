@@ -85,6 +85,7 @@ function Product ({ consignmentCategory, dispatch }) {
     modalForm,
     modalType,
     currentItem,
+    formType,
     showModalForm,
     onSubmit (data) {
       if (modalType === 'main') {

@@ -24,6 +24,7 @@ const ModalForm = ({
   modalType,
   currentItem,
   showModalForm,
+  formType,
   onSubmit,
   form: {
     getFieldDecorator,
@@ -34,16 +35,27 @@ const ModalForm = ({
 
   const categoryOption = list.length > 0 ? list.map(record => <Option key={record.id} value={record.id}>{record.name}</Option>) : []
 
+  const confirm = () => {
+    Modal.confirm({
+      title: `${String(formType).at(0).toUpperCase() + String(formType).slice(1)} Category`,
+      content: `Are you sure to ${formType} this category?`,
+      onCancel () {
+        showModalForm({ value: null })
+      },
+      onOk () {
+        const fields = getFieldsValue()
+        onSubmit(fields)
+      }
+    })
+  }
+
   return (
     <Modal
       visible={modalForm}
       title="create new category"
       okText="Save"
       onCancel={() => showModalForm({ value: null })}
-      onOk={() => {
-        const fields = getFieldsValue()
-        onSubmit(fields)
-      }}
+      onOk={() => confirm()}
     >
       <Form layout="horizontal">
         <FormItem label="Nama" hasFeedback {...formItemLayout}>
