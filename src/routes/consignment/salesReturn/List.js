@@ -67,7 +67,7 @@ const List = ({
       },
       {
         column1: 'Total',
-        column2: record.total || '-'
+        column2: record.total ? `Rp ${numberFormatter(record.total)}` : '-'
       }
     ]
 
@@ -85,7 +85,8 @@ const List = ({
       {
         title: 'Price',
         dataIndex: 'price',
-        key: 'price'
+        key: 'price',
+        render: value => `Rp ${numberFormatter(value)}`
       }
     ]
 

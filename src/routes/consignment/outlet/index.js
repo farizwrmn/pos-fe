@@ -1,12 +1,15 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Modal, Table, Tabs } from 'antd'
+import { numberFormat } from 'utils'
 import { routerRedux } from 'dva/router'
 import List from './List'
 import Filter from './Filter'
 import Form from './Form'
 
 const TabPane = Tabs.TabPane
+
+const moneyFormat = numberFormat.numberFormatter
 
 function Outlet ({ consignmentOutlet, dispatch, loading }) {
   const { list, currentOutlet, activeKey, formType, q, pagination } = consignmentOutlet
@@ -50,11 +53,11 @@ function Outlet ({ consignmentOutlet, dispatch, loading }) {
       const informationData = [
         {
           description: 'Food Commission',
-          value: record.commission_food
+          value: `${record.commission_food} %`
         },
         {
           description: 'Non Food Commission',
-          value: record.commission_non_food
+          value: `${record.commission_non_food} %`
         },
         {
           description: 'Payment Charge',
@@ -78,59 +81,59 @@ function Outlet ({ consignmentOutlet, dispatch, loading }) {
         },
         {
           description: 'Sewa Box A',
-          value: record.default_price_box_a
+          value: `Rp ${moneyFormat(record.default_price_box_a)}`
         },
         {
           description: 'Sewa Box B',
-          value: record.default_price_box_b
+          value: `Rp ${moneyFormat(record.default_price_box_b)}`
         },
         {
           description: 'Sewa Box C',
-          value: record.default_price_box_c
+          value: `Rp ${moneyFormat(record.default_price_box_c)}`
         },
         {
           description: 'Sewa Box D',
-          value: record.default_price_box_d
+          value: `Rp ${moneyFormat(record.default_price_box_d)}`
         },
         {
           description: 'Sewa Box E',
-          value: record.default_price_box_e
+          value: `Rp ${moneyFormat(record.default_price_box_e)}`
         },
         {
           description: 'Sewa Box F',
-          value: record.default_price_box_f
+          value: `Rp ${moneyFormat(record.default_price_box_f)}`
         },
         {
           description: 'Sewa Box G',
-          value: record.default_price_box_g
+          value: `Rp ${moneyFormat(record.default_price_box_g)}`
         },
         {
           description: 'Sewa Box H',
-          value: record.default_price_box_h
+          value: `Rp ${moneyFormat(record.default_price_box_h)}`
         },
         {
           description: 'Sewa Box I',
-          value: record.default_price_box_i
+          value: `Rp ${moneyFormat(record.default_price_box_i)}`
         },
         {
           description: 'Sewa Box J',
-          value: record.default_price_box_j
+          value: `Rp ${moneyFormat(record.default_price_box_j)}`
         },
         {
           description: 'Sewa Box K',
-          value: record.default_price_box_k
+          value: `Rp ${moneyFormat(record.default_price_box_k)}`
         },
         {
           description: 'Sewa Box L',
-          value: record.default_price_box_l
+          value: `Rp ${moneyFormat(record.default_price_box_l)}`
         },
         {
           description: 'Sewa Box M',
-          value: record.default_price_box_m
+          value: `Rp ${moneyFormat(record.default_price_box_m)}`
         },
         {
           description: 'Sewa Box N',
-          value: record.default_price_box_n
+          value: `Rp ${moneyFormat(record.default_price_box_n)}`
         }
       ]
       Modal.info({
