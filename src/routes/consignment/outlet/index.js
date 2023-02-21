@@ -170,11 +170,13 @@ function Outlet ({ consignmentOutlet, dispatch, loading }) {
       })
     },
     onFilterChange ({ pagination }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentOutlet/query',
         payload: {
           q,
-          pagination
+          current,
+          pageSize
         }
       })
     }
