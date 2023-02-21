@@ -46,7 +46,8 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
         { text: 'Canceled', value: 'canceled' },
         { text: 'Pending', value: 'pending' },
         { text: 'Rejected', value: 'rejected' }
-      ]
+      ],
+      render: value => `${String(value).at(0).toUpperCase()}${String(value).slice(1)}`
     },
     {
       title: 'Vendor',
