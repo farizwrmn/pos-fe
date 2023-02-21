@@ -45,11 +45,13 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
       })
     },
     onFilterChange ({ pagination }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentVendor/query',
         payload: {
           q,
-          pagination
+          current,
+          pageSize
         }
       })
     }
