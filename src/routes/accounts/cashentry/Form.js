@@ -138,7 +138,7 @@ const FormCounter = ({
                     required: true
                   }
                 ]
-              })(<Input maxLength={255} />)}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col {...column}>
