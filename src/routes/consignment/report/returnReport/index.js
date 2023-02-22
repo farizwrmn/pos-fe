@@ -10,6 +10,14 @@ import PrintPDF from './PrintPDF'
 
 const TabPane = Tabs.TabPane
 
+const filterColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 12,
+  lg: 12,
+  xL: 12
+}
+
 function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, app, loading }) {
   const { list, activeKey, range, pagination, consignmentId } = consignmentReturnReport
   const { list: vendorList, selectedVendor } = consignmentVendor
@@ -125,9 +133,7 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
           {activeKey === '0' &&
             <div>
               <Row style={{ marginBottom: '10px' }}>
-                <Col span={8} />
-                <Col span={4} />
-                <Col span={12}>
+                <Col {...filterColumnProps} >
                   <Filter {...filterProps} />
                 </Col>
               </Row>

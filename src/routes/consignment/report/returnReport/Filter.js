@@ -1,21 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Select, DatePicker, Button } from 'antd'
+import { Form, Select, DatePicker, Button, Col } from 'antd'
 
-const FormItem = Form.Item
 const Option = Select.Option
 const RangePicker = DatePicker.RangePicker
+
+const columnProps = {
+  xs: 24,
+  sm: 24,
+  md: 8,
+  lg: 8
+}
+
+const tailColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 2,
+  lg: 2
+}
+
 
 const Filter = ({
   vendorList,
   selectVendor,
+  selectedVendor,
   range,
   getData,
   searchVendor,
   updateDateRange,
   form: {
-    getFieldDecorator,
-    getFieldsValue,
     validateFields
   }
 }) => {
@@ -53,38 +66,32 @@ const Filter = ({
 
   return (
     <Form layout="inline">
-      <FormItem >
-        {getFieldDecorator('vendor')(
-          <Select
-            style={{
-              width: '200px'
-            }}
-            showSearch
-            placeholder="Select vendor"
-            onChange={(value) => { selectVendor(value) }}
-            onSearch={selectVendorSearch}
-            filterOption={false}
-          >
-            {vendorOption}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem>
-        {getFieldDecorator('dateRange', {
-          initialValue: range
-        })(
-          <RangePicker
-            style={{
-              width: '100%'
-            }}
-            disabled={!getFieldsValue().vendor}
-            onChange={onChangeDate}
-          />
-        )}
-      </FormItem>
-      <FormItem>
-        <Button type="primary" onClick={() => handleSubmit()}>CARI</Button>
-      </FormItem>
+      <Col {...columnProps}>
+        <Select
+          style={{
+            width: '95%'
+          }}
+          showSearch
+          placeholder="Select vendor"
+          onChange={(value) => { selectVendor(value) }}
+          onSearch={selectVendorSearch}
+          filterOption={false}
+        >
+          {vendorOption}
+        </Select>
+      </Col>
+      <Col {...columnProps}>
+        <RangePicker
+          style={{
+            width: '95%'
+          }}
+          disabled={!selectedVendor}
+          onChange={onChangeDate}
+        />
+      </Col>
+      <Col {...tailColumnProps}>
+        <Button type="primary" style={{ width: '95%' }} onClick={() => handleSubmit()} disabled={!range}>CARI</Button>
+      </Col>
     </Form>
   )
 }
