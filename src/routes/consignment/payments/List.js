@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Col, Modal, Table } from 'antd'
 import { DropOption } from 'components'
 
-const listColumn = {
+const listColumnProps = {
   xs: 24,
   sm: 24,
   md: 12
@@ -58,7 +58,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   ]
 
   return (
-    <Col {...listColumn}>
+    <Col {...listColumnProps}>
       <Table {...tableProps}
         bordered
         columns={columns}
