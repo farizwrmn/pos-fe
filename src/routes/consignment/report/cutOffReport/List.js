@@ -99,8 +99,7 @@ const List = ({
       title: 'Durasi',
       dataIndex: 'endDate',
       key: 'endDate',
-      width: '140px',
-      fixed: 'right'
+      width: '140px'
     }
   ]
 
