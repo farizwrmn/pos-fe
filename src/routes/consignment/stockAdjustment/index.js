@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Modal, Table, Tabs } from 'antd'
+import { Col, Modal, Table, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import { numberFormat } from 'utils'
 import Form from './Form'
@@ -100,7 +100,9 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       width: '600px',
       title: 'Stock Adjustment Information',
       content: (
-        <Table pagination={false} bordered columns={columns} rowKey={(record, key) => key} dataSource={dataSample} />
+        <Col span={24}>
+          <Table pagination={false} bordered columns={columns} rowKey={(record, key) => key} dataSource={dataSample} />
+        </Col>
       ),
       onCancel () {
         modalDetail = false
