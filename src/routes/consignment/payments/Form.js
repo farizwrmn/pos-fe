@@ -43,13 +43,13 @@ const FormCounter = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: formType === 'edit' ? 10 : 19
+        offset: formType === 'edit' ? 10 : 18
       },
       sm: {
-        offset: formType === 'edit' ? 15 : 20
+        offset: formType === 'edit' ? 15 : 18
       },
       md: {
-        offset: formType === 'edit' ? 15 : 19
+        offset: formType === 'edit' ? 15 : 18
       },
       lg: {
         offset: formType === 'edit' ? 13 : 18

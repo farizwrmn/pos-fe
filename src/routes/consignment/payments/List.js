@@ -3,6 +3,12 @@ import PropTypes from 'prop-types'
 import { Col, Modal, Table } from 'antd'
 import { DropOption } from 'components'
 
+const listColumn = {
+  xs: 24,
+  sm: 24,
+  md: 12
+}
+
 const List = ({ ...tableProps, editItem, deleteItem }) => {
   const handleMenuClick = (record, event) => {
     if (event.key === '1') {
@@ -52,7 +58,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   ]
 
   return (
-    <Col span={12}>
+    <Col {...listColumn}>
       <Table {...tableProps}
         bordered
         columns={columns}
