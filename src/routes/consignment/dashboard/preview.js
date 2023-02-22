@@ -51,7 +51,7 @@ function Preview ({
       <Row gutter={24} justify="center">
         {boxList.map((item) => {
           return (
-            <Col lg={2} md={6}>
+            <Col lg={2} md={4}>
               <div onClick={() => {
                 item.daysLeft && showModalDetail({
                   ...item,

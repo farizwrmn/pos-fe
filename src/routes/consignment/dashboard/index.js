@@ -54,7 +54,7 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
     const formattedData = [
       {
         name: 'Status',
-        value: item.status || '-'
+        value: item.status ? String(item.status).toUpperCase() : '-'
       },
       {
         name: 'Outlet',
@@ -66,11 +66,11 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
       },
       {
         name: 'Tanggal Mulai',
-        value: item.start_date || '-'
+        value: item.start_date ? moment(item.start_date).format('DD MMM YYYY') : '-'
       },
       {
         name: 'Tanggal Berakhir',
-        value: item.end_date || '-'
+        value: item.end_date ? moment(item.end_date).format('DD MMM YYYY') : '-'
       },
       {
         name: 'Boxes',
@@ -90,7 +90,7 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
       },
       {
         name: 'Dibuat Pada',
-        value: moment(item.created_at).format('YYYY-MM-DD') || '-'
+        value: moment(item.created_at).format('DD MMM YYYY') || '-'
       },
       {
         name: 'Dipegang Oleh',
@@ -98,7 +98,7 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
       },
       {
         name: 'Dipegang Pada',
-        value: moment(item.approved_at).format('YYYY-MM-DD') || '-'
+        value: moment(item.approved_at).format('DD MMM YYYY') || '-'
       }
     ]
     // const filteredData = currentItem.filter(filtered => filtered !== currentItem[0])
