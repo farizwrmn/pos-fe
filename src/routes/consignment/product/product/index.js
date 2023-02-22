@@ -40,8 +40,8 @@ function Product ({ consignmentProduct, dispatch, loading }) {
     loading: loading.effects['consignmentProduct/query'],
     showConfirm ({ type, id }) {
       confirm({
-        title: `Are you sure to ${type}?`,
-        content: 'description',
+        title: `${String(type).at(0).toUpperCase() + String(type).slice(1)} product`,
+        content: `Are you sure to ${type} this product?`,
         onCancel () { },
         onOk () {
           if (type === 'edit') {
@@ -61,11 +61,13 @@ function Product ({ consignmentProduct, dispatch, loading }) {
       })
     },
     onFilterChange ({ pagination }) {
+      const { current, pageSize } = pagination
       dispatch({
         type: 'consignmentProduct/query',
         payload: {
           q,
-          pagination
+          current,
+          pageSize
         }
       })
     }

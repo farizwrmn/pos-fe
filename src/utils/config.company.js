@@ -16,6 +16,7 @@ const APICONSIGNMENTHOST = production ? (process.env.API_CONSIGNMENT_ENDPOINT ||
 const APICONSIGNMENTPORT = production ? 443 : 3120
 const APICONSIGNMENTVERSION = production ? '/api/v1' : ''
 const APICONSIGNMENTURL = `${APICONSIGNMENTPROTOCOL}://${APICONSIGNMENTHOST}:${APICONSIGNMENTPORT}${APICONSIGNMENTVERSION}`
+const CONSIGNMENTIMAGEURL = true ? 'https://consignment.k3mart.id/images/products/' : '-'
 
 const IMAGEURL = true ? 'https://graph.k3mart.id/image' : 'http://localhost:3100'
 const S3URL = true ? 'https://graph.k3mart.id/s3' : 'http://localhost:3100'
@@ -35,6 +36,7 @@ module.exports = {
   IMAGEURL,
   S3URL,
   IMAGECONSIGNMENTURL,
+  CONSIGNMENTIMAGEURL,
   MAIN_WEBSITE,
   APIIMAGEURL,
   couchdb: {

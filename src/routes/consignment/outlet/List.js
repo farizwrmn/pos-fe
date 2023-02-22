@@ -8,8 +8,8 @@ const Confirm = Modal.confirm
 const List = ({ ...tableProps, showConfirmation, editItem, deleteItem, onFilterChange }) => {
   const handleMenuClick = (record, event) => {
     Confirm({
-      title: `${event.key === '1' ? 'edit' : 'delete'} Item`,
-      content: `Are you sure to ${event.key === '1' ? 'edit' : 'delete'} this?`,
+      title: `${event.key === '1' ? 'Edit' : 'Delete'} outlet`,
+      content: `Are you sure to ${event.key === '1' ? 'edit' : 'delete'} this outlet?`,
       onCancel () { },
       onOk () {
         if (event.key === '1') {

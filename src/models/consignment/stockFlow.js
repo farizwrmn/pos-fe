@@ -76,12 +76,13 @@ export default modelExtend(pageModel, {
           statusFilter,
           page: current,
           pageSize,
-          order: 'status,-created_at'
+          order: 'statusNumber,-created_at'
         }
         const response = yield call(query, params)
         yield put({
           type: 'querySuccess',
           payload: {
+            ...payload,
             list: response.data.list,
             pagination: {
               showSizeChanger: true,

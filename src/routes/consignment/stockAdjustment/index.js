@@ -9,6 +9,7 @@ import List from './List'
 
 const TabPane = Tabs.TabPane
 const numberFormatter = numberFormat.numberFormatter
+let modalDetail = false
 
 function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispatch, loading }) {
   const {
@@ -46,7 +47,14 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
     }))
   }
 
-  const detailInformation = () => {
+  if (!consignmentId) {
+    return (
+      <div>Consignment not linked to this store, please contact your administrator</div>
+    )
+  }
+
+  const DetailInformation = () => {
+    modalDetail = false
     const dataSample = currentItem.map((record) => {
       return {
         productName: (
@@ -70,12 +78,6 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       }
     })
 
-    if (!consignmentId) {
-      return (
-        <div>Consignment not linked to this store, please contact your administrator</div>
-      )
-    }
-
     const columns = [
       {
         title: 'Nama Produk',
@@ -94,13 +96,14 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       }
     ]
 
-    Modal.info({
+    const modal = Modal.info({
       width: '600px',
       title: 'Stock Adjustment Information',
       content: (
         <Table pagination={false} bordered columns={columns} rowKey={(record, key) => key} dataSource={dataSample} />
       ),
       onCancel () {
+        modalDetail = false
         dispatch({
           type: 'consignmentStockAdjustment/updateState',
           payload: {
@@ -109,6 +112,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
         })
       },
       onOk () {
+        modalDetail = false
         dispatch({
           type: 'consignmentStockAdjustment/updateState',
           payload: {
@@ -117,10 +121,8 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
         })
       }
     })
-  }
 
-  if (currentItem && currentItem.length > 0) {
-    detailInformation()
+    return modal
   }
 
   const formProps = {
@@ -183,6 +185,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
     dataSource: list,
     loading: loading.effects['consignmentStockAdjustment/query'],
     openDetail (id) {
+      modalDetail = true
       dispatch({
         type: 'consignmentStockAdjustment/queryProductById',
         payload: {
@@ -222,6 +225,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
 
   return (
     <div className="content-inner">
+      {modalDetail && currentItem && currentItem.length > 0 && <DetailInformation />}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' &&

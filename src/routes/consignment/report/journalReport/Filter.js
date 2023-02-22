@@ -15,7 +15,8 @@ const Filter = ({
   updateCurrentBalance,
   form: {
     getFieldDecorator,
-    validateFields
+    validateFields,
+    getFieldsValue
   }
 }) => {
   const balanceOption = balanceList.length > 0 ? balanceList.map(record => (<Option key={record.id} value={record.id}>{record['approveUser.userName']} || {moment(record.open).format('DD MMM YYYY | hh:mm:ss')} - {moment(record.closed).format('DD MMM YYYY | hh:mm:ss')}</Option>)) : []
@@ -28,7 +29,7 @@ const Filter = ({
       if (selectedBalance && selectedBalance.id) {
         getData(moment(selectedBalance.open).format('YYYY-MM-DD HH:mm:SS'), moment(selectedBalance.closed).format('YYYY-MM-DD HH:mm:SS'))
       } else {
-        getData(moment(dateRange[0]).format('YYYY-MM-DD HH:mm:SS'), moment(dateRange[1]).format('YYYY-MM-DD HH:mm:SS'))
+        getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD'))
       }
     })
   }
@@ -80,13 +81,14 @@ const Filter = ({
             style={{ marginBottom: '10px', minWidth: '450px' }}
             filterOption={false}
             onChange={handleChangeBalance}
+            disabled={!getFieldsValue().date}
           >
             {balanceOption}
           </Select>
         )}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={() => handleSubmit()}>Cari</Button>
+        <Button type="primary" onClick={() => handleSubmit()} disabled={!getFieldsValue().date}>Cari</Button>
       </FormItem>
     </Form>
   )

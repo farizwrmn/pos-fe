@@ -2,7 +2,6 @@ import { request, crypt } from 'utils'
 import { rest } from 'utils/config.company'
 
 export function queryById (data) {
-  console.log('queryById', data)
   const id = data.id
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -1,4 +1,7 @@
 import { Table } from 'antd'
+import { numberFormat } from 'utils'
+
+const numberFormatter = numberFormat.numberFormatter
 
 const List = ({ ...tableProps }) => {
   const columns = [
@@ -18,25 +21,25 @@ const List = ({ ...tableProps }) => {
               <strong>Harga Normal:</strong>
             </div>
             <div>
-              {value}
+              Rp {numberFormatter(value)}
             </div>
             <div>
               <strong>Harga GrabFood GoFood:</strong>
             </div>
             <div>
-              {record.price_grabfood_gofood}
+              Rp {numberFormatter(record.price_grabfood_gofood)}
             </div>
             <div>
               <strong>Harga Grabmart:</strong>
             </div>
             <div>
-              {record.price_grabmart}
+              Rp {numberFormatter(record.price_grabmart)}
             </div>
             <div>
               <strong>Harga Commerce:</strong>
             </div>
             <div>
-              {record.price_shopee}
+              Rp {numberFormatter(record.price_shopee)}
             </div>
           </div>
         )

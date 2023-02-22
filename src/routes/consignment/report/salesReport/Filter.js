@@ -108,7 +108,7 @@ const Filter = ({
         )}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={() => handleSubmit()}>
+        <Button type="primary" onClick={() => handleSubmit()} disabled={!getFieldsValue().dateRange}>
           CARI
         </Button>
       </FormItem>

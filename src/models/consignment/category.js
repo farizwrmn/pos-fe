@@ -54,6 +54,13 @@ export default modelExtend(pageModel, {
               activeKey: location.query.activeKey
             }
           })
+        } else {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: '0'
+            }
+          })
         }
       })
     }

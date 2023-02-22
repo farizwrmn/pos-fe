@@ -8,8 +8,8 @@ const Confirm = Modal.confirm
 const List = ({ ...tableProps, edit, onFilterChange }) => {
   const editConfirm = (record) => {
     Confirm({
-      title: 'Edit Vendor',
-      Content: 'Are you sure to edit this?',
+      title: 'Edit vendor',
+      content: 'Are you sure to edit this?',
       onOk () { edit(record) },
       onCancel () { }
     })
@@ -75,14 +75,14 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
             </div>
           )
         }
-        return 'gak ada'
+        return 'Tidak ada'
       }
     },
     {
       title: 'Setuju T&C',
       dataIndex: 'is_agree_tnc',
       key: 'is_agree_tnc',
-      render: value => (value === 1 ? 'agreed' : 'not agreed')
+      render: value => (value === 1 ? 'Agreed' : 'Not agreed')
     },
     {
       title: 'Action',

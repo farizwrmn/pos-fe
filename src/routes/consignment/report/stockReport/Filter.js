@@ -90,6 +90,7 @@ const Filter = ({
               <Search
                 placeholder="Cari product NAME/CODE"
                 onSearch={() => handleSubmit()}
+                disabled={!selectedVendor.id}
               />
             )}
           </FormItem>

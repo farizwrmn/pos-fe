@@ -3,7 +3,6 @@ import { rest } from 'utils/config.company'
 
 export async function query (data) {
   const apiHeaderToken = crypt.apiheader()
-  console.log('query outlet service')
   return request({
     fullUrl: `${rest.apiConsignmentURL}/return/get`,
     method: 'get',
@@ -14,7 +13,6 @@ export async function query (data) {
 
 export async function queryReport (data) {
   const apiHeaderToken = crypt.apiheader()
-  console.log('query outlet service')
   return request({
     fullUrl: `${rest.apiConsignmentURL}/return/report`,
     method: 'get',
@@ -25,8 +23,6 @@ export async function queryReport (data) {
 
 export function queryById (id) {
   const apiHeaderToken = crypt.apiheader()
-  console.log('id', id)
-  console.log('query outlet service')
   return request({
     fullUrl: `${rest.apiConsignmentURL}/return/get/${id}`,
     method: 'get',

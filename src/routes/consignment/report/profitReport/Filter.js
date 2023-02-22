@@ -15,7 +15,8 @@ const Filter = ({
   changeTime,
   onSearchVendor,
   form: {
-    getFieldDecorator
+    getFieldDecorator,
+    getFieldsValue
   }
 }) => {
   let vendorOption = vendorList.length > 0 ? vendorList.map(record => (<Option key={record.id} value={record.id}>{record.vendor_code} - {record.name}</Option>)) : []
@@ -79,11 +80,11 @@ const Filter = ({
       </FormItem>
       <FormItem>
         {getFieldDecorator('date', dateRangeProps)(
-          <RangePicker onChange={changeTime} />
+          <RangePicker onChange={changeTime} disabled={!getFieldsValue().vendor} />
         )}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={() => getData()}>Cari</Button>
+        <Button type="primary" onClick={() => getData()} disabled={!getFieldsValue().date}>Cari</Button>
       </FormItem>
     </Form>
   )

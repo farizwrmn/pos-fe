@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Row, Col, Select, Modal, Input, Upload, Icon, message } from 'antd'
-import { IMAGEURL, rest } from 'utils/config.company'
+import { CONSIGNMENTIMAGEURL, IMAGEURL, rest } from 'utils/config.company'
 
 const FormItem = Form.Item
 const Confirm = Modal.confirm
@@ -203,7 +203,16 @@ const FormCounter = ({
                       url: `${String(IMAGEURL)}/${selectedProduct.productImage}`,
                       thumbUrl: `${String(IMAGEURL)}/${selectedProduct.productImage}`
                     }]
-                    : undefined
+                    : selectedProduct.photo
+                      && selectedProduct.photo != null ?
+                      [{
+                        uid: 0,
+                        name: selectedProduct.photo,
+                        status: 'done',
+                        url: `${String(CONSIGNMENTIMAGEURL)}/${selectedProduct.photo}`,
+                        thumbUrl: `${String(CONSIGNMENTIMAGEURL)}/${selectedProduct.photo}`
+                      }]
+                      : undefined
                 }
                 action={`${apiCompanyURL}/time/time`}
                 onPreview={file => console.log('file', file)}

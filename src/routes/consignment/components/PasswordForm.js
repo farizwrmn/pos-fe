@@ -24,7 +24,8 @@ const FormCounter = ({
       }
       console.log('getFieldsValue', getFieldsValue())
       Modal.confirm({
-        title: 'Do you want to save changes?',
+        title: 'Save password',
+        content: 'Do you want to save changes?',
         onOk () {
           handleSubmitPassword(fields.password)
         },

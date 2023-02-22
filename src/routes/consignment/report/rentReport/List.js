@@ -13,8 +13,8 @@ const List = ({
   const columns = [
     {
       title: 'Tanggal',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       render: value => moment(value).format('DD MMM YYYY')
     },
     {

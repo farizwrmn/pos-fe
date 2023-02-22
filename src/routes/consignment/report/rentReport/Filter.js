@@ -10,7 +10,8 @@ const Filter = ({
   getData,
   changeTime,
   form: {
-    getFieldDecorator
+    getFieldDecorator,
+    getFieldsValue
   }
 }) => {
   return (
@@ -23,7 +24,7 @@ const Filter = ({
         )}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={() => getData()}>Cari</Button>
+        <Button type="primary" onClick={() => getData()} disabled={!getFieldsValue().date}>Cari</Button>
       </FormItem>
     </Form>
   )
