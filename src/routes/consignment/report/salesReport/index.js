@@ -138,22 +138,27 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
         <TabPane tab="Report" key="0" >
           {activeKey === '0' &&
             <div>
-              <Row style={{ marginBottom: '10px' }}>
-                <Col span={8}>
+              <Row style={{ marginBottom: '15px' }}>
+                <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+                  <Filter {...filterProps} />
+                </Col>
+              </Row>
+              <Row style={{ marginBottom: '15px' }}>
+                <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                   {selectedVendor && selectedVendor.id &&
                     (
                       <div style={{ padding: '8px', fontSize: '16px', fontWeight: 'bolder' }}>
                         {(String(selectedVendor.id)).toUpperCase()} - {selectedVendor.name.toUpperCase()}
                       </div>
                     )}
-                  {list && list.length > 0 && <Summary {...summaryProps} />}
-                </Col>
-                <Col span={4} />
-                <Col span={12}>
-                  <Filter {...filterProps} />
+                  <Summary {...summaryProps} />
                 </Col>
               </Row>
-              <List {...listProps} />
+              <Row>
+                <Col span={24}>
+                  <List {...listProps} />
+                </Col>
+              </Row>
             </div>
           }
         </TabPane>
