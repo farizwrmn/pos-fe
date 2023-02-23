@@ -78,7 +78,7 @@ const Filter = ({
               marginBottom: '10px',
               paddingRight: '10px'
             }}
-            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : null}
+            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
             showSearch
             placeholder="Select vendor"
             optionFilterProp="children"
@@ -99,7 +99,7 @@ const Filter = ({
               marginBottom: '10px',
               paddingRight: '10px'
             }}
-            value={selectedProduct.id ? `${selectedProduct.product_code} - ${selectedProduct.product_name}` : null}
+            value={selectedProduct.id ? `${selectedProduct.product_code} - ${selectedProduct.product_name}` : undefined}
             disabled={!selectedVendor.id}
             showSearch
             placeholder="Select Product"
@@ -126,12 +126,12 @@ const Filter = ({
               width: '100%',
               paddingRight: '10px'
             }}
-            value={dateRange.length > 0 ? dateRange : null}
+            value={dateRange.length > 0 ? dateRange : []}
           />
         </Col>
         <Col {...tailColumnProps}>
           <Button type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
-            CARI
+            Cari
           </Button>
         </Col>
       </Form>
