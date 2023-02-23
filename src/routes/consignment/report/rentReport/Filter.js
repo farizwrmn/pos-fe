@@ -1,37 +1,46 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Form, Button, DatePicker } from 'antd'
+import { Form, Button, DatePicker, Col } from 'antd'
 
-const FormItem = Form.Item
 const RangePicker = DatePicker.RangePicker
+
+const columnProps = {
+  xs: 24,
+  sm: 24,
+  md: 8,
+  lg: 8
+}
+
+const tailColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 2,
+  lg: 2
+}
 
 const Filter = ({
   dateRange,
   getData,
-  changeTime,
-  form: {
-    getFieldDecorator,
-    getFieldsValue
-  }
+  changeTime
 }) => {
   return (
-    <Form layout="inline">
-      <FormItem>
-        {getFieldDecorator('date', {
-          initialValue: dateRange || null
-        })(
-          <RangePicker onChange={changeTime} />
-        )}
-      </FormItem>
-      <FormItem>
-        <Button type="primary" onClick={() => getData()} disabled={!getFieldsValue().date}>Cari</Button>
-      </FormItem>
-    </Form>
+    <Col span={24} style={{ marginBottom: '10px' }}>
+      <Form layout="inline">
+        <Col {...columnProps}>
+          <RangePicker onChange={changeTime} style={{ width: '95%' }} />
+        </Col>
+        <Col {...tailColumnProps}>
+          <Button
+            type="primary"
+            onClick={() => getData()}
+            disabled={!dateRange}
+            style={{ width: '95%' }}
+          >
+            Cari
+          </Button>
+        </Col>
+      </Form>
+    </Col>
   )
-}
-
-Filter.propTypes = {
-  form: PropTypes.object
 }
 
 export default Form.create()(Filter)
