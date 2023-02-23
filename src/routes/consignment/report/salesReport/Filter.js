@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Select, DatePicker, Button, Col } from 'antd'
+import { Form, Select, DatePicker, Button, Col, Spin } from 'antd'
 
 const Option = Select.Option
 const RangePicker = DatePicker.RangePicker
+
+let searchTimeOut
 
 const columnProps = {
   xs: 24,
@@ -23,11 +25,13 @@ const Filter = ({
   vendorList,
   selectedVendor,
   selectVendor,
+  loadingSearchVendor,
   getData,
   searchVendor,
   dateRange,
   updateDateRange,
   loading,
+  clearVendorList,
   form: {
     validateFields
   }
@@ -45,8 +49,8 @@ const Filter = ({
     updateDateRange(value)
   }
 
-  let searchTimeOut
   const selectVendorSearch = (value) => {
+    clearVendorList()
     if (value.length > 0) {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -76,6 +80,7 @@ const Filter = ({
           onSearch={selectVendorSearch}
           filterOption={false}
           value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+          notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
         >
           {vendorOption}
         </Select>

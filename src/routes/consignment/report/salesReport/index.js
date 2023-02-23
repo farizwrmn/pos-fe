@@ -67,6 +67,7 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
     vendorList,
     selectedVendor,
     loading: loading.effects['consignmentSalesReport/query'],
+    loadingSearchVendor: loading.effects['consignmentSalesReport/queryVendor'],
     getData () {
       const from = moment(dateRange[0]).format('YYYY-MM-DD')
       const to = moment(dateRange[1]).format('YYYY-MM-DD')

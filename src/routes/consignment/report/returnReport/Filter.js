@@ -1,15 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Select, DatePicker, Button, Col } from 'antd'
+import { Form, Select, DatePicker, Button, Col, Spin } from 'antd'
 
 const Option = Select.Option
 const RangePicker = DatePicker.RangePicker
 
+let searchTimeOut
+
 const columnProps = {
   xs: 24,
   sm: 24,
-  md: 8,
-  lg: 8
+  md: 6,
+  lg: 6
 }
 
 const tailColumnProps = {
@@ -24,10 +26,12 @@ const Filter = ({
   vendorList,
   selectVendor,
   selectedVendor,
-  range,
+  loadingSearchVendor,
+  dateRange,
   getData,
   searchVendor,
   updateDateRange,
+  clearVendorList,
   form: {
     validateFields
   }
@@ -42,8 +46,8 @@ const Filter = ({
     })
   }
 
-  let searchTimeOut
   const selectVendorSearch = (value) => {
+    clearVendorList()
     if (value.length > 0) {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -64,8 +68,10 @@ const Filter = ({
 
   const vendorOption = vendorList.length > 0 ? vendorList.map(record => ((<Option key={record.id} value={record.id}>{record.vendor_code} - {record.name}</Option>))) : []
 
+  console.log('selectedVendor', selectedVendor)
+
   return (
-    <Form layout="inline">
+    <Col span={24} style={{ marginBottom: '10px' }}>
       <Col {...columnProps}>
         <Select
           style={{
@@ -76,6 +82,8 @@ const Filter = ({
           onChange={(value) => { selectVendor(value) }}
           onSearch={selectVendorSearch}
           filterOption={false}
+          notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+          value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
         >
           {vendorOption}
         </Select>
@@ -85,14 +93,14 @@ const Filter = ({
           style={{
             width: '95%'
           }}
-          disabled={!selectedVendor}
+          disabled={!selectedVendor.id}
           onChange={onChangeDate}
         />
       </Col>
       <Col {...tailColumnProps}>
-        <Button type="primary" style={{ width: '95%' }} onClick={() => handleSubmit()} disabled={!range}>CARI</Button>
+        <Button type="primary" style={{ width: '95%' }} onClick={() => handleSubmit()} disabled={!dateRange.length > 0}>Cari</Button>
       </Col>
-    </Form>
+    </Col>
   )
 }
 

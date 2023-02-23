@@ -22,7 +22,7 @@ export default modelExtend(pageModel, {
 
     consignmentId: getConsignmentId(),
 
-    range: null,
+    dateRange: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
