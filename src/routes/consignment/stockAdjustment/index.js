@@ -64,13 +64,13 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
         ),
         price: (
           <div>
-            normalPrice:<br />
+            Normal Price:<br />
             {`Rp ${numberFormatter(record.normalPrice)}` || '-'} <br /><br />
-            grab price: <br />
+            Grab Price: <br />
             {`Rp ${numberFormatter(record.grabPrice)}` || '-'}<br /><br />
-            grab mart price: <br />
+            Grabmart Price: <br />
             {`Rp ${numberFormatter(record.grabMartPrice)}` || '-'}<br /><br />
-            e-Commerce price: <br />
+            e-Commerce Price: <br />
             {`Rp ${numberFormatter(record.commercePrice)}` || '-'}<br /><br />
           </div>
         ),
