@@ -126,8 +126,6 @@ export default modelExtend(pageModel, {
     * queryEdit ({ payload = {} }, { call, put }) {
       const response = yield call(queryEdit, payload)
       if (response && response.meta && response.meta.success) {
-        message.success('Berhasil')
-        payload.resetFields()
         yield put({
           type: 'query',
           payload: {
@@ -138,6 +136,8 @@ export default modelExtend(pageModel, {
             pageSize: 10
           }
         })
+        message.success('Berhasil')
+        payload.resetFields()
       } else {
         message.error(`Gagal : ${response.success}`)
       }

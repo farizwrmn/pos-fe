@@ -277,7 +277,7 @@ const FormCounter = ({
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()} loading={loading}>Cancel</Button>}
+            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()} disabled={loading}>Cancel</Button>}
             <Button type="primary" onClick={() => handleSubmit()} loading={loading}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
           </FormItem>
         </Col>
