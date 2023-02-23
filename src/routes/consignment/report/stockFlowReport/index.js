@@ -18,6 +18,7 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
     vendorList,
     selectedVendor,
     selectedVendorProduct,
+    dateRange,
     selectedProduct,
     consignmentId
   } = consignmentStockFlowReport
@@ -64,7 +65,9 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
     vendorList,
     selectedVendor,
     selectedVendorProduct,
+    dateRange,
     selectedProduct,
+    loadingSearchVendor: loading.effects['consignmentStockFlowReport/queryVendor'],
     getStockFlowByProduct () {
       dispatch({
         type: 'consignmentStockFlowReport/query',
@@ -108,6 +111,14 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
         type: 'consignmentStockFlowReport/updateState',
         payload: {
           dateRange: value
+        }
+      })
+    },
+    clearVendorList () {
+      dispatch({
+        type: 'consignmentStockFlowReport/updateState',
+        payload: {
+          vendorList: []
         }
       })
     }

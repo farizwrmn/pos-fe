@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Col, Table } from 'antd'
 import moment from 'moment'
 
 const List = ({ ...tableProps, onFilterChange, dataSource }) => {
@@ -117,14 +117,16 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
   }
 
   return (
-    <Table {...tableProps}
-      bordered
-      columns={columns}
-      simple
-      scroll={{ x: 1000 }}
-      rowKey={record => record.id}
-      onChange={onChange}
-    />
+    <Col span={24}>
+      <Table {...tableProps}
+        bordered
+        columns={columns}
+        simple
+        scroll={{ x: 1000 }}
+        rowKey={record => record.id}
+        onChange={onChange}
+      />
+    </Col>
   )
 }
 
