@@ -16,7 +16,7 @@ const listColumn = {
   xl: 6
 }
 
-function Product ({ consignmentCategory, dispatch }) {
+function Product ({ consignmentCategory, dispatch, loading }) {
   const { list, subList, currentItem, activeKey, modalForm, modalType, formType } = consignmentCategory
 
   const changeTab = (key) => {
@@ -93,6 +93,11 @@ function Product ({ consignmentCategory, dispatch }) {
     modalType,
     currentItem,
     formType,
+    loading: (loading.effects['consignmentCategory/queryAdd']
+      || loading.effects['consignmentCategory/queryEdit']
+      || loading.effects['consignmentCategory/subQueryAdd']
+      || loading.effects['consignmentCategory/subQueryEdit']
+    ),
     showModalForm,
     onSubmit (data) {
       if (modalType === 'main') {
@@ -165,4 +170,4 @@ function Product ({ consignmentCategory, dispatch }) {
   )
 }
 
-export default connect(({ consignmentCategory, dispatch }) => ({ consignmentCategory, dispatch }))(Product)
+export default connect(({ consignmentCategory, dispatch, loading }) => ({ consignmentCategory, dispatch, loading }))(Product)
