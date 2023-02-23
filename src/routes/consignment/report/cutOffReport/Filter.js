@@ -7,6 +7,7 @@ const FormItem = Form.Item
 const Option = Select.Option
 
 const Filter = ({
+  loading,
   periodList,
   getData,
   form: {
@@ -37,7 +38,12 @@ const Filter = ({
         )}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={() => handleSubmit()}>Cari</Button>
+        <Button
+          type="primary"
+          onClick={() => handleSubmit()}
+          loading={loading}
+          disabled={!getFieldsValue().period}
+        >Cari</Button>
       </FormItem>
     </Form>
   )

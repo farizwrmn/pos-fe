@@ -38,6 +38,7 @@ function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, a
 
   const filterProps = {
     periodList,
+    loading: loading.effects['consignmentCutOffReport/query'],
     getData (data) {
       dispatch({
         type: 'consignmentCutOffReport/query',
