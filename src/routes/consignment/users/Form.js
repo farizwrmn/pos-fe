@@ -37,6 +37,9 @@ const FormCounter = ({
   add,
   edit,
   resetPassword,
+  loading,
+  modalState,
+  handleModal,
   form: {
     validateFields,
     getFieldDecorator,
@@ -64,21 +67,12 @@ const FormCounter = ({
 
   const outletOption = outletList.length > 0 ? outletList.map(record => (<Option key={record.id} value={record.id}>{record.outlet_name}</Option>)) : []
 
-  let modal
   const handleSubmitPassword = (password) => {
-    modal.destroy()
-    resetPassword(password)
+    resetPassword({ password })
   }
 
   const editPassword = () => {
-    modal = Modal.info({
-      title: 'Change Password',
-      content: (
-        <PasswordForm handleSubmitPassword={handleSubmitPassword} />
-      ),
-      okText: 'Close',
-      onOk () { }
-    })
+    handleModal()
   }
 
   const handleCancel = () => {
@@ -223,10 +217,12 @@ const FormCounter = ({
             <Button
               type="primary"
               onClick={() => handleSubmit()}
+              loading={loading}
             >
               {formType === 'add' ? 'Simpan' : 'Ubah'}
             </Button>
           </FormItem>
+          <PasswordForm handleSubmitPassword={handleSubmitPassword} loading={loading} modalState={modalState} handleModal={handleModal} />
         </Col>
       </Row>
     </Form >

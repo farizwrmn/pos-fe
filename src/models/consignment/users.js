@@ -8,6 +8,7 @@ export default modelExtend(pageModel, {
   namespace: 'consignmentUsers',
 
   state: {
+    modalState: false,
     activeKey: '0',
     formType: 'add',
     list: [],
@@ -114,7 +115,7 @@ export default modelExtend(pageModel, {
       const response = yield call(queryResetPassword, body)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
-        yield put({ type: 'querySuccess', payload: { ...payload } })
+        yield put({ type: 'querySuccess', payload: { ...payload, modalState: false } })
       } else {
         message.error(`Gagal : ${response.message}`)
       }

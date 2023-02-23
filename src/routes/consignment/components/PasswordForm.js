@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input, Button, Modal, message } from 'antd'
+import { Form, Row, Col, Input, Modal, message } from 'antd'
 
 const FormItem = Form.Item
 
 const FormCounter = ({
   handleSubmitPassword,
+  loading,
+  modalState,
+  handleModal,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -22,7 +25,6 @@ const FormCounter = ({
         message.error('Password tidak sama')
         return
       }
-      console.log('getFieldsValue', getFieldsValue())
       Modal.confirm({
         title: 'Save password',
         content: 'Do you want to save changes?',
@@ -35,39 +37,46 @@ const FormCounter = ({
   }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col span={24}>
-          <FormItem label="Password" hasFeedback>
-            {getFieldDecorator('password', {
-              initialValue: null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <Input type="password" />
-            )}
-          </FormItem>
-          <FormItem label="Password Confirmation" hasFeedback>
-            {getFieldDecorator('passwordConfirmation', {
-              initialValue: null,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <Input type="password" />
-            )}
-          </FormItem>
-          <Button onClick={() => handleSubmit()} type="primary">
-            RESET PASSWORD
-          </Button>
-        </Col>
-      </Row>
-    </Form >
+    <Modal
+      confirmLoading={loading}
+      visible={modalState}
+      title="Change Password"
+      okText="Reset Password"
+      onCancel={() => handleModal()}
+      onOk={() => handleSubmit()}
+      cancelText="Close"
+    >
+      <Form layout="horizontal">
+        <Row>
+          <Col span={24}>
+            <FormItem label="Password" hasFeedback>
+              {getFieldDecorator('password', {
+                initialValue: null,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Input type="password" />
+              )}
+            </FormItem>
+            <FormItem label="Password Confirmation" hasFeedback>
+              {getFieldDecorator('passwordConfirmation', {
+                initialValue: null,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Input type="password" />
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form >
+    </Modal>
   )
 }
 

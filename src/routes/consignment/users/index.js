@@ -9,7 +9,7 @@ import List from './List'
 const TabPane = Tabs.TabPane
 
 function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
-  const { activeKey, formType, list, selectedUser, q, pagination } = consignmentUsers
+  const { activeKey, formType, list, selectedUser, q, pagination, modalState } = consignmentUsers
   const { list: outletList } = consignmentOutlet
 
   const changeTab = (key) => {
@@ -38,10 +38,10 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
         type: 'consignmentUsers/updateState',
         payload: {
           formType: 'edit',
-          activeKey: '0',
           selectedUser: record
         }
       })
+      changeTab('0')
     },
     onFilterChange ({ current, pageSize }) {
       dispatch({
@@ -59,6 +59,11 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
     outletList,
     selectedUser,
     formType,
+    modalState,
+    loading: (loading.effects['consignmentUsers/queryAdd']
+      || loading.effects['consignmentUsers/queryEdit']
+      || loading.effects['consignmentUsers/queryResetPassword']
+    ),
     cancelEdit () {
       dispatch({
         type: 'consignmentUsers/updateState',
@@ -85,12 +90,20 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
         }
       })
     },
-    resetPassword (password) {
+    resetPassword ({ password }) {
       dispatch({
         type: 'consignmentUsers/queryResetPassword',
         payload: {
           id: selectedUser.id,
           password
+        }
+      })
+    },
+    handleModal () {
+      dispatch({
+        type: 'consignmentUsers/updateState',
+        payload: {
+          modalState: !modalState
         }
       })
     }
