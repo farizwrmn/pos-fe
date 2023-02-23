@@ -60,8 +60,10 @@ export default modelExtend(pageModel, {
         }
         const response = yield call(query, params)
         let list = response.data
-        let total = getReturnTotal(list)
-        list.push({ total })
+        if (list && list.length > 0) {
+          let total = getReturnTotal(list)
+          list.push({ total })
+        }
         yield put({
           type: 'querySuccess',
           payload: {
