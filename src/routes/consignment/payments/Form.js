@@ -27,6 +27,7 @@ const column = {
 
 const FormCounter = ({
   formType,
+  loading,
   selectedOutlet,
   currentItem,
   cancelEdit,
@@ -157,6 +158,7 @@ const FormCounter = ({
                 <Button
                   type="ghost"
                   onClick={() => handleCancel()}
+                  disabled={loading}
                 >
                   Cancel
                 </Button>
@@ -164,6 +166,7 @@ const FormCounter = ({
             <Button
               type="primary"
               onClick={() => handleSubmit()}
+              loading={loading}
             >
               {formType === 'add' ? 'Simpan' : 'Ubah'}
             </Button>

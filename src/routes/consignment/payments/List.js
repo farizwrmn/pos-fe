@@ -6,7 +6,9 @@ import { DropOption } from 'components'
 const listColumnProps = {
   xs: 24,
   sm: 24,
-  md: 12
+  md: 16,
+  lg: 16,
+  xl: 16
 }
 
 const List = ({ ...tableProps, editItem, deleteItem }) => {
@@ -63,7 +65,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 600 }}
+        scroll={{ x: 500 }}
         rowKey={record => record.id}
       />
     </Col>
