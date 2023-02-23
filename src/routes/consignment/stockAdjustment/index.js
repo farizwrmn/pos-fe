@@ -132,6 +132,9 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
     productList,
     selectedOutlet,
     selectedVendorProductList,
+    loadingSearchVendor: (loading.effects['consignmentStockAdjustment/updateState']
+      || loading.effects['consignmentStockAdjustment/querySearchVendor']),
+    loading: loading.effects['consignmentStockAdjustment/queryAdd'],
     updateProductList (list) {
       dispatch({
         type: 'consignmentStockAdjustment/updateState',
@@ -178,6 +181,14 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       dispatch({
         type: 'consignmentStockAdjustment/queryAdd',
         payload: body
+      })
+    },
+    emptyVendorList () {
+      dispatch({
+        type: 'consignmentStockAdjustment/updateState',
+        payload: {
+          vendorList: []
+        }
       })
     }
   }

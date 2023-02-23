@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Select, Input, Modal } from 'antd'
+import { Form, Button, Row, Col, Select, Input, Modal, Spin } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
 
 const { TextArea } = Input
+
+let searchTimeOut
 
 const formItemLayout = {
   labelCol: {
@@ -31,12 +33,15 @@ const FormCounter = ({
   modalType,
   vendorList,
   productList,
+  loadingSearchVendor,
+  loading,
   selectedOutlet,
   selectedVendorProductList,
   updateProductList,
   searchVendor,
   selectVendor,
   submitAdjustment,
+  emptyVendorList,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -163,8 +168,8 @@ const FormCounter = ({
     updateProductList(list)
   }
 
-  let searchTimeOut
   const selectVendorSearch = (value) => {
+    emptyVendorList()
     if (value.length > 0) {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -318,6 +323,7 @@ const FormCounter = ({
                 onChange={(value) => { selectVendor(value) }}
                 onSearch={selectVendorSearch}
                 filterOption={false}
+                notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
               >
                 {vendorOption}
               </Select>
@@ -359,7 +365,7 @@ const FormCounter = ({
           {productForm}
 
           <FormItem {...tailFormItemLayout}>
-            <Button type="primary" onClick={() => handleSubmit()}>Simpan</Button>
+            <Button type="primary" onClick={() => handleSubmit()} loading={loading}>Simpan</Button>
           </FormItem>
         </Col>
       </Row>
