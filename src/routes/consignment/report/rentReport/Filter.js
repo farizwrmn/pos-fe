@@ -18,6 +18,7 @@ const tailColumnProps = {
 }
 
 const Filter = ({
+  loading,
   dateRange,
   getData,
   changeTime
@@ -26,14 +27,19 @@ const Filter = ({
     <Col span={24} style={{ marginBottom: '10px' }}>
       <Form layout="inline">
         <Col {...columnProps}>
-          <RangePicker onChange={changeTime} style={{ width: '95%' }} />
+          <RangePicker
+            onChange={changeTime}
+            style={{ width: '95%' }}
+            value={dateRange}
+          />
         </Col>
         <Col {...tailColumnProps}>
           <Button
             type="primary"
             onClick={() => getData()}
-            disabled={!dateRange}
+            disabled={!dateRange.length > 0}
             style={{ width: '95%' }}
+            loading={loading}
           >
             Cari
           </Button>

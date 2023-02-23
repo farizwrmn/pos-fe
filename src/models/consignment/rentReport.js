@@ -9,7 +9,7 @@ export default modelExtend(pageModel, {
 
   state: {
     activeKey: '0',
-    dateRange: null,
+    dateRange: [],
 
     list: [],
 
