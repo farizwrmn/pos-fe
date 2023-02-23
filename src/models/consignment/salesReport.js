@@ -20,7 +20,7 @@ export default modelExtend(pageModel, {
 
     consignmentId: getConsignmentId(),
 
-    dateRange: null,
+    dateRange: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,

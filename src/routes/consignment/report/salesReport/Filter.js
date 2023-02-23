@@ -15,8 +15,8 @@ const columnProps = {
 const tailColumnProps = {
   xs: 24,
   sm: 24,
-  md: 2,
-  lg: 2
+  md: 3,
+  lg: 3
 }
 
 const Filter = ({
@@ -27,6 +27,7 @@ const Filter = ({
   searchVendor,
   dateRange,
   updateDateRange,
+  loading,
   form: {
     validateFields
   }
@@ -66,7 +67,6 @@ const Filter = ({
     <Form layout="inline">
       <Col {...columnProps}>
         <Select
-          size="large"
           style={{
             width: '95%'
           }}
@@ -75,18 +75,19 @@ const Filter = ({
           onChange={(value) => { selectVendor(value) }}
           onSearch={selectVendorSearch}
           filterOption={false}
+          value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
         >
           {vendorOption}
         </Select>
       </Col>
       <Col {...columnProps}>
         <RangePicker
-          size="large"
           style={{
             width: '95%'
           }}
-          disabled={!selectedVendor}
+          disabled={!selectedVendor.id}
           onChange={onChangeDate}
+          value={dateRange.length > 0 ? dateRange : []}
         />
       </Col>
       <Col {...tailColumnProps}>
@@ -96,10 +97,10 @@ const Filter = ({
           }}
           type="primary"
           onClick={() => handleSubmit()}
-          disabled={!dateRange}
-          size="large"
+          disabled={!dateRange.length > 0}
+          loading={loading}
         >
-          CARI
+          Cari
         </Button>
       </Col>
     </Form>

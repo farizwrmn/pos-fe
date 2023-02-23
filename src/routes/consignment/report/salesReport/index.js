@@ -66,6 +66,7 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
     dateRange,
     vendorList,
     selectedVendor,
+    loading: loading.effects['consignmentSalesReport/query'],
     getData () {
       const from = moment(dateRange[0]).format('YYYY-MM-DD')
       const to = moment(dateRange[1]).format('YYYY-MM-DD')
@@ -79,13 +80,15 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
       })
     },
     selectVendor (value) {
-      const vendor = vendorList.filter(record => record.id === value)[0]
-      dispatch({
-        type: 'consignmentSalesReport/updateState',
-        payload: {
-          selectedVendor: vendor
-        }
-      })
+      const vendor = vendorList.filter(record => record.id === value)
+      if (vendor && vendor[0]) {
+        dispatch({
+          type: 'consignmentSalesReport/updateState',
+          payload: {
+            selectedVendor: vendor[0]
+          }
+        })
+      }
     },
     searchVendor (value) {
       dispatch({
@@ -100,6 +103,14 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
         type: 'consignmentSalesReport/updateState',
         payload: {
           dateRange: value
+        }
+      })
+    },
+    clearVendorList () {
+      dispatch({
+        type: 'consignmentSalesReport/updateState',
+        payload: {
+          vendorList: []
         }
       })
     }
