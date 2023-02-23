@@ -11,9 +11,9 @@ const TabPane = Tabs.TabPane
 const listColumn = {
   xs: 24,
   sm: 24,
-  md: 8,
-  lg: 6,
-  xl: 6
+  md: 12,
+  lg: 12,
+  xl: 12
 }
 
 function Product ({ consignmentCategory, dispatch, loading }) {
