@@ -68,6 +68,7 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
     dateRange,
     selectedProduct,
     loadingSearchVendor: loading.effects['consignmentStockFlowReport/queryVendor'],
+    loading: loading.effects['consignmentStockFlowReport/query'],
     getStockFlowByProduct () {
       dispatch({
         type: 'consignmentStockFlowReport/query',

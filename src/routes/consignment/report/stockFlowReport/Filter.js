@@ -27,6 +27,7 @@ const Filter = ({
   selectedProduct,
   dateRange,
   loadingSearchVendor,
+  loading,
   getStockFlowByProduct,
   updateSelectedProduct,
   searchVendor,
@@ -129,7 +130,7 @@ const Filter = ({
           />
         </Col>
         <Col {...tailColumnProps}>
-          <Button type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0}>
+          <Button type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
             CARI
           </Button>
         </Col>
