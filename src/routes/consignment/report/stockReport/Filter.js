@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input, Select } from 'antd'
+import { Form, Row, Col, Input, Select, Spin } from 'antd'
 
 const Search = Input.Search
 const FormItem = Form.Item
 const Option = Select.Option
+
+let searchTimeOut
 
 const searchBarLayout = {
   sm: { span: 24 },
@@ -17,9 +19,11 @@ const Filter = ({
   q,
   selectedVendor,
   vendorList,
+  loadingSearchVendor,
   onFilterChange,
   searchVendor,
   onSelectVendor,
+  clearVendorList,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -31,8 +35,8 @@ const Filter = ({
     onFilterChange(field)
   }
 
-  let searchTimeOut
   const handleSearch = (value) => {
+    clearVendorList()
     if (value !== '') {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -80,6 +84,7 @@ const Filter = ({
                 onSearch={handleSearch}
                 filterOption={false}
                 onChange={handleChange}
+                notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
               >
                 {vendorOption}
               </Select>

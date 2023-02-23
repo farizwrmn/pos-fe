@@ -64,6 +64,7 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
     vendorList,
     selectedVendor,
     q,
+    loadingSearchVendor: loading.effects['consignmentVendor/query'],
     onFilterChange (value) {
       dispatch({
         type: 'consignmentStockReport/query',
@@ -97,6 +98,14 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
         payload: {
           q: '',
           vendorId: id
+        }
+      })
+    },
+    clearVendorList () {
+      dispatch({
+        type: 'consignmentVendor/updateState',
+        payload: {
+          list: []
         }
       })
     }
