@@ -10,7 +10,7 @@ import PrintPDF from './PrintPDF'
 
 const TabPane = Tabs.TabPane
 
-function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, app }) {
+function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, app, loading }) {
   const { activeKey, dateRange, summary, consignmentId } = consignmentProfitReport
   const { list: vendorList, selectedVendor } = consignmentVendor
   const { user, storeInfo } = app
@@ -42,6 +42,7 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
     vendorList,
     selectedVendor,
     dateRange,
+    loading: loading.effects['consignmentProfitReport/query'],
     changeVendor (vendorId) {
       const vendor = vendorList.filter(filtered => filtered.id === vendorId)[0]
       dispatch({
@@ -129,5 +130,6 @@ export default connect(({
   consignmentProfitReport,
   consignmentVendor,
   dispatch,
-  app
-}) => ({ consignmentProfitReport, consignmentVendor, dispatch, app }))(ProfitReport)
+  app,
+  loading
+}) => ({ consignmentProfitReport, consignmentVendor, dispatch, app, loading }))(ProfitReport)

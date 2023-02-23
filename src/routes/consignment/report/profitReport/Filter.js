@@ -26,7 +26,8 @@ const Filter = ({
   getData,
   changeVendor,
   changeTime,
-  onSearchVendor
+  onSearchVendor,
+  loading
 }) => {
   let vendorOption = vendorList.length > 0 ? vendorList.map(record => (<Option key={record.id} value={record.id}>{record.vendor_code} - {record.name}</Option>)) : []
 
@@ -53,15 +54,16 @@ const Filter = ({
             filterOption={false}
             showSearch
             onSearch={handleSearchVendor}
+            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
           >
             {vendorOption}
           </Select>
         </Col>
         <Col {...columnProps}>
-          <RangePicker onChange={changeTime} disabled={!selectedVendor} style={{ width: '95%' }} />
+          <RangePicker onChange={changeTime} value={dateRange} disabled={!selectedVendor.id} style={{ width: '95%' }} />
         </Col>
         <Col {...tailColumnProps}>
-          <Button type="primary" onClick={() => getData()} disabled={!dateRange} style={{ width: '95%' }}>Cari</Button>
+          <Button type="primary" onClick={() => getData()} disabled={!dateRange.length > 0} style={{ width: '95%' }} loading={loading}>Cari</Button>
         </Col>
       </Form>
     </Col>
