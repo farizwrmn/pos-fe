@@ -36,7 +36,7 @@ const DetailList = ({
       columns={columns}
       simple
       pagination={false}
-      scroll={{ x: 1000 }}
+      scroll={{ x: 600 }}
       rowKey={record => record.id}
     />
   )

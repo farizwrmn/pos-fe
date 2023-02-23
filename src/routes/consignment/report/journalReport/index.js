@@ -141,8 +141,8 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
           {activeKey === '0' &&
             <div>
               <Filter {...filterProps} />
-              <Summary {...summaryProps} />
-              {list && list.length ? <Detail {...detailProps} /> : null}
+              {summary && summary.length > 0 && <Summary {...summaryProps} />}
+              {list && list.length > 0 && <Detail {...detailProps} />}
             </div>
           }
         </TabPane>
