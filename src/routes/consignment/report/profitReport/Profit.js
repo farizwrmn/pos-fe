@@ -4,21 +4,23 @@ import { numberFormat } from 'utils'
 
 const Profit = ({ summary }) => {
   const cardColumns = {
-    sm: { span: 16 },
-    md: { span: 16 },
-    lg: { span: 8 },
-    xl: { span: 8 }
+    xs: 24,
+    sm: 24,
+    md: 16,
+    lg: 8,
+    xl: 8
   }
 
   const itemColumns = {
-    sm: { span: 24 },
-    md: { span: 24 },
-    lg: { span: 12 },
-    xl: { span: 12 }
+    xs: 12,
+    sm: 12,
+    md: 12,
+    lg: 12,
+    xl: 12
   }
 
   return (
-    <Row>
+    <Col span={24}>
       <Col {...cardColumns}>
         <Card
           title={
@@ -72,7 +74,7 @@ const Profit = ({ summary }) => {
           </Row>
         </Card>
       </Col>
-    </Row>
+    </Col>
   )
 }
 
