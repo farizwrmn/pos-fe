@@ -92,14 +92,14 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
             selectedVendor: vendor[0]
           }
         })
+        dispatch({
+          type: 'consignmentStockReport/query',
+          payload: {
+            q: '',
+            vendorId: id
+          }
+        })
       }
-      dispatch({
-        type: 'consignmentStockReport/query',
-        payload: {
-          q: '',
-          vendorId: id
-        }
-      })
     },
     clearVendorList () {
       dispatch({

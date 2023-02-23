@@ -88,14 +88,16 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
     },
     onSelectVendor (value) {
       const vendor = vendorList.filter(filtered => filtered.id === value)[0]
-      dispatch({
-        type: 'consignmentStockFlowReport/queryProductByVendorId',
-        payload: {
-          selectedVendor: vendor,
-          selectedProduct: {},
-          selectedVendorProduct: []
-        }
-      })
+      if (vendor && vendor[0]) {
+        dispatch({
+          type: 'consignmentStockFlowReport/queryProductByVendorId',
+          payload: {
+            selectedVendor: vendor[0],
+            selectedProduct: {},
+            selectedVendorProduct: []
+          }
+        })
+      }
     },
     searchVendor (value) {
       dispatch({

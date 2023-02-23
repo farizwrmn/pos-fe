@@ -73,24 +73,24 @@ const Filter = ({
       <Col span={12} />
       <Col {...searchBarLayout} >
         <Form layout="horizontal">
-          <FormItem label="Vendor">
-            {getFieldDecorator('vendor', vendorFields)(
-              <Select
-                style={{
-                  width: '100%'
-                }}
-                placeholder="vendor"
-                showSearch
-                onSearch={handleSearch}
-                filterOption={false}
-                onChange={handleChange}
-                notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
-              >
-                {vendorOption}
-              </Select>
-            )}
-          </FormItem>
-          <FormItem label="Cari Nama/Kode Produk">
+          <Col>
+            <Select
+              style={{
+                width: '100%',
+                marginBottom: '10px'
+              }}
+              placeholder="Select Vendor"
+              showSearch
+              onSearch={handleSearch}
+              filterOption={false}
+              onChange={handleChange}
+              value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+              notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+            >
+              {vendorOption}
+            </Select>
+          </Col>
+          <FormItem >
             {getFieldDecorator('q', qFields)(
               <Search
                 placeholder="Cari product NAME/CODE"

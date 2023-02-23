@@ -68,8 +68,6 @@ const Filter = ({
 
   const vendorOption = vendorList.length > 0 ? vendorList.map(record => ((<Option key={record.id} value={record.id}>{record.vendor_code} - {record.name}</Option>))) : []
 
-  console.log('selectedVendor', selectedVendor)
-
   return (
     <Col span={24} style={{ marginBottom: '10px' }}>
       <Col {...columnProps}>

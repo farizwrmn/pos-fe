@@ -71,13 +71,15 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
       })
     },
     selectVendor (value) {
-      const vendor = vendorList.filter(record => record.id === value)[0]
-      dispatch({
-        type: 'consignmentVendor/updateState',
-        payload: {
-          selectedVendor: vendor
-        }
-      })
+      const vendor = vendorList.filter(record => record.id === value)
+      if (vendor && vendor[0]) {
+        dispatch({
+          type: 'consignmentVendor/updateState',
+          payload: {
+            selectedVendor: vendor[0]
+          }
+        })
+      }
     },
     searchVendor (value) {
       dispatch({
