@@ -29,6 +29,8 @@ const column = {
 
 const FormCounter = ({
   formType,
+  loading,
+  modalState,
   selectedVendor,
   lastVendor,
   categoryList,
@@ -36,6 +38,7 @@ const FormCounter = ({
   add,
   edit,
   resetPassword,
+  handleModal,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -100,25 +103,12 @@ const FormCounter = ({
     })
   }
 
-  const changeCategory = (value) => {
-    console.log('value', value)
-  }
-
-  let modal
   const handleResetPassword = (password) => {
-    modal.destroy()
     resetPassword(password)
   }
 
   const changePassword = () => {
-    modal = Modal.info({
-      title: 'Ubah Password',
-      content: (
-        <PasswordForm handleSubmitPassword={handleResetPassword} />
-      ),
-      onOk () { },
-      onCancel () { }
-    })
+    handleModal()
   }
 
   const categoryOption = categoryList.length > 0 ? categoryList.map(record => (record.id !== 1 && <Option key={record.id} value={record.id}>{record.name}</Option>)) : []
@@ -136,7 +126,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select onChange={changeCategory}>
+              <Select >
                 {categoryOption}
               </Select>
             )}
@@ -144,8 +134,8 @@ const FormCounter = ({
           <FormItem label="Kode Vendor" hasFeedback {...formItemLayout}>
             {getFieldDecorator('vendorCode', {
               initialValue: formType === 'add' ? (
-                `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${(`00000${lastVendor.id + 1}`).slice((String(lastVendor.id)).length)}`
-              ) : `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${selectedVendor.vendor_code.slice(1)}`,
+                `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${String(lastVendor.id + 1).padStart(5, '0')}`
+              ) : `${selectedVendor.category === 2 ? 'F' : 'V'}${String(selectedVendor.id).padStart(5, '0')}`,
               rules: [
                 {
                   required: true
@@ -287,10 +277,11 @@ const FormCounter = ({
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()}>Cancel</Button>}
-            <Button type="primary" onClick={() => handleSubmit()}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
+            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()} loading={loading}>Cancel</Button>}
+            <Button type="primary" onClick={() => handleSubmit()} loading={loading}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
           </FormItem>
         </Col>
+        <PasswordForm handleSubmitPassword={handleResetPassword} modalState={modalState} handleModal={handleModal} loading={loading} />
       </Row>
     </Form>
   )

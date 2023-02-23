@@ -14,6 +14,7 @@ export default modelExtend(pageModel, {
   namespace: 'consignmentVendor',
 
   state: {
+    modalState: false,
     activeKey: '0',
     formType: 'add',
     list: [],

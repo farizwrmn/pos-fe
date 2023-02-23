@@ -9,7 +9,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) {
-  const { list, selectedVendor, lastVendor, activeKey, formType, pagination, q } = consignmentVendor
+  const { list, selectedVendor, lastVendor, activeKey, formType, pagination, q, modalState } = consignmentVendor
   const { list: categoryList } = consignmentCategory
 
   const changeTab = (key) => {
@@ -35,12 +35,13 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
     pagination,
     loading: loading.effects['consignmentVendor/query'],
     edit (record) {
+      console.log('record', record)
+      changeTab('0')
       dispatch({
         type: 'consignmentVendor/updateState',
         payload: {
-          formType: 'edit',
-          activeKey: '0',
-          selectedVendor: record
+          selectedVendor: record,
+          formType: 'edit'
         }
       })
     },
@@ -73,6 +74,10 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
     selectedVendor,
     lastVendor,
     categoryList,
+    modalState,
+    loading: (loading.effects['consignmentVendor/add']
+      || loading.effects['consignmentVendor/edit']
+      || loading.effects['consignmentVendor/resetPassword']),
     cancelEdit () {
       dispatch({
         type: 'consignmentVendor/updateState',
@@ -107,6 +112,14 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
         payload: {
           id: selectedVendor.id,
           password
+        }
+      })
+    },
+    handleModal () {
+      dispatch({
+        type: 'consignmentVendor/updateState',
+        payload: {
+          modalState: !modalState
         }
       })
     }
