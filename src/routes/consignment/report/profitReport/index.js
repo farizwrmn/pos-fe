@@ -43,14 +43,17 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
     selectedVendor,
     dateRange,
     loading: loading.effects['consignmentProfitReport/query'],
+    loadingSearchVendor: loading.effects['consignmentVendor/query'],
     changeVendor (vendorId) {
-      const vendor = vendorList.filter(filtered => filtered.id === vendorId)[0]
-      dispatch({
-        type: 'consignmentVendor/updateState',
-        payload: {
-          selectedVendor: vendor
-        }
-      })
+      const vendor = vendorList.filter(filtered => filtered.id === vendorId)
+      if (vendor && vendor[0]) {
+        dispatch({
+          type: 'consignmentVendor/updateState',
+          payload: {
+            selectedVendor: vendor[0]
+          }
+        })
+      }
     },
     changeTime (time) {
       dispatch({
@@ -77,6 +80,14 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
         type: 'consignmentVendor/query',
         payload: {
           q: value
+        }
+      })
+    },
+    clearVendorList () {
+      dispatch({
+        type: 'consignmentVendor/updateState',
+        payload: {
+          list: []
         }
       })
     }
@@ -117,7 +128,7 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
           {activeKey === '0' &&
             <div>
               <Filter {...filterProps} />
-              {summary && summary.total && <Profit {...profitProps} />}
+              {summary && summary.total !== undefined && <Profit {...profitProps} />}
             </div>
           }
         </TabPane>
