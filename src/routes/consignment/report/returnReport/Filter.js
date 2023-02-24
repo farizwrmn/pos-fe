@@ -93,6 +93,7 @@ const Filter = ({
           }}
           disabled={!selectedVendor.id}
           onChange={onChangeDate}
+          value={dateRange}
         />
       </Col>
       <Col {...tailColumnProps}>

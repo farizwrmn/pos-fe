@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
   namespace: 'consignmentCutOffReport',
 
   state: {
+    period: null,
     activeKey: '0',
     list: [],
     consignmentId: getConsignmentId(),
@@ -32,14 +33,21 @@ export default modelExtend(pageModel, {
             type: 'queryPeriodList',
             payload: {}
           })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey
+              }
+            })
+          } else {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: '0'
+              }
+            })
+          }
         }
       })
     }

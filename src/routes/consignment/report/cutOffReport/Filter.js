@@ -7,6 +7,7 @@ const FormItem = Form.Item
 const Option = Select.Option
 
 const Filter = ({
+  period,
   loading,
   periodList,
   getData,
@@ -31,7 +32,9 @@ const Filter = ({
   return (
     <Form layout="inline">
       <FormItem>
-        {getFieldDecorator('period')(
+        {getFieldDecorator('period', {
+          initialValue: period || undefined
+        })(
           <Select placeholder="Pilih Periode" style={{ marginBottom: '10px', minWidth: '120px' }}>
             {periodOption}
           </Select>

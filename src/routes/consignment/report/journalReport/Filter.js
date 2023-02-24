@@ -20,6 +20,7 @@ const tailColumnProps = {
 }
 
 const Filter = ({
+  loading,
   dateRange,
   balanceList,
   selectedBalance,
@@ -57,7 +58,7 @@ const Filter = ({
     <Col span={24} style={{ marginBottom: '10px' }}>
       <Form layout="inline">
         <Col {...columnProps}>
-          <RangePicker style={{ width: '95%' }} onChange={handleChangeDate} />
+          <RangePicker style={{ width: '95%' }} onChange={handleChangeDate} value={dateRange} />
         </Col>
         <Col {...columnProps}>
           <Select
@@ -65,13 +66,13 @@ const Filter = ({
             style={{ width: '95%' }}
             filterOption={false}
             onChange={handleChangeBalance}
-            disabled={!dateRange}
+            disabled={!dateRange.length > 0}
           >
             {balanceOption}
           </Select>
         </Col>
         <Col {...tailColumnProps}>
-          <Button style={{ width: '95%' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange}>Cari</Button>
+          <Button style={{ width: '95%' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>Cari</Button>
         </Col>
       </Form>
     </Col>

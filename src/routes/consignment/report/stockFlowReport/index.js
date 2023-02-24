@@ -78,16 +78,18 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
       })
     },
     updateSelectedProduct (value) {
-      const product = selectedVendorProduct.filter(filtered => filtered.id === value)[0]
-      dispatch({
-        type: 'consignmentStockFlowReport/updateState',
-        payload: {
-          selectedProduct: product
-        }
-      })
+      const product = selectedVendorProduct.filter(filtered => filtered.id === value)
+      if (product && product[0]) {
+        dispatch({
+          type: 'consignmentStockFlowReport/updateState',
+          payload: {
+            selectedProduct: product[0]
+          }
+        })
+      }
     },
     onSelectVendor (value) {
-      const vendor = vendorList.filter(filtered => filtered.id === value)[0]
+      const vendor = vendorList.filter(filtered => filtered.id === value)
       if (vendor && vendor[0]) {
         dispatch({
           type: 'consignmentStockFlowReport/queryProductByVendorId',

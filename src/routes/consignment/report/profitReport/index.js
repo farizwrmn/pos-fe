@@ -11,8 +11,8 @@ import PrintPDF from './PrintPDF'
 const TabPane = Tabs.TabPane
 
 function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, app, loading }) {
-  const { activeKey, dateRange, summary, consignmentId } = consignmentProfitReport
-  const { list: vendorList, selectedVendor } = consignmentVendor
+  const { activeKey, dateRange, summary, consignmentId, selectedVendor } = consignmentProfitReport
+  const { list: vendorList } = consignmentVendor
   const { user, storeInfo } = app
 
   const changeTab = (key) => {
@@ -48,7 +48,7 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
       const vendor = vendorList.filter(filtered => filtered.id === vendorId)
       if (vendor && vendor[0]) {
         dispatch({
-          type: 'consignmentVendor/updateState',
+          type: 'consignmentProfitReport/updateState',
           payload: {
             selectedVendor: vendor[0]
           }

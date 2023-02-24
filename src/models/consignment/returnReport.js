@@ -22,6 +22,8 @@ export default modelExtend(pageModel, {
 
     consignmentId: getConsignmentId(),
 
+    selectedVendor: {},
+
     dateRange: [],
     pagination: {
       showSizeChanger: true,
@@ -34,15 +36,21 @@ export default modelExtend(pageModel, {
     setup ({ history, dispatch }) {
       history.listen((location) => {
         if (location.pathname === '/integration/consignment/return-report') {
-          return true
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey
+              }
+            })
+          } else {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: '0'
+              }
+            })
+          }
         }
       })
     }

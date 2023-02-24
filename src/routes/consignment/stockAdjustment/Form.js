@@ -154,18 +154,20 @@ const FormCounter = ({
 
   const changeProductName = (value, index) => {
     const list = productList
-    const product = selectedVendorProductList.filter(filtered => filtered.id === value)[0]
-    list[index] = {
-      id: value,
-      product_name: `${value} - ${product.product_name}`,
-      stockId: product['stocks.stock_id'],
-      quantity: 1,
-      normalPrice: product.price,
-      grabPrice: product.price_grabfood_gofood || 0,
-      grabMartPrice: product.price_grabmart || 0,
-      commercePrice: product.price_shopee || 0
+    const product = selectedVendorProductList.filter(filtered => filtered.id === value)
+    if (product && product[0]) {
+      list[index] = {
+        id: value,
+        product_name: `${value} - ${product[0].product_name}`,
+        stockId: product[0]['stocks.stock_id'],
+        quantity: 1,
+        normalPrice: product[0].price,
+        grabPrice: product[0].price_grabfood_gofood || 0,
+        grabMartPrice: product[0].price_grabmart || 0,
+        commercePrice: product[0].price_shopee || 0
+      }
+      updateProductList(list)
     }
-    updateProductList(list)
   }
 
   const selectVendorSearch = (value) => {

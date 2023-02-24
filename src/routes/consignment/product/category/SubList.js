@@ -24,8 +24,10 @@ const List = ({ ...tableProps, list, showModalForm }) => {
       dataIndex: 'category_id',
       key: 'category_id',
       render: (value) => {
-        const category = list.filter(filtered => filtered.id === value)[0]
-        return category.name
+        const category = list.filter(filtered => filtered.id === value)
+        if (category && category[0]) {
+          return category[0].name
+        }
       }
     },
     {

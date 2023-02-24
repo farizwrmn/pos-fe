@@ -46,21 +46,23 @@ export default modelExtend(pageModel, {
             type: 'subQuery',
             payload: {}
           })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
+          if (location.pathname === '/integration/consignment/product-category') {
+            if (location.query && location.query.activeKey) {
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: location.query.activeKey
+                }
+              })
+            } else {
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: '0'
+                }
+              })
             }
-          })
-        } else {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: '0'
-            }
-          })
+          }
         }
       })
     }
