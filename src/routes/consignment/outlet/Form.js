@@ -105,7 +105,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Nama Outlet" hasFeedback {...formItemLayout}>
@@ -117,7 +117,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Alamat" hasFeedback {...formItemLayout}>
@@ -129,7 +129,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Jumlah Baris Box" hasFeedback {...formItemLayout}>
@@ -141,7 +141,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Jumlah Kolom Box" hasFeedback {...formItemLayout}>
@@ -153,7 +153,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Komisi Makanan (%)" hasFeedback {...formItemLayout}>
@@ -165,7 +165,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Komisi Non Makanan (%)" hasFeedback {...formItemLayout}>
@@ -177,7 +177,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Include Payment Charge" hasFeedback {...formItemLayout}>
@@ -189,7 +189,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select>
+              <Select disabled={loadingAdd || loadingEdit}>
                 <Option key={0} value={0}>Tidak</Option>
                 <Option key={1} value={1}>Ya</Option>
               </Select>
@@ -204,7 +204,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Nama Pemilik Rekening" hasFeedback {...formItemLayout}>
@@ -216,7 +216,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
@@ -228,7 +228,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Nomor Handphone" hasFeedback {...formItemLayout}>
@@ -240,7 +240,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box A" hasFeedback {...formItemLayout}>
@@ -252,7 +252,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box B" hasFeedback {...formItemLayout}>
@@ -264,7 +264,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box C" hasFeedback {...formItemLayout}>
@@ -276,7 +276,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box D" hasFeedback {...formItemLayout}>
@@ -288,7 +288,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box E" hasFeedback {...formItemLayout}>
@@ -300,7 +300,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box F" hasFeedback {...formItemLayout}>
@@ -312,7 +312,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box G" hasFeedback {...formItemLayout}>
@@ -324,7 +324,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box H" hasFeedback {...formItemLayout}>
@@ -336,7 +336,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box I" hasFeedback {...formItemLayout}>
@@ -348,7 +348,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box J" hasFeedback {...formItemLayout}>
@@ -360,7 +360,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box K" hasFeedback {...formItemLayout}>
@@ -372,7 +372,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box L" hasFeedback {...formItemLayout}>
@@ -384,7 +384,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box M" hasFeedback {...formItemLayout}>
@@ -396,7 +396,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box N" hasFeedback {...formItemLayout}>
@@ -408,7 +408,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input type="number" />
+              <Input type="number" disabled={loadingAdd || loadingEdit} />
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
