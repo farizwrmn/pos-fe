@@ -35,7 +35,6 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
     pagination,
     loading: loading.effects['consignmentVendor/query'],
     edit (record) {
-      console.log('record', record)
       changeTab('0')
       dispatch({
         type: 'consignmentVendor/updateState',

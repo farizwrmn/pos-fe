@@ -83,7 +83,7 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
         dispatch({
           type: 'consignmentJournalReport/updateState',
           payload: {
-            selectedBalance: balance
+            selectedBalance: balance[0]
           }
         })
       }

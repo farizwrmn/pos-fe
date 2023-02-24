@@ -30,7 +30,8 @@ const List = ({
       title: 'Bank',
       dataIndex: 'vendor.bank_name',
       key: 'vendor.bank_name',
-      width: '50px'
+      width: '50px',
+      render: value => String(value).toUpperCase()
     },
     {
       title: 'No. Rek',
