@@ -76,8 +76,8 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          submitAdjustment(getFieldsValue())
-          resetFields()
+          const fields = getFieldsValue()
+          submitAdjustment(fields, resetFields)
         },
         onCancel () { }
       })
@@ -189,7 +189,7 @@ const FormCounter = ({
     return (
       <FormItem label={`Produk ${index + 1}`} hasFeedback {...formItemLayout}>
         {getFieldDecorator(`productName-${index}`, {
-          initialValue: record.productName,
+          initialValue: record.productName || undefined,
           rules: [
             {
               required: true
@@ -198,7 +198,8 @@ const FormCounter = ({
         })(
           <Select
             onChange={(value) => { changeProductName(value, index) }}
-            disabled={!getFieldsValue().vendor}
+            disabled={!getFieldsValue().vendor || loading}
+            placeholder="Select Product"
           >
             {productOption}
           </Select>
@@ -211,7 +212,7 @@ const FormCounter = ({
             }
           ]
         })(
-          <Input addonBefore="Quantity" disabled={!getFieldsValue().vendor} onChange={(event) => { changeQty(event, index) }} />
+          <Input addonBefore="Quantity" disabled={!getFieldsValue().vendor || loading} onChange={(event) => { changeQty(event, index) }} />
         )}
         {getFieldDecorator(`normalPrice-${index}`, {
           initialValue: record.normalPrice,
@@ -221,7 +222,7 @@ const FormCounter = ({
             }
           ]
         })(
-          <Input addonBefore="Normal Price" disabled={!getFieldsValue().vendor} onChange={(event) => { changePrice(event, index, '1') }} />
+          <Input addonBefore="Normal Price" disabled={!getFieldsValue().vendor || loading} onChange={(event) => { changePrice(event, index, '1') }} />
         )}
         {getFieldDecorator(`grabPrice-${index}`, {
           initialValue: record.grabPrice || 0,
@@ -231,7 +232,7 @@ const FormCounter = ({
             }
           ]
         })(
-          <Input addonBefore="Grab/Gojek Price" disabled={!getFieldsValue().vendor} onChange={(event) => { changePrice(event, index, '2') }} />
+          <Input addonBefore="Grab/Gojek Price" disabled={!getFieldsValue().vendor || loading} onChange={(event) => { changePrice(event, index, '2') }} />
         )}
         {getFieldDecorator(`grabMartPrice-${index}`, {
           initialValue: record.grabMartPrice || 0,
@@ -241,7 +242,7 @@ const FormCounter = ({
             }
           ]
         })(
-          <Input addonBefore="GrabMart Price" disabled={!getFieldsValue().vendor} onChange={(event) => { changePrice(event, index, '3') }} />
+          <Input addonBefore="GrabMart Price" disabled={!getFieldsValue().vendor || loading} onChange={(event) => { changePrice(event, index, '3') }} />
         )}
         {getFieldDecorator(`commercePrice-${index}`, {
           initialValue: record.commercePrice || 0,
@@ -251,7 +252,7 @@ const FormCounter = ({
             }
           ]
         })(
-          <Input addonBefore="e-Commerce Price" disabled={!getFieldsValue().vendor} onChange={(event) => { changePrice(event, index, '4') }} />
+          <Input addonBefore="e-Commerce Price" disabled={!getFieldsValue().vendor || loading} onChange={(event) => { changePrice(event, index, '4') }} />
         )}
         <Row>
           {getFieldsValue().vendor ? ((index + 1) === productList.length ? (
@@ -262,6 +263,7 @@ const FormCounter = ({
                     onClick={() => removeProduct(index)}
                     type="danger"
                     style={{ width: '100%' }}
+                    loading={loading}
                   >
                     Remove Product
                   </Button>
@@ -272,6 +274,7 @@ const FormCounter = ({
                   onClick={() => addProduct()}
                   type="primary"
                   style={{ width: '100%' }}
+                  loading={loading}
                 >
                   Add Product
                 </Button>
@@ -283,6 +286,7 @@ const FormCounter = ({
                 onClick={() => removeProduct(index)}
                 type="danger"
                 style={{ width: '100%' }}
+                loading={loading}
               >
                 Remove Product
               </Button>
@@ -311,7 +315,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Vendor" hasFeedback {...formItemLayout}>
             {getFieldDecorator('vendor', {
-              initialValue: null,
+              initialValue: undefined,
               rules: [
                 {
                   required: true
@@ -320,12 +324,13 @@ const FormCounter = ({
             })(
               <Select
                 showSearch
-                placeholder="Select vendor"
+                placeholder="Select Vendor"
                 optionFilterProp="children"
                 onChange={(value) => { selectVendor(value) }}
                 onSearch={selectVendorSearch}
                 filterOption={false}
                 notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+                disabled={loading}
               >
                 {vendorOption}
               </Select>
@@ -333,7 +338,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Tipe Permintaan" hasFeedback {...formItemLayout}>
             {getFieldDecorator('type', {
-              initialValue: null,
+              initialValue: undefined,
               rules: [
                 {
                   required: true
@@ -344,7 +349,7 @@ const FormCounter = ({
                 showSearch
                 placeholder="Select Request Type"
                 optionFilterProp="children"
-                disabled={!getFieldsValue().vendor}
+                disabled={!getFieldsValue().vendor || loading}
               >
                 <Option value={1}>Stock IN</Option>
                 <Option value={0}>Stock OUT</Option>
@@ -353,14 +358,14 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Catatan" hasFeedback {...formItemLayout}>
             {getFieldDecorator('note', {
-              initialValue: null,
+              initialValue: undefined,
               rules: [
                 {
                   required: false
                 }
               ]
             })(
-              <TextArea disabled={!getFieldsValue().vendor} />
+              <TextArea disabled={!getFieldsValue().vendor || loading} placeholder={'Tulis Catatan ... '} />
             )}
           </FormItem>
 

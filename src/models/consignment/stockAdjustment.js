@@ -141,6 +141,7 @@ export default modelExtend(pageModel, {
       const inserted = yield call(queryInsertData, payload)
       if (inserted.success) {
         success()
+        payload.resetFields()
         yield put({
           type: 'querySuccess',
           payload: {

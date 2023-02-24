@@ -160,7 +160,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
         }
       })
     },
-    submitAdjustment (data) {
+    submitAdjustment (data, resetFields) {
       const dataHeader = {
         outletId: consignmentId,
         vendorId: selectedVendor.id,
@@ -175,7 +175,8 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
 
       const body = {
         dataHeader,
-        dataDetail
+        dataDetail,
+        resetFields
       }
 
       dispatch({
