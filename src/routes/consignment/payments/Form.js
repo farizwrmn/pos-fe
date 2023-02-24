@@ -113,7 +113,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Kode Akun" hasFeedback {...formItemLayout}>
@@ -125,7 +125,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Biaya Food (%)" hasFeedback {...formItemLayout}>
@@ -137,7 +137,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Biaya Non-Food (%)" hasFeedback {...formItemLayout}>
@@ -149,7 +149,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
