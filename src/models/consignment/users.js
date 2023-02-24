@@ -86,7 +86,6 @@ export default modelExtend(pageModel, {
         status: payload.status,
         outletId: payload.outlet
       }
-      payload.resetFields()
       const response = yield call(queryAdd, body)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')

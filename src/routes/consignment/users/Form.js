@@ -96,7 +96,6 @@ const FormCounter = ({
         onOk () {
           if (formType === 'add') {
             add(fields, resetFields)
-            resetFields
           } else {
             edit(fields, resetFields)
           }
@@ -119,7 +118,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Email" hasFeedback {...formItemLayout}>
@@ -131,7 +130,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Password" hasFeedback {...formItemLayout}>
@@ -144,9 +143,9 @@ const FormCounter = ({
               ]
             })(
               formType === 'add' ? (
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               ) : (
-                <Button type="primary" onClick={() => editPassword()}>
+                <Button type="primary" onClick={() => editPassword()} loading={loading}>
                   edit password
                 </Button>
               )
@@ -162,7 +161,7 @@ const FormCounter = ({
                   }
                 ]
               })(
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               )}
             </FormItem>
           )}
@@ -175,7 +174,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <RadioGroup onChange={null}>
+              <RadioGroup onChange={null} disabled={loading}>
                 <Radio value="kasir">kasir</Radio>
                 <Radio value="admin">admin</Radio>
                 <Radio value="superadmin">superadmin</Radio>
@@ -192,7 +191,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select onChange={null}>
+              <Select onChange={null} disabled={loading}>
                 {outletOption}
               </Select>
             )}
@@ -206,7 +205,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <RadioGroup onChange={null}>
+              <RadioGroup onChange={null} disabled={loading}>
                 <Radio value={1}>active</Radio>
                 <Radio value={0}>non active</Radio>
               </RadioGroup>

@@ -76,8 +76,10 @@ function Users ({ consignmentUsers, consignmentOutlet, dispatch, loading }) {
     add (data, resetFields) {
       dispatch({
         type: 'consignmentUsers/queryAdd',
-        payload: data,
-        resetFields
+        payload: {
+          ...data,
+          resetFields
+        }
       })
     },
     edit (data, resetFields) {
