@@ -3,6 +3,7 @@ import { Form, Button, Select } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 let currentArray = []
 
@@ -121,16 +122,22 @@ const bcaCSVtoArray = (string) => {
 const FormAutoCounter = ({
   loading,
   dispatch,
+  listBank,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue
   }
 }) => {
+  let bankOption = (listBank || []).map(record => <Option key={record.id} value={record.id}>{record.bankCode} - {record.bankName}</Option>)
+
   const handleSubmit = () => {
     validateFields((error) => {
       if (error) {
         return error
+      }
+      if (currentArray.length < 1) {
+        return 'This feature is not supported to this bank.'
       }
       dispatch({
         type: 'bankentry/importCsv',
@@ -141,13 +148,17 @@ const FormAutoCounter = ({
     })
   }
 
+  const handleSearchBank = (value) => {
+    console.log('value', value)
+  }
+
   const fileReader = new FileReader()
   const handleOnChange = (event) => {
     const file = event.target.files[0]
 
     fileReader.onload = function (event) {
       const text = event.target.result
-      if (getFieldsValue().bank === 'bca') {
+      if (getFieldsValue().bank === 1) {
         bcaCSVtoArray(text)
       }
     }
@@ -166,8 +177,11 @@ const FormAutoCounter = ({
           })(
             <Select
               placeholder="Pilih Bank"
+              showSearch
+              onSearch={handleSearchBank}
+              filterOption={false}
             >
-              <Select.Option value="bca">BCA</Select.Option>
+              {bankOption}
             </Select>
           )}
         </FormItem>

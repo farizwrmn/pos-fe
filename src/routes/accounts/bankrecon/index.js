@@ -7,7 +7,7 @@ import FormImport from './FormImport'
 import Form from './Form'
 import List from './List'
 
-const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
+const Cash = ({ bankentry, accountCode, location, loading, dispatch, bank }) => {
   const {
     listBankRecon,
     summaryBankRecon,
@@ -19,8 +19,10 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
     to
   } = bankentry
   const { listAccountCode } = accountCode
+  const { listBank } = bank
 
   const formImportProps = {
+    listBank,
     loading,
     dispatch
   }
@@ -103,6 +105,7 @@ Cash.propTypes = {
 
 export default connect(({
   bankentry,
+  bank,
   accountCode,
   loading,
-  pos }) => ({ bankentry, accountCode, loading, pos }))(Cash)
+  pos }) => ({ bankentry, bank, accountCode, loading, pos }))(Cash)

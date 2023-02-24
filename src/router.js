@@ -1351,6 +1351,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/master/accountCode'))
               cb(null, require('./routes/accounts/bankrecon'))
             }, 'finance-bank-recon')
