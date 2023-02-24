@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input, Select } from 'antd'
+import { Form, Row, Col, Input, Select, Spin } from 'antd'
 
 const Search = Input.Search
 const FormItem = Form.Item
 const Option = Select.Option
+
+let searchTimeOut
 
 const searchBarLayout = {
   sm: { span: 24 },
@@ -17,9 +19,11 @@ const Filter = ({
   q,
   selectedVendor,
   vendorList,
+  loadingSearchVendor,
   onFilterChange,
   searchVendor,
   onSelectVendor,
+  clearVendorList,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -31,8 +35,8 @@ const Filter = ({
     onFilterChange(field)
   }
 
-  let searchTimeOut
   const handleSearch = (value) => {
+    clearVendorList()
     if (value !== '') {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -69,23 +73,24 @@ const Filter = ({
       <Col span={12} />
       <Col {...searchBarLayout} >
         <Form layout="horizontal">
-          <FormItem label="Vendor">
-            {getFieldDecorator('vendor', vendorFields)(
-              <Select
-                style={{
-                  width: '100%'
-                }}
-                placeholder="vendor"
-                showSearch
-                onSearch={handleSearch}
-                filterOption={false}
-                onChange={handleChange}
-              >
-                {vendorOption}
-              </Select>
-            )}
-          </FormItem>
-          <FormItem label="Cari Nama/Kode Produk">
+          <Col>
+            <Select
+              style={{
+                width: '100%',
+                marginBottom: '10px'
+              }}
+              placeholder="Select Vendor"
+              showSearch
+              onSearch={handleSearch}
+              filterOption={false}
+              onChange={handleChange}
+              value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+              notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+            >
+              {vendorOption}
+            </Select>
+          </Col>
+          <FormItem >
             {getFieldDecorator('q', qFields)(
               <Search
                 placeholder="Cari product NAME/CODE"

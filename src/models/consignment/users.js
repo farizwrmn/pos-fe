@@ -8,6 +8,7 @@ export default modelExtend(pageModel, {
   namespace: 'consignmentUsers',
 
   state: {
+    modalState: false,
     activeKey: '0',
     formType: 'add',
     list: [],
@@ -31,14 +32,21 @@ export default modelExtend(pageModel, {
               pageSize: 10
             }
           })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey
+              }
+            })
+          } else {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: '0'
+              }
+            })
+          }
         }
       })
     }
@@ -78,7 +86,6 @@ export default modelExtend(pageModel, {
         status: payload.status,
         outletId: payload.outlet
       }
-      payload.resetFields()
       const response = yield call(queryAdd, body)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
@@ -114,7 +121,7 @@ export default modelExtend(pageModel, {
       const response = yield call(queryResetPassword, body)
       if (response && response.meta && response.meta.success) {
         message.success('Berhasil')
-        yield put({ type: 'querySuccess', payload: { ...payload } })
+        yield put({ type: 'querySuccess', payload: { ...payload, modalState: false } })
       } else {
         message.error(`Gagal : ${response.message}`)
       }

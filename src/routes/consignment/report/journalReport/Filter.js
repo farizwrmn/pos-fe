@@ -1,12 +1,26 @@
 import React from 'react'
-import { Form, Select, Button, DatePicker } from 'antd'
+import { Form, Select, Button, DatePicker, Col } from 'antd'
 import moment from 'moment'
 
-const FormItem = Form.Item
 const RangePicker = DatePicker.RangePicker
 const Option = Select.Option
 
+const columnProps = {
+  xs: 24,
+  sm: 24,
+  md: 8,
+  lg: 8
+}
+
+const tailColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 2,
+  lg: 2
+}
+
 const Filter = ({
+  loading,
   dateRange,
   balanceList,
   selectedBalance,
@@ -14,12 +28,10 @@ const Filter = ({
   getData,
   updateCurrentBalance,
   form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue
+    validateFields
   }
 }) => {
-  const balanceOption = balanceList.length > 0 ? balanceList.map(record => (<Option key={record.id} value={record.id}>{record['approveUser.userName']} || {moment(record.open).format('DD MMM YYYY | hh:mm:ss')} - {moment(record.closed).format('DD MMM YYYY | hh:mm:ss')}</Option>)) : []
+  const balanceOption = balanceList.length > 0 ? balanceList.map(record => (<Option key={record.id} value={record.id}>{record.approveUser.userName} || {moment(record.open).format('DD MMM YYYY | hh:mm:ss')} - {moment(record.closed).format('DD MMM YYYY | hh:mm:ss')}</Option>)) : []
 
   const handleSubmit = () => {
     validateFields((error) => {
@@ -29,7 +41,7 @@ const Filter = ({
       if (selectedBalance && selectedBalance.id) {
         getData(moment(selectedBalance.open).format('YYYY-MM-DD HH:mm:SS'), moment(selectedBalance.closed).format('YYYY-MM-DD HH:mm:SS'))
       } else {
-        getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD'))
+        getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD 23:59:59'))
       }
     })
   }
@@ -42,55 +54,29 @@ const Filter = ({
     updateCurrentBalance(value)
   }
 
-  let dateRangeProps = {
-    rules: [
-      {
-        required: true
-      }
-    ]
-  }
-  if (dateRange) {
-    dateRangeProps = {
-      ...dateRangeProps,
-      initialValue: dateRange
-    }
-  }
-
-  let balanceProps = {}
-  if (selectedBalance) {
-    balanceProps = {
-      ...balanceProps,
-      initialValue: selectedBalance.id
-    }
-  }
-
-
   return (
-    <Form layout="inline">
-      <FormItem>
-        {getFieldDecorator('date', dateRangeProps
-        )(
-          <RangePicker onChange={handleChangeDate} />
-        )}
-      </FormItem>
-      <FormItem>
-        {getFieldDecorator('balance', balanceProps
-        )(
+    <Col span={24} style={{ marginBottom: '10px' }}>
+      <Form layout="inline">
+        <Col {...columnProps}>
+          <RangePicker style={{ width: '95%' }} onChange={handleChangeDate} value={dateRange} />
+        </Col>
+        <Col {...columnProps}>
           <Select
             placeholder="Pilih Balance Id"
-            style={{ marginBottom: '10px', minWidth: '450px' }}
+            style={{ width: '95%' }}
             filterOption={false}
             onChange={handleChangeBalance}
-            disabled={!getFieldsValue().date}
+            disabled={!dateRange.length > 0}
+            value={selectedBalance.id ? `${selectedBalance.approveUser.userName} || ${moment(selectedBalance.open).format('DD MMM YYYY | hh:mm:ss')} - ${moment(selectedBalance.closed).format('DD MMM YYYY | hh:mm:ss')}` : undefined}
           >
             {balanceOption}
           </Select>
-        )}
-      </FormItem>
-      <FormItem>
-        <Button type="primary" onClick={() => handleSubmit()} disabled={!getFieldsValue().date}>Cari</Button>
-      </FormItem>
-    </Form>
+        </Col>
+        <Col {...tailColumnProps}>
+          <Button style={{ width: '95%' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>Cari</Button>
+        </Col>
+      </Form>
+    </Col>
   )
 }
 

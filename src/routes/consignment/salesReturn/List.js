@@ -7,6 +7,22 @@ import moment from 'moment'
 const numberFormatter = numberFormat.numberFormatter
 let modalDetail
 
+const headerColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 16,
+  lg: 16,
+  xl: 16
+}
+
+const detailColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 22,
+  lg: 22,
+  xl: 22
+}
+
 const List = ({
   ...tableProps,
   onFilterChange,
@@ -97,29 +113,27 @@ const List = ({
       iconType: 'exclamation-circle',
       content: (
         <Row>
-          <Row>
-            <Col span={16}>
-              <Table
-                bordered
-                pagination={false}
-                dataSource={formattedData}
-                columns={detailColumn}
-                scroll={{ x: 300 }}
-              />
-            </Col>
-            <Col span={24} style={{ marginTop: '15px' }}>
-              <div style={{ fontWeight: 'bolder' }}>
-                PRODUCT LIST
-              </div>
-              <Table
-                pagination={false}
-                bordered
-                dataSource={record.products}
-                columns={productColumn}
-                scroll={{ x: 300 }}
-              />
-            </Col>
-          </Row>
+          <Col {...headerColumnProps}>
+            <Table
+              bordered
+              pagination={false}
+              dataSource={formattedData}
+              columns={detailColumn}
+              scroll={{ x: 300 }}
+            />
+          </Col>
+          <Col {...detailColumnProps} style={{ marginTop: '15px' }}>
+            <div style={{ fontWeight: 'bolder' }}>
+              PRODUCT LIST
+            </div>
+            <Table
+              pagination={false}
+              bordered
+              dataSource={record.products}
+              columns={productColumn}
+              scroll={{ x: 300 }}
+            />
+          </Col>
         </Row>
       ),
       okText: 'Close',

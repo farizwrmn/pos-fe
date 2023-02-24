@@ -37,6 +37,9 @@ const FormCounter = ({
   add,
   edit,
   resetPassword,
+  loading,
+  modalState,
+  handleModal,
   form: {
     validateFields,
     getFieldDecorator,
@@ -64,21 +67,12 @@ const FormCounter = ({
 
   const outletOption = outletList.length > 0 ? outletList.map(record => (<Option key={record.id} value={record.id}>{record.outlet_name}</Option>)) : []
 
-  let modal
   const handleSubmitPassword = (password) => {
-    modal.destroy()
-    resetPassword(password)
+    resetPassword({ password })
   }
 
   const editPassword = () => {
-    modal = Modal.info({
-      title: 'Change Password',
-      content: (
-        <PasswordForm handleSubmitPassword={handleSubmitPassword} />
-      ),
-      okText: 'Close',
-      onOk () { }
-    })
+    handleModal()
   }
 
   const handleCancel = () => {
@@ -102,7 +96,6 @@ const FormCounter = ({
         onOk () {
           if (formType === 'add') {
             add(fields, resetFields)
-            resetFields
           } else {
             edit(fields, resetFields)
           }
@@ -125,7 +118,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Email" hasFeedback {...formItemLayout}>
@@ -137,7 +130,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Password" hasFeedback {...formItemLayout}>
@@ -150,9 +143,9 @@ const FormCounter = ({
               ]
             })(
               formType === 'add' ? (
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               ) : (
-                <Button type="primary" onClick={() => editPassword()}>
+                <Button type="primary" onClick={() => editPassword()} loading={loading}>
                   edit password
                 </Button>
               )
@@ -168,7 +161,7 @@ const FormCounter = ({
                   }
                 ]
               })(
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               )}
             </FormItem>
           )}
@@ -181,7 +174,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <RadioGroup onChange={null}>
+              <RadioGroup onChange={null} disabled={loading}>
                 <Radio value="kasir">kasir</Radio>
                 <Radio value="admin">admin</Radio>
                 <Radio value="superadmin">superadmin</Radio>
@@ -198,7 +191,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select onChange={null}>
+              <Select onChange={null} disabled={loading}>
                 {outletOption}
               </Select>
             )}
@@ -212,21 +205,23 @@ const FormCounter = ({
                 }
               ]
             })(
-              <RadioGroup onChange={null}>
+              <RadioGroup onChange={null} disabled={loading}>
                 <Radio value={1}>active</Radio>
                 <Radio value={0}>non active</Radio>
               </RadioGroup>
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()}>Cancel</Button>}
+            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()} disabled={loading}>Cancel</Button>}
             <Button
               type="primary"
               onClick={() => handleSubmit()}
+              loading={loading}
             >
               {formType === 'add' ? 'Simpan' : 'Ubah'}
             </Button>
           </FormItem>
+          <PasswordForm handleSubmitPassword={handleSubmitPassword} loading={loading} modalState={modalState} handleModal={handleModal} />
         </Col>
       </Row>
     </Form >

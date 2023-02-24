@@ -26,12 +26,15 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
     },
     {
       title: 'Photo',
-      dataIndex: 'productPhoto',
+      dataIndex: 'productImage',
       key: 'productImage',
       width: '150px',
+      textAlign: 'center',
       render: (value, record) => {
         return (
-          <img alt={record.product_code} width="100%" style={{ maxWidth: '200px' }} src={value ? `${IMAGEURL}/${value}` : record.photo ? `${CONSIGNMENTIMAGEURL}/${record.photo}` : 'null'} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
+            {(value || record.photo) ? <img alt={record.product_code} style={{ maxWidth: '150px', maxHeight: '150px', alignSelf: 'center' }} src={value ? `${IMAGEURL}/${value}` : `${CONSIGNMENTIMAGEURL}/${record.photo}`} /> : 'No Photo'}
+          </div>
         )
       }
     },

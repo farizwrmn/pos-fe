@@ -7,6 +7,8 @@ const FormItem = Form.Item
 const Option = Select.Option
 
 const Filter = ({
+  period,
+  loading,
   periodList,
   getData,
   form: {
@@ -30,14 +32,21 @@ const Filter = ({
   return (
     <Form layout="inline">
       <FormItem>
-        {getFieldDecorator('period')(
+        {getFieldDecorator('period', {
+          initialValue: period || undefined
+        })(
           <Select placeholder="Pilih Periode" style={{ marginBottom: '10px', minWidth: '120px' }}>
             {periodOption}
           </Select>
         )}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={() => handleSubmit()}>Cari</Button>
+        <Button
+          type="primary"
+          onClick={() => handleSubmit()}
+          loading={loading}
+          disabled={!getFieldsValue().period}
+        >Cari</Button>
       </FormItem>
     </Form>
   )

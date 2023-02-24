@@ -39,6 +39,7 @@ function RentReport ({ consignmentRentReport, dispatch, app, loading }) {
 
   const filterProps = {
     dateRange,
+    loading: loading.effects['consignmentRentReport/query'],
     changeTime (time) {
       dispatch({
         type: 'consignmentRentReport/updateState',

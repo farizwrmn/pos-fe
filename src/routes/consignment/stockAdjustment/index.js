@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Modal, Table, Tabs } from 'antd'
+import { Col, Modal, Table, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import { numberFormat } from 'utils'
 import Form from './Form'
@@ -64,13 +64,13 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
         ),
         price: (
           <div>
-            normalPrice:<br />
+            Normal Price:<br />
             {`Rp ${numberFormatter(record.normalPrice)}` || '-'} <br /><br />
-            grab price: <br />
+            Grab Price: <br />
             {`Rp ${numberFormatter(record.grabPrice)}` || '-'}<br /><br />
-            grab mart price: <br />
+            Grabmart Price: <br />
             {`Rp ${numberFormatter(record.grabMartPrice)}` || '-'}<br /><br />
-            e-Commerce price: <br />
+            e-Commerce Price: <br />
             {`Rp ${numberFormatter(record.commercePrice)}` || '-'}<br /><br />
           </div>
         ),
@@ -100,7 +100,9 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       width: '600px',
       title: 'Stock Adjustment Information',
       content: (
-        <Table pagination={false} bordered columns={columns} rowKey={(record, key) => key} dataSource={dataSample} />
+        <Col span={24}>
+          <Table pagination={false} bordered columns={columns} rowKey={(record, key) => key} dataSource={dataSample} />
+        </Col>
       ),
       onCancel () {
         modalDetail = false
@@ -130,6 +132,9 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
     productList,
     selectedOutlet,
     selectedVendorProductList,
+    loadingSearchVendor: (loading.effects['consignmentStockAdjustment/updateState']
+      || loading.effects['consignmentStockAdjustment/querySearchVendor']),
+    loading: loading.effects['consignmentStockAdjustment/queryAdd'],
     updateProductList (list) {
       dispatch({
         type: 'consignmentStockAdjustment/updateState',
@@ -155,7 +160,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
         }
       })
     },
-    submitAdjustment (data) {
+    submitAdjustment (data, resetFields) {
       const dataHeader = {
         outletId: consignmentId,
         vendorId: selectedVendor.id,
@@ -170,12 +175,21 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
 
       const body = {
         dataHeader,
-        dataDetail
+        dataDetail,
+        resetFields
       }
 
       dispatch({
         type: 'consignmentStockAdjustment/queryAdd',
         payload: body
+      })
+    },
+    emptyVendorList () {
+      dispatch({
+        type: 'consignmentStockAdjustment/updateState',
+        payload: {
+          vendorList: []
+        }
       })
     }
   }

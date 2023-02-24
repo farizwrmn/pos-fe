@@ -7,8 +7,8 @@ const Confirm = Modal.confirm
 const List = ({ ...tableProps, editUser, onFilterChange }) => {
   const confirmEdit = (record) => {
     Confirm({
-      title: 'Edit',
-      content: 'are you sure to edit this user?',
+      title: 'Edit User',
+      content: 'Are you sure to edit this user?',
       onOk () { editUser(record) },
       onCancel () { }
     })

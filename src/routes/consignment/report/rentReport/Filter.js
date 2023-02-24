@@ -1,37 +1,52 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Form, Button, DatePicker } from 'antd'
+import { Form, Button, DatePicker, Col } from 'antd'
 
-const FormItem = Form.Item
 const RangePicker = DatePicker.RangePicker
 
-const Filter = ({
-  dateRange,
-  getData,
-  changeTime,
-  form: {
-    getFieldDecorator,
-    getFieldsValue
-  }
-}) => {
-  return (
-    <Form layout="inline">
-      <FormItem>
-        {getFieldDecorator('date', {
-          initialValue: dateRange || null
-        })(
-          <RangePicker onChange={changeTime} />
-        )}
-      </FormItem>
-      <FormItem>
-        <Button type="primary" onClick={() => getData()} disabled={!getFieldsValue().date}>Cari</Button>
-      </FormItem>
-    </Form>
-  )
+const columnProps = {
+  xs: 24,
+  sm: 24,
+  md: 8,
+  lg: 8
 }
 
-Filter.propTypes = {
-  form: PropTypes.object
+const tailColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 2,
+  lg: 2
+}
+
+const Filter = ({
+  loading,
+  dateRange,
+  getData,
+  changeTime
+}) => {
+  return (
+    <Col span={24} style={{ marginBottom: '10px' }}>
+      <Form layout="inline">
+        <Col {...columnProps}>
+          <RangePicker
+            onChange={changeTime}
+            style={{ width: '95%' }}
+            value={dateRange}
+          />
+        </Col>
+        <Col {...tailColumnProps}>
+          <Button
+            type="primary"
+            onClick={() => getData()}
+            disabled={!dateRange.length > 0}
+            style={{ width: '95%' }}
+            loading={loading}
+          >
+            Cari
+          </Button>
+        </Col>
+      </Form>
+    </Col>
+  )
 }
 
 export default Form.create()(Filter)

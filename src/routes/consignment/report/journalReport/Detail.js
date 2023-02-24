@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tabs } from 'antd'
+import { Col, Tabs } from 'antd'
 import DetailList from './DetailList'
 
 const TabPane = Tabs.TabPane
@@ -13,7 +13,7 @@ const Detail = ({
   loading
 }) => {
   return (
-    <div style={{ marginTop: '10px' }}>
+    <Col span={24}>
       <Tabs activeKey={detailActiveKey} onChange={key => changeTab(key)} type="card">
         {paymentMethod && paymentMethod.map((record, index) => {
           return (
@@ -29,7 +29,7 @@ const Detail = ({
           )
         })}
       </Tabs>
-    </div>
+    </Col>
   )
 }
 

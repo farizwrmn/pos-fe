@@ -53,6 +53,7 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
     balanceList,
     selectedBalance,
     dateRange,
+    loading: loading.effects['consignmentJournalReport/querySummary'],
     getData (from, to) {
       dispatch({
         type: 'consignmentJournalReport/querySummary',
@@ -77,13 +78,15 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
       })
     },
     updateCurrentBalance (value) {
-      const balance = balanceList.filter(filtered => filtered.id === value)[0]
-      dispatch({
-        type: 'consignmentJournalReport/updateState',
-        payload: {
-          selectedBalance: balance
-        }
-      })
+      const balance = balanceList.filter(filtered => filtered.id === value)
+      if (balance && balance[0]) {
+        dispatch({
+          type: 'consignmentJournalReport/updateState',
+          payload: {
+            selectedBalance: balance[0]
+          }
+        })
+      }
     }
   }
 
@@ -141,8 +144,8 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
           {activeKey === '0' &&
             <div>
               <Filter {...filterProps} />
-              <Summary {...summaryProps} />
-              {list && list.length ? <Detail {...detailProps} /> : null}
+              {summary && summary.length > 0 && <Summary {...summaryProps} />}
+              {list && list.length > 0 && <Detail {...detailProps} />}
             </div>
           }
         </TabPane>

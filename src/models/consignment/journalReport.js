@@ -13,7 +13,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     detailActiveKey: '0',
 
-    dateRange: null,
+    dateRange: [],
 
     list: [],
     summary: [],
@@ -34,21 +34,22 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        if (location.pathname === '/integration/consignment/sales-return') {
-          dispatch({
-            type: 'query',
-            payload: {
-              list: []
-            }
-          })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+        if (location.pathname === '/integration/consignment/journal-report') {
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey
+              }
+            })
+          } else {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: '0'
+              }
+            })
+          }
         }
       })
     }

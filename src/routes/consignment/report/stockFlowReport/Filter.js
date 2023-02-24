@@ -1,22 +1,40 @@
 import React from 'react'
-import { Form, Row, Select, Button, DatePicker } from 'antd'
+import { Form, Select, Button, DatePicker, Col, Spin } from 'antd'
 
-const FormItem = Form.Item
 const Option = Select.Option
+
+let searchTimeOut
+
+const selectColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 6,
+  lg: 6,
+  xl: 6
+}
+
+const tailColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 2,
+  lg: 2
+}
 
 const Filter = ({
   vendorList,
   selectedVendor,
   selectedVendorProduct,
   selectedProduct,
+  dateRange,
+  loadingSearchVendor,
+  loading,
   getStockFlowByProduct,
   updateSelectedProduct,
   searchVendor,
   onSelectVendor,
   updateDateRange,
+  clearVendorList,
   form: {
-    getFieldDecorator,
-    getFieldsValue,
     validateFields
   }
 }) => {
@@ -25,13 +43,12 @@ const Filter = ({
       if (error) {
         return error
       }
-
       getStockFlowByProduct()
     })
   }
 
-  let searchTimeOut
   const onSearchVendor = (value) => {
+    clearVendorList()
     if (value.length > 0) {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -51,99 +68,74 @@ const Filter = ({
   const vendorOption = vendorList.length > 0 ? vendorList.map(record => <Option key={record.id} value={record.id}>{`${record.vendor_code} - ${record.name}`}</Option>) : []
   const productOption = selectedVendorProduct.length > 0 ? selectedVendorProduct.map(record => <Option key={record.id} value={record.id}>{record.product_code} - {record.product_name}</Option>) : []
 
-  let vendorprops = {
-    rules: [
-      {
-        required: true
-      }
-    ]
-  }
-  if (selectedVendor && selectedVendor.name) {
-    vendorprops.initialValue = `${selectedVendor.vendor_code} - ${selectedVendor.name}`
-  }
-
-  let productProps = {
-    rules: [
-      {
-        required: true
-      }
-    ]
-  }
-  if (selectedProduct && selectedProduct.product_name) {
-    console.log('selectedProduct', selectedProduct)
-    console.log('selectedProduct.product_name', selectedProduct.product_name)
-    productProps = {
-      ...productProps,
-      initialValue: `${selectedProduct.product_code} - ${selectedProduct.product_name}`
-    }
-  }
-
-  let dateRangeProps = {
-    rules: [
-      {
-        required: true
-      }
-    ]
-  }
-
   return (
-    <Form layout="inline" style={{ marginBottom: '10px' }}>
-      <Row>
-        <FormItem >
-          {getFieldDecorator('vendor', vendorprops)(
-            <Select
-              style={{
-                width: '200px'
-              }}
-              showSearch
-              placeholder="Select vendor"
-              optionFilterProp="children"
-              onChange={(value) => {
-                onSelectVendor(value)
-              }}
-              onSearch={onSearchVendor}
-              filterOption={false}
-            >
-              {vendorOption}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('product', productProps)(
-            <Select
-              style={{
-                width: '200px'
-              }}
-              disabled={!getFieldsValue().vendor}
-              showSearch
-              placeholder="Select Product"
-              optionFilterProp="children"
-              onChange={(value) => {
-                updateSelectedProduct(value)
-              }}
-              filterOption={(input, option) => {
-                if ((option.props.children[0].toLowerCase()).includes(input.toLowerCase()) || (option.props.children[2].toLowerCase()).includes(input.toLowerCase())) {
-                  return true
-                }
-                return false
-              }}
-            >
-              {productOption}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('dateRange', dateRangeProps)(
-            <DatePicker.RangePicker disabled={!getFieldsValue().product} onChange={handleDateRange} />
-          )}
-        </FormItem>
-        <FormItem>
-          <Button type="primary" onClick={() => handleSubmit()}>
-            CARI
+    <Col span={24}>
+      <Form layout="inline" style={{ marginBottom: '10px' }}>
+        <Col {...selectColumnProps}>
+          <Select
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              paddingRight: '10px'
+            }}
+            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+            showSearch
+            placeholder="Select vendor"
+            optionFilterProp="children"
+            onChange={(value) => {
+              onSelectVendor(value)
+            }}
+            onSearch={onSearchVendor}
+            filterOption={false}
+            notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+          >
+            {vendorOption}
+          </Select>
+        </Col>
+        <Col {...selectColumnProps}>
+          <Select
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              paddingRight: '10px'
+            }}
+            value={selectedProduct.id ? `${selectedProduct.product_code} - ${selectedProduct.product_name}` : undefined}
+            disabled={!selectedVendor.id}
+            showSearch
+            placeholder="Select Product"
+            optionFilterProp="children"
+            onChange={(value) => {
+              updateSelectedProduct(value)
+            }}
+            filterOption={(input, option) => {
+              return (
+                option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+              )
+            }}
+          >
+            {productOption}
+          </Select>
+        </Col>
+        <Col {...selectColumnProps}>
+          <DatePicker.RangePicker
+            disabled={!selectedProduct.id}
+            onChange={handleDateRange}
+            style={{
+              marginBottom: '10px',
+              width: '100%',
+              paddingRight: '10px'
+            }}
+            value={dateRange.length > 0 ? dateRange : []}
+          />
+        </Col>
+        <Col {...tailColumnProps}>
+          <Button type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
+            Cari
           </Button>
-        </FormItem>
-      </Row>
-    </Form>
+        </Col>
+      </Form>
+    </Col>
   )
 }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Col, Table } from 'antd'
 
 const List = ({
   ...tableProps,
@@ -24,7 +24,7 @@ const List = ({
       dataIndex: 'type',
       key: 'type',
       fixed: 'left',
-      width: '150px'
+      width: '120px'
     },
     ...paymentColumn,
     {
@@ -38,7 +38,7 @@ const List = ({
   ]
 
   return (
-    <div>
+    <Col span={24} style={{ marginBottom: '10px' }}>
       <Table
         {...tableProps}
         dataSource={summary}
@@ -49,7 +49,7 @@ const List = ({
         scroll={{ x: 2600 }}
         rowKey={record => record.id}
       />
-    </div>
+    </Col>
   )
 }
 

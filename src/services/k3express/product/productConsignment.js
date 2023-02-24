@@ -32,7 +32,6 @@ export async function add (params) {
 
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
-  console.log('params', params)
   return request({
     url: `/k3express/product-consignment/edit/${params.id}`,
     method: 'put',

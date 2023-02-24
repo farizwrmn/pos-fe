@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Col, Table } from 'antd'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 
@@ -63,15 +63,17 @@ const List = ({
   }
 
   return (
-    <Table
-      {...tableProps}
-      bordered
-      columns={columns}
-      simple
-      scroll={{ x: 1000 }}
-      rowKey={record => record.id}
-      onChange={onChange}
-    />
+    <Col span={24}>
+      <Table
+        {...tableProps}
+        bordered
+        columns={columns}
+        simple
+        scroll={{ x: 1000 }}
+        rowKey={record => record.id}
+        onChange={onChange}
+      />
+    </Col>
   )
 }
 

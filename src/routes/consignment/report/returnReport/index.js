@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Col, Dropdown, Icon, Menu, Row, Tabs } from 'antd'
+import { Button, Dropdown, Icon, Menu, Tabs } from 'antd'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import Filter from './Filter'
@@ -11,8 +11,8 @@ import PrintPDF from './PrintPDF'
 const TabPane = Tabs.TabPane
 
 function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, app, loading }) {
-  const { list, activeKey, range, pagination, consignmentId } = consignmentReturnReport
-  const { list: vendorList, selectedVendor } = consignmentVendor
+  const { list, activeKey, dateRange, pagination, consignmentId, selectedVendor } = consignmentReturnReport
+  const { list: vendorList } = consignmentVendor
   const { user, storeInfo } = app
 
   const changeTab = (key) => {
@@ -55,28 +55,31 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
   const filterProps = {
     vendorList,
     selectedVendor,
-    range,
+    dateRange,
+    loadingSearchVendor: loading.effects['consignmentVendor/query'],
     getData () {
-      const from = moment(range[0]).format('YYYY-MM-DD')
-      const to = moment(range[1]).format('YYYY-MM-DD')
+      const from = moment(dateRange[0]).format('YYYY-MM-DD')
+      const to = moment(dateRange[1]).format('YYYY-MM-DD')
       dispatch({
         type: 'consignmentReturnReport/query',
         payload: {
           vendorId: selectedVendor.id,
-          range,
+          dateRange,
           from,
           to
         }
       })
     },
     selectVendor (value) {
-      const vendor = vendorList.filter(record => record.id === value)[0]
-      dispatch({
-        type: 'consignmentVendor/updateState',
-        payload: {
-          selectedVendor: vendor
-        }
-      })
+      const vendor = vendorList.filter(record => record.id === value)
+      if (vendor && vendor[0]) {
+        dispatch({
+          type: 'consignmentReturnReport/updateState',
+          payload: {
+            selectedVendor: vendor[0]
+          }
+        })
+      }
     },
     searchVendor (value) {
       dispatch({
@@ -90,7 +93,15 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
       dispatch({
         type: 'consignmentReturnReport/updateState',
         payload: {
-          range: value
+          dateRange: value
+        }
+      })
+    },
+    clearVendorList () {
+      dispatch({
+        type: 'consignmentVendor/updateState',
+        payload: {
+          list: []
         }
       })
     }
@@ -124,13 +135,7 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
         <TabPane tab="Report" key="0" >
           {activeKey === '0' &&
             <div>
-              <Row style={{ marginBottom: '10px' }}>
-                <Col span={8} />
-                <Col span={4} />
-                <Col span={12}>
-                  <Filter {...filterProps} />
-                </Col>
-              </Row>
+              <Filter {...filterProps} />
               <List {...listProps} />
             </div>
           }

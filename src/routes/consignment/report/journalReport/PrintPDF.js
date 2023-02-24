@@ -150,8 +150,6 @@ const PrintPDF = ({ dataSource, summary, paymentMethod, user, storeInfo }) => {
     footer
   }
 
-  console.log('pdfProps', pdfProps)
-
   return (
     <BasicReport {...pdfProps} />
   )

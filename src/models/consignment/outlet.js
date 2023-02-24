@@ -45,14 +45,23 @@ export default modelExtend(pageModel, {
               pageSize: 10
             }
           })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
+          if (location.pathname === '/integration/consignment/outlet') {
+            if (location.query && location.query.activeKey) {
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: location.query.activeKey
+                }
+              })
+            } else {
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: '0'
+                }
+              })
             }
-          })
+          }
         }
       })
     }
@@ -70,7 +79,11 @@ export default modelExtend(pageModel, {
       if (consignmentId) {
         const data = yield call(query, params)
         const outlets = data.data.list
-        const selectedOutlet = outlets.filter(filtered => filtered.id === parseInt(consignmentId, 10))[0]
+        let selectedOutlet = {}
+        const filteredOutlet = outlets.filter(filtered => filtered.id === parseInt(consignmentId, 10))
+        if (filteredOutlet && filteredOutlet[0]) {
+          selectedOutlet = filteredOutlet[0]
+        }
         if (data.success) {
           yield put({
             type: 'querySuccess',
@@ -126,8 +139,6 @@ export default modelExtend(pageModel, {
     * queryEdit ({ payload = {} }, { call, put }) {
       const response = yield call(queryEdit, payload)
       if (response && response.meta && response.meta.success) {
-        message.success('Berhasil')
-        payload.resetFields()
         yield put({
           type: 'query',
           payload: {
@@ -138,6 +149,8 @@ export default modelExtend(pageModel, {
             pageSize: 10
           }
         })
+        message.success('Berhasil')
+        payload.resetFields()
       } else {
         message.error(`Gagal : ${response.success}`)
       }

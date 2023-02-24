@@ -12,6 +12,7 @@ export default modelExtend(pageModel, {
   state: {
     activeKey: '0',
     list: [],
+    selectedVendor: {},
 
     consignmentId: getConsignmentId(),
 
@@ -25,13 +26,22 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ history, dispatch }) {
       history.listen((location) => {
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+        if (location.pathname === '/integration/consignment/stock-report') {
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey
+              }
+            })
+          } else {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: '0'
+              }
+            })
+          }
         }
       })
     }

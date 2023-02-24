@@ -8,8 +8,15 @@ import ModalMainForm from './component/modalMainForm'
 
 const TabPane = Tabs.TabPane
 
+const listColumn = {
+  xs: 24,
+  sm: 24,
+  md: 12,
+  lg: 12,
+  xl: 12
+}
 
-function Product ({ consignmentCategory, dispatch }) {
+function Product ({ consignmentCategory, dispatch, loading }) {
   const { list, subList, currentItem, activeKey, modalForm, modalType, formType } = consignmentCategory
 
   const changeTab = (key) => {
@@ -86,6 +93,11 @@ function Product ({ consignmentCategory, dispatch }) {
     modalType,
     currentItem,
     formType,
+    loading: (loading.effects['consignmentCategory/queryAdd']
+      || loading.effects['consignmentCategory/queryEdit']
+      || loading.effects['consignmentCategory/subQueryAdd']
+      || loading.effects['consignmentCategory/subQueryEdit']
+    ),
     showModalForm,
     onSubmit (data) {
       if (modalType === 'main') {
@@ -136,7 +148,7 @@ function Product ({ consignmentCategory, dispatch }) {
         <TabPane tab="Category List" key="0" >
           {activeKey === '0' &&
             <Row>
-              <Col xs={6} md={12}>
+              <Col {...listColumn}>
                 <List {...listProps} />
               </Col>
             </Row>
@@ -145,7 +157,7 @@ function Product ({ consignmentCategory, dispatch }) {
         <TabPane tab="Sub-Category List" key="1" >
           {activeKey === '1' &&
             <Row>
-              <Col xs={6} md={12}>
+              <Col {...listColumn}>
                 <SubList {...subListProps} />
               </Col>
             </Row>
@@ -158,4 +170,4 @@ function Product ({ consignmentCategory, dispatch }) {
   )
 }
 
-export default connect(({ consignmentCategory, dispatch }) => ({ consignmentCategory, dispatch }))(Product)
+export default connect(({ consignmentCategory, dispatch, loading }) => ({ consignmentCategory, dispatch, loading }))(Product)

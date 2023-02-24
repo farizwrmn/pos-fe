@@ -29,7 +29,7 @@ const getTag = (record) => {
 }
 
 
-function Detail ({ consignmentStockFlow, dispatch }) {
+function Detail ({ consignmentStockFlow, dispatch, loading }) {
   const {
     currentItem
   } = consignmentStockFlow
@@ -81,8 +81,25 @@ function Detail ({ consignmentStockFlow, dispatch }) {
           <div className="content-inner-zero-min-height">
             <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
             <h1>Detail</h1>
-            <Button type="primary" icon="check" disabled={currentItem && currentItem.status !== 'pending'} onClick={() => showConfirmation('Approve')}>Approve</Button>
-            <Button type="danger" style={{ marginLeft: '20px' }} icon="delete" disabled={currentItem && currentItem.status !== 'pending'} onClick={() => showConfirmation('Void')}>Void</Button>
+            <Button
+              type="primary"
+              icon="check"
+              disabled={currentItem && currentItem.status !== 'pending'}
+              onClick={() => showConfirmation('Approve')}
+              loading={loading.effects['consignmentStockFlow/approve'] || loading.effects['consignmentStockFlow/reject']}
+            >
+              Approve
+            </Button>
+            <Button
+              type="danger"
+              style={{ marginLeft: '20px' }}
+              icon="delete"
+              disabled={currentItem && currentItem.status !== 'pending'}
+              onClick={() => showConfirmation('Void')}
+              loading={loading.effects['consignmentStockFlow/approve'] || loading.effects['consignmentStockFlow/reject']}
+            >
+              Void
+            </Button>
             <div className={styles.content}>
               <Row>
                 <Col span={12}><strong>ID Permintaan Mutasi</strong></Col>
@@ -132,5 +149,6 @@ function Detail ({ consignmentStockFlow, dispatch }) {
 
 export default connect(({
   consignmentStockFlow,
-  dispatch
-}) => ({ consignmentStockFlow, dispatch }))(Detail)
+  dispatch,
+  loading
+}) => ({ consignmentStockFlow, dispatch, loading }))(Detail)

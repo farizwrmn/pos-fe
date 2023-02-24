@@ -50,7 +50,6 @@ export async function queryAdd (params) {
 }
 
 export async function queryEdit (params) {
-  console.log('params', params)
   const apiHeaderToken = crypt.apiheader()
   return request({
     fullUrl: `${rest.apiConsignmentURL}/vendors/edit`,
@@ -70,7 +69,6 @@ export async function queryLast () {
 }
 
 export async function queryResetPassword (params) {
-  console.log('params', params)
   const apiHeaderToken = crypt.apiheader()
   return request({
     fullUrl: `${rest.apiConsignmentURL}/vendors/edit-password`,

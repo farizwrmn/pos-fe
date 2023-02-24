@@ -9,7 +9,7 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch }) {
+function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch, loading }) {
   const { activeKey, list, lastCutOffDate, pagination } = consignmentCutOffPeriodReport
 
   const changeTab = (key) => {
@@ -48,6 +48,7 @@ function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch }) {
   }
 
   const formProps = {
+    loading: loading.effects['consignmentCutOffPeriodReport/queryAdd'],
     onSubmit (value) {
       dispatch({
         type: 'consignmentCutOffPeriodReport/queryAdd',
@@ -70,13 +71,13 @@ function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch }) {
               {list && list.length > 0 &&
                 <Row gutter={24}>
                   {list.map(record => (
-                    <Col lg={6} md={12} style={{ marginTop: '8px' }}>
+                    <Col lg={6} md={12} style={{ marginTop: '8px' }} key={record.id}>
                       <Card>
                         <div style={{ height: '60px' }}>
                           <div>{moment(record.period).format('DD MMM YYYY')}</div>
                           <div>{record['outlet.outlet_name']}</div>
                         </div>
-                        <Button icon="mail" type="primary" onClick={() => sendEmail(record)}>KIRIM EMAIL</Button>
+                        <Button icon="mail" type="primary" onClick={() => sendEmail(record)} loading={loading.effects['consignmentCutOffPeriodReport/querySendEmail']}>KIRIM EMAIL</Button>
                       </Card>
                     </Col>
                   ))}
@@ -90,4 +91,4 @@ function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch }) {
   )
 }
 
-export default connect(({ consignmentCutOffPeriodReport, dispatch }) => ({ consignmentCutOffPeriodReport, dispatch }))(CutOffPeriodReport)
+export default connect(({ consignmentCutOffPeriodReport, dispatch, loading }) => ({ consignmentCutOffPeriodReport, dispatch, loading }))(CutOffPeriodReport)

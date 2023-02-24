@@ -27,6 +27,7 @@ const column = {
 
 const FormCounter = ({
   formType,
+  loading,
   selectedOutlet,
   currentItem,
   cancelEdit,
@@ -43,13 +44,13 @@ const FormCounter = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: formType === 'edit' ? 10 : 19
+        offset: formType === 'edit' ? 10 : 18
       },
       sm: {
-        offset: formType === 'edit' ? 15 : 20
+        offset: formType === 'edit' ? 15 : 18
       },
       md: {
-        offset: formType === 'edit' ? 15 : 19
+        offset: formType === 'edit' ? 15 : 18
       },
       lg: {
         offset: formType === 'edit' ? 13 : 18
@@ -112,7 +113,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Kode Akun" hasFeedback {...formItemLayout}>
@@ -124,7 +125,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Biaya Food (%)" hasFeedback {...formItemLayout}>
@@ -136,7 +137,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Biaya Non-Food (%)" hasFeedback {...formItemLayout}>
@@ -148,7 +149,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
@@ -157,6 +158,7 @@ const FormCounter = ({
                 <Button
                   type="ghost"
                   onClick={() => handleCancel()}
+                  disabled={loading}
                 >
                   Cancel
                 </Button>
@@ -164,6 +166,7 @@ const FormCounter = ({
             <Button
               type="primary"
               onClick={() => handleSubmit()}
+              loading={loading}
             >
               {formType === 'add' ? 'Simpan' : 'Ubah'}
             </Button>

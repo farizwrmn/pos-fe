@@ -5,6 +5,7 @@ import { Form, Button, DatePicker } from 'antd'
 const FormItem = Form.Item
 
 const FormCounter = ({
+  loading,
   onSubmit,
   form: {
     getFieldDecorator,
@@ -37,7 +38,7 @@ const FormCounter = ({
         )}
       </FormItem>
       <FormItem >
-        <Button type="primary" onClick={() => { handleSumbit() }} >Submit</Button>
+        <Button type="primary" onClick={() => { handleSumbit() }} loading={loading} >Submit</Button>
       </FormItem>
     </Form >
   )

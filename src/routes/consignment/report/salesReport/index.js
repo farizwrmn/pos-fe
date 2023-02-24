@@ -66,6 +66,8 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
     dateRange,
     vendorList,
     selectedVendor,
+    loading: loading.effects['consignmentSalesReport/query'],
+    loadingSearchVendor: loading.effects['consignmentSalesReport/queryVendor'],
     getData () {
       const from = moment(dateRange[0]).format('YYYY-MM-DD')
       const to = moment(dateRange[1]).format('YYYY-MM-DD')
@@ -79,13 +81,15 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
       })
     },
     selectVendor (value) {
-      const vendor = vendorList.filter(record => record.id === value)[0]
-      dispatch({
-        type: 'consignmentSalesReport/updateState',
-        payload: {
-          selectedVendor: vendor
-        }
-      })
+      const vendor = vendorList.filter(record => record.id === value)
+      if (vendor && vendor[0]) {
+        dispatch({
+          type: 'consignmentSalesReport/updateState',
+          payload: {
+            selectedVendor: vendor[0]
+          }
+        })
+      }
     },
     searchVendor (value) {
       dispatch({
@@ -100,6 +104,14 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
         type: 'consignmentSalesReport/updateState',
         payload: {
           dateRange: value
+        }
+      })
+    },
+    clearVendorList () {
+      dispatch({
+        type: 'consignmentSalesReport/updateState',
+        payload: {
+          vendorList: []
         }
       })
     }
@@ -138,22 +150,27 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
         <TabPane tab="Report" key="0" >
           {activeKey === '0' &&
             <div>
-              <Row style={{ marginBottom: '10px' }}>
-                <Col span={8}>
+              <Row style={{ marginBottom: '15px' }}>
+                <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+                  <Filter {...filterProps} />
+                </Col>
+              </Row>
+              <Row style={{ marginBottom: '15px' }}>
+                <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                   {selectedVendor && selectedVendor.id &&
                     (
                       <div style={{ padding: '8px', fontSize: '16px', fontWeight: 'bolder' }}>
                         {(String(selectedVendor.id)).toUpperCase()} - {selectedVendor.name.toUpperCase()}
                       </div>
                     )}
-                  {list && list.length > 0 && <Summary {...summaryProps} />}
-                </Col>
-                <Col span={4} />
-                <Col span={12}>
-                  <Filter {...filterProps} />
+                  <Summary {...summaryProps} />
                 </Col>
               </Row>
-              <List {...listProps} />
+              <Row>
+                <Col span={24}>
+                  <List {...listProps} />
+                </Col>
+              </Row>
             </div>
           }
         </TabPane>

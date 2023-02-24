@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Col, Table } from 'antd'
 import { numberFormat } from 'utils'
 import moment from 'moment'
 
@@ -128,16 +128,16 @@ const List = ({ ...tableProps, dataSource }) => {
     }
   ]
 
-  console.log({ ...tableProps })
-
   return (
-    <Table {...tableProps}
-      bordered
-      columns={columns}
-      simple
-      scroll={{ x: 1000 }}
-      rowKey={record => record.id}
-    />
+    <Col span={24}>
+      <Table {...tableProps}
+        bordered
+        columns={columns}
+        simple
+        scroll={{ x: 1000 }}
+        rowKey={record => record.id}
+      />
+    </Col>
   )
 }
 

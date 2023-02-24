@@ -26,6 +26,7 @@ const ModalForm = ({
   showModalForm,
   formType,
   onSubmit,
+  loading,
   form: {
     getFieldDecorator,
     getFieldsValue
@@ -56,6 +57,7 @@ const ModalForm = ({
       okText="Save"
       onCancel={() => showModalForm({ value: null })}
       onOk={() => confirm()}
+      confirmLoading={loading}
     >
       <Form layout="horizontal">
         <FormItem label="Nama" hasFeedback {...formItemLayout}>

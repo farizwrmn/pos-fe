@@ -29,6 +29,8 @@ const column = {
 
 const FormCounter = ({
   formType,
+  loading,
+  modalState,
   selectedVendor,
   lastVendor,
   categoryList,
@@ -36,6 +38,7 @@ const FormCounter = ({
   add,
   edit,
   resetPassword,
+  handleModal,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -100,25 +103,12 @@ const FormCounter = ({
     })
   }
 
-  const changeCategory = (value) => {
-    console.log('value', value)
-  }
-
-  let modal
   const handleResetPassword = (password) => {
-    modal.destroy()
     resetPassword(password)
   }
 
   const changePassword = () => {
-    modal = Modal.info({
-      title: 'Ubah Password',
-      content: (
-        <PasswordForm handleSubmitPassword={handleResetPassword} />
-      ),
-      onOk () { },
-      onCancel () { }
-    })
+    handleModal()
   }
 
   const categoryOption = categoryList.length > 0 ? categoryList.map(record => (record.id !== 1 && <Option key={record.id} value={record.id}>{record.name}</Option>)) : []
@@ -136,7 +126,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select onChange={changeCategory}>
+              <Select disabled={loading}>
                 {categoryOption}
               </Select>
             )}
@@ -144,8 +134,8 @@ const FormCounter = ({
           <FormItem label="Kode Vendor" hasFeedback {...formItemLayout}>
             {getFieldDecorator('vendorCode', {
               initialValue: formType === 'add' ? (
-                `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${(`00000${lastVendor.id + 1}`).slice((String(lastVendor.id)).length)}`
-              ) : `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${selectedVendor.vendor_code.slice(1)}`,
+                `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${String(lastVendor.id + 1).padStart(5, '0')}`
+              ) : `${selectedVendor.category === 2 ? 'F' : 'V'}${String(selectedVendor.id).padStart(5, '0')}`,
               rules: [
                 {
                   required: true
@@ -164,7 +154,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Tipe Identitas" hasFeedback {...formItemLayout}>
@@ -176,7 +166,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select>
+              <Select disabled={loading}>
                 <Option value="NPWP">NPWP</Option>
                 <Option value="KTP">KTP</Option>
               </Select>
@@ -191,7 +181,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Phone" hasFeedback {...formItemLayout}>
@@ -203,7 +193,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input addonBefore="+62" />
+              <Input addonBefore="+62" disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Email" hasFeedback {...formItemLayout}>
@@ -217,7 +207,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Password" hasFeedback {...formItemLayout}>
@@ -230,9 +220,9 @@ const FormCounter = ({
               ]
             })(
               formType === 'add' ? (
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               ) : (
-                <Button type="primary" onClick={() => changePassword()}>Edit Password</Button>
+                <Button type="primary" onClick={() => changePassword()} loading={loading}>Edit Password</Button>
               )
             )}
           </FormItem>
@@ -246,7 +236,7 @@ const FormCounter = ({
                   }
                 ]
               })(
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               )}
             </FormItem>
           )}
@@ -259,7 +249,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Nama Pemilik Rekening" hasFeedback {...formItemLayout}>
@@ -271,7 +261,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
@@ -283,14 +273,15 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()}>Cancel</Button>}
-            <Button type="primary" onClick={() => handleSubmit()}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
+            {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()} disabled={loading}>Cancel</Button>}
+            <Button type="primary" onClick={() => handleSubmit()} loading={loading}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
           </FormItem>
         </Col>
+        <PasswordForm handleSubmitPassword={handleResetPassword} modalState={modalState} handleModal={handleModal} loading={loading} />
       </Row>
     </Form>
   )

@@ -7,7 +7,7 @@ import List from './List'
 
 const TabPane = Tabs.TabPane
 
-function Payments ({ consignmentPayment, consignmentOutlet, dispatch }) {
+function Payments ({ consignmentPayment, consignmentOutlet, dispatch, loading }) {
   const { list, currentItem, activeKey, formType } = consignmentPayment
   const { selectedOutlet } = consignmentOutlet
 
@@ -32,6 +32,7 @@ function Payments ({ consignmentPayment, consignmentOutlet, dispatch }) {
     formType,
     selectedOutlet,
     currentItem,
+    loading: (loading.effects['consignmentPayment/queryAdd'] || loading.effects['consignmentPayment/queryEdit']),
     cancelEdit () {
       dispatch({
         type: 'consignmentPayment/updateState',
@@ -124,5 +125,6 @@ function Payments ({ consignmentPayment, consignmentOutlet, dispatch }) {
 export default connect(({
   consignmentPayment,
   consignmentOutlet,
-  dispatch
-}) => ({ consignmentPayment, consignmentOutlet, dispatch }))(Payments)
+  dispatch,
+  loading
+}) => ({ consignmentPayment, consignmentOutlet, dispatch, loading }))(Payments)

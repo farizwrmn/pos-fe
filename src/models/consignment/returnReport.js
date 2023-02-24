@@ -22,7 +22,9 @@ export default modelExtend(pageModel, {
 
     consignmentId: getConsignmentId(),
 
-    range: null,
+    selectedVendor: {},
+
+    dateRange: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -34,15 +36,21 @@ export default modelExtend(pageModel, {
     setup ({ history, dispatch }) {
       history.listen((location) => {
         if (location.pathname === '/integration/consignment/return-report') {
-          return true
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
-            }
-          })
+          if (location.query && location.query.activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: location.query.activeKey
+              }
+            })
+          } else {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: '0'
+              }
+            })
+          }
         }
       })
     }
@@ -60,8 +68,10 @@ export default modelExtend(pageModel, {
         }
         const response = yield call(query, params)
         let list = response.data
-        let total = getReturnTotal(list)
-        list.push({ total })
+        if (list && list.length > 0) {
+          let total = getReturnTotal(list)
+          list.push({ total })
+        }
         yield put({
           type: 'querySuccess',
           payload: {

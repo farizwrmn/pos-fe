@@ -68,7 +68,7 @@ const List = ({ ...tableProps, showConfirmation, editItem, deleteItem, onFilterC
       bordered
       columns={columns}
       simple
-      scroll={{ x: 1000 }}
+      scroll={{ x: 800 }}
       rowKey={record => record.id}
       onChange={onChange}
     />

@@ -9,7 +9,7 @@ import PrintPDF from './PrintPDF'
 const TabPane = Tabs.TabPane
 
 function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, app, loading }) {
-  const { activeKey, list, periodList, consignmentId } = consignmentCutOffReport
+  const { activeKey, list, periodList, consignmentId, period } = consignmentCutOffReport
   const { list: outletList } = consignmentOutlet
   const { storeInfo, user } = app
 
@@ -37,7 +37,9 @@ function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, a
   }
 
   const filterProps = {
+    period,
     periodList,
+    loading: loading.effects['consignmentCutOffReport/query'],
     getData (data) {
       dispatch({
         type: 'consignmentCutOffReport/query',

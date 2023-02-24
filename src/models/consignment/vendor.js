@@ -14,6 +14,7 @@ export default modelExtend(pageModel, {
   namespace: 'consignmentVendor',
 
   state: {
+    modalState: false,
     activeKey: '0',
     formType: 'add',
     list: [],
@@ -51,14 +52,23 @@ export default modelExtend(pageModel, {
             type: 'queryLast',
             payload: {}
           })
-        }
-        if (location.query && location.query.activeKey) {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: location.query.activeKey
+          if (location.pathname === '/integration/consignment/vendor') {
+            if (location.query && location.query.activeKey) {
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: location.query.activeKey
+                }
+              })
+            } else {
+              dispatch({
+                type: 'updateState',
+                payload: {
+                  activeKey: '0'
+                }
+              })
             }
-          })
+          }
         }
       })
     }
