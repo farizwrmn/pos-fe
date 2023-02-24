@@ -126,7 +126,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select >
+              <Select disabled={loading}>
                 {categoryOption}
               </Select>
             )}
@@ -154,7 +154,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Tipe Identitas" hasFeedback {...formItemLayout}>
@@ -166,7 +166,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select>
+              <Select disabled={loading}>
                 <Option value="NPWP">NPWP</Option>
                 <Option value="KTP">KTP</Option>
               </Select>
@@ -181,7 +181,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Phone" hasFeedback {...formItemLayout}>
@@ -193,7 +193,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input addonBefore="+62" />
+              <Input addonBefore="+62" disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Email" hasFeedback {...formItemLayout}>
@@ -207,7 +207,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Password" hasFeedback {...formItemLayout}>
@@ -220,9 +220,9 @@ const FormCounter = ({
               ]
             })(
               formType === 'add' ? (
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               ) : (
-                <Button type="primary" onClick={() => changePassword()}>Edit Password</Button>
+                <Button type="primary" onClick={() => changePassword()} loading={loading}>Edit Password</Button>
               )
             )}
           </FormItem>
@@ -236,7 +236,7 @@ const FormCounter = ({
                   }
                 ]
               })(
-                <Input type="password" autoComplete="new-password" />
+                <Input type="password" autoComplete="new-password" disabled={loading} />
               )}
             </FormItem>
           )}
@@ -249,7 +249,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Nama Pemilik Rekening" hasFeedback {...formItemLayout}>
@@ -261,7 +261,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
@@ -273,7 +273,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Input />
+              <Input disabled={loading} />
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
