@@ -27,9 +27,10 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'ID Mutasi Produk',
       dataIndex: 'id',
       key: 'id',
+      width: 120,
       render: (text, record) => {
         return (
-          <div>
+          <div style={{ textAlign: 'center' }}>
             <Link to={`/integration/consignment/stock-flow/${record.id}`}>
               SF-{moment(record.created_at).format('YYMM')}{String(text).padStart(8, '0')}
             </Link>
@@ -41,12 +42,14 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Outlet',
       dataIndex: 'outlet_id',
       key: 'outlet_id',
+      width: 180,
       render: value => (value === selectedOutlet.id ? selectedOutlet.outlet_name : '-')
     },
     {
       title: 'Tipe',
       dataIndex: 'request_type',
       key: 'request_type',
+      width: 80,
       render: (value) => {
         return (
           <div style={{
@@ -74,6 +77,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 90,
       render: (text) => {
         return (
           <div style={{
@@ -106,12 +110,14 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
     {
       title: 'Vendor',
       dataIndex: 'vendor.name',
-      key: 'vendor.name'
+      key: 'vendor.name',
+      width: 70
     },
     {
       title: 'Dibuat pada',
       dataIndex: 'created_at',
       key: 'created_at',
+      width: 80,
       render: (text) => {
         return dateFormat(text)
       }
@@ -120,6 +126,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Dipegang oleh',
       dataIndex: 'admin.name',
       key: 'admin.name',
+      width: 90,
       render: (value, record) => {
         return (
           <div>
@@ -132,6 +139,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Dipegang pada',
       dataIndex: 'approved_at',
       key: 'approved_at',
+      width: 90,
       render: (text) => {
         return dateFormat(text)
       }

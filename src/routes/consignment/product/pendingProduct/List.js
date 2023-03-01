@@ -17,7 +17,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
   const columns = [
     {
       title: 'Action',
-      width: '50px',
+      width: 50,
       render: (_, record) => {
         return (
           <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Approve', disabled: false }, { key: '2', name: 'Reject', disabled: false }]} />
@@ -28,7 +28,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       title: 'Photo',
       dataIndex: 'productImage',
       key: 'productImage',
-      width: '200px',
+      width: 150,
       render: (value, record) => {
         return (
           <div style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
@@ -104,7 +104,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       bordered
       columns={columns}
       simple
-      scroll={{ x: 1500 }}
+      scroll={{ x: 1300 }}
       rowKey={record => record.id}
       onChange={onChange}
     />

@@ -28,7 +28,7 @@ const Filter = ({
             initialValue: q
           })(
             <Search
-              placeholder="Cari stock adjustment Id"
+              placeholder="Cari stock adjustment ID"
               onSearch={(value) => { onFilterChange(value) }}
             />
           )}

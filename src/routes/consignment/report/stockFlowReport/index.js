@@ -22,7 +22,7 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
     selectedProduct,
     consignmentId
   } = consignmentStockFlowReport
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -132,7 +132,9 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
   const printProps = {
     dataSource: list,
     user,
-    storeInfo
+    dateRange,
+    selectedVendor,
+    selectedProduct
   }
 
   const menu = (

@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
+import moment from 'moment'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ dataSource, period }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -40,19 +41,19 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       if (list.hasOwnProperty(key)) {
         let row = []
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['vendor.name'], alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['vendor.bank_name'], alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['vendor.account_number'], alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['vendor.account_name'], alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].total, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].commission, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].charge, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key]['vendor.name'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key]['vendor.bank_name'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key]['vendor.account_number'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key]['vendor.account_name'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].total || '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].commission || '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].charge || '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({
           value: (list[key]['vendor.bank_name'].toLowerCase() !== 'bca'
             ? 5000
             : 0
           ),
-          alignment: { vertical: 'middle', horizontal: 'center' },
+          alignment: { vertical: 'middle', horizontal: 'right' },
           font: styles.tableBody,
           border: styles.tableBorder
         })
@@ -61,7 +62,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
             ? list[key].total - list[key].commission - list[key].charge - 5000
             : list[key].total - list[key].commission - list[key].charge
           ),
-          alignment: { vertical: 'middle', horizontal: 'center' },
+          alignment: { vertical: 'middle', horizontal: 'right' },
           font: styles.tableBody,
           border: styles.tableBorder
         })
@@ -75,7 +76,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 
   const title = [
     { value: 'LAPORAN CUT OFF', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
+    { value: `Period: ${moment(period).format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

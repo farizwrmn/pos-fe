@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, summary, paymentMethod, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, summary, user, dateRange }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,11 @@ const PrintPDF = ({ dataSource, summary, paymentMethod, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
-          },
-          {
             text: 'LAPORAN JURNAL',
             style: 'header'
+          },
+          {
+            text: `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}`
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -55,37 +55,26 @@ const PrintPDF = ({ dataSource, summary, paymentMethod, user, storeInfo }) => {
     let body = []
     let count = 1
 
-    paymentMethod.map((record) => {
-      let row = []
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: record.method || '-', alignment: 'center' })
-      row.push({ text: summary[`${record.typeCode}`] || '0', alignment: 'center' })
-      body.push(row)
-      return record
-    })
-
-    let totalRow = []
-    totalRow.push({ text: '-', alignment: 'center' })
-    totalRow.push({ text: '-', alignment: 'center' })
-    totalRow.push({ text: '-', alignment: 'center' })
-    totalRow.push({ text: 'TOTAL' || '-', alignment: 'center' })
-    totalRow.push({ text: summary.total || '0', alignment: 'center' })
-    body.push(totalRow)
-
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center' })
-        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].number || (tableBody[key]['returnOrder.number'])).toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].method || '-').toString(), alignment: 'center' })
-        row.push({ text: (tableBody[key].total || '0').toString(), alignment: 'center', color: tableBody[key].type === 'RTN' ? '#FF0000' : '#000000' })
+        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'center' })
+        row.push({ text: (tableBody[key].number || (tableBody[key]['returnOrder.number'])).toString(), alignment: 'center' })
+        row.push({ text: (tableBody[key].method || '').toString(), alignment: 'center' })
+        row.push({ text: `Rp ${Number(tableBody[key].total || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'RTN' ? '#FF0000' : '#000000' })
         body.push(row)
       }
       count += 1
     }
+    let totalRow = []
+    totalRow.push({ text: '', alignment: 'center' })
+    totalRow.push({ text: '', alignment: 'center' })
+    totalRow.push({ text: '', alignment: 'center' })
+    totalRow.push({ text: 'TOTAL', alignment: 'center' })
+    totalRow.push({ text: summary.total || '0', alignment: 'right' })
+    body.push(totalRow)
+
     return body
   }
 
@@ -137,7 +126,7 @@ const PrintPDF = ({ dataSource, summary, paymentMethod, user, storeInfo }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['5%', '15%', '45%', '12%', '13%', '10%'],
+    width: ['5%', '15%', '45%', '15%', '20%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

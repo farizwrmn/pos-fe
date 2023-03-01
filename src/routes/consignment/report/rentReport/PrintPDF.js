@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, user, dateRange }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,11 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
-          },
-          {
             text: 'LAPORAN SEWA',
             style: 'header'
+          },
+          {
+            text: `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}`
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -61,13 +61,13 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center' })
-        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].id || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].vendorName || '').toString(), alignment: 'center' })
-        row.push({ text: (tableBody[key].outletName || '0').toString(), alignment: 'center' })
-        row.push({ text: (tableBody[key].price || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].discount || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].final_price || '0').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'center' })
+        row.push({ text: `BR-${moment(tableBody[key].createdAt).format('YYMM')}${String(tableBody[key].id || '').padStart(8, '0')}`, alignment: 'center' })
+        row.push({ text: (tableBody[key].vendorName || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].outletName || '').toString(), alignment: 'left' })
+        row.push({ text: `Rp ${Number(tableBody[key].price || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].discount || 0).toLocaleString()}`.toString(), alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].final_price || 0).toLocaleString()}`, alignment: 'right' })
         body.push(row)
       }
       count += 1
@@ -123,7 +123,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['5%', '15%', '15%', '15%', '12%', '13%', '10%', '15%'],
+    width: ['4%', '12%', '22%', '15%', '13%', '10%', '10%', '14%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

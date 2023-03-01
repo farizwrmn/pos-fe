@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource, storeInfo, paymentMethod, summary }) => {
+const PrintXLS = ({ dataSource, summary, dateRange }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -38,43 +38,32 @@ const PrintXLS = ({ dataSource, storeInfo, paymentMethod, summary }) => {
     let body = []
     let start = 1
 
-    paymentMethod.map((record) => {
-      let row = []
-      row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: record.method || '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: summary[`${record.typeCode}`] || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-      body.push(row)
-      return record
-    })
-
-    let totalRow = []
-    totalRow.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-    totalRow.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-    totalRow.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-    totalRow.push({ value: 'TOTAL' || '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-    totalRow.push({ value: summary.total || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-    body.push(totalRow)
-
     for (let key in list) {
       if (list.hasOwnProperty(key)) {
         let row = []
-        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].number, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].method, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].type !== 'RTN' ? list[key].total : Number(`-${list[key].total}`), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].number || (list[key]['returnOrder.number']), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].method, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].type !== 'RTN' ? list[key].total : Number(`-${list[key].total}`), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
     }
+
+    let totalRow = []
+    totalRow.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    totalRow.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    totalRow.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    totalRow.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+    totalRow.push({ value: summary.total || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+    body.push(totalRow)
     return body
   }
 
   const title = [
     { value: 'LAPORAN JURNAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
+    { value: `Tanggal: ${moment(dateRange).format('DD MMMM YYYY')} - ${moment(dateRange).format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

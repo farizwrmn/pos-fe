@@ -10,7 +10,7 @@ const List = ({ ...tableProps, list, showModalForm }) => {
   const columns = [
     {
       title: 'Action',
-      width: 100,
+      width: 60,
       render: (record) => {
         return (
           <Row type="flex" justify="center">
@@ -23,6 +23,7 @@ const List = ({ ...tableProps, list, showModalForm }) => {
       title: 'Kategori',
       dataIndex: 'category_id',
       key: 'category_id',
+      width: 100,
       render: (value) => {
         const category = list.filter(filtered => filtered.id === value)
         if (category && category[0]) {
@@ -46,7 +47,7 @@ const List = ({ ...tableProps, list, showModalForm }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 400 }}
+        scroll={{ x: 300 }}
         rowKey={record => record.id}
       />
     </div>

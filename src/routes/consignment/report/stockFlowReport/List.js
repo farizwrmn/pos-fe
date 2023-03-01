@@ -9,6 +9,7 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
       title: 'Tanggal',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 120,
       render: (text, record) => {
         if (record !== dataSource[dataSource.length - 1]) {
           return {
@@ -30,6 +31,7 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
       title: 'Deskripsi',
       dataIndex: 'description',
       key: 'description',
+      width: 150,
       render: (value, record) => {
         if (record !== dataSource[dataSource.length - 1]) {
           return {
@@ -48,41 +50,21 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
       }
     },
     {
-      title: 'Tipe',
-      dataIndex: 'stock_type',
-      key: 'stock_type',
-      render: (value, record) => {
-        if (record !== dataSource[dataSource.length - 1]) {
-          return {
-            children: <div>{value === 1 ? 'Stock IN' : 'Stock Out'}</div>,
-            props: {
-              colSpan: 1
-            }
-          }
-        }
-        return {
-          children: <div>{value === 1 ? 'Stock IN' : 'Stock Out'}</div>,
-          props: {
-            colSpan: 0
-          }
-        }
-      }
-    },
-    {
       title: 'Jumlah',
       dataIndex: 'quantity',
       key: 'quantity',
+      width: 70,
       render: (value, record) => {
         if (record !== dataSource[dataSource.length - 1]) {
           return {
-            children: <div style={{ color: record.stock_type === 0 ? '#FF0000' : '#000000' }}>{value}</div>,
+            children: <div style={{ color: record.stock_type === 0 ? '#FF0000' : '#000000', textAlign: 'center' }}>{value}</div>,
             props: {
               colSpan: 1
             }
           }
         }
         return {
-          children: <div style={{ color: record.stock_type === 0 ? '#FF0000' : '#000000' }}>{value}</div>,
+          children: <div style={{ color: record.stock_type === 0 ? '#FF0000' : '#000000', textAlign: 'center' }}>{value}</div>,
           props: {
             colSpan: 0
           }
@@ -93,17 +75,18 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
       title: 'Stok',
       dataIndex: 'stock_amount',
       key: 'stock_amount',
+      width: 50,
       render: (value, record) => {
         if (record !== dataSource[dataSource.length - 1]) {
           return {
-            children: <div>{value}</div>,
+            children: <div style={{ textAlign: 'center' }}>{value}</div>,
             props: {
               colSpan: 1
             }
           }
         }
         return {
-          children: <div>{record.quantity}</div>,
+          children: <div style={{ textAlign: 'center' }}>{record.quantity}</div>,
           props: {
             colSpan: 1
           }
@@ -122,7 +105,7 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1000 }}
+        scroll={{ x: 400 }}
         rowKey={record => record.id}
         onChange={onChange}
       />

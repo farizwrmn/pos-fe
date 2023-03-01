@@ -200,6 +200,7 @@ const FormCounter = ({
             onChange={(value) => { changeProductName(value, index) }}
             disabled={!getFieldsValue().vendor || loading}
             placeholder="Select Product"
+            showSearch
           >
             {productOption}
           </Select>

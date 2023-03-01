@@ -29,23 +29,33 @@ const List = ({ ...tableProps, showConfirmation, editItem, deleteItem, onFilterC
   const columns = [
     {
       title: 'Action',
-      width: '50px',
+      width: 50,
       render: (_, record) => <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
     },
     {
       title: 'Outlet Code',
       dataIndex: 'outlet_code',
-      key: 'outlet_code'
+      key: 'outlet_code',
+      width: 100,
+      render: (value) => {
+        return (
+          <div style={{ textAlign: 'center' }}>
+            {value}
+          </div>
+        )
+      }
     },
     {
       title: 'Nama Outlet',
       dataIndex: 'outlet_name',
-      key: 'outlet_name'
+      key: 'outlet_name',
+      width: 150
     },
     {
       title: 'Keterangan',
       dataIndex: 'commission_food',
       key: 'commission_food',
+      width: 200,
       render: (_, record) => {
         return (
           <div style={{ padding: '10px' }}>
@@ -68,7 +78,7 @@ const List = ({ ...tableProps, showConfirmation, editItem, deleteItem, onFilterC
       bordered
       columns={columns}
       simple
-      scroll={{ x: 800 }}
+      scroll={{ x: 700 }}
       rowKey={record => record.id}
       onChange={onChange}
     />

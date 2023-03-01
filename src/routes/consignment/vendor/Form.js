@@ -113,6 +113,13 @@ const FormCounter = ({
 
   const categoryOption = categoryList.length > 0 ? categoryList.map(record => (record.id !== 1 && <Option key={record.id} value={record.id}>{record.name}</Option>)) : []
 
+  const validatePassword = (_, value) => {
+    if (value !== getFieldsValue().password) {
+      return Promise.reject(new Error('Password must be the same'))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -215,7 +222,12 @@ const FormCounter = ({
               initialValue: null,
               rules: [
                 {
-                  required: formType === 'add'
+                  required: formType === 'add',
+                  message: 'required'
+                },
+                {
+                  min: 8,
+                  message: 'password should have more than 8 char.'
                 }
               ]
             })(
@@ -232,7 +244,11 @@ const FormCounter = ({
                 initialValue: null,
                 rules: [
                   {
-                    required: true
+                    required: true,
+                    message: 'required'
+                  },
+                  {
+                    validator: validatePassword
                   }
                 ]
               })(

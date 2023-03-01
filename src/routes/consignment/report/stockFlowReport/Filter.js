@@ -74,13 +74,12 @@ const Filter = ({
         <Col {...selectColumnProps}>
           <Select
             style={{
-              width: '100%',
-              marginBottom: '10px',
-              paddingRight: '10px'
+              width: '95%',
+              marginBottom: '10px'
             }}
             value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
             showSearch
-            placeholder="Select vendor"
+            placeholder="Select Vendor"
             optionFilterProp="children"
             onChange={(value) => {
               onSelectVendor(value)
@@ -95,9 +94,8 @@ const Filter = ({
         <Col {...selectColumnProps}>
           <Select
             style={{
-              width: '100%',
-              marginBottom: '10px',
-              paddingRight: '10px'
+              width: '95%',
+              marginBottom: '10px'
             }}
             value={selectedProduct.id ? `${selectedProduct.product_code} - ${selectedProduct.product_name}` : undefined}
             disabled={!selectedVendor.id}
@@ -122,15 +120,14 @@ const Filter = ({
             disabled={!selectedProduct.id}
             onChange={handleDateRange}
             style={{
-              marginBottom: '10px',
-              width: '100%',
-              paddingRight: '10px'
+              width: '95%',
+              marginBottom: '10px'
             }}
             value={dateRange.length > 0 ? dateRange : []}
           />
         </Col>
         <Col {...tailColumnProps}>
-          <Button type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
+          <Button style={{ width: '95%', marginBottom: '10px' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
             Cari
           </Button>
         </Col>

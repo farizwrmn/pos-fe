@@ -8,18 +8,16 @@ const numberFormatter = numberFormat.numberFormatter
 const List = ({ ...tableProps, onFilterChange }) => {
   const columns = [
     {
-      title: (
-        <div style={{ fontWeight: 'bolder' }}>
-          Vendor
-        </div>
-      ),
+      title: 'Vendor',
       dataIndex: 'product.vendor.name',
-      key: 'product.vendor.name'
+      key: 'product.vendor.name',
+      width: 100
     },
     {
       title: 'Nama Produk',
       dataIndex: 'product.product_name',
       key: 'product.product_name',
+      width: 170,
       render: (value, record) => {
         return (
           <div>
@@ -31,13 +29,16 @@ const List = ({ ...tableProps, onFilterChange }) => {
     {
       title: 'Quantity',
       dataIndex: 'quantity',
-      key: 'quantity'
+      key: 'quantity',
+      width: 80,
+      render: value => <div style={{ textAlign: 'center' }}>{value}</div>
     },
     {
       title: 'Harga',
       dataIndex: 'price',
       key: 'price',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 100,
+      render: value => <div style={{ textAlign: 'right' }}>{`Rp ${numberFormatter(value)}`}</div>
     }
   ]
 
@@ -50,7 +51,7 @@ const List = ({ ...tableProps, onFilterChange }) => {
       bordered
       columns={columns}
       simple
-      scroll={{ x: 1000 }}
+      scroll={{ x: 470 }}
       rowKey={record => record.id}
       onChange={onChange}
     />

@@ -73,10 +73,11 @@ const Filter = ({
       <Col {...columnProps}>
         <Select
           style={{
-            width: '95%'
+            width: '95%',
+            marginBottom: '10px'
           }}
           showSearch
-          placeholder="Select vendor"
+          placeholder="Select Vendor"
           onChange={(value) => { selectVendor(value) }}
           onSearch={selectVendorSearch}
           filterOption={false}
@@ -89,7 +90,8 @@ const Filter = ({
       <Col {...columnProps}>
         <RangePicker
           style={{
-            width: '95%'
+            width: '95%',
+            marginBottom: '10px'
           }}
           disabled={!selectedVendor.id}
           onChange={onChangeDate}
@@ -97,7 +99,7 @@ const Filter = ({
         />
       </Col>
       <Col {...tailColumnProps}>
-        <Button type="primary" style={{ width: '95%' }} onClick={() => handleSubmit()} disabled={!dateRange.length > 0}>Cari</Button>
+        <Button type="primary" style={{ width: '95%', marginBottom: '10px' }} onClick={() => handleSubmit()} disabled={!dateRange.length > 0}>Cari</Button>
       </Col>
     </Col>
   )

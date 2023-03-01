@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 
 function RentReport ({ consignmentRentReport, dispatch, app, loading }) {
   const { list, activeKey, dateRange, pagination, consignmentId } = consignmentRentReport
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -79,7 +79,7 @@ function RentReport ({ consignmentRentReport, dispatch, app, loading }) {
   const printProps = {
     dataSource: list,
     user,
-    storeInfo
+    dateRange
   }
 
   const menu = (

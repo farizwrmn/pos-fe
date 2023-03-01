@@ -30,7 +30,7 @@ function ColorInfo () {
           color: '#FFFFFF'
         }}
       >
-        Rental period under 7 days
+        Rental Period Under 7 Days
       </div>
       <div
         style={{
