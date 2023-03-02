@@ -93,7 +93,7 @@ function Detail ({ consignmentStockFlow, dispatch, loading }) {
       <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
-            <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
+            <Button type="primary" icon="rollback" onClick={() => BackToList()} loading={loading.effects['consignmentStockFlow/approve'] || loading.effects['consignmentStockFlow/reject']}>Back</Button>
             <h1>Detail</h1>
             <Button
               type="primary"
