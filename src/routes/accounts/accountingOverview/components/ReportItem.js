@@ -1,12 +1,13 @@
 import React from 'react'
 import { Button } from 'antd'
+import { Link } from 'dva/router'
 import classes from './ReportItem.less'
 
 const ReportItem = ({
   title,
   content,
   paramText,
-  onClick
+  url
 }) => {
   return (
     <div className={classes.container}>
@@ -15,7 +16,7 @@ const ReportItem = ({
         {content}
       </div>
       <div className={classes.buttonAction}>
-        <Button onClick={() => onClick()}>{paramText || 'Lihat Laporan'}</Button>
+        <Link to={url}><Button>{paramText || 'Lihat Laporan'}</Button></Link>
       </div>
     </div>
   )
