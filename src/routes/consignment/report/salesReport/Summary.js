@@ -50,23 +50,23 @@ const Summary = ({ ...tableProps, list }) => {
         value: subTotal
       },
       {
-        name: 'commission',
+        name: 'Commission',
         value: commission
       },
       {
-        name: 'charge',
+        name: 'Charge',
         value: charge
       },
       {
-        name: 'grab',
+        name: 'Grab',
         value: grab
       },
       {
-        name: 'capital',
+        name: 'Capital',
         value: capital
       },
       {
-        name: 'profit',
+        name: 'Profit',
         value: profit
       }
     ]

@@ -48,7 +48,8 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: {
               current: 1,
-              pageSize: 10
+              pageSize: 10,
+              currentItem: {}
             }
           })
           if (location.query && location.query.activeKey) {

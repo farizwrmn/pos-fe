@@ -49,7 +49,7 @@ function Detail ({
         {(boxList || []).map((item) => {
           if (item['vendor.name']) {
             return (
-              <Col lg={4} md={8}>
+              <Col lg={4} md={8} sm={12} xs={12}>
 
                 <Card
                   title={item.box_code}
@@ -115,7 +115,7 @@ function Detail ({
             )
           }
           return (
-            <Col lg={4} md={8}>
+            <Col lg={4} md={8} sm={12} xs={12}>
               <div>
                 <Card
                   title={item.box_code}

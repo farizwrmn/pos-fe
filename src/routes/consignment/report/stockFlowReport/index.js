@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Dropdown, Icon, Menu, Tabs } from 'antd'
+import { Button, Col, Dropdown, Icon, Menu, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import Filter from './Filter'
 import List from './List'
@@ -73,7 +73,8 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
       dispatch({
         type: 'consignmentStockFlowReport/query',
         payload: {
-          stockId: selectedProduct.id
+          stockId: selectedProduct.id,
+          dateRange
         }
       })
     },
@@ -157,10 +158,10 @@ function StockFlowReport ({ consignmentStockFlowReport, dispatch, app, loading }
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={moreButtonTab}>
         <TabPane tab="Report" key="0" >
           {activeKey === '0' &&
-            <div style={{ marginTop: '20px' }}>
+            <Col span={24} style={{ marginTop: '20px' }}>
               <Filter {...filterProps} />
               <List {...listProps} />
-            </div>
+            </Col>
           }
         </TabPane>
       </Tabs>

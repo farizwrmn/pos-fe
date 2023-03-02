@@ -9,6 +9,7 @@ import {
 import {
   queryByVendorId as queryProductByVendorId
 } from 'services/consignment/products'
+import moment from 'moment'
 import { pageModel } from '../common'
 
 
@@ -66,10 +67,13 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
+      const { stockId, dateRange } = payload
       if (consignmentId) {
         const params = {
           outletId: consignmentId,
-          stockId: payload.stockId
+          stockId,
+          from: moment(dateRange[0]).format('YYYY-MM-DD'),
+          to: moment(dateRange[1]).format('YYYY-MM-DD')
         }
         const response = yield call(query, params)
         let data = response.data.list

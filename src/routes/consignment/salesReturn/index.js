@@ -54,7 +54,7 @@ function SalesReturn ({ consignmentSalesReturn, dispatch, loading }) {
     returnDetail,
     filter,
     pagination,
-    loading: loading.effects['consignmentSalesReturn/query'],
+    loading: loading.effects['consignmentSalesReturn/query'] || loading.effects['consignmentSalesReturn/queryById'],
     clearDetail () {
       dispatch({
         type: 'consignmentSalesReturn/updateState', payload: { returnDetail: {} }

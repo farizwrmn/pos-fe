@@ -50,21 +50,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       dataIndex: 'request_type',
       key: 'request_type',
       width: 80,
-      render: (value) => {
-        return (
-          <div style={{
-            padding: '5px',
-            color: '#FFFFFF',
-            backgroundColor: value === 1 ? '#6fc182' : '#e47882',
-            borderRadius: '10px',
-            textAlign: 'center'
-          }
-          }
-          >
-            {value === 1 ? 'Stock IN' : 'Stock OUT'}
-          </div >
-        )
-      },
+      render: value => (value === 1 ? 'Stock IN' : 'Stock OUT'),
       filters: [{
         text: 'Stock IN',
         value: 1
@@ -78,21 +64,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       dataIndex: 'status',
       key: 'status',
       width: 90,
-      render: (text) => {
-        return (
-          <div style={{
-            padding: '5px',
-            color: text !== 'canceled' && '#FFFFFF',
-            backgroundColor: text === 'pending' ? '#808080' : text === 'approved' ? '#6fc182' : text === 'rejected' ? '#e47882' : '#fad25a',
-            borderRadius: '10px',
-            textAlign: 'center'
-          }
-          }
-          >
-            {String(text).at(0).toUpperCase() + String(text).slice(1)}
-          </div >
-        )
-      },
+      render: text => String(text).at(0).toUpperCase() + String(text).slice(1),
       filters: [{
         text: 'Approved',
         value: 'approved'

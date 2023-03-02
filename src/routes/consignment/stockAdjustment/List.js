@@ -4,11 +4,6 @@ import { Table } from 'antd'
 import moment from 'moment'
 
 const List = ({ ...tableProps, openDetail, onFilterChange }) => {
-  const idFormatter = (value) => {
-    const id = `00000000${value}`
-    return id.slice(id.length - 8)
-  }
-
   const dateFormatter = (value) => {
     const formattedDate = moment(value).format('DD MMM YYYY')
     return formattedDate || '-'
@@ -20,11 +15,11 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
       dataIndex: 'id',
       key: 'id',
       width: 120,
-      render: (text) => {
+      render: (text, record) => {
         return (
           <a href={null} onClick={() => { openDetail(text) }} >
             <div style={{ textAlign: 'center' }}>
-              SF-{idFormatter(text)}
+              SF-{moment(record.createdAt).format('YYMM')}{String(text).padStart(8, '0')}
             </div>
           </a>
         )
@@ -40,7 +35,7 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
         { text: 'Stock OUT', value: '0' }
       ],
       render: (value) => {
-        return value === 1 ? 'Stock In' : 'Stock Out'
+        return value === 1 ? 'Stock IN' : 'Stock OUT'
       }
     },
     {

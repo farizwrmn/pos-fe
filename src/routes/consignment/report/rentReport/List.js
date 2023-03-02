@@ -25,7 +25,7 @@ const List = ({
       width: 130,
       render: (value, record) => {
         let id = `00000000${value}`
-        let time = moment(record.created_at).format('YYMM')
+        let time = moment(record.createdAt).format('YYMM')
 
         return `BR-${time}${id.slice(id.length - 8)}`
       }

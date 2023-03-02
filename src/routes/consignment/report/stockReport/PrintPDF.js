@@ -120,7 +120,7 @@ const PrintPDF = ({ dataSource, user, selectedVendor }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['5%', '20%', '55%', '10%', '10%'],
+    width: ['5%', '25%', '45%', '10%', '15%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

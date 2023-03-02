@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Col, Table } from 'antd'
+import { Table } from 'antd'
 import moment from 'moment'
 
 const List = ({ ...tableProps, onFilterChange, dataSource }) => {
@@ -22,7 +22,7 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
         return {
           children: <div>Jumlah Stok</div>,
           props: {
-            colSpan: 4
+            colSpan: 3
           }
         }
       }
@@ -31,7 +31,6 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
       title: 'Deskripsi',
       dataIndex: 'description',
       key: 'description',
-      width: 150,
       render: (value, record) => {
         if (record !== dataSource[dataSource.length - 1]) {
           return {
@@ -100,16 +99,14 @@ const List = ({ ...tableProps, onFilterChange, dataSource }) => {
   }
 
   return (
-    <Col span={24}>
-      <Table {...tableProps}
-        bordered
-        columns={columns}
-        simple
-        scroll={{ x: 400 }}
-        rowKey={record => record.id}
-        onChange={onChange}
-      />
-    </Col>
+    <Table {...tableProps}
+      bordered
+      columns={columns}
+      simple
+      scroll={{ x: 400 }}
+      rowKey={record => record.id}
+      onChange={onChange}
+    />
   )
 }
 
