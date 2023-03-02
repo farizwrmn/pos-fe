@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, user, selectedVendor }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,14 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
-          },
-          {
             text: 'LAPORAN STOK',
             style: 'header'
+          },
+          {
+            text: `Tanggal: ${moment().format('DD MMMM YYYY')}`
+          },
+          {
+            text: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : ''
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -60,8 +63,8 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
         row.push({ text: count, alignment: 'center' })
         row.push({ text: (tableBody[key]['product.vendor.name'] || '').toString(), alignment: 'left' })
         row.push({ text: (tableBody[key]['product.product_name'] || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].quantity || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].price || '0').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].quantity || 0).toString(), alignment: 'center' })
+        row.push({ text: `Rp ${Number(tableBody[key].price || 0).toLocaleString()}`, alignment: 'right' })
         body.push(row)
       }
       count += 1
@@ -117,7 +120,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['6%', '15%', '55%', '12%', '12%'],
+    width: ['5%', '25%', '45%', '10%', '15%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

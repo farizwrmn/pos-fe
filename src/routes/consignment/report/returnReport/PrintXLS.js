@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -41,21 +41,21 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
       if (list.hasOwnProperty(key)) {
         let row = []
         if (list[key] === list[list.length - 1]) {
-          row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key].total, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key].total, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         } else {
-          row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key]['returnOrder.number'], alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key]['salesOrderProduct.stock.product.product_name'] === 1 ? 'STOCK IN' : 'STOCK OUT', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key].quantity, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key].price_after_discount, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key].total, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key]['returnOrder.number'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key]['salesOrderProduct.stock.product.product_name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key].quantity || 0, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key].price_after_discount || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key].total || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         }
         body.push(row)
       }
@@ -66,7 +66,8 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 
   const title = [
     { value: 'LAPORAN RETUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
+    { value: dateRange && dateRange.length > 0 ? `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}` : '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+    { value: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

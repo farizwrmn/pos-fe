@@ -17,9 +17,17 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
 
   const columns = [
     {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      width: 50,
+      render: (_, record) => <Button type="primary" onClick={() => editConfirm(record)}>Edit</Button>
+    },
+    {
       title: 'Vendor Profile',
       dataIndex: 'vendorProfile',
       key: 'vendorProfile',
+      width: 200,
       render: (_, record) => {
         return (
           <div>
@@ -82,20 +90,8 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
       title: 'Setuju T&C',
       dataIndex: 'is_agree_tnc',
       key: 'is_agree_tnc',
+      width: 100,
       render: value => (value === 1 ? 'Agreed' : 'Not agreed')
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      width: '80px',
-      render: (_, record) => {
-        return (
-          <Button type="primary" onClick={() => editConfirm(record)}>
-            Ubah
-          </Button>
-        )
-      }
     }
   ]
 
@@ -109,9 +105,9 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1000 }}
         rowKey={record => record.id}
         onChange={onChange}
+        scroll={{ x: 600 }}
       />
     </div>
   )

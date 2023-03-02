@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, user, dateRange, selectedVendor, selectedProduct }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,17 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
-          },
-          {
             text: 'LAPORAN MUTASI PRODUK',
             style: 'header'
+          },
+          {
+            text: dateRange && dateRange.length > 0 ? `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}` : ''
+          },
+          {
+            text: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : ''
+          },
+          {
+            text: selectedProduct && selectedProduct.id ? `Product: ${selectedProduct.product_code} - ${selectedProduct.product_name}` : ''
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -55,7 +61,6 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
   const createTableBody = (tableBody) => {
     let body = []
     let count = 1
-    console.log('tableBody', tableBody)
     for (let key in tableBody) {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
@@ -65,14 +70,14 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
           row.push({ text: '' })
           row.push({ text: '' })
           row.push({ text: 'JUMLAH STOK SEKARANG', alignment: 'left' })
-          row.push({ text: tableBody[key].quantity || '0', alignment: 'left' })
+          row.push({ text: tableBody[key].quantity || 0, alignment: 'center' })
         } else {
           row.push({ text: count, alignment: 'center' })
-          row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'left' })
+          row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'center' })
           row.push({ text: (tableBody[key].description || '').toString(), alignment: 'left' })
-          row.push({ text: (tableBody[key].stock_type === 1 ? 'STOCK IN' : 'STOCK OUT').toString(), alignment: 'center' })
-          row.push({ text: (tableBody[key].quantity || '0').toString(), alignment: 'center' })
-          row.push({ text: (tableBody[key].stock_amount || '0').toString(), alignment: 'left' })
+          row.push({ text: (tableBody[key].stock_type === 1 ? 'IN' : 'OUT').toString(), alignment: 'center' })
+          row.push({ text: (tableBody[key].quantity || 0).toString(), alignment: 'center' })
+          row.push({ text: (tableBody[key].stock_amount || 0).toString(), alignment: 'center' })
         }
         body.push(row)
       }
@@ -129,7 +134,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['5%', '15%', '45%', '12%', '13%', '10%'],
+    width: ['5%', '12%', '59%', '6%', '10%', '8%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

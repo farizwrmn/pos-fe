@@ -33,7 +33,9 @@ function PendingProduct ({ consignmentPendingProduct, dispatch, loading }) {
   const listProps = {
     dataSource: list,
     pagination,
-    loading: loading.effects['consignmentPendingProduct/query'],
+    loading: loading.effects['consignmentPendingProduct/query']
+      || loading.effects['consignmentPendingProduct/queryApprove']
+      || loading.effects['consignmentPendingProduct/queryReject'],
     showConfirm ({ type, id }) {
       let note
       confirm({

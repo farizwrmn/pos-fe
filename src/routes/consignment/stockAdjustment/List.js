@@ -4,11 +4,6 @@ import { Table } from 'antd'
 import moment from 'moment'
 
 const List = ({ ...tableProps, openDetail, onFilterChange }) => {
-  const idFormatter = (value) => {
-    const id = `00000000${value}`
-    return id.slice(id.length - 8)
-  }
-
   const dateFormatter = (value) => {
     const formattedDate = moment(value).format('DD MMM YYYY')
     return formattedDate || '-'
@@ -19,9 +14,14 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
       title: 'ID Penyesuaian Stok',
       dataIndex: 'id',
       key: 'id',
-      render: (text) => {
+      width: 120,
+      render: (text, record) => {
         return (
-          <a href={null} onClick={() => { openDetail(text) }}>SF-{idFormatter(text)}</a>
+          <a href={null} onClick={() => { openDetail(text) }} >
+            <div style={{ textAlign: 'center' }}>
+              SF-{moment(record.createdAt).format('YYMM')}{String(text).padStart(8, '0')}
+            </div>
+          </a>
         )
       }
     },
@@ -29,18 +29,20 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
       title: 'Tipe',
       dataIndex: 'request_type',
       key: 'request_type',
+      width: 80,
       filters: [
         { text: 'Stock IN', value: '1' },
         { text: 'Stock OUT', value: '0' }
       ],
       render: (value) => {
-        return value === 1 ? 'Stock In' : 'Stock Out'
+        return value === 1 ? 'Stock IN' : 'Stock OUT'
       }
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 80,
       filters: [
         { text: 'Approved', value: 'approved' },
         { text: 'Canceled', value: 'canceled' },
@@ -52,18 +54,21 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
     {
       title: 'Vendor',
       dataIndex: 'vendor.name',
-      key: 'vendor.name'
+      key: 'vendor.name',
+      width: 80
     },
     {
       title: 'Dibuat pada',
       dataIndex: 'created_at',
       key: 'created_at',
+      width: 90,
       render: value => dateFormatter(value)
     },
     {
       title: 'Dipegang oleh',
       dataIndex: 'admin.name',
       key: 'admin.name',
+      width: 120,
       render: (text, record) => {
         return (
           <div>
@@ -76,6 +81,7 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
       title: 'Dipegang pada',
       dataIndex: 'approved_at',
       key: 'approved_at',
+      width: 120,
       render: value => dateFormatter(value)
     }
   ]
@@ -98,7 +104,7 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
       bordered
       columns={columns}
       simple
-      scroll={{ x: 1000 }}
+      scroll={{ x: 800 }}
       rowKey={record => record.id}
       onChange={onChange}
     />

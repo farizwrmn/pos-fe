@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource, storeInfo }) => {
+const PrintXLS = ({ dataSource, dateRange }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -40,14 +40,14 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
     for (let key in list) {
       if (list.hasOwnProperty(key)) {
         let row = []
-        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].id, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].vendorName, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].outletName, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].price, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].discount || 0, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].final_price, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: `BR-${moment(list[key].createdAt).format('YYMM')}${String(list[key].id || '').padStart(8, '0')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].vendorName || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].outletName || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].price || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].discount || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].final_price || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
       start += 1
@@ -57,7 +57,7 @@ const PrintXLS = ({ dataSource, storeInfo }) => {
 
   const title = [
     { value: 'LAPORAN SEWA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
+    { value: `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

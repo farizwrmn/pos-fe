@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, summary, selectedVendor, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, summary, selectedVendor, user }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,14 @@ const PrintPDF = ({ dataSource, summary, selectedVendor, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
+            text: 'LAPORAN LABA RUGI',
+            style: 'header'
           },
           {
-            text: `LAPORAN LABA RUGI (${moment(summary.from).format('DD MMM YYYY')} - ${moment(summary.to).format('DD MMM YYYYY')})`,
-            style: 'header'
+            text: summary ? `Tanggal: ${moment(summary.from).format('DD MMM YYYY')} - ${moment(summary.to).format('DD MMM YYYYY')}` : ''
+          },
+          {
+            text: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : ''
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -51,33 +54,30 @@ const PrintPDF = ({ dataSource, summary, selectedVendor, user, storeInfo }) => {
   const createTableBody = () => {
     let body = []
     let row = []
-    row.push({ text: 'VENDOR', alignment: 'center' })
-    row.push({ text: selectedVendor.name, alignment: 'center' })
+
+    row = []
+    row.push({ text: 'TOTAL PENJUALAN', alignment: 'left' })
+    row.push({ text: `Rp ${Number(summary.total || 0).toLocaleString()}`, alignment: 'right' })
     body.push(row)
 
     row = []
-    row.push({ text: 'TOTAL PENJUALAN', alignment: 'center' })
-    row.push({ text: summary.total, alignment: 'center' })
+    row.push({ text: 'MODAL', alignment: 'left' })
+    row.push({ text: `Rp ${Number(summary.capital || 0).toLocaleString()}`, alignment: 'right' })
     body.push(row)
 
     row = []
-    row.push({ text: 'MODAL', alignment: 'center' })
-    row.push({ text: summary.capital, alignment: 'center' })
+    row.push({ text: 'PAYMENT CHARGE', alignment: 'left' })
+    row.push({ text: `Rp ${Number(summary.charge || 0).toLocaleString()}`, alignment: 'right' })
     body.push(row)
 
     row = []
-    row.push({ text: 'PAYMENT CHARGE', alignment: 'center' })
-    row.push({ text: summary.charge, alignment: 'center' })
+    row.push({ text: 'KOMISI', alignment: 'left' })
+    row.push({ text: `Rp ${Number(summary.commission || 0).toLocaleString()}`, alignment: 'right' })
     body.push(row)
 
     row = []
-    row.push({ text: 'KOMISI', alignment: 'center' })
-    row.push({ text: summary.commission, alignment: 'center' })
-    body.push(row)
-
-    row = []
-    row.push({ text: 'LABA KOTOR', alignment: 'center' })
-    row.push({ text: summary.profit, alignment: 'center' })
+    row.push({ text: 'LABA KOTOR', alignment: 'left' })
+    row.push({ text: `Rp ${Number(summary.profit || 0).toLocaleString()}`, alignment: 'right' })
     body.push(row)
 
     return body

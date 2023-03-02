@@ -12,66 +12,78 @@ const List = ({ ...tableProps, onFilterChange }) => {
       title: 'Tanggal',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 90,
       render: text => moment(text).format('DD MMM YYYY')
     },
     {
       title: 'Faktur Penjualan',
       dataIndex: 'salesOrder.number',
-      key: 'salesOrder.number'
+      key: 'salesOrder.number',
+      width: 140
     },
     {
       title: 'Nama Produk',
       dataIndex: 'stock.product.product_name',
-      key: 'stock.product.product_name'
+      key: 'stock.product.product_name',
+      width: 100
     },
     {
       title: 'Quantity',
       dataIndex: 'quantity',
-      key: 'quantity'
+      key: 'quantity',
+      width: 80,
+      render: value => <div style={{ textAlign: 'center' }}>{value}</div>
     },
     {
       title: 'Metode Pembayaran',
       dataIndex: 'salesOrder.paymentMethods.method',
       key: 'salesOrder.paymentMethods.method',
+      width: 140,
       render: value => value || '-'
     },
     {
       title: 'Total(Modal + Grab)',
       dataIndex: 'total',
       key: 'total',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 140,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Komisi(Komisi + Grab)',
       dataIndex: 'commission',
       key: 'commission',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 150,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Charge',
       dataIndex: 'charge',
       key: 'charge',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 90,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Grab',
       dataIndex: 'commissionGrab',
       key: 'commissionGrab',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 90,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Modal',
       dataIndex: 'stock.product.capital',
       key: 'stock.product.capital',
+      width: 90,
       render: (value, record) => {
-        return `Rp ${numberFormatter(value * record.quantity)}`
+        return <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value * record.quantity)}`}</div>
       }
     },
     {
       title: 'Profit',
       dataIndex: 'profit',
       key: 'profit',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 90,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     }
   ]
 
@@ -84,7 +96,7 @@ const List = ({ ...tableProps, onFilterChange }) => {
       bordered
       columns={columns}
       simple
-      scroll={{ x: 1300 }}
+      scroll={{ x: 1200 }}
       rowKey={record => record.id}
       onChange={onChange}
     />

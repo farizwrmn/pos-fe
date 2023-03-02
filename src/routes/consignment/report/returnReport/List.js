@@ -12,6 +12,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Tanggal',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 90,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
           return ({
@@ -33,6 +34,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Retur Penjualan',
       dataIndex: 'returnOrder.number',
       key: 'returnOrder.number',
+      width: 140,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
           return ({
@@ -54,6 +56,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Nama Produk',
       dataIndex: 'salesOrderProduct.stock.product.product_name',
       key: 'salesOrderProduct.stock.product.product_name',
+      width: 120,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
           return ({
@@ -75,6 +78,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
+      width: 80,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
           return ({
@@ -85,7 +89,7 @@ const List = ({ ...tableProps, dataSource }) => {
           })
         }
         return ({
-          children: value,
+          children: <div style={{ textAlign: 'center' }}>{value}</div>,
           props: {
             colSpan: 1
           }
@@ -96,6 +100,7 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Harga',
       dataIndex: 'price_after_discount',
       key: 'price_after_discount',
+      width: 100,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
           return ({
@@ -106,7 +111,7 @@ const List = ({ ...tableProps, dataSource }) => {
           })
         }
         return ({
-          children: `Rp ${numberFormatter(value)}`,
+          children: <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>,
           props: {
             colSpan: 1
           }
@@ -117,9 +122,10 @@ const List = ({ ...tableProps, dataSource }) => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
+      width: 100,
       render: (value) => {
         return ({
-          children: `Rp ${numberFormatter(value)}`,
+          children: <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>,
           props: {
             colSpan: 1
           }
@@ -134,7 +140,7 @@ const List = ({ ...tableProps, dataSource }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1000 }}
+        scroll={{ x: 650 }}
         rowKey={record => record.id}
       />
     </Col>

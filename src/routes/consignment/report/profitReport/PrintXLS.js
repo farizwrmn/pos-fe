@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource, summary, selectedVendor, storeInfo }) => {
+const PrintXLS = ({ dataSource, summary, selectedVendor }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -37,33 +37,29 @@ const PrintXLS = ({ dataSource, summary, selectedVendor, storeInfo }) => {
   const createTableBody = () => {
     let body = []
     let row = []
-    row.push({ value: 'VENDOR', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-    row.push({ value: selectedVendor.name, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row = []
+    row.push({ value: 'TOTAL PENJUALAN', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: summary.total, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
     body.push(row)
 
     row = []
-    row.push({ value: 'TOTAL PENJUALAN', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-    row.push({ value: summary.total, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: 'MODAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: summary.capital, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
     body.push(row)
 
     row = []
-    row.push({ value: 'MODAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-    row.push({ value: summary.capital, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: 'PAYMENT CHARGE', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: summary.charge, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
     body.push(row)
 
     row = []
-    row.push({ value: 'PAYMENT CHARGE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-    row.push({ value: summary.charge, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: 'COMMISSION', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: summary.commission, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
     body.push(row)
 
     row = []
-    row.push({ value: 'COMMISSION', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-    row.push({ value: summary.commission, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-    body.push(row)
-
-    row = []
-    row.push({ value: 'LABA KOTOR', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-    row.push({ value: summary.profit, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: 'LABA KOTOR', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+    row.push({ value: summary.profit, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
     body.push(row)
 
 
@@ -71,8 +67,9 @@ const PrintXLS = ({ dataSource, summary, selectedVendor, storeInfo }) => {
   }
 
   const title = [
-    { value: `LAPORAN LABA RUGI (${moment(summary.from).format('DD MMM YYYY')} - ${moment(summary.to).format('DD MMM YYYYY')})`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant }
+    { value: 'LAPORAN LABA RUGI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: `Tanggal: ${moment(summary.from).format('DD MMM YYYY')} - ${moment(summary.to).format('DD MMM YYYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
+    { value: `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

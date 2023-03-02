@@ -32,13 +32,15 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
   const columns = [
     {
       title: 'Action',
-      width: '50px',
+      width: 50,
       render: (_, record) => <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
     },
     {
       title: 'Code',
       dataIndex: 'typeCode',
-      key: 'typeCode'
+      key: 'typeCode',
+      width: 50,
+      render: value => <div style={{ textAlign: 'center' }}>{value}</div>
     },
     {
       title: 'Method',
@@ -49,13 +51,15 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Fee Food',
       dataIndex: 'fee_food',
       key: 'fee_food',
-      render: value => `${value} %`
+      width: 70,
+      render: value => <div style={{ textAlign: 'center' }}>{`${value} %`}</div>
     },
     {
       title: 'Fee Non Food',
       dataIndex: 'fee_non_food',
       key: 'fee_non_food',
-      render: value => `${value} %`
+      width: 110,
+      render: value => <div style={{ textAlign: 'center' }}>{`${value} %`}</div>
     }
   ]
 
@@ -65,7 +69,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 500 }}
+        scroll={{ x: 450 }}
         rowKey={record => record.id}
       />
     </Col>

@@ -11,7 +11,7 @@ const TabPane = Tabs.TabPane
 function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, app, loading }) {
   const { activeKey, list, periodList, consignmentId, period } = consignmentCutOffReport
   const { list: outletList } = consignmentOutlet
-  const { storeInfo, user } = app
+  const { user } = app
 
   const changeTab = () => {
   }
@@ -53,7 +53,7 @@ function CutOffReport ({ consignmentCutOffReport, consignmentOutlet, dispatch, a
   const printProps = {
     dataSource: list,
     user,
-    storeInfo
+    period
   }
 
   const menu = (

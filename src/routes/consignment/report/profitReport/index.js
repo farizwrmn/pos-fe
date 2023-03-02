@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane
 function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, app, loading }) {
   const { activeKey, dateRange, summary, consignmentId, selectedVendor } = consignmentProfitReport
   const { list: vendorList } = consignmentVendor
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -102,8 +102,7 @@ function ProfitReport ({ consignmentProfitReport, consignmentVendor, dispatch, a
     dataSource: [],
     summary,
     selectedVendor,
-    user,
-    storeInfo
+    user
   }
 
   const menu = (

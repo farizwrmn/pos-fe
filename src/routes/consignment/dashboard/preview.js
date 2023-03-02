@@ -70,7 +70,7 @@ function Preview ({
                     borderRadius: '10px'
                   }}
                 >
-                  <a href={null} style={{ color: '#FFFFFF' }}>{item.box_code}</a>
+                  <a href={null} style={{ color: '#FFFFFF', alignSelf: 'center' }}>{item.box_code}</a>
                 </Card>
               </div>
             </Col>

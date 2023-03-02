@@ -24,73 +24,78 @@ const List = ({
     {
       title: 'Vendor',
       dataIndex: 'vendor.name',
-      key: 'vendor.name'
+      key: 'vendor.name',
+      width: 100
     },
     {
       title: 'Bank',
       dataIndex: 'vendor.bank_name',
       key: 'vendor.bank_name',
-      width: '50px',
+      width: 80,
       render: value => String(value).toUpperCase()
     },
     {
       title: 'No. Rek',
       dataIndex: 'vendor.account_number',
       key: 'vendor.account_number',
-      width: '100px'
+      width: 120
     },
     {
       title: 'Pemilik Rek',
       dataIndex: 'vendor.account_name',
-      key: 'vendor.account_name'
+      key: 'vendor.account_name',
+      width: 150
     },
     {
       title: 'Total Penjualan',
       dataIndex: 'total',
       key: 'total',
-      width: '120px',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 120,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Komisi',
       dataIndex: 'commission',
       key: 'commission',
-      width: '90px',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 100,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Biaya',
       dataIndex: 'charge',
       key: 'charge',
-      width: '70px',
-      render: value => `Rp ${numberFormatter(value)}`
+      width: 100,
+      render: value => <div style={{ textAlign: 'end' }}>{`Rp ${numberFormatter(value)}`}</div>
     },
     {
       title: 'Biaya Transfer',
       dataIndex: 'vendor.bank_name',
       key: 'trasnferCharge',
-      width: '100px',
-      render: text => (text.toLowerCase() !== 'bca' ? `Rp ${numberFormatter(5000)}` : `Rp ${numberFormatter(0)}`)
+      width: 140,
+      render: text => <div style={{ textAlign: 'end' }}> {(text.toLowerCase() !== 'bca' ? `Rp ${numberFormatter(5000)}` : `Rp ${numberFormatter(0)}`)}</div>
     },
     {
       title: 'Dibayarkan',
       dataIndex: 'total',
       key: 'payed',
-      width: '110px',
+      width: 120,
       render: (value, record) => {
         let total = record['vendor.bank_name'].toLowerCase() !== 'bca' ? `Rp ${numberFormatter(value - record.commission - record.charge - 5000)}` : `Rp ${numberFormatter(value - record.commission - record.charge)}`
-        return total
+        return (
+          <div style={{ textAlign: 'end' }}>{total}</div>
+        )
       }
     },
     {
       title: 'Email',
       dataIndex: 'vendor.email',
       key: 'vendor.email',
+      width: 100,
       render: (value, record) => {
         return (
           <Tooltip placement="left" title={value}>
-            <Button icon="mail" onClick={() => handleSendButton(record)}>
-              Send Email
+            <Button icon="mail" onClick={() => handleSendButton(record)} disabled={record.emailSent === 2}>
+              {record.emailSent === 2 ? 'Sent' : 'Send Email'}
             </Button>
           </Tooltip>
         )
@@ -100,7 +105,7 @@ const List = ({
       title: 'Durasi',
       dataIndex: 'endDate',
       key: 'endDate',
-      width: '140px'
+      width: 140
     }
   ]
 
@@ -113,7 +118,7 @@ const List = ({
         columns={columns}
         simple
         pagination={false}
-        scroll={{ x: 1500 }}
+        scroll={{ x: 1100 }}
         rowKey={record => record.id}
       />
     </div>

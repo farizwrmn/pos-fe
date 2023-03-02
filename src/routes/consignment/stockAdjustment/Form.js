@@ -54,16 +54,16 @@ const FormCounter = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: modalType === 'edit' ? 10 : 19
+        offset: modalType === 'edit' ? 13 : 17
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: modalType === 'edit' ? 13 : 17
       },
       md: {
-        offset: modalType === 'edit' ? 15 : 19
+        offset: modalType === 'edit' ? 13 : 17
       },
       lg: {
-        offset: modalType === 'edit' ? 13 : 18
+        offset: modalType === 'edit' ? 13 : 17
       }
     }
   }
@@ -200,6 +200,7 @@ const FormCounter = ({
             onChange={(value) => { changeProductName(value, index) }}
             disabled={!getFieldsValue().vendor || loading}
             placeholder="Select Product"
+            showSearch
           >
             {productOption}
           </Select>

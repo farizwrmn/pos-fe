@@ -28,7 +28,7 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       title: 'Photo',
       dataIndex: 'productImage',
       key: 'productImage',
-      width: '150px',
+      width: 150,
       textAlign: 'center',
       render: (value, record) => {
         return (
@@ -41,45 +41,53 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
     {
       title: 'Vendor',
       dataIndex: 'vendor.name',
-      key: 'vendor.name'
+      key: 'vendor.name',
+      width: 150
     },
     {
       title: 'Kode Produk',
       dataIndex: 'product_code',
-      key: 'product_code'
+      key: 'product_code',
+      width: 120
     },
     {
       title: 'Nama Produk',
       dataIndex: 'product_name',
-      key: 'product_name'
+      key: 'product_name',
+      width: 150
     },
     {
       title: 'Barcode',
       dataIndex: 'barcode',
       key: 'barcode',
+      width: 120,
       render: value => value || '-'
     },
     {
       title: 'No. BPOM/PIRT',
       dataIndex: 'noLicense',
       key: 'noLicense',
+      width: 120,
       render: value => value || '-'
     },
     {
       title: 'Berat',
       dataIndex: 'weight',
       key: 'weight',
+      width: 60,
       render: value => value || '-'
     },
     {
       title: 'Kategori Utama',
       dataIndex: 'category.name',
-      key: 'category.name'
+      key: 'category.name',
+      width: 120
     },
     {
       title: 'Sub Kategori',
       dataIndex: 'subcategory.name',
       key: 'subcategory.name',
+      width: 120,
       render: value => value || '-'
     },
     {

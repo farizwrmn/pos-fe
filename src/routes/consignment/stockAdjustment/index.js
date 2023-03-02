@@ -82,17 +82,18 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
       {
         title: 'Nama Produk',
         dataIndex: 'productName',
-        key: 'productName'
+        key: 'productName',
+        width: 100
       }, {
         title: 'Harga',
         dataIndex: 'price',
         key: 'price',
-        width: '140px'
+        width: 50
       }, {
         title: 'Qty',
         dataIndex: 'qty',
         key: 'qty',
-        width: '45px'
+        width: 40
       }
     ]
 
@@ -197,7 +198,7 @@ function StockAdjustment ({ consignmentStockAdjustment, consignmentOutlet, dispa
   const listProps = {
     pagination,
     dataSource: list,
-    loading: loading.effects['consignmentStockAdjustment/query'],
+    loading: loading.effects['consignmentStockAdjustment/query'] || loading.effects['consignmentStockAdjustment/queryProductById'],
     openDetail (id) {
       modalDetail = true
       dispatch({

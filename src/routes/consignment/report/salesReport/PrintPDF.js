@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,14 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
-          },
-          {
             text: 'LAPORAN PENJUALAN',
             style: 'header'
+          },
+          {
+            text: dateRange && dateRange.length > 0 ? `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}` : ''
+          },
+          {
+            text: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : ''
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -46,8 +49,6 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       { text: 'NO', style: 'tableHeader' },
       { text: 'TANGGAL', style: 'tableHeader' },
       { text: 'FAKTUR PENJUALAN', style: 'tableHeader' },
-      { text: 'NAMA PRODUK', style: 'tableHeader' },
-      { text: 'QTY', style: 'tableHeader' },
       { text: 'PAYMENT', style: 'tableHeader' },
       { text: 'TOTAL', style: 'tableHeader' },
       { text: 'KOMISI', style: 'tableHeader' },
@@ -65,17 +66,20 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center' })
-        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key]['salesOrder.number'] || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key]['stock.product.product_name']).toString(), alignment: 'center' })
-        row.push({ text: (tableBody[key].quantity || '0').toString(), alignment: 'center' })
-        row.push({ text: (tableBody[key]['salesOrder.paymentMethods.method'] || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].total || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].commission || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].charge || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].commissionGrab || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key]['stock.product.capital'] || '0').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key].profit || '0').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'center' })
+        row.push({
+          text: `${tableBody[key]['salesOrder.number'] || ''}
+        Produk: ${tableBody[key]['stock.product.product_name'] || ''}
+        Qty: ${tableBody[key].quantity || 0}`,
+          alignment: 'left'
+        })
+        row.push({ text: (tableBody[key]['salesOrder.paymentMethods.method'] || '').toString(), alignment: 'center' })
+        row.push({ text: `Rp ${Number(tableBody[key].total || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].commission || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].charge || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].commissionGrab || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key]['stock.product.capital'] || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].profit || 0).toLocaleString()}`, alignment: 'right' })
         body.push(row)
       }
       count += 1
@@ -97,101 +101,18 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     })
     let row = []
     if (subTotal !== null) {
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: 'SUBTOTAL', alignment: 'center' })
-      row.push({ text: subTotal, alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
+      row.push({ text: '', alignment: 'center' })
+      row.push({ text: '', alignment: 'center' })
+      row.push({ text: '', alignment: 'center' })
+      row.push({ text: 'TOTAL', alignment: 'left' })
+      row.push({ text: `Rp ${Number(subTotal || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(commission || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(charge || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(grab || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(capital || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(profit || 0).toLocaleString()}`, alignment: 'right' })
       body.push(row)
     }
-    row = []
-    if (commission !== null) {
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: 'COMMISSION', alignment: 'center' })
-      row.push({ text: commission, alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      body.push(row)
-    }
-    row = []
-    if (charge !== null) {
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: 'CHARGE', alignment: 'center' })
-      row.push({ text: charge, alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      body.push(row)
-    }
-    row = []
-    if (grab !== null) {
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: 'GRAB', alignment: 'center' })
-      row.push({ text: grab, alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      body.push(row)
-    }
-    row = []
-    if (capital !== null) {
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: 'CAPITAL', alignment: 'center' })
-      row.push({ text: capital, alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      body.push(row)
-    }
-    row = []
-    if (profit !== null) {
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: '-', alignment: 'center' })
-      row.push({ text: 'PROFIT', alignment: 'center' })
-      row.push({ text: profit, alignment: 'center' })
-      body.push(row)
-    }
-
     return body
   }
 
@@ -243,7 +164,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['5%', '15%', '20%', '20%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%'],
+    width: ['4%', '12%', '20%', '10%', '9%', '9%', '9%', '9%', '9%', '9%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

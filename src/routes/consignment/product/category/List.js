@@ -10,7 +10,7 @@ const List = ({ ...tableProps, showModalForm }) => {
   const columns = [
     {
       title: 'Action',
-      width: 100,
+      width: 60,
       render: (record) => {
         return (
           <Row type="flex" justify="center">
@@ -35,7 +35,7 @@ const List = ({ ...tableProps, showModalForm }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 400 }}
+        scroll={{ x: 300 }}
         rowKey={record => record.id}
       />
     </div>

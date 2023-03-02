@@ -27,9 +27,10 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'ID Mutasi Produk',
       dataIndex: 'id',
       key: 'id',
+      width: 120,
       render: (text, record) => {
         return (
-          <div>
+          <div style={{ textAlign: 'center' }}>
             <Link to={`/integration/consignment/stock-flow/${record.id}`}>
               SF-{moment(record.created_at).format('YYMM')}{String(text).padStart(8, '0')}
             </Link>
@@ -41,27 +42,15 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Outlet',
       dataIndex: 'outlet_id',
       key: 'outlet_id',
+      width: 180,
       render: value => (value === selectedOutlet.id ? selectedOutlet.outlet_name : '-')
     },
     {
       title: 'Tipe',
       dataIndex: 'request_type',
       key: 'request_type',
-      render: (value) => {
-        return (
-          <div style={{
-            padding: '5px',
-            color: '#FFFFFF',
-            backgroundColor: value === 1 ? '#6fc182' : '#e47882',
-            borderRadius: '10px',
-            textAlign: 'center'
-          }
-          }
-          >
-            {value === 1 ? 'Stock IN' : 'Stock OUT'}
-          </div >
-        )
-      },
+      width: 80,
+      render: value => (value === 1 ? 'Stock IN' : 'Stock OUT'),
       filters: [{
         text: 'Stock IN',
         value: 1
@@ -74,21 +63,8 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (text) => {
-        return (
-          <div style={{
-            padding: '5px',
-            color: text !== 'canceled' && '#FFFFFF',
-            backgroundColor: text === 'pending' ? '#808080' : text === 'approved' ? '#6fc182' : text === 'rejected' ? '#e47882' : '#fad25a',
-            borderRadius: '10px',
-            textAlign: 'center'
-          }
-          }
-          >
-            {String(text).at(0).toUpperCase() + String(text).slice(1)}
-          </div >
-        )
-      },
+      width: 90,
+      render: text => String(text).at(0).toUpperCase() + String(text).slice(1),
       filters: [{
         text: 'Approved',
         value: 'approved'
@@ -106,12 +82,14 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
     {
       title: 'Vendor',
       dataIndex: 'vendor.name',
-      key: 'vendor.name'
+      key: 'vendor.name',
+      width: 70
     },
     {
       title: 'Dibuat pada',
       dataIndex: 'created_at',
       key: 'created_at',
+      width: 80,
       render: (text) => {
         return dateFormat(text)
       }
@@ -120,6 +98,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Dipegang oleh',
       dataIndex: 'admin.name',
       key: 'admin.name',
+      width: 90,
       render: (value, record) => {
         return (
           <div>
@@ -132,6 +111,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       title: 'Dipegang pada',
       dataIndex: 'approved_at',
       key: 'approved_at',
+      width: 90,
       render: (text) => {
         return dateFormat(text)
       }

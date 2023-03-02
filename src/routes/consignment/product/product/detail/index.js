@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 
-function Detail ({ consignmentProduct, consignmentCategory, dispatch }) {
+function Detail ({ consignmentProduct, consignmentCategory, dispatch, loading }) {
   const { selectedProduct, formType } = consignmentProduct
   const {
     list: categoryList,
@@ -21,6 +21,7 @@ function Detail ({ consignmentProduct, consignmentCategory, dispatch }) {
     subCategoryList,
     formType,
     selectedProduct,
+    loading: loading.effects['consignmentProduct/queryEdit'],
     onSubmit (data) {
       dispatch({
         type: 'consignmentProduct/queryEdit',
@@ -54,5 +55,6 @@ function Detail ({ consignmentProduct, consignmentCategory, dispatch }) {
 export default connect(({
   consignmentProduct,
   consignmentCategory,
-  dispatch
-}) => ({ consignmentProduct, consignmentCategory, dispatch }))(Detail)
+  dispatch,
+  loading
+}) => ({ consignmentProduct, consignmentCategory, dispatch, loading }))(Detail)

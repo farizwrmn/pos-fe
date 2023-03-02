@@ -13,7 +13,7 @@ const TabPane = Tabs.TabPane
 function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, app, loading }) {
   const { list, activeKey, dateRange, pagination, consignmentId, selectedVendor } = consignmentReturnReport
   const { list: vendorList } = consignmentVendor
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -111,7 +111,8 @@ function ReturnReport ({ consignmentReturnReport, consignmentVendor, dispatch, a
   const printProps = {
     dataSource: list,
     user,
-    storeInfo
+    selectedVendor,
+    dateRange
   }
 
   const menu = (

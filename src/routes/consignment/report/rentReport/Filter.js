@@ -29,7 +29,7 @@ const Filter = ({
         <Col {...columnProps}>
           <RangePicker
             onChange={changeTime}
-            style={{ width: '95%' }}
+            style={{ width: '95%', marginBottom: '10px' }}
             value={dateRange}
           />
         </Col>
@@ -38,7 +38,7 @@ const Filter = ({
             type="primary"
             onClick={() => getData()}
             disabled={!dateRange.length > 0}
-            style={{ width: '95%' }}
+            style={{ width: '95%', marginBottom: '10px' }}
             loading={loading}
           >
             Cari

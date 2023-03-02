@@ -156,8 +156,7 @@ const List = ({
       title: 'Order ID',
       dataIndex: 'salesNumber',
       key: 'salesNumber',
-      width: '150px',
-      minWidth: '150px',
+      width: 150,
       render: (text, record) => (
         <Row type="flex" justify="center">
           <a href={null}
@@ -175,8 +174,7 @@ const List = ({
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      width: '80px',
-      minWidth: '80px',
+      width: 80,
       render: (value) => {
         return (
           <div>
@@ -189,8 +187,7 @@ const List = ({
       title: 'Dibuat oleh',
       dataIndex: 'admin.name',
       key: 'admin.name',
-      width: '150px',
-      minWidth: '150px',
+      width: 120,
       render: (text, record) => {
         return (
           <div>
@@ -203,8 +200,7 @@ const List = ({
       title: 'Dibuat pada',
       dataIndex: 'created_at',
       key: 'created_at',
-      width: '140px',
-      minWidth: '140px',
+      width: 140,
       render: (text) => {
         const formattedDate = moment(text).format('DD MMMM YYYY')
         return (
@@ -218,8 +214,7 @@ const List = ({
       title: 'Ubah Status oleh',
       dataIndex: 'admin.name',
       key: 'changestatus.name',
-      width: '150px',
-      minWidth: '150px',
+      width: 150,
       render: (text, record) => {
         return (
           <div>
@@ -232,8 +227,7 @@ const List = ({
       title: 'Ubah Status pada',
       dataIndex: 'changestatus_at',
       key: 'changestatus_at',
-      width: '140px',
-      minWidth: '140px',
+      width: 140,
       render: (text) => {
         return (
           <div>
@@ -246,8 +240,7 @@ const List = ({
       title: 'Status',
       dataIndex: 'return_status',
       key: 'return_status',
-      width: '80px',
-      minWidth: '80px',
+      width: 80,
       filters: [{
         text: 'Approved',
         value: 'approved'
@@ -270,8 +263,7 @@ const List = ({
       title: 'Alasan',
       dataIndex: 'return_reason',
       key: 'return_reason',
-      width: '150px',
-      minWidth: '150px',
+      width: 150,
       render: (text) => {
         return (
           <div>
@@ -290,7 +282,7 @@ const List = ({
         bordered
         simple
         columns={columns}
-        scroll={{ x: 1000 }}
+        scroll={{ x: 1010 }}
         rowKey={record => record.id}
         onChange={onChange}
       />

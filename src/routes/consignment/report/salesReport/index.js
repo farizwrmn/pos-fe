@@ -23,7 +23,7 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
     dateRange,
     pagination
   } = consignmentSalesReport
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -126,7 +126,8 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
   const printProps = {
     dataSource: list,
     user,
-    storeInfo
+    selectedVendor,
+    dateRange
   }
 
   const menu = (

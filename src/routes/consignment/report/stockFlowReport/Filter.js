@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Select, Button, DatePicker, Col, Spin } from 'antd'
+import { Form, Select, Button, DatePicker, Col, Spin, Row } from 'antd'
 
 const Option = Select.Option
 
@@ -69,73 +69,72 @@ const Filter = ({
   const productOption = selectedVendorProduct.length > 0 ? selectedVendorProduct.map(record => <Option key={record.id} value={record.id}>{record.product_code} - {record.product_name}</Option>) : []
 
   return (
-    <Col span={24}>
-      <Form layout="inline" style={{ marginBottom: '10px' }}>
-        <Col {...selectColumnProps}>
-          <Select
-            style={{
-              width: '100%',
-              marginBottom: '10px',
-              paddingRight: '10px'
-            }}
-            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
-            showSearch
-            placeholder="Select vendor"
-            optionFilterProp="children"
-            onChange={(value) => {
-              onSelectVendor(value)
-            }}
-            onSearch={onSearchVendor}
-            filterOption={false}
-            notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
-          >
-            {vendorOption}
-          </Select>
-        </Col>
-        <Col {...selectColumnProps}>
-          <Select
-            style={{
-              width: '100%',
-              marginBottom: '10px',
-              paddingRight: '10px'
-            }}
-            value={selectedProduct.id ? `${selectedProduct.product_code} - ${selectedProduct.product_name}` : undefined}
-            disabled={!selectedVendor.id}
-            showSearch
-            placeholder="Select Product"
-            optionFilterProp="children"
-            onChange={(value) => {
-              updateSelectedProduct(value)
-            }}
-            filterOption={(input, option) => {
-              return (
-                option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
-              )
-            }}
-          >
-            {productOption}
-          </Select>
-        </Col>
-        <Col {...selectColumnProps}>
-          <DatePicker.RangePicker
-            disabled={!selectedProduct.id}
-            onChange={handleDateRange}
-            style={{
-              marginBottom: '10px',
-              width: '100%',
-              paddingRight: '10px'
-            }}
-            value={dateRange.length > 0 ? dateRange : []}
-          />
-        </Col>
-        <Col {...tailColumnProps}>
-          <Button type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
-            Cari
-          </Button>
-        </Col>
-      </Form>
-    </Col>
+    <Row>
+      <Col span={24}>
+        <Form layout="inline" style={{ marginBottom: '10px' }}>
+          <Col {...selectColumnProps}>
+            <Select
+              style={{
+                width: '95%',
+                marginBottom: '10px'
+              }}
+              value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+              showSearch
+              placeholder="Select Vendor"
+              optionFilterProp="children"
+              onChange={(value) => {
+                onSelectVendor(value)
+              }}
+              onSearch={onSearchVendor}
+              filterOption={false}
+              notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+            >
+              {vendorOption}
+            </Select>
+          </Col>
+          <Col {...selectColumnProps}>
+            <Select
+              style={{
+                width: '95%',
+                marginBottom: '10px'
+              }}
+              value={selectedProduct.id ? `${selectedProduct.product_code} - ${selectedProduct.product_name}` : undefined}
+              disabled={!selectedVendor.id}
+              showSearch
+              placeholder="Select Product"
+              optionFilterProp="children"
+              onChange={(value) => {
+                updateSelectedProduct(value)
+              }}
+              filterOption={(input, option) => {
+                return (
+                  option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                  option.props.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                )
+              }}
+            >
+              {productOption}
+            </Select>
+          </Col>
+          <Col {...selectColumnProps}>
+            <DatePicker.RangePicker
+              disabled={!selectedProduct.id}
+              onChange={handleDateRange}
+              style={{
+                width: '95%',
+                marginBottom: '10px'
+              }}
+              value={dateRange.length > 0 ? dateRange : []}
+            />
+          </Col>
+          <Col {...tailColumnProps}>
+            <Button style={{ width: '95%', marginBottom: '10px' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>
+              Cari
+            </Button>
+          </Col>
+        </Form>
+      </Col>
+    </Row>
   )
 }
 

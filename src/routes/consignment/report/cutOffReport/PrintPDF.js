@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, storeInfo }) => {
+const PrintPDF = ({ dataSource, user, period }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -26,11 +26,11 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       {
         stack: [
           {
-            stack: storeInfo.stackHeader01
-          },
-          {
             text: 'LAPORAN CUT OFF',
             style: 'header'
+          },
+          {
+            text: `Period: ${moment(period).format('DD MMMM YYYY')}`
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]
@@ -45,9 +45,6 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     [
       { text: 'NO', style: 'tableHeader' },
       { text: 'VENDOR', style: 'tableHeader' },
-      { text: 'BANK', style: 'tableHeader' },
-      { text: 'NO. REK', style: 'tableHeader' },
-      { text: 'PEMILIK REK', style: 'tableHeader' },
       { text: 'TOTAL', style: 'tableHeader' },
       { text: 'KOMISI', style: 'tableHeader' },
       { text: 'BIAYA', style: 'tableHeader' },
@@ -64,21 +61,24 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center' })
-        row.push({ text: (tableBody[key]['vendor.name']), alignment: 'left' })
-        row.push({ text: (tableBody[key]['vendor.bank_name']), alignment: 'left' })
-        row.push({ text: (tableBody[key]['vendor.account_number']), alignment: 'center' })
-        row.push({ text: (tableBody[key]['vendor.account_name']), alignment: 'center' })
-        row.push({ text: (tableBody[key].total), alignment: 'left' })
-        row.push({ text: (tableBody[key].commission), alignment: 'left' })
-        row.push({ text: (tableBody[key].charge), alignment: 'left' })
-        row.push({ text: (tableBody[key]['vendor.bank_name'].toLowerCase() !== 'bca' ? 5000 : 0), alignment: 'left' })
         row.push({
-          text: (tableBody[key]['vendor.bank_name'].toLowerCase() !== 'bca'
-            ? tableBody[key].total - tableBody[key].commission - tableBody[key].charge - 5000
-            : tableBody[key].total - tableBody[key].commission - tableBody[key].charge),
+          text: `Nama: ${tableBody[key]['vendor.name'] || ''}
+        Bank: ${tableBody[key]['vendor.bank_name'] || ''}
+        No. Rek: ${tableBody[key]['vendor.account_number'] || ''}
+        Nama Rek: ${tableBody[key]['vendor.account_name'] || ''}`,
           alignment: 'left'
         })
-        row.push({ text: (tableBody[key].endDate), alignment: 'left' })
+        row.push({ text: `Rp ${Number(tableBody[key].total || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].commission || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key].charge || 0).toLocaleString()}`, alignment: 'right' })
+        row.push({ text: `Rp ${Number(tableBody[key]['vendor.bank_name'].toLowerCase() !== 'bca' ? 5000 : 0).toLocaleString()}`, alignment: 'right' })
+        row.push({
+          text: (`Rp ${Number(tableBody[key]['vendor.bank_name'].toLowerCase() !== 'bca'
+            ? tableBody[key].total - tableBody[key].commission - tableBody[key].charge - 5000
+            : tableBody[key].total - tableBody[key].commission - tableBody[key].charge).toLocaleString()}`),
+          alignment: 'right'
+        })
+        row.push({ text: (tableBody[key].endDate || ''), alignment: 'left' })
         body.push(row)
       }
       count += 1
@@ -134,7 +134,7 @@ const PrintPDF = ({ dataSource, user, storeInfo }) => {
     name: 'PDF',
     className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['5%', '5%', '9%', '9%', '9%', '9%', '9%', '9%', '9%', '9%', '9%', '9%'],
+    width: ['5%', '25%', '11%', '9%', '9%', '15%', '12%', '14%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

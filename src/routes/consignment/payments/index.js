@@ -83,7 +83,7 @@ function Payments ({ consignmentPayment, consignmentOutlet, dispatch, loading })
     },
     deleteItem (id) {
       Modal.confirm({
-        title: 'delete payment',
+        title: 'Delete Payment',
         content: 'Are you sure to delete this payment?',
         onOk () {
           dispatch({

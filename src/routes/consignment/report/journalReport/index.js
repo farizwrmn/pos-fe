@@ -24,7 +24,7 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
     dateRange,
     consignmentId
   } = consignmentJournalReport
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -115,10 +115,9 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
 
   const printProps = {
     summary: summary[0],
-    paymentMethod,
     dataSource: list,
     user,
-    storeInfo
+    dateRange
   }
 
   const menu = (

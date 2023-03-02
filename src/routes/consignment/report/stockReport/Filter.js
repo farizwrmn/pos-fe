@@ -93,7 +93,7 @@ const Filter = ({
           <FormItem >
             {getFieldDecorator('q', qFields)(
               <Search
-                placeholder="Cari product NAME/CODE"
+                placeholder="Cari nama produk / kode produk"
                 onSearch={() => handleSubmit()}
                 disabled={!selectedVendor.id}
               />

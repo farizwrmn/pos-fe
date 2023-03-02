@@ -21,7 +21,7 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
   const {
     list: vendorList
   } = consignmentVendor
-  const { user, storeInfo } = app
+  const { user } = app
 
   const changeTab = (key) => {
     dispatch({
@@ -114,7 +114,7 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
   const printProps = {
     dataSource: list,
     user,
-    storeInfo
+    selectedVendor
   }
 
   const menu = (

@@ -58,12 +58,12 @@ const Filter = ({
     <Col span={24} style={{ marginBottom: '10px' }}>
       <Form layout="inline">
         <Col {...columnProps}>
-          <RangePicker style={{ width: '95%' }} onChange={handleChangeDate} value={dateRange} />
+          <RangePicker style={{ width: '95%', marginBottom: '10px' }} onChange={handleChangeDate} value={dateRange} />
         </Col>
         <Col {...columnProps}>
           <Select
             placeholder="Pilih Balance Id"
-            style={{ width: '95%' }}
+            style={{ width: '95%', marginBottom: '10px' }}
             filterOption={false}
             onChange={handleChangeBalance}
             disabled={!dateRange.length > 0}
@@ -73,7 +73,7 @@ const Filter = ({
           </Select>
         </Col>
         <Col {...tailColumnProps}>
-          <Button style={{ width: '95%' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>Cari</Button>
+          <Button style={{ width: '95%', marginBottom: '10px' }} type="primary" onClick={() => handleSubmit()} disabled={!dateRange.length > 0} loading={loading}>Cari</Button>
         </Col>
       </Form>
     </Col>

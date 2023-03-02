@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Col, Modal, Row, Tag } from 'antd'
+import { Button, Col, Modal, Row, Spin, Tag } from 'antd'
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import styles from './index.less'
@@ -35,6 +35,12 @@ function Detail ({ consignmentStockFlow, dispatch, loading }) {
   } = consignmentStockFlow
 
   const BackToList = () => {
+    dispatch({
+      type: 'consignmentStockFlow/updateState',
+      payload: {
+        currentItem: {}
+      }
+    })
     dispatch(routerRedux.push('/integration/consignment/stock-flow?activeKey=0'))
   }
 
@@ -74,12 +80,20 @@ function Detail ({ consignmentStockFlow, dispatch, loading }) {
     dataSource: currentItem.product
   }
 
+  if (loading.effects['consignmentStockFlow/queryDetail']) {
+    return (
+      <div>
+        <Spin size="large" />
+      </div>
+    )
+  }
+
   return (
     <div className="wrapper">
       <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
-            <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
+            <Button type="primary" icon="rollback" onClick={() => BackToList()} loading={loading.effects['consignmentStockFlow/approve'] || loading.effects['consignmentStockFlow/reject']}>Back</Button>
             <h1>Detail</h1>
             <Button
               type="primary"
