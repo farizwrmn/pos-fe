@@ -1,26 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { BasicReport } from 'components'
+import { RepeatReport } from 'components'
 
 const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
-  const styles = {
-    header: {
-      fontSize: 18,
-      bold: true,
-      margin: [0, 0, 0, 10],
-      alignment: 'center'
-    },
-    tableHeader: {
-      bold: true,
-      fontSize: 13,
-      alignment: 'center'
-    },
-    tableBody: {
-      fontSize: 11
-    }
-  }
-
   const header = {
     stack: [
       {
@@ -44,22 +27,21 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
     margin: [40, 12, 40, 30]
   }
 
-  const tableHeader = [
-    [
-      { text: 'NO', style: 'tableHeader' },
-      { text: 'TANGGAL', style: 'tableHeader' },
-      { text: 'FAKTUR PENJUALAN', style: 'tableHeader' },
-      { text: 'PAYMENT', style: 'tableHeader' },
-      { text: 'TOTAL', style: 'tableHeader' },
-      { text: 'KOMISI', style: 'tableHeader' },
-      { text: 'CHARGE', style: 'tableHeader' },
-      { text: 'GRAB', style: 'tableHeader' },
-      { text: 'MODAL', style: 'tableHeader' },
-      { text: 'PROFIT', style: 'tableHeader' }
+  const createTableBody = (tableBody, summary) => {
+    const tableHeader = [
+      [
+        { text: 'NO', style: 'tableHeader' },
+        { text: 'TANGGAL', style: 'tableHeader' },
+        { text: 'FAKTUR PENJUALAN', style: 'tableHeader' },
+        { text: 'PAYMENT', style: 'tableHeader' },
+        { text: 'TOTAL', style: 'tableHeader' },
+        { text: 'KOMISI', style: 'tableHeader' },
+        { text: 'CHARGE', style: 'tableHeader' },
+        { text: 'GRAB', style: 'tableHeader' },
+        { text: 'MODAL', style: 'tableHeader' },
+        { text: 'PROFIT', style: 'tableHeader' }
+      ]
     ]
-  ]
-
-  const createTableBody = (tableBody) => {
     let body = []
     let count = 1
     for (let key in tableBody) {
@@ -84,36 +66,21 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
       }
       count += 1
     }
-    let subTotal = 0
-    let commission = 0
-    let charge = 0
-    let grab = 0
-    let capital = 0
-    let profit = 0
-    tableBody.map((record) => {
-      subTotal += record.total
-      commission += record.commission
-      charge += record.charge
-      grab += record.commissionGrab
-      capital += record['stock.product.capital'] * record.quantity
-      profit += record.profit
-      return record
-    })
     let row = []
-    if (subTotal !== null) {
+    if (summary !== null) {
       row.push({ text: '', alignment: 'center' })
       row.push({ text: '', alignment: 'center' })
       row.push({ text: '', alignment: 'center' })
       row.push({ text: 'TOTAL', alignment: 'left' })
-      row.push({ text: `Rp ${Number(subTotal || 0).toLocaleString()}`, alignment: 'right' })
-      row.push({ text: `Rp ${Number(commission || 0).toLocaleString()}`, alignment: 'right' })
-      row.push({ text: `Rp ${Number(charge || 0).toLocaleString()}`, alignment: 'right' })
-      row.push({ text: `Rp ${Number(grab || 0).toLocaleString()}`, alignment: 'right' })
-      row.push({ text: `Rp ${Number(capital || 0).toLocaleString()}`, alignment: 'right' })
-      row.push({ text: `Rp ${Number(profit || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(summary.subTotal || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(summary.commission || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(summary.charge || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(summary.grab || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(summary.capital || 0).toLocaleString()}`, alignment: 'right' })
+      row.push({ text: `Rp ${Number(summary.profit || 0).toLocaleString()}`, alignment: 'right' })
       body.push(row)
     }
-    return body
+    return tableHeader.concat(body)
   }
 
   const footer = (currentPage, pageCount) => {
@@ -150,29 +117,27 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
     }
   }
 
-  let tableBody = []
-  try {
-    tableBody = createTableBody(dataSource)
-  } catch (e) {
-    console.log(e)
-  }
-
   const pdfProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
-    name: 'PDF',
+    buttonSize: 'large',
     className: '',
+    name: 'Pdf',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
-    width: ['4%', '12%', '20%', '10%', '9%', '9%', '9%', '9%', '9%', '9%'],
+    width: (dataSource || [])
+      .filter(filtered => filtered.list.length > 0)
+      .map(() => (['4%', '12%', '20%', '10%', '9%', '9%', '9%', '9%', '9%', '9%'])),
     pageSize: 'A4',
     pageOrientation: 'landscape',
-    pageMargins: [40, 130, 40, 60],
-    tableStyle: styles,
-    layout: 'noBorder',
-    tableHeader,
-    tableBody,
+    pageMargins: [15, 90, 15, 60],
+    tableTitle: (dataSource || [])
+      .filter(filtered => filtered.list.length > 0)
+      .map(filtered => ({ text: `Vendor : ${filtered.vendor.vendor_code} - ${filtered.vendor.name}`, style: 'tableTitle' })),
+    tableBody: (dataSource || [])
+      .filter(filtered => filtered.list.length > 0)
+      .map(filtered => createTableBody(filtered.list, filtered.summary)),
     data: dataSource,
+    dataSource,
     header,
     footer
   }
@@ -180,7 +145,7 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
   console.log('pdfProps', pdfProps)
 
   return (
-    <BasicReport {...pdfProps} />
+    <RepeatReport {...pdfProps} />
   )
 }
 

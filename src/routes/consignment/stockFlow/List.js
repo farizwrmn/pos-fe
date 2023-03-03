@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 
@@ -50,7 +50,7 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       dataIndex: 'request_type',
       key: 'request_type',
       width: 80,
-      render: value => (value === 1 ? 'Stock IN' : 'Stock OUT'),
+      render: value => <div style={{ textAlign: 'center' }}><Tag color={value === 1 ? 'green' : 'red'}>{(value === 1 ? 'Stock IN' : 'Stock OUT')}</Tag></div>,
       filters: [{
         text: 'Stock IN',
         value: 1
@@ -64,7 +64,18 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
       dataIndex: 'status',
       key: 'status',
       width: 90,
-      render: text => String(text).at(0).toUpperCase() + String(text).slice(1),
+      render: text => (
+        <div style={{ textAlign: 'center' }}>
+          <Tag
+            color={text === 'approved' ? 'green'
+              : text === 'rejected' ? 'red'
+                : text === 'canceled' ? 'yellow' : ''
+            }
+          >
+            {String(text).at(0).toUpperCase() + String(text).slice(1)}
+          </Tag>
+        </div>
+      ),
       filters: [{
         text: 'Approved',
         value: 'approved'

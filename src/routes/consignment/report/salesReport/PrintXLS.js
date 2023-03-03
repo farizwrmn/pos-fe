@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { BasicExcelReport } from 'components'
+import { RepeatExcelReport } from 'components'
 import moment from 'moment'
 
 const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
@@ -34,112 +34,182 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
     }
   }
 
-  const createTableBody = (list) => {
-    let body = []
-    let start = 1
-    for (let key in list) {
-      if (list.hasOwnProperty(key)) {
-        let row = []
-        row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].createdAt ? moment(list[key].createdAt).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['salesOrder.number'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['stock.product.product_name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].quantity || 0, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['salesOrder.paymentMethods.method'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].total || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].commission || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].charge || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].commissionGrab || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['stock.product.capital'] || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].profit || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        body.push(row)
-      }
-      start += 1
-    }
-
-    let subTotal = 0
-    let commission = 0
-    let charge = 0
-    let grab = 0
-    let capital = 0
-    let profit = 0
-    list.map((record) => {
-      subTotal += record.total
-      commission += record.commission
-      charge += record.charge
-      grab += record.commissionGrab
-      capital += record['stock.product.capital'] * record.quantity
-      profit += record.profit
-      return record
-    })
-    let row = []
-    if (subTotal !== null && commission !== null && charge !== null && grab !== null && capital !== null && profit !== null) {
-      row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: subTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: commission, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: charge, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: grab, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: capital, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      row.push({ value: profit, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      body.push(row)
-    }
-    return body
-  }
-
   const title = [
     { value: 'LAPORAN PENJUALAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: dateRange && dateRange.length > 0 ? `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}` : '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
     { value: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
-  const tableHeader = [
-    [
-      { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'FAKTUR PENJUALAN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NAMA PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'PAYMENT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'KOMISI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'CHARGE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'GRAB', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'MODAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'PROFIT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
-    ]
+  const tableHeaderStyle = {
+    alignment: { vertical: 'middle', horizontal: 'center' },
+    font: styles.tableHeader,
+    border: styles.tableBorder
+  }
+
+  const tableHeaderContent = [
+    'NO',
+    'TANGGAL',
+    'FAKTUR PENJUALAN',
+    'NAMA PRODUK',
+    'QTY',
+    'PAYMENT',
+    'TOTAL',
+    'KOMISI',
+    'CHARGE',
+    'GRAB',
+    'MODAL',
+    'PROFIT'
   ]
 
-  let tableBody
-  try {
-    tableBody = createTableBody(dataSource)
-  } catch (e) {
-    console.log(e)
+  const tableHeader = [tableHeaderContent.map(content => ({ value: content, ...tableHeaderStyle }))
+  ]
+
+  let tableTitle = dataSource
+    .filter(filtered => filtered.list.length > 0)
+    .map(record => ([
+      [
+        { value: 'Vendor', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
+        { value: `${record.vendor.vendor_code}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle },
+        { value: '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableTitle },
+        { value: `${record.vendor.name}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableTitle }
+      ]
+    ]))
+
+  let tableBody = dataSource
+    .filter(filtered => filtered.list.length > 0)
+    .map((dataBody) => {
+      let data = dataBody.list
+        .map((listData, index) => {
+          const datalist = [
+            (index + 1 || '').toString(),
+            listData.createdAt || '-',
+            listData['salesOrder.number'] || '-',
+            listData['stock.product.product_name'] || '-',
+            listData.quantity || '-',
+            listData['salesOrder.paymentMethods.method'] || '-',
+            listData.total || 0,
+            listData.commission || 0,
+            listData.charge || 0,
+            listData.commissionGrab || 0,
+            listData['stock.product.capital'] || 0,
+            listData.profit || 0
+          ]
+          if (index === dataBody.list.length - 1) {
+            const summary = [
+              '',
+              '',
+              '',
+              '',
+              '',
+              'Total',
+              dataBody.summary.subTotal,
+              dataBody.summary.commission,
+              dataBody.summary.charge,
+              dataBody.summary.grab,
+              dataBody.summary.capital,
+              dataBody.summary.profit
+            ]
+            return [
+              datalist.map(dataDetail => ({
+                value: dataDetail,
+                alignment: { vertical: 'middle', horizontal: 'middle' },
+                font: styles.tableBody,
+                border: styles.tableBorder
+              })),
+              summary.map(dataDetail => ({
+                value: dataDetail,
+                alignment: { vertical: 'middle', horizontal: 'middle' },
+                font: styles.tableBody,
+                border: styles.tableBorder
+              }))
+            ]
+          }
+          return datalist.map(dataDetail => ({
+            value: dataDetail,
+            alignment: { vertical: 'middle', horizontal: 'middle' },
+            font: styles.tableBody,
+            border: styles.tableBorder
+          }))
+        })
+      let result = []
+      data.map((record, index) => {
+        if (data.length - 1 === index) {
+          result.push(record[0])
+          result.push(record[1])
+          return true
+        }
+        result.push(record)
+        return true
+      })
+      return result
+    })
+
+  const getTableFilters = (data, dataHeader) => {
+    const resultData = [dataHeader.map(dataHeaderDetail => ({ value: dataHeaderDetail, ...tableHeaderStyle }))]
+    let index = 1
+    data.map(record => record.list.map((listData) => {
+      const datalist = [
+        index.toString(),
+        listData.createdAt || '-',
+        listData['salesOrder.number'] || '-',
+        listData['stock.product.product_name'] || '-',
+        listData.quantity || '-',
+        listData['salesOrder.paymentMethods.method'] || '-',
+        listData.total || 0,
+        listData.commission || 0,
+        listData.charge || 0,
+        listData.grab || 0,
+        listData['stock.product.capital'] || 0,
+        listData.profit || 0
+      ]
+      index += 1
+      resultData.push(datalist.map(dataDetail => ({
+        value: dataDetail,
+        alignment: { vertical: 'middle', horizontal: 'middle' },
+        font: styles.tableBody,
+        border: styles.tableBorder
+      })))
+      return listData
+    })
+    )
+    return resultData
   }
 
   // Declare additional Props
   const XLSProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
-    className: '',
+    buttonSize: 'large',
     name: 'Excel',
+    className: '',
     buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
-    data: dataSource,
+    data: dataSource.filter(filtered => filtered.list.length > 0),
     title,
     tableHeader,
-    tableBody,
-    fileName: 'Sales-report'
+    tableFilter: getTableFilters(dataSource, [
+      'NO',
+      'TANGGAL',
+      'FAKTUR PENJUALAN',
+      'NAMA PRODUK',
+      'QTY',
+      'PAYMENT',
+      'TOTAL',
+      'KOMISI',
+      'CHARGE',
+      'GRAB',
+      'MODAL',
+      'PROFIT'
+    ]),
+    fileName: 'SalesReport-',
+    tableTitle,
+    tableBody
   }
 
   return (
-    <BasicExcelReport {...XLSProps} />
+    <RepeatExcelReport {...XLSProps} />
   )
 }
 
