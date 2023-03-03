@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Col, Row, Table, Tabs } from 'antd'
 import { numberFormat } from 'utils'
 import moment from 'moment'
+import Summary from './Summary'
 
 const numberFormatter = numberFormat.numberFormatter
+const TabPane = Tabs.TabPane
 
-const List = ({ ...tableProps, onFilterChange }) => {
+const List = ({ ...tableProps, onFilterChange, list, loading, vendorActiveKey, changeVendorTab }) => {
   const columns = [
     {
       title: 'Tanggal',
@@ -92,14 +94,33 @@ const List = ({ ...tableProps, onFilterChange }) => {
   }
 
   return (
-    <Table {...tableProps}
-      bordered
-      columns={columns}
-      simple
-      scroll={{ x: 1200 }}
-      rowKey={record => record.id}
-      onChange={onChange}
-    />
+    <Row>
+      <Tabs activeKey={vendorActiveKey} onChange={key => changeVendorTab(key)} type="card">
+        {list.map((record, index) => {
+          return (<TabPane tab={`${record.vendor.vendor_code} - ${record.vendor.name}`} key={String(index)} >
+            {vendorActiveKey === String(index) &&
+              <div>
+                <Row style={{ marginBottom: '15px' }}>
+                  <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                    <Summary loading={loading} list={record.summary} />
+                  </Col>
+                </Row>
+                <Table {...tableProps}
+                  dataSource={record.list}
+                  bordered
+                  columns={columns}
+                  simple
+                  scroll={{ x: 1200 }}
+                  rowKey={rowRecord => rowRecord.id}
+                  onChange={onChange}
+                />
+              </div>
+            }
+          </TabPane>
+          )
+        })}
+      </Tabs>
+    </Row>
   )
 }
 

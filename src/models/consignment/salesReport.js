@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
 
   state: {
     activeKey: '0',
+    vendorActiveKey: '0',
     list: [],
 
     vendorList: [],

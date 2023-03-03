@@ -29,45 +29,30 @@ const Summary = ({ ...tableProps, list }) => {
   ]
 
   const dataSummary = (data) => {
-    let subTotal = 0
-    let commission = 0
-    let charge = 0
-    let grab = 0
-    let capital = 0
-    let profit = 0
-    for (let item in data) {
-      const record = list[item]
-      subTotal += record.total
-      commission += record.commission
-      charge += record.charge
-      grab += record.commissionGrab
-      capital += record['stock.product.capital'] * record.quantity
-      profit += record.profit
-    }
     return [
       {
         name: 'Subtotal',
-        value: subTotal
+        value: data.subTotal
       },
       {
         name: 'Commission',
-        value: commission
+        value: data.commission
       },
       {
         name: 'Charge',
-        value: charge
+        value: data.charge
       },
       {
         name: 'Grab',
-        value: grab
+        value: data.grab
       },
       {
         name: 'Capital',
-        value: capital
+        value: data.capital
       },
       {
         name: 'Profit',
-        value: profit
+        value: data.profit
       }
     ]
   }

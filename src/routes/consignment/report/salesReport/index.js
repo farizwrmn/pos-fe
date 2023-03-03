@@ -5,7 +5,6 @@ import moment from 'moment'
 import { routerRedux } from 'dva/router'
 import Filter from './Filter'
 import List from './List'
-import Summary from './Summary'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
 
@@ -15,6 +14,7 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
   const {
     list,
     activeKey,
+    vendorActiveKey,
 
     vendorList,
     selectedVendor,
@@ -42,6 +42,15 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
     }))
   }
 
+  const changeVendorTab = (key) => {
+    dispatch({
+      type: 'consignmentSalesReport/updateState',
+      payload: {
+        vendorActiveKey: key
+      }
+    })
+  }
+
   if (!consignmentId) {
     return (
       <div>Consignment not linked to this store, please contact your administrator</div>
@@ -49,9 +58,11 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
   }
 
   const listProps = {
-    dataSource: list,
+    list,
     pagination,
+    vendorActiveKey,
     loading: loading.effects['consignmentSalesReport/query'],
+    changeVendorTab,
     onFilterChange ({ pagination }) {
       dispatch({
         type: 'consignmentSalesReport/updateState',
@@ -117,12 +128,6 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
     }
   }
 
-  const summaryProps = {
-    list,
-    pagination,
-    loading: loading.effects['consignmentSalesReport/query']
-  }
-
   const printProps = {
     dataSource: list,
     user,
@@ -151,26 +156,17 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
         <TabPane tab="Report" key="0" >
           {activeKey === '0' &&
             <div>
-              <Row style={{ marginBottom: '15px' }}>
-                <Col xs={24} sm={24} md={16} lg={16} xl={16}>
-                  <Filter {...filterProps} />
-                </Col>
-              </Row>
-              <Row style={{ marginBottom: '15px' }}>
-                <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                  {selectedVendor && selectedVendor.id &&
-                    (
-                      <div style={{ padding: '8px', fontSize: '16px', fontWeight: 'bolder' }}>
-                        {(String(selectedVendor.id)).toUpperCase()} - {selectedVendor.name.toUpperCase()}
-                      </div>
-                    )}
-                  <Summary {...summaryProps} />
-                </Col>
-              </Row>
               <Row>
-                <Col span={24}>
-                  <List {...listProps} />
-                </Col>
+                <Row style={{ marginBottom: '15px' }}>
+                  <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+                    <Filter {...filterProps} />
+                  </Col>
+                </Row>
+                {list && list.length > 0 && (
+                  <Col span={24}>
+                    <List {...listProps} />
+                  </Col>
+                )}
               </Row>
             </div>
           }
