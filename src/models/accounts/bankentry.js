@@ -261,11 +261,9 @@ export default modelExtend(pageModel, {
     },
     * autoRecon ({ payload = {} }, { call, put }) {
       const response = yield call(autoRecon, payload)
-      console.log('response', response)
       const { reconciled } = response
-      const { result } = reconciled
-      console.log('result', result)
       if (response && response.success) {
+        const { result } = reconciled
         yield put({
           type: 'updateState',
           payload: {
