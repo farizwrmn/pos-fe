@@ -33,6 +33,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/stock'
           || pathname === '/k3express/product-category'
+          || pathname === '/k3express/product-consignment'
         ) {
           if (activeKey !== '1') {
             dispatch({
@@ -43,7 +44,8 @@ export default modelExtend(pageModel, {
             })
           }
         }
-        if (pathname === '/k3express/product-category') {
+        if (pathname === '/k3express/product-category'
+          || pathname === '/k3express/product-consignment') {
           dispatch({
             type: 'updateState',
             payload: {

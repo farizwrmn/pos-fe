@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { IMAGEURL, IMAGECONSIGNMENTURL } from 'utils/config.company'
+import { IMAGEURL } from 'utils/config.company'
 import {
   Row,
   Col,
@@ -161,7 +161,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Dibuat oleh</Col>
-              <Col span={12}>{data.created ? data.created.name : ''}</Col>
+              <Col span={12}>{data.createdby_pos ? data.createdby_pos : (data.created ? data.created.name : '')}</Col>
             </Row>
             <Row>
               <Col span={12}>Dibuat pada</Col>
@@ -169,7 +169,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Dipegang oleh</Col>
-              <Col span={12}>{data.handled ? data.handled.name : ''}</Col>
+              <Col span={12}>{data.handledby_pos ? data.handledby_pos : (data.handled ? data.handled.name : '-')}</Col>
             </Row>
             <Row>
               <Col span={12}>Dipegang pada</Col>
@@ -190,7 +190,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
                 <Col span={12}>Upload by Vendor</Col>
                 <Col span={12}>
                   {data.payment_proof ?
-                    <img height="180px" src={`${IMAGECONSIGNMENTURL}/${data.payment_proof}`} alt="no_image" />
+                    <img height="180px" src={`${IMAGEURL}/${data.payment_proof}`} alt="no_image" />
                     : null}
                 </Col>
               </Row>
