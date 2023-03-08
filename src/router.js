@@ -1248,6 +1248,203 @@ const Routers = function ({ history, app }) {
             }, 'consignment/rent/rent-request')
           }
         }, {
+          path: 'integration/consignment/dashboard',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/dashboard'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/dashboard'))
+            }, 'consignment/dashboard')
+          }
+        }, {
+          path: 'integration/consignment/sales-return',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/salesReturn'))
+              cb(null, require('./routes/consignment/salesReturn'))
+            }, 'consignment/salesReturn')
+          }
+        }, {
+          path: 'integration/consignment/stock-flow',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockFlow'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/stockFlow'))
+            }, 'consignment/stockFlow')
+          }
+        }, {
+          path: 'integration/consignment/stock-flow/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockFlow'))
+              cb(null, require('./routes/consignment/stockFlow/detail'))
+            }, 'consignment/stockFlowDetail')
+          }
+        }, {
+          path: 'integration/consignment/stock-adjustment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockAdjustment'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/stockAdjustment'))
+            }, 'consignment/stockAdjustment')
+          }
+        }, {
+          path: 'integration/consignment/users',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/users'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/users'))
+            }, 'consignment/users')
+          }
+        }, {
+          path: 'integration/consignment/vendor',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/vendor'))
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/vendor'))
+            }, 'consignment/vendor')
+          }
+        }, {
+          path: 'integration/consignment/pending-product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/pendingProduct'))
+              cb(null, require('./routes/consignment/product/pendingProduct'))
+            }, 'consignment/pendingProduct')
+          }
+        }, {
+          path: 'integration/consignment/product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/product'))
+              cb(null, require('./routes/consignment/product/product'))
+            }, 'consignment/product')
+          }
+        }, {
+          path: 'integration/consignment/product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/product'))
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/product/product'))
+            }, 'consignment/product')
+          }
+        }, {
+          path: 'integration/consignment/product/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/product'))
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/product/product/detail'))
+            }, 'consignment/productDetail')
+          }
+        }, {
+          path: 'integration/consignment/product-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/product/category'))
+            }, 'consignment/productCategory')
+          }
+        }, {
+          path: 'integration/consignment/outlet',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/outlet'))
+            }, 'consignment/outlet')
+          }
+        }, {
+          path: 'integration/consignment/payments',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/payments'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/payments'))
+            }, 'consignment/payments')
+          }
+        }, {
+          path: 'integration/consignment/stock-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockReport'))
+              registerModel(app, require('./models/consignment/vendor'))
+              cb(null, require('./routes/consignment/report/stockReport'))
+            }, 'consignment/report/stockReport')
+          }
+        }, {
+          path: 'integration/consignment/stock-flow-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockFlowReport'))
+              cb(null, require('./routes/consignment/report/stockFlowReport'))
+            }, 'consignment/report/stockFlowReport')
+          }
+        }, {
+          path: 'integration/consignment/sales-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/salesReport'))
+              cb(null, require('./routes/consignment/report/salesReport'))
+            }, 'consignment/report/salesReport')
+          }
+        }, {
+          path: 'integration/consignment/return-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/returnReport'))
+              registerModel(app, require('./models/consignment/vendor'))
+              cb(null, require('./routes/consignment/report/returnReport'))
+            }, 'consignment/report/returnReport')
+          }
+        }, {
+          path: 'integration/consignment/cut-off-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/cutOffReport'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/report/cutOffReport'))
+            }, 'consignment/report/cutOffReport')
+          }
+        }, {
+          path: 'integration/consignment/cut-off-period-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/cutOffPeriodReport'))
+              cb(null, require('./routes/consignment/report/cutOffPeriodReport'))
+            }, 'consignment/report/cutOffPeriodReport')
+          }
+        }, {
+          path: 'integration/consignment/journal-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/journalReport'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/report/journalReport'))
+            }, 'consignment/report/journalReport')
+          }
+        }, {
+          path: 'integration/consignment/rent-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/rentReport'))
+              cb(null, require('./routes/consignment/report/rentReport'))
+            }, 'consignment/report/rentReport')
+          }
+        }, {
+          path: 'integration/consignment/profit-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/profitReport'))
+              registerModel(app, require('./models/consignment/vendor'))
+              cb(null, require('./routes/consignment/report/profitReport'))
+            }, 'consignment/report/profitReport')
+          }
+        }, {
           path: 'integration/consignment/rent-request/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1270,6 +1467,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/k3express/product/productCategory'))
               cb(null, require('./routes/k3express/product/productCategory'))
             }, 'k3express/product/k3expresscategory')
+          }
+        }, {
+          path: 'k3express/product-consignment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productConsignment'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              cb(null, require('./routes/k3express/product/productConsignment'))
+            }, 'k3express/product/k3expressconsignment')
           }
         }, {
           path: 'cash-entry/:id',
