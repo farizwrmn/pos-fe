@@ -304,7 +304,7 @@ const FormCounter = ({
             <br />
             <br />
             <Col {...column}>
-              <div style={{ margin: '0px', width: '100 %', overflowY: 'auto', height: '300px' }}>
+              <div style={{ margin: '0px', width: '100%', overflowY: 'auto', height: '400px' }}>
                 <Tree
                   showLine
                   // onRightClick={handleChooseTree}
