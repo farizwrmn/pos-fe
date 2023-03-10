@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Col, Modal, Row, Spin, Tag } from 'antd'
+import { Button, Col, Input, Modal, Row, Spin, Tag } from 'antd'
 import { routerRedux } from 'dva/router'
 import moment from 'moment'
 import styles from './index.less'
 import List from './List'
+
+const TextArea = Input.TextArea
 
 const getTag = (record) => {
   let status = <Tag color="grey">{record.status.toUpperCase()}</Tag>
@@ -29,7 +31,11 @@ const getTag = (record) => {
 }
 
 
-function Detail ({ consignmentStockFlow, dispatch, loading }) {
+function Detail ({
+  consignmentStockFlow,
+  dispatch,
+  loading
+}) {
   const {
     currentItem
   } = consignmentStockFlow
@@ -44,33 +50,38 @@ function Detail ({ consignmentStockFlow, dispatch, loading }) {
     dispatch(routerRedux.push('/integration/consignment/stock-flow?activeKey=0'))
   }
 
-  const approveTrans = () => {
+  const approveTrans = ({ note }) => {
     dispatch({
       type: 'consignmentStockFlow/approve',
       payload: {
-        id: currentItem.id
+        id: currentItem.id,
+        note
       }
     })
   }
 
-  const voidTrans = () => {
+  const voidTrans = ({ note }) => {
     dispatch({
       type: 'consignmentStockFlow/reject',
       payload: {
-        id: currentItem.id
+        id: currentItem.id,
+        note
       }
     })
   }
 
   const showConfirmation = (type) => {
+    let note
     Modal.confirm({
       title: type,
-      content: 'Apakah kamu yakin?',
+      content: (
+        <TextArea onChange={(event) => { note = event.target.value }} />
+      ),
       onOk () {
         if (String(type).toLowerCase() === 'approve') {
-          approveTrans()
+          approveTrans({ note })
         } else {
-          voidTrans()
+          voidTrans({ note })
         }
       }
     })
