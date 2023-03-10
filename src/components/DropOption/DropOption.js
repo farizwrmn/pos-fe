@@ -18,14 +18,6 @@ const DropOption = ({ menuName, onMenuClick, menuOptions = [], buttonStyle, drop
         styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
         disabledItem = item.disabled === undefined ? true : item.undefined
         break
-      case 'Approve':
-        styleMenuItem = { color: '#00a854', background: '#cfefdf', bordercolor: '#cfefdf' }
-        disabledItem = item.disabled === undefined ? true : item.undefined
-        break
-      case 'Reject':
-        styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
-        disabledItem = item.disabled === undefined ? true : item.undefined
-        break
       case 'Void':
         styleMenuItem = { color: '#f04134', background: '#fcdbd9', bordercolor: '#fcdbd9' }
         disabledItem = item.disabled || false
