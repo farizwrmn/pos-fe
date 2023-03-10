@@ -12,7 +12,7 @@ import lstorage from './lstorage'
 
 const currencyFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
-    return `Rp ${currency.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+    return `Rp ${(currency || '-').toLocaleString()}`
   }
   return 'Rp 0'
 }
