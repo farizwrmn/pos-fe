@@ -133,8 +133,8 @@ const List = ({
                       <div>{item.transDate}</div>
                     </Col>
                     <Col span={12}>
-                      {item.debit && item.debit > 0 ? <div>{`(DB) ${currencyFormatter(Number(item.debit))}`}</div> : null}
-                      {item.credit && item.credit > 0 ? <div>{`(CR) ${currencyFormatter(Number(item.credit))}`}</div> : null}
+                      {item.debit && item.debit != null ? <div>{`(DB) ${currencyFormatter(Number(item.debit))}`}</div> : null}
+                      {item.credit && item.credit != null ? <div>{`(CR) ${currencyFormatter(Number(item.credit))}`}</div> : null}
                     </Col>
                   </Row>
                   <Row>
