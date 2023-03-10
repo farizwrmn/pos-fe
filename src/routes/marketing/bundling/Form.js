@@ -781,7 +781,7 @@ class FormCounter extends Component {
                   initialValue: item.paymentOption,
                   rules: [
                     {
-                      required: true
+                      required: false
                     }
                   ]
                 })(<Select
