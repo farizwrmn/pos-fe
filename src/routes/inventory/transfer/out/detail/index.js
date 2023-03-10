@@ -6,6 +6,7 @@ import { Row, Col, Button, Modal } from 'antd'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import FormAccounting from 'components/accounting/FormAccounting'
+import { prefix } from 'utils/config.main'
 import ModalCancel from './ModalCancel'
 import ModalEdit from './ModalEdit'
 import PrintPDF from './PrintPDF'
@@ -152,28 +153,37 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
       Modal.confirm({
         title: 'Are you sure void this Invoice?',
         onOk () {
-          dispatch({
-            type: 'transferOut/updateState',
-            payload: {
-              listtransferOut: []
-            }
-          })
-          dispatch({
-            type: 'transferOutDetail/updateState',
-            payload: {
-              disableConfirm: true
-            }
-          })
-          dispatch({
-            type: 'transferOutDetail/voidTrans',
-            payload: {
-              id: data[0].id,
-              transNo: data[0].transNo,
-              reference: data[0].reference,
-              memo: e.memo,
-              storeId: lstorage.getCurrentUserStore()
-            }
-          })
+          const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
+          const formattedStartPeriod = moment(startPeriod).format('YYYY-MM-DD')
+          if (moment(data[0].transDate).format('YYYY-MM-DD') >= formattedStartPeriod) {
+            dispatch({
+              type: 'transferOut/updateState',
+              payload: {
+                listtransferOut: []
+              }
+            })
+            dispatch({
+              type: 'transferOutDetail/updateState',
+              payload: {
+                disableConfirm: true
+              }
+            })
+            dispatch({
+              type: 'transferOutDetail/voidTrans',
+              payload: {
+                id: data[0].id,
+                transNo: data[0].transNo,
+                reference: data[0].reference,
+                memo: e.memo,
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          } else {
+            Modal.warning({
+              title: 'Can`t Void this Invoice',
+              content: 'has been Closed'
+            })
+          }
         },
         onCancel () {
           console.log('no')

@@ -797,7 +797,7 @@ class FormCounter extends Component {
                   initialValue: item.paymentBankId,
                   rules: [
                     {
-                      required: true
+                      required: !!getFieldValue('paymentOption')
                     }
                   ]
                 })(<Select
