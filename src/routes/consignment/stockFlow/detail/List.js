@@ -6,9 +6,27 @@ const numberFormatter = numberFormat.numberFormatter
 const List = ({ ...tableProps }) => {
   const columns = [
     {
-      title: 'Nama Produk',
+      title: 'Produk',
       dataIndex: 'productName',
-      key: 'productName'
+      key: 'productName',
+      render: (value, record) => {
+        return (
+          <div>
+            <div>
+              <strong>Kode:</strong>
+            </div>
+            <div>
+              {record.productCode}
+            </div>
+            <div>
+              <strong>Nama:</strong>
+            </div>
+            <div>
+              {value}
+            </div>
+          </div>
+        )
+      }
     },
     {
       title: 'Harga',

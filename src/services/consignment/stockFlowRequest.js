@@ -58,6 +58,7 @@ export function reject (data) {
   return request({
     fullUrl: `${rest.apiConsignmentURL}/stock-flow-request/reject/${id}`,
     method: 'put',
+    data,
     headers: apiHeaderToken
   })
 }
