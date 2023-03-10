@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
-import { routerRedux } from 'dva/router'
 import ReportItem from './components/ReportItem'
 
 const column = {
@@ -11,35 +10,25 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormCounter = ({
-  dispatch
-}) => {
+const FormCounter = () => {
   const purchaseSummaryReportProps = {
     content: 'Menampilkan daftar kronologis untuk semua pembelian dan pembayaran Anda untuk rentang tanggal yang dipilih.',
-    onClick () {
-      dispatch(routerRedux.push('/report/purchase/summary'))
-    }
+    url: '/report/purchase/summary'
   }
 
   const vendorBalanceReportProps = {
     content: 'Menampilkan jumlah nilai yang Anda hutang pada setiap Supplier.',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounts/payable?activeKey=1'))
-    }
+    url: '/report/accounts/payable?activeKey=1'
   }
 
   const agedPayableReportProps = {
     content: 'Laporan ini memberikan ringkasan hutang Anda, menunjukkan setiap vendor Anda secara bulanan, serta jumlah total dari waktu ke waktu. Hal ini praktis untuk membantu melacak hutang Anda.',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounts/payable?activeKey=1'))
-    }
+    url: '/report/accounts/payable?activeKey=1'
   }
 
   const purchaseProductReportProps = {
     content: 'Menampilkan daftar kuantitas pembelian per produk, termasuk jumlah retur, net pembelian, dan harga pembelian rata-rata.',
-    onClick () {
-      dispatch(routerRedux.push('/report/purchase/summary?activeKey=3'))
-    }
+    url: '/report/purchase/summary?activeKey=3'
   }
 
   return (

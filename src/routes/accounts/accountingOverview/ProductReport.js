@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
-import { routerRedux } from 'dva/router'
 import ReportItem from './components/ReportItem'
 
 const column = {
@@ -11,28 +10,20 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormCounter = ({
-  dispatch
-}) => {
+const FormCounter = () => {
   const inventorySummaryReportProps = {
     content: 'Menampilkan daftar kuantitas dan nilai seluruh barang persediaan per tanggal yg ditentukan.',
-    onClick () {
-      dispatch(routerRedux.push('/report/fifo/summary'))
-    }
+    url: '/report/fifo/summary'
   }
 
   const inventoryValuationReportProps = {
     content: 'Rangkuman informasi penting seperti sisa stok yg tersedia, nilai, dan biaya rata-rata, untuk setiap barang persediaan.',
-    onClick () {
-      dispatch(routerRedux.push('/report/fifo/value'))
-    }
+    url: '/report/fifo/value'
   }
 
   const inventoryDetailsReportProps = {
     content: 'Menampilkan daftar transaksi yg terkait dengan setiap Barang dan Jasa, dan menjelaskan bagaimana transaksi tersebut mempengaruhi jumlah stok barang, nilai, dan harga biaya nya.',
-    onClick () {
-      dispatch(routerRedux.push('/report/fifo/card'))
-    }
+    url: '/report/fifo/card'
   }
 
   return (
