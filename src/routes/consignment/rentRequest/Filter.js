@@ -31,7 +31,7 @@ const Filter = ({
 
   return (
     <Row>
-      <Col span={12}>
+      <Col {...searchBarLayout} >
         <FormItem >
           {getFieldDecorator('status', {
             initialValue: 'pending'
