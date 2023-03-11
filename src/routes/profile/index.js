@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Tabs } from 'antd'
+import { Cascader, Tabs, Tooltip } from 'antd'
+import { lstorage } from 'utils'
 import { User, Password, TOTP } from './components'
 import styles from './index.less'
 
@@ -28,6 +29,30 @@ const Profile = ({ app, dispatch }) => {
         }
       })
     }
+  }
+
+  const defaultRole = lstorage.getCurrentUserRole()
+  const listUserRoles = lstorage.getListUserRoles()
+
+  const changeRole = (roleCode) => {
+    dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
+    // dispatch({ type: 'app/setPermission', payload: { role: roleCode } })
+    setTimeout(() => { window.location.reload() }, 200)
+  }
+
+  const handleChangeRole = (value) => {
+    const localId = lstorage.getStorageKey('udi')
+    const dataUdi = [
+      localId[1],
+      value.toString(),
+      localId[3],
+      localId[4],
+      localId[5],
+      localId[6],
+      localId[7]
+    ]
+    lstorage.putStorageKey('udi', dataUdi, localId[0])
+    changeRole(value.toString())
   }
 
   const totpProps = {
@@ -69,6 +94,17 @@ const Profile = ({ app, dispatch }) => {
     <div className="content-inner">
       <div className={styles.profile}>
         <User {...userProps} />
+        <div>
+          <Tooltip placement="top" title="click to switch role">
+            <Cascader options={listUserRoles}
+              onChange={handleChangeRole}
+              changeOnSelect
+              allowClear={false}
+              defaultValue={[defaultRole]}
+              placeholder="Switch Role"
+            />
+          </Tooltip>
+        </div>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Change Password" key="1"><Password {...passwordProps} /></TabPane>
           <TabPane tab="TOTP" key="2"><TOTP {...totpProps} /></TabPane>
