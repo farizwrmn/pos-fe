@@ -79,12 +79,12 @@ export default {
                 compareTo: location.query.compareTo
               }
             })
-          } else {
+          } else if (location.query && location.query.to) {
             dispatch({
               type: 'queryBalanceSheetCompare',
               payload: {
                 storeId: location.query.storeId || undefined,
-                to: moment(location.query.to, 'YYYY-MM-DD').startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
+                compareTo: moment(location.query.to, 'YYYY-MM-DD').startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
               }
             })
             dispatch({
