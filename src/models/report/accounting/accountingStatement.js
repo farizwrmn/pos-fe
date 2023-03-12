@@ -81,10 +81,17 @@ export default {
             })
           } else {
             dispatch({
+              type: 'queryBalanceSheetCompare',
+              payload: {
+                storeId: location.query.storeId || undefined,
+                to: location.query.to
+              }
+            })
+            dispatch({
               type: 'queryProfitCompare',
               payload: {
                 storeId: location.query.storeId || undefined,
-                compareTo: moment().startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
+                compareTo: moment(location.query.to, 'YYYY-MM-DD').startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
               }
             })
           }
