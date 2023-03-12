@@ -107,6 +107,9 @@ const Payment = ({
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const confirmPayment = (taxInfo) => {
+    if (loading.effects['payment/create']) {
+      return
+    }
     Modal.confirm({
       title: 'Save Payment',
       content: 'are you sure ?',
