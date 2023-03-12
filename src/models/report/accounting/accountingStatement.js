@@ -84,7 +84,7 @@ export default {
               type: 'queryBalanceSheetCompare',
               payload: {
                 storeId: location.query.storeId || undefined,
-                to: location.query.to
+                to: moment(location.query.to, 'YYYY-MM-DD').startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
               }
             })
             dispatch({
