@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input, Select, Spin } from 'antd'
+import { Form, Row, Col, Input, Select, Spin, Button } from 'antd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -9,10 +9,19 @@ const Option = Select.Option
 let searchTimeOut
 
 const searchBarLayout = {
+  xs: { span: 24 },
   sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  md: { span: 8 },
+  lg: { span: 6 },
+  xl: { span: 6 }
+}
+
+const vendorLayout = {
+  xs: { span: 24 },
+  sm: { span: 24 },
+  md: { span: 16 },
+  lg: { span: 18 },
+  xl: { span: 18 }
 }
 
 const Filter = ({
@@ -20,9 +29,11 @@ const Filter = ({
   selectedVendor,
   vendorList,
   loadingSearchVendor,
+  loading,
   onFilterChange,
   searchVendor,
   onSelectVendor,
+  getData,
   clearVendorList,
   form: {
     getFieldDecorator,
@@ -70,32 +81,35 @@ const Filter = ({
 
   return (
     <Row>
-      <Col span={12} />
+      <Col {...vendorLayout}>
+        <Col>
+          <Select
+            style={{
+              width: 200,
+              margin: '0 10px 10px 0'
+            }}
+            placeholder="Select Vendor"
+            showSearch
+            onSearch={handleSearch}
+            filterOption={false}
+            onChange={handleChange}
+            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+            notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+          >
+            {vendorOption}
+          </Select>
+          <Button type="primary" style={{ width: 100, margin: '0 0 10px 0' }} onClick={() => getData()} loading={loading}>
+            Cari
+          </Button>
+        </Col>
+      </Col>
       <Col {...searchBarLayout} >
         <Form layout="horizontal">
-          <Col>
-            <Select
-              style={{
-                width: '100%',
-                marginBottom: '10px'
-              }}
-              placeholder="Select Vendor"
-              showSearch
-              onSearch={handleSearch}
-              filterOption={false}
-              onChange={handleChange}
-              value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
-              notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
-            >
-              {vendorOption}
-            </Select>
-          </Col>
           <FormItem >
             {getFieldDecorator('q', qFields)(
               <Search
                 placeholder="Cari nama produk / kode produk"
                 onSearch={() => handleSubmit()}
-                disabled={!selectedVendor.id}
               />
             )}
           </FormItem>
