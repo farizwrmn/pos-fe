@@ -82,26 +82,22 @@ const Filter = ({
   return (
     <Row>
       <Col {...vendorLayout}>
-        <Col>
-          <Select
-            style={{
-              width: 200,
-              margin: '0 10px 10px 0'
-            }}
-            placeholder="Select Vendor"
-            showSearch
-            onSearch={handleSearch}
-            filterOption={false}
-            onChange={handleChange}
-            value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
-            notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
-          >
-            {vendorOption}
-          </Select>
-          <Button type="primary" style={{ width: 100, margin: '0 0 10px 0' }} onClick={() => getData()} loading={loading}>
-            Cari
-          </Button>
-        </Col>
+        <Select
+          style={{
+            width: 200,
+            margin: '0 10px 10px 0'
+          }}
+          placeholder="Select Vendor"
+          showSearch
+          onSearch={handleSearch}
+          filterOption={false}
+          onChange={handleChange}
+          value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
+          notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+        >
+          {vendorOption}
+        </Select>
+        <Button type="primary" style={{ margin: '0 0 10px 0' }} onClick={() => getData()} loading={loading} icon="search" />
       </Col>
       <Col {...searchBarLayout} >
         <Form layout="horizontal">
