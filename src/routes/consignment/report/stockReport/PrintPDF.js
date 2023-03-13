@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, selectedVendor }) => {
+const PrintPDF = ({ dataSource, user }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -31,9 +31,6 @@ const PrintPDF = ({ dataSource, user, selectedVendor }) => {
           },
           {
             text: `Tanggal: ${moment().format('DD MMMM YYYY')}`
-          },
-          {
-            text: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : ''
           },
           {
             canvas: [{ type: 'line', x1: 2, y1: 5, x2: 762, y2: 5, lineWidth: 0.5 }]

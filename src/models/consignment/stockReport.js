@@ -42,6 +42,12 @@ export default modelExtend(pageModel, {
               }
             })
           }
+          if (location.query.q || location.query.vendorId) {
+            dispatch({
+              type: 'query',
+              payload: location.query
+            })
+          }
         }
       })
     }
@@ -61,7 +67,12 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             ...payload,
-            list: response.data
+            list: response.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: response && response.meta ? response.meta.total : false
+            }
           }
         })
       } else {

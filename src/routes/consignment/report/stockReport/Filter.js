@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input, Select, Spin, Button } from 'antd'
+import { Form, Row, Col, Input, Select, Spin } from 'antd'
 
 const Search = Input.Search
 const FormItem = Form.Item
@@ -25,29 +25,27 @@ const vendorLayout = {
 }
 
 const Filter = ({
-  q,
-  selectedVendor,
+  location,
   vendorList,
   loadingSearchVendor,
-  loading,
   onFilterChange,
   searchVendor,
-  onSelectVendor,
-  getData,
-  clearVendorList,
   form: {
     getFieldDecorator,
-    getFieldsValue,
-    setFieldsValue
+    getFieldsValue
   }
 }) => {
-  const handleSubmit = () => {
-    let field = getFieldsValue().q
+  const handleSubmit = (value) => {
+    let field = {
+      ...getFieldsValue()
+    }
+    if (value) {
+      field.vendorId = value
+    }
     onFilterChange(field)
   }
 
   const handleSearch = (value) => {
-    clearVendorList()
     if (value !== '') {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -58,60 +56,46 @@ const Filter = ({
     }
   }
 
-  const handleChange = (value) => {
-    if (value !== '') {
-      setFieldsValue({
-        q: ''
-      })
-      onSelectVendor(value)
-    }
-  }
-
-  const vendorOption = vendorList ? vendorList.map(record => <Option key={record.id} value={record.id}>{record.name}</Option>) : []
-
-  let vendorFields = {}
-  if (selectedVendor && selectedVendor.name) {
-    vendorFields.initialValue = selectedVendor.name
-  }
-
-  let qFields = {}
-  if (q) {
-    qFields.initialValue = q
-  }
+  const vendorOption = vendorList ? vendorList.map(record => <Option key={record.id} id={record.id} value={record.id} title={`${record.name}@(${record.vendor_code})`}>{`${record.name} | (${record.vendor_code})`}</Option>) : []
 
   return (
-    <Row>
-      <Col {...vendorLayout}>
-        <Select
-          style={{
-            width: 200,
-            margin: '0 10px 10px 0'
-          }}
-          placeholder="Select Vendor"
-          showSearch
-          onSearch={handleSearch}
-          filterOption={false}
-          onChange={handleChange}
-          value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
-          notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
-        >
-          {vendorOption}
-        </Select>
-        <Button type="primary" style={{ margin: '0 0 10px 0' }} onClick={() => getData()} loading={loading} icon="search" />
-      </Col>
-      <Col {...searchBarLayout} >
-        <Form layout="horizontal">
+    <Form layout="horizontal">
+      <Row>
+        <Col {...vendorLayout}>
           <FormItem >
-            {getFieldDecorator('q', qFields)(
+            {getFieldDecorator('vendorId', {
+              initialValue: location.query ? Number(location.query.vendorId) : undefined
+            })(
+              <Select
+                style={{
+                  width: 200,
+                  margin: '0 10px 10px 0'
+                }}
+                placeholder="Select Vendor"
+                showSearch
+                onSearch={handleSearch}
+                onSelect={handleSubmit}
+                filterOption={false}
+                notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+              >
+                {vendorOption}
+              </Select>
+            )}</FormItem>
+        </Col>
+        <Col {...searchBarLayout} >
+          <FormItem >
+            {getFieldDecorator('q', {
+              initialValue: location.query ? location.query.q : undefined
+            })(
               <Search
                 placeholder="Cari nama produk / kode produk"
                 onSearch={() => handleSubmit()}
               />
             )}
           </FormItem>
-        </Form>
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+    </Form>
   )
 }
 
