@@ -64,7 +64,7 @@ const Filter = ({
         <Col {...vendorLayout}>
           <FormItem >
             {getFieldDecorator('vendorId', {
-              initialValue: location.query.vendorId && location.query.vendorId ? Number(location.query.vendorId) : undefined
+              initialValue: location.query && location.query.vendorId ? Number(location.query.vendorId) : undefined
             })(
               <Select
                 style={{
