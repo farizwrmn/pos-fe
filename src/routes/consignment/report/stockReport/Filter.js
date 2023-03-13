@@ -64,7 +64,7 @@ const Filter = ({
         <Col {...vendorLayout}>
           <FormItem >
             {getFieldDecorator('vendorId', {
-              initialValue: location.query ? Number(location.query.vendorId) : undefined
+              initialValue: location.query && location.query.vendorId ? Number(location.query.vendorId) : undefined
             })(
               <Select
                 style={{
@@ -76,6 +76,7 @@ const Filter = ({
                 onSearch={handleSearch}
                 onSelect={handleSubmit}
                 filterOption={false}
+                allowClear
                 notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
               >
                 {vendorOption}
@@ -85,7 +86,7 @@ const Filter = ({
         <Col {...searchBarLayout} >
           <FormItem >
             {getFieldDecorator('q', {
-              initialValue: location.query ? location.query.q : undefined
+              initialValue: location.query && location.query.q ? location.query.q : undefined
             })(
               <Search
                 placeholder="Cari nama produk / kode produk"
