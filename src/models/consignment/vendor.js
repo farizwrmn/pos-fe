@@ -41,13 +41,24 @@ export default modelExtend(pageModel, {
               selectedVendor: {}
             }
           })
-          dispatch({
-            type: 'query',
-            payload: {
-              current: 1,
-              pageSize: 10
-            }
-          })
+          if (location.query.vendorId) {
+            dispatch({
+              type: 'query',
+              payload: {
+                current: 1,
+                pageSize: 10,
+                id: location.query.vendorId
+              }
+            })
+          } else {
+            dispatch({
+              type: 'query',
+              payload: {
+                current: 1,
+                pageSize: 10
+              }
+            })
+          }
           dispatch({
             type: 'queryLast',
             payload: {}
@@ -76,8 +87,9 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const { q, current, pageSize } = payload
+      const { q, id, current, pageSize } = payload
       const params = {
+        id,
         q,
         page: current,
         pageSize,

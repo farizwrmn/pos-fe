@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Button, Dropdown, Icon, Menu, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
@@ -9,14 +10,12 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app, loading }) {
+function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app, location, loading }) {
   const {
     activeKey,
     list,
     consignmentId,
-    q,
-    pagination,
-    selectedVendor
+    pagination
   } = consignmentStockReport
   const {
     list: vendorList
@@ -50,46 +49,41 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
     dataSource: list,
     pagination,
     loading: loading.effects['consignmentStockReport/query'],
-    onFilterChange ({ pagination }) {
-      dispatch({
-        type: 'consignmentStockReport/updateState',
-        payload: {
-          pagination
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
         }
-      })
+      }))
     }
   }
 
   const filterProps = {
     vendorList,
-    selectedVendor,
-    q,
+    location,
     loadingSearchVendor: loading.effects['consignmentVendor/query'],
     loading: loading.effects['consignmentStockReport/query'],
     onFilterChange (value) {
-      dispatch({
-        type: 'consignmentStockReport/query',
-        payload: {
-          q: value,
-          vendorId: selectedVendor.id,
-          pagination
+      const { query, pathname } = location
+      const { q, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...other,
+          ...value,
+          page: 1
         }
-      })
+      }))
     },
     searchVendor (q) {
       dispatch({
         type: 'consignmentVendor/query',
         payload: {
           q
-        }
-      })
-    },
-    getData () {
-      dispatch({
-        type: 'consignmentStockReport/query',
-        payload: {
-          q: '',
-          vendorId: selectedVendor.id
         }
       })
     },
@@ -116,8 +110,7 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
 
   const printProps = {
     dataSource: list,
-    user,
-    selectedVendor
+    user
   }
 
   const menu = (
@@ -149,6 +142,11 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
       </Tabs>
     </div>
   )
+}
+
+StockReport.propTypes = {
+  location: PropTypes.object,
+  dispatch: PropTypes.func
 }
 
 export default connect(({ consignmentStockReport, consignmentVendor, dispatch, app, loading }) => ({ consignmentStockReport, consignmentVendor, dispatch, app, loading }))(StockReport)
