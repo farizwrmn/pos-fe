@@ -42,12 +42,10 @@ export default modelExtend(pageModel, {
               }
             })
           }
-          if (location.query.q || location.query.vendorId) {
-            dispatch({
-              type: 'query',
-              payload: location.query
-            })
-          }
+          dispatch({
+            type: 'query',
+            payload: location.query
+          })
         }
       })
     }
