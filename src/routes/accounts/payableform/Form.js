@@ -63,6 +63,7 @@ const FormCounter = ({
   supplierOpt = (listSupplier || []).length > 0 ? listSupplier.map(c => <Option value={c.id} key={c.id}>{`${c.supplierName} (${c.supplierCode})`}</Option>) : [],
   purchaseProps,
   updateCurrentItem,
+  selectedRowKeys,
   form: {
     getFieldDecorator,
     getFieldValue,
@@ -213,6 +214,15 @@ const FormCounter = ({
     dispatch,
     visible: modalProductVisible,
     ...purchaseProps,
+    selectedRowKeys,
+    updateSelectedKey (key) {
+      dispatch({
+        type: 'payableForm/updateState',
+        payload: {
+          selectedRowKeys: key
+        }
+      })
+    },
     onInvoiceHeader (period) {
       validateFields(['supplierId'], (errors) => {
         if (errors) {
