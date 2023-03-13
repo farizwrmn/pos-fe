@@ -50,9 +50,7 @@ export default modelExtend(pageModel, {
           }
           dispatch({
             type: 'query',
-            payload: {
-              ...location.query
-            }
+            payload: location.query
           })
         }
       })
