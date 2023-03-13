@@ -5,7 +5,7 @@ import { Table } from 'antd'
 
 const numberFormatter = numberFormat.numberFormatter
 
-const List = ({ ...tableProps, onFilterChange }) => {
+const List = (tableProps) => {
   const columns = [
     {
       title: 'Vendor',
@@ -42,10 +42,6 @@ const List = ({ ...tableProps, onFilterChange }) => {
     }
   ]
 
-  const onChange = (pagination) => {
-    onFilterChange({ pagination })
-  }
-
   return (
     <Table {...tableProps}
       bordered
@@ -53,7 +49,6 @@ const List = ({ ...tableProps, onFilterChange }) => {
       simple
       scroll={{ x: 470 }}
       rowKey={record => record.id}
-      onChange={onChange}
     />
   )
 }

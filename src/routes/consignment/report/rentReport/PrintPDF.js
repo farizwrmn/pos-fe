@@ -136,7 +136,6 @@ const PrintPDF = ({ dataSource, user, dateRange }) => {
     footer
   }
 
-  console.log('pdfProps', pdfProps)
 
   return (
     <BasicReport {...pdfProps} />

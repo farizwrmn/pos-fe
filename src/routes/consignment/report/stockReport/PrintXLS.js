@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource, selectedVendor }) => {
+const PrintXLS = ({ dataSource }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -54,8 +54,7 @@ const PrintXLS = ({ dataSource, selectedVendor }) => {
 
   const title = [
     { value: 'LAPORAN STOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `Tanggal: ${moment().format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody },
-    { value: selectedVendor && selectedVendor.id ? `Vendor: ${selectedVendor.vendor_code} - ${selectedVendor.name}` : '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
+    { value: `Tanggal: ${moment().format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

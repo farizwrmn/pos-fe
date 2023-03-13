@@ -9,34 +9,43 @@ const Option = Select.Option
 let searchTimeOut
 
 const searchBarLayout = {
+  xs: { span: 24 },
   sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  md: { span: 8 },
+  lg: { span: 6 },
+  xl: { span: 6 }
+}
+
+const vendorLayout = {
+  xs: { span: 24 },
+  sm: { span: 24 },
+  md: { span: 16 },
+  lg: { span: 18 },
+  xl: { span: 18 }
 }
 
 const Filter = ({
-  q,
-  selectedVendor,
+  location,
   vendorList,
   loadingSearchVendor,
   onFilterChange,
   searchVendor,
-  onSelectVendor,
-  clearVendorList,
   form: {
     getFieldDecorator,
-    getFieldsValue,
-    setFieldsValue
+    getFieldsValue
   }
 }) => {
-  const handleSubmit = () => {
-    let field = getFieldsValue().q
+  const handleSubmit = (value) => {
+    let field = {
+      ...getFieldsValue()
+    }
+    if (value) {
+      field.vendorId = value
+    }
     onFilterChange(field)
   }
 
   const handleSearch = (value) => {
-    clearVendorList()
     if (value !== '') {
       if (searchTimeOut) {
         clearTimeout(searchTimeOut)
@@ -47,61 +56,47 @@ const Filter = ({
     }
   }
 
-  const handleChange = (value) => {
-    if (value !== '') {
-      setFieldsValue({
-        q: ''
-      })
-      onSelectVendor(value)
-    }
-  }
-
-  const vendorOption = vendorList ? vendorList.map(record => <Option key={record.id} value={record.id}>{record.name}</Option>) : []
-
-  let vendorFields = {}
-  if (selectedVendor && selectedVendor.name) {
-    vendorFields.initialValue = selectedVendor.name
-  }
-
-  let qFields = {}
-  if (q) {
-    qFields.initialValue = q
-  }
+  const vendorOption = vendorList ? vendorList.map(record => <Option key={record.id} id={record.id} value={record.id} title={`${record.name}@(${record.vendor_code})`}>{`${record.name} | (${record.vendor_code})`}</Option>) : []
 
   return (
-    <Row>
-      <Col span={12} />
-      <Col {...searchBarLayout} >
-        <Form layout="horizontal">
-          <Col>
-            <Select
-              style={{
-                width: '100%',
-                marginBottom: '10px'
-              }}
-              placeholder="Select Vendor"
-              showSearch
-              onSearch={handleSearch}
-              filterOption={false}
-              onChange={handleChange}
-              value={selectedVendor.id ? `${selectedVendor.vendor_code} - ${selectedVendor.name}` : undefined}
-              notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
-            >
-              {vendorOption}
-            </Select>
-          </Col>
+    <Form layout="horizontal">
+      <Row>
+        <Col {...vendorLayout}>
           <FormItem >
-            {getFieldDecorator('q', qFields)(
+            {getFieldDecorator('vendorId', {
+              initialValue: location.query && location.query.vendorId ? Number(location.query.vendorId) : undefined
+            })(
+              <Select
+                style={{
+                  width: 200,
+                  margin: '0 10px 10px 0'
+                }}
+                placeholder="Select Vendor"
+                showSearch
+                onSearch={handleSearch}
+                onSelect={handleSubmit}
+                filterOption={false}
+                allowClear
+                notFoundContent={loadingSearchVendor ? <Spin size="small" /> : null}
+              >
+                {vendorOption}
+              </Select>
+            )}</FormItem>
+        </Col>
+        <Col {...searchBarLayout} >
+          <FormItem >
+            {getFieldDecorator('q', {
+              initialValue: location.query && location.query.q ? location.query.q : undefined
+            })(
               <Search
                 placeholder="Cari nama produk / kode produk"
                 onSearch={() => handleSubmit()}
-                disabled={!selectedVendor.id}
               />
             )}
           </FormItem>
-        </Form>
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+    </Form>
   )
 }
 
