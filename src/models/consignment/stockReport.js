@@ -50,13 +50,7 @@ export default modelExtend(pageModel, {
           }
           dispatch({
             type: 'query',
-<<<<<<< HEAD
             payload: location.query
-=======
-            payload: {
-              ...location.query
-            }
->>>>>>> 7256e9ab (fix consignment)
           })
         }
       })
