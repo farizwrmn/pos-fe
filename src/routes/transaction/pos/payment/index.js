@@ -7,13 +7,11 @@ import { prefix } from 'utils/config.main'
 import {
   Row,
   Col,
-  Modal,
   message
 } from 'antd'
 import moment from 'moment'
 import FormPayment from './Form'
-
-const { getCashierTrans } = lstorage
+import ModalPaymentConfirm from './ModalPaymentConfirm'
 
 const Payment = ({
   paymentOpts,
@@ -30,9 +28,10 @@ const Payment = ({
     lastTransNo,
     listAmount,
     modalType,
-    typeTrans,
     itemPayment,
     paymentModalVisible,
+    modalPaymentConfirmVisible,
+    taxInfo,
     woNumber,
     companyInfo } = payment
   const {
@@ -101,116 +100,12 @@ const Payment = ({
 
     return `${h}:${m}:${s}`
   }
-
-  const usageLoyalty = memberInformation.useLoyalty || 0
-  const totalDiscount = usageLoyalty
-  const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
-  const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const confirmPayment = (taxInfo) => {
-    if (loading.effects['payment/create']) {
-      return
-    }
-    Modal.confirm({
-      title: 'Save Payment',
-      content: 'are you sure ?',
-      onOk () {
-        const product = getCashierTrans()
-        const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-        // const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
-        const dataPos = product.concat(service)
-        let checkProductId = false
-        for (let n = 0; n < dataPos.length; n += 1) {
-          if (dataPos[n].productId === 0) {
-            checkProductId = true
-            break
-          }
-        }
-        if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
-          const modal = Modal.warning({
-            title: 'Warning',
-            content: 'Member Not Found...!'
-          })
-          setTimeout(() => modal.destroy(), 1000)
-          return
-        }
-        if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
-          Modal.error({
-            title: 'Payment pending restricted',
-            content: 'This member type cannot allow to pending'
-          })
-          return
-        }
-        if (checkProductId) {
-          console.log(checkProductId)
-          Modal.error({
-            title: 'Payment',
-            content: 'Something Wrong with Product'
-          })
-          return
-        }
-        if (typeTrans.toString().length === 0) {
-          Modal.warning({
-            title: 'Payment method',
-            content: 'Your Payment method is empty'
-          })
-        } else {
-          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C') : []
-          if (loading.effects['payment/create']) {
-            return
-          }
-          dispatch({
-            type: 'payment/create',
-            payload: {
-              periode: moment().format('MMYY'),
-              transDate: getDate(1),
-              transDate2: getDate(3),
-              transTime: setTime(),
-              grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
-              totalPayment,
-              creditCardNo: '',
-              creditCardType: '',
-              creditCardCharge: 0,
-              totalCreditCard: 0,
-              transDatePrint: moment().format('DD MMM YYYY HH:mm'),
-              company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-              gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-              phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-              address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-              lastTransNo,
-              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-              // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
-              paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
-              totalChange,
-              unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
-              totalDiscount: curTotalDiscount,
-              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-              rounding: curRounding,
-              memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
-              memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
-              memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-              useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
-              technicianId: mechanicInformation.employeeCode,
-              curShift,
-              printNo: 1,
-              curCashierNo,
-              cashierId: user.userid,
-              userName: user.username,
-              taxInfo,
-              setting,
-              listAmount,
-              companyInfo,
-              curNetto: parseFloat(curTotal) + parseFloat(curRounding),
-              curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
-              usingWo: !((woNumber === '' || woNumber === null)),
-              woNumber: woNumber === '' ? null : woNumber
-            }
-          })
-          // dispatch(routerRedux.push('/transaction/pos'))
-        }
-      },
-      onCancel () {
-        console.log('cancel')
+    dispatch({
+      type: 'payment/updateState',
+      payload: {
+        taxInfo,
+        modalPaymentConfirmVisible: true
       }
     })
   }
@@ -344,8 +239,78 @@ const Payment = ({
     }
   }
 
+  const usageLoyalty = memberInformation.useLoyalty || 0
+  const totalDiscount = usageLoyalty
+  const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
+  const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+
+  const modalConfirm = {
+    visible: modalPaymentConfirmVisible && !loading.effects['payment/create'],
+    loading,
+    onOk () {
+      dispatch({ type: 'payment/updateState', payload: { modalPaymentConfirmVisible: false, taxInfo: {} } })
+      if (loading.effects['payment/create']) {
+        return
+      }
+      const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
+      dispatch({
+        type: 'payment/create',
+        payload: {
+          periode: moment().format('MMYY'),
+          transDate: getDate(1),
+          transDate2: getDate(3),
+          transTime: setTime(),
+          grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
+          totalPayment,
+          creditCardNo: '',
+          creditCardType: '',
+          creditCardCharge: 0,
+          curNetto,
+          totalCreditCard: 0,
+          transDatePrint: moment().format('DD MMM YYYY HH:mm'),
+          company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+          gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+          phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+          address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+          lastTransNo,
+          lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+          // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+          paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
+          totalChange,
+          unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+          totalDiscount: curTotalDiscount,
+          policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+          rounding: curRounding,
+          memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
+          memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+          employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
+          memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+          useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
+          technicianId: mechanicInformation.employeeCode,
+          curShift,
+          printNo: 1,
+          curCashierNo,
+          cashierId: user.userid,
+          userName: user.username,
+          taxInfo,
+          setting,
+          listAmount,
+          companyInfo,
+          curTotalPayment,
+          curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
+          usingWo: !((woNumber === '' || woNumber === null)),
+          woNumber: woNumber === '' ? null : woNumber
+        }
+      })
+    },
+    onCancel () {
+      dispatch({ type: 'payment/updateState', payload: { modalPaymentConfirmVisible: false, taxInfo: {} } })
+    }
+  }
+
   return (
     <div className="content-inner">
+      {modalPaymentConfirmVisible && !loading.effects['payment/create'] && <ModalPaymentConfirm {...modalConfirm} />}
       {listOpts.length > 0 && <div>
         <Row style={{ marginBottom: 16 }}>
           <Col span={24}>
