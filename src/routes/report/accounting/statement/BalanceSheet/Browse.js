@@ -118,26 +118,23 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
     const fixRevenue = operationalRevenue + nonOperationalRevenue
     const fixRevenueCompare = operationalRevenueCompare + nonOperationalRevenueCompare
 
-    group.PRFT = [
+    group.PRFT = group.PRFT.concat([
       {
         accountCode: 'SYSTEM',
         accountId: 31,
-        accountName: 'Laba Ditahan',
+        accountName: 'Laba Belum Dialokasikan Tahun Ini',
         accountParentId: null,
         accountType: 'APAY',
         createdBy: 'SYSTEM',
         credit: 0,
-        debit: fixRevenue,
+        debit: fixRevenue - fixRevenueCompare,
         entryType: 'C',
         transactionType: 'PRFT'
-      }
-    ]
-
-    groupCompare.PRFT = [
+      },
       {
         accountCode: 'SYSTEM',
         accountId: 31,
-        accountName: 'Laba Ditahan',
+        accountName: 'Laba Belum Dialokasikan Tahun Lalu',
         accountParentId: null,
         accountType: 'APAY',
         createdBy: 'SYSTEM',
@@ -146,7 +143,34 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, list
         entryType: 'C',
         transactionType: 'PRFT'
       }
-    ]
+    ])
+
+    groupCompare.PRFT = groupCompare.PRFT.concat([
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Laba Belum Dialokasikan Tahun Ini',
+        accountParentId: null,
+        accountType: 'APAY',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: fixRevenueCompare,
+        entryType: 'C',
+        transactionType: 'PRFT'
+      },
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Laba Belum Dialokasikan Tahun Lalu',
+        accountParentId: null,
+        accountType: 'APAY',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: 0,
+        entryType: 'C',
+        transactionType: 'PRFT'
+      }
+    ])
 
     const { dataSource: groupBANKBody } = createTableBodyBrowse(
       group,
