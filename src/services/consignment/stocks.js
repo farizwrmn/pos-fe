@@ -10,3 +10,13 @@ export async function query (data) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryAll (data) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/stock/get-all`,
+    method: 'get',
+    data,
+    headers: apiHeaderToken
+  })
+}
