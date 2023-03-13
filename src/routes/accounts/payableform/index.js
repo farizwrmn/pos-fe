@@ -22,6 +22,7 @@ const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCod
     modalType,
     activeKey,
     pagination,
+    selectedRowKeys,
     list
   } = payableForm
   const { listPayment } = paymentEdc
@@ -211,6 +212,7 @@ const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCod
     }
   }
   const formProps = {
+    selectedRowKeys,
     listAccountCodeAll: listAccountCode,
     listPayment,
     listPurchaseExpense,

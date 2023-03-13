@@ -6,12 +6,8 @@ import { numberFormatter } from 'utils/string'
 
 const FormItem = Form.Item
 
-const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, dispatch, ...tableProps }) => {
+const ListInvoice = ({ loading, updateSelectedKey, selectedRowKeys, listInvoice, purchase, dispatch, ...tableProps }) => {
   const { searchText, tmpInvoiceList } = purchase
-
-  const handleMenuClick = (record) => {
-    onChooseInvoice(record)
-  }
 
   const handleChange = (e) => {
     const { value } = e.target
@@ -42,6 +38,23 @@ const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, 
         tmpInvoiceList
       }
     })
+  }
+
+  const handleSubmitAll = () => {
+    dispatch({
+      type: 'payableForm/addMultipleItem',
+      payload: {
+        selectedRowKeys
+      }
+    })
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    hideDefaultSelections: false,
+    onChange: (selectedRowKeys) => {
+      updateSelectedKey(selectedRowKeys)
+    }
   }
 
   const columns = [
@@ -94,8 +107,13 @@ const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, 
               <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
             </FormItem>
             <FormItem>
-              <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
+              <Button size="small" type="default" onClick={handleReset}>Reset</Button>
             </FormItem>
+            {selectedRowKeys && selectedRowKeys.length > 0 ? (
+              <FormItem>
+                <Button disabled={loading} size="small" type="primary" onClick={handleSubmitAll}>{`Add ${selectedRowKeys.length} Selected`}</Button>
+              </FormItem>
+            ) : null}
           </Col>
         </Row>
       </Form>
@@ -104,12 +122,12 @@ const ListInvoice = ({ onInvoiceHeader, listInvoice, onChooseInvoice, purchase, 
         {...tableProps}
         title={() => `Total: ${numberFormatter(listInvoice ? listInvoice.reduce((prev, next) => prev + next.paymentTotal, 0) : 0)}`}
         pagination={false}
+        rowSelection={rowSelection}
         bordered
         columns={columns}
         simple
         size="small"
         rowKey={record => record.productCode}
-        onRowClick={_record => handleMenuClick(_record)}
       />
     </div>
   )
