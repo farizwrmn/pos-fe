@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user }) => {
+const PrintPDF = ({ dataSource, user, name = 'PDF' }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -58,8 +58,8 @@ const PrintPDF = ({ dataSource, user }) => {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center' })
-        row.push({ text: (tableBody[key]['product.vendor.name'] || '').toString(), alignment: 'left' })
-        row.push({ text: (tableBody[key]['product.product_name'] || '').toString(), alignment: 'left' })
+        row.push({ text: (tableBody[key].vendorName || tableBody[key]['product.vendor.name'] || '').toString(), alignment: 'left' })
+        row.push({ text: (`${tableBody[key].productCode || tableBody[key]['product.product_code'] || ''} - ${tableBody[key].productName || tableBody[key]['product.product_name'] || ''}`).toString(), alignment: 'left' })
         row.push({ text: (tableBody[key].quantity || 0).toString(), alignment: 'center' })
         row.push({ text: `Rp ${Number(tableBody[key].price || 0).toLocaleString()}`, alignment: 'right' })
         body.push(row)
@@ -111,12 +111,11 @@ const PrintPDF = ({ dataSource, user }) => {
   }
 
   const pdfProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
-    name: 'PDF',
+    buttonSize: 'large',
+    name,
     className: '',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     width: ['5%', '25%', '45%', '10%', '15%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',

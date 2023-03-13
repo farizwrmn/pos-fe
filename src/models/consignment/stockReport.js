@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { getConsignmentId } from 'utils/lstorage'
 import {
-  query
+  query, queryAll
 } from 'services/consignment/stocks'
 import { pageModel } from '../common'
 
@@ -13,6 +13,12 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     selectedVendor: {},
+
+    showPDFModal: false,
+    mode: '',
+    listPrintAllStock: [],
+    changed: false,
+    stockLoading: false,
 
     consignmentId: getConsignmentId(),
 
@@ -42,12 +48,10 @@ export default modelExtend(pageModel, {
               }
             })
           }
-          if (location.query.q || location.query.vendorId) {
-            dispatch({
-              type: 'query',
-              payload: location.query
-            })
-          }
+          dispatch({
+            type: 'query',
+            payload: location.query
+          })
         }
       })
     }
@@ -60,7 +64,9 @@ export default modelExtend(pageModel, {
         const params = {
           q: payload.q,
           outletId: consignmentId,
-          vendorId: payload.vendorId
+          vendorId: payload.vendorId,
+          page: payload.page,
+          pageSize: payload.pageSize
         }
         const response = yield call(query, params)
         yield put({
@@ -83,6 +89,30 @@ export default modelExtend(pageModel, {
           }
         })
       }
+    },
+
+    * queryAllStock ({ payload = {} }, { call, put }) {
+      const consignmentId = getConsignmentId()
+      if (consignmentId) {
+        yield put({ type: 'showLoading' })
+        let params = {
+          outletId: getConsignmentId(),
+          ...payload
+        }
+        const data = yield call(queryAll, params)
+        yield put({ type: 'hideLoading' })
+        if (data.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listPrintAllStock: data.data,
+              changed: true
+            }
+          })
+        }
+      } else {
+        yield put({ type: 'updateState', payload: { listPrintAllStock: [], changed: false } })
+      }
     }
   },
 
@@ -97,6 +127,19 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         ...action.payload
+      }
+    },
+    showLoading (state) {
+      return {
+        ...state,
+        stockLoading: true
+      }
+    },
+
+    hideLoading (state) {
+      return {
+        ...state,
+        stockLoading: false
       }
     }
   }

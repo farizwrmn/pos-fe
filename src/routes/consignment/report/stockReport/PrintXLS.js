@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource }) => {
+const PrintXLS = ({ dataSource, name = 'Excel' }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -41,8 +41,8 @@ const PrintXLS = ({ dataSource }) => {
       if (list.hasOwnProperty(key)) {
         let row = []
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['product.vendor.name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['product.product_name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].vendorName || list[key]['product.vendor.name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: `${list[key].productCode || list[key]['product.product_code'] || '-'} - ${list[key].productName || list[key]['product.product_name'] || ''}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].quantity || 0, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].price || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
@@ -76,12 +76,11 @@ const PrintXLS = ({ dataSource }) => {
 
   // Declare additional Props
   const XLSProps = {
-    buttonType: '',
+    buttonType: 'default',
     iconSize: '',
-    buttonSize: '',
+    buttonSize: 'large',
     className: '',
-    name: 'Excel',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    name,
     paperSize: 9,
     orientation: 'portrait',
     data: dataSource,
