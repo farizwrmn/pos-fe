@@ -42,7 +42,7 @@ const PrintXLS = ({ dataSource, name = 'Excel' }) => {
         let row = []
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].vendorName || list[key]['product.vendor.name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].productName || list[key]['product.product_name'] || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: `${list[key].productCode || list[key]['product.product_code'] || '-'} - ${list[key].productName || list[key]['product.product_name'] || ''}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].quantity || 0, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key].price || 0, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
