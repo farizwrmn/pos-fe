@@ -155,6 +155,9 @@ const Payment = ({
           })
         } else {
           const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C') : []
+          if (loading.effects['payment/create']) {
+            return
+          }
           dispatch({
             type: 'payment/create',
             payload: {
