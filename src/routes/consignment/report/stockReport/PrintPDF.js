@@ -59,7 +59,11 @@ const PrintPDF = ({ dataSource, user, name = 'PDF' }) => {
         let row = []
         row.push({ text: count, alignment: 'center' })
         row.push({ text: (tableBody[key].vendorName || tableBody[key]['product.vendor.name'] || '').toString(), alignment: 'left' })
+<<<<<<< HEAD
         row.push({ text: (`${tableBody[key].productCode || tableBody[key]['product.product_code'] || ''} - ${tableBody[key].productName || tableBody[key]['product.product_name'] || ''}`).toString(), alignment: 'left' })
+=======
+        row.push({ text: (tableBody[key].productName || tableBody[key]['product.product_name'] || '').toString(), alignment: 'left' })
+>>>>>>> 7256e9ab (fix consignment)
         row.push({ text: (tableBody[key].quantity || 0).toString(), alignment: 'center' })
         row.push({ text: `Rp ${Number(tableBody[key].price || 0).toLocaleString()}`, alignment: 'right' })
         body.push(row)
