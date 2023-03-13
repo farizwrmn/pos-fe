@@ -65,6 +65,7 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
     selectedVendor,
     q,
     loadingSearchVendor: loading.effects['consignmentVendor/query'],
+    loading: loading.effects['consignmentStockReport/query'],
     onFilterChange (value) {
       dispatch({
         type: 'consignmentStockReport/query',
@@ -83,6 +84,15 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
         }
       })
     },
+    getData () {
+      dispatch({
+        type: 'consignmentStockReport/query',
+        payload: {
+          q: '',
+          vendorId: selectedVendor.id
+        }
+      })
+    },
     onSelectVendor (id) {
       const vendor = vendorList.filter(filtered => filtered.id === id)
       if (vendor && vendor[0]) {
@@ -90,13 +100,6 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
           type: 'consignmentStockReport/updateState',
           payload: {
             selectedVendor: vendor[0]
-          }
-        })
-        dispatch({
-          type: 'consignmentStockReport/query',
-          payload: {
-            q: '',
-            vendorId: id
           }
         })
       }
