@@ -107,6 +107,9 @@ const Payment = ({
   const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
   const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const confirmPayment = (taxInfo) => {
+    if (loading.effects['payment/create']) {
+      return
+    }
     Modal.confirm({
       title: 'Save Payment',
       content: 'are you sure ?',
@@ -150,58 +153,61 @@ const Payment = ({
             title: 'Payment method',
             content: 'Your Payment method is empty'
           })
-        } else {
-          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C') : []
-          dispatch({
-            type: 'payment/create',
-            payload: {
-              periode: moment().format('MMYY'),
-              transDate: getDate(1),
-              transDate2: getDate(3),
-              transTime: setTime(),
-              grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
-              totalPayment,
-              creditCardNo: '',
-              creditCardType: '',
-              creditCardCharge: 0,
-              totalCreditCard: 0,
-              transDatePrint: moment().format('DD MMM YYYY HH:mm'),
-              company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-              gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-              phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-              address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-              lastTransNo,
-              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-              // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
-              paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
-              totalChange,
-              unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
-              totalDiscount: curTotalDiscount,
-              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-              rounding: curRounding,
-              memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
-              memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
-              memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-              useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
-              technicianId: mechanicInformation.employeeCode,
-              curShift,
-              printNo: 1,
-              curCashierNo,
-              cashierId: user.userid,
-              userName: user.username,
-              taxInfo,
-              setting,
-              listAmount,
-              companyInfo,
-              curNetto: parseFloat(curTotal) + parseFloat(curRounding),
-              curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
-              usingWo: !((woNumber === '' || woNumber === null)),
-              woNumber: woNumber === '' ? null : woNumber
-            }
-          })
-          // dispatch(routerRedux.push('/transaction/pos'))
+          return
         }
+        const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C') : []
+        if (loading.effects['payment/create']) {
+          return
+        }
+        dispatch({
+          type: 'payment/create',
+          payload: {
+            periode: moment().format('MMYY'),
+            transDate: getDate(1),
+            transDate2: getDate(3),
+            transTime: setTime(),
+            grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
+            totalPayment,
+            creditCardNo: '',
+            creditCardType: '',
+            creditCardCharge: 0,
+            totalCreditCard: 0,
+            transDatePrint: moment().format('DD MMM YYYY HH:mm'),
+            company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+            gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+            phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+            address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+            lastTransNo,
+            lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+            // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+            paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
+            totalChange,
+            unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+            totalDiscount: curTotalDiscount,
+            policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+            rounding: curRounding,
+            memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
+            memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+            employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
+            memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+            useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
+            technicianId: mechanicInformation.employeeCode,
+            curShift,
+            printNo: 1,
+            curCashierNo,
+            cashierId: user.userid,
+            userName: user.username,
+            taxInfo,
+            setting,
+            listAmount,
+            companyInfo,
+            curNetto: parseFloat(curTotal) + parseFloat(curRounding),
+            curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
+            usingWo: !((woNumber === '' || woNumber === null)),
+            woNumber: woNumber === '' ? null : woNumber
+          }
+        })
+        // dispatch(routerRedux.push('/transaction/pos'))
       },
       onCancel () {
         console.log('cancel')

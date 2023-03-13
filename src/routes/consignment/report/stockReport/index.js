@@ -54,16 +54,24 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
     dataSource: list,
     pagination,
     loading: loading.effects['consignmentStockReport/query'],
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
+    // onChange (page) {
+    //   const { query, pathname } = location
+    //   dispatch(routerRedux.push({
+    //     pathname,
+    //     query: {
+    //       ...query,
+    //       page: page.current,
+    //       pageSize: page.pageSize
+    //     }
+    //   }))
+    // }
+    onChange ({ pagination }) {
+      dispatch({
+        type: 'consignmentStockReport/updateState',
+        payload: {
+          pagination
         }
-      }))
+      })
     }
   }
 
