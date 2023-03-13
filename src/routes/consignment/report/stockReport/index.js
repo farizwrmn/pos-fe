@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Dropdown, Icon, Menu, Tabs } from 'antd'
+import { Button, Col, Dropdown, Icon, Menu, Modal, Row, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import Filter from './Filter'
 import List from './List'
@@ -15,7 +15,12 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
     activeKey,
     list,
     consignmentId,
-    pagination
+    pagination,
+    showPDFModal,
+    mode,
+    listPrintAllStock,
+    changed,
+    stockLoading
   } = consignmentStockReport
   const {
     list: vendorList
@@ -109,14 +114,23 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
   }
 
   const printProps = {
-    dataSource: list,
     user
+  }
+
+  const onShowPDFModal = (mode) => {
+    dispatch({
+      type: 'consignmentStockReport/updateState',
+      payload: {
+        showPDFModal: true,
+        mode
+      }
+    })
   }
 
   const menu = (
     <Menu>
-      <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
-      <Menu.Item key="2"><PrintXLS {...printProps} /></Menu.Item>
+      <Menu.Item key="1"><Button onClick={() => onShowPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-pdf" />PDF</Button></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => onShowPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0 }}><Icon type="file-excel" />Excel</Button></Menu.Item>
     </Menu>
   )
 
@@ -128,8 +142,67 @@ function StockReport ({ consignmentStockReport, consignmentVendor, dispatch, app
     </Dropdown>
   </div>)
 
+  const PDFModalProps = {
+    visible: showPDFModal,
+    footer: null,
+    width: '600px',
+    title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+    onCancel () {
+      dispatch({
+        type: 'consignmentStockReport/updateState',
+        payload: {
+          showPDFModal: false,
+          changed: false,
+          listPrintAllStock: []
+        }
+      })
+    }
+  }
+
+  const getAllStock = () => {
+    const { query } = location
+    dispatch({
+      type: 'consignmentStockReport/queryAllStock',
+      payload: {
+        vendorId: query.vendorId
+      }
+    })
+  }
+
+  let buttonClickPDF = (changed && listPrintAllStock.length) ? (<PrintPDF dataSource={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let buttonClickXLS = (changed && listPrintAllStock.length) ? (<PrintXLS dataSource={listPrintAllStock} name="Print All Stock" {...printProps} />) : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get All Stock</Button>)
+  let notification = (changed && listPrintAllStock.length) ? "Click 'Print All Stock' to print!" : "Click 'Get All Stock' to get all data!"
+
+  let printMode
+  if (mode === 'pdf') {
+    printMode = (
+      <Row>
+        <Col md={8}>
+          {buttonClickPDF}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p>
+        </Col>
+        <Col md={8}>
+          <PrintPDF dataSource={list} name="Print Current Page" {...printProps} />
+        </Col>
+      </Row>
+    )
+  } else {
+    printMode = (<Row>
+      <Col md={8}>
+        {buttonClickXLS}<p style={{ color: 'red', fontSize: 10 }}>{notification}</p>
+      </Col>
+      <Col md={8}>
+        <PrintXLS dataSource={list} name="Print Current Page" {...printProps} />
+      </Col>
+    </Row>)
+  }
+
   return (
     <div className="content-inner">
+      {showPDFModal && (
+        <Modal {...PDFModalProps}>
+          {printMode}
+        </Modal>
+      )}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={moreButtonTab}>
         <TabPane tab="Report" key="0" >
           {activeKey === '0' &&

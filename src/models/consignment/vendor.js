@@ -59,11 +59,11 @@ export default modelExtend(pageModel, {
               }
             })
           }
-          dispatch({
-            type: 'queryLast',
-            payload: {}
-          })
           if (location.pathname === '/integration/consignment/vendor') {
+            dispatch({
+              type: 'queryLast',
+              payload: {}
+            })
             if (location.query && location.query.activeKey) {
               dispatch({
                 type: 'updateState',
