@@ -3,6 +3,7 @@ import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { User, Password, TOTP } from './components'
 import styles from './index.less'
+import Role from './components/role'
 
 const TabPane = Tabs.TabPane
 
@@ -28,6 +29,12 @@ const Profile = ({ app, dispatch }) => {
         }
       })
     }
+  }
+
+  const changeRole = (roleCode) => {
+    dispatch({ type: 'app/query', payload: { userid: user.userid, role: roleCode } })
+    // dispatch({ type: 'app/setPermission', payload: { role: roleCode } })
+    setTimeout(() => { window.location.reload() }, 200)
   }
 
   const totpProps = {
@@ -69,6 +76,7 @@ const Profile = ({ app, dispatch }) => {
     <div className="content-inner">
       <div className={styles.profile}>
         <User {...userProps} />
+        <Role changeRole={changeRole} />
         <Tabs defaultActiveKey="1">
           <TabPane tab="Change Password" key="1"><Password {...passwordProps} /></TabPane>
           <TabPane tab="TOTP" key="2"><TOTP {...totpProps} /></TabPane>
