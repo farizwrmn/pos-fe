@@ -4,6 +4,7 @@ import { Link } from 'dva/router'
 import moment from 'moment'
 import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
+import PrintPDFv2 from './PrintPDFv2'
 
 const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
   const clickPrint = (record) => {
@@ -241,6 +242,7 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
     <div>
       <Modal {...modalProps} >
         <PrintPDF {...printProps} />
+        <PrintPDFv2 {...printProps} />
       </Modal>
       <Table {...tableProps}
         bordered

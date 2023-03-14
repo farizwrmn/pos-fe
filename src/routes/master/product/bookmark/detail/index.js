@@ -6,13 +6,14 @@ import Product from './Product'
 import styles from './index.less'
 import ModalProduct from './ModalProduct'
 import ModalBundle from './ModalBundle'
+import ModalBookmark from './ModalBookmark'
 
 const Detail = ({
   productBookmarkDetail,
   dispatch,
   loading
 }) => {
-  const { data, listBookmark, modalProductVisible, modalBundleVisible } = productBookmarkDetail
+  const { data, listBookmark, modalProductVisible, modalBundleVisible, modalBookmarkVisible, modalBookmarkItem } = productBookmarkDetail
 
   const content = []
   for (let key in data) {
@@ -30,6 +31,15 @@ const Detail = ({
     dataSource: listBookmark,
     loading: loading.effects['productBookmark/query'] || loading.effects['productBookmarkDetail/query'],
     location,
+    editItem (record) {
+      dispatch({
+        type: 'productBookmarkDetail/updateState',
+        payload: {
+          modalBookmarkVisible: true,
+          modalBookmarkItem: record
+        }
+      })
+    },
     deleteItem (id) {
       dispatch({
         type: 'productBookmark/delete',
@@ -101,6 +111,7 @@ const Detail = ({
         type: 'productBookmark/add',
         payload: {
           data: {
+            type: 'PRODUCT',
             productId: record.id,
             groupId: data.id
           }
@@ -157,10 +168,31 @@ const Detail = ({
     }
   }
 
+  const modalBookmarkProps = {
+    visible: modalBookmarkVisible,
+    item: modalBookmarkItem,
+    onSubmit (data) {
+      dispatch({
+        type: 'productBookmarkDetail/updateBookmarkDetail',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'productBookmarkDetail/updateState',
+        payload: {
+          modalBookmarkVisible: false,
+          modalBookmarkItem: {}
+        }
+      })
+    }
+  }
+
   return (<div className="content-inner">
     <div className={styles.content}>
       {modalProductVisible && !loading.effects['productBookmark/query'] && <ModalProduct {...modalProductProps} />}
       {modalBundleVisible && !loading.effects['promo/query'] && <ModalBundle {...modalBundleProps} />}
+      {modalBookmarkVisible && modalBookmarkItem && modalBookmarkItem.id && <ModalBookmark {...modalBookmarkProps} />}
       <Row>
         <Col md={24} lg={12}>
           {content}

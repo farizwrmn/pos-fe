@@ -21,6 +21,16 @@ export async function query (params) {
   })
 }
 
+export async function queryReport (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/rent-request-report`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -74,6 +84,16 @@ export async function voidTrans (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     fullUrl: `${rest.apiConsignmentURL}/rent-request-void/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function cancelRentRequest (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/rent-request-cancel/${params.id}`,
     method: 'put',
     data: params,
     headers: apiHeaderToken

@@ -86,7 +86,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
       },
       {
         table: {
-          widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
+          widths: ['15%', '1%', '32%', '10%', '15%', '1%', '26%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, { text: 'MACHINE', fontSize: 11 }, ':', { text: itemHeader.machineName, fontSize: 11 }],
             [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'PAYMENT TYPE', fontSize: 11 }, ':', { text: itemHeader.typeName, fontSize: 11 }],
@@ -235,7 +235,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '15%', '34%', '35%'],
+    width: ['6%', '20%', '15%', '34%', '25%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',

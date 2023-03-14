@@ -381,7 +381,8 @@ const ReturnSales = ({ location, returnPurchase, purchase, app, dispatch, loadin
       dispatch({
         type: 'returnPurchase/query',
         payload: {
-          ...value
+          ...value,
+          page: 1
         }
       })
     }

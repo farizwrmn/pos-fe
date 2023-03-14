@@ -19,6 +19,18 @@ const checkExists = (index, list) => {
   return false
 }
 
+const selectItem = (listInvoice, invoice) => {
+  console.log('listInvoice, invoice', listInvoice, invoice)
+  let selectedInvoice = null
+  try {
+    selectedInvoice = listInvoice[invoice]
+  } catch (error) {
+    console.log('selectItem error:', listInvoice, invoice, error)
+    selectedInvoice = null
+  }
+  return selectedInvoice
+}
+
 export default modelExtend(pageModel, {
   namespace: 'payableForm',
 
@@ -28,6 +40,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listItem: [],
+    selectedRowKeys: [],
     currentItemList: {},
     modalVisible: false,
     modalCancelVisible: false,
@@ -72,6 +85,65 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * addMultipleItem ({ payload = {} }, { put, select }) {
+      const listItem = yield select(({ payableForm }) => payableForm.listItem)
+      const listInvoice = yield select(({ purchase }) => purchase.listInvoice)
+      const { selectedRowKeys } = payload
+      let newList = [
+        ...listItem
+      ]
+      for (let key in selectedRowKeys) {
+        const invoice = selectedRowKeys[key]
+        const item = selectItem(listInvoice, invoice)
+        if (!item) {
+          console.log('Require item in payload')
+          // eslint-disable-next-line no-continue
+          continue
+        }
+        const exists = checkExists(item.transNo, listItem)
+        if (exists) {
+          console.log('Item already exists')
+          // eslint-disable-next-line no-continue
+          continue
+        }
+        if (item.paymentTotal <= 0) {
+          if (!item.returnPurchaseDetail) {
+            console.log('Item already paid')
+          }
+          // eslint-disable-next-line no-continue
+          continue
+        }
+        newList.push({
+          ...item,
+          amount: item.paymentTotal
+        })
+      }
+
+      yield put({
+        type: 'purchase/hideProductModal'
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          selectedRowKeys: []
+        }
+      })
+      yield put({
+        type: 'returnPurchase/updateState',
+        payload: {
+          modalReturnVisible: false
+        }
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: newList
+            .map((item, index) => ({ no: index + 1, ...item }))
+        }
+      })
+      message.success('Success add item')
+    },
 
     * queryDetail ({ payload = {} }, { call, put }) {
       const data = yield call(queryById, payload)
