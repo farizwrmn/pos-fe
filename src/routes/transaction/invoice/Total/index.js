@@ -62,7 +62,7 @@ const Total = ({
         </Col>
         <Col span={12} className={styles.right}>
           <strong className={styles.total}>
-            {numberFormatter(parseFloat(Total) + parseFloat(posData.dineInTax) + parseFloat(curCharge))}
+            {numberFormatter(parseFloat(Total || 0) + parseFloat(posData.dineInTax || 0) + parseFloat(curCharge || 0))}
           </strong>
         </Col>
       </Row>

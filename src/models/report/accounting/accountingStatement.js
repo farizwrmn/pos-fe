@@ -1,6 +1,7 @@
 /**
  * Created by Veirry on 07/07/2020.
  */
+import moment from 'moment'
 import {
   queryProfitLoss,
   queryBalanceSheet,
@@ -76,6 +77,21 @@ export default {
               payload: {
                 storeId: location.query.storeId || undefined,
                 compareTo: location.query.compareTo
+              }
+            })
+          } else if (location.query && location.query.to) {
+            dispatch({
+              type: 'queryBalanceSheetCompare',
+              payload: {
+                storeId: location.query.storeId || undefined,
+                compareTo: moment(location.query.to, 'YYYY-MM-DD').startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
+              }
+            })
+            dispatch({
+              type: 'queryProfitCompare',
+              payload: {
+                storeId: location.query.storeId || undefined,
+                compareTo: moment(location.query.to, 'YYYY-MM-DD').startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
               }
             })
           }

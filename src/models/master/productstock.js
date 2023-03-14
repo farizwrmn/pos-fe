@@ -166,7 +166,6 @@ export default modelExtend(pageModel, {
         storeId: lstorage.getCurrentUserStore()
       })
 
-      console.log('listStorePrice', listStorePrice)
       if (listStorePrice && listStorePrice.data && listStorePrice.data.length > 0) {
         const item = listStorePrice.data[0]
         payload.modalStorePriceItem.sellPrice = item.sellPrice

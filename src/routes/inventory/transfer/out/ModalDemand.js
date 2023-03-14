@@ -173,8 +173,6 @@ class ModalDemand extends Component {
       onOk: handleOk
     }
 
-    console.log('selectedRowKeys', selectedRowKeys)
-
     const rowSelection = {
       selectedRowKeys,
       hideDefaultSelections: false,

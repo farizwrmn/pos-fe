@@ -24,6 +24,8 @@ export default {
   state: {
     currentItem: {},
     modalVisible: false,
+    modalPaymentConfirmVisible: false,
+    taxInfo: {},
     modalType: 'add',
     selectedRowKeys: [],
     isMotion: localStorage.getItem('antdAdminUserIsMotion') === 'true',
@@ -91,7 +93,53 @@ export default {
   // confirm payment
 
   effects: {
-    * create ({ payload }, { call, put }) {
+    * create ({ payload }, { select, call, put }) {
+      const { curTotalPayment, curNetto } = payload
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const typeTrans = yield select(({ payment }) => payment.typeTrans)
+      if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        return
+      }
+      if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
+        Modal.error({
+          title: 'Payment pending restricted',
+          content: 'This member type cannot allow to pending'
+        })
+        return
+      }
+      if (typeTrans.toString().length === 0) {
+        Modal.warning({
+          title: 'Payment method',
+          content: 'Your Payment method is empty'
+        })
+        return
+      }
+
+      const product = getCashierTrans()
+      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      // const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+      const dataPos = product.concat(service)
+      let checkProductId = false
+      for (let n = 0; n < dataPos.length; n += 1) {
+        if (dataPos[n].productId === 0) {
+          checkProductId = true
+          break
+        }
+      }
+      if (checkProductId) {
+        console.log(checkProductId)
+        Modal.error({
+          title: 'Payment',
+          content: 'Something Wrong with Product'
+        })
+        return
+      }
+
       const invoice = {
         seqCode: 'INV',
         type: lstorage.getCurrentUserStore()

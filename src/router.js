@@ -75,14 +75,6 @@ const Routers = function ({ history, app }) {
             }, 'nps')
           }
         }, {
-          path: 'userprofile',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/setting/userProfile'))
-              cb(null, require('./routes/setting/user/profile/'))
-            }, 'user-profile')
-          }
-        }, {
           path: 'master/employee',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
