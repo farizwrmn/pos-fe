@@ -2,16 +2,6 @@ import React, { Component } from 'react'
 import { Modal, Button } from 'antd'
 
 class ModalPaymentConfirm extends Component {
-  componentDidMount () {
-    setTimeout(() => {
-      const selector = document.getElementById('buttonOk')
-      if (selector) {
-        selector.focus()
-        selector.select()
-      }
-    }, 300)
-  }
-
   render () {
     const { onOk, onCancel, loading, ...modalProps } = this.props
 
@@ -19,11 +9,6 @@ class ModalPaymentConfirm extends Component {
       <Modal
         {...modalProps}
         onOk={() => {
-          const selector = document.getElementById('buttonCancel')
-          if (selector) {
-            selector.focus()
-            selector.select()
-          }
           onOk()
         }}
         onCancel={() => {
