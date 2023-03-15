@@ -36,6 +36,8 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    modalAccountRuleVisible: false,
+    modalAccountRuleItem: {},
     listAccountCode: [],
     listAccountCodeExpense: [],
     listAccountCodeLov: [],
