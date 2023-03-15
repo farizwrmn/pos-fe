@@ -27,12 +27,10 @@ const column = {
 }
 
 const FormCounter = ({
-  listBankRecon,
   accountId,
   loading,
   onSubmit,
   showImportDialog,
-  autoRecon,
   listAccountCode,
   from,
   to,
@@ -98,8 +96,7 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem>
               {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
-              <Button type="primary" icon="check" style={{ float: 'right', marginLeft: '10px' }} onClick={() => autoRecon()} disabled={!listBankRecon.length > 0} >Start Recon</Button>
-              <Button type="primary" icon="download" style={{ float: 'right', marginLeft: '10px' }} onClick={() => showImportDialog()} />
+              <Button type="primary" icon="check" style={{ float: 'right', marginLeft: '10px' }} onClick={() => showImportDialog()}>BCA Auto Recon</Button>
               <Button type="primary" icon="search" loading={loading && loading.effects['bankentry/queryBankRecon']} disabled={loading && loading.effects['bankentry/queryBankRecon']} onClick={handleSubmit} style={{ float: 'right' }} />
             </FormItem>
           </Col>

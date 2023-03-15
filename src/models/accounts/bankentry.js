@@ -265,18 +265,10 @@ export default modelExtend(pageModel, {
         message.error(`Gagal: ${response.message}`)
       }
     },
-    * autoRecon ({ payload = {} }, { call, put }) {
+    * autoRecon ({ payload = {} }, { call }) {
       const response = yield call(autoRecon, payload)
-      const { reconciled } = response
       if (response && response.success) {
-        const { result } = reconciled
-        yield put({
-          type: 'updateState',
-          payload: {
-            selectedRowKeys: result
-          }
-        })
-        message.success('Berhasil import')
+        message.success('Berhasil!')
       } else {
         message.error(`Gagal: ${response.message}`)
       }

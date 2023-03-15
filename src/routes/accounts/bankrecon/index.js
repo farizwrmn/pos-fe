@@ -7,7 +7,7 @@ import FormImport from './FormImport'
 import Form from './Form'
 import List from './List'
 
-const Cash = ({ bankentry, accountCode, location, loading, dispatch, bank }) => {
+const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
   const {
     listBankRecon,
     summaryBankRecon,
@@ -19,12 +19,26 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch, bank }) => 
     to
   } = bankentry
   const { listAccountCode } = accountCode
-  const { listBank } = bank
 
   const formImportProps = {
-    listBank,
     loading,
-    dispatch
+    autoRecon () {
+      dispatch({
+        type: 'bankentry/autoRecon',
+        payload: {
+          list: listBankRecon
+        }
+      })
+    },
+    importCSV (array) {
+      console.log('array', array)
+      dispatch({
+        type: 'bankentry/importCsv',
+        payload: {
+          list: array
+        }
+      })
+    }
   }
 
   const formProps = {
@@ -48,19 +62,11 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch, bank }) => 
     },
     showImportDialog () {
       Modal.info({
-        title: 'Import CSV File',
+        title: 'Auto Reconciliation BCA',
         content: (
           <FormImport {...formImportProps} />
         ),
         okText: 'Close'
-      })
-    },
-    autoRecon () {
-      dispatch({
-        type: 'bankentry/autoRecon',
-        payload: {
-          list: listBankRecon
-        }
       })
     }
   }
@@ -105,7 +111,6 @@ Cash.propTypes = {
 
 export default connect(({
   bankentry,
-  bank,
   accountCode,
   loading,
-  pos }) => ({ bankentry, bank, accountCode, loading, pos }))(Cash)
+  pos }) => ({ bankentry, accountCode, loading, pos }))(Cash)

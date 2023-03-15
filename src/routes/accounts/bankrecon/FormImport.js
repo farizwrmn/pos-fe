@@ -1,9 +1,8 @@
 import React from 'react'
-import { Form, Button, Select } from 'antd'
+import { Form, Button } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
-const Option = Select.Option
 
 let currentArray = []
 
@@ -121,40 +120,33 @@ const bcaCSVtoArray = (string) => {
 
 const FormAutoCounter = ({
   loading,
-  dispatch,
-  listBank,
+  autoRecon,
+  importCSV,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue
   }
 }) => {
-  let bankOption = (listBank || []).map(record => <Option key={record.id} value={record.id}>{record.bankCode} - {record.bankName}</Option>)
-
   const handleSubmit = () => {
+    console.log('submit')
     validateFields((error) => {
+      console.log('error', error)
+      console.log('currentArray', currentArray)
       if (error) {
         return error
       }
       if (currentArray.length < 1) {
         return 'This feature is not supported to this bank.'
       }
-      dispatch({
-        type: 'bankentry/importCsv',
-        payload: {
-          list: currentArray
-        }
-      })
+      importCSV(currentArray)
     })
-  }
-
-  const handleSearchBank = (value) => {
-    console.log('value', value)
   }
 
   const fileReader = new FileReader()
   const handleOnChange = (event) => {
     const file = event.target.files[0]
+    console.log('file', file)
 
     fileReader.onload = function (event) {
       const text = event.target.result
@@ -169,33 +161,18 @@ const FormAutoCounter = ({
   return (
     <div>
       <Form>
-        <FormItem label="Bank" hasFeedback>
-          {getFieldDecorator('bank', {
-            rules: [{
-              required: true
-            }]
-          })(
-            <Select
-              placeholder="Pilih Bank"
-              showSearch
-              onSearch={handleSearchBank}
-              filterOption={false}
-            >
-              {bankOption}
-            </Select>
-          )}
-        </FormItem>
         <FormItem label="Csv File" hasFeedback>
           {getFieldDecorator('file', {
             rules: [{
               required: true
             }]
           })(
-            <input type="file" accept=".csv" onChange={handleOnChange} disabled={!getFieldsValue().bank} />
+            <input type="file" accept=".csv" onChange={handleOnChange} />
           )}
         </FormItem>
         <FormItem>
-          <Button type="primary" icon="download" onClick={() => handleSubmit()} loading={loading && loading.effects['bankentry/importCsv']}>Import</Button>
+          <Button type="primary" icon="download" onClick={() => handleSubmit()} loading={loading && loading.effects['bankentry/importCsv']} disabled={!getFieldsValue().file}>Import</Button>
+          <Button type="primary" icon="check" onClick={() => autoRecon()} loading={loading && loading.effects['bankentry/importCsv']}>Start Reconciliation</Button>
         </FormItem>
       </Form>
     </div>
