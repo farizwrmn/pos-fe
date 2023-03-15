@@ -405,7 +405,7 @@ const Routers = function ({ history, app }) {
           path: 'master/paymentoption',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/paymentOption'))
               registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/'))
@@ -415,7 +415,7 @@ const Routers = function ({ history, app }) {
           path: 'master/paymentoption/edc/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/paymentOption/edc'))
               registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/edc/'))
@@ -687,7 +687,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/adjust'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/transaction/adjust'))
             }, 'transaction-adjust')
           }
@@ -730,7 +730,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
               registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/report/accounting/ledger/generalLedger'))
             }, 'report-accounting-general-ledger-consolidation')
           }
@@ -1175,7 +1175,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/finance/pettyExpense'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
               registerModel(app, require('./models/setting/userStore'))
@@ -1205,7 +1205,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/transferInvoice'))
               registerModel(app, require('./models/transferOut'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/transfer/transferInvoice'))
             }, 'inventory-transfer-invoice')
@@ -1223,7 +1223,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/cashentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
@@ -1515,7 +1515,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/journalentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
@@ -1528,10 +1528,9 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/master/bank'))
-              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
               cb(null, require('./routes/accounts/bankentry/'))
@@ -1542,7 +1541,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/transferentry/'))
             }, 'finance-transfer-entry')
           }
@@ -1551,7 +1550,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/bankrecon'))
             }, 'finance-bank-recon')
           }
@@ -1568,7 +1567,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/bankhistory/'))
             }, 'finance-bank-history')
           }
@@ -1980,7 +1979,7 @@ const Routers = function ({ history, app }) {
           path: 'marketing/voucher',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/marketing/voucher'))
               cb(null, require('./routes/marketing/voucher'))
             }, 'marketing-voucher')
@@ -2039,7 +2038,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/generalLedger'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/taxReport/generalLedger'))
             }, 'tax-report-accounting-general-ledger-consolidation')
           }
@@ -2064,7 +2063,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/journalentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/taxReport/journalentry'))
             }, 'tools-transaction-journal-entry')
           }
@@ -2072,7 +2071,7 @@ const Routers = function ({ history, app }) {
           path: 'balance/finance/petty-cash',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/finance/pettyCash'))
               cb(null, require('./routes/finance/pettyCash'))
@@ -2090,7 +2089,7 @@ const Routers = function ({ history, app }) {
           path: 'balance/finance/petty-expense',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/finance/pettyExpense'))
@@ -2103,7 +2102,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/finance/pettyHistory'))
               registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/finance/pettyHistory'))
             }, 'finance-history')
           }
@@ -2112,7 +2111,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/marketing/voucherdetail'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/marketing/voucher/detail'))
             }, 'marketing-voucher-detail')
           }
