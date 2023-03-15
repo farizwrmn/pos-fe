@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs } from 'antd'
+import ModalAccountRule from './ModalAccountRule'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
@@ -10,8 +11,9 @@ import Setting from './Setting'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ accountCode, accountCodeDefault, loading, dispatch, location, app }) => {
+const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispatch, location, app }) => {
   const { listAccountCode, listAccountCodeLov, pagination, modalType, currentItem, activeKey } = accountCode
+  const { modalAccountRuleVisible, modalAccountRuleItem } = accountRule
   const { listAccountCodeDefaultLov } = accountCodeDefault
   const { user, storeInfo } = app
   const filterProps = {
@@ -111,17 +113,12 @@ const Counter = ({ accountCode, accountCodeDefault, loading, dispatch, location,
         payload: data
       })
     },
-    queryEditItem (code, id) {
+    queryEditItem (item) {
       dispatch({
-        type: 'accountCode/updateState',
+        type: 'accountRule/updateState',
         payload: {
-          currentItem: {}
-        }
-      })
-      dispatch({
-        type: 'accountCode/queryEditItem',
-        payload: {
-          id
+          modalAccountRuleItem: item,
+          modalAccountRuleVisible: true
         }
       })
     },
@@ -156,8 +153,44 @@ const Counter = ({ accountCode, accountCodeDefault, loading, dispatch, location,
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
   }
 
+  const modalAccountRuleProps = {
+    visible: modalAccountRuleVisible,
+    item: modalAccountRuleItem,
+    loading,
+    onEdit () {
+      dispatch({
+        type: 'accountCode/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+      dispatch({
+        type: 'accountCode/queryEditItem',
+        payload: {
+          id: modalAccountRuleItem.id
+        }
+      })
+    },
+    onEditRole (data) {
+      dispatch({
+        type: 'accountRule/edit',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'accountRule/updateState',
+        payload: {
+          modalAccountRuleVisible: false,
+          modalAccountRuleItem: {}
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
+      {modalAccountRuleVisible && <ModalAccountRule {...modalAccountRuleProps} />}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
@@ -190,4 +223,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, accountCodeDefault, loading, app }) => ({ accountCode, accountCodeDefault, loading, app }))(Counter)
+export default connect(({ accountCode, accountRule, accountCodeDefault, loading, app }) => ({ accountCode, accountRule, accountCodeDefault, loading, app }))(Counter)
