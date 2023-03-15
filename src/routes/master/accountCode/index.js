@@ -120,6 +120,14 @@ const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispat
           item
         }
       })
+
+      dispatch({
+        type: 'updateState',
+        payload: {
+          modalAccountRuleItem: item,
+          modalAccountRuleVisible: {}
+        }
+      })
     },
     showParent () {
       dispatch({

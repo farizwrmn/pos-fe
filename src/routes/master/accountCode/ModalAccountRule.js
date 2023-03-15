@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button } from 'antd'
+import { Modal, Button, Spin } from 'antd'
 
 const ModalAccountRule = ({ onEdit, onCancel, onEditRole, loading, ...modalProps }) => {
   return (
@@ -12,7 +12,9 @@ const ModalAccountRule = ({ onEdit, onCancel, onEditRole, loading, ...modalProps
         (<Button id="button" type="primary" onClick={onEditRole} disabled={loading.effects['payment/create']}>Submit Role</Button>)
       ]}
     >
-      Modal
+      {loading.effects['accountRule/queryId'] || loading.effects['accountRule/edit'] ? <Spin /> : (
+        <div>Modal</div>
+      )}
     </Modal>
   )
 }
