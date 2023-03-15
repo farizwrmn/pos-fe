@@ -154,6 +154,7 @@ const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispat
   }
 
   const modalAccountRuleProps = {
+    title: `Edit ${modalAccountRuleItem ? modalAccountRuleItem.accountCode : ''} - ${modalAccountRuleItem ? modalAccountRuleItem.accountName : ''}`,
     visible: modalAccountRuleVisible,
     item: modalAccountRuleItem,
     loading,
@@ -168,6 +169,13 @@ const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispat
         type: 'accountCode/queryEditItem',
         payload: {
           id: modalAccountRuleItem.id
+        }
+      })
+      dispatch({
+        type: 'accountRule/updateState',
+        payload: {
+          modalAccountRuleVisible: false,
+          modalAccountRuleItem: {}
         }
       })
     },

@@ -170,7 +170,7 @@ const FormCounter = ({
           key={item.accountCode}
           title={(
             <div
-              onClick={() => handleClickTree(item.accountCode, item.id)}
+              onClick={() => handleClickTree(item)}
               value={item.accountCode}
             >
               {item.accountCode} - {item.accountName}
