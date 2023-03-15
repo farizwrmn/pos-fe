@@ -115,10 +115,9 @@ const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispat
     },
     queryEditItem (item) {
       dispatch({
-        type: 'accountRule/updateState',
+        type: 'accountRule/queryId',
         payload: {
-          modalAccountRuleItem: item,
-          modalAccountRuleVisible: true
+          item
         }
       })
     },
