@@ -18,12 +18,12 @@ const ModalAccountRule = ({
     return data.map((item) => {
       if (item.children && item.children[0] && item.children[0].key) {
         return (
-          <TreeNode title={item.title} key={item.key} dataRef={item}>
+          <TreeNode title={item.title} key={item.id || item.key} dataRef={item}>
             {renderTreeNodes(item.children)}
           </TreeNode>
         )
       }
-      return <TreeNode key={item.key} title={item.title} />
+      return <TreeNode key={item.id || item.key} title={item.title} />
     })
   }
 
@@ -31,9 +31,6 @@ const ModalAccountRule = ({
     // modalNodeCheckedStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
     console.log('onCheckStore', checkedKeys.checked.filter((e) => { return e }))
   }
-
-  console.log('listAllStores', listAllStores)
-  console.log('listAllRole', listAllRole)
 
   return (
     <Modal
@@ -49,7 +46,7 @@ const ModalAccountRule = ({
         <div>
           <Row>
             <Col md={24} lg={12}>
-              <div>List Store</div>
+              <div><strong>List Store</strong></div>
               <Tree
                 checkable
                 checkStrictly
@@ -62,7 +59,7 @@ const ModalAccountRule = ({
               </Tree>
             </Col>
             <Col md={24} lg={12}>
-              <div>List Role</div>
+              <div><strong>List Role</strong></div>
               <Tree
                 checkable
                 checkStrictly

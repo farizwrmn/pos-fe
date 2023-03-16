@@ -197,14 +197,22 @@ export default modelExtend(pageModel, {
     * queryId ({ payload = {} }, { call, put }) {
       const { item } = payload
       const response = yield call(queryId, { id: item.id })
-      if (response.success) {
+      if (response.success && response.data && response.data.listStore && response.data.listRole) {
         yield put({
-          type: 'querySuccess',
+          type: 'updateState',
           payload: {
-            currentItem: response.data
+            listDefaultStore: response.data.listStore.map(item => `${item.storeId}`),
+            listDefaultRole: response.data.listStore.map(item => item.userRole)
           }
         })
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDefaultStore: [],
+            listDefaultRole: []
+          }
+        })
         throw response
       }
     },

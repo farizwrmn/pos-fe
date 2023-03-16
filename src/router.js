@@ -382,6 +382,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/userRole'))
+              registerModel(app, require('./models/misc'))
               registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/accountCodeDefault'))
