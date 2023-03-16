@@ -177,7 +177,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             {data.payment_rule && !data.payment_rule.includes('no_image') && (
               <Row>
-                <Col span={12}>Upload by Admin</Col>
+                <Col span={12}>Payment proof</Col>
                 <Col span={12}>
                   {data.payment_rule ?
                     <img height="180px" src={`${IMAGEURL}/${data.payment_rule}`} alt="no_image" />
@@ -187,7 +187,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             )}
             {data.payment_proof && !data.payment_proof.includes('no_image') && (
               <Row>
-                <Col span={12}>Upload by Vendor</Col>
+                <Col span={12}>Payment proof</Col>
                 <Col span={12}>
                   {data.payment_proof ?
                     <img height="180px" src={`${IMAGECONSIGNMENTURL}/${data.payment_proof}`} alt="no_image" />
