@@ -11,9 +11,11 @@ import Setting from './Setting'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispatch, location, app }) => {
+const Counter = ({ accountCode, accountRule, userRole, userStore, accountCodeDefault, loading, dispatch, location, app }) => {
   const { listAccountCode, listAccountCodeLov, pagination, modalType, currentItem, activeKey } = accountCode
-  const { modalAccountRuleVisible, modalAccountRuleItem } = accountRule
+  const { listDefaultStore, listDefaultRole, modalAccountRuleVisible, modalAccountRuleItem } = accountRule
+  const { listAllStores } = userStore
+  const { listUserRole } = userRole
   const { listAccountCodeDefaultLov } = accountCodeDefault
   const { user, storeInfo } = app
   const filterProps = {
@@ -164,6 +166,10 @@ const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispat
     title: `Edit ${modalAccountRuleItem ? modalAccountRuleItem.accountCode : ''} - ${modalAccountRuleItem ? modalAccountRuleItem.accountName : ''}`,
     visible: modalAccountRuleVisible,
     item: modalAccountRuleItem,
+    listAllStores,
+    listDefaultStore,
+    listAllRole: listUserRole,
+    listDefaultRole,
     loading,
     onEdit () {
       dispatch({
@@ -238,4 +244,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, accountRule, accountCodeDefault, loading, app }) => ({ accountCode, accountRule, accountCodeDefault, loading, app }))(Counter)
+export default connect(({ accountCode, accountRule, userRole, userStore, accountCodeDefault, loading, app }) => ({ accountCode, accountRule, userRole, userStore, accountCodeDefault, loading, app }))(Counter)

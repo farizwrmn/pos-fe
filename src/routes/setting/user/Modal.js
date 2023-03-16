@@ -287,6 +287,11 @@ const ModalEntry = ({
         }
       })
   }
+
+  console.log('listAllStores', listAllStores)
+  console.log('listUserStores', listUserStores)
+  console.log('listUserRole', listUserRole)
+
   return (
     <Modal width="35vw"
       height="70vh"
