@@ -194,13 +194,6 @@ export default modelExtend(pageModel, {
   effects: {
     * queryId ({ payload = {} }, { call, put }) {
       const { item } = payload
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalAccountRuleItem: payload.item,
-          modalAccountRuleVisible: {}
-        }
-      })
       const response = yield call(queryId, { id: item.id })
       if (response.success) {
         yield put({

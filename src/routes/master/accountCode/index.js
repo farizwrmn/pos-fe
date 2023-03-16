@@ -122,10 +122,10 @@ const Counter = ({ accountCode, accountRule, accountCodeDefault, loading, dispat
       })
 
       dispatch({
-        type: 'updateState',
+        type: 'accountRule/updateState',
         payload: {
           modalAccountRuleItem: item,
-          modalAccountRuleVisible: {}
+          modalAccountRuleVisible: true
         }
       })
     },
