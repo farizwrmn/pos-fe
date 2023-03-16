@@ -190,17 +190,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
                 <Col span={12}>Upload by Vendor</Col>
                 <Col span={12}>
                   {data.payment_proof ?
-                    <img
-                      height="180px"
-                      src={`${IMAGEURL}/${data.payment_proof}`}
-                      alt="no_image"
-                      onError={(e) => {
-                        const oldURL = `${IMAGECONSIGNMENTURL}/${data.payment_proof}`
-                        if (e.target.src !== oldURL) {
-                          e.target.src = oldURL
-                        }
-                      }}
-                    />
+                    <img height="180px" src={`${IMAGECONSIGNMENTURL}/${data.payment_proof}`} alt="no_image" />
                     : null}
                 </Col>
               </Row>
