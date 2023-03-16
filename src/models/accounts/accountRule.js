@@ -202,7 +202,9 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listDefaultStore: response.data.listStore.map(item => `${item.storeId}`),
-            listDefaultRole: response.data.listStore.map(item => item.userRole)
+            listDefaultRole: response.data.listRole.map(item => item.userRole),
+            modalAccountRuleItem: item,
+            modalAccountRuleVisible: true
           }
         })
       } else {
@@ -272,30 +274,22 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
-      if (data.success) {
+      const response = yield call(add, payload.data)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            modalAccountRuleItem: {},
+            modalAccountRuleVisible: false,
+            listDefaultRole: [],
+            listDefaultStore: []
           }
         })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
+        throw response
       }
     }
   },

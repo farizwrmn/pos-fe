@@ -108,6 +108,7 @@ const Counter = ({ accountCode, accountRule, misc, userStore, accountCodeDefault
     modalType,
     item: currentItem,
     listAccountCodeLov,
+    loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
       dispatch({
@@ -120,14 +121,6 @@ const Counter = ({ accountCode, accountRule, misc, userStore, accountCodeDefault
         type: 'accountRule/queryId',
         payload: {
           item
-        }
-      })
-
-      dispatch({
-        type: 'accountRule/updateState',
-        payload: {
-          modalAccountRuleItem: item,
-          modalAccountRuleVisible: true
         }
       })
     },
@@ -171,7 +164,7 @@ const Counter = ({ accountCode, accountRule, misc, userStore, accountCodeDefault
     item: modalAccountRuleItem,
     listAllStores,
     listDefaultStore,
-    listAllRole: listRole,
+    listAllRole: listRole.filter(filtered => filtered.key !== 'OWN'),
     listDefaultRole,
     loading,
     onEdit () {
@@ -197,8 +190,13 @@ const Counter = ({ accountCode, accountRule, misc, userStore, accountCodeDefault
     },
     onEditRole (data) {
       dispatch({
-        type: 'accountRule/edit',
-        payload: data
+        type: 'accountRule/add',
+        payload: {
+          data: {
+            accountId: modalAccountRuleItem.id,
+            ...data
+          }
+        }
       })
     },
     onCancel () {
@@ -214,7 +212,7 @@ const Counter = ({ accountCode, accountRule, misc, userStore, accountCodeDefault
 
   return (
     <div className="content-inner">
-      {modalAccountRuleVisible && <ModalAccountRule {...modalAccountRuleProps} />}
+      {modalAccountRuleVisible && !loading.effects['accountRule/queryId'] && <ModalAccountRule {...modalAccountRuleProps} />}
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}

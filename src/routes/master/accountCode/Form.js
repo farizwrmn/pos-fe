@@ -36,6 +36,7 @@ const FormCounter = ({
   button,
   queryEditItem,
   showParent,
+  loading,
   form: {
     getFieldDecorator,
     validateFields,
@@ -152,6 +153,7 @@ const FormCounter = ({
         return (
           <TreeNode
             key={item.accountCode}
+            disabled={loading.effects['accountRule/queryId']}
             title={(
               <div
                 onClick={() => handleClickTree(item)}
@@ -168,6 +170,7 @@ const FormCounter = ({
       return (
         <TreeNode
           key={item.accountCode}
+          disabled={loading.effects['accountRule/queryId']}
           title={(
             <div
               onClick={() => handleClickTree(item)}
