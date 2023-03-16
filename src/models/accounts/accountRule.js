@@ -38,6 +38,8 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     modalAccountRuleVisible: false,
     modalAccountRuleItem: {},
+    listDefaultStore: [],
+    listDefaultRole: [],
     listAccountCode: [],
     listAccountCodeExpense: [],
     listAccountCodeLov: [],

@@ -380,6 +380,8 @@ const Routers = function ({ history, app }) {
           path: 'master/account',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/setting/userRole'))
               registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/accountCodeDefault'))
