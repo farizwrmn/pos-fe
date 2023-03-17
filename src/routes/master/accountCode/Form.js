@@ -36,6 +36,7 @@ const FormCounter = ({
   button,
   queryEditItem,
   showParent,
+  loading,
   form: {
     getFieldDecorator,
     validateFields,
@@ -61,18 +62,9 @@ const FormCounter = ({
     }
   }
 
-  const handleClickTree = (event, id) => {
-    Modal.confirm({
-      title: 'Edit item ?',
-      content: `You're gonna edit item ${event}`,
-      onOk () {
-        resetFields()
-        queryEditItem(event, id)
-      },
-      onCancel () {
-        console.log('cancel')
-      }
-    })
+  const handleClickTree = (item) => {
+    resetFields()
+    queryEditItem(item)
   }
 
   const listOptions = (listAccountCodeLov || []).length > 0 ? (listAccountCodeLov || []).map(c => <Option key={c.id}>{c.accountName} ({c.accountCode})</Option>) : []
@@ -161,9 +153,10 @@ const FormCounter = ({
         return (
           <TreeNode
             key={item.accountCode}
+            disabled={loading.effects['accountRule/queryId']}
             title={(
               <div
-                onClick={() => handleClickTree(item.accountCode, item.id)}
+                onClick={() => handleClickTree(item)}
                 value={item.accountCode}
               >
                 {item.accountCode} - {item.accountName}
@@ -177,9 +170,10 @@ const FormCounter = ({
       return (
         <TreeNode
           key={item.accountCode}
+          disabled={loading.effects['accountRule/queryId']}
           title={(
             <div
-              onClick={() => handleClickTree(item.accountCode, item.id)}
+              onClick={() => handleClickTree(item)}
               value={item.accountCode}
             >
               {item.accountCode} - {item.accountName}
@@ -304,7 +298,7 @@ const FormCounter = ({
             <br />
             <br />
             <Col {...column}>
-              <div style={{ margin: '0px', width: '100 %', overflowY: 'auto', height: '300px' }}>
+              <div style={{ margin: '0px', width: '100%', overflowY: 'auto', height: '400px' }}>
                 <Tree
                   showLine
                   // onRightClick={handleChooseTree}

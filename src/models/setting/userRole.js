@@ -18,10 +18,13 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/setting/user') {
+        if (location.pathname === '/setting/user'
+          || location.pathname === '/master/account') {
           dispatch({
             type: 'query',
-            payload: location.query
+            payload: {
+              userId: '000001'
+            }
           })
         }
       })

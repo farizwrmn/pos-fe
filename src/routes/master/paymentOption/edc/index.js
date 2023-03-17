@@ -9,10 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ paymentOpts, paymentEdc, accountCode, loading, dispatch, location, app }) => {
+const Counter = ({ paymentOpts, paymentEdc, accountRule, loading, dispatch, location, app }) => {
   const { listPayment, pagination, modalType, currentItem, activeKey } = paymentEdc
   const { listOpts } = paymentOpts
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -155,13 +155,13 @@ Counter.propTypes = {
 export default connect(({
   paymentOpts,
   paymentEdc,
-  accountCode,
+  accountRule,
   loading,
   app
 }) => ({
   paymentOpts,
   paymentEdc,
-  accountCode,
+  accountRule,
   loading,
   app
 }))(Counter)

@@ -9,12 +9,12 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ cashentry, accountCode, customer, supplier, loading, dispatch, location, app }) => {
+const Cash = ({ cashentry, accountRule, customer, supplier, loading, dispatch, location, app }) => {
   const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = cashentry
 
   const { listCustomer } = customer
   const { listSupplier } = supplier
-  const { listAccountCode, listAccountCodeExpense } = accountCode
+  const { listAccountCode, listAccountCodeExpense } = accountRule
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -326,9 +326,9 @@ Cash.propTypes = {
 
 export default connect(({
   cashentry,
-  accountCode,
+  accountRule,
   customer,
   supplier,
   loading,
   pos,
-  app }) => ({ cashentry, accountCode, customer, supplier, loading, pos, app }))(Cash)
+  app }) => ({ cashentry, accountRule, customer, supplier, loading, pos, app }))(Cash)
