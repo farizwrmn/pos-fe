@@ -110,10 +110,10 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
       </Row>
       <Row>
         <Col {...listColumnProps}>
-          <ConflictedList {...conflictedListProps} />
+          <List {...listProps} />
         </Col>
         <Col {...listColumnProps}>
-          <List {...listProps} />
+          <ConflictedList {...conflictedListProps} />
         </Col>
       </Row>
     </div>

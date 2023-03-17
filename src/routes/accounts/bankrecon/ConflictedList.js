@@ -6,9 +6,6 @@ const ConflictedList = ({
 }) => {
   return (
     <Row style={{ zIndex: 1 }}>
-      <div>
-        CONFLICTED LIST
-      </div>
       <Col md={24} lg={12}>
         {listConflictedBankRecon && listConflictedBankRecon.map((item) => {
           return (
@@ -16,7 +13,7 @@ const ConflictedList = ({
               <Card
                 title={(
                   <div>
-                    {item.merchantName}
+                    {`${item.merchantName} ( CONFLICTED )`}
                   </div>
                 )}
                 style={{ marginBottom: '1em' }}
