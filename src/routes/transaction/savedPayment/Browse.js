@@ -120,12 +120,13 @@ const BrowseGroup = ({
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: text =>
-      (<span>
-        <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
-          {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
-        </Tag>
-      </span>),
+      render: text => (
+        <span>
+          <Tag color={text === 'A' ? 'blue' : text === 'C' ? 'red' : 'green'}>
+            {text === 'A' ? 'Active' : text === 'C' ? 'Canceled' : 'Non-Active'}
+          </Tag>
+        </span>
+      ),
       filters: [{
         text: 'Active',
         value: 'A'
