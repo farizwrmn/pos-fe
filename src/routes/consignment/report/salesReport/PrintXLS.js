@@ -84,15 +84,15 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
           const datalist = [
             (index + 1 || '').toString(),
             listData.createdAt || '-',
-            listData['salesOrder.number'] || '-',
-            listData['stock.product.product_name'] || '-',
+            listData['salesOrder.number'] || listData['returnOrder.number'],
+            listData['stock.product.product_name'] || listData['salesOrderProduct.stock.product.product_name'],
             listData.quantity || '-',
-            listData['salesOrder.paymentMethods.method'] || '-',
+            listData['salesOrder.paymentMethods.method'] || listData['returnOrder.salesOrder.paymentMethods.method'],
             listData.total || 0,
             listData.commission || 0,
             listData.charge || 0,
             listData.commissionGrab || 0,
-            listData['stock.product.capital'] || 0,
+            (listData['stock.product.capital'] || 0) || (listData['salesOrderProduct.stock.product.capital'] || 0),
             listData.profit || 0
           ]
           if (index === dataBody.list.length - 1) {
@@ -114,7 +114,10 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
               datalist.map(dataDetail => ({
                 value: dataDetail,
                 alignment: { vertical: 'middle', horizontal: 'middle' },
-                font: styles.tableBody,
+                font: {
+                  ...styles.tableBody,
+                  color: listData.type === 'rtn' ? { argb: 'FFFF0000' } : { argb: '00000000' }
+                },
                 border: styles.tableBorder
               })),
               summary.map(dataDetail => ({
@@ -128,7 +131,10 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
           return datalist.map(dataDetail => ({
             value: dataDetail,
             alignment: { vertical: 'middle', horizontal: 'middle' },
-            font: styles.tableBody,
+            font: {
+              ...styles.tableBody,
+              color: listData.type === 'rtn' ? { argb: 'FFFF0000' } : { argb: '00000000' }
+            },
             border: styles.tableBorder
           }))
         })
@@ -152,22 +158,25 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
       const datalist = [
         index.toString(),
         listData.createdAt || '-',
-        listData['salesOrder.number'] || '-',
-        listData['stock.product.product_name'] || '-',
+        listData['salesOrder.number'] || listData['returnOrder.number'],
+        listData['stock.product.product_name'] || listData['salesOrderProduct.stock.product.product_name'],
         listData.quantity || '-',
-        listData['salesOrder.paymentMethods.method'] || '-',
+        listData['salesOrder.paymentMethods.method'] || listData['returnOrder.salesOrder.paymentMethods.method'],
         listData.total || 0,
         listData.commission || 0,
         listData.charge || 0,
         listData.grab || 0,
-        listData['stock.product.capital'] || 0,
+        (listData['stock.product.capital'] || 0) || (listData['salesOrderProduct.stock.product.capital'] || 0),
         listData.profit || 0
       ]
       index += 1
       resultData.push(datalist.map(dataDetail => ({
         value: dataDetail,
         alignment: { vertical: 'middle', horizontal: 'middle' },
-        font: styles.tableBody,
+        font: {
+          ...styles.tableBody,
+          color: listData.type === 'rtn' ? { argb: 'FFFF0000' } : { argb: '00000000' }
+        },
         border: styles.tableBorder
       })))
       return listData
