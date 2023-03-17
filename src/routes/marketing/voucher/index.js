@@ -9,9 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, app }) => {
+const Voucher = ({ marketingVoucher, accountRule, loading, dispatch, location, app }) => {
   const { list, pagination, newTransNo, modalType, currentItem, activeKey } = marketingVoucher
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -147,7 +147,7 @@ const Voucher = ({ marketingVoucher, accountCode, loading, dispatch, location, a
 }
 
 Voucher.propTypes = {
-  accountCode: PropTypes.object,
+  accountRule: PropTypes.object,
   marketingVoucher: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -155,4 +155,4 @@ Voucher.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ accountCode, marketingVoucher, loading, app }) => ({ accountCode, marketingVoucher, loading, app }))(Voucher)
+export default connect(({ accountRule, marketingVoucher, loading, app }) => ({ accountRule, marketingVoucher, loading, app }))(Voucher)

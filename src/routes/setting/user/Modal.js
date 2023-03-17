@@ -287,6 +287,7 @@ const ModalEntry = ({
         }
       })
   }
+
   return (
     <Modal width="35vw"
       height="70vh"
