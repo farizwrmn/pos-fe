@@ -100,7 +100,7 @@ const List = ({ ...tableProps, onFilterChange, list, summary, loading, vendorAct
     <Row>
       {summary && (
         <Row>
-          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Summary loading={loading} list={summary} />
           </Col>
         </Row>
