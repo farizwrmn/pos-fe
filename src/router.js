@@ -383,6 +383,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/userRole'))
               registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/accountCodeDefault'))
               cb(null, require('./routes/master/accountCode/'))
