@@ -23,6 +23,9 @@ export default modelExtend(pageModel, {
             payload: location.query
           })
         }
+        if (location.pathname === '/master/account') {
+          dispatch({ type: 'userStore/getAllStores', payload: {} })
+        }
         if (location.pathname === '/marketing/promo'
           || location.pathname === '/report/accounting/profit-loss'
           || location.pathname === '/report/accounting/tax-report'

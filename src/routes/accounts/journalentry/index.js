@@ -9,10 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ journalentry, accountCode, loading, dispatch, location, app }) => {
+const Cash = ({ journalentry, accountRule, loading, dispatch, location, app }) => {
   const { listCash, listItem, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = journalentry
 
-  const { listAccountCodeLov } = accountCode
+  const { listAccountCodeLov } = accountRule
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -322,12 +322,12 @@ Cash.propTypes = {
 export default connect(
   ({
     journalentry,
-    accountCode,
+    accountRule,
     loading,
     app
   }) => ({
     journalentry,
-    accountCode,
+    accountRule,
     loading,
     app
   }))(Cash)

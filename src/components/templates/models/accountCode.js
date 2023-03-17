@@ -44,16 +44,16 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data.success) {
+      const response = yield call(query, payload)
+      if (response.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: response.data,
             pagination: {
-              current: Number(data.page) || 1,
-              pageSize: Number(data.pageSize) || 10,
-              total: data.total
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total
             }
           }
         })
@@ -61,17 +61,17 @@ export default modelExtend(pageModel, {
     },
 
     * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
+      const response = yield call(remove, payload)
+      if (response.success) {
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw response
       }
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload.data)
-      if (data.success) {
+      const response = yield call(add, payload.data)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
@@ -93,15 +93,15 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
-        throw data
+        throw response
       }
     },
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ accountCode }) => accountCode.currentItem.id)
       const newCounter = { ...payload.data, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
+      const response = yield call(edit, newCounter)
+      if (response.success) {
         success()
         yield put({
           type: 'updateState',
@@ -129,7 +129,7 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
-        throw data
+        throw response
       }
     }
   },

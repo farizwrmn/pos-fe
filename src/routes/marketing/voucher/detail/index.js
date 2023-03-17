@@ -15,10 +15,10 @@ import ModalPayment from './ModalPayment'
 import PrintXLS from './PrintXLS'
 
 
-const Detail = ({ app, voucherdetail, accountCode, dispatch }) => {
+const Detail = ({ app, voucherdetail, accountRule, dispatch }) => {
   const { user, storeInfo } = app
   const { listDetail, listAccounting, visiblePayment, data, selectedRowKeys } = voucherdetail
-  const { listAccountCodeLov } = accountCode
+  const { listAccountCodeLov } = accountRule
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -144,8 +144,8 @@ const Detail = ({ app, voucherdetail, accountCode, dispatch }) => {
 
 Detail.propTypes = {
   app: PropTypes.object,
-  accountCode: PropTypes.object,
+  accountRule: PropTypes.object,
   voucherdetail: PropTypes.object
 }
 
-export default connect(({ app, voucherdetail, accountCode }) => ({ app, voucherdetail, accountCode }))(Detail)
+export default connect(({ app, voucherdetail, accountRule }) => ({ app, voucherdetail, accountRule }))(Detail)
