@@ -38,6 +38,7 @@ export default modelExtend(pageModel, {
       current: 1
     },
     listBankRecon: [],
+    listConflictedBankRecon: [],
     summaryBankRecon: [],
     accountId: null,
     from: null,
@@ -265,10 +266,17 @@ export default modelExtend(pageModel, {
         message.error(`Gagal: ${response.message}`)
       }
     },
-    * autoRecon ({ payload = {} }, { call }) {
+    * autoRecon ({ payload = {} }, { call, put }) {
       const response = yield call(autoRecon, payload)
-      if (response && response.success) {
-        message.success('Berhasil!')
+      if (response && response.success && response.conflictedRecord) {
+        const { conflictedRecord } = response
+        yield put({
+          type: 'updateState',
+          payload: {
+            listConflictedBankRecon: conflictedRecord
+          }
+        })
+        message.success(`Berhasil! ${conflictedRecord.length > 0 && 'Terdapat conflict, selesaikan secara manual!'}`)
       } else {
         message.error(`Gagal: ${response.message}`)
       }

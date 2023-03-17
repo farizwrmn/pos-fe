@@ -6,7 +6,7 @@ const FormItem = Form.Item
 
 let currentArray = []
 
-const bcaCSVtoArray = (string) => {
+const convertCSVtoArray = (string) => {
   const csvHeader = [
     'approvalCode',
     'cardNumber',
@@ -129,10 +129,7 @@ const FormAutoCounter = ({
   }
 }) => {
   const handleSubmit = () => {
-    console.log('submit')
     validateFields((error) => {
-      console.log('error', error)
-      console.log('currentArray', currentArray)
       if (error) {
         return error
       }
@@ -150,9 +147,7 @@ const FormAutoCounter = ({
 
     fileReader.onload = function (event) {
       const text = event.target.result
-      if (getFieldsValue().bank === 1) {
-        bcaCSVtoArray(text)
-      }
+      convertCSVtoArray(text)
     }
 
     fileReader.readAsText(file)

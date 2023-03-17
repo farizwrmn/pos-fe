@@ -2,14 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Modal, Row } from 'antd'
+import { Col, Modal, Row } from 'antd'
 import FormImport from './FormImport'
 import Form from './Form'
 import List from './List'
+import ConflictedList from './ConflictedList'
 
 const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   const {
     listBankRecon,
+    listConflictedBankRecon,
     summaryBankRecon,
     selectedRowKeys,
     currentItem,
@@ -19,6 +21,14 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     to
   } = bankentry
   const { listAccountCode } = accountRule
+
+  const listColumnProps = {
+    xs: 24,
+    sm: 24,
+    md: 12,
+    lg: 12,
+    xl: 12
+  }
 
   const formImportProps = {
     loading,
@@ -89,12 +99,23 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     }
   }
 
+  const conflictedListProps = {
+    listConflictedBankRecon
+  }
+
   return (
     <div className="content-inner">
       <Row>
         <Form {...formProps} />
       </Row>
-      <List {...listProps} />
+      <Row>
+        <Col {...listColumnProps}>
+          <ConflictedList {...conflictedListProps} />
+        </Col>
+        <Col {...listColumnProps}>
+          <List {...listProps} />
+        </Col>
+      </Row>
     </div>
   )
 }
