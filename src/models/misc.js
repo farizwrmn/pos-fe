@@ -21,6 +21,14 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
+        if (location.pathname === '/master/account') {
+          dispatch({
+            type: 'lov',
+            payload: {
+              code: 'USERROLE'
+            }
+          })
+        }
         if (location.pathname === '/setting/misc') {
           dispatch({
             type: 'query',

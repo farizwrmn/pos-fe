@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 import List from './List'
 
-const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
+const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   const {
     listBankRecon,
     summaryBankRecon,
@@ -14,7 +14,7 @@ const Cash = ({ bankentry, accountCode, location, loading, dispatch }) => {
     from,
     to
   } = bankentry
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
 
   const formProps = {
     item: currentItem,
@@ -75,6 +75,6 @@ Cash.propTypes = {
 
 export default connect(({
   bankentry,
-  accountCode,
+  accountRule,
   loading,
-  pos }) => ({ bankentry, accountCode, loading, pos }))(Cash)
+  pos }) => ({ bankentry, accountRule, loading, pos }))(Cash)
