@@ -16,14 +16,14 @@ import List from './List'
 
 const TabPane = Tabs.TabPane
 
-const Adjust = ({ adjustNew, app, location, pos, dispatch, accountCode, adjust, productstock, loading }) => {
+const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, productstock, loading }) => {
   const { user, storeInfo } = app
   const {
     activeKey, lastTrans, templistType, pagination, currentItem, searchText, disabledItemOut, disabledItemIn, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee,
     modalVisible, modalType
   } = adjust
   const { list, pagination: paginationNew } = adjustNew
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
   const {
     tmpProductList
   } = pos
@@ -439,7 +439,7 @@ Adjust.propTypes = {
   app: PropTypes.object.isRequired,
   adjustNew: PropTypes.object.isRequired,
   adjust: PropTypes.object.isRequired,
-  accountCode: PropTypes.object.isRequired,
+  accountRule: PropTypes.object.isRequired,
   productstock: PropTypes.object.isRequired,
   location: PropTypes.object,
   dispatch: PropTypes.func,
@@ -447,4 +447,4 @@ Adjust.propTypes = {
 }
 
 
-export default connect(({ pos, app, adjustNew, adjust, productstock, accountCode, loading }) => ({ pos, app, adjustNew, adjust, productstock, accountCode, loading }))(Adjust)
+export default connect(({ pos, app, adjustNew, adjust, productstock, accountRule, loading }) => ({ pos, app, adjustNew, adjust, productstock, accountRule, loading }))(Adjust)

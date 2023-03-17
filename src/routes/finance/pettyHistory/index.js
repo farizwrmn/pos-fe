@@ -7,9 +7,9 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ pettyHistory, accountCode, userStore, loading, dispatch, location }) => {
+const Counter = ({ pettyHistory, accountRule, userStore, loading, dispatch, location }) => {
   const { list, modalClosingVisible, currentItemClosing, modalType, currentItem, activeKey } = pettyHistory
-  const { listAccountCode, listAccountCodeExpense } = accountCode
+  const { listAccountCode, listAccountCodeExpense } = accountRule
   const { listAllStores } = userStore
 
   const changeTab = (key) => {
@@ -130,7 +130,7 @@ const Counter = ({ pettyHistory, accountCode, userStore, loading, dispatch, loca
 
 Counter.propTypes = {
   pettyHistory: PropTypes.object,
-  accountCode: PropTypes.object,
+  accountRule: PropTypes.object,
   userStore: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -138,4 +138,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyHistory, accountCode, userStore, loading, app }) => ({ pettyHistory, accountCode, userStore, loading, app }))(Counter)
+export default connect(({ pettyHistory, accountRule, userStore, loading, app }) => ({ pettyHistory, accountRule, userStore, loading, app }))(Counter)

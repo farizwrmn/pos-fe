@@ -109,7 +109,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              accountType: [],
+              accountType: ACCOUNT_TYPE_BANK,
               cacheType: CACHE_TYPE_ALL
             }
           })
@@ -119,7 +119,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              accountType: ACCOUNT_TYPE_BANK,
+              accountType: [],
               cacheType: CACHE_TYPE_BANK
             }
           })
@@ -176,8 +176,7 @@ export default modelExtend(pageModel, {
           })
         }
         if (
-          pathname === '/master/account'
-          || pathname === '/journal-entry'
+          pathname === '/journal-entry'
           || pathname === '/tools/transaction/journal-entry') {
           if (activeKey !== '1') {
             dispatch({
@@ -227,7 +226,7 @@ export default modelExtend(pageModel, {
       })
       if (response.success) {
         yield put({
-          type: 'querySuccess',
+          type: 'updateState',
           payload: {
             listAccountCode: response.data
           }
@@ -245,7 +244,7 @@ export default modelExtend(pageModel, {
       })
       if (response.success) {
         yield put({
-          type: 'querySuccess',
+          type: 'updateState',
           payload: {
             listAccountCodeExpense: response.data
           }
@@ -263,7 +262,7 @@ export default modelExtend(pageModel, {
       })
       if (response.success) {
         yield put({
-          type: 'querySuccess',
+          type: 'updateState',
           payload: {
             listAccountCodeLov: response.data
           }
