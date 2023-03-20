@@ -51,6 +51,8 @@ class TransferModal extends Component {
           data.dimension = currentItemList.dimension
           data.dimensionPack = currentItemList.dimensionPack
           data.dimensionBox = currentItemList.dimensionBox
+          data.qtyStore = currentItemList.qtyStore
+          data.qtyDemand = currentItemList.qtyDemand
           onOkList(data)
           // handleProductBrowse()
         } else {
