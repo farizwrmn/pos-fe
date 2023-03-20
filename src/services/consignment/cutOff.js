@@ -11,6 +11,16 @@ export async function query (data) {
   })
 }
 
+export async function queryallCutOff (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/cut-off/get-all`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryPeriodList () {
   const apiHeaderToken = crypt.apiheader()
   return request({

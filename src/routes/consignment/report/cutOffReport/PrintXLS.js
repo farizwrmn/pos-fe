@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 import moment from 'moment'
 
-const PrintXLS = ({ dataSource, period }) => {
+const PrintXLS = ({ dataSource, period, name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -41,13 +41,14 @@ const PrintXLS = ({ dataSource, period }) => {
       if (list.hasOwnProperty(key)) {
         let row = []
         row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key]['vendor.name'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].outletName, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: `${list[key]['vendor.vendor_code']} - ${list[key]['vendor.name']}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key]['vendor.bank_name'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key]['vendor.account_number'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: list[key]['vendor.account_name'] || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].total || '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].commission || '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: list[key].charge || '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].total || '0', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].commission || '0', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: list[key].charge || '0', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({
           value: (list[key]['vendor.bank_name'].toLowerCase() !== 'bca'
             ? 5000
@@ -82,6 +83,7 @@ const PrintXLS = ({ dataSource, period }) => {
   const tableHeader = [
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'OUTLET', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'VENDOR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'BANK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'NO. REK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
@@ -108,8 +110,7 @@ const PrintXLS = ({ dataSource, period }) => {
     iconSize: '',
     buttonSize: '',
     className: '',
-    name: 'Excel',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
+    name,
     paperSize: 9,
     orientation: 'portrait',
     data: dataSource,
