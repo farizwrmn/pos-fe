@@ -2,7 +2,8 @@ import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import {
   queryPeriodList,
-  query
+  query,
+  queryallCutOff
 } from 'services/consignment/cutOff'
 import { setCutOffReadyForEmail } from 'services/consignment/cutOffDetail'
 import { getConsignmentId } from 'utils/lstorage'
@@ -16,6 +17,13 @@ export default modelExtend(pageModel, {
     period: null,
     activeKey: '0',
     list: [],
+
+    showPDFModal: false,
+    mode: '',
+    changed: false,
+    cutOffLoading: false,
+    listPrintAllCutOff: [],
+
     consignmentId: getConsignmentId(),
     periodList: [],
     pagination: {
@@ -58,7 +66,7 @@ export default modelExtend(pageModel, {
       const consignmentId = getConsignmentId()
       if (consignmentId) {
         const params = {
-          period: payload.period,
+          ...payload,
           outletId: consignmentId
         }
         const response = yield call(query, params)
@@ -82,6 +90,20 @@ export default modelExtend(pageModel, {
       } else {
         message.error(`Gagal: ${response.message}`)
       }
+    },
+    * queryAllCutOff ({ payload = {} }, { call, put }) {
+      yield put({ type: 'showLoading' })
+      const data = yield call(queryallCutOff, payload)
+      yield put({ type: 'hideLoading' })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPrintAllCutOff: data.data,
+            changed: true
+          }
+        })
+      }
     }
 
   },
@@ -97,6 +119,19 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         ...action.payload
+      }
+    },
+    showLoading (state) {
+      return {
+        ...state,
+        cutOffLoading: true
+      }
+    },
+
+    hideLoading (state) {
+      return {
+        ...state,
+        cutOffLoading: false
       }
     }
   }

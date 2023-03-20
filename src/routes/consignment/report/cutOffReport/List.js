@@ -25,7 +25,9 @@ const List = ({
       title: 'Vendor',
       dataIndex: 'vendor.name',
       key: 'vendor.name',
-      width: 100
+      width: 100,
+      render: (value, record) => <div>{`${record['vendor.vendor_code']} - ${value}`}</div>
+
     },
     {
       title: 'Bank',

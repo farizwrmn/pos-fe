@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
 
-const PrintPDF = ({ dataSource, user, period }) => {
+const PrintPDF = ({ dataSource, user, period, name }) => {
   const styles = {
     header: {
       fontSize: 18,
@@ -62,10 +62,12 @@ const PrintPDF = ({ dataSource, user, period }) => {
         let row = []
         row.push({ text: count, alignment: 'center' })
         row.push({
-          text: `Nama: ${tableBody[key]['vendor.name'] || ''}
+          text: `Kode: ${tableBody[key]['vendor.vendor_code'] || ''}
+          Nama: ${tableBody[key]['vendor.name'] || ''}
         Bank: ${tableBody[key]['vendor.bank_name'] || ''}
         No. Rek: ${tableBody[key]['vendor.account_number'] || ''}
-        Nama Rek: ${tableBody[key]['vendor.account_name'] || ''}`,
+        Nama Rek: ${tableBody[key]['vendor.account_name'] || ''}
+        Outlet: ${tableBody[key].outletName || ''}`,
           alignment: 'left'
         })
         row.push({ text: `Rp ${Number(tableBody[key].total || 0).toLocaleString()}`, alignment: 'right' })
@@ -131,9 +133,8 @@ const PrintPDF = ({ dataSource, user, period }) => {
     buttonType: '',
     iconSize: '',
     buttonSize: '',
-    name: 'PDF',
+    name,
     className: '',
-    buttonStyle: { background: 'transparent', border: 'none', padding: 0 },
     width: ['5%', '25%', '11%', '9%', '9%', '15%', '12%', '14%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
