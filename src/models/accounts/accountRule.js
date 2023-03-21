@@ -109,7 +109,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              accountType: ACCOUNT_TYPE_BANK,
+              accountType: [],
               cacheType: CACHE_TYPE_ALL
             }
           })
