@@ -13,6 +13,7 @@ const TabPane = Tabs.TabPane
 function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
   const {
     list,
+    summary,
     activeKey,
     vendorActiveKey,
 
@@ -59,6 +60,7 @@ function SalesReport ({ consignmentSalesReport, dispatch, app, loading }) {
 
   const listProps = {
     list,
+    summary,
     pagination,
     vendorActiveKey,
     loading: loading.effects['consignmentSalesReport/query'],

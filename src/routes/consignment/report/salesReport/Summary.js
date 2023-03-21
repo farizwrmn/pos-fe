@@ -35,6 +35,18 @@ const Summary = ({ ...tableProps, list }) => {
         value: data.subTotal
       },
       {
+        name: 'Subtotal Food',
+        value: data.totalFood
+      },
+      {
+        name: 'Subtotal Non Food',
+        value: data.totalNonFood
+      },
+      {
+        name: 'Subtotal Dine In',
+        value: data.totalDineIn
+      },
+      {
         name: 'Commission',
         value: data.commission
       },
