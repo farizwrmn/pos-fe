@@ -13,24 +13,24 @@ const List = ({ ...tableProps, onFilterChange, list, summary, loading, vendorAct
   const columns = [
     {
       title: 'Tanggal',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       width: 90,
-      render: (text, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{moment(text).format('DD MMM YYYY')}</div>
+      render: (text, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{moment(text, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY')}</div>
     },
     {
       title: 'Faktur Penjualan',
-      dataIndex: 'salesOrder.number',
-      key: 'salesOrder.number',
+      dataIndex: 'number',
+      key: 'number',
       width: 140,
-      render: (value, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{value || record['returnOrder.number']}</div>
+      render: (value, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{value}</div>
     },
     {
       title: 'Nama Produk',
-      dataIndex: 'stock.product.product_name',
-      key: 'stock.product.product_name',
+      dataIndex: 'product_name',
+      key: 'product_name',
       width: 100,
-      render: (value, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{value || record['salesOrderProduct.stock.product.product_name']}</div>
+      render: (value, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{value}</div>
     },
     {
       title: 'Quantity',
@@ -41,10 +41,10 @@ const List = ({ ...tableProps, onFilterChange, list, summary, loading, vendorAct
     },
     {
       title: 'Metode Pembayaran',
-      dataIndex: 'salesOrder.paymentMethods.method',
-      key: 'salesOrder.paymentMethods.method',
+      dataIndex: 'method',
+      key: 'method',
       width: 140,
-      render: (value, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{value || record['returnOrder.salesOrder.paymentMethods.method']}</div>
+      render: (value, record) => <div style={{ color: record.type === 'rtn' ? color.error : color.black }}>{value}</div>
     },
     {
       title: 'Total(Modal + Grab)',
@@ -76,8 +76,8 @@ const List = ({ ...tableProps, onFilterChange, list, summary, loading, vendorAct
     },
     {
       title: 'Modal',
-      dataIndex: 'stock.product.capital',
-      key: 'stock.product.capital',
+      dataIndex: 'capital',
+      key: 'capital',
       width: 90,
       render: (value, record) => {
         return <div style={{ textAlign: 'end', color: record.type === 'rtn' ? color.error : color.black }}>{`Rp ${numberFormatter(value * record.quantity)}`}</div>
