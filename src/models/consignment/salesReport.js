@@ -15,6 +15,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     vendorActiveKey: '0',
     list: [],
+    summary: {},
 
     vendorList: [],
     selectedVendor: {},
@@ -74,7 +75,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: response.data
+            list: response.data.data,
+            summary: response.data.summary
           }
         })
       } else {

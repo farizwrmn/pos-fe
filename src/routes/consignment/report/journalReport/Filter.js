@@ -41,7 +41,7 @@ const Filter = ({
       if (selectedBalance && selectedBalance.id) {
         getData(moment(selectedBalance.open).format('YYYY-MM-DD HH:mm:SS'), moment(selectedBalance.closed).format('YYYY-MM-DD HH:mm:SS'))
       } else {
-        getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD 23:59:59'))
+        getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD'))
       }
     })
   }
