@@ -46,7 +46,7 @@ const List = ({
 
   return (
     <div>
-      <div style={{ position: 'fixed', minWidth: '300px', bottom: 10, right: 0, zIndex: 2 }}>
+      <div style={{ position: 'fixed', minWidth: '300px', bottom: 10, zIndex: 2 }}>
         {selectedRowKeys && selectedRowKeys.length > 0 && (
           <div>
             <Button

@@ -11,7 +11,8 @@ import ConflictedList from './ConflictedList'
 const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   const {
     listBankRecon,
-    listConflictedBankRecon,
+    conflictedCSV,
+    selectedConflictedRowKeys,
     summaryBankRecon,
     selectedRowKeys,
     currentItem,
@@ -100,7 +101,13 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   }
 
   const conflictedListProps = {
-    listConflictedBankRecon
+    conflictedCSV,
+    selectedConflictedRowKeys,
+    dispatch,
+    loading: loading.effects['bankentry/updateBankRecon'],
+    onSubmit () {
+
+    }
   }
 
   return (

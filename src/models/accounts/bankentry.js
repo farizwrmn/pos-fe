@@ -38,7 +38,8 @@ export default modelExtend(pageModel, {
       current: 1
     },
     listBankRecon: [],
-    listConflictedBankRecon: [],
+    conflictedCSV: [],
+    selectedConflictedRowKeys: [],
     summaryBankRecon: [],
     accountId: null,
     from: null,
@@ -270,13 +271,16 @@ export default modelExtend(pageModel, {
       const response = yield call(autoRecon, payload)
       if (response && response.success && response.conflictedRecord) {
         const { conflictedRecord } = response
+        const { conflictedImportData, accountLedger } = conflictedRecord
+        console.log('conflictedRecord', conflictedRecord)
         yield put({
           type: 'updateState',
           payload: {
-            listConflictedBankRecon: conflictedRecord
+            conflictedCSV: conflictedImportData,
+            listBankRecon: accountLedger
           }
         })
-        message.success(`Berhasil! ${conflictedRecord.length > 0 && 'Terdapat conflict, selesaikan secara manual!'}`)
+        message.success(`Berhasil! ${conflictedImportData.length > 0 ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
       } else {
         message.error(`Gagal: ${response.message}`)
       }
