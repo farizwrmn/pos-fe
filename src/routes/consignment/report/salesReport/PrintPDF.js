@@ -48,20 +48,20 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
-        row.push({ text: (tableBody[key].createdAt ? moment(tableBody[key].createdAt).format('DD MMM YYYY') : '').toString(), alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
+        row.push({ text: (tableBody[key].created_at ? moment(tableBody[key].created_at).format('DD MMM YYYY') : '').toString(), alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({
-          text: `${tableBody[key]['salesOrder.number'] || tableBody[key]['returnOrder.number']}
-        Produk: ${tableBody[key]['stock.product.product_name'] || tableBody[key]['salesOrderProduct.stock.product.product_name']}
+          text: `${tableBody[key].number}
+        Produk: ${tableBody[key].product_name}
         Qty: ${tableBody[key].quantity || 0}`,
           alignment: 'left',
           color: tableBody[key].type === 'rtn' ? 'red' : 'black'
         })
-        row.push({ text: (tableBody[key]['salesOrder.paymentMethods.method'] || tableBody[key]['returnOrder.salesOrder.paymentMethods.method']).toString(), alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
+        row.push({ text: (tableBody[key].method).toString(), alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({ text: `Rp ${Number(tableBody[key].total || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({ text: `Rp ${Number(tableBody[key].commission || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({ text: `Rp ${Number(tableBody[key].charge || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({ text: `Rp ${Number(tableBody[key].commissionGrab || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
-        row.push({ text: `Rp ${(Number(tableBody[key]['stock.product.capital'] || Number(tableBody[key]['salesOrderProduct.stock.product.capital'])) || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
+        row.push({ text: `Rp ${(Number(tableBody[key].capital || 0)).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({ text: `Rp ${Number(tableBody[key].profit || 0).toLocaleString()}`, alignment: 'right', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         body.push(row)
       }

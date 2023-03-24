@@ -63,7 +63,7 @@ const PrintXLS = ({ dataSource, summary, dateRange }) => {
 
   const title = [
     { value: 'LAPORAN JURNAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `Tanggal: ${moment(dateRange).format('DD MMMM YYYY')} - ${moment(dateRange).format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
+    { value: `Tanggal: ${moment(dateRange[0]).format('DD MMMM YYYY')} - ${moment(dateRange[1]).format('DD MMMM YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody }
   ]
 
   const tableHeader = [

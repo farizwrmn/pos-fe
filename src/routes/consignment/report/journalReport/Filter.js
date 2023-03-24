@@ -31,7 +31,7 @@ const Filter = ({
     validateFields
   }
 }) => {
-  const balanceOption = balanceList.length > 0 ? balanceList.map(record => (<Option key={record.id} value={record.id}>{record.approveUser.userName} || {moment(record.open).format('DD MMM YYYY | hh:mm:ss')} - {moment(record.closed).format('DD MMM YYYY | hh:mm:ss')}</Option>)) : []
+  const balanceOption = balanceList.length > 0 ? balanceList.map(record => (<Option key={record.id} value={record.id}>{record.approveUser.userName} || {moment(record.open).format('DD MMM YYYY | HH:mm:ss')} - {moment(record.closed).format('DD MMM YYYY | HH:mm:ss')}</Option>)) : []
 
   const handleSubmit = () => {
     validateFields((error) => {
@@ -39,7 +39,10 @@ const Filter = ({
         return error
       }
       if (selectedBalance && selectedBalance.id) {
-        getData(moment(selectedBalance.open).format('YYYY-MM-DD HH:mm:SS'), moment(selectedBalance.closed).format('YYYY-MM-DD HH:mm:SS'))
+        getData(moment(selectedBalance.open).format('YYYY-MM-DD'),
+          moment(selectedBalance.closed).format('YYYY-MM-DD'),
+          selectedBalance.open,
+          selectedBalance.closed)
       } else {
         getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD'))
       }
@@ -67,7 +70,7 @@ const Filter = ({
             filterOption={false}
             onChange={handleChangeBalance}
             disabled={!dateRange.length > 0}
-            value={selectedBalance.id ? `${selectedBalance.approveUser.userName} || ${moment(selectedBalance.open).format('DD MMM YYYY | hh:mm:ss')} - ${moment(selectedBalance.closed).format('DD MMM YYYY | hh:mm:ss')}` : undefined}
+            value={selectedBalance.id ? `${selectedBalance.approveUser.userName} || ${moment(selectedBalance.open).format('DD MMM YYYY | HH:mm:ss')} - ${moment(selectedBalance.closed).format('DD MMM YYYY | HH:mm:ss')}` : undefined}
           >
             {balanceOption}
           </Select>

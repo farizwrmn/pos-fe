@@ -54,12 +54,14 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
     selectedBalance,
     dateRange,
     loading: loading.effects['consignmentJournalReport/querySummary'],
-    getData (from, to) {
+    getData (from, to, openTime, closedTime) {
       dispatch({
         type: 'consignmentJournalReport/querySummary',
         payload: {
           from,
-          to
+          to,
+          openTime,
+          closedTime
         }
       })
     },
