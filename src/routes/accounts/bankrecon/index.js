@@ -12,7 +12,6 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   const {
     listBankRecon,
     conflictedCSV,
-    selectedConflictedRowKeys,
     summaryBankRecon,
     selectedRowKeys,
     currentItem,
@@ -32,15 +31,11 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   }
 
   const formImportProps = {
+    listAccountCode,
+    accountId,
+    from,
+    to,
     loading,
-    autoRecon () {
-      dispatch({
-        type: 'bankentry/autoRecon',
-        payload: {
-          list: listBankRecon
-        }
-      })
-    },
     importCSV (array) {
       console.log('array', array)
       dispatch({
@@ -48,6 +43,12 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
         payload: {
           list: array
         }
+      })
+    },
+    onSubmit (params) {
+      dispatch({
+        type: 'bankentry/autoRecon',
+        payload: params
       })
     }
   }
@@ -102,12 +103,7 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
 
   const conflictedListProps = {
     conflictedCSV,
-    selectedConflictedRowKeys,
-    dispatch,
-    loading: loading.effects['bankentry/updateBankRecon'],
-    onSubmit () {
-
-    }
+    loading: loading.effects['bankentry/updateBankRecon']
   }
 
   return (

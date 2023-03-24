@@ -268,6 +268,7 @@ export default modelExtend(pageModel, {
       }
     },
     * autoRecon ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
       const response = yield call(autoRecon, payload)
       if (response && response.success && response.conflictedRecord) {
         const { conflictedRecord } = response

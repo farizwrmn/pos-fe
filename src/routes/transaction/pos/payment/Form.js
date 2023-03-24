@@ -24,6 +24,34 @@ const Option = Select.Option
 const TreeNode = TreeSelect.TreeNode
 // const Option = Select.Option
 
+const printDateVisible = false
+const taxVisible = false
+
+const ammountItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24
+    },
+    sm: {
+      span: 24
+    },
+    md: {
+      span: 24
+    }
+  },
+  wrapperCol: {
+    xs: {
+      span: 24
+    },
+    sm: {
+      span: 24
+    },
+    md: {
+      span: 24
+    }
+  }
+}
+
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -300,6 +328,20 @@ class FormPayment extends React.Component {
 
     return (
       <Form layout="horizontal">
+        <Col>
+          <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
+            {getFieldDecorator('amount', {
+              initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
+                  message: '0-9 please insert the value'
+                }
+              ]
+            })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}>Netto</Button>)} autoFocus maxLength={10} />)}
+          </FormItem>
+        </Col>
         <Row>
           <Col md={12} sm={24}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
@@ -327,24 +369,17 @@ class FormPayment extends React.Component {
                 </TreeSelect>
               )}
             </FormItem>
-            <FormItem label="Amount" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('amount', {
-                initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
-                rules: [
-                  {
-                    required: true,
-                    pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
-                    message: '0-9 please insert the value'
-                  }
-                ]
-              })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}>Netto</Button>)} autoFocus maxLength={10} />)}
-            </FormItem>
-            <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
-              <Input maxLength={25} value={taxInvoiceNo} onChange={e => this.onChangeTaxInvoiceNo(e)} placeholder="Tax Invoice No" />
-            </FormItem>
-            <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
-              <DatePicker value={taxDate} onChange={e => this.onChangeTaxDate(e)} placeholder="Tax Date" />
-            </FormItem>
+
+            {taxVisible &&
+              <div>
+                <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+                  <Input maxLength={25} value={taxInvoiceNo} onChange={e => this.onChangeTaxInvoiceNo(e)} placeholder="Tax Invoice No" />
+                </FormItem>
+                <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
+                  <DatePicker value={taxDate} onChange={e => this.onChangeTaxDate(e)} placeholder="Tax Date" />
+                </FormItem>
+              </div>
+            }
           </Col>
           <Col md={12} sm={24}>
             <FormItem label="Note" hasFeedback {...formItemLayout}>
@@ -391,34 +426,36 @@ class FormPayment extends React.Component {
                 </Select>
               )}
             </FormItem>
-            <FormItem
-              label="Print Date"
-              hasFeedback
-              style={{
-                display: getFieldValue('typeCode') === 'C' ? 'none' : ''
-              }}
-              {...formItemLayout}
-            >
-              {getFieldDecorator('printDate', {
-                initialValue: (currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank) ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
-                  item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss')
-                    : null),
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C',
-                    message: 'please insert the value'
-                  }
-                ]
-              })(
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  placeholder="Select Time"
-                  disabled
-                  style={{ width: '100%', fontSize: '14pt' }}
-                />
-              )}
-            </FormItem>
+            {printDateVisible &&
+              <FormItem
+                label="Print Date"
+                hasFeedback
+                style={{
+                  display: getFieldValue('typeCode') === 'C' ? 'none' : ''
+                }}
+                {...formItemLayout}
+              >
+                {getFieldDecorator('printDate', {
+                  initialValue: (currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank) ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
+                    item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss')
+                      : null),
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C',
+                      message: 'please insert the value'
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="Select Time"
+                    disabled
+                    style={{ width: '100%', fontSize: '14pt' }}
+                  />
+                )}
+              </FormItem>
+            }
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardName', {
@@ -457,24 +494,36 @@ class FormPayment extends React.Component {
         <List {...listProps} />
         <Row>
           <Col md={12} sm={24} style={{ float: 'right', textAlign: 'right' }}>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
-              <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Charge" {...formItemLayout}>
-              <Input value={curCharge.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
-              <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Dine In Tax" {...formItemLayout}>
-              <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-              <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-              <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
+            {curTotal !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
+                <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curChange !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Charge" {...formItemLayout}>
+                <Input value={curCharge.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curRounding !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
+                <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {dineIn !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Dine In Tax" {...formItemLayout}>
+                <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curNetto !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
+                <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curChange !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
+                <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
             <Form layout="vertical">
               <FormItem>
                 <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" >Back To Transaction Detail</Button>

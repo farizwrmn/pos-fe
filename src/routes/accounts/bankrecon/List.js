@@ -46,6 +46,15 @@ const List = ({
 
   return (
     <div>
+      <div
+        style={{
+          padding: '10px',
+          fontSize: '20px',
+          fontWeight: 'bold'
+        }}
+      >
+        TIDAK ADA DI CSV
+      </div>
       <div style={{ position: 'fixed', minWidth: '300px', bottom: 10, zIndex: 2 }}>
         {selectedRowKeys && selectedRowKeys.length > 0 && (
           <div>
