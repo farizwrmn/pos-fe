@@ -36,7 +36,7 @@ const convertCSVtoArray = (string) => {
     'traceNumber',
     'transactionCode'
   ]
-  const csvRows = String(string).slice(String(string).indexOf('\n') + 1).split('\n')
+  const csvRows = String(string).trim().split('\n')
 
   const array = csvRows.map((record) => {
     const values = record.split(';')
@@ -47,7 +47,11 @@ const convertCSVtoArray = (string) => {
     return obj
   })
 
-  let reformatArray = array.map((record) => {
+  let reformatArray = array.map((record, index) => {
+    if (!Number(record.grossAmount)) {
+      console.log('record', record)
+      console.log('index', index)
+    }
     return ({
       EDCBatchNumber: Number(record.EDCBatchNumber),
       MDR: Number(record.MDR),
@@ -78,30 +82,39 @@ const convertCSVtoArray = (string) => {
       transactionTime: record.transactionTime
     })
   })
-  reformatArray = reformatArray.filter(filtered => !String(filtered.recordSource).includes('PC')
-    && !String(filtered.recordSource).includes('RC')
+
+  reformatArray = reformatArray.filter(filtered => !String(filtered.recordSource).includes('RC')
     && !String(filtered.recordSource).includes('UD')
     && !String(filtered.recordSource).includes('UC')
-    && filtered.grossAmount
   )
-  currentArray = reformatArray.map((record) => {
+  console.log('reformatArray', reformatArray)
+  currentArray = reformatArray.map((record, index) => {
     let type
 
     if (String(record.recordSource).includes('TD')
       || String(record.recordSource).includes('SD')
-      || String(record.recordSource).includes('AD')) {
+      || String(record.recordSource).includes('AD')
+      || String(record.recordSource).includes('TF')
+      || String(record.recordSource).includes('SF')
+      || String(record.recordSource).includes('AF')) {
       type = 'D'
     }
 
     if (String(record.recordSource).includes('TC')
       || String(record.recordSource).includes('SC')
-      || String(record.recordSource).includes('AC')) {
+      || String(record.recordSource).includes('AC')
+      || String(record.recordSource).includes('PC')) {
       type = 'K'
     }
 
     if (String(record.recordSource).includes('TQ')
       || String(record.recordSource).includes('AS')) {
       type = 'QR'
+    }
+
+    if (!record.merchantId) {
+      console.log('record', record)
+      console.log('index', index)
     }
 
     return ({
@@ -111,6 +124,7 @@ const convertCSVtoArray = (string) => {
       mdrAmount: record.MDRAmount,
       recordSource: record.recordSource,
       grossAmount: record.grossAmount,
+      redeemAmount: record.redeemAmount,
       transDate: moment(record.transDate).format('YYYY-MM-DD'),
       type,
       bank: 'BCA'
@@ -143,8 +157,6 @@ const FormAutoCounter = ({
   const fileReader = new FileReader()
   const handleOnChange = (event) => {
     const file = event.target.files[0]
-    console.log('file', file)
-
     fileReader.onload = function (event) {
       const text = event.target.result
       convertCSVtoArray(text)
