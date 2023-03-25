@@ -26,17 +26,18 @@ const TreeNode = TreeSelect.TreeNode
 
 const printDateVisible = false
 const taxVisible = false
+const cardVisible = false
 
 const ammountItemLayout = {
   labelCol: {
     xs: {
-      span: 24
+      span: 3
     },
     sm: {
-      span: 24
+      span: 3
     },
     md: {
-      span: 24
+      span: 3
     }
   },
   wrapperCol: {
@@ -88,20 +89,20 @@ class FormPayment extends React.Component {
 
   componentDidMount () {
     const {
-      selectedPaymentShortcut,
-      currentBundlePayment,
-      onGetMachine,
-      onResetMachine
+      selectedPaymentShortcut
+      // currentBundlePayment,
+      // onGetMachine,
+      // onResetMachine
     } = this.props
-    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
-      onResetMachine()
-      if (currentBundlePayment && currentBundlePayment.paymentBankId) {
-        onGetMachine(currentBundlePayment.paymentOption)
-      } else {
-        onGetMachine(selectedPaymentShortcut.typeCode)
-      }
-      // onGetCost(selectedPaymentShortcut.machine)
-    }
+    // if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
+    //   onResetMachine()
+    //   if (currentBundlePayment && currentBundlePayment.paymentBankId) {
+    //     onGetMachine(currentBundlePayment.paymentOption)
+    //   } else {
+    //     onGetMachine(selectedPaymentShortcut.typeCode)
+    //   }
+    //   // onGetCost(selectedPaymentShortcut.machine)
+    // }
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       typeCode: selectedPaymentShortcut.typeCode,
@@ -131,8 +132,8 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
-      onGetMachine,
-      onGetCost,
+      // onGetMachine,
+      // onGetCost,
       onResetMachine,
       curTotal,
       listEdc,
@@ -163,6 +164,21 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
+    const filteredPaymentList = listEdc.filter((filtered) => {
+      if (filtered.paymentOption === typeCode) {
+        return true
+      }
+      return false
+    })
+
+    const filteredCostList = listCost.filter((filtered) => {
+      const filteredList = filteredPaymentList.filter(filteredEDC => filteredEDC.id === filtered.machine.id)
+      if (filteredList && filteredList[0]) {
+        return true
+      }
+      return false
+    })
+
     const handleSubmit = () => {
       validateFields((errors) => {
         if (errors) {
@@ -174,7 +190,7 @@ class FormPayment extends React.Component {
           ...getFieldsValue()
         }
         data.amount = parseFloat(data.amount)
-        const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
+        const selectedBank = filteredCostList ? filteredCostList.filter(filtered => filtered.id === data.bank) : []
 
         if (modalType === 'add') {
           data.id = listAmount.length + 1
@@ -299,7 +315,10 @@ class FormPayment extends React.Component {
       })
       validateFields()
       onResetMachine()
-      onGetMachine(value)
+      this.setState({
+        typeCode: value
+      })
+      // onGetMachine(value)
     }
 
     const onChangeMachine = (machineId) => {
@@ -307,9 +326,9 @@ class FormPayment extends React.Component {
         bank: undefined
       })
       validateFields()
-      onGetCost(machineId)
-      if (listEdc && listEdc.length > 0) {
-        const filteredMachine = listEdc.filter(filtered => filtered.id === machineId)
+      // onGetCost(machineId)
+      if (filteredCostList && filteredCostList.length > 0) {
+        const filteredMachine = filteredCostList.filter(filtered => filtered.id === machineId)
         if (filteredMachine && filteredMachine[0] && filteredMachine[0].qrisImage) {
           setQrisImage(filteredMachine[0].qrisImage)
           message.info('Send Qris Image to Customer View')
@@ -339,8 +358,28 @@ class FormPayment extends React.Component {
                   message: '0-9 please insert the value'
                 }
               ]
-            })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}>Netto</Button>)} autoFocus maxLength={10} />)}
+            })(
+              <Input
+                style={{ width: '100%', fontSize: '30px', height: '60px' }}
+                onChange={value => changeToNumber(value)}
+                // addonBefore={(
+                //   <Button
+                //     onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
+                //   >
+                //     Netto
+                //   </Button>
+                // )}
+                autoFocus
+                maxLength={10}
+                size="large"
+              />
+            )}
           </FormItem>
+          <Button
+            onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
+          >
+            Netto
+          </Button>
         </Col>
         <Row>
           <Col md={12} sm={24}>
@@ -369,7 +408,38 @@ class FormPayment extends React.Component {
                 </TreeSelect>
               )}
             </FormItem>
-
+            <FormItem label="EDC" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('machine', {
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
+                  filteredPaymentList && filteredPaymentList.length === 1 ? filteredPaymentList[0].id : parseFloat(selectedPaymentShortcut.machine)
+                ) : (item.machine || undefined),
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && filteredPaymentList.length > 0)
+                  }
+                ]
+              })(
+                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {filteredPaymentList.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem label="Card" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bank', {
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
+                  filteredCostList && filteredCostList.length === 1 ? filteredCostList[0].id : parseFloat(selectedPaymentShortcut.bank)
+                ) : (item.bank || undefined),
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && filteredCostList.length > 0)
+                  }
+                ]
+              })(
+                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank)} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {filteredCostList.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                </Select>
+              )}
+            </FormItem>
             {taxVisible &&
               <div>
                 <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
@@ -393,38 +463,6 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
-            </FormItem>
-            <FormItem label="EDC" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('machine', {
-                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  listEdc && listEdc.length === 1 ? listEdc[0].id : parseFloat(selectedPaymentShortcut.machine)
-                ) : item.machine,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
-                  }
-                ]
-              })(
-                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem label="Card" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('bank', {
-                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
-                ) : item.bank,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
-                  }
-                ]
-              })(
-                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank)} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
-                </Select>
-              )}
             </FormItem>
             {printDateVisible &&
               <FormItem
@@ -457,20 +495,35 @@ class FormPayment extends React.Component {
               </FormItem>
             }
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Card Name" hasFeedback {...formItemLayout}>
+              <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardName', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') !== 'C',
-                      pattern: /^[a-z0-9 -.,_]+$/i,
-                      message: 'please insert the value'
-                    }
-                  ]
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
+                    ? [
+                      {
+                        required: true,
+                        pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
+                        message: '0-9 please insert the value (max. 6 digits)'
+                      }
+                    ] : (getFieldValue('typeCode') === 'QR')
+                      ? [
+                        {
+                          required: true,
+                          pattern: /^(?!(.)\1+$)[qQrR0]+$/,
+                          message: 'please insert the value(ex. 0 or QR)'
+                        }
+                      ] :
+                      [
+                        {
+                          required: getFieldValue('typeCode') !== 'C',
+                          pattern: /^[a-z0-9 -.,_]+$/i,
+                          message: 'please insert the value'
+                        }
+                      ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
               </FormItem>
             )}
-            {getFieldValue('typeCode') !== 'C' && (
+            {cardVisible && getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
@@ -488,8 +541,8 @@ class FormPayment extends React.Component {
           <Col lg={8} md={12} sm={24} />
         </Row>
         <FormItem {...formItemLayout}>
-          <Button type="primary" onClick={handleSubmit}>{`${modalType === 'add' ? 'Add' : 'Edit'} Payment Method (Ctrl + B)`}</Button>
           {modalType === 'edit' && <Button type="dashed" onClick={() => onCancelEdit()}>Cancel edit</Button>}
+          <Button type="primary" onClick={handleSubmit}>{`${modalType === 'add' ? 'Add' : 'Edit'} Payment Method (Ctrl + B)`}</Button>
         </FormItem>
         <List {...listProps} />
         <Row>

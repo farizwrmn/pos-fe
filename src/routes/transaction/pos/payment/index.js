@@ -35,10 +35,10 @@ const Payment = ({
     woNumber,
     companyInfo } = payment
   const {
-    listPayment: listEdc
+    paymentLov: listEdc
   } = paymentEdc
   const {
-    listPayment: listCost
+    paymentLov: listCost
   } = paymentCost
   const { memberInformation,
     mechanicInformation,

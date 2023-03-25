@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/paymentOption/paymentCostService'
+import { query, add, edit, remove, queryLov } from 'services/master/paymentOption/paymentCostService'
 import { pageModel } from 'common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listPayment: [],
+    paymentLov: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -39,6 +40,12 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/transaction/pos') {
+          dispatch({
+            type: 'queryLov',
+            payload: {}
+          })
+        }
       })
     }
   },
@@ -57,6 +64,20 @@ export default modelExtend(pageModel, {
               pageSize: Number(data.pageSize) || 10,
               total: data.total
             }
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
+    * queryLov ({ payload = {} }, { call, put }) {
+      const data = yield call(queryLov, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccessLov',
+          payload: {
+            paymentLov: data.data
           }
         })
       } else {
@@ -134,6 +155,13 @@ export default modelExtend(pageModel, {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+
+    querySuccessLov (state, action) {
+      return {
+        ...state,
+        paymentLov: action.payload.paymentLov
       }
     },
 
