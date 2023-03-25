@@ -1,6 +1,7 @@
 import React from 'react'
-import { Form, Button, Select, DatePicker } from 'antd'
+import { Form, Button, Select, DatePicker, LocaleProvider } from 'antd'
 import moment from 'moment'
+import enUS from 'antd/lib/locale-provider/en_US'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -208,17 +209,19 @@ const FormAutoCounter = ({
           >{listAccountOpt}
           </Select>)}
         </FormItem>
-        <FormItem label="Date">
-          {getFieldDecorator('rangePicker', {
-            initialValue: from && to ? [moment(from, 'YYYY-MM-DD'), moment(to, 'YYYY-MM-DD')] : null,
-            rules: [{
-              required: true,
-              message: 'Required'
-            }]
-          })(
-            <RangePicker size="large" />
-          )}
-        </FormItem>
+        <LocaleProvider locale={enUS}>
+          <FormItem label="Date">
+            {getFieldDecorator('rangePicker', {
+              initialValue: from && to ? [moment(from, 'YYYY-MM-DD'), moment(to, 'YYYY-MM-DD')] : null,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(
+              <RangePicker size="large" />
+            )}
+          </FormItem>
+        </LocaleProvider>
         <FormItem label="Csv File" hasFeedback>
           {getFieldDecorator('file')(
             <input type="file" accept=".csv" onChange={handleOnChange} />

@@ -7,15 +7,17 @@ const ConflictedList = ({
 }) => {
   return (
     <div>
-      <div
-        style={{
-          padding: '10px',
-          fontSize: '20px',
-          fontWeight: 'bold'
-        }}
-      >
-        TIDAK ADA DI AKUN INI
-      </div>
+      {conflictedCSV && conflictedCSV[0] && (
+        <div
+          style={{
+            padding: '10px',
+            fontSize: '20px',
+            fontWeight: 'bold'
+          }}
+        >
+          TIDAK ADA DI AKUN INI
+        </div>
+      )}
       <Row style={{ zIndex: 1 }}>
         <Col md={24} lg={12}>
           {conflictedCSV && conflictedCSV.map((item) => {
