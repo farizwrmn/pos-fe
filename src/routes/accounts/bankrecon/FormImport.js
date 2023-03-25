@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Select, DatePicker, LocaleProvider } from 'antd'
+import { Form, Button, Select, DatePicker, LocaleProvider, message } from 'antd'
 import moment from 'moment'
 import enUS from 'antd/lib/locale-provider/en_US'
 
@@ -23,7 +23,7 @@ const convertCSVtoArray = (string) => {
     'merchantName',
     'nettAmount',
     'originalAmount',
-    'transDate',
+    'effectiveDate',
     'merchantPaymentDate',
     'recordSource',
     'redeemAmount',
@@ -32,8 +32,9 @@ const convertCSVtoArray = (string) => {
     'merchantPaymentStatus',
     'reportDate',
     'merchantSettleDate',
+    'merchantSettleTime',
     'terminalId',
-    'transactionDate',
+    'transDate',
     'transactionTime',
     'sequenceNumber',
     'traceNumber',
@@ -50,11 +51,8 @@ const convertCSVtoArray = (string) => {
     return obj
   })
 
-  let reformatArray = array.map((record, index) => {
-    if (!Number(record.grossAmount)) {
-      console.log('record', record)
-      console.log('index', index)
-    }
+
+  let reformatArray = array.map((record) => {
     return ({
       EDCBatchNumber: Number(record.EDCBatchNumber),
       MDR: Number(record.MDR),
@@ -62,7 +60,7 @@ const convertCSVtoArray = (string) => {
       approvalCode: record.approvalCode,
       cardNumber: record.cardNumber,
       cardType: record.cardType,
-      transDate: record.transDate,
+      transDate: String(record.transDate).trim() ? moment(record.transDate, 'YYYYMMDD').format('YYYY-MM-DD') : undefined,
       grossAmount: Number(record.grossAmount),
       groupId: record.groupId,
       indicator: record.indicator,
@@ -82,45 +80,42 @@ const convertCSVtoArray = (string) => {
       traceNumber: Number(record.traceNumber),
       transactionCode: record.transactionCode,
       transactionDate: record.transactionDate,
-      transactionTime: record.transactionTime
+      transactionTime: String(record.transactionTime).trim() ? moment(record.transactionTime, 'HHmmss').format('HH:mm:ss') : undefined
     })
   })
 
   reformatArray = reformatArray.filter(filtered => !String(filtered.recordSource).includes('RC')
     && !String(filtered.recordSource).includes('UD')
     && !String(filtered.recordSource).includes('UC')
+    && !String(filtered.recordSource).includes('SF')
+    && !String(filtered.recordSource).includes('AF')
+    && !String(filtered.recordSource).includes('AD')
+    && !String(filtered.recordSource).includes('SC')
+    && !String(filtered.recordSource).includes('SD')
+    && !String(filtered.recordSource).includes('AC')
+    && !String(filtered.recordSource).includes('AS')
   )
-  console.log('reformatArray', reformatArray)
-  currentArray = reformatArray.map((record, index) => {
+  console.log('reformatArray', reformatArray.filter(filtered => !filtered.transDate || !filtered.transactionTime))
+
+  currentArray = reformatArray.map((record) => {
     let type
 
     if (String(record.recordSource).includes('TD')
-      || String(record.recordSource).includes('SD')
-      || String(record.recordSource).includes('AD')
-      || String(record.recordSource).includes('TF')
-      || String(record.recordSource).includes('SF')
-      || String(record.recordSource).includes('AF')) {
+      || String(record.recordSource).includes('TF')) {
       type = 'D'
     }
 
     if (String(record.recordSource).includes('TC')
-      || String(record.recordSource).includes('SC')
-      || String(record.recordSource).includes('AC')
       || String(record.recordSource).includes('PC')) {
       type = 'K'
     }
 
-    if (String(record.recordSource).includes('TQ')
-      || String(record.recordSource).includes('AS')) {
+    if (String(record.recordSource).includes('TQ')) {
       type = 'QR'
     }
 
-    if (!record.merchantId) {
-      console.log('record', record)
-      console.log('index', index)
-    }
-
     return ({
+      approvalCode: record.approvalCode,
       edcBatchNumber: record.EDCBatchNumber,
       merchantId: record.merchantId,
       merchantName: record.merchantName,
@@ -128,7 +123,8 @@ const convertCSVtoArray = (string) => {
       recordSource: record.recordSource,
       grossAmount: record.grossAmount,
       redeemAmount: record.redeemAmount,
-      transDate: moment(record.transDate).format('YYYY-MM-DD'),
+      transDate: record.transDate,
+      transTime: record.transactionTime,
       type,
       bank: 'BCA'
     })
@@ -169,15 +165,11 @@ const FormAutoCounter = ({
   }
 
   const handleImport = () => {
-    validateFields((error) => {
-      if (error) {
-        return error
-      }
-      if (currentArray.length < 1) {
-        return 'This feature is not supported to this bank.'
-      }
-      importCSV(currentArray)
-    })
+    if (currentArray.length < 1) {
+      message.error('This feature is not supported to this bank.')
+      return
+    }
+    importCSV(currentArray)
   }
 
   const fileReader = new FileReader()
@@ -228,7 +220,7 @@ const FormAutoCounter = ({
           )}
         </FormItem>
         <FormItem>
-          <Button type="primary" icon="download" onClick={() => handleImport()} loading={loading && loading.effects['bankentry/importCsv']} disabled={!getFieldsValue().file}>Import</Button>
+          <Button type="primary" icon="download" onClick={handleImport} loading={loading && loading.effects['bankentry/importCsv']} disabled={!getFieldsValue().file}>Import</Button>
           <Button type="primary" icon="check" onClick={handleSubmit} loading={loading && loading.effects['bankentry/importCsv']}>Start Reconciliation</Button>
         </FormItem>
       </Form>

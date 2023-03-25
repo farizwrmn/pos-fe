@@ -133,6 +133,14 @@ const List = ({
                 >
                   <Row>
                     <Col span={12}>
+                      <div>EDC Batch Number:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.edcBatchNumber}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={12}>
                       <div>Trans No:</div>
                     </Col>
                     <Col span={12}>
@@ -141,7 +149,7 @@ const List = ({
                   </Row>
                   <Row>
                     <Col span={12}>
-                      <div>{item.transDate}</div>
+                      <div>{`${item.transDate}, ${item.transTime}`}</div>
                     </Col>
                     <Col span={12}>
                       {item.debit && item.debit != null ? <div>{`(DB) ${currencyFormatter(Number(item.debit))}`}</div> : null}

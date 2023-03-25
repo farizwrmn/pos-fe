@@ -26,7 +26,7 @@ const ConflictedList = ({
                 <Card
                   title={(
                     <div>
-                      {`( ${item.merchantId} ) - ${item.merchantName}`}
+                      {`( ${item.approvalCode} ) - ${item.merchantName}`}
                     </div>
                   )}
                 >
@@ -40,7 +40,7 @@ const ConflictedList = ({
                   </Row>
                   <Row>
                     <Col span={12}>
-                      <div>{moment(item.transDate, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY')}</div>
+                      <div>{`${moment(item.transDate, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY')}, ${moment(item.transTime, 'HH:mm:ss').format('HH:mm:ss')}`}</div>
                     </Col>
                     <Col span={12}>
                       {item.grossAmount && item.grossAmount != null ? <div>{`( ${item.recordSource} ) ( ${item.type} ) ${currencyFormatter(Number(item.grossAmount))}`}</div> : null}

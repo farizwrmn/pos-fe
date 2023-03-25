@@ -26,7 +26,7 @@ const TreeNode = TreeSelect.TreeNode
 
 const printDateVisible = false
 const taxVisible = false
-const cardVisible = false
+const cardVisible = true
 
 const ammountItemLayout = {
   labelCol: {
