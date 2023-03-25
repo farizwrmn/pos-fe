@@ -41,8 +41,7 @@ const Filter = ({
       if (selectedBalance && selectedBalance.id) {
         getData(moment(selectedBalance.open).format('YYYY-MM-DD'),
           moment(selectedBalance.closed).format('YYYY-MM-DD'),
-          moment(selectedBalance.open).format('HH:mm:ss'),
-          moment(selectedBalance.closed).format('HH:mm:ss'))
+          selectedBalance.id)
       } else {
         getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD'))
       }
