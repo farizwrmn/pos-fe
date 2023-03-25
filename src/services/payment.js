@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { request, config, crypt, lstorage } from '../utils'
 // const { apiURL, apiPrefix, api } = config
 const { pos, posdetail } = config.api
@@ -121,7 +122,7 @@ export async function createDetail (params) {
 }
 // when void an Invoice
 export async function updatePos (params) {
-  const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}` : null
+  const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}?uuid=${uuidv4()}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
