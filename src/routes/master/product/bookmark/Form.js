@@ -98,6 +98,18 @@ const formProductBrand = ({
               ]
             })(<Input />)}
           </FormItem>
+          <FormItem label="Shortcut Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('shortcutCode', {
+              initialValue: item.shortcutCode,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^[0-9]{3}$/,
+                  message: 'Shortcut must be 3 characters'
+                }
+              ]
+            })(<Input />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" disabled={disabled} onClick={handleSubmit}>{button}</Button>

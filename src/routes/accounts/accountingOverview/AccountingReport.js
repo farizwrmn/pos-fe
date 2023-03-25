@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col } from 'antd'
-import { routerRedux } from 'dva/router'
 import ReportItem from './components/ReportItem'
 
 const column = {
@@ -11,35 +10,25 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormCounter = ({
-  dispatch
-}) => {
+const FormCounter = () => {
   const balanceSheetReportProps = {
     content: 'Menampilan apa yang anda miliki (aset), apa yang anda hutang (liabilitas), dan apa yang anda sudah investasikan pada perusahaan anda (ekuitas).',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounting/balance-sheet'))
-    }
+    url: '/report/accounting/balance-sheet'
   }
 
   const profitLossReportProps = {
     content: 'Menampilkan setiap tipe transaksi dan jumlah total untuk pendapatan dan pengeluaran anda.',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounting/profit-loss'))
-    }
+    url: '/report/accounting/profit-loss'
   }
 
   const generalLedgerReportProps = {
     content: 'Daftar semua jurnal per transaksi yang terjadi dalam periode waktu. Hal ini berguna untuk melacak di mana transaksi Anda masuk ke masing-masing rekening.',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounting/consolidation/general-ledger'))
-    }
+    url: '/report/accounting/consolidation/general-ledger'
   }
 
   const trialBalanceReportProps = {
     content: 'Menampilkan saldo dari setiap akun, termasuk saldo awal, pergerakan, dan saldo akhir dari periode yang ditentukan.',
-    onClick () {
-      dispatch(routerRedux.push('/report/accounting/consolidation/trial-balance'))
-    }
+    url: '/report/accounting/consolidation/trial-balance'
   }
 
   return (

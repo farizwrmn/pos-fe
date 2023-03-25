@@ -75,14 +75,6 @@ const Routers = function ({ history, app }) {
             }, 'nps')
           }
         }, {
-          path: 'userprofile',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/setting/userProfile'))
-              cb(null, require('./routes/setting/user/profile/'))
-            }, 'user-profile')
-          }
-        }, {
           path: 'master/employee',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -388,6 +380,10 @@ const Routers = function ({ history, app }) {
           path: 'master/account',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/setting/userRole'))
+              registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/accountCodeDefault'))
               cb(null, require('./routes/master/accountCode/'))
@@ -413,7 +409,7 @@ const Routers = function ({ history, app }) {
           path: 'master/paymentoption',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/paymentOption'))
               registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/'))
@@ -423,7 +419,7 @@ const Routers = function ({ history, app }) {
           path: 'master/paymentoption/edc/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/paymentOption/edc'))
               registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/master/paymentOption/edc/'))
@@ -695,7 +691,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/adjust'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/transaction/adjust'))
             }, 'transaction-adjust')
           }
@@ -738,7 +734,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/accounting/ledger/generalLedger'))
               registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/report/accounting/ledger/generalLedger'))
             }, 'report-accounting-general-ledger-consolidation')
           }
@@ -959,6 +955,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/fifo'))
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/product/productCost'))
               registerModel(app, require('./models/setting/store'))
               cb(null, require('./routes/report/fifo/summary/'))
             }, 'report-purchase-summary-trans')
@@ -1182,7 +1179,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/bank'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/finance/pettyExpense'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
               registerModel(app, require('./models/setting/userStore'))
@@ -1212,7 +1209,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/transferInvoice'))
               registerModel(app, require('./models/transferOut'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/transfer/transferInvoice'))
             }, 'inventory-transfer-invoice')
@@ -1230,7 +1227,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/cashentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
@@ -1245,6 +1242,203 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/consignment/rentRequest'))
               cb(null, require('./routes/consignment/rentRequest'))
             }, 'consignment/rent/rent-request')
+          }
+        }, {
+          path: 'integration/consignment/dashboard',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/dashboard'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/dashboard'))
+            }, 'consignment/dashboard')
+          }
+        }, {
+          path: 'integration/consignment/sales-return',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/salesReturn'))
+              cb(null, require('./routes/consignment/salesReturn'))
+            }, 'consignment/salesReturn')
+          }
+        }, {
+          path: 'integration/consignment/stock-flow',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockFlow'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/stockFlow'))
+            }, 'consignment/stockFlow')
+          }
+        }, {
+          path: 'integration/consignment/stock-flow/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockFlow'))
+              cb(null, require('./routes/consignment/stockFlow/detail'))
+            }, 'consignment/stockFlowDetail')
+          }
+        }, {
+          path: 'integration/consignment/stock-adjustment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockAdjustment'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/stockAdjustment'))
+            }, 'consignment/stockAdjustment')
+          }
+        }, {
+          path: 'integration/consignment/users',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/users'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/users'))
+            }, 'consignment/users')
+          }
+        }, {
+          path: 'integration/consignment/vendor',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/vendor'))
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/vendor'))
+            }, 'consignment/vendor')
+          }
+        }, {
+          path: 'integration/consignment/pending-product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/pendingProduct'))
+              cb(null, require('./routes/consignment/product/pendingProduct'))
+            }, 'consignment/pendingProduct')
+          }
+        }, {
+          path: 'integration/consignment/product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/product'))
+              cb(null, require('./routes/consignment/product/product'))
+            }, 'consignment/product')
+          }
+        }, {
+          path: 'integration/consignment/product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/product'))
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/product/product'))
+            }, 'consignment/product')
+          }
+        }, {
+          path: 'integration/consignment/product/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/product'))
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/product/product/detail'))
+            }, 'consignment/productDetail')
+          }
+        }, {
+          path: 'integration/consignment/product-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/category'))
+              cb(null, require('./routes/consignment/product/category'))
+            }, 'consignment/productCategory')
+          }
+        }, {
+          path: 'integration/consignment/outlet',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/outlet'))
+            }, 'consignment/outlet')
+          }
+        }, {
+          path: 'integration/consignment/payments',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/payments'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/payments'))
+            }, 'consignment/payments')
+          }
+        }, {
+          path: 'integration/consignment/stock-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockReport'))
+              registerModel(app, require('./models/consignment/vendor'))
+              cb(null, require('./routes/consignment/report/stockReport'))
+            }, 'consignment/report/stockReport')
+          }
+        }, {
+          path: 'integration/consignment/stock-flow-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/stockFlowReport'))
+              cb(null, require('./routes/consignment/report/stockFlowReport'))
+            }, 'consignment/report/stockFlowReport')
+          }
+        }, {
+          path: 'integration/consignment/sales-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/salesReport'))
+              cb(null, require('./routes/consignment/report/salesReport'))
+            }, 'consignment/report/salesReport')
+          }
+        }, {
+          path: 'integration/consignment/return-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/returnReport'))
+              registerModel(app, require('./models/consignment/vendor'))
+              cb(null, require('./routes/consignment/report/returnReport'))
+            }, 'consignment/report/returnReport')
+          }
+        }, {
+          path: 'integration/consignment/cut-off-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/cutOffReport'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/report/cutOffReport'))
+            }, 'consignment/report/cutOffReport')
+          }
+        }, {
+          path: 'integration/consignment/cut-off-period-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/cutOffPeriodReport'))
+              cb(null, require('./routes/consignment/report/cutOffPeriodReport'))
+            }, 'consignment/report/cutOffPeriodReport')
+          }
+        }, {
+          path: 'integration/consignment/journal-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/journalReport'))
+              registerModel(app, require('./models/consignment/outlet'))
+              cb(null, require('./routes/consignment/report/journalReport'))
+            }, 'consignment/report/journalReport')
+          }
+        }, {
+          path: 'integration/consignment/rent-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/rentReport'))
+              cb(null, require('./routes/consignment/report/rentReport'))
+            }, 'consignment/report/rentReport')
+          }
+        }, {
+          path: 'integration/consignment/profit-report',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/consignment/profitReport'))
+              registerModel(app, require('./models/consignment/vendor'))
+              cb(null, require('./routes/consignment/report/profitReport'))
+            }, 'consignment/report/profitReport')
           }
         }, {
           path: 'integration/consignment/rent-request/:id',
@@ -1269,6 +1463,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/k3express/product/productCategory'))
               cb(null, require('./routes/k3express/product/productCategory'))
             }, 'k3express/product/k3expresscategory')
+          }
+        }, {
+          path: 'k3express/product-consignment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/product/productConsignment'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              cb(null, require('./routes/k3express/product/productConsignment'))
+            }, 'k3express/product/k3expressconsignment')
           }
         }, {
           path: 'cash-entry/:id',
@@ -1315,7 +1519,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/journalentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/marketing/customerSocial'))
               registerModel(app, require('./models/master/supplier'))
@@ -1328,10 +1532,9 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/master/bank'))
-              registerModel(app, require('./models/master/accountCode'))
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/master/supplier'))
               cb(null, require('./routes/accounts/bankentry/'))
@@ -1342,7 +1545,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/transferentry/'))
             }, 'finance-transfer-entry')
           }
@@ -1351,7 +1554,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/bankrecon'))
             }, 'finance-bank-recon')
           }
@@ -1368,7 +1571,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/bankentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/bankhistory/'))
             }, 'finance-bank-history')
           }
@@ -1780,7 +1983,7 @@ const Routers = function ({ history, app }) {
           path: 'marketing/voucher',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/marketing/voucher'))
               cb(null, require('./routes/marketing/voucher'))
             }, 'marketing-voucher')
@@ -1839,7 +2042,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/generalLedger'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/taxReport/generalLedger'))
             }, 'tax-report-accounting-general-ledger-consolidation')
           }
@@ -1864,7 +2067,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/taxReport/journalentry'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/taxReport/journalentry'))
             }, 'tools-transaction-journal-entry')
           }
@@ -1872,7 +2075,7 @@ const Routers = function ({ history, app }) {
           path: 'balance/finance/petty-cash',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/finance/pettyCash'))
               cb(null, require('./routes/finance/pettyCash'))
@@ -1890,7 +2093,7 @@ const Routers = function ({ history, app }) {
           path: 'balance/finance/petty-expense',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/finance/pettyExpense'))
@@ -1903,7 +2106,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/finance/pettyHistory'))
               registerModel(app, require('./models/setting/userStore'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/finance/pettyHistory'))
             }, 'finance-history')
           }
@@ -1912,7 +2115,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/marketing/voucherdetail'))
-              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/marketing/voucher/detail'))
             }, 'marketing-voucher-detail')
           }

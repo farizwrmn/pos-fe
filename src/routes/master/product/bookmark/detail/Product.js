@@ -5,9 +5,12 @@ import { DropOption } from 'components'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, deleteItem }) => {
+const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
+      editItem(record)
+    }
+    if (e.key === '2') {
       confirm({
         title: record.product ? `Are you sure delete ${record.product.productName} ?` : 'Are you sure delete this item ?',
         onOk () {
@@ -38,7 +41,7 @@ const List = ({ ...tableProps, deleteItem }) => {
       key: 'product.productName',
       render: (text, record) => {
         if (record.type === 'PRODUCT') {
-          return record.product.productCode
+          return record.product.productName
         }
 
         if (record.type === 'BUNDLE') {
@@ -47,10 +50,15 @@ const List = ({ ...tableProps, deleteItem }) => {
       }
     },
     {
+      title: 'Shortcut Code',
+      dataIndex: 'shortcutCode',
+      key: 'shortcutCode'
+    },
+    {
       title: 'Operation',
       key: 'operation',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete', disabled: false }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]

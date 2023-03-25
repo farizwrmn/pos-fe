@@ -13,12 +13,12 @@ import PaymentModal from './PaymentModal'
 
 const TabPane = Tabs.TabPane
 
-const TransferInvoice = ({ transferInvoice, userStore, accountCode, transferOut, loading, dispatch, location, app }) => {
+const TransferInvoice = ({ transferInvoice, userStore, accountRule, transferOut, loading, dispatch, location, app }) => {
   const { query, pathname } = location
   const { listAllStores } = userStore
   const { listTransGroup, list, listStore, listItem, listLovVisible, modalPaymentVisible, pagination, modalVisible, modalType, modalItemType, currentItem, currentItemList, activeKey } = transferInvoice
   const { listTrans: listTransfer, listTransGroup: listTransferGroup } = transferOut
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
   const { user, storeInfo } = app
   const filterProps = {
     data: list,
@@ -528,14 +528,14 @@ TransferInvoice.propTypes = {
 export default connect(({
   transferInvoice,
   userStore,
-  accountCode,
+  accountRule,
   transferOut,
   loading,
   app
 }) => ({
   transferInvoice,
   userStore,
-  accountCode,
+  accountRule,
   transferOut,
   loading,
   app

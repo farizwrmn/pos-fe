@@ -9,6 +9,8 @@ import {
   // Tag,
   Button
 } from 'antd'
+import { prefix } from 'utils/config.main'
+import moment from 'moment'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
@@ -57,13 +59,22 @@ const Detail = ({ payableForm, loading, app, dispatch }) => {
       Modal.confirm({
         title: 'Are you sure void this Invoice?',
         onOk () {
-          dispatch({
-            type: 'payableForm/voidTrans',
-            payload: {
-              id: data.id,
-              memo: e.memo
-            }
-          })
+          const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
+          const formattedStartPeriod = moment(startPeriod).format('YYYY-MM-DD')
+          if (moment(data.transDate).format('YYYY-MM-DD') >= formattedStartPeriod) {
+            dispatch({
+              type: 'payableForm/voidTrans',
+              payload: {
+                id: data.id,
+                memo: e.memo
+              }
+            })
+          } else {
+            Modal.warning({
+              title: 'Can`t Void this Invoice',
+              content: 'has been Closed'
+            })
+          }
         },
         onCancel () {
           console.log('no')

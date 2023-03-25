@@ -9,9 +9,9 @@ import moment from 'moment'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, generalLedger, accountCode, app, loading }) => {
+const Report = ({ dispatch, generalLedger, accountRule, app, loading }) => {
   const { period, year, activeKey, listProduct } = generalLedger
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
   let { listRekap } = generalLedger
   if (activeKey === '1') {
     listRekap = listRekap.filter(el => el.count !== 0)
@@ -95,9 +95,9 @@ Report.propTypes = {
   dispatch: PropTypes.func.isRequired,
   app: PropTypes.object.isRequired,
   generalLedger: PropTypes.object.isRequired,
-  accountCode: PropTypes.object,
+  accountRule: PropTypes.object,
   productcategory: PropTypes.object.isRequired,
   productbrand: PropTypes.object.isRequired
 }
 
-export default connect(({ generalLedger, accountCode, productcategory, productbrand, app, loading }) => ({ generalLedger, accountCode, productcategory, productbrand, app, loading }))(Report)
+export default connect(({ generalLedger, accountRule, productcategory, productbrand, app, loading }) => ({ generalLedger, accountRule, productcategory, productbrand, app, loading }))(Report)

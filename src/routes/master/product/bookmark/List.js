@@ -7,7 +7,7 @@ import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -33,6 +33,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
           </Link>
         )
       }
+    },
+    {
+      title: 'Shortcut Code',
+      dataIndex: 'shortcutCode',
+      key: 'shortcutCode'
     },
     {
       title: 'Created',

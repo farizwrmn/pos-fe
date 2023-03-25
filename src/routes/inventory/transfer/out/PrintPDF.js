@@ -7,9 +7,9 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const formatNumberIndonesia = numberFormat.numberFormatter
 
-const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
+const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -70,7 +70,7 @@ const PrintPDF = ({ user, listItem, itemPrint, storeInfo, printNo }) => {
             alignment: 'center'
           },
           {
-            stack: storeInfo.stackHeader02
+            stack: []
           }
         ]
       },

@@ -1,7 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
+import { message } from 'antd'
+import { edit } from '../../services/product/bookmark'
 import { queryById } from '../../services/product/bookmarkGroup'
 import { pageModel } from './../common'
+
+const success = () => {
+  message.success('Bookmark has been saved')
+}
 
 export default modelExtend(pageModel, {
   namespace: 'productBookmarkDetail',
@@ -10,7 +16,9 @@ export default modelExtend(pageModel, {
     data: {},
     listBookmark: [],
     modalProductVisible: false,
-    modalBundleVisible: false
+    modalBundleVisible: false,
+    modalBookmarkVisible: false,
+    modalBookmarkItem: {}
   },
 
   subscriptions: {
@@ -43,6 +51,29 @@ export default modelExtend(pageModel, {
             listBookmark: response.data.bookmark
           }
         })
+      } else {
+        throw response
+      }
+    },
+
+    * updateBookmarkDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(edit, {
+        id: payload.id,
+        shortcutCode: payload.shortcutCode,
+        groupId: payload.groupId,
+        productId: payload.productId,
+        type: payload.type
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalBookmarkItem: {},
+            modalBookmarkVisible: false
+          }
+        })
+        yield put({ type: 'query', payload: { id: payload.groupId } })
+        success()
       } else {
         throw response
       }

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import Form from './Form'
 
-const Cash = ({ bankentry, accountCode, dispatch }) => {
+const Cash = ({ bankentry, accountRule, dispatch }) => {
   const { currentItem } = bankentry
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
 
   const formProps = {
     item: currentItem,
@@ -40,6 +40,6 @@ Cash.propTypes = {
 
 export default connect(({
   bankentry,
-  accountCode,
+  accountRule,
   loading,
-  pos }) => ({ bankentry, accountCode, loading, pos }))(Cash)
+  pos }) => ({ bankentry, accountRule, loading, pos }))(Cash)

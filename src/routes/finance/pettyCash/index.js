@@ -10,9 +10,9 @@ import Setting from './Setting'
 
 const TabPane = Tabs.TabPane
 
-const PettyCash = ({ pettyCash, accountCode, userStore, loading, dispatch, location, app }) => {
+const PettyCash = ({ pettyCash, accountRule, userStore, loading, dispatch, location, app }) => {
   const { list, listItem, listOption, pagination, modalType, currentItem, activeKey, sequence, modalItemVisible, currentListItem, modalItemType } = pettyCash
-  const { listAccountCode } = accountCode
+  const { listAccountCode } = accountRule
   const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
@@ -287,7 +287,7 @@ const PettyCash = ({ pettyCash, accountCode, userStore, loading, dispatch, locat
 
 PettyCash.propTypes = {
   pettyCash: PropTypes.object,
-  accountCode: PropTypes.object,
+  accountRule: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   userStore: PropTypes.object,
@@ -295,4 +295,4 @@ PettyCash.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ pettyCash, accountCode, userStore, loading, app }) => ({ pettyCash, accountCode, userStore, loading, app }))(PettyCash)
+export default connect(({ pettyCash, accountRule, userStore, loading, app }) => ({ pettyCash, accountRule, userStore, loading, app }))(PettyCash)

@@ -10,7 +10,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCode, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
+const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountRule, paymentEdc, bank, paymentOpts, supplier, loading, dispatch, location, purchase, app }) => {
   const { query } = location
   const { listAllStores } = userStore
   const { listPurchaseExpense } = pettyExpense
@@ -22,10 +22,11 @@ const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCod
     modalType,
     activeKey,
     pagination,
+    selectedRowKeys,
     list
   } = payableForm
   const { listPayment } = paymentEdc
-  const { listAccountCodeLov, listAccountCode } = accountCode
+  const { listAccountCodeLov, listAccountCode } = accountRule
   const { listOpts } = paymentOpts
   const { listBank } = bank
   const { listSupplier } = supplier
@@ -211,6 +212,7 @@ const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCod
     }
   }
   const formProps = {
+    selectedRowKeys,
     listAccountCodeAll: listAccountCode,
     listPayment,
     listPurchaseExpense,
@@ -350,7 +352,7 @@ const Cash = ({ payableForm, pettyExpense, userStore, returnPurchase, accountCod
 Cash.propTypes = {
   returnPurchase: PropTypes.object,
   payableForm: PropTypes.object,
-  accountCode: PropTypes.object,
+  accountRule: PropTypes.object,
   paymentOpts: PropTypes.object,
   bank: PropTypes.object,
   loading: PropTypes.object,
@@ -363,7 +365,7 @@ export default connect(({
   returnPurchase,
   pettyExpense,
   payableForm,
-  accountCode,
+  accountRule,
   userStore,
   paymentOpts,
   paymentEdc,
@@ -376,7 +378,7 @@ export default connect(({
     returnPurchase,
     pettyExpense,
     payableForm,
-    accountCode,
+    accountRule,
     userStore,
     paymentOpts,
     paymentEdc,

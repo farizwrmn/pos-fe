@@ -135,7 +135,7 @@ const groupByType = (
   }
 }
 
-const PrintXLS = ({ listTrans, listProfit, storeInfo, to }) => {
+const PrintXLS = ({ listTrans, listProfitCompare, listProfit, storeInfo, to }) => {
   const title = [
     { value: 'LAPORAN NERACA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
@@ -173,6 +173,7 @@ const PrintXLS = ({ listTrans, listProfit, storeInfo, to }) => {
   }
 
   const groubedByTeamProfit = groupBy(listProfit, 'accountType')
+  const groubedByTeamProfitCompare = groupBy(listProfitCompare, 'accountType')
 
   const groupProfit = {
     REVE: [],
@@ -182,22 +183,32 @@ const PrintXLS = ({ listTrans, listProfit, storeInfo, to }) => {
     OEXP: [],
     ...groubedByTeamProfit
   }
+  const groupProfitCompare = {
+    REVE: [],
+    COGS: [],
+    EXPS: [],
+    OINC: [],
+    OEXP: [],
+    ...groubedByTeamProfitCompare
+  }
 
   const ProcedureOfList = () => {
     // Start - REVE
-    const { total: totalREVE } = groupByType(groupProfit, { type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
+    const { total: totalREVE, totalCompare: totalCompareREVE } = groupByType(groupProfit, { groupCompare: groupProfitCompare, type: 'REVE', bodyTitle: 'PENDAPATAN', totalTitle: 'Jumlah Pendapatan' })
     // End - REVE
 
     // Start - COGS
-    const { total: totalCOGS } = groupByType(groupProfit, { type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
+    const { total: totalCOGS, totalCompare: totalCompareCOGS } = groupByType(groupProfit, { groupCompare: groupProfitCompare, type: 'COGS', bodyTitle: 'BEBAN POKOK PENJUALAN', totalTitle: 'Jumlah Beban Pokok Penjualan' })
     // End - COGS
 
     // Start - Laba Kotor
     const labaKotor = totalREVE + totalCOGS
+    const labaKotorCompare = totalCompareREVE + totalCompareCOGS
     // End - Laba Kotor
 
     // Start - EXPS
-    const { total: totalEXPS } = groupByType(groupProfit, {
+    const { total: totalEXPS, totalCompare: totalCompareEXPS } = groupByType(groupProfit, {
+      groupCompare: groupProfitCompare,
       type: 'EXPS',
       totalTitle: 'Jumlah Beban Operasional',
       bodyTitle: 'BEBAN OPERASIONAL'
@@ -206,14 +217,16 @@ const PrintXLS = ({ listTrans, listProfit, storeInfo, to }) => {
 
     // Start - Pendapatan Operasional
     const operationalRevenue = labaKotor + totalEXPS
+    const operationalRevenueCompare = labaKotorCompare + totalCompareEXPS
     // End - Pendapatan Operasional
 
     // Start - OINC
-    const { total: totalOINC } = groupByType(groupProfit, { type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
+    const { total: totalOINC, totalCompare: totalCompareOINC } = groupByType(groupProfit, { groupCompare: groupProfitCompare, type: 'OINC', bodyTitle: 'PENDAPATAN NON OPERASIONAL', totalTitle: 'Jumlah Pendapatan Non Operasional' })
     // End - OINC
 
     // Start - OEXP
-    const { total: totalOXPS } = groupByType(groupProfit, {
+    const { total: totalOXPS, totalCompare: totalCompareOXPS } = groupByType(groupProfit, {
+      groupCompare: groupProfitCompare,
       type: 'OEXP',
       bodyTitle: 'BEBAN NON OPERASIONAL',
       totalTitle: 'Jumlah Beban Non Operasional'
@@ -222,17 +235,31 @@ const PrintXLS = ({ listTrans, listProfit, storeInfo, to }) => {
 
     // Start - Jumlah Non Operasional
     const nonOperationalRevenue = totalOINC + totalOXPS
+    const nonOperationalRevenueCompare = totalCompareOINC + totalCompareOXPS
     const fixRevenue = operationalRevenue + nonOperationalRevenue
+    const fixRevenueCompare = operationalRevenueCompare + nonOperationalRevenueCompare
     group.PRFT = [
       {
         accountCode: 'SYSTEM',
         accountId: 31,
-        accountName: 'Laba Ditahan',
+        accountName: 'Laba Belum Dialokasikan Tahun Ini',
         accountParentId: null,
         accountType: 'APAY',
         createdBy: 'SYSTEM',
         credit: 0,
-        debit: fixRevenue,
+        debit: fixRevenue - fixRevenueCompare,
+        entryType: 'C',
+        transactionType: 'PRFT'
+      },
+      {
+        accountCode: 'SYSTEM',
+        accountId: 31,
+        accountName: 'Laba Belum Dialokasikan Tahun Lalu',
+        accountParentId: null,
+        accountType: 'APAY',
+        createdBy: 'SYSTEM',
+        credit: 0,
+        debit: fixRevenueCompare,
         entryType: 'C',
         transactionType: 'PRFT'
       }

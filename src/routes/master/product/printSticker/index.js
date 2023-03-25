@@ -64,7 +64,7 @@ class ProductStock extends Component {
           <span>
             <PrintShelf setClick={click => this.clickChildShelf = click} stickers={listSticker} user={user} {...printProps} />
             <PrintAvancedShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printProps} />
-            <PrintLongShelf setClick={click => this.clickChild = click} stickers={listSticker} user={user} {...printProps} />
+            <PrintLongShelf setClick={click => this.clickLongChild = click} stickers={listSticker} user={user} {...printProps} />
           </span>
         )
         break
@@ -109,7 +109,8 @@ class ProductStock extends Component {
             payload: {
               ...payload,
               resetChild: parentProps ? parentProps.clickChild : undefined,
-              resetChildShelf: parentProps ? parentProps.clickChildShelf : undefined
+              resetChildShelf: parentProps ? parentProps.clickChildShelf : undefined,
+              resetChildLong: parentProps ? parentProps.clickLongChild : undefined
             }
           })
         },
@@ -148,7 +149,8 @@ class ProductStock extends Component {
             payload: {
               sticker,
               resetChild: parentProps.clickChild,
-              resetChildShelf: parentProps.clickChildShelf
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         },
@@ -158,7 +160,8 @@ class ProductStock extends Component {
             payload: {
               sticker,
               resetChild: parentProps.clickChild,
-              resetChildShelf: parentProps.clickChildShelf
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         },
@@ -169,7 +172,8 @@ class ProductStock extends Component {
               selectedRecord,
               changedRecord,
               resetChild: parentProps.clickChild,
-              resetChildShelf: parentProps.clickChildShelf
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         },

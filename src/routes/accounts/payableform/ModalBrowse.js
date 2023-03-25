@@ -3,23 +3,32 @@ import PropTypes from 'prop-types'
 import { Modal } from 'antd'
 import ListInvoice from './ListInvoice'
 
-const Browse = ({ location, pagination, purchase, dispatch, onChange, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
+const Browse = ({ location, updateSelectedKey, selectedRowKeys, payableForm, pagination, purchase, dispatch, onChange, loading, onRestoreVoid, onChooseItemItem, onChooseInvoice, onInvoiceHeader, ...purchaseProps }) => {
   const { listInvoice, itemPayment, modalType, isMotion } = purchase
   const modalOpts = {
     ...purchaseProps,
     onCancel () {
       dispatch({ type: 'purchase/modalEditHide' })
       dispatch({ type: 'purchase/hideProductModal' })
+      dispatch({
+        type: 'payableForm/updateState',
+        payload: {
+          selectedRowKeys: []
+        }
+      })
     }
   }
   const listProps = {
     dataSource: modalType === 'browseInvoice' ? listInvoice : [],
     listInvoice,
     purchase,
-    loading: loading.effects['purchase/getInvoice'] || loading.effects['purchase/getInvoicePayable'],
+    dispatch,
+    loading: loading.effects['purchase/getInvoice'] || loading.effects['purchase/getInvoicePayable'] || loading.effects['payableForm/addMultipleItem'],
     location,
     item: itemPayment,
     isMotion,
+    selectedRowKeys,
+    updateSelectedKey,
     onInvoiceHeader (period) {
       onInvoiceHeader(period)
     },
