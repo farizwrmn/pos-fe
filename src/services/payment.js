@@ -99,7 +99,7 @@ export async function queryDetailConsignment (params) {
 
 export async function create (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = `${pos}/code/${encodeURIComponent(params.transNo)}`
+  const url = `${pos}/code/${encodeURIComponent(params.transNo)}?uuid=${uuidv4()}`
   return request({
     url,
     method: 'post',
@@ -122,7 +122,7 @@ export async function createDetail (params) {
 }
 // when void an Invoice
 export async function updatePos (params) {
-  const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}?uuid=${uuidv4()}` : null
+  const url = params ? `${pos}/code/${encodeURIComponent(params.transNo)}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
