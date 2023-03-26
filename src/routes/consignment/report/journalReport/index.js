@@ -79,12 +79,14 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
       })
     },
     updateCurrentBalance (value) {
-      const balance = balanceList.filter(filtered => filtered.id === value)
+      const balance = balanceList.filter(filtered => value.find(record => filtered.id === record))
       if (balance && balance[0]) {
         dispatch({
           type: 'consignmentJournalReport/updateState',
           payload: {
-            selectedBalance: balance[0]
+            selectedBalance: [
+              ...balance
+            ]
           }
         })
       }

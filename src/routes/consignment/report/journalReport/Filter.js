@@ -38,10 +38,10 @@ const Filter = ({
       if (error) {
         return error
       }
-      if (selectedBalance && selectedBalance.id) {
-        getData(moment(selectedBalance.open).format('YYYY-MM-DD'),
-          moment(selectedBalance.closed).format('YYYY-MM-DD'),
-          selectedBalance.id)
+      if (selectedBalance && selectedBalance[0]) {
+        getData(moment(dateRange[0]).format('YYYY-MM-DD'),
+          moment(dateRange[1]).format('YYYY-MM-DD'),
+          selectedBalance.map(record => record.id))
       } else {
         getData(moment(dateRange[0]).format('YYYY-MM-DD'), moment(dateRange[1]).format('YYYY-MM-DD'))
       }
@@ -68,8 +68,8 @@ const Filter = ({
             style={{ width: '95%', marginBottom: '10px' }}
             filterOption={false}
             onChange={handleChangeBalance}
+            mode="multiple"
             disabled={!dateRange.length > 0}
-            value={selectedBalance.id ? `${selectedBalance.approveUser.userName} || ${moment(selectedBalance.open).format('DD MMM YYYY | HH:mm:ss')} - ${moment(selectedBalance.closed).format('DD MMM YYYY | HH:mm:ss')}` : undefined}
           >
             {balanceOption}
           </Select>
