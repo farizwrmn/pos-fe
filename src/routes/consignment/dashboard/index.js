@@ -90,7 +90,7 @@ function Dashboard ({ consignmentDashboard, consignmentOutlet, dispatch }) {
       },
       {
         name: 'Dibuat Pada',
-        value: moment(item.created_at).format('DD MMM YYYY') || '-'
+        value: moment(item.createdAt).format('DD MMM YYYY') || '-'
       },
       {
         name: 'Dipegang Oleh',

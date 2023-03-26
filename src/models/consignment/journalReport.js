@@ -63,8 +63,7 @@ export default modelExtend(pageModel, {
       const consignmentId = getConsignmentId()
       if (consignmentId) {
         const params = {
-          from: payload.from,
-          to: payload.to,
+          ...payload,
           outletId: consignmentId
         }
         const response = yield call(querySummary, params)

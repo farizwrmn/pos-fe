@@ -54,12 +54,13 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
     selectedBalance,
     dateRange,
     loading: loading.effects['consignmentJournalReport/querySummary'],
-    getData (from, to) {
+    getData (from, to, balanceId) {
       dispatch({
         type: 'consignmentJournalReport/querySummary',
         payload: {
           from,
-          to
+          to,
+          balanceId
         }
       })
     },
@@ -78,12 +79,14 @@ function JournalReport ({ consignmentJournalReport, dispatch, app, loading }) {
       })
     },
     updateCurrentBalance (value) {
-      const balance = balanceList.filter(filtered => filtered.id === value)
+      const balance = balanceList.filter(filtered => value.find(record => filtered.id === record))
       if (balance && balance[0]) {
         dispatch({
           type: 'consignmentJournalReport/updateState',
           payload: {
-            selectedBalance: balance[0]
+            selectedBalance: [
+              ...balance
+            ]
           }
         })
       }
