@@ -83,7 +83,7 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
         .map((listData, index) => {
           const datalist = [
             (index + 1 || '').toString(),
-            moment(listData.created_at).format('DD MMM YYYY') || '-',
+            moment(listData.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY') || '-',
             listData.number || '',
             listData.product_name || '',
             listData.quantity || '-',
@@ -157,7 +157,7 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
     data.map(record => record.list.map((listData) => {
       const datalist = [
         index.toString(),
-        moment(listData.created_at).format('DD MMM YYYY') || '-',
+        moment(listData.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY') || '-',
         listData.number || '-',
         listData.product_name || '-',
         listData.quantity || '-',

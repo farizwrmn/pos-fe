@@ -19,7 +19,7 @@ const List = ({ ...tableProps, openDetail, onFilterChange }) => {
         return (
           <a href={null} onClick={() => { openDetail(text) }} >
             <div style={{ textAlign: 'center' }}>
-              SF-{moment(record.created_at).format('YYMM')}{String(text).padStart(8, '0')}
+              SF-{moment(record.created_at, 'YYYY-MM-DD HH:mm:ss').format('YYMM')}{String(text).padStart(8, '0')}
             </div>
           </a>
         )
