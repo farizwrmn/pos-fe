@@ -75,8 +75,7 @@ export default modelExtend(pageModel, {
     },
     * querySendEmail ({ payload = {} }, { call, put }) {
       const params = {
-        outletId: payload.record.outlet_id,
-        cutOffId: payload.record.id
+        period: payload.record.period
       }
       const response = yield call(setCutOffReadyForEmail, params)
       const date = moment(response.data.period).format('DD MMM YYYY')
