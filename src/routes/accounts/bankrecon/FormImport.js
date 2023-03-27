@@ -220,7 +220,7 @@ const FormAutoCounter = ({
           )}
         </FormItem>
         <FormItem>
-          <Button type="primary" icon="download" onClick={handleImport} loading={loading && loading.effects['bankentry/importCsv']} disabled={!getFieldsValue().file}>Import</Button>
+          <Button style={{ marginRight: '10px' }} type="ghost" icon="download" onClick={handleImport} loading={loading && loading.effects['bankentry/importCsv']} disabled={!getFieldsValue().file}>Import</Button>
           <Button type="primary" icon="check" onClick={handleSubmit} loading={loading && loading.effects['bankentry/importCsv']}>Start Reconciliation</Button>
         </FormItem>
       </Form>
