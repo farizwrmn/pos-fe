@@ -84,25 +84,26 @@ const convertCSVtoArray = (string) => {
     })
   })
 
+
   reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
-    && String(filtered.recordSource).trim() === 'TF'
-    && String(filtered.recordSource).trim() === 'TC'
-    && String(filtered.recordSource).trim() === 'TQ'
+    || String(filtered.recordSource).trim() === 'TF'
+    || String(filtered.recordSource).trim() === 'TC'
+    || String(filtered.recordSource).trim() === 'TQ'
   )
 
   currentArray = reformatArray.map((record) => {
     let type
 
-    if (String(record.recordSource).includes('TD')
-      || String(record.recordSource).includes('TF')) {
+    if (String(record.recordSource).trim() === 'TD'
+      || String(record.recordSource).trim() === 'TF') {
       type = 'D'
     }
 
-    if (String(record.recordSource).includes('TC')) {
+    if (String(record.recordSource).trim() === 'TC') {
       type = 'K'
     }
 
-    if (String(record.recordSource).includes('TQ')) {
+    if (String(record.recordSource).trim() === 'TQ') {
       type = 'QR'
     }
 
