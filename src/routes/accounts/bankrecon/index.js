@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Col, Modal, Row } from 'antd'
+import { Button, Col, Modal, Row } from 'antd'
 import FormImport from './FormImport'
 import Form from './Form'
 import List from './List'
@@ -18,7 +18,8 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     pagination,
     accountId,
     from,
-    to
+    to,
+    modalVisible
   } = bankentry
   const { listAccountCode } = accountRule
 
@@ -36,12 +37,12 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     from,
     to,
     loading,
-    importCSV (array) {
-      console.log('array', array)
+    importCSV (array, filename) {
       dispatch({
         type: 'bankentry/importCsv',
         payload: {
-          list: array
+          list: array,
+          filename
         }
       })
     },
@@ -73,12 +74,11 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
       }))
     },
     showImportDialog () {
-      Modal.info({
-        title: 'Auto Reconciliation BCA',
-        content: (
-          <FormImport {...formImportProps} />
-        ),
-        okText: 'Close'
+      dispatch({
+        type: 'bankentry/updateState',
+        payload: {
+          modalVisible: true
+        }
       })
     }
   }
@@ -91,7 +91,6 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     pagination,
     dispatch,
     onSubmit (item) {
-      console.log('item', item)
       dispatch({
         type: 'bankentry/updateBankRecon',
         payload: {
@@ -102,12 +101,41 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   }
 
   const conflictedListProps = {
-    conflictedCSV,
-    loading: loading.effects['bankentry/updateBankRecon']
+    conflictedCSV
   }
 
   return (
     <div className="content-inner">
+      <Modal
+        title="Auto Reconciliation BCA"
+        visible={modalVisible}
+        confirmLoading={loading.effects['bankentry/importCsv'] || loading.effects['bankentry/autoRecon']}
+        footer={[
+          <Button
+            key="close"
+            onClick={() => {
+              dispatch({
+                type: 'bankentry/updateState',
+                payload: {
+                  modalVisible: false
+                }
+              })
+            }}
+          >
+            Close
+          </Button>
+        ]}
+        onCancel={() => {
+          dispatch({
+            type: 'bankentry/updateState',
+            payload: {
+              modalVisible: false
+            }
+          })
+        }}
+      >
+        <FormImport {...formImportProps} />
+      </Modal>
       <Row>
         <Form {...formProps} />
       </Row>

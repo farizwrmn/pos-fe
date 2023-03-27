@@ -8,6 +8,7 @@ const { RangePicker } = DatePicker
 const Option = Select.Option
 
 let currentArray = []
+let filename = ''
 
 const convertCSVtoArray = (string) => {
   const csvHeader = [
@@ -51,51 +52,43 @@ const convertCSVtoArray = (string) => {
     return obj
   })
 
-
   let reformatArray = array.map((record) => {
     return ({
-      EDCBatchNumber: Number(record.EDCBatchNumber),
-      MDR: Number(record.MDR),
-      MDRAmount: Number(record.MDRAmount),
+      EDCBatchNumber: Number(record.EDCBatchNumber) || 0,
+      MDR: Number(record.MDR) || 0,
+      MDRAmount: Number(record.MDRAmount) || 0,
       approvalCode: record.approvalCode,
       cardNumber: record.cardNumber,
       cardType: record.cardType,
       transDate: String(record.transDate).trim() ? moment(record.transDate, 'YYYYMMDD').format('YYYY-MM-DD') : undefined,
-      grossAmount: Number(record.grossAmount),
+      grossAmount: Number(record.grossAmount) || 0,
       groupId: record.groupId,
       indicator: record.indicator,
-      merchantId: Number(record.merchantId),
+      merchantId: Number(record.merchantId) || 0,
       merchantName: String(record.merchantName).trim(),
       merchantPaymentDate: record.merchantPaymentDate,
       merchantPaymentStatus: record.merchantPaymentStatus,
       merchantSettleDate: record.merchantSettleDate,
-      nettAmount: Number(record.nettAmount),
-      originalAmount: Number(record.originalAmount),
+      nettAmount: Number(record.nettAmount) || 0,
+      originalAmount: Number(record.originalAmount) || 0,
       recordSource: record.recordSource,
-      redeemAmount: Number(record.redeemAmount),
+      redeemAmount: Number(record.redeemAmount) || 0,
       reportDate: record.reportDate,
-      rewardAmount: Number(record.rewardAmount),
-      sequenceNumber: Number(record.sequenceNumber),
-      terminalId: Number(record.terminalId),
+      rewardAmount: Number(record.rewardAmount) || 0,
+      sequenceNumber: Number(record.sequenceNumber) || 0,
+      terminalId: Number(record.terminalId) || 0,
       traceNumber: Number(record.traceNumber),
       transactionCode: record.transactionCode,
       transactionDate: record.transactionDate,
-      transactionTime: String(record.transactionTime).trim() ? moment(record.transactionTime, 'HHmmss').format('HH:mm:ss') : undefined
+      transactionTime: record.transactionTime
     })
   })
 
-  reformatArray = reformatArray.filter(filtered => !String(filtered.recordSource).includes('RC')
-    && !String(filtered.recordSource).includes('UD')
-    && !String(filtered.recordSource).includes('UC')
-    && !String(filtered.recordSource).includes('SF')
-    && !String(filtered.recordSource).includes('AF')
-    && !String(filtered.recordSource).includes('AD')
-    && !String(filtered.recordSource).includes('SC')
-    && !String(filtered.recordSource).includes('SD')
-    && !String(filtered.recordSource).includes('AC')
-    && !String(filtered.recordSource).includes('AS')
+  reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
+    && String(filtered.recordSource).trim() === 'TF'
+    && String(filtered.recordSource).trim() === 'TC'
+    && String(filtered.recordSource).trim() === 'TQ'
   )
-  console.log('reformatArray', reformatArray.filter(filtered => !filtered.transDate || !filtered.transactionTime))
 
   currentArray = reformatArray.map((record) => {
     let type
@@ -105,8 +98,7 @@ const convertCSVtoArray = (string) => {
       type = 'D'
     }
 
-    if (String(record.recordSource).includes('TC')
-      || String(record.recordSource).includes('PC')) {
+    if (String(record.recordSource).includes('TC')) {
       type = 'K'
     }
 
@@ -166,15 +158,20 @@ const FormAutoCounter = ({
 
   const handleImport = () => {
     if (currentArray.length < 1) {
-      message.error('This feature is not supported to this bank.')
+      message.error('No data to be imported.')
       return
     }
-    importCSV(currentArray)
+    if (!filename) {
+      message.error('File name is not defined.')
+      return
+    }
+    importCSV(currentArray, filename)
   }
 
   const fileReader = new FileReader()
   const handleOnChange = (event) => {
     const file = event.target.files[0]
+    filename = file.name
     fileReader.onload = function (event) {
       const text = event.target.result
       convertCSVtoArray(text)
@@ -220,8 +217,8 @@ const FormAutoCounter = ({
           )}
         </FormItem>
         <FormItem>
-          <Button style={{ marginRight: '10px' }} type="ghost" icon="download" onClick={handleImport} loading={loading && loading.effects['bankentry/importCsv']} disabled={!getFieldsValue().file}>Import</Button>
-          <Button type="primary" icon="check" onClick={handleSubmit} loading={loading && loading.effects['bankentry/importCsv']}>Start Reconciliation</Button>
+          <Button style={{ marginRight: '10px' }} type="ghost" icon="download" onClick={() => handleImport()} loading={loading && (loading.effects['bankentry/importCsv'] || loading.effects['bankentry/autoRecon'])} disabled={!getFieldsValue().file}>Import</Button>
+          <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading && (loading.effects['bankentry/importCsv'] || loading.effects['bankentry/autoRecon'])}>Start Reconciliation</Button>
         </FormItem>
       </Form>
     </div>
