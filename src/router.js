@@ -602,7 +602,7 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-add')
           }
         }, {
-          path: 'transaction/purchase/order',
+          path: 'transaction/procurement/order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchase'))
@@ -611,36 +611,12 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-order')
           }
         }, {
-          path: 'transaction/purchase/order/:id',
+          path: 'transaction/procurement/order/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
               cb(null, require('./routes/purchase/purchaseOrder/detail'))
             }, 'transaction-purchase-order-detail')
-          }
-        }, {
-          path: 'transaction/purchase/demand',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/purchaseOrder/purchaseDemand'))
-              cb(null, require('./routes/purchase/purchaseDemand'))
-            }, 'transaction-purchase-demand')
-          }
-        }, {
-          path: 'transaction/purchase/fulfillment',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/purchaseOrder/purchaseFulfillment'))
-              cb(null, require('./routes/purchase/purchaseFulfillment'))
-            }, 'transaction-purchase-fulfillment')
-          }
-        }, {
-          path: 'transaction/purchase/price',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/purchaseOrder/purchasePrice'))
-              cb(null, require('./routes/purchase/purchasePrice'))
-            }, 'transaction-purchase-price')
           }
         }, {
           path: 'inventory/transfer/demand',
