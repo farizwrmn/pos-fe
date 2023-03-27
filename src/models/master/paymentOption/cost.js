@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { query, add, edit, remove, queryLov } from 'services/master/paymentOption/paymentCostService'
 import { pageModel } from 'common'
+import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
@@ -72,16 +73,27 @@ export default modelExtend(pageModel, {
     },
 
     * queryLov ({ payload = {} }, { call, put }) {
-      const data = yield call(queryLov, payload)
-      if (data.success) {
+      const cachedCost = lstorage.getCost()
+      if (cachedCost && cachedCost[0]) {
         yield put({
           type: 'querySuccessLov',
           payload: {
-            paymentLov: data.data
+            paymentLov: cachedCost
           }
         })
       } else {
-        throw data
+        const data = yield call(queryLov, payload)
+        if (data.success) {
+          lstorage.setCost(data.data)
+          yield put({
+            type: 'querySuccessLov',
+            payload: {
+              paymentLov: data.data
+            }
+          })
+        } else {
+          throw data
+        }
       }
     },
 

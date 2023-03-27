@@ -46,7 +46,7 @@ const List = ({
 
   return (
     <div>
-      {listBankRecon && listBankRecon[0] && (
+      {listBankRecon && listBankRecon[0] && !summaryBankRecon[0] && (
         <div
           style={{
             padding: '10px',

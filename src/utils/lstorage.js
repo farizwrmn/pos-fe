@@ -164,6 +164,40 @@ const setBundleTrans = (data) => {
   return localStorage.setItem('bundle_promo', data)
 }
 
+const setEdc = (data) => {
+  const ttl = moment().add(5, 'minutes')
+  return localStorage.setItem('payment_edc', JSON.stringify({ data, ttl }))
+}
+
+const getEdc = () => {
+  let cachedData = localStorage.getItem('payment_edc') ? JSON.parse(localStorage.getItem('payment_edc')) : null
+  if (cachedData) {
+    const { data, ttl } = cachedData
+    if (moment(ttl).isAfter(moment())) {
+      return data
+    }
+    return null
+  }
+  return null
+}
+
+const setCost = (data) => {
+  const ttl = moment().add(5, 'minutes')
+  return localStorage.setItem('payment_cost', JSON.stringify({ data, ttl }))
+}
+
+const getCost = () => {
+  let cachedData = localStorage.getItem('payment_cost') ? JSON.parse(localStorage.getItem('payment_cost')) : null
+  if (cachedData) {
+    const { data, ttl } = cachedData
+    if (moment(ttl).isAfter(moment())) {
+      return data
+    }
+    return null
+  }
+  return null
+}
+
 // remove item
 const removeItemKey = (key) => {
   localStorage.removeItem(`${prefix}${key}`)
@@ -324,5 +358,9 @@ module.exports = {
   setShopeeRequireLogin,
   getConsignmentId,
   getGrabmartOrder,
-  setGrabmartOrder
+  setGrabmartOrder,
+  setEdc,
+  getEdc,
+  setCost,
+  getCost
 }
