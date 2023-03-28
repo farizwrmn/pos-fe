@@ -584,6 +584,70 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-payment')
           }
         }, {
+          path: 'transaction/procurement/order',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseOrder'))
+              cb(null, require('./routes/procurement/purchaseOrder/main'))
+            }, 'transaction-procurement-order')
+          }
+        }, {
+          path: 'transaction/procurement/order/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseOrder'))
+              cb(null, require('./routes/procurement/purchaseOrder/detail'))
+            }, 'transaction-procurement-order-detail')
+          }
+        }, {
+          path: 'transaction/procurement/requisition',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseRequisition'))
+              cb(null, require('./routes/procurement/purchaseRequisition/main'))
+            }, 'transaction-procurement-requisition')
+          }
+        }, {
+          path: 'transaction/procurement/requisition/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseRequisition'))
+              cb(null, require('./routes/procurement/purchaseRequisition/detail'))
+            }, 'transaction-procurement-requisition-detail')
+          }
+        }, {
+          path: 'transaction/procurement/invoice',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseInvoice'))
+              cb(null, require('./routes/procurement/purchaseInvoice/main'))
+            }, 'transaction-procurement-invoice')
+          }
+        }, {
+          path: 'transaction/procurement/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseInvoice'))
+              cb(null, require('./routes/procurement/purchaseInvoice/detail'))
+            }, 'transaction-procurement-invoice-detail')
+          }
+        }, {
+          path: 'transaction/procurement/safety',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseSafetyStock'))
+              cb(null, require('./routes/procurement/purchaseSafetyStock/main'))
+            }, 'transaction-procurement-safety-stock')
+          }
+        }, {
+          path: 'transaction/procurement/safety/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseSafetyStock'))
+              cb(null, require('./routes/procurement/purchaseSafetyStock/detail'))
+            }, 'transaction-procurement-safety-stock-detail')
+          }
+        }, {
           path: 'transaction/purchase/add',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
