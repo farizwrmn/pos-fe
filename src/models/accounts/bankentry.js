@@ -272,8 +272,7 @@ export default modelExtend(pageModel, {
       const response = yield call(autoRecon, payload)
       if (response && response.success && response.conflictedRecord) {
         const { conflictedRecord } = response
-        const { conflictedImportData, accountLedger } = conflictedRecord
-        console.log('conflictedRecord', conflictedRecord)
+        const { conflictedImportData = [], accountLedger = [] } = conflictedRecord
         yield put({
           type: 'updateState',
           payload: {
