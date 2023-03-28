@@ -101,7 +101,17 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   }
 
   const conflictedListProps = {
-    conflictedCSV
+    conflictedCSV,
+    loading,
+    onSubmit (item) {
+      dispatch({
+        type: 'bankentry/reconImportData',
+        payload: {
+          id: item.id,
+          conflictedCSV
+        }
+      })
+    }
   }
 
   return (

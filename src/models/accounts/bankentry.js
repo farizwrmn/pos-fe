@@ -9,7 +9,7 @@ import { queryById, query, queryId, add, edit, remove, transfer, queryBankRecon,
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { queryById as queryPaymentById } from '../../services/payment/payment'
 import { queryById as queryPayableById } from '../../services/payment/payable'
-import { add as importCsv, autoRecon } from '../../services/payment/paymentValidationImport'
+import { add as importCsv, autoRecon, updateRecon } from '../../services/payment/paymentValidationImport'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -282,6 +282,22 @@ export default modelExtend(pageModel, {
           }
         })
         message.success(`Berhasil! ${conflictedImportData.length > 0 ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * reconImportData ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const { conflictedCSV, id } = payload
+      const response = yield call(updateRecon, id)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            conflictedCSV: conflictedCSV.filter(filtered => filtered.id !== id)
+          }
+        })
+        message.success('Berhasil!')
       } else {
         message.error(`Gagal: ${response.message}`)
       }

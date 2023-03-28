@@ -12,6 +12,15 @@ export async function add (params) {
   })
 }
 
+export async function updateRecon (id) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentValidationImport}/${id}`,
+    method: 'put',
+    headers: apiHeaderToken
+  })
+}
+
 export async function autoRecon (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
