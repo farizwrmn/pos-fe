@@ -136,7 +136,7 @@ const List = ({
                       <div>EDC Batch Number:</div>
                     </Col>
                     <Col span={12}>
-                      {item.edcBatchNumber}
+                      {item.edcBatchNumber || '-'}
                     </Col>
                   </Row>
                   <Row>

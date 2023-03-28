@@ -277,7 +277,8 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             conflictedCSV: conflictedImportData,
-            listBankRecon: accountLedger
+            listBankRecon: accountLedger,
+            summaryBankRecon: []
           }
         })
         message.success(`Berhasil! ${conflictedImportData.length > 0 ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
