@@ -93,7 +93,6 @@ const Filter = ({
             width: '95%',
             marginBottom: '10px'
           }}
-          disabled={!selectedVendor.id}
           onChange={onChangeDate}
           value={dateRange}
         />

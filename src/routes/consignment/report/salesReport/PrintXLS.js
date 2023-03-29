@@ -83,16 +83,16 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
         .map((listData, index) => {
           const datalist = [
             (index + 1 || '').toString(),
-            listData.createdAt || '-',
-            listData['salesOrder.number'] || listData['returnOrder.number'],
-            listData['stock.product.product_name'] || listData['salesOrderProduct.stock.product.product_name'],
+            moment(listData.created_at).format('DD MMM YYYY') || '-',
+            listData.number || '',
+            listData.product_name || '',
             listData.quantity || '-',
-            listData['salesOrder.paymentMethods.method'] || listData['returnOrder.salesOrder.paymentMethods.method'],
+            listData.method || '-',
             listData.total || 0,
             listData.commission || 0,
             listData.charge || 0,
             listData.commissionGrab || 0,
-            (listData['stock.product.capital'] || 0) || (listData['salesOrderProduct.stock.product.capital'] || 0),
+            (listData.capital || 0),
             listData.profit || 0
           ]
           if (index === dataBody.list.length - 1) {
@@ -157,16 +157,16 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
     data.map(record => record.list.map((listData) => {
       const datalist = [
         index.toString(),
-        listData.createdAt || '-',
-        listData['salesOrder.number'] || listData['returnOrder.number'],
-        listData['stock.product.product_name'] || listData['salesOrderProduct.stock.product.product_name'],
+        moment(listData.created_at).format('DD MMM YYYY') || '-',
+        listData.number || '-',
+        listData.product_name || '-',
         listData.quantity || '-',
-        listData['salesOrder.paymentMethods.method'] || listData['returnOrder.salesOrder.paymentMethods.method'],
+        listData.method || '-',
         listData.total || 0,
         listData.commission || 0,
         listData.charge || 0,
         listData.grab || 0,
-        (listData['stock.product.capital'] || 0) || (listData['salesOrderProduct.stock.product.capital'] || 0),
+        (listData.capital || 0),
         listData.profit || 0
       ]
       index += 1

@@ -128,7 +128,7 @@ function Detail ({
             <div className={styles.content}>
               <Row>
                 <Col span={12}><strong>ID Permintaan Mutasi</strong></Col>
-                <Col span={12}><strong>SF-{moment(currentItem.created_at).format('YYMM')}{String(currentItem.id).padStart(8, '0')}</strong></Col>
+                <Col span={12}><strong>SF-{moment(currentItem.createdAt).format('YYMM')}{String(currentItem.id).padStart(8, '0')}</strong></Col>
               </Row>
               <Row>
                 <Col span={12}>Tipe Permintaan</Col>

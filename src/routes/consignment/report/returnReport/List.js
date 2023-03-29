@@ -10,8 +10,8 @@ const List = ({ ...tableProps, dataSource }) => {
   const columns = [
     {
       title: 'Tanggal',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
       width: 90,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
@@ -32,8 +32,8 @@ const List = ({ ...tableProps, dataSource }) => {
     },
     {
       title: 'Retur Penjualan',
-      dataIndex: 'returnOrder.number',
-      key: 'returnOrder.number',
+      dataIndex: 'number',
+      key: 'number',
       width: 140,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {
@@ -54,8 +54,8 @@ const List = ({ ...tableProps, dataSource }) => {
     },
     {
       title: 'Nama Produk',
-      dataIndex: 'salesOrderProduct.stock.product.product_name',
-      key: 'salesOrderProduct.stock.product.product_name',
+      dataIndex: 'product_name',
+      key: 'product_name',
       width: 120,
       render: (value, record) => {
         if (record === dataSource[dataSource.length - 1]) {

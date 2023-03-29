@@ -121,7 +121,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
           <div className={styles.content}>
             <Row>
               <Col span={12}><strong>ID Permintaan Sewa</strong></Col>
-              <Col span={12}><strong>BR-{moment(data.created_at).format('YYMM')}{String(data.id).padStart(8, '0')}</strong></Col>
+              <Col span={12}><strong>BR-{moment(data.createdAt).format('YYMM')}{String(data.id).padStart(8, '0')}</strong></Col>
             </Row>
             <Row>
               <Col span={12}>Status</Col>
@@ -165,7 +165,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Dibuat pada</Col>
-              <Col span={12}>{moment(data.created_at).format('DD-MMM-YYYY HH:mm')}</Col>
+              <Col span={12}>{moment(data.createdAt).format('DD-MMM-YYYY HH:mm')}</Col>
             </Row>
             <Row>
               <Col span={12}>Dipegang oleh</Col>
@@ -173,7 +173,7 @@ const Detail = ({ loading, rentRequest, dispatch }) => {
             </Row>
             <Row>
               <Col span={12}>Dipegang pada</Col>
-              <Col span={12}>{moment(data.updated_at).format('DD-MMM-YYYY HH:mm')}</Col>
+              <Col span={12}>{moment(data.updatedAt).format('DD-MMM-YYYY HH:mm')}</Col>
             </Row>
             {data.payment_rule && !data.payment_rule.includes('no_image') && (
               <Row>
