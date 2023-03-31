@@ -10,26 +10,6 @@ export async function query (params) {
   })
 }
 
-export async function queryDC (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/procurement-distribution-center',
-    method: 'get',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function queryStore (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: '/procurement-distribution-store',
-    method: 'get',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

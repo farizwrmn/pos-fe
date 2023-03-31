@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/procurement/purchaseSafetyStock'
-import { queryDC as queryDistributionCenter, queryStore } from 'services/procurement/purchaseDistribution'
+import { query as queryDistributionCenter } from 'services/procurement/purchaseDistribution'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -45,7 +45,7 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * getDistributionCenterList ({ payload = {} }, { call, put }) {
+    * getDistributionCenterList (payload, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
@@ -53,13 +53,17 @@ export default modelExtend(pageModel, {
           listStore: []
         }
       })
-      const response = yield call(queryDistributionCenter, payload)
-      if (response.success) {
+      const response = yield call(queryDistributionCenter, {
+        storeId: lstorage.getCurrentUserStore(),
+        type: 'all',
+        order: 'sellingStoreId'
+      })
+      if (response.success && response.data && response.data[0]) {
         yield put({
           type: 'updateState',
           payload: {
-            listDistributionCenter: response.listDC,
-            listStore: response.listStore
+            listDistributionCenter: [response.data[0]],
+            listStore: response.data
           }
         })
       } else {
@@ -94,18 +98,19 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const listStore = yield call(queryStore, {
-        purchaseStoreId: payload.purchaseStoreId
+      const listStore = yield call(queryDistributionCenter, {
+        storeId: lstorage.getCurrentUserStore(),
+        type: 'all',
+        order: 'sellingStoreId'
       })
       if (listStore.success
-        && payload.purchaseStoreId
         && payload.from
         && payload.to
         && listStore.data
         && listStore.data.length > 0) {
         const response = yield call(add, {
-          purchaseStoreId: payload.purchaseStoreId,
-          salesStoreId: listStore.data.map(item => item.storeId),
+          purchaseStoreId: lstorage.getCurrentUserStore(),
+          salesStoreId: listStore.data.map(item => item.sellingStoreId),
           from: payload.from,
           to: payload.to
         })
@@ -134,7 +139,7 @@ export default modelExtend(pageModel, {
           throw response
         }
       } else {
-        message.error(`Parameter Error, DC: ${payload.purchaseStoreId} FROM: ${payload.from} TO: ${payload.from} STORE: ${listStore.data && listStore.data.length}`)
+        message.error(`Parameter Error, DC: ${lstorage.getCurrentUserStore()} STORE: ${listStore.data && listStore.data.length} FROM: ${payload.from} TO: ${payload.from}`)
         throw listStore
       }
     },
