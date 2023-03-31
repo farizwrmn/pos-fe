@@ -18,7 +18,7 @@ const Counter = ({
 }) => {
   const {
     // list,
-    listDistributionCenter,
+    listStore,
     // pagination,
     modalType,
     currentItem,
@@ -103,7 +103,7 @@ const Counter = ({
   const formProps = {
     modalType,
     item: currentItem,
-    listDistributionCenter,
+    listStore,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Form, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
@@ -27,10 +28,9 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
   onSubmit,
   modalType,
-  listDistributionCenter,
+  listStore,
   form: {
     getFieldDecorator,
     validateFields,
@@ -56,7 +56,13 @@ const FormCounter = ({
     }
   }
 
-  let listStore = listDistributionCenter.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+  let listStoreOption = listStore.map(x => (
+    <Option
+      title={x.sellingStore.storeName}
+      value={x.sellingStore.id}
+      key={x.sellingStore.id}
+    >{x.sellingStore.storeName}</Option>
+  ))
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -83,19 +89,19 @@ const FormCounter = ({
           <h1>Generate Safety Stock</h1>
           <FormItem label="Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('rangeDate', {
-              initialValue: item.rangeDate,
+              initialValue: [moment().subtract(6, 'months'), moment()],
               rules: [
                 {
                   required: true
                 }
               ]
             })(
-              <RangePicker size="large" format="DD-MMM-YYYY" />
+              <RangePicker disabled size="large" format="DD-MMM-YYYY" />
             )}
           </FormItem>
           <FormItem label="Distribution Center" hasFeedback {...formItemLayout}>
             {getFieldDecorator('purchaseStoreId', {
-              initialValue: item.purchaseStoreId,
+              initialValue: listStore.map(item => item.sellingStoreId),
               rules: [
                 {
                   required: true
@@ -105,11 +111,13 @@ const FormCounter = ({
               <Select
                 mode={modalType === 'add' ? 'multiple' : 'default'}
                 size="large"
+                multiple
+                disabled
                 style={{ width: '100%' }}
                 placeholder="Choose Store"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
-                {listStore}
+                {listStoreOption}
               </Select>
             )}
           </FormItem>
