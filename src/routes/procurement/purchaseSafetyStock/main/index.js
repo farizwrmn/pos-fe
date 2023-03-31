@@ -4,63 +4,76 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs } from 'antd'
 import Form from './Form'
-import List from './List'
-import Filter from './Filter'
+// import List from './List'
+// import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ purchaseSafetyStock, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = purchaseSafetyStock
-  const { user, storeInfo } = app
-  const filterProps = {
-    onFilterChange (value) {
-      dispatch({
-        type: 'purchaseSafetyStock/query',
-        payload: {
-          ...value
-        }
-      })
-    }
-  }
+const Counter = ({
+  purchaseSafetyStock,
+  // loading,
+  dispatch,
+  location
+  // app
+}) => {
+  const {
+    // list,
+    listDistributionCenter,
+    // pagination,
+    modalType,
+    currentItem,
+    activeKey
+  } = purchaseSafetyStock
+  // const { user, storeInfo } = app
+  // const filterProps = {
+  //   onFilterChange (value) {
+  //     dispatch({
+  //       type: 'purchaseSafetyStock/query',
+  //       payload: {
+  //         ...value
+  //       }
+  //     })
+  //   }
+  // }
 
-  const listProps = {
-    dataSource: list,
-    user,
-    storeInfo,
-    pagination,
-    loading: loading.effects['purchaseSafetyStock/query'],
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
-      dispatch({
-        type: 'purchaseSafetyStock/editItem',
-        payload: { item }
-      })
-    },
-    deleteItem (id) {
-      dispatch({
-        type: 'purchaseSafetyStock/delete',
-        payload: id
-      })
-    }
-  }
+  // const listProps = {
+  //   dataSource: list,
+  //   user,
+  //   storeInfo,
+  //   pagination,
+  //   loading: loading.effects['purchaseSafetyStock/query'],
+  //   location,
+  //   onChange (page) {
+  //     const { query, pathname } = location
+  //     dispatch(routerRedux.push({
+  //       pathname,
+  //       query: {
+  //         ...query,
+  //         page: page.current,
+  //         pageSize: page.pageSize
+  //       }
+  //     }))
+  //   },
+  //   editItem (item) {
+  //     const { pathname } = location
+  //     dispatch(routerRedux.push({
+  //       pathname,
+  //       query: {
+  //         activeKey: 0
+  //       }
+  //     }))
+  //     dispatch({
+  //       type: 'purchaseSafetyStock/editItem',
+  //       payload: { item }
+  //     })
+  //   },
+  //   deleteItem (id) {
+  //     dispatch({
+  //       type: 'purchaseSafetyStock/delete',
+  //       payload: id
+  //     })
+  //   }
+  // }
 
   const changeTab = (key) => {
     dispatch({
@@ -90,10 +103,11 @@ const Counter = ({ purchaseSafetyStock, loading, dispatch, location, app }) => {
   const formProps = {
     modalType,
     item: currentItem,
+    listDistributionCenter,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `purchaseSafetyStock/${modalType}`,
+        type: 'purchaseSafetyStock/add',
         payload: {
           data,
           reset
@@ -128,14 +142,14 @@ const Counter = ({ purchaseSafetyStock, loading, dispatch, location, app }) => {
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
-        <TabPane tab="Browse" key="1" >
+        {/* <TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
               <Filter {...filterProps} />
               <List {...listProps} />
             </div>
           }
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   )

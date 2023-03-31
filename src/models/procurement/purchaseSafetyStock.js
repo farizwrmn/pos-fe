@@ -2,7 +2,9 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, add, edit, remove } from 'services/procurement/purchaseSafetyStock'
+import { queryDC as queryDistributionCenter, queryStore } from 'services/procurement/purchaseDistribution'
 import { pageModel } from 'models/common'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('Safety Stock has been saved')
@@ -13,6 +15,8 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    listDistributionCenter: [],
+    listStore: [],
     modalType: 'add',
     activeKey: '0',
     list: [],
@@ -26,22 +30,42 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/transaction/procurement/safety') {
           dispatch({
-            type: 'updateState',
+            type: 'getDistributionCenterList',
             payload: {
-              activeKey: activeKey || '0'
+              storeId: lstorage.getCurrentUserStore()
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
   },
 
   effects: {
+
+    * getDistributionCenterList ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listDistributionCenter: [],
+          listStore: []
+        }
+      })
+      const response = yield call(queryDistributionCenter, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDistributionCenter: response.listDC,
+            listStore: response.listStore
+          }
+        })
+      } else {
+        throw response
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
@@ -70,30 +94,48 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload.data)
-      if (response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
+      const listStore = yield call(queryStore, {
+        purchaseStoreId: payload.purchaseStoreId
+      })
+      if (listStore.success
+        && payload.purchaseStoreId
+        && payload.from
+        && payload.to
+        && listStore.data
+        && listStore.data.length > 0) {
+        const response = yield call(add, {
+          purchaseStoreId: payload.purchaseStoreId,
+          salesStoreId: listStore.data.map(item => item.storeId),
+          from: payload.from,
+          to: payload.to
+        })
+        if (response.success) {
+          success()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {}
+            }
+          })
+          yield put({
+            type: 'query'
+          })
+          if (payload.reset) {
+            payload.reset()
           }
-        })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: payload
+            }
+          })
+          throw response
         }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw response
+        message.error(`Parameter Error, DC: ${payload.purchaseStoreId} FROM: ${payload.from} TO: ${payload.from} STORE: ${listStore.data && listStore.data.length}`)
+        throw listStore
       }
     },
 

@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
+const { RangePicker } = DatePicker
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -27,9 +29,8 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
-  onCancel,
   modalType,
-  button,
+  listDistributionCenter,
   form: {
     getFieldDecorator,
     validateFields,
@@ -55,10 +56,7 @@ const FormCounter = ({
     }
   }
 
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
+  let listStore = listDistributionCenter.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -82,30 +80,41 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <h1>Generate Safety Stock</h1>
+          <FormItem label="Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('rangeDate', {
+              initialValue: item.rangeDate,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(
+              <RangePicker size="large" format="DD-MMM-YYYY" />
+            )}
+          </FormItem>
+          <FormItem label="Distribution Center" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('purchaseStoreId', {
+              initialValue: item.purchaseStoreId,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Select
+                mode={modalType === 'add' ? 'multiple' : 'default'}
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose Store"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {listStore}
+              </Select>
+            )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" onClick={handleSubmit}>Add</Button>
           </FormItem>
         </Col>
       </Row>
