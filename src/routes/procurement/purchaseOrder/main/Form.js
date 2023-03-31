@@ -1,58 +1,69 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { lstorage } from 'utils'
+import moment from 'moment'
+import ListItem from './ListItem'
 
 const FormItem = Form.Item
+const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    span: 8
   },
   wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    span: 9
   }
 }
 
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const col = {
+  lg: {
+    span: 12,
+    offset: 0
+  }
 }
 
-const FormCounter = ({
+const FormAdd = ({
   item = {},
-  onSubmit,
   onCancel,
   modalType,
+  listSupplier,
+  onSubmit,
   button,
+  loadingButton,
+  listItem,
+  handleProductBrowse,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
     resetFields
-  }
+  },
+  listProps
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
+  const handleSubmit = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
       }
-    }
+      const data = {
+        ...item,
+        ...getFieldsValue()
+      }
+      data.supplierId = data.supplierId
+      data.storeId = lstorage.getCurrentUserStore()
+      Modal.confirm({
+        title: 'Save this transaction',
+        content: 'Are you sure?',
+        onOk () {
+          onSubmit(data, listItem, resetFields)
+        },
+        onCancel () {
+        }
+      })
+    })
   }
 
   const handleCancel = () => {
@@ -60,64 +71,83 @@ const FormCounter = ({
     resetFields()
   }
 
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
-    })
-  }
+  const supplierData = (listSupplier || []).length > 0 ?
+    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
+    : []
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
+    <div>
+      <Form layout="horizontal">
+        <Row>
+          <Col {...col}>
+            <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('transNo', {
+                initialValue: item.transNo,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input disabled maxLength={20} />)}
+            </FormItem>
+            <FormItem label="Deadline Receive" {...formItemLayout}>
+              {getFieldDecorator('deadlineDate', {
+                initialValue: moment().add('14', 'days'),
+                rules: [{
                   required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+                  message: 'Required'
+                }]
+              })(<DatePicker />)}
+            </FormItem>
+            <FormItem required label="Supplier" {...formItemLayout}>
+              {getFieldDecorator('supplierId', {
+                initialValue: item.supplierId,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                optionFilterProp="children"
+                style={{ width: '100%' }}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >
+                {supplierData}
+              </Select>)}
+            </FormItem>
+            <Button type="primary" size="large" onClick={() => handleProductBrowse(true, true)}>Product</Button>
+          </Col>
+          <Col {...col}>
+            <FormItem label="Description" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: item.description,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 3 }} />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <ListItem {...listProps} style={{ marginTop: '10px' }} />
+        <FormItem>
+          <Button disabled={loadingButton.effects['purchaseOrder/add'] || loadingButton.effects['purchaseOrder/edit']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
+          {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+        </FormItem>
+      </Form>
+    </div>
   )
 }
 
-FormCounter.propTypes = {
+FormAdd.propTypes = {
   form: PropTypes.object.isRequired,
+  disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,
+  resetItem: PropTypes.func,
   button: PropTypes.string
 }
 
-export default Form.create()(FormCounter)
+export default Form.create()(FormAdd)

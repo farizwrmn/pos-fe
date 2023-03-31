@@ -587,7 +587,8 @@ const Routers = function ({ history, app }) {
           path: 'transaction/procurement/order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/procurement/purchaseOrder'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
               cb(null, require('./routes/procurement/purchaseOrder/main'))
             }, 'transaction-procurement-order')
           }

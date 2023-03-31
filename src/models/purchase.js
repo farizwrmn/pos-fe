@@ -100,7 +100,8 @@ export default modelExtend(pageModel, {
         }
         if (location.pathname === '/report/accounts/payable'
           || location.pathname === '/transaction/purchase/return'
-          || location.pathname === '/transaction/purchase/order') {
+          || location.pathname === '/transaction/purchase/order'
+          || location.pathname === '/transaction/procurement/order') {
           dispatch({
             type: 'querySupplier',
             payload: {
