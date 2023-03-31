@@ -200,8 +200,6 @@ export default modelExtend(pageModel, {
               paymentLov
             }
           })
-        } else {
-          throw cachedEdc
         }
       } else {
         const data = yield call(queryLov, payload)

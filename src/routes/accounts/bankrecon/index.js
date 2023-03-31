@@ -104,27 +104,29 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     conflictedCSV
   }
 
+  const modalFooter = [
+    <Button
+      key="close"
+      onClick={() => {
+        dispatch({
+          type: 'bankentry/updateState',
+          payload: {
+            modalVisible: false
+          }
+        })
+      }}
+    >
+      Close
+    </Button>
+  ]
+
   return (
     <div className="content-inner">
       <Modal
         title="Auto Reconciliation BCA"
         visible={modalVisible}
         confirmLoading={loading.effects['bankentry/importCsv'] || loading.effects['bankentry/autoRecon']}
-        footer={[
-          <Button
-            key="close"
-            onClick={() => {
-              dispatch({
-                type: 'bankentry/updateState',
-                payload: {
-                  modalVisible: false
-                }
-              })
-            }}
-          >
-            Close
-          </Button>
-        ]}
+        footer={modalFooter}
         onCancel={() => {
           dispatch({
             type: 'bankentry/updateState',

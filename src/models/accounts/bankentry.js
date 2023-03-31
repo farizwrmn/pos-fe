@@ -259,7 +259,6 @@ export default modelExtend(pageModel, {
       }
     },
     * importCsv ({ payload = {} }, { call }) {
-      console.log('payload', payload)
       const response = yield call(importCsv, payload)
       if (response && response.success) {
         message.success('Berhasil import')
@@ -281,7 +280,7 @@ export default modelExtend(pageModel, {
             summaryBankRecon: []
           }
         })
-        message.success(`Berhasil! ${conflictedImportData.length > 0 ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
+        message.success(`Berhasil! ${(conflictedImportData.length > 0 || accountLedger.length > 0) ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
       } else {
         message.error(`Gagal: ${response.message}`)
       }
