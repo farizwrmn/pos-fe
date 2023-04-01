@@ -1550,6 +1550,16 @@ const Routers = function ({ history, app }) {
             }, 'finance-transfer-entry')
           }
         }, {
+          path: 'auto-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/accounts/autorecon'))
+              registerModel(app, require('./models/accounts/accountRule'))
+              cb(null, require('./routes/accounts/autorecon'))
+            }, 'finance-bank-auto-recon')
+          }
+        }, {
           path: 'bank-recon',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

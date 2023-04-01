@@ -84,6 +84,7 @@ export default modelExtend(pageModel, {
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'
+          || pathname === '/auto-recon'
           || pathname === '/balance/finance/petty-cash'
           || pathname === '/balance/finance/history'
           || pathname === '/master/paymentoption'
