@@ -2,7 +2,7 @@ import { Card, Col, Row } from 'antd'
 import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
-const ConflictedList = ({
+const CsvList = ({
   conflictedCSV
 }) => {
   return (
@@ -19,7 +19,7 @@ const ConflictedList = ({
         </div>
       )}
       <Row style={{ zIndex: 1 }}>
-        <Col md={24} lg={12}>
+        <Col md={24} lg={16}>
           {conflictedCSV && conflictedCSV.map((item) => {
             return (
               <div style={{ marginBottom: '10px' }}>
@@ -73,4 +73,4 @@ const ConflictedList = ({
   )
 }
 
-export default ConflictedList
+export default CsvList

@@ -2,16 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Col, Modal, Row } from 'antd'
+import { Button, Modal, Row, Tabs } from 'antd'
 import FormImport from './FormImport'
 import Form from './Form'
 import List from './List'
 import ConflictedList from './ConflictedList'
 
+const TabPane = Tabs.TabPane
+
 const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   const {
     listBankRecon,
     conflictedCSV,
+    conflictedPayment,
     summaryBankRecon,
     selectedRowKeys,
     currentItem,
@@ -19,16 +22,25 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     accountId,
     from,
     to,
-    modalVisible
+    modalVisible,
+    activeKey
   } = bankentry
   const { listAccountCode } = accountRule
 
-  const listColumnProps = {
-    xs: 24,
-    sm: 24,
-    md: 12,
-    lg: 12,
-    xl: 12
+  const changeTab = (key) => {
+    dispatch({
+      type: 'bankentry/updateState',
+      payload: {
+        activeKey: key
+      }
+    })
+    const { pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        activeKey: key
+      }
+    }))
   }
 
   const formImportProps = {
@@ -72,14 +84,6 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
           page: 1
         }
       }))
-    },
-    showImportDialog () {
-      dispatch({
-        type: 'bankentry/updateState',
-        payload: {
-          modalVisible: true
-        }
-      })
     }
   }
 
@@ -101,7 +105,8 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
   }
 
   const conflictedListProps = {
-    conflictedCSV
+    conflictedCSV,
+    conflictedPayment
   }
 
   const modalFooter = [
@@ -120,35 +125,50 @@ const Cash = ({ bankentry, accountRule, location, loading, dispatch }) => {
     </Button>
   ]
 
+  const modalProps = {
+    title: 'Auto Reconciliation BCA',
+    visible: modalVisible,
+    confirmLoading: loading.effects['bankentry/importCsv'] || loading.effects['bankentry/autoRecon'],
+    footer: modalFooter,
+    onCancel () {
+      dispatch({
+        type: 'bankentry/updateState',
+        payload: {
+          modalVisible: false
+        }
+      })
+    }
+  }
+
+
+  const showImportDialog = () => {
+    dispatch({
+      type: 'bankentry/updateState',
+      payload: {
+        modalVisible: true
+      }
+    })
+  }
+
   return (
     <div className="content-inner">
-      <Modal
-        title="Auto Reconciliation BCA"
-        visible={modalVisible}
-        confirmLoading={loading.effects['bankentry/importCsv'] || loading.effects['bankentry/autoRecon']}
-        footer={modalFooter}
-        onCancel={() => {
-          dispatch({
-            type: 'bankentry/updateState',
-            payload: {
-              modalVisible: false
-            }
-          })
-        }}
-      >
+      <Modal {...modalProps} >
         <FormImport {...formImportProps} />
       </Modal>
-      <Row>
-        <Form {...formProps} />
-      </Row>
-      <Row>
-        <Col {...listColumnProps}>
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
+        <TabPane tab="Bank Reconciliation" key="0" >
+          <Form {...formProps} />
           <List {...listProps} />
-        </Col>
-        <Col {...listColumnProps}>
-          <ConflictedList {...conflictedListProps} />
-        </Col>
-      </Row>
+        </TabPane>
+        <TabPane tab="Auto Reconciliation" key="1" >
+          <Row>
+            <Button type="primary" icon="check" onClick={() => showImportDialog()}>BCA Auto Recon</Button>
+          </Row>
+          <Row>
+            <ConflictedList {...conflictedListProps} />
+          </Row>
+        </TabPane>
+      </Tabs>
     </div>
   )
 }

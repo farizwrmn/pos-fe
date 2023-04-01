@@ -39,6 +39,7 @@ export default modelExtend(pageModel, {
     },
     listBankRecon: [],
     conflictedCSV: [],
+    conflictedPayment: [],
     selectedConflictedRowKeys: [],
     summaryBankRecon: [],
     accountId: null,
@@ -89,6 +90,15 @@ export default modelExtend(pageModel, {
           } else {
             dispatch({ type: 'querySequence' })
           }
+        }
+
+        if (pathname === '/bank-recon') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
+          })
         }
       })
     }
@@ -276,8 +286,8 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             conflictedCSV: conflictedImportData,
-            listBankRecon: accountLedger,
-            summaryBankRecon: []
+            conflictedPayment: accountLedger,
+            modalVisible: false
           }
         })
         message.success(`Berhasil! ${(conflictedImportData.length > 0 || accountLedger.length > 0) ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)

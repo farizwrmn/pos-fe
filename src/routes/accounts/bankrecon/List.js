@@ -46,18 +46,7 @@ const List = ({
 
   return (
     <div>
-      {listBankRecon && listBankRecon[0] && !summaryBankRecon[0] && (
-        <div
-          style={{
-            padding: '10px',
-            fontSize: '20px',
-            fontWeight: 'bold'
-          }}
-        >
-          TIDAK ADA DI CSV
-        </div>
-      )}
-      <div style={{ position: 'fixed', minWidth: '300px', bottom: 10, zIndex: 2 }}>
+      <div style={{ position: 'fixed', minWidth: '300px', bottom: 10, right: 0, zIndex: 2 }}>
         {selectedRowKeys && selectedRowKeys.length > 0 && (
           <div>
             <Button
@@ -133,14 +122,6 @@ const List = ({
                 >
                   <Row>
                     <Col span={12}>
-                      <div>EDC Batch Number:</div>
-                    </Col>
-                    <Col span={12}>
-                      {item.edcBatchNumber || '-'}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
                       <div>Trans No:</div>
                     </Col>
                     <Col span={12}>
@@ -149,7 +130,7 @@ const List = ({
                   </Row>
                   <Row>
                     <Col span={12}>
-                      <div>{`${item.transDate}, ${item.transTime}`}</div>
+                      <div>{`${item.transDate}`}</div>
                     </Col>
                     <Col span={12}>
                       {item.debit && item.debit != null ? <div>{`(DB) ${currencyFormatter(Number(item.debit))}`}</div> : null}

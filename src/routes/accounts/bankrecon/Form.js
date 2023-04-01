@@ -15,22 +15,21 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 16 },
-    sm: { span: 17 },
-    md: { span: 17 }
+    sm: { span: 14 },
+    md: { span: 14 }
   }
 }
 
 const column = {
   xs: { span: 24 },
   md: { span: 24 },
-  lg: { span: 6 }
+  lg: { span: 10 }
 }
 
 const FormCounter = ({
   accountId,
   loading,
   onSubmit,
-  showImportDialog,
   listAccountCode,
   from,
   to,
@@ -93,10 +92,9 @@ const FormCounter = ({
               )}
             </FormItem>
           </Col>
-          <Col {...column}>
+          <Col span={2}>
             <FormItem>
               {/* {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>} */}
-              <Button type="primary" icon="check" style={{ float: 'right', marginLeft: '10px' }} onClick={() => showImportDialog()}>BCA Auto Recon</Button>
               <Button type="primary" icon="search" loading={loading && loading.effects['bankentry/queryBankRecon']} disabled={loading && loading.effects['bankentry/queryBankRecon']} onClick={handleSubmit} style={{ float: 'right' }} />
             </FormItem>
           </Col>
