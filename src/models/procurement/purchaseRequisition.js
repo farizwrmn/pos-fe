@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import { query as querySafetyStock } from 'services/procurement/purchaseSafetyStock'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
 import { pageModel } from 'models/common'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('Purchase Requisition has been saved')
@@ -12,6 +14,11 @@ export default modelExtend(pageModel, {
   namespace: 'purchaseRequisition',
 
   state: {
+    currentSafety: {},
+    listSafety: [],
+
+    listItem: [],
+
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
@@ -26,22 +33,39 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/transaction/procurement/requisition') {
           dispatch({
-            type: 'updateState',
+            type: 'querySafetyStock',
             payload: {
-              activeKey: activeKey || '0'
+              storeId: lstorage.getCurrentUserStore()
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
   },
 
   effects: {
+    * querySafetyStock ({ payload = {} }, { call, put }) {
+      const response = yield call(querySafetyStock, {
+        storeId: payload.storeId,
+        order: '-rangeDateTo',
+        pageSize: 1
+      })
+      if (response.success && response.data && response.data[0]) {
+        const currentSafety = response.data[0]
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentSafety
+          }
+        })
+      } else {
+        message.error('Safety Stock not found, please generate one first')
+        throw response
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)

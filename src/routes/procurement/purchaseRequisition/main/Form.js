@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import moment from 'moment'
+import { Form, Input, DatePicker, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 
@@ -82,26 +83,24 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transNo', {
+              initialValue: item.transNo,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input disabled maxLength={60} />)}
+          </FormItem>
+          <FormItem label="Deadline Receive" {...formItemLayout}>
+            {getFieldDecorator('deadlineDate', {
+              initialValue: moment().add('5', 'days'),
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<DatePicker />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
