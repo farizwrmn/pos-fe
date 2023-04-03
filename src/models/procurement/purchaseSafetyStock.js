@@ -31,7 +31,8 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/transaction/procurement/safety') {
+        if (pathname === '/transaction/procurement/safety'
+          || pathname === '/transaction/procurement/requisition') {
           dispatch({
             type: 'getDistributionCenterList',
             payload: {

@@ -605,6 +605,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/procurement/purchaseRequisition'))
+              registerModel(app, require('./models/procurement/purchaseSafetyStock'))
               cb(null, require('./routes/procurement/purchaseRequisition/main'))
             }, 'transaction-procurement-requisition')
           }

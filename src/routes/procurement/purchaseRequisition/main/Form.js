@@ -2,19 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Form, Input, DatePicker, Button, Row, Col, Modal } from 'antd'
+import ListItem from './ListItem'
 
 const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    md: { span: 24 },
+    lg: { span: 8 }
   },
   wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    md: { span: 24 },
+    lg: { span: 16 }
   }
 }
 
@@ -28,9 +27,9 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
-  onCancel,
-  modalType,
-  button,
+  listDistributionCenter,
+  listStore,
+  listItemProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -38,29 +37,6 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -77,6 +53,11 @@ const FormCounter = ({
         onCancel () { }
       })
     })
+  }
+
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current < moment(new Date()).add(-1, 'days').endOf('day')
   }
 
   return (
@@ -100,15 +81,35 @@ const FormCounter = ({
                 required: true,
                 message: 'Required'
               }]
-            })(<DatePicker />)}
+            })(<DatePicker disabledDate={disabledDate} />)}
           </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          <Row>
+            <Col md={24} lg={8} style={{ paddingRight: '10px', marginBottom: '10px', textAlign: 'right' }}><b>Distribution Center: </b></Col>
+            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
+              {listDistributionCenter.map((item, index) => (
+                <div>
+                  {`${index + 1}. ${item.dcStore.storeName}`}
+                </div>
+              ))}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={24} lg={8} style={{ paddingRight: '10px', textAlign: 'right' }}><b>Store: </b></Col>
+            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
+              {listStore.map((item, index) => (
+                <div>
+                  {`${index + 1}. ${item.sellingStore.storeName}`}
+                </div>
+              ))}
+            </Col>
+          </Row>
+          <ListItem {...listItemProps} />
+          <FormItem {...formItemLayout}>
+            <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Submit</Button>
           </FormItem>
         </Col>
       </Row>
-    </Form>
+    </Form >
   )
 }
 

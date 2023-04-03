@@ -7,14 +7,19 @@ import Form from './Form'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ purchaseRequisition, dispatch, location }) => {
+const Counter = ({ purchaseSafetyStock, purchaseRequisition, dispatch, location }) => {
   const {
     // list,
     // pagination,
     modalType,
     currentItem,
-    activeKey
+    activeKey,
+    listItem
   } = purchaseRequisition
+  const {
+    listStore,
+    listDistributionCenter
+  } = purchaseSafetyStock
   // const { user, storeInfo } = app
   // const filterProps = {
   //   onFilterChange (value) {
@@ -91,13 +96,20 @@ const Counter = ({ purchaseRequisition, dispatch, location }) => {
     })
   }
 
+  const listItemProps = {
+    listItem
+  }
+
   const formProps = {
+    listItemProps,
     modalType,
     item: currentItem,
+    listStore,
+    listDistributionCenter,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `purchaseRequisition/${modalType}`,
+        type: 'purchaseRequisition/create',
         payload: {
           data,
           reset
@@ -153,4 +165,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchaseRequisition, loading, app }) => ({ purchaseRequisition, loading, app }))(Counter)
+export default connect(({ purchaseSafetyStock, purchaseRequisition, loading, app }) => ({ purchaseSafetyStock, purchaseRequisition, loading, app }))(Counter)

@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query as querySafetyStock } from 'services/procurement/purchaseSafetyStock'
+import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
@@ -35,6 +36,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/transaction/procurement/requisition') {
+          dispatch({ type: 'querySequence' })
           dispatch({
             type: 'querySafetyStock',
             payload: {
@@ -47,6 +49,26 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * querySequence ({ payload = {} }, { select, call, put }) {
+      const invoice = {
+        seqCode: 'PR',
+        type: lstorage.getCurrentUserStore(),
+        ...payload
+      }
+      const data = yield call(querySequence, invoice)
+      const currentItem = yield select(({ purchaseRequisition }) => purchaseRequisition.currentItem)
+      const transNo = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {
+            ...currentItem,
+            transNo
+          }
+        }
+      })
+    },
+
     * querySafetyStock ({ payload = {} }, { call, put }) {
       const response = yield call(querySafetyStock, {
         storeId: payload.storeId,

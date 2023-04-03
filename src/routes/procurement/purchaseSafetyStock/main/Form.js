@@ -1,22 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { Form, DatePicker, Button, Row, Col, Modal } from 'antd'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
-const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    md: { span: 24 },
+    lg: { span: 8 }
   },
   wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    md: { span: 24 },
+    lg: { span: 16 }
   }
 }
 
@@ -31,6 +28,7 @@ const FormCounter = ({
   onSubmit,
   modalType,
   listStore,
+  listDistributionCenter,
   form: {
     getFieldDecorator,
     validateFields,
@@ -55,14 +53,6 @@ const FormCounter = ({
       }
     }
   }
-
-  let listStoreOption = listStore.map(x => (
-    <Option
-      title={x.sellingStore.storeName}
-      value={x.sellingStore.id}
-      key={x.sellingStore.id}
-    >{x.sellingStore.storeName}</Option>
-  ))
 
   const handleSubmit = () => {
     validateFields((errors) => {
@@ -99,28 +89,26 @@ const FormCounter = ({
               <RangePicker disabled size="large" format="DD-MMM-YYYY" />
             )}
           </FormItem>
-          <FormItem label="Distribution Center" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('purchaseStoreId', {
-              initialValue: listStore.map(item => item.sellingStoreId),
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <Select
-                mode={modalType === 'add' ? 'multiple' : 'default'}
-                size="large"
-                multiple
-                disabled
-                style={{ width: '100%' }}
-                placeholder="Choose Store"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {listStoreOption}
-              </Select>
-            )}
-          </FormItem>
+          <Row>
+            <Col md={24} lg={8} style={{ paddingRight: '10px', marginBottom: '10px', textAlign: 'right' }}><b>Distribution Center: </b></Col>
+            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
+              {listDistributionCenter.map((item, index) => (
+                <div>
+                  {`${index + 1}. ${item.dcStore.storeName}`}
+                </div>
+              ))}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={24} lg={8} style={{ paddingRight: '10px', textAlign: 'right' }}><b>Store: </b></Col>
+            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
+              {listStore.map((item, index) => (
+                <div>
+                  {`${index + 1}. ${item.sellingStore.storeName}`}
+                </div>
+              ))}
+            </Col>
+          </Row>
           <FormItem {...tailFormItemLayout}>
             <Button type="primary" onClick={handleSubmit}>Add</Button>
           </FormItem>
