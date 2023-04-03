@@ -10,6 +10,46 @@ export async function query (params) {
   })
 }
 
+export async function queryDetail ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function querySupplier ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety-supplier/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryBrand ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety-brand/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryCategory ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety-category/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

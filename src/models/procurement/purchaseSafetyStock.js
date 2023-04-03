@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/procurement/purchaseSafetyStock'
+import {
+  query,
+  add
+} from 'services/procurement/purchaseSafetyStock'
 import { query as queryDistributionCenter } from 'services/procurement/purchaseDistribution'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
@@ -89,15 +91,6 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const response = yield call(remove, payload)
-      if (response.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw response
-      }
-    },
-
     * add ({ payload }, { call, put }) {
       const listStore = yield call(queryDistributionCenter, {
         storeId: lstorage.getCurrentUserStore(),
@@ -142,42 +135,6 @@ export default modelExtend(pageModel, {
       } else {
         message.error(`Parameter Error, DC: ${lstorage.getCurrentUserStore()} STORE: ${listStore.data && listStore.data.length} FROM: ${payload.from} TO: ${payload.from}`)
         throw listStore
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ purchaseSafetyStock }) => purchaseSafetyStock.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const response = yield call(edit, newCounter)
-      if (response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw response
       }
     }
   },

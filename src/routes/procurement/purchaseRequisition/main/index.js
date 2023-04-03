@@ -2,19 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
 import Form from './Form'
 
-const TabPane = Tabs.TabPane
-
-const Counter = ({ purchaseSafetyStock, purchaseRequisition, dispatch, location }) => {
+const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, location }) => {
   const {
     // list,
     // pagination,
+    paginationSafety,
     modalType,
     currentItem,
     activeKey,
-    listItem
+    listItem,
+    listSafetySupplier,
+    listSafetyBrand,
+    listSafetyCategory,
+    listSafety
   } = purchaseRequisition
   const {
     listStore,
@@ -71,29 +73,46 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, dispatch, location 
   //   }
   // }
 
-  const changeTab = (key) => {
-    dispatch({
-      type: 'purchaseRequisition/changeTab',
-      payload: { key }
-    })
-    const { query, pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        activeKey: key
-      }
-    }))
-    dispatch({ type: 'purchaseRequisition/updateState', payload: { list: [] } })
-  }
-
-  const clickBrowse = () => {
-    dispatch({
-      type: 'purchaseRequisition/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
+  const listSafetyProps = {
+    listSafetySupplier,
+    listSafetyBrand,
+    listSafetyCategory,
+    dataSource: listSafety,
+    pagination: paginationSafety,
+    loading: loading.effects['purchaseRequisition/querySafetyStock']
+      || loading.effects['purchaseRequisition/queryDetailSafety']
+      || loading.effects['purchaseRequisition/querySupplierSafety']
+      || loading.effects['purchaseRequisition/queryBrandSafety']
+      || loading.effects['purchaseRequisition/queryCategorySafety'],
+    location,
+    onChange (page) {
+      dispatch({
+        type: 'purchaseRequisition/queryDetailSafety',
+        payload: {
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      })
+    },
+    editItem (item) {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: 0
+        }
+      }))
+      dispatch({
+        type: 'purchaseRequisition/editItem',
+        payload: { item }
+      })
+    },
+    deleteItem (id) {
+      dispatch({
+        type: 'purchaseRequisition/delete',
+        payload: id
+      })
+    }
   }
 
   const listItemProps = {
@@ -102,6 +121,7 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, dispatch, location 
 
   const formProps = {
     listItemProps,
+    listSafetyProps,
     modalType,
     item: currentItem,
     listStore,
@@ -133,26 +153,9 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, dispatch, location 
     }
   }
 
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
-
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
-          {activeKey === '0' && <Form {...formProps} />}
-        </TabPane>
-        {/* <TabPane tab="Browse" key="1" >
-          {activeKey === '1' &&
-            <div>
-              <Filter {...filterProps} />
-              <List {...listProps} />
-            </div>
-          }
-        </TabPane> */}
-      </Tabs>
+      {activeKey === '0' && <Form {...formProps} />}
     </div>
   )
 }

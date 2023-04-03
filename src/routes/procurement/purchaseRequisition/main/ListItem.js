@@ -2,7 +2,8 @@ import React from 'react'
 import { Table } from 'antd'
 
 const ListItem = ({
-  listItem
+  listItem,
+  ...otherProps
 }) => {
   const columns = [
     {
@@ -14,9 +15,10 @@ const ListItem = ({
 
   return (
     <div>
-      <div><h1>Safety Stock</h1></div>
+      <div><h1>Requisition Item</h1></div>
       <div>
         <Table
+          {...otherProps}
           bordered
           columns={columns}
           simple

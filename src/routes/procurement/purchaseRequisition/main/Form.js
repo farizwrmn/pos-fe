@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Form, Input, DatePicker, Button, Row, Col, Modal } from 'antd'
+import ListSafetyStock from './ListSafetyStock'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -18,10 +19,8 @@ const formItemLayout = {
 }
 
 const column = {
-  sm: { span: 24 },
   md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  lg: { span: 12 }
 }
 
 const FormCounter = ({
@@ -30,6 +29,7 @@ const FormCounter = ({
   listDistributionCenter,
   listStore,
   listItemProps,
+  listSafetyProps,
   form: {
     getFieldDecorator,
     validateFields,
@@ -103,13 +103,12 @@ const FormCounter = ({
               ))}
             </Col>
           </Row>
-          <ListItem {...listItemProps} />
-          <FormItem {...formItemLayout}>
-            <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Submit</Button>
-          </FormItem>
         </Col>
       </Row>
-    </Form >
+      <ListSafetyStock {...listSafetyProps} />
+      <ListItem {...listItemProps} />
+      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Submit</Button>
+    </Form>
   )
 }
 

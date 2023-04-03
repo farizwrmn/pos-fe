@@ -1,7 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query as querySafetyStock } from 'services/procurement/purchaseSafetyStock'
+import {
+  query as querySafetyStock,
+  queryDetail,
+  querySupplier,
+  queryBrand,
+  queryCategory
+} from 'services/procurement/purchaseSafetyStock'
 import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
 import { pageModel } from 'models/common'
@@ -18,15 +24,26 @@ export default modelExtend(pageModel, {
     currentSafety: {},
     listSafety: [],
 
+    listSafetySupplier: [],
+    listSafetyBrand: [],
+    listSafetyCategory: [],
+
     listItem: [],
 
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
     list: [],
+
+    paginationSafety: {
+      showSizeChanger: true,
+      showQuickJumper: false,
+      current: 1
+    },
+
     pagination: {
       showSizeChanger: true,
-      showQuickJumper: true,
+      showQuickJumper: false,
       current: 1
     }
   },
@@ -49,6 +66,114 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetailSafety ({ payload = {} }, { select, call, put }) {
+      const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
+      const response = yield call(queryDetail, {
+        ...payload,
+        id: currentSafety.id
+      })
+      if (response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafety: response.data,
+            paginationSafety: {
+              showSizeChanger: true,
+              showQuickJumper: false,
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total
+            }
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafety: [],
+            pagination: {
+              showSizeChanger: true,
+              showQuickJumper: false,
+              current: 1
+            }
+          }
+        })
+        throw response
+      }
+    },
+
+    * querySupplierSafety ({ payload = {} }, { select, call, put }) {
+      const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
+      const response = yield call(querySupplier, {
+        ...payload,
+        id: currentSafety.id
+      })
+      if (response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafetySupplier: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafetySupplier: []
+          }
+        })
+        throw response
+      }
+    },
+
+    * queryBrandSafety ({ payload = {} }, { select, call, put }) {
+      const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
+      const response = yield call(queryBrand, {
+        ...payload,
+        id: currentSafety.id
+      })
+      if (response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafetyBrand: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafetyBrand: []
+          }
+        })
+        throw response
+      }
+    },
+
+    * queryCategorySafety ({ payload = {} }, { select, call, put }) {
+      const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
+      const response = yield call(queryCategory, {
+        ...payload,
+        id: currentSafety.id
+      })
+      if (response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafetyCategory: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSafetyCategory: []
+          }
+        })
+        throw response
+      }
+    },
+
     * querySequence ({ payload = {} }, { select, call, put }) {
       const invoice = {
         seqCode: 'PR',
@@ -80,9 +205,18 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            currentSafety
+            currentSafety,
+            paginationSafety: {
+              showSizeChanger: true,
+              showQuickJumper: false,
+              current: 1
+            }
           }
         })
+        yield put({ type: 'queryDetailSafety', payload: { id: currentSafety.id } })
+        yield put({ type: 'querySupplierSafety', payload: { id: currentSafety.id } })
+        yield put({ type: 'queryBrandSafety', payload: { id: currentSafety.id } })
+        yield put({ type: 'queryCategorySafety', payload: { id: currentSafety.id } })
       } else {
         message.error('Safety Stock not found, please generate one first')
         throw response
