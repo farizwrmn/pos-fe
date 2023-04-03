@@ -25,7 +25,7 @@ export const versionInfo = () => {
 }
 export const prefix = 'smiPos'
 export const footerText = 'K3MART'
-export const footerSubText = 'K3MART © 2022'
+export const footerSubText = 'K3MART © 2023'
 export const disableMultiSelect = true
 export const openPages = [
   '/login',
