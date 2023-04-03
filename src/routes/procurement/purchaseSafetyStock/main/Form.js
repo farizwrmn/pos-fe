@@ -27,6 +27,7 @@ const column = {
 const FormCounter = ({
   onSubmit,
   modalType,
+  loading,
   listStore,
   listDistributionCenter,
   form: {
@@ -62,6 +63,9 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      console.log('onSubmit', data)
+      data.from = data.rangeDate[0].format('YYYY-MM-DD')
+      data.to = data.rangeDate[1].format('YYYY-MM-DD')
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -110,7 +114,7 @@ const FormCounter = ({
             </Col>
           </Row>
           <FormItem {...tailFormItemLayout}>
-            <Button type="primary" onClick={handleSubmit}>Add</Button>
+            <Button disabled={loading.effects['purchaseSafetyStock/add']} type="primary" onClick={handleSubmit}>Add</Button>
           </FormItem>
         </Col>
       </Row>

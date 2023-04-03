@@ -97,16 +97,17 @@ export default modelExtend(pageModel, {
         type: 'all',
         order: 'sellingStoreId'
       })
+      console.log('listStore', listStore)
       if (listStore.success
-        && payload.from
-        && payload.to
+        && payload.data.from
+        && payload.data.to
         && listStore.data
         && listStore.data.length > 0) {
         const response = yield call(add, {
           purchaseStoreId: lstorage.getCurrentUserStore(),
           salesStoreId: listStore.data.map(item => item.sellingStoreId),
-          from: payload.from,
-          to: payload.to
+          from: payload.data.from,
+          to: payload.data.to
         })
         if (response.success) {
           success()
@@ -133,7 +134,7 @@ export default modelExtend(pageModel, {
           throw response
         }
       } else {
-        message.error(`Parameter Error, DC: ${lstorage.getCurrentUserStore()} STORE: ${listStore.data && listStore.data.length} FROM: ${payload.from} TO: ${payload.from}`)
+        message.error(`Parameter Error, DC: ${lstorage.getCurrentUserStore()} STORE: ${listStore.data && listStore.data.length} FROM: ${payload.data.from} TO: ${payload.data.to}`)
         throw listStore
       }
     }

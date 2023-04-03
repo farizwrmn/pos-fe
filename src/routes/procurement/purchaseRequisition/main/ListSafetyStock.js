@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Row, Col, Select, Form } from 'antd'
+import { Table, Row, Col, Button, Checkbox, Select, Form } from 'antd'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -19,7 +19,12 @@ const ListSafetyStock = ({
   listSafetySupplier,
   listSafetyBrand,
   listSafetyCategory,
-  form: { getFieldDecorator },
+  onFilterChange,
+  updateSelectedKey,
+  selectedRowKeysSafety,
+  handleSubmitAll,
+  loading,
+  form: { getFieldDecorator, getFieldsValue },
   ...otherProps
 }) => {
   const columns = [
@@ -27,6 +32,7 @@ const ListSafetyStock = ({
       title: 'Name',
       dataIndex: 'product.productName',
       key: 'product.productName',
+      width: '250px',
       render: (text, record) => {
         return (
           <div>
@@ -41,6 +47,7 @@ const ListSafetyStock = ({
       title: 'Desired Supplier',
       dataIndex: 'desiredSupplier.supplierName',
       key: 'desiredSupplier.supplierName',
+      width: '100px',
       render: (text, record) => {
         return (
           <div>
@@ -54,6 +61,7 @@ const ListSafetyStock = ({
       title: 'Brand',
       dataIndex: 'record.product.brand.brandCode',
       key: 'record.product.brand.brandCode',
+      width: '100px',
       render: (text, record) => {
         return (
           <div>
@@ -67,6 +75,7 @@ const ListSafetyStock = ({
       title: 'Category',
       dataIndex: 'record.product.category.categoryCode',
       key: 'record.product.category.categoryCode',
+      width: '100px',
       render: (text, record) => {
         return (
           <div>
@@ -80,6 +89,7 @@ const ListSafetyStock = ({
       title: 'Safety Stock',
       dataIndex: 'safetyStock',
       key: 'safetyStock',
+      width: '150px',
       render: (text, record) => {
         return (
           <div>
@@ -94,6 +104,7 @@ const ListSafetyStock = ({
       title: 'Lead Time',
       dataIndex: 'maxLeadTime',
       key: 'maxLeadTime',
+      width: '150px',
       render: (text, record) => {
         return (
           <div>
@@ -107,6 +118,7 @@ const ListSafetyStock = ({
       title: 'Sales',
       dataIndex: 'avgSalesPerDay',
       key: 'avgSalesPerDay',
+      width: '150px',
       render: (text, record) => {
         return (
           <div>
@@ -120,14 +132,15 @@ const ListSafetyStock = ({
       title: 'Recommended To Buy',
       dataIndex: 'recommededToBuy',
       key: 'recommededToBuy',
+      width: '100px',
       render: (text, record) => {
         const minimumBuyingQty = record.product.dimensionBox
         let qtyToBuy = 0
         let boxToBuy = 0
-        if (record.stock >= record.safetyStock) {
+        if ((record.stock - record.orderedQty) >= record.safetyStock) {
           qtyToBuy = 0
         } else {
-          qtyToBuy = record.safetyStock - record.stock
+          qtyToBuy = record.safetyStock - record.stock - record.orderedQty
         }
         if (Number(minimumBuyingQty) > 1) {
           boxToBuy = Math.ceil(qtyToBuy / minimumBuyingQty)
@@ -135,7 +148,8 @@ const ListSafetyStock = ({
         if (boxToBuy > 0) {
           return (
             <div>
-              <div>Buy: {qtyToBuy} Pcs or {boxToBuy} Boxes</div>
+              <div>Buy: {qtyToBuy} Pcs</div>
+              <div>{boxToBuy} Boxes</div>
             </div>
           )
         }
@@ -152,6 +166,47 @@ const ListSafetyStock = ({
   const listBrand = listSafetyBrand.map(item => (<Option title={`${item.brandName} (code: ${item.brandCode})`} value={item.id} key={item.id}>{`${item.brandName} (count: ${item.countItem})`}</Option>))
   const listCategory = listSafetyCategory.map(item => (<Option title={`${item.categoryName} (code: ${item.categoryCode})`} value={item.id} key={item.id}>{`${item.categoryName} (count: ${item.countItem})`}</Option>))
 
+  const onFilter = (field, value) => {
+    const data = { ...getFieldsValue() }
+    if (field === 'desiredSupplierId') {
+      if (value && value.length > 0) {
+        data.desiredSupplierId = data.desiredSupplierId && typeof data.desiredSupplierId === 'object' ? data.desiredSupplierId.concat(value) : value
+      } else {
+        data.desiredSupplierId = []
+      }
+    }
+    if (field === 'brandId' && value && value.length > 0) {
+      if (value && value.length > 0) {
+        data.brandId = data.brandId && typeof data.brandId === 'object' ? data.brandId.concat(value) : value
+      } else {
+        data.brandId = []
+      }
+    }
+    if (field === 'categoryId' && value && value.length > 0) {
+      if (value && value.length > 0) {
+        data.categoryId = data.categoryId && typeof data.categoryId === 'object' ? data.categoryId.concat(value) : value
+      } else {
+        data.categoryId = []
+      }
+    }
+    if (field === 'notFinishedGeneral') {
+      data.notFinishedGeneral = Number(value)
+    } else {
+      data.notFinishedGeneral = Number(data.notFinishedGeneral)
+    }
+    onFilterChange(data)
+  }
+
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeysSafety,
+    hideDefaultSelections: false,
+    onChange: (selectedRowKeys) => {
+      updateSelectedKey(selectedRowKeys)
+    }
+  }
+
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+
   return (
     <div>
       <div><h1>Safety Stock</h1></div>
@@ -163,7 +218,7 @@ const ListSafetyStock = ({
                 required: false
               }]
             })(
-              <Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
+              <Select filterOption={filterOption} onChange={value => onFilter('desiredSupplierId', value)} style={{ width: '100%' }} mode="multiple" allowClear size="large">
                 {listSupplier}
               </Select>
             )}
@@ -176,7 +231,7 @@ const ListSafetyStock = ({
                 required: false
               }]
             })(
-              <Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
+              <Select filterOption={filterOption} onChange={value => onFilter('brandId', value)} style={{ width: '100%' }} mode="multiple" allowClear size="large">
                 {listBrand}
               </Select>
             )}
@@ -189,22 +244,40 @@ const ListSafetyStock = ({
                 required: false
               }]
             })(
-              <Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
+              <Select filterOption={filterOption} onChange={value => onFilter('categoryId', value)} style={{ width: '100%' }} mode="multiple" allowClear size="large">
                 {listCategory}
               </Select>
             )}
           </FormItem>
         </Col>
       </Row>
+      <Row>
+        <Col md={24} lg={12}>
+          <FormItem label="Recommended To Buy" {...formItemLayout}>
+            {getFieldDecorator('notFinishedGeneral', {
+              valuePropName: 'checked'
+            })(<Checkbox onChange={e => onFilter('notFinishedGeneral', e.target.checked)}>Show All</Checkbox>)}
+          </FormItem>
+        </Col>
+        <Col md={24} lg={12} />
+      </Row>
       <div>
         <Table
           {...otherProps}
+          rowSelection={rowSelection}
           bordered
           columns={columns}
+          scroll={{ x: 1200 }}
           simple
+          loading={loading}
           rowKey={record => record.id}
         />
       </div>
+      {selectedRowKeysSafety && selectedRowKeysSafety.length > 0 ? (
+        <FormItem>
+          <Button disabled={loading} size="small" type="primary" onClick={handleSubmitAll}>{`Add ${selectedRowKeysSafety.length} Selected`}</Button>
+        </FormItem>
+      ) : null}
     </div>
   )
 }

@@ -28,7 +28,10 @@ export default modelExtend(pageModel, {
     listSafetyBrand: [],
     listSafetyCategory: [],
 
+    filterSafety: {},
+
     listItem: [],
+    selectedRowKeysSafety: [],
 
     currentItem: {},
     modalType: 'add',
@@ -68,7 +71,9 @@ export default modelExtend(pageModel, {
   effects: {
     * queryDetailSafety ({ payload = {} }, { select, call, put }) {
       const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
+      const filterSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.filterSafety)
       const response = yield call(queryDetail, {
+        ...filterSafety,
         ...payload,
         id: currentSafety.id
       })
@@ -77,12 +82,14 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listSafety: response.data,
+            selectedRowKeysSafety: [],
             paginationSafety: {
               showSizeChanger: true,
               showQuickJumper: false,
               current: Number(response.page) || 1,
               pageSize: Number(response.pageSize) || 10,
-              total: response.total
+              total: response.total,
+              showTotal: total => `${total} Items`
             }
           }
         })
@@ -91,6 +98,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listSafety: [],
+            selectedRowKeysSafety: [],
             pagination: {
               showSizeChanger: true,
               showQuickJumper: false,
@@ -206,6 +214,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             currentSafety,
+            filterSafety: {},
             paginationSafety: {
               showSizeChanger: true,
               showQuickJumper: false,
@@ -221,6 +230,38 @@ export default modelExtend(pageModel, {
         message.error('Safety Stock not found, please generate one first')
         throw response
       }
+    },
+
+    * addMultiItem ({ payload = {} }, { put }) {
+      const {
+        selectedRowKeysSafety,
+        listItem,
+        listSafety
+      } = payload
+      let newListItem = [
+        ...listItem
+      ]
+      console.log('addMultiItem', selectedRowKeysSafety,
+        listItem,
+        listSafety)
+      for (let key in selectedRowKeysSafety) {
+        const id = selectedRowKeysSafety[key]
+        const filteredSafety = listSafety.filter(filtered => filtered.id === id)
+        if (filteredSafety && filteredSafety[0]) {
+          const filteredExists = listItem.filter(filtered => filtered.id === id)
+          if (filteredExists && filteredExists.length === 0) {
+            newListItem = newListItem.concat([filteredSafety[0]])
+          }
+        }
+      }
+      console.log('newListItem', newListItem)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: newListItem,
+          selectedRowKeysSafety: []
+        }
+      })
     },
 
     * query ({ payload = {} }, { call, put }) {

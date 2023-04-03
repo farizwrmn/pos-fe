@@ -6,77 +6,28 @@ import Form from './Form'
 
 const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, location }) => {
   const {
-    // list,
-    // pagination,
     paginationSafety,
     modalType,
     currentItem,
-    activeKey,
     listItem,
     listSafetySupplier,
     listSafetyBrand,
     listSafetyCategory,
-    listSafety
+    listSafety,
+    selectedRowKeysSafety
   } = purchaseRequisition
   const {
     listStore,
     listDistributionCenter
   } = purchaseSafetyStock
-  // const { user, storeInfo } = app
-  // const filterProps = {
-  //   onFilterChange (value) {
-  //     dispatch({
-  //       type: 'purchaseRequisition/query',
-  //       payload: {
-  //         ...value
-  //       }
-  //     })
-  //   }
-  // }
 
-  // const listProps = {
-  //   dataSource: list,
-  //   user,
-  //   storeInfo,
-  //   pagination,
-  //   loading: loading.effects['purchaseRequisition/query'],
-  //   location,
-  //   onChange (page) {
-  //     const { query, pathname } = location
-  //     dispatch(routerRedux.push({
-  //       pathname,
-  //       query: {
-  //         ...query,
-  //         page: page.current,
-  //         pageSize: page.pageSize
-  //       }
-  //     }))
-  //   },
-  //   editItem (item) {
-  //     const { pathname } = location
-  //     dispatch(routerRedux.push({
-  //       pathname,
-  //       query: {
-  //         activeKey: 0
-  //       }
-  //     }))
-  //     dispatch({
-  //       type: 'purchaseRequisition/editItem',
-  //       payload: { item }
-  //     })
-  //   },
-  //   deleteItem (id) {
-  //     dispatch({
-  //       type: 'purchaseRequisition/delete',
-  //       payload: id
-  //     })
-  //   }
-  // }
+  console.log('loading', loading.effects['purchaseRequisition/queryDetailSafety'])
 
   const listSafetyProps = {
     listSafetySupplier,
     listSafetyBrand,
     listSafetyCategory,
+    selectedRowKeysSafety,
     dataSource: listSafety,
     pagination: paginationSafety,
     loading: loading.effects['purchaseRequisition/querySafetyStock']
@@ -85,6 +36,24 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
       || loading.effects['purchaseRequisition/queryBrandSafety']
       || loading.effects['purchaseRequisition/queryCategorySafety'],
     location,
+    updateSelectedKey (selectedRowKeysSafety) {
+      dispatch({
+        type: 'purchaseRequisition/updateState',
+        payload: {
+          selectedRowKeysSafety
+        }
+      })
+    },
+    handleSubmitAll () {
+      dispatch({
+        type: 'purchaseRequisition/addMultiItem',
+        payload: {
+          selectedRowKeysSafety,
+          listItem,
+          listSafety
+        }
+      })
+    },
     onChange (page) {
       dispatch({
         type: 'purchaseRequisition/queryDetailSafety',
@@ -94,29 +63,33 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
         }
       })
     },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
+    onFilterChange (data) {
+      dispatch({
+        type: 'purchaseRequisition/queryDetailSafety',
+        payload: {
+          ...data,
+          page: 1,
+          pageSize: 10
         }
-      }))
-      dispatch({
-        type: 'purchaseRequisition/editItem',
-        payload: { item }
       })
-    },
-    deleteItem (id) {
       dispatch({
-        type: 'purchaseRequisition/delete',
-        payload: id
+        type: 'purchaseRequisition/updateState',
+        payload: {
+          filterSafety: data
+        }
       })
     }
   }
 
+  console.log('listItem', listItem)
+
   const listItemProps = {
-    listItem
+    dataSource: listItem,
+    pagination: false,
+    loading: loading.effects['purchaseRequisition/addMultiItem']
+      || loading.effects['purchaseRequisition/addItem']
+      || loading.effects['purchaseRequisition/editItem'],
+    location
   }
 
   const formProps = {
@@ -155,7 +128,7 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
 
   return (
     <div className="content-inner">
-      {activeKey === '0' && <Form {...formProps} />}
+      <Form {...formProps} />
     </div>
   )
 }
