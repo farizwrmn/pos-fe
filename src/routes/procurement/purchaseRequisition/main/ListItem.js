@@ -1,7 +1,12 @@
 import React from 'react'
 import { Table } from 'antd'
+import {
+  getRecommendedQtyToBuy,
+  getRecommendedBoxToBuy
+} from './utils'
 
 const ListItem = ({
+  listItem,
   ...otherProps
 }) => {
   const columns = [
@@ -9,7 +14,7 @@ const ListItem = ({
       title: 'Name',
       dataIndex: 'product.productName',
       key: 'product.productName',
-      width: '250px',
+      width: '230px',
       render: (text, record) => {
         return (
           <div>
@@ -78,50 +83,23 @@ const ListItem = ({
       }
     },
     {
-      title: 'Lead Time',
-      dataIndex: 'maxLeadTime',
-      key: 'maxLeadTime',
-      width: '150px',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>Max Lead Time: {record.maxLeadTime} Days</div>
-            <div><b>Average Lead Time: </b>{record.avgLeadTime} Days</div>
-          </div>
-        )
-      }
-    },
-    {
-      title: 'Sales',
-      dataIndex: 'avgSalesPerDay',
-      key: 'avgSalesPerDay',
-      width: '150px',
-      render: (text, record) => {
-        return (
-          <div>
-            <div>Max Sales Per Day: {record.maxSalesPerDay} Pcs</div>
-            <div><b>Average Sales Per Day: </b>{record.avgSalesPerDay} Pcs</div>
-          </div>
-        )
-      }
-    },
-    {
       title: 'Recommended To Buy',
-      dataIndex: 'recommededToBuy',
-      key: 'recommededToBuy',
+      dataIndex: 'qty',
+      key: 'qty',
       width: '100px',
       render: (text, record) => {
-        const minimumBuyingQty = record.product.dimensionBox
-        let qtyToBuy = 0
-        let boxToBuy = 0
-        if ((record.stock - record.orderedQty) >= record.safetyStock) {
-          qtyToBuy = 0
-        } else {
-          qtyToBuy = record.safetyStock - record.stock - record.orderedQty
-        }
-        if (Number(minimumBuyingQty) > 1) {
-          boxToBuy = Math.ceil(qtyToBuy / minimumBuyingQty)
-        }
+        let qtyToBuy = getRecommendedQtyToBuy({
+          stock: record.stock,
+          orderedQty: record.orderedQty,
+          safetyStock: record.safetyStock
+        })
+        let boxToBuy = getRecommendedBoxToBuy({
+          dimensionBox: record.product.dimensionBox,
+          stock: record.stock,
+          orderedQty: record.orderedQty,
+          safetyStock: record.safetyStock
+        })
+
         if (boxToBuy > 0) {
           return (
             <div>
@@ -147,9 +125,17 @@ const ListItem = ({
           {...otherProps}
           bordered
           columns={columns}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 1000 }}
           simple
           rowKey={record => record.id}
+          footer={() => (
+            <div>
+              <div>Qty : {listItem.reduce((prev, next) => {
+                return prev + next.qty
+              }, 0).toLocaleString()}</div>
+              <div>Credit : {listItem.reduce((cnt, o) => cnt + parseFloat(o.amountOut || 0), 0).toLocaleString()}</div>
+            </div>)
+          }
         />
       </div>
     </div>

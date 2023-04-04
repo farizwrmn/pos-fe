@@ -21,8 +21,6 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     listDistributionCenter
   } = purchaseSafetyStock
 
-  console.log('loading', loading.effects['purchaseRequisition/queryDetailSafety'])
-
   const listSafetyProps = {
     listSafetySupplier,
     listSafetyBrand,
@@ -81,10 +79,9 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     }
   }
 
-  console.log('listItem', listItem)
-
   const listItemProps = {
     dataSource: listItem,
+    listItem,
     pagination: false,
     loading: loading.effects['purchaseRequisition/addMultiItem']
       || loading.effects['purchaseRequisition/addItem']

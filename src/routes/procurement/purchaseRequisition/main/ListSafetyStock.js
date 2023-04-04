@@ -32,7 +32,7 @@ const ListSafetyStock = ({
       title: 'Name',
       dataIndex: 'product.productName',
       key: 'product.productName',
-      width: '250px',
+      width: '220px',
       render: (text, record) => {
         return (
           <div>
@@ -267,7 +267,7 @@ const ListSafetyStock = ({
           rowSelection={rowSelection}
           bordered
           columns={columns}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 1030 }}
           simple
           loading={loading}
           rowKey={record => record.id}
