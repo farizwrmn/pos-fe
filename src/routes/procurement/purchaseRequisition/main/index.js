@@ -3,10 +3,20 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
+import ModalEditCost from './ModalEditCost'
+import ModalEditQty from './ModalEditQty'
+import ModalEditSupplier from './ModalEditSupplier'
+import ModalStock from './ModalStock'
 
 const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, location }) => {
   const {
+    currentItemEdit,
     paginationSafety,
+    modalEditCostVisible,
+    modalEditQtyVisible,
+    modalEditSupplierVisible,
+    modalStockVisible,
+
     modalType,
     currentItem,
     listItem,
@@ -167,8 +177,84 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     }
   }
 
+  const modalEditCostProps = {
+    title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    visible: modalEditCostVisible,
+    item: currentItemEdit,
+    loading,
+    onOk (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/editCost',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseRequisition/hideModalEditCost'
+      })
+    }
+  }
+
+  const modalEditQtyProps = {
+    title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    visible: modalEditQtyVisible,
+    item: currentItemEdit,
+    loading,
+    onOk (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/editQty',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseRequisition/hideModalEditQty'
+      })
+    }
+  }
+
+  const modalEditSupplierProps = {
+    title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    visible: modalEditSupplierVisible,
+    item: currentItemEdit,
+    loading,
+    onOk (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/editSupplier',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseRequisition/hideModalEditSupplier'
+      })
+    }
+  }
+
+  const modalStockProps = {
+    title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    visible: modalStockVisible,
+    item: currentItemEdit,
+    loading,
+    onCancel () {
+      dispatch({
+        type: 'purchaseRequisition/hideModalStock'
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
+      {modalEditCostVisible && <ModalEditCost {...modalEditCostProps} />}
+      {modalEditQtyVisible && <ModalEditQty {...modalEditQtyProps} />}
+      {modalEditSupplierVisible && <ModalEditSupplier {...modalEditSupplierProps} />}
+      {modalStockVisible && <ModalStock {...modalStockProps} />}
       <Form {...formProps} />
     </div>
   )

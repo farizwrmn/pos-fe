@@ -12,6 +12,12 @@ import { query as queryProductCost } from 'services/product/productCost'
 import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
 import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
+import {
+  querySupplierHistory,
+  queryPurchaseHistory,
+  queryPurchaseOrderProduct,
+  queryStockProcurement
+} from 'services/procurement/purchaseHistory'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 import { getRecommendedQtyToBuy, getRecommendedBoxToBuy } from 'utils/safetyStockUtils'
@@ -35,6 +41,17 @@ export default modelExtend(pageModel, {
 
     listItem: [],
     selectedRowKeysSafety: [],
+
+    listSupplierHistory: [],
+    listPurchaseHistory: [],
+    listPurchaseOrder: [],
+    listStock: [],
+
+    currentItemEdit: {},
+    modalEditCostVisible: false,
+    modalEditQtyVisible: false,
+    modalEditSupplierVisible: false,
+    modalStockVisible: false,
 
     currentItem: {},
     modalType: 'add',
@@ -317,12 +334,166 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * showModalEditSupplier ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditSupplierVisible: true,
+          currentItemEdit: payload.currentItemEdit
+        }
+      })
+      const response = yield call(querySupplierHistory, {
+        productId: payload.currentItemEdit.productId,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplierHistory: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * showModalEditCost ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditCostVisible: true,
+          currentItemEdit: payload.currentItemEdit
+        }
+      })
+      const response = yield call(queryPurchaseHistory, {
+        productId: payload.currentItemEdit.productId,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseHistory: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * showModalEditQty ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditQtyVisible: true,
+          currentItemEdit: payload.currentItemEdit
+        }
+      })
+      const response = yield call(queryStockProcurement, {
+        productId: payload.currentItemEdit.productId,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listStock: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+      const responseStore = yield call(queryPurchaseOrderProduct, {
+        productId: payload.currentItemEdit.productId,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (responseStore && responseStore.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseOrder: responseStore.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * showModalStock ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStockVisible: true,
+          currentItemEdit: payload.currentItemEdit
+        }
+      })
+      const response = yield call(queryStockProcurement, {
+        productId: payload.currentItemEdit.productId,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listStock: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * hideModalEditSupplier ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditSupplierVisible: false,
+          currentItemEdit: payload.currentItemEdit,
+          listSupplierHistory: []
+        }
+      })
+    },
+
+    * hideModalEditCost ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditCostVisible: false,
+          currentItemEdit: payload.currentItemEdit,
+          listPurchaseHistory: []
+        }
+      })
+    },
+
+    * hideModalEditQty ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditQtyVisible: false,
+          currentItemEdit: payload.currentItemEdit,
+          listStock: []
+        }
+      })
+    },
+
+    * hideModalStock ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStockVisible: false,
+          currentItemEdit: payload.currentItemEdit,
+          listStock: []
+        }
+      })
+    },
+
     * deleteItem ({ payload = {} }, { select, put }) {
       const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
       const newListItem = listItem
         .filter(filtered => filtered.id !== payload.currentItemEdit.id)
         .map((item, index) => {
-          item.no = index
+          item.no = index + 1
           return item
         })
       message.success(`Item ${payload.currentItemEdit.product.productName} Deleted`)
