@@ -96,7 +96,7 @@ export default modelExtend(pageModel, {
         const listPrice = listStorePrice.success && listStorePrice.data && listStorePrice.data.length > 0 ? listStorePrice.data : []
 
         if (productCost && productCost.data && productCost.data.length > 0) {
-          listSafety = response.data.map((item) => {
+          listSafety = response.data.map((item, index) => {
             const filteredProductCost = productCost.data.filter(filtered => filtered.productId === item.productId)
             const filteredPrice = listPrice.filter(filtered => filtered.productId === item.productId)
             if (filteredPrice && filteredPrice.length > 0) {
@@ -117,6 +117,7 @@ export default modelExtend(pageModel, {
               }
               item.product.costPrice = filteredProductCost[0].costPrice
             }
+            item.no = index + 1
             return item
           })
         }
@@ -312,6 +313,23 @@ export default modelExtend(pageModel, {
         payload: {
           listItem: newListItem,
           selectedRowKeysSafety: []
+        }
+      })
+    },
+
+    * deleteItem ({ payload = {} }, { select, put }) {
+      const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
+      const newListItem = listItem
+        .filter(filtered => filtered.id !== payload.currentItemEdit.id)
+        .map((item, index) => {
+          item.no = index
+          return item
+        })
+      message.success(`Item ${payload.currentItemEdit.product.productName} Deleted`)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: newListItem
         }
       })
     },

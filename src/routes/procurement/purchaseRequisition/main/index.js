@@ -85,11 +85,23 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     pagination: false,
     loading: loading.effects['purchaseRequisition/addMultiItem']
       || loading.effects['purchaseRequisition/addItem']
-      || loading.effects['purchaseRequisition/editItem'],
+      || loading.effects['purchaseRequisition/editItem']
+      || loading.effects['purchaseRequisition/showModalEditSupplier']
+      || loading.effects['purchaseRequisition/showModalEditQty']
+      || loading.effects['purchaseRequisition/showModalStock']
+      || loading.effects['purchaseRequisition/deleteItem'],
     location,
     onShowModalEditSupplier (currentItemEdit) {
       dispatch({
         type: 'purchaseRequisition/showModalEditSupplier',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    onShowModalEditCost (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/showModalEditCost',
         payload: {
           currentItemEdit
         }

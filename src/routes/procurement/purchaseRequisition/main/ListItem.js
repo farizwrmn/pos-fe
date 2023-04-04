@@ -1,10 +1,9 @@
 import React from 'react'
-import { Table, Modal } from 'antd'
+import { Table, Button, Modal, Icon } from 'antd'
 import {
   getRecommendedQtyToBuy,
   getRecommendedBoxToBuy
 } from 'utils/safetyStockUtils'
-import { DropOption } from 'components'
 
 const confirm = Modal.confirm
 
@@ -13,32 +12,43 @@ const ListItem = ({
   onShowModalEditSupplier,
   onShowModalEditQty,
   onShowModalStock,
+  onShowModalEditCost,
   deleteItem,
+  loading,
   ...otherProps
 }) => {
-  const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
-      confirm({
-        title: 'Are you sure to delete this record ?',
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
-    }
+  const onDeleteItem = (record) => {
+    confirm({
+      title: 'Are you sure to delete this record ?',
+      onOk () {
+        deleteItem(record)
+      }
+    })
   }
 
   const columns = [
     {
       title: 'Name',
+      dataIndex: 'no',
+      key: 'no',
+      width: '50px'
+    },
+    {
+      title: 'Name',
       dataIndex: 'product.productName',
       key: 'product.productName',
-      width: '350px',
+      width: '300px',
       render: (text, record) => {
+        let qtyToBuy = getRecommendedQtyToBuy({
+          stock: record.stock,
+          orderedQty: record.orderedQty,
+          safetyStock: record.safetyStock
+        })
         return (
           <div>
             <div><b>{record.product.productCode}</b>{` ${record.product.productName}`}</div>
-            <div>D: {record.product.dimension} P: {record.product.dimensionPack} B: {record.product.dimensionBox}</div>
-            <div onClick={() => onShowModalEditSupplier(record)}>{record.desiredSupplier.supplierName}</div>
+            <div style={{ color: record.qty > qtyToBuy ? 'red' : 'initial' }}>D: {record.product.dimension} P: {record.product.dimensionPack} B: {record.product.dimensionBox}</div>
+            <div onClick={() => onShowModalEditSupplier(record)} style={{ color: 'green' }}>{record.desiredSupplier.supplierName} <Icon type="edit" /></div>
             {record.supplierChangeMemo ? <div><pre>Memo: {record.supplierChangeMemo}</pre></div> : null}
             <div>{record.product.brand.brandName}</div>
             <div>{record.product.category.categoryName}</div>
@@ -68,9 +78,9 @@ const ListItem = ({
           <div>
             <div>Safety Stock: {(record.safetyStock || 0).toLocaleString()}</div>
             <div><b>Recommended: </b>{(record.greasleyStock || 0).toLocaleString()}</div>
-            <div onClick={() => onShowModalStock(record)} style={{ color: 'green' }}>Stock All Related Store: {(record.stock || 0).toLocaleString()}</div>
-            <div style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>Buy: {(qtyToBuy || 0).toLocaleString()} Pcs</div>
-            {boxToBuy > 0 ? <div style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>{(boxToBuy || 0).toLocaleString()} Boxes</div> : null}
+            <div onClick={() => onShowModalStock(record)} style={{ color: 'green' }}>Stock All Related Store: {(record.stock || 0).toLocaleString()} <Icon type="eye-o" /></div>
+            <div onClick={() => onShowModalStock(record)} style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>Buy: {(qtyToBuy || 0).toLocaleString()} Pcs</div>
+            {boxToBuy > 0 ? <div onClick={() => onShowModalStock(record)} style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>{(boxToBuy || 0).toLocaleString()} Boxes</div> : null}
           </div>
         )
       }
@@ -94,14 +104,14 @@ const ListItem = ({
         })
         return (
           <div>
-            <div onClick={() => onShowModalEditQty(record)} style={{ color: record.qty > qtyToBuy ? 'red' : 'initial' }}>Qty: {(record.qty || 0).toLocaleString()} Pcs {record.qty > qtyToBuy ? `(Over ${record.qty - qtyToBuy})` : ''}</div>
+            <div onClick={() => onShowModalEditQty(record)} style={{ color: record.qty > qtyToBuy ? 'red' : 'initial' }}>Qty: {(record.qty || 0).toLocaleString()} Pcs {record.qty > qtyToBuy ? `(Over ${record.qty - qtyToBuy}) ` : ''}<Icon type="edit" style={{ fontSize: '12px' }} /></div>
             {record.supplierChangeMemo ? <div><pre>Memo: {record.supplierChangeMemo}</pre></div> : null}
             {boxToBuy > 0 ? <div>Box: {(boxToBuy || 0).toLocaleString()} Boxes</div> : null}
-            <div>Cost: Rp {(record
+            <div onClick={() => onShowModalEditCost(record)} style={{ color: 'green' }}>Cost: Rp {(record
               && record.product
               && record.product.costPrice > 0
               ? record.product.costPrice : 0).toLocaleString()
-            }</div>
+            } <Icon type="edit" style={{ fontSize: '12px' }} /></div>
             <div>Sell Price: Rp {(record
               && record.product
               && record.product.sellPrice > 0
@@ -133,7 +143,7 @@ const ListItem = ({
       key: 'operation',
       width: '100px',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Delete', disabled: false }]} />
+        return <Button disabled={loading} icon="delete" type="danger" onClick={() => onDeleteItem(record)}>Delete</Button >
       }
     }
   ]
@@ -144,6 +154,7 @@ const ListItem = ({
       <div>
         <Table
           {...otherProps}
+          loading={loading}
           bordered
           columns={columns}
           scroll={{ x: 1000 }}
