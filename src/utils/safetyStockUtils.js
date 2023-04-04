@@ -20,7 +20,6 @@ export const getRecommendedBoxToBuy = ({
 }) => {
   const minimumBuyingQty = dimensionBox
   let qtyToBuy = getRecommendedQtyToBuy({
-    dimensionBox,
     stock,
     orderedQty,
     safetyStock

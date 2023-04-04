@@ -9,10 +9,12 @@ import {
   queryCategory
 } from 'services/procurement/purchaseSafetyStock'
 import { query as queryProductCost } from 'services/product/productCost'
+import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
 import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
+import { getRecommendedQtyToBuy, getRecommendedBoxToBuy } from 'utils/safetyStockUtils'
 
 const success = () => {
   message.success('Purchase Requisition has been saved')
@@ -85,16 +87,35 @@ export default modelExtend(pageModel, {
         })
         let listSafety = response.data
 
+        const listStorePrice = yield call(queryStorePrice, {
+          productId: response.data.map(item => item.productId),
+          storeId: lstorage.getCurrentUserStore()
+        })
+
+
+        const listPrice = listStorePrice.success && listStorePrice.data && listStorePrice.data.length > 0 ? listStorePrice.data : []
+
         if (productCost && productCost.data && productCost.data.length > 0) {
           listSafety = response.data.map((item) => {
-            const filteredProduct = productCost.data.filter(filtered => filtered.productId === item.productId)
-            if (filteredProduct && filteredProduct[0]) {
+            const filteredProductCost = productCost.data.filter(filtered => filtered.productId === item.productId)
+            const filteredPrice = listPrice.filter(filtered => filtered.productId === item.productId)
+            if (filteredPrice && filteredPrice.length > 0) {
+              const price = filteredPrice[0]
+              item.product.sellPrice = price.sellPrice
+            }
+            if (filteredProductCost && filteredProductCost[0]) {
               item.storeSupplier = {
-                id: filteredProduct[0].supplierId,
-                supplierCode: filteredProduct[0].supplierCode,
-                supplierName: filteredProduct[0].supplierName
+                id: filteredProductCost[0].supplierId,
+                supplierCode: filteredProductCost[0].supplierCode,
+                supplierName: filteredProductCost[0].supplierName
               }
-              item.product.costPrice = filteredProduct[0].costPrice
+              item.desiredSupplierChange = true
+              item.desiredSupplier = {
+                id: filteredProductCost[0].supplierId,
+                supplierCode: filteredProductCost[0].supplierCode,
+                supplierName: filteredProductCost[0].supplierName
+              }
+              item.product.costPrice = filteredProductCost[0].costPrice
             }
             return item
           })
@@ -262,20 +283,30 @@ export default modelExtend(pageModel, {
       let newListItem = [
         ...listItem
       ]
-      console.log('addMultiItem', selectedRowKeysSafety,
-        listItem,
-        listSafety)
       for (let key in selectedRowKeysSafety) {
         const id = selectedRowKeysSafety[key]
         const filteredSafety = listSafety.filter(filtered => filtered.id === id)
         if (filteredSafety && filteredSafety[0]) {
           const filteredExists = listItem.filter(filtered => filtered.id === id)
           if (filteredExists && filteredExists.length === 0) {
+            const qtyToBuy = getRecommendedQtyToBuy({
+              stock: filteredSafety[0].stock,
+              orderedQty: filteredSafety[0].orderedQty,
+              safetyStock: filteredSafety[0].safetyStock
+            })
+            let boxToBuy = getRecommendedBoxToBuy({
+              dimensionBox: filteredSafety[0].product.dimensionBox,
+              stock: 0,
+              orderedQty: 0,
+              safetyStock: qtyToBuy
+            })
+
+            filteredSafety[0].qty = boxToBuy > 0 ? boxToBuy * Number(filteredSafety[0].product.dimensionBox) : qtyToBuy
+
             newListItem = newListItem.concat([filteredSafety[0]])
           }
         }
       }
-      console.log('newListItem', newListItem)
       yield put({
         type: 'updateState',
         payload: {

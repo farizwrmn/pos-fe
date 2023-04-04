@@ -86,7 +86,39 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     loading: loading.effects['purchaseRequisition/addMultiItem']
       || loading.effects['purchaseRequisition/addItem']
       || loading.effects['purchaseRequisition/editItem'],
-    location
+    location,
+    onShowModalEditSupplier (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/showModalEditSupplier',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    onShowModalEditQty (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/showModalEditQty',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    onShowModalStock (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/showModalStock',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
+    deleteItem (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/deleteItem',
+        payload: {
+          currentItemEdit
+        }
+      })
+    }
   }
 
   const formProps = {
