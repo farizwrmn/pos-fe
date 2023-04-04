@@ -1,7 +1,8 @@
 import { lstorage } from 'utils'
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
-import { add as importCsv, autoRecon } from '../../services/payment/paymentValidationImport'
+import { add as importCsv, autoRecon } from 'services/payment/paymentValidationImport'
+import { query } from 'services/payment/paymentValidationConflict'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -25,19 +26,19 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, accountId, from, to } = location.query
+        const { accountId, from, to, page, pageSize } = location.query
         const { pathname } = location
-        console.log('pathname', pathname)
-        console.log('activeKey', activeKey)
 
         if (pathname === '/auto-recon') {
           if (accountId && from && to) {
             dispatch({
-              type: 'autoRecon',
+              type: 'query',
               payload: {
                 accountId,
                 from,
-                to
+                to,
+                page: page || 1,
+                pageSize: pageSize || 10
               }
             })
           }
@@ -47,6 +48,19 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * query ({ payload = {} }, { call, put }) {
+      const response = yield call(query, payload)
+      if (response && response.success && response.meta) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+
+          }
+        })
+      } else {
+        message.error(`Failed to get data: ${response.message}`)
+      }
+    },
     * importCsv ({ payload = {} }, { call, put }) {
       const response = yield call(importCsv, payload)
       if (response && response.success) {
@@ -77,6 +91,13 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    querySuccess (state, { payload }) {
+      return {
+        ...state,
+        ...payload
+      }
+    },
+
     updateState (state, { payload }) {
       return { ...state, ...payload }
     }
