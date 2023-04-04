@@ -8,6 +8,7 @@ import {
   queryBrand,
   queryCategory
 } from 'services/procurement/purchaseSafetyStock'
+import { query as queryProductCost } from 'services/product/productCost'
 import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
 import { pageModel } from 'models/common'
@@ -78,10 +79,30 @@ export default modelExtend(pageModel, {
         id: currentSafety.id
       })
       if (response.success && response.data && response.data.length > 0) {
+        const productCost = yield call(queryProductCost, {
+          productId: response.data.map(item => item.productId),
+          storeId: lstorage.getCurrentUserStore()
+        })
+        let listSafety = response.data
+
+        if (productCost && productCost.data && productCost.data.length > 0) {
+          listSafety = response.data.map((item) => {
+            const filteredProduct = productCost.data.filter(filtered => filtered.productId === item.productId)
+            if (filteredProduct && filteredProduct[0]) {
+              item.storeSupplier = {
+                id: filteredProduct[0].supplierId,
+                supplierCode: filteredProduct[0].supplierCode,
+                supplierName: filteredProduct[0].supplierName
+              }
+              item.product.costPrice = filteredProduct[0].costPrice
+            }
+            return item
+          })
+        }
         yield put({
           type: 'updateState',
           payload: {
-            listSafety: response.data,
+            listSafety,
             selectedRowKeysSafety: [],
             paginationSafety: {
               showSizeChanger: true,

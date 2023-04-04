@@ -3,7 +3,7 @@ import { Table } from 'antd'
 import {
   getRecommendedQtyToBuy,
   getRecommendedBoxToBuy
-} from './utils'
+} from 'utils/safetyStockUtils'
 
 const ListItem = ({
   listItem,

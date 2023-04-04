@@ -1,5 +1,9 @@
 import React from 'react'
 import { Table, Row, Col, Button, Checkbox, Select, Form } from 'antd'
+import {
+  getRecommendedQtyToBuy,
+  getRecommendedBoxToBuy
+} from 'utils/safetyStockUtils'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -134,28 +138,28 @@ const ListSafetyStock = ({
       key: 'recommededToBuy',
       width: '100px',
       render: (text, record) => {
-        const minimumBuyingQty = record.product.dimensionBox
-        let qtyToBuy = 0
-        let boxToBuy = 0
-        if ((record.stock - record.orderedQty) >= record.safetyStock) {
-          qtyToBuy = 0
-        } else {
-          qtyToBuy = record.safetyStock - record.stock - record.orderedQty
-        }
-        if (Number(minimumBuyingQty) > 1) {
-          boxToBuy = Math.ceil(qtyToBuy / minimumBuyingQty)
-        }
+        let qtyToBuy = getRecommendedQtyToBuy({
+          stock: record.stock,
+          orderedQty: record.orderedQty,
+          safetyStock: record.safetyStock
+        })
+        let boxToBuy = getRecommendedBoxToBuy({
+          dimensionBox: record.product.dimensionBox,
+          stock: record.stock,
+          orderedQty: record.orderedQty,
+          safetyStock: record.safetyStock
+        })
         if (boxToBuy > 0) {
           return (
             <div>
-              <div>Buy: {qtyToBuy} Pcs</div>
-              <div>{boxToBuy} Boxes</div>
+              <div style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>Buy: {qtyToBuy} Pcs</div>
+              <div style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>{boxToBuy} Boxes</div>
             </div>
           )
         }
         return (
           <div>
-            <div>Buy: {qtyToBuy} Pcs</div>
+            <div style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>Buy: {qtyToBuy} Pcs</div>
           </div>
         )
       }
