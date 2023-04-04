@@ -17,6 +17,11 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     modalEditSupplierVisible,
     modalStockVisible,
 
+    listSupplierHistory,
+    listPurchaseHistory,
+    listPurchaseOrder,
+    listStock,
+
     modalType,
     currentItem,
     listItem,
@@ -179,9 +184,10 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
 
   const modalEditCostProps = {
     title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    listPurchaseHistory,
     visible: modalEditCostVisible,
     item: currentItemEdit,
-    loading,
+    loading: loading.effects['purchaseRequisition/showModalEditCost'],
     onOk (currentItemEdit) {
       dispatch({
         type: 'purchaseRequisition/editCost',
@@ -199,9 +205,11 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
 
   const modalEditQtyProps = {
     title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    listStock,
+    listPurchaseOrder,
     visible: modalEditQtyVisible,
     item: currentItemEdit,
-    loading,
+    loading: loading.effects['purchaseRequisition/showModalEditQty'],
     onOk (currentItemEdit) {
       dispatch({
         type: 'purchaseRequisition/editQty',
@@ -219,9 +227,10 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
 
   const modalEditSupplierProps = {
     title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    listSupplierHistory,
     visible: modalEditSupplierVisible,
     item: currentItemEdit,
-    loading,
+    loading: loading.effects['purchaseRequisition/showModalEditSupplier'],
     onOk (currentItemEdit) {
       dispatch({
         type: 'purchaseRequisition/editSupplier',
@@ -239,9 +248,10 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
 
   const modalStockProps = {
     title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
+    listStock,
     visible: modalStockVisible,
     item: currentItemEdit,
-    loading,
+    loading: loading.effects['purchaseRequisition/showModalStock'],
     onCancel () {
       dispatch({
         type: 'purchaseRequisition/hideModalStock'

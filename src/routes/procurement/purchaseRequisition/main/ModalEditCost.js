@@ -1,12 +1,80 @@
 import React from 'react'
-import { Modal, Form } from 'antd'
+import { Modal, Form, Table } from 'antd'
 
-const ModalEditCost = ({ ...modalProps }) => {
+const ModalEditCost = ({
+  listPurchaseHistory,
+  loading,
+  ...modalProps
+}) => {
+  const columns = [
+    {
+      title: 'No',
+      dataIndex: 'transNo',
+      key: 'transNo'
+    },
+    {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty',
+      render: text => (text || 0).toLocaleString()
+    },
+    {
+      title: 'Price',
+      dataIndex: 'purchasePrice',
+      key: 'purchasePrice',
+      render: text => (text || 0).toLocaleString()
+    },
+    {
+      title: 'Disc (%)',
+      dataIndex: 'discPercent',
+      key: 'discPercent',
+      render: text => (text || 0).toLocaleString()
+    },
+    {
+      title: 'Disc (N)',
+      dataIndex: 'discNominal',
+      key: 'discNominal',
+      render: text => (text || 0).toLocaleString()
+    },
+    {
+      title: 'Inv.Disc (%)',
+      dataIndex: 'discInvoicePercent',
+      key: 'discInvoicePercent',
+      render: text => (text || 0).toLocaleString()
+    },
+    {
+      title: 'Inv.Disc (N)',
+      dataIndex: 'discInvoiceNominal',
+      key: 'discInvoiceNominal',
+      render: text => (text || 0).toLocaleString()
+    },
+    {
+      title: 'Delivery Fee',
+      dataIndex: 'deliveryFee',
+      key: 'deliveryFee',
+      render: text => (text || 0).toLocaleString()
+    }
+  ]
+
   return (
     <Modal
+      width={800}
       {...modalProps}
     >
-      ModalEditCost
+      <Table
+        pagination={false}
+        bordered
+        columns={columns}
+        simple
+        loading={loading}
+        rowKey={record => record.id}
+        dataSource={listPurchaseHistory}
+      />
     </Modal>
   )
 }

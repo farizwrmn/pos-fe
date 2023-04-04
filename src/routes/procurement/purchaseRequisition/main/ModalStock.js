@@ -1,12 +1,36 @@
 import React from 'react'
-import { Modal, Form } from 'antd'
+import { Modal, Form, Table } from 'antd'
 
-const ModalStock = ({ ...modalProps }) => {
+const ModalStock = ({
+  listStock,
+  loading,
+  ...modalProps
+}) => {
+  const columns = [
+    {
+      title: 'Store',
+      dataIndex: 'storeName',
+      key: 'storeName'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty'
+    }
+  ]
   return (
     <Modal
       {...modalProps}
     >
-      ModalStock
+      <Table
+        pagination={false}
+        bordered
+        columns={columns}
+        simple
+        loading={loading}
+        rowKey={record => record.id}
+        dataSource={listStock}
+      />
     </Modal>
   )
 }
