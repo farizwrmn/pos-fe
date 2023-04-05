@@ -17,6 +17,8 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     modalEditSupplierVisible,
     modalStockVisible,
 
+    listSupplier,
+
     listSupplierHistory,
     listPurchaseHistory,
     listPurchaseOrder,
@@ -111,6 +113,12 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
         type: 'purchaseRequisition/showModalEditSupplier',
         payload: {
           currentItemEdit
+        }
+      })
+      dispatch({
+        type: 'purchaseRequisition/querySupplier',
+        payload: {
+          q: ''
         }
       })
     },
@@ -210,12 +218,18 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     visible: modalEditQtyVisible,
     item: currentItemEdit,
     loading: loading.effects['purchaseRequisition/showModalEditQty'],
-    onOk (currentItemEdit) {
+    onChangeQty (qty) {
       dispatch({
         type: 'purchaseRequisition/editQty',
         payload: {
-          currentItemEdit
+          currentItemEdit,
+          qty
         }
+      })
+    },
+    onOk () {
+      dispatch({
+        type: 'purchaseRequisition/hideModalEditQty'
       })
     },
     onCancel () {
@@ -228,15 +242,31 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
   const modalEditSupplierProps = {
     title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
     listSupplierHistory,
+    listSupplier,
     visible: modalEditSupplierVisible,
     item: currentItemEdit,
-    loading: loading.effects['purchaseRequisition/showModalEditSupplier'],
-    onOk (currentItemEdit) {
+    loading: loading.effects['purchaseRequisition/showModalEditSupplier']
+      || loading.effects['purchaseRequisition/querySupplier'],
+    onSearch (query) {
       dispatch({
-        type: 'purchaseRequisition/editSupplier',
+        type: 'purchaseRequisition/querySupplier',
         payload: {
-          currentItemEdit
+          q: query
         }
+      })
+    },
+    onChooseSupplier (supplier) {
+      dispatch({
+        type: 'purchaseRequisition/changeSupplier',
+        payload: {
+          currentItemEdit,
+          supplier
+        }
+      })
+    },
+    onOk () {
+      dispatch({
+        type: 'purchaseRequisition/hideModalEditSupplier'
       })
     },
     onCancel () {

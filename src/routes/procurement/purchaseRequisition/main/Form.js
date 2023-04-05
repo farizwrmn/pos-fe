@@ -107,7 +107,7 @@ const FormCounter = ({
       </Row>
       <ListSafetyStock {...listSafetyProps} />
       <ListItem {...listItemProps} />
-      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Submit</Button>
+      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Generate Purchase Order</Button>
     </Form>
   )
 }

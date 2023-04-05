@@ -20,6 +20,16 @@ export async function queryPurchaseHistory (params) {
   })
 }
 
+export async function querySearchSupplier ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-history/supplier-search',
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryPurchaseOrderProduct (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -1,105 +1,139 @@
-import React from 'react'
-import { Modal, Form, Table } from 'antd'
+import React, { Component } from 'react'
+import { Modal, Form, Table, InputNumber } from 'antd'
 
-const ModalEditQty = ({
-  listStock,
-  listPurchaseOrder,
-  loading,
-  ...modalProps
-}) => {
-  const columns = [
-    {
-      title: 'Store',
-      dataIndex: 'storeName',
-      key: 'storeName'
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty'
-    }
-  ]
-  const columnsPurchaseOrder = [
-    {
-      title: 'No',
-      dataIndex: 'transNo',
-      key: 'transNo'
-    },
-    {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate'
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
-      render: text => (text || 0).toLocaleString()
-    },
-    {
-      title: 'Price',
-      dataIndex: 'purchasePrice',
-      key: 'purchasePrice',
-      render: text => (text || 0).toLocaleString()
-    },
-    {
-      title: 'Disc (%)',
-      dataIndex: 'discPercent',
-      key: 'discPercent',
-      render: text => (text || 0).toLocaleString()
-    },
-    {
-      title: 'Disc (N)',
-      dataIndex: 'discNominal',
-      key: 'discNominal',
-      render: text => (text || 0).toLocaleString()
-    },
-    {
-      title: 'Inv.Disc (%)',
-      dataIndex: 'discInvoicePercent',
-      key: 'discInvoicePercent',
-      render: text => (text || 0).toLocaleString()
-    },
-    {
-      title: 'Inv.Disc (N)',
-      dataIndex: 'discInvoiceNominal',
-      key: 'discInvoiceNominal',
-      render: text => (text || 0).toLocaleString()
-    },
-    {
-      title: 'Delivery Fee',
-      dataIndex: 'deliveryFee',
-      key: 'deliveryFee',
-      render: text => (text || 0).toLocaleString()
-    }
-  ]
-  return (
-    <Modal
-      width={800}
-      {...modalProps}
-    >
-      <Table
-        pagination={false}
-        bordered
-        columns={columnsPurchaseOrder}
-        simple
-        loading={loading}
-        rowKey={record => record.id}
-        dataSource={listPurchaseOrder}
-      />
-      <br />
-      <Table
-        pagination={false}
-        bordered
-        columns={columns}
-        simple
-        loading={loading}
-        rowKey={record => record.id}
-        dataSource={listStock}
-      />
-    </Modal>
-  )
+class ModalEditQty extends Component {
+  componentDidMount () {
+    setTimeout(() => {
+      const selector = document.getElementById('qty')
+      if (selector) {
+        selector.focus()
+        selector.select()
+      }
+    }, 100)
+  }
+
+  render () {
+    const {
+      listStock,
+      listPurchaseOrder,
+      loading,
+      item,
+      onChangeQty,
+      ...modalProps
+    } = this.props
+
+    const columns = [
+      {
+        title: 'Store',
+        dataIndex: 'storeName',
+        key: 'storeName',
+        render: (text, record) => {
+          return <div style={{ color: record.qty <= 0 ? 'red' : 'initial' }}>{text}</div>
+        }
+      },
+      {
+        title: 'Qty',
+        dataIndex: 'qty',
+        key: 'qty',
+        render: (text) => {
+          return <div style={{ color: text <= 0 ? 'red' : 'initial' }}>{text}</div>
+        }
+      }
+    ]
+    const columnsPurchaseOrder = [
+      {
+        title: 'No',
+        dataIndex: 'transNo',
+        key: 'transNo'
+      },
+      {
+        title: 'Date',
+        dataIndex: 'transDate',
+        key: 'transDate'
+      },
+      {
+        title: 'Qty',
+        dataIndex: 'qty',
+        key: 'qty',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Price',
+        dataIndex: 'purchasePrice',
+        key: 'purchasePrice',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Disc (%)',
+        dataIndex: 'discPercent',
+        key: 'discPercent',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Disc (N)',
+        dataIndex: 'discNominal',
+        key: 'discNominal',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Inv.Disc (%)',
+        dataIndex: 'discInvoicePercent',
+        key: 'discInvoicePercent',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Inv.Disc (N)',
+        dataIndex: 'discInvoiceNominal',
+        key: 'discInvoiceNominal',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Delivery Fee',
+        dataIndex: 'deliveryFee',
+        key: 'deliveryFee',
+        render: (text, record) => ((text || 0) / (record.portion || 0)).toLocaleString()
+      }
+    ]
+
+    return (
+      <Modal
+        width={800}
+        {...modalProps}
+      >
+        <InputNumber
+          min={0}
+          defaultValue={item.qty}
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              onChangeQty(e.target.value)
+            }
+          }}
+        />
+        <br />
+        <Table
+          pagination={false}
+          bordered
+          columns={columnsPurchaseOrder}
+          simple
+          loading={loading}
+          rowKey={record => record.id}
+          dataSource={listPurchaseOrder}
+          onRowClick={record => onChangeQty(record.qty)}
+        />
+        <br />
+        <Table
+          pagination={false}
+          bordered
+          columns={columns}
+          simple
+          loading={loading}
+          rowKey={record => record.id}
+          dataSource={listStock}
+          onRowClick={record => onChangeQty(record.qty)}
+        />
+      </Modal>
+    )
+  }
 }
-
 
 export default Form.create()(ModalEditQty)

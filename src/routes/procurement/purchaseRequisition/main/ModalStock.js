@@ -10,12 +10,18 @@ const ModalStock = ({
     {
       title: 'Store',
       dataIndex: 'storeName',
-      key: 'storeName'
+      key: 'storeName',
+      render: (text, record) => {
+        return <div style={{ color: record.qty <= 0 ? 'red' : 'initial' }}>{text}</div>
+      }
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
-      key: 'qty'
+      key: 'qty',
+      render: (text) => {
+        return <div style={{ color: text <= 0 ? 'red' : 'initial' }}>{text}</div>
+      }
     }
   ]
   return (

@@ -57,7 +57,7 @@ const ModalEditCost = ({
       title: 'Delivery Fee',
       dataIndex: 'deliveryFee',
       key: 'deliveryFee',
-      render: text => (text || 0).toLocaleString()
+      render: (text, record) => (((text || 0) * (record.portion || 0)) / (record.qty || 1)).toLocaleString()
     }
   ]
 

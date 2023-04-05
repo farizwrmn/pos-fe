@@ -13,6 +13,7 @@ import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceSto
 import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/procurement/purchaseRequisition'
 import {
+  querySearchSupplier,
   querySupplierHistory,
   queryPurchaseHistory,
   queryPurchaseOrderProduct,
@@ -42,6 +43,7 @@ export default modelExtend(pageModel, {
     listItem: [],
     selectedRowKeysSafety: [],
 
+    listSupplier: [],
     listSupplierHistory: [],
     listPurchaseHistory: [],
     listPurchaseOrder: [],
@@ -218,6 +220,63 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * changeSupplier ({ payload = {} }, { select, put }) {
+      const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
+      const { currentItemEdit, supplier } = payload
+      message.success('Supplier Changed')
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditSupplierVisible: false,
+          listItem: listItem.map((item) => {
+            if (item.id === currentItemEdit.id) {
+              item.desiredSupplier = {
+                id: supplier.id,
+                supplierCode: supplier.supplierCode,
+                supplierName: supplier.supplierName
+              }
+              item.storeSupplier = {
+                id: supplier.id,
+                supplierCode: supplier.supplierCode,
+                supplierName: supplier.supplierName
+              }
+            }
+            return item
+          })
+        }
+      })
+    },
+
+    * querySupplier ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSupplier: []
+        }
+      })
+      const response = yield call(querySearchSupplier, {
+        q: payload.q,
+        page: 1,
+        pageSize: 10
+      })
+      if (response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplier: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplier: []
+          }
+        })
+        throw response
+      }
+    },
+
     * queryCategorySafety ({ payload = {} }, { select, call, put }) {
       const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
       const response = yield call(queryCategory, {
@@ -328,7 +387,10 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          listItem: newListItem,
+          listItem: newListItem.map((item, index) => {
+            item.no = index + 1
+            return item
+          }),
           selectedRowKeysSafety: []
         }
       })

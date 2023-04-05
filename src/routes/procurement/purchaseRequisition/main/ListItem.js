@@ -108,9 +108,8 @@ const ListItem = ({
             {record.supplierChangeMemo ? <div><pre>Memo: {record.supplierChangeMemo}</pre></div> : null}
             {boxToBuy > 0 ? <div>Box: {(boxToBuy || 0).toLocaleString()} Boxes</div> : null}
             <div onClick={() => onShowModalEditCost(record)} style={{ color: 'green' }}>Cost: Rp {(record
-              && record.product
-              && record.product.costPrice > 0
-              ? record.product.costPrice : 0).toLocaleString()
+              && record.purchasePrice > 0
+              ? record.purchasePrice : 0).toLocaleString()
             } <Icon type="edit" style={{ fontSize: '12px' }} /></div>
             <div>Sell Price: Rp {(record
               && record.product
