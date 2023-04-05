@@ -1,7 +1,19 @@
 import React, { Component } from 'react'
 import { Modal, Form, Table, Input } from 'antd'
 
+const FormItem = Form.Item
 const { Search } = Input
+
+const formItemLayout = {
+  labelCol: {
+    md: { span: 24 },
+    lg: { span: 8 }
+  },
+  wrapperCol: {
+    md: { span: 24 },
+    lg: { span: 16 }
+  }
+}
 
 class ModalEditSupplier extends Component {
   componentDidMount () {
@@ -21,8 +33,11 @@ class ModalEditSupplier extends Component {
       listSupplier,
       onSearch,
       loading,
+      item,
+      form: { getFieldDecorator, getFieldsValue, validateFields },
       ...modalProps
     } = this.props
+
     const columns = [
       {
         title: 'Code',
@@ -35,11 +50,44 @@ class ModalEditSupplier extends Component {
         key: 'supplierName'
       }
     ]
+
+    const onSubmit = (record) => {
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const data = {
+          ...getFieldsValue()
+        }
+        onChooseSupplier({
+          ...record,
+          supplierChangeMemo: data.supplierChangeMemo
+        })
+      })
+    }
+
     return (
       <Modal
         okText={null}
         {...modalProps}
       >
+        <FormItem label="Why Changing Supplier ?" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('supplierChangeMemo', {
+            initialValue: item.supplierChangeMemo,
+            rules: [
+              {
+                required: true,
+                pattern: /^[a-z0-9/\n _-]{10,100}$/i,
+                message: 'At least 10 character'
+              }
+            ]
+          })(
+            <Input
+              maxLength={255}
+            />
+          )}
+        </FormItem>
+
         <h1>Purchase History</h1>
         <Table
           pagination={false}
@@ -49,7 +97,7 @@ class ModalEditSupplier extends Component {
           loading={loading}
           rowKey={record => record.id}
           dataSource={listSupplierHistory}
-          onRowClick={record => onChooseSupplier(record)}
+          onRowClick={record => onSubmit(record)}
         />
         <br />
         <h1>Supplier List</h1>
@@ -69,7 +117,7 @@ class ModalEditSupplier extends Component {
           loading={loading}
           rowKey={record => record.id}
           dataSource={listSupplier}
-          onRowClick={record => onChooseSupplier(record)}
+          onRowClick={record => onSubmit(record)}
         />
       </Modal>
     )

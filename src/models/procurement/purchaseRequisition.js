@@ -230,16 +230,50 @@ export default modelExtend(pageModel, {
           modalEditSupplierVisible: false,
           listItem: listItem.map((item) => {
             if (item.id === currentItemEdit.id) {
-              item.desiredSupplier = {
-                id: supplier.id,
-                supplierCode: supplier.supplierCode,
-                supplierName: supplier.supplierName
-              }
+              item.supplierChangeMemo = payload.supplier.supplierChangeMemo
               item.storeSupplier = {
                 id: supplier.id,
                 supplierCode: supplier.supplierCode,
                 supplierName: supplier.supplierName
               }
+            }
+            return item
+          })
+        }
+      })
+    },
+
+    * editQty ({ payload = {} }, { select, put }) {
+      const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
+      const { currentItemEdit } = payload
+      message.success('Qty edited')
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditQtyVisible: false,
+          listItem: listItem.map((item) => {
+            if (item.id === currentItemEdit.id) {
+              item.qty = payload.qty
+              item.notFulfilledQtyMemo = payload.notFulfilledQtyMemo
+            }
+            return item
+          })
+        }
+      })
+    },
+
+    * editCost ({ payload = {} }, { select, put }) {
+      const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
+      const { currentItemEdit } = payload
+      message.success('Cost edited')
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditCostVisible: false,
+          listItem: listItem.map((item) => {
+            if (item.id === currentItemEdit.id) {
+              item.purchasePrice = payload.purchasePrice
+              item.changingCostMemo = payload.changingCostMemo
             }
             return item
           })
@@ -378,6 +412,7 @@ export default modelExtend(pageModel, {
               safetyStock: qtyToBuy
             })
 
+            filteredSafety[0].recommendToBuy = boxToBuy > 0 ? boxToBuy * Number(filteredSafety[0].product.dimensionBox) : qtyToBuy
             filteredSafety[0].qty = boxToBuy > 0 ? boxToBuy * Number(filteredSafety[0].product.dimensionBox) : qtyToBuy
 
             newListItem = newListItem.concat([filteredSafety[0]])

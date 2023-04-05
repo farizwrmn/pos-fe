@@ -1,5 +1,18 @@
 import React, { Component } from 'react'
-import { Modal, Form, Table, InputNumber } from 'antd'
+import { Modal, Input, Form, Button, Table, InputNumber } from 'antd'
+
+const FormItem = Form.Item
+
+const formItemLayout = {
+  labelCol: {
+    md: { span: 24 },
+    lg: { span: 8 }
+  },
+  wrapperCol: {
+    md: { span: 24 },
+    lg: { span: 16 }
+  }
+}
 
 class ModalEditQty extends Component {
   componentDidMount () {
@@ -18,7 +31,9 @@ class ModalEditQty extends Component {
       listPurchaseOrder,
       loading,
       item,
+      form: { getFieldsValue, getFieldValue, validateFields, getFieldDecorator },
       onChangeQty,
+      onCancel,
       ...modalProps
     } = this.props
 
@@ -95,20 +110,68 @@ class ModalEditQty extends Component {
       }
     ]
 
+    const onSubmit = () => {
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const data = {
+          ...getFieldsValue()
+        }
+        onChangeQty({
+          qty: data.qty,
+          notFulfilledQtyMemo: data.notFulfilledQtyMemo
+        })
+      })
+    }
+
     return (
       <Modal
         width={800}
+        onCancel={onCancel}
+        footer={[
+          (<Button id="buttonCancel" type="default" onClick={onCancel} disabled={loading}>Cancel</Button>),
+          (<Button id="buttonSubmit" type="primary" onClick={onSubmit} disabled={loading}>Ok</Button>)
+        ]}
         {...modalProps}
       >
-        <InputNumber
-          min={0}
-          defaultValue={item.qty}
-          onKeyDown={(e) => {
-            if (e.keyCode === 13) {
-              onChangeQty(e.target.value)
-            }
-          }}
-        />
+
+        <FormItem label="Qty" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('qty', {
+            initialValue: item.qty,
+            rules: [
+              {
+                required: true
+              }
+            ]
+          })(
+            <InputNumber
+              min={0}
+              defaultValue={item.qty}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  onSubmit()
+                }
+              }}
+            />
+          )}
+        </FormItem>
+        <FormItem label="Why buying less than recommended ?" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('notFulfilledQtyMemo', {
+            initialValue: item.notFulfilledQtyMemo,
+            rules: [
+              {
+                required: getFieldValue('qty') < item.recommendToBuy,
+                pattern: /^[a-z0-9/\n _-]{10,100}$/i,
+                message: 'At least 10 character'
+              }
+            ]
+          })(
+            <Input
+              maxLength={255}
+            />
+          )}
+        </FormItem>
         <br />
         <Table
           pagination={false}
@@ -118,7 +181,10 @@ class ModalEditQty extends Component {
           loading={loading}
           rowKey={record => record.id}
           dataSource={listPurchaseOrder}
-          onRowClick={record => onChangeQty(record.qty)}
+          onRowClick={record => onChangeQty({
+            qty: record.qty,
+            notFulfilledQtyMemo: record.notFulfilledQtyMemo
+          })}
         />
         <br />
         <Table
@@ -129,7 +195,10 @@ class ModalEditQty extends Component {
           loading={loading}
           rowKey={record => record.id}
           dataSource={listStock}
-          onRowClick={record => onChangeQty(record.qty)}
+          onRowClick={record => onChangeQty({
+            qty: record.qty,
+            notFulfilledQtyMemo: record.notFulfilledQtyMemo
+          })}
         />
       </Modal>
     )

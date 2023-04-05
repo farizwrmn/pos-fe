@@ -1,9 +1,26 @@
 import React from 'react'
-import { Modal, Form, Table } from 'antd'
+import { Modal, Form, Button, Table, InputNumber, Input } from 'antd'
+
+const FormItem = Form.Item
+
+const formItemLayout = {
+  labelCol: {
+    md: { span: 24 },
+    lg: { span: 8 }
+  },
+  wrapperCol: {
+    md: { span: 24 },
+    lg: { span: 16 }
+  }
+}
 
 const ModalEditCost = ({
   listPurchaseHistory,
   loading,
+  form: { getFieldsValue, getFieldValue, validateFields, getFieldDecorator },
+  onCancel,
+  onChangeCost,
+  item,
   ...modalProps
 }) => {
   const columns = [
@@ -61,11 +78,68 @@ const ModalEditCost = ({
     }
   ]
 
+  const onSubmit = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue()
+      }
+      onChangeCost({
+        purchasePrice: data.purchasePrice,
+        changingCostMemo: data.changingCostMemo
+      })
+    })
+  }
+
   return (
     <Modal
       width={800}
+      onCancel={onCancel}
+      footer={[
+        (<Button id="buttonCancel" type="default" onClick={onCancel} disabled={loading}>Cancel</Button>),
+        (<Button id="buttonSubmit" type="primary" onClick={onSubmit} disabled={loading}>Ok</Button>)
+      ]}
       {...modalProps}
     >
+      <FormItem label="Purchase Price" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('purchasePrice', {
+          initialValue: item.purchasePrice,
+          rules: [
+            {
+              required: true
+            }
+          ]
+        })(
+          <InputNumber
+            min={0}
+            defaultValue={item.qty}
+            onKeyDown={(e) => {
+              if (e.keyCode === 13) {
+                onSubmit()
+              }
+            }}
+          />
+        )}
+      </FormItem>
+      <FormItem label="Why cost changed ?" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('changingCostMemo', {
+          initialValue: item.changingCostMemo,
+          rules: [
+            {
+              required: getFieldValue('purchasePrice') > item.oldPurchasePrice,
+              pattern: /^[a-z0-9/\n _-]{10,100}$/i,
+              message: 'At least 10 character'
+            }
+          ]
+        })(
+          <Input
+            maxLength={255}
+          />
+        )}
+      </FormItem>
+      <br />
       <Table
         pagination={false}
         bordered

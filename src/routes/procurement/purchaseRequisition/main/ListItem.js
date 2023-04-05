@@ -48,7 +48,7 @@ const ListItem = ({
           <div>
             <div><b>{record.product.productCode}</b>{` ${record.product.productName}`}</div>
             <div style={{ color: record.qty > qtyToBuy ? 'red' : 'initial' }}>D: {record.product.dimension} P: {record.product.dimensionPack} B: {record.product.dimensionBox}</div>
-            <div onClick={() => onShowModalEditSupplier(record)} style={{ color: 'green' }}>{record.desiredSupplier.supplierName} <Icon type="edit" /></div>
+            <div onClick={() => onShowModalEditSupplier(record)} style={{ color: 'green' }}>{record.storeSupplier.supplierName} <Icon type="edit" /></div>
             {record.supplierChangeMemo ? <div><pre>Memo: {record.supplierChangeMemo}</pre></div> : null}
             <div>{record.product.brand.brandName}</div>
             <div>{record.product.category.categoryName}</div>
@@ -105,12 +105,13 @@ const ListItem = ({
         return (
           <div>
             <div onClick={() => onShowModalEditQty(record)} style={{ color: record.qty > qtyToBuy ? 'red' : 'initial' }}>Qty: {(record.qty || 0).toLocaleString()} Pcs {record.qty > qtyToBuy ? `(Over ${record.qty - qtyToBuy}) ` : ''}<Icon type="edit" style={{ fontSize: '12px' }} /></div>
-            {record.supplierChangeMemo ? <div><pre>Memo: {record.supplierChangeMemo}</pre></div> : null}
+            {record.notFulfilledQtyMemo ? <div><pre>Memo: {record.notFulfilledQtyMemo}</pre></div> : null}
             {boxToBuy > 0 ? <div>Box: {(boxToBuy || 0).toLocaleString()} Boxes</div> : null}
             <div onClick={() => onShowModalEditCost(record)} style={{ color: 'green' }}>Cost: Rp {(record
               && record.purchasePrice > 0
               ? record.purchasePrice : 0).toLocaleString()
             } <Icon type="edit" style={{ fontSize: '12px' }} /></div>
+            {record.changingCostMemo ? <div><pre>Memo: {record.changingCostMemo}</pre></div> : null}
             <div>Sell Price: Rp {(record
               && record.product
               && record.product.sellPrice > 0

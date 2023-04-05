@@ -196,11 +196,16 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     visible: modalEditCostVisible,
     item: currentItemEdit,
     loading: loading.effects['purchaseRequisition/showModalEditCost'],
-    onOk (currentItemEdit) {
+    onChangeCost ({
+      purchasePrice,
+      changingCostMemo
+    }) {
       dispatch({
         type: 'purchaseRequisition/editCost',
         payload: {
-          currentItemEdit
+          currentItemEdit,
+          purchasePrice,
+          changingCostMemo
         }
       })
     },
@@ -217,13 +222,18 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     listPurchaseOrder,
     visible: modalEditQtyVisible,
     item: currentItemEdit,
-    loading: loading.effects['purchaseRequisition/showModalEditQty'],
-    onChangeQty (qty) {
+    loading: loading.effects['purchaseRequisition/showModalEditQty']
+      || loading.effects['purchaseRequisition/editQty'],
+    onChangeQty ({
+      qty,
+      notFulfilledQtyMemo
+    }) {
       dispatch({
         type: 'purchaseRequisition/editQty',
         payload: {
           currentItemEdit,
-          qty
+          qty,
+          notFulfilledQtyMemo
         }
       })
     },
