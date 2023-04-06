@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Form, Button, Table, InputNumber, Input } from 'antd'
+import { Modal, message, Form, Button, Table, InputNumber, Input } from 'antd'
 
 const FormItem = Form.Item
 
@@ -78,13 +78,23 @@ const ModalEditCost = ({
     }
   ]
 
-  const onSubmit = () => {
+  const onSubmit = (record) => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
         ...getFieldsValue()
+      }
+      if (record) {
+        data.purchasePrice = record.purchasePrice
+      }
+      if (data.purchasePrice > item.oldPurchasePrice
+        && (!data.changingCostMemo
+          || (data.changingCostMemo
+            && data.changingCostMemo.length < 10))) {
+        message.error('Why cost changed is required')
+        return
       }
       onChangeCost({
         purchasePrice: data.purchasePrice,
@@ -99,7 +109,7 @@ const ModalEditCost = ({
       onCancel={onCancel}
       footer={[
         (<Button id="buttonCancel" type="default" onClick={onCancel} disabled={loading}>Cancel</Button>),
-        (<Button id="buttonSubmit" type="primary" onClick={onSubmit} disabled={loading}>Ok</Button>)
+        (<Button id="buttonSubmit" type="primary" onClick={() => onSubmit()} disabled={loading}>Ok</Button>)
       ]}
       {...modalProps}
     >
@@ -148,6 +158,7 @@ const ModalEditCost = ({
         loading={loading}
         rowKey={record => record.id}
         dataSource={listPurchaseHistory}
+        onRowClick={record => onSubmit(record)}
       />
     </Modal>
   )

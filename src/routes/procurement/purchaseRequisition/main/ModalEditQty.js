@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Input, Form, Button, Table, InputNumber } from 'antd'
+import { Modal, message, Input, Form, Button, Table, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 
@@ -110,13 +110,23 @@ class ModalEditQty extends Component {
       }
     ]
 
-    const onSubmit = () => {
+    const onSubmit = (record) => {
       validateFields((errors) => {
         if (errors) {
           return
         }
         const data = {
           ...getFieldsValue()
+        }
+        if (record) {
+          data.qty = record.qty
+        }
+        if (data.qty < item.recommendToBuy
+          && (!data.notFulfilledQtyMemo
+            || (data.notFulfilledQtyMemo
+              && data.notFulfilledQtyMemo.length < 10))) {
+          message.error('Why buying less than recommended is required')
+          return
         }
         onChangeQty({
           qty: data.qty,
@@ -131,7 +141,7 @@ class ModalEditQty extends Component {
         onCancel={onCancel}
         footer={[
           (<Button id="buttonCancel" type="default" onClick={onCancel} disabled={loading}>Cancel</Button>),
-          (<Button id="buttonSubmit" type="primary" onClick={onSubmit} disabled={loading}>Ok</Button>)
+          (<Button id="buttonSubmit" type="primary" onClick={() => onSubmit()} disabled={loading}>Ok</Button>)
         ]}
         {...modalProps}
       >
@@ -181,7 +191,7 @@ class ModalEditQty extends Component {
           loading={loading}
           rowKey={record => record.id}
           dataSource={listPurchaseOrder}
-          onRowClick={record => onChangeQty({
+          onRowClick={record => onSubmit({
             qty: record.qty,
             notFulfilledQtyMemo: record.notFulfilledQtyMemo
           })}
@@ -195,7 +205,7 @@ class ModalEditQty extends Component {
           loading={loading}
           rowKey={record => record.id}
           dataSource={listStock}
-          onRowClick={record => onChangeQty({
+          onRowClick={record => onSubmit({
             qty: record.qty,
             notFulfilledQtyMemo: record.notFulfilledQtyMemo
           })}
