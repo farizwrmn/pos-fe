@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, DatePicker, Button, Row, Col, Modal } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
 
@@ -27,9 +28,6 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
-  onCancel,
-  modalType,
-  button,
   form: {
     getFieldDecorator,
     validateFields,
@@ -37,29 +35,6 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -78,37 +53,58 @@ const FormCounter = ({
     })
   }
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current < moment(new Date()).add(-1, 'days').endOf('day')
+  }
+
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transNo', {
+              initialValue: item.transNo,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input disabled maxLength={60} />)}
           </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          <FormItem label="Deadline Receive" {...formItemLayout}>
+            {getFieldDecorator('expectedArrival', {
+              initialValue: item.expectedArrival,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<DatePicker disabledDate={disabledDate} />)}
           </FormItem>
+          {/* <Row>
+            <Col md={24} lg={8} style={{ paddingRight: '10px', marginBottom: '10px', textAlign: 'right' }}><b>Distribution Center: </b></Col>
+            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
+              {listDistributionCenter.map((item, index) => (
+                <div>
+                  {`${index + 1}. ${item.dcStore.storeName}`}
+                </div>
+              ))}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={24} lg={8} style={{ paddingRight: '10px', textAlign: 'right' }}><b>Store: </b></Col>
+            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
+              {listStore.map((item, index) => (
+                <div>
+                  {`${index + 1}. ${item.sellingStore.storeName}`}
+                </div>
+              ))}
+            </Col>
+          </Row> */}
         </Col>
       </Row>
+      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px', marginLeft: '10px' }}>Finish & Generate Purchase Order</Button>
+      <Button type="default" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
     </Form>
   )
 }
