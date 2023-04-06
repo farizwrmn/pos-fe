@@ -299,8 +299,6 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     }
   }
 
-  console.log('listItem', listItem)
-
   return (
     <div className="content-inner">
       {modalEditCostVisible && <ModalEditCost {...modalEditCostProps} />}

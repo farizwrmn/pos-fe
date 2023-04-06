@@ -1,7 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/procurement/purchaseQuotation'
+import { lstorage } from 'utils'
+import {
+  queryCount,
+  querySupplierCount,
+  query,
+  add,
+  edit,
+  remove
+} from 'services/procurement/purchaseQuotation'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -12,6 +20,9 @@ export default modelExtend(pageModel, {
   namespace: 'purchaseQuotation',
 
   state: {
+    listTrans: [],
+    listSupplier: [],
+
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
@@ -26,22 +37,66 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
-          })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+        if (pathname === '/transaction/procurement/quotation') {
+          dispatch({ type: 'queryCount', payload: {} })
         }
       })
     }
   },
 
   effects: {
+
+    * queryCount (payload, { call, put }) {
+      const response = yield call(queryCount, {
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTrans: []
+          }
+        })
+        throw response
+      }
+    },
+
+    * querySupplierCount ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSupplier: []
+        }
+      })
+      const response = yield call(querySupplierCount, {
+        storeId: lstorage.getCurrentUserStore(),
+        transId: payload.transId
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplier: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplier: []
+          }
+        })
+        throw response
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)

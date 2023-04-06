@@ -10,6 +10,26 @@ export async function query (params) {
   })
 }
 
+export async function queryCount (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-quotation-request/trans',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function querySupplierCount (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-quotation-request/supplier',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
