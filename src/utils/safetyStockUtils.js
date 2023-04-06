@@ -25,7 +25,7 @@ export const getRecommendedBoxToBuy = ({
     safetyStock
   })
   let boxToBuy = 0
-  if (Number(minimumBuyingQty) > 1) {
+  if (Number(minimumBuyingQty) > 1 && qtyToBuy > 0) {
     boxToBuy = Math.ceil(qtyToBuy / minimumBuyingQty)
   }
   return boxToBuy

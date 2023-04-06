@@ -44,6 +44,9 @@ const ListItem = ({
           orderedQty: record.orderedQty,
           safetyStock: record.safetyStock
         })
+        if (qtyToBuy < 0) {
+          qtyToBuy = 0
+        }
         return (
           <div>
             <div><b>{record.product.productCode}</b>{` ${record.product.productName}`}</div>
@@ -73,6 +76,9 @@ const ListItem = ({
           orderedQty: record.orderedQty,
           safetyStock: record.safetyStock
         })
+        if (qtyToBuy < 0) {
+          qtyToBuy = 0
+        }
 
         return (
           <div>
@@ -102,6 +108,9 @@ const ListItem = ({
           orderedQty: record.orderedQty,
           safetyStock: record.safetyStock
         })
+        if (qtyToBuy < 0) {
+          qtyToBuy = 0
+        }
         return (
           <div>
             <div onClick={() => onShowModalEditQty(record)} style={{ color: record.qty > qtyToBuy ? 'red' : 'initial' }}>Qty: {(record.qty || 0).toLocaleString()} Pcs {record.qty > qtyToBuy ? `(Over ${record.qty - qtyToBuy}) ` : ''}<Icon type="edit" style={{ fontSize: '12px' }} /></div>

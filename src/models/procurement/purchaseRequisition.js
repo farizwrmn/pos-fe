@@ -419,8 +419,13 @@ export default modelExtend(pageModel, {
               safetyStock: qtyToBuy
             })
 
-            filteredSafety[0].recommendToBuy = boxToBuy > 0 ? boxToBuy * Number(filteredSafety[0].product.dimensionBox) : qtyToBuy
-            filteredSafety[0].qty = boxToBuy > 0 ? boxToBuy * Number(filteredSafety[0].product.dimensionBox) : qtyToBuy
+            let qty = boxToBuy > 0 ? boxToBuy * Number(filteredSafety[0].product.dimensionBox) : qtyToBuy
+            if (qty < 0) {
+              qty = 0
+            }
+
+            filteredSafety[0].recommendToBuy = qty
+            filteredSafety[0].qty = qty
 
             newListItem = newListItem.concat([filteredSafety[0]])
           }
@@ -637,9 +642,10 @@ export default modelExtend(pageModel, {
 
     * create ({ payload }, { select, call, put }) {
       const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
-      const currentItemEdit = yield select(({ purchaseRequisition }) => purchaseRequisition.currentItemEdit)
+      const currentSafety = yield select(({ purchaseRequisition }) => purchaseRequisition.currentSafety)
       const listDetail = listItem.map((item) => {
         return ({
+          id: item.id,
           productId: item.productId,
           desiredSupplierId: item.desiredSupplierId,
           supplierId: item.storeSupplier.id,
@@ -662,12 +668,14 @@ export default modelExtend(pageModel, {
         })
       })
       const response = yield call(add, {
-        transNo: payload.data.transNo,
-        safetyStockId: currentItemEdit.id,
-        storeId: currentItemEdit.storeId,
-        qty: listItem.reduce((prev, next) => prev + (next.qty), 0),
-        total: listItem.reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0),
-        expectedArrival: payload.data.deadlineDate,
+        header: {
+          transNo: payload.data.transNo,
+          safetyStockId: currentSafety.id,
+          storeId: currentSafety.storeId,
+          qty: listItem.reduce((prev, next) => prev + (next.qty), 0),
+          total: listItem.reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0),
+          expectedArrival: payload.data.deadlineDate
+        },
         detail: listDetail
       })
       if (response.success) {

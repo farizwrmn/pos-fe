@@ -143,6 +143,9 @@ const ListSafetyStock = ({
           orderedQty: record.orderedQty,
           safetyStock: record.safetyStock
         })
+        if (qtyToBuy < 0) {
+          qtyToBuy = 0
+        }
         let boxToBuy = getRecommendedBoxToBuy({
           dimensionBox: record.product.dimensionBox,
           stock: record.stock,
