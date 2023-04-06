@@ -128,7 +128,6 @@ export default modelExtend(pageModel, {
                 supplierCode: filteredProductCost[0].supplierCode,
                 supplierName: filteredProductCost[0].supplierName
               }
-              item.desiredSupplierChange = true
               item.desiredSupplier = {
                 id: filteredProductCost[0].supplierId,
                 supplierCode: filteredProductCost[0].supplierCode,
@@ -628,30 +627,60 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload.data)
+    * create ({ payload }, { select, call, put }) {
+      const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
+      const currentItemEdit = yield select(({ purchaseRequisition }) => purchaseRequisition.currentItemEdit)
+      const listDetail = listItem.map((item) => {
+        return ({
+          productId: item.productId,
+          desiredSupplierId: item.desiredSupplierId,
+          supplierId: item.storeSupplier.id,
+          supplierChangeMemo: item.supplierChangeMemo,
+          qty: item.qty,
+          recommendToBuy: item.recommendToBuy,
+          purchasePrice: item.purchasePrice,
+          oldPurchasePrice: item.oldPurchasePrice,
+          changingCostMemo: item.changingCostMemo,
+          total: item.purchasePrice * item.qty,
+          notFulfilledQtyMemo: item.notFulfilledQtyMemo,
+          orderedQty: item.orderedQty,
+          stock: item.stock,
+          safetyStock: item.safetyStock,
+          greasleyStock: item.greasleyStock,
+          avgLeadTime: item.avgLeadTime,
+          avgSalesPerDay: item.avgSalesPerDay,
+          maxLeadTime: item.maxLeadTime,
+          maxSalesPerDay: item.maxSalesPerDay
+        })
+      })
+      const response = yield call(add, {
+        transNo: payload.data.transNo,
+        safetyStockId: currentItemEdit.id,
+        storeId: currentItemEdit.storeId,
+        qty: listItem.reduce((prev, next) => prev + (next.qty), 0),
+        total: listItem.reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0),
+        expectedArrival: payload.data.deadlineDate,
+        detail: listDetail
+      })
       if (response.success) {
         success()
         yield put({
           type: 'updateState',
           payload: {
-            modalType: 'add',
-            currentItem: {}
+            listItem: []
           }
         })
+        yield put({ type: 'querySequence' })
         yield put({
-          type: 'query'
+          type: 'querySafetyStock',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
+          }
         })
         if (payload.reset) {
           payload.reset()
         }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw response
       }
     },
