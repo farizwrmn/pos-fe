@@ -24,7 +24,7 @@ import { lstorage } from 'utils'
 import { getRecommendedQtyToBuy, getRecommendedBoxToBuy } from 'utils/safetyStockUtils'
 
 const success = () => {
-  message.success('Purchase Requisition has been saved')
+  message.success('Quotation created')
 }
 
 export default modelExtend(pageModel, {
@@ -79,6 +79,14 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/transaction/procurement/requisition') {
           dispatch({ type: 'querySequence' })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listItem: [],
+              filterSafety: {},
+              currentItemEdit: {}
+            }
+          })
           dispatch({
             type: 'querySafetyStock',
             payload: {
@@ -667,7 +675,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listItem: []
+            listItem: [],
+            filterSafety: {}
           }
         })
         yield put({ type: 'querySequence' })
