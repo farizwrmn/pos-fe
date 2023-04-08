@@ -14,6 +14,8 @@ const Counter = ({ purchaseQuotation, app, dispatch, loading, location }) => {
     pagination: false,
     item: currentItem,
     loading: loading.effects['purchaseQuotation/queryRequisitionDetail']
+      || loading.effects['purchaseQuotation/add']
+      || loading.effects['purchaseQuotation/createPurchaseOrder']
   }
 
   const printProps = {
@@ -29,11 +31,14 @@ const Counter = ({ purchaseQuotation, app, dispatch, loading, location }) => {
     item: currentItem,
     listSupplierDetail,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    loading: loading.effects['purchaseQuotation/add']
+      || loading.effects['purchaseQuotation/createPurchaseOrder'],
     onSubmit (transNo, data) {
       dispatch({
         type: 'purchaseQuotation/add',
         payload: {
           transId: currentItem.id,
+          supplierId: currentItem.supplierId,
           transNo,
           data
         }

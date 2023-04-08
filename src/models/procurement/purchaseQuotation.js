@@ -1,5 +1,4 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
@@ -106,6 +105,8 @@ export default modelExtend(pageModel, {
       if (response.success && response.data) {
         const currentItem = yield select(({ purchaseQuotation }) => purchaseQuotation.currentItem)
         if (response.data[0]) {
+          currentItem.hasRFQ = response.data[0].hasRFQ
+          currentItem.supplierId = response.data[0].supplierId
           currentItem.supplierName = response.data[0].supplierName
           yield put({
             type: 'updateState',
@@ -202,6 +203,7 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       const response = yield call(addSupplierDetail, {
         storeId: lstorage.getCurrentUserStore(),
+        supplierId: payload.supplierId,
         transId: payload.transId,
         transNo: payload.transNo,
         detail: payload.data
@@ -209,14 +211,13 @@ export default modelExtend(pageModel, {
       if (response.success) {
         success()
         yield put({
-          type: 'updateState',
+          type: 'queryRequisitionDetail',
           payload: {
-            modalType: 'add',
-            currentItem: {},
-            listSupplierDetail: []
+            id: payload.transId,
+            transId: payload.transId,
+            supplierId: payload.supplierId
           }
         })
-        yield put(routerRedux.push('/transaction/procurement/quotation'))
       } else {
         throw response
       }

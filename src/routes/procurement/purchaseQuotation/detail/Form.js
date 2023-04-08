@@ -34,6 +34,7 @@ const FormCounter = ({
   onSubmit,
   listItemProps,
   printProps,
+  loading,
   form: {
     getFieldDecorator
   }
@@ -139,11 +140,12 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
-      <PrintXLS data={listItemProps.dataSource} name="Export" {...printProps} />
-      <span>
-        <label style={{ marginTop: '10px', padding: '0.5em', float: 'right' }} htmlFor="submitQuotation" className="ant-btn ant-btn-primary ant-btn-lg">Import Quotation</label>
+      {item && item.hasRFQ ? <PrintXLS data={listItemProps.dataSource} name="Export" {...printProps} /> : null}
+      {item && item.hasRFQ ? <span>
+        <label disabled={loading} style={{ marginTop: '10px', padding: '0.5em', float: 'right' }} htmlFor="submitQuotation" className="ant-btn ant-btn-primary ant-btn-lg">Import Quotation</label>
         <input
           id="submitQuotation"
+          disabled={loading}
           type="file"
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           className="ant-btn ant-btn-primary ant-btn-lg"
@@ -156,7 +158,7 @@ const FormCounter = ({
             handleImportProduct(event)
           }}
         />
-      </span>
+      </span> : null}
       <ListItem {...listItemProps} />
     </Form>
   )
