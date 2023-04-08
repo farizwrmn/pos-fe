@@ -130,7 +130,7 @@ const List = ({
                   </Row>
                   <Row>
                     <Col span={12}>
-                      <div>{`${item.transDate}`}</div>
+                      <div>{item.transDate}</div>
                     </Col>
                     <Col span={12}>
                       {item.debit && item.debit != null ? <div>{`(DB) ${currencyFormatter(Number(item.debit))}`}</div> : null}

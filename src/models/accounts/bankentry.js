@@ -9,7 +9,6 @@ import { queryById, query, queryId, add, edit, remove, transfer, queryBankRecon,
 import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { queryById as queryPaymentById } from '../../services/payment/payment'
 import { queryById as queryPayableById } from '../../services/payment/payable'
-import { add as importCsv, autoRecon } from '../../services/payment/paymentValidationImport'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -38,9 +37,6 @@ export default modelExtend(pageModel, {
       current: 1
     },
     listBankRecon: [],
-    conflictedCSV: [],
-    conflictedPayment: [],
-    selectedConflictedRowKeys: [],
     summaryBankRecon: [],
     accountId: null,
     from: null,
@@ -90,15 +86,6 @@ export default modelExtend(pageModel, {
           } else {
             dispatch({ type: 'querySequence' })
           }
-        }
-
-        if (pathname === '/bank-recon') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
-          })
         }
       })
     }
@@ -266,33 +253,6 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw response
-      }
-    },
-    * importCsv ({ payload = {} }, { call }) {
-      const response = yield call(importCsv, payload)
-      if (response && response.success) {
-        message.success('Berhasil import')
-      } else {
-        message.error(`Gagal: ${response.message}`)
-      }
-    },
-    * autoRecon ({ payload = {} }, { call, put }) {
-      payload.storeId = lstorage.getCurrentUserStore()
-      const response = yield call(autoRecon, payload)
-      if (response && response.success && response.conflictedRecord) {
-        const { conflictedRecord } = response
-        const { conflictedImportData = [], accountLedger = [] } = conflictedRecord
-        yield put({
-          type: 'updateState',
-          payload: {
-            conflictedCSV: conflictedImportData,
-            conflictedPayment: accountLedger,
-            modalVisible: false
-          }
-        })
-        message.success(`Berhasil! ${(conflictedImportData.length > 0 || accountLedger.length > 0) ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
-      } else {
-        message.error(`Gagal: ${response.message}`)
       }
     },
     * updateBankRecon ({ payload = {} }, { call, put, select }) {
