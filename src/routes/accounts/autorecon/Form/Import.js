@@ -140,7 +140,6 @@ const FormImport = ({
         message.error('No data to be imported.')
         return
       }
-      console.log('filename', filename)
       if (!filename) {
         message.error('File name is not defined.')
         return

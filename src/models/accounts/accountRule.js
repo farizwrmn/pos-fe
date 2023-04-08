@@ -176,8 +176,10 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        const matchAutoRecon = pathToRegexp('/auto-recon/:id').exec(pathname)
         if (
           pathname === '/journal-entry'
+          || matchAutoRecon
           || pathname === '/tools/transaction/journal-entry') {
           if (activeKey !== '1') {
             dispatch({

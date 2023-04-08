@@ -2,7 +2,8 @@ import { lstorage } from 'utils'
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import { add as importCsv, autoRecon } from 'services/payment/paymentValidationImport'
-import { query } from 'services/payment/paymentValidationConflict'
+import { query, queryDetail, queryAdd, queryResolve, queryAll } from 'services/payment/paymentValidationConflict'
+import pathToRegexp from 'path-to-regexp'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -11,24 +12,46 @@ export default modelExtend(pageModel, {
   state: {
     activeKey: '0',
     modalVisible: false,
+    resolveModalVisible: false,
+    conflictModalVisible: false,
+    formModalVisible: false,
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      current: 1
+      pageSize: 15,
+      current: 1,
+      simple: true,
+      total: 0
     },
+    ledgerEntry: [],
+    currentLedgerEntry: {},
+    list: [],
     conflictedCSV: [],
+    selectedCsvRowKeys: [],
     conflictedPayment: [],
+    selectedPaymentRowKeys: [],
     accountId: null,
     from: null,
-    to: null
+    to: null,
+    showPDFModal: false,
+    mode: '',
+    changed: false,
+    listPrintAll: [],
+    detail: {}
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { accountId, from, to, page, pageSize } = location.query
+        const { activeKey, accountId, from, to, page, pageSize, q } = location.query
         const { pathname } = location
-
+        const match = pathToRegexp('/auto-recon/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1])
+            }
+          })
+        }
         if (pathname === '/auto-recon') {
           if (accountId && from && to) {
             dispatch({
@@ -38,7 +61,16 @@ export default modelExtend(pageModel, {
                 from,
                 to,
                 page: page || 1,
-                pageSize: pageSize || 10
+                pageSize: pageSize || 15,
+                q
+              }
+            })
+          }
+          if (activeKey) {
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey
               }
             })
           }
@@ -49,12 +81,49 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      const response = yield call(query, payload)
-      if (response && response.success && response.meta) {
+      const response = yield call(query, { ...payload, order: 'resolved,-id' })
+      if (response && response.success && response.meta && response.data) {
         yield put({
           type: 'querySuccess',
           payload: {
-
+            list: response.data,
+            pagination: {
+              pageSize: 15,
+              current: Number(payload.page),
+              total: Number(response.meta.count),
+              simple: true
+            }
+          }
+        })
+      } else {
+        message.error(`Failed to get data: ${response.message}`)
+      }
+    },
+    * queryAll ({ payload = {} }, { call, put }) {
+      const response = yield call(queryAll, { ...payload })
+      if (response && response.success && response.meta && response.data) {
+        if (response.data.length === 0) {
+          message.error('Data not found!')
+        }
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            listPrintAll: response.data
+          }
+        })
+      } else {
+        message.error(`Failed to get data: ${response.message}`)
+      }
+    },
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDetail, payload)
+      if (response && response.success && response.meta && response.data) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            detail: response.data
           }
         })
       } else {
@@ -79,11 +148,54 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            ...payload,
             conflictedCSV: conflictedImportData,
             conflictedPayment: accountLedger
           }
         })
         message.success(`Berhasil! ${(conflictedImportData.length > 0 || accountLedger.length > 0) ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * add ({ payload = {} }, { call, put }) {
+      const response = yield call(queryAdd, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            conflictModalVisible: false
+          }
+        })
+        yield put({
+          type: 'autoRecon',
+          payload: {
+            ...payload,
+            ledgerEntry: []
+          }
+        })
+        message.success('Berhasil')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * resolve ({ payload = {} }, { call, put }) {
+      const response = yield call(queryResolve, payload)
+      console.log('response', response)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            resolveModalVisible: false
+          }
+        })
+        yield put({
+          type: 'queryDetail',
+          payload: {
+            id: payload.paymentConflict.id
+          }
+        })
+        message.success('Berhasil')
       } else {
         message.error(`Gagal: ${response.message}`)
       }

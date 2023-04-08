@@ -1,17 +1,45 @@
-import { Card, Col, Row } from 'antd'
+import { Card, Checkbox, Col, Row } from 'antd'
 import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
+const checkRowKeys = (selectedRowKeys, id) => {
+  const filteredRow = selectedRowKeys.filter(filtered => filtered.id === id)
+  if (filteredRow && filteredRow[0]) {
+    return true
+  }
+  return false
+}
+
 const CsvList = ({
-  conflictedCSV
+  conflictedCSV,
+  selectedCsvRowKeys,
+  dispatch
 }) => {
+  const onSelect = (id, isChecked) => {
+    if (isChecked) {
+      dispatch({
+        type: 'autorecon/updateState',
+        payload: {
+          selectedCsvRowKeys: selectedCsvRowKeys.filter(filtered => filtered.id !== id)
+        }
+      })
+      return
+    }
+    dispatch({
+      type: 'autorecon/updateState',
+      payload: {
+        selectedCsvRowKeys: selectedCsvRowKeys.concat([{ id }])
+      }
+    })
+  }
+
   return (
     <div>
       {conflictedCSV && conflictedCSV[0] && (
         <div
           style={{
             padding: '10px',
-            fontSize: '20px',
+            fontSize: '16px',
             fontWeight: 'bold'
           }}
         >
@@ -21,11 +49,13 @@ const CsvList = ({
       <Row style={{ zIndex: 1 }}>
         <Col md={24} lg={16}>
           {conflictedCSV && conflictedCSV.map((item) => {
+            const isChecked = checkRowKeys(selectedCsvRowKeys, item.id)
             return (
               <div style={{ marginBottom: '10px' }}>
                 <Card
                   title={(
                     <div>
+                      <Checkbox style={{ marginRight: '10px' }} onChange={() => onSelect(item.id, isChecked)} checked={isChecked} />
                       {`( ${item.approvalCode} ) - ${item.merchantName}`}
                     </div>
                   )}

@@ -100,19 +100,19 @@ const FormAutoCounter = ({
                   message: 'Required'
                 }]
               })(
-                <RangePicker size="large" format="DD-MMM-YYYY" />
+                <RangePicker size="large" format="DD-MMM-YYYY" ranges={{}} />
               )}
             </FormItem>
           </Col>
           <Col {...buttonColumnProps}>
             <FormItem>
-              <Button style={{ marginRight: '10px' }} type="secondary" icon="download" onClick={() => showImportModal()} >Import</Button>
-              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon']} >Start Reconciliation</Button>
+              <Button style={{ marginRight: '10px' }} type="secondary" icon="download" onClick={() => showImportModal()} loading={loading.effects['autorecon/autoRecon']} >Import</Button>
+              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon']} > Start Reconciliation</Button>
             </FormItem>
           </Col>
         </Row>
       </Form>
-    </div>
+    </div >
   )
 }
 

@@ -20,15 +20,21 @@ const gapColumnProps = {
 
 const ConflictedList = ({
   conflictedCSV,
-  conflictedPayment
+  selectedCsvRowKeys,
+  conflictedPayment,
+  selectedPaymentRowKeys,
+  dispatch
 }) => {
   const csvListProps = {
-    conflictedCSV
+    conflictedCSV,
+    selectedCsvRowKeys,
+    dispatch
   }
 
   const paymentListProps = {
-    conflictedPayment
-
+    conflictedPayment,
+    selectedPaymentRowKeys,
+    dispatch
   }
 
   return (
