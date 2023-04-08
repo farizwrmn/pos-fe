@@ -43,7 +43,7 @@ const CsvList = ({
             fontWeight: 'bold'
           }}
         >
-          TIDAK ADA DI AKUN INI
+          TIDAK ADA PADA AKUN INI
         </div>
       )}
       <Row style={{ zIndex: 1 }}>
@@ -70,7 +70,7 @@ const CsvList = ({
                   </Row>
                   <Row>
                     <Col span={12}>
-                      <div>{`${moment(item.transDate, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY')}, ${item.transTime}`}</div>
+                      <div>{`${moment(item.transDate).format('DD MMMM YYYY')}, ${item.transTime}`}</div>
                     </Col>
                     <Col span={12}>
                       {item.grossAmount && item.grossAmount != null ? <div>{`( ${item.recordSource} )( ${item.type} ) ${currencyFormatter(Number(item.grossAmount))}`}</div> : null}

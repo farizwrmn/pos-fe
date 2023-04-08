@@ -43,7 +43,7 @@ const PaymentList = ({
             fontWeight: 'bold'
           }}
         >
-          TIDAK ADA DI CSV
+          TIDAK ADA PADA CSV
         </div>
       )}
       <Row style={{ zIndex: 1 }}>

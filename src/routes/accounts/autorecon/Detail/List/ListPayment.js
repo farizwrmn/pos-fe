@@ -1,4 +1,4 @@
-import { Card, Col, Row, Spin } from 'antd'
+import { Card, Col, Row } from 'antd'
 import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
@@ -17,10 +17,9 @@ const ListPayment = ({
   if (loading.effects['autorecon/queryDetail']) {
     return (
       <Card
+        loading
         title="Payment"
-      >
-        <Spin size="Large" />
-      </Card>
+      />
     )
   }
 
