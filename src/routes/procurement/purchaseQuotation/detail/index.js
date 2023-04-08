@@ -4,19 +4,38 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
 
-const Counter = ({ purchaseQuotation, dispatch, location }) => {
-  const { modalType, currentItem } = purchaseQuotation
+const Counter = ({ purchaseQuotation, app, dispatch, loading, location }) => {
+  const { modalType, listSupplierDetail, currentItem } = purchaseQuotation
+  const { user, storeInfo } = app
+
+  const listItemProps = {
+    dataSource: listSupplierDetail,
+    listItem: listSupplierDetail,
+    pagination: false,
+    item: currentItem,
+    loading: loading.effects['purchaseQuotation/queryRequisitionDetail']
+  }
+
+  const printProps = {
+    user,
+    storeInfo,
+    item: currentItem
+  }
 
   const formProps = {
     modalType,
+    listItemProps,
+    printProps,
     item: currentItem,
+    listSupplierDetail,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, reset) {
+    onSubmit (transNo, data) {
       dispatch({
-        type: `purchaseQuotation/${modalType}`,
+        type: 'purchaseQuotation/add',
         payload: {
-          data,
-          reset
+          transId: currentItem.id,
+          transNo,
+          data
         }
       })
     },

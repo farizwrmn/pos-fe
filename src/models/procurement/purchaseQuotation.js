@@ -2,14 +2,17 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import pathToRegexp from 'path-to-regexp'
 import {
   queryCount,
   querySupplierCount,
   query,
-  add,
-  edit,
-  remove
+  querySupplierDetail,
+  addSupplierDetail
 } from 'services/procurement/purchaseQuotation'
+import {
+  queryId as queryRequisitionId
+} from 'services/procurement/purchaseRequisition'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -21,6 +24,7 @@ export default modelExtend(pageModel, {
 
   state: {
     listTrans: [],
+    listSupplierDetail: [],
     listSupplier: [],
 
     currentItem: {},
@@ -37,15 +41,95 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname } = location
+        const { pathname, query } = location
+        const { supplierId } = query
         if (pathname === '/transaction/procurement/quotation') {
           dispatch({ type: 'queryCount', payload: {} })
+        }
+        const match = pathToRegexp('/transaction/procurement/quotation/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryRequisitionDetail',
+            payload: {
+              id: match[1],
+              transId: match[1],
+              supplierId
+            }
+          })
         }
       })
     }
   },
 
   effects: {
+
+    * queryRequisitionDetail ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+      const response = yield call(queryRequisitionId, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: response.data
+          }
+        })
+
+        yield put({
+          type: 'querySupplierDetail',
+          payload: {
+            transId: payload.transId,
+            supplierId: payload.supplierId
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {}
+          }
+        })
+        throw response
+      }
+    },
+
+    * querySupplierDetail ({ payload = {} }, { select, call, put }) {
+      const response = yield call(querySupplierDetail, {
+        transId: payload.transId,
+        storeId: lstorage.getCurrentUserStore(),
+        supplierId: payload.supplierId
+      })
+      if (response.success && response.data) {
+        const currentItem = yield select(({ purchaseQuotation }) => purchaseQuotation.currentItem)
+        if (response.data[0]) {
+          currentItem.supplierName = response.data[0].supplierName
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem
+            }
+          })
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplierDetail: response.data.map((item, index) => ({ ...item, no: index + 1 }))
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSupplierDetail: []
+          }
+        })
+        throw response
+      }
+    },
 
     * queryCount (payload, { call, put }) {
       const response = yield call(queryCount, {
@@ -115,47 +199,13 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const response = yield call(remove, payload)
-      if (response.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw response
-      }
-    },
-
     * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload.data)
-      if (response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw response
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ purchaseQuotation }) => purchaseQuotation.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const response = yield call(edit, newCounter)
+      const response = yield call(addSupplierDetail, {
+        storeId: lstorage.getCurrentUserStore(),
+        transId: payload.transId,
+        transNo: payload.transNo,
+        detail: payload.data
+      })
       if (response.success) {
         success()
         yield put({
@@ -163,27 +213,11 @@ export default modelExtend(pageModel, {
           payload: {
             modalType: 'add',
             currentItem: {},
-            activeKey: '1'
+            listSupplierDetail: []
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
-        }
+        yield put(routerRedux.push('/transaction/procurement/quotation'))
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw response
       }
     }

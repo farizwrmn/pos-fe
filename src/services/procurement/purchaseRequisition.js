@@ -10,6 +10,15 @@ export async function query (params) {
   })
 }
 
+export async function queryId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-requisition/${params.id}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

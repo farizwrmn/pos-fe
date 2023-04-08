@@ -33,7 +33,7 @@ const ListSafetyStock = ({
 }) => {
   const columns = [
     {
-      title: 'Name',
+      title: 'Product',
       dataIndex: 'product.productName',
       key: 'product.productName',
       width: '220px',

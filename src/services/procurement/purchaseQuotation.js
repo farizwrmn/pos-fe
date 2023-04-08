@@ -30,6 +30,26 @@ export async function querySupplierCount (params) {
   })
 }
 
+export async function querySupplierDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-quotation-request/supplier/${params.transId}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function addSupplierDetail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-quotation-request/supplier/${params.transId}`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

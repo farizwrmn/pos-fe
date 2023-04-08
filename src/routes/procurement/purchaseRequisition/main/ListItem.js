@@ -28,13 +28,13 @@ const ListItem = ({
 
   const columns = [
     {
-      title: 'Name',
+      title: 'No',
       dataIndex: 'no',
       key: 'no',
       width: '50px'
     },
     {
-      title: 'Name',
+      title: 'Product',
       dataIndex: 'product.productName',
       key: 'product.productName',
       width: '300px',

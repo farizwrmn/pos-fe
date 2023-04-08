@@ -1,7 +1,11 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable jsx-a11y/label-has-for */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, DatePicker, Button, Row, Col, Modal } from 'antd'
-import moment from 'moment'
+import * as Excel from 'exceljs/dist/exceljs.min.js'
+import { Form, Input, Row, Col, message } from 'antd'
+import ListItem from './ListItem'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 
@@ -28,34 +32,86 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
+  listItemProps,
+  printProps,
   form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
+    getFieldDecorator
   }
 }) => {
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
-    })
+  const handleImportProduct = (event) => {
+    let uploadData = []
+    let transNo = null
+    let invalidTransNo = 0
+    let invalidQty = 0
+    let invalidPrice = 0
+    const fileName = event.target.files[0]
+    const workbook = new Excel.Workbook()
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(fileName)
+    reader.onload = () => {
+      const buffer = reader.result
+      workbook.xlsx.load(buffer)
+        .then(async (workbook) => {
+          const sheet = workbook.getWorksheet('POS 1')
+          await sheet
+            .eachRow({ includeEmpty: false }, (row, rowIndex) => {
+              let startPoint = 3
+              let reference = row.values[++startPoint]
+              if (rowIndex >= 7) {
+                if (transNo === reference || uploadData.length === 0) {
+                  transNo = reference
+                } else if (uploadData.length > 0) {
+                  invalidTransNo = rowIndex + 1
+                }
+                const productCode = row.values[++startPoint]
+                // eslint-disable-next-line no-unused-vars
+                const productName = row.values[++startPoint]
+                // eslint-disable-next-line no-unused-vars
+                const qty = row.values[++startPoint]
+                if (qty == null || Number(qty) <= 0) {
+                  invalidQty = rowIndex + 1
+                }
+                if (qty == null || Number(qty) <= 0) {
+                  invalidPrice = rowIndex + 1
+                }
+                const purchasePrice = row.values[++startPoint]
+                // eslint-disable-next-line no-unused-vars
+                const total = row.values[++startPoint]
+
+                const data = {
+                  productCode,
+                  qty,
+                  purchasePrice
+                }
+                uploadData.push(data)
+              }
+            })
+        })
+        .then(() => {
+          if (invalidTransNo) {
+            message.error(`Only allow 1 Trans No at once, at row: ${invalidTransNo}`)
+            return
+          }
+          if (invalidQty) {
+            message.error(`Invalid Qty, at row: ${invalidQty}`)
+            return
+          }
+          if (invalidPrice) {
+            message.error(`Invalid Price, at row: ${invalidPrice}`)
+            return
+          }
+          if (uploadData && uploadData.length > 0) {
+            onSubmit(transNo, uploadData)
+          } else {
+            message.error('No Data to Upload')
+          }
+        })
+    }
   }
 
-  const disabledDate = (current) => {
-    // Can not select days before today and today
-    return current < moment(new Date()).add(-1, 'days').endOf('day')
+  const uploadProps = {
+    name: 'file',
+    processData: false
   }
 
   return (
@@ -79,32 +135,29 @@ const FormCounter = ({
                 required: true,
                 message: 'Required'
               }]
-            })(<DatePicker disabledDate={disabledDate} />)}
+            })(<Input disabled />)}
           </FormItem>
-          {/* <Row>
-            <Col md={24} lg={8} style={{ paddingRight: '10px', marginBottom: '10px', textAlign: 'right' }}><b>Distribution Center: </b></Col>
-            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
-              {listDistributionCenter.map((item, index) => (
-                <div>
-                  {`${index + 1}. ${item.dcStore.storeName}`}
-                </div>
-              ))}
-            </Col>
-          </Row>
-          <Row>
-            <Col md={24} lg={8} style={{ paddingRight: '10px', textAlign: 'right' }}><b>Store: </b></Col>
-            <Col md={24} lg={16} style={{ paddingLeft: '10px' }}>
-              {listStore.map((item, index) => (
-                <div>
-                  {`${index + 1}. ${item.sellingStore.storeName}`}
-                </div>
-              ))}
-            </Col>
-          </Row> */}
         </Col>
       </Row>
-      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px', marginLeft: '10px' }}>Finish & Generate Purchase Order</Button>
-      <Button type="default" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
+      <PrintXLS data={listItemProps.dataSource} name="Export" {...printProps} />
+      <span>
+        <label style={{ marginTop: '10px', padding: '0.5em', float: 'right' }} htmlFor="submitQuotation" className="ant-btn ant-btn-primary ant-btn-lg">Import Quotation</label>
+        <input
+          id="submitQuotation"
+          type="file"
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          className="ant-btn ant-btn-primary ant-btn-lg"
+          style={{ visibility: 'hidden', marginTop: '10px', float: 'right' }}
+          {...uploadProps}
+          onClick={(event) => {
+            event.target.value = null
+          }}
+          onInput={(event) => {
+            handleImportProduct(event)
+          }}
+        />
+      </span>
+      <ListItem {...listItemProps} />
     </Form>
   )
 }

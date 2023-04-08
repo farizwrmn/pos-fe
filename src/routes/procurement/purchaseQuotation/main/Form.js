@@ -35,7 +35,7 @@ const FormCounter = ({
                   {listSupplier && !loading.effects['purchaseQuotation/querySupplierCount'] ? listSupplier.map((supplier) => {
                     return (
                       <div>
-                        <div><Link to={`/transaction/procurement/quotation/${item.id}?supplierId=${supplier.id}`}>{`${supplier.supplierName} Total: Rp ${supplier.total.toLocaleString()} Count: ${supplier.countSupplier}`}</Link></div>
+                        <div><Link to={`/transaction/procurement/quotation/${item.id}?supplierId=${supplier.id}`}>{`${supplier.supplierName} Total: Rp ${supplier.total.toLocaleString()} Count: ${supplier.countSupplier} ${supplier.hasRFQ ? '(RFQ)' : ''}`}</Link></div>
                       </div>
                     )
                   }) : <Spin />}
