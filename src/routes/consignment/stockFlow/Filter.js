@@ -32,7 +32,7 @@ const Filter = ({
         <FormItem >
           {getFieldDecorator('q')(
             <Search
-              placeholder="Search Stock Flow ID"
+              placeholder="Search Stock Flow ID / Vendor Name / Vendor Code"
               onSearch={() => handleSubmit()}
             />
           )}
