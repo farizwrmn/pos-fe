@@ -1,8 +1,7 @@
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
-import { queryPeriod, queryLast, queryAdd } from 'services/consignment/cutOff'
-import { setCutOffReadyForEmail } from 'services/consignment/cutOffDetail'
+import { queryPeriod, queryLast, queryAdd, querySendEmail } from 'services/consignment/cutOff'
 import { pageModel } from '../common'
 
 
@@ -77,7 +76,7 @@ export default modelExtend(pageModel, {
       const params = {
         period: payload.record.period
       }
-      const response = yield call(setCutOffReadyForEmail, params)
+      const response = yield call(querySendEmail, params)
       const date = moment(response.data.period).format('DD MMM YYYY')
       yield put({ type: 'querySuccess', payload: { lastCutOffDate: date, ...payload } })
     },
