@@ -4,7 +4,7 @@ import { Table } from 'antd'
 import styles from 'themes/index.less'
 import { numberFormatter } from 'utils/string'
 
-const ListItem = ({ ...tableProps, listItem, onModalVisible }) => {
+const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
   const handleMenuClick = (record) => {
     onModalVisible(record)
   }

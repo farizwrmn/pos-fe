@@ -1,74 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Tabs } from 'antd'
-import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
+import ModalQuotation from './ModalQuotation'
 import Form from './Form'
-import Browse from './Browse'
-import ModalItem from './Modal'
-import List from './List'
-import Filter from './Filter'
 
-// const { getCashierTrans } = lstorage
-const { TabPane } = Tabs
-
-const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loading }) => {
+const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
   const {
-    list: listReturnPurchase,
-    pagination,
-    modalType,
-    // listInvoice,
-    // tmpInvoiceList,
-    // isChecked,
-    // listProducts,
-    // listTransOut,
-    activeKey,
-    modalInvoiceVisible,
-    modalProductVisible,
-    listItem,
+    listQuotationTrans,
+    listQuotationSupplier,
+    modalQuotationVisible,
     currentItem,
-    // currentItemList,
-    modalEditItemVisible,
-    modalConfirmVisible,
-    reference,
-    referenceNo,
-    // formType,
-    // display,
-    // activeKey,
-    currentItemList
-    // filter,
-    // sort,
-    // showPrintModal
+    listItem
   } = purchaseOrder
+
   const {
-    listPurchaseLatestDetail,
     listSupplier
   } = purchase
-  const { user, storeInfo } = app
-  // const filterProps = {
-  //   display,
-  //   filter: {
-  //     ...location.query
-  //   },
-  //   onFilterChange (value) {
-  //     dispatch({
-  //       type: 'purchaseOrder/query',
-  //       payload: {
-  //         userName: value.cityName,
-  //         ...value
-  //       }
-  //     })
-  //   },
-  //   switchIsChecked () {
-  //     dispatch({
-  //       type: 'purchaseOrder/switchIsChecked',
-  //       payload: `${isChecked ? 'none' : 'block'}`
-  //     })
-  //   }
-  // }
 
-  const listProps = {
+  const listItemProps = {
     dataSource: listItem,
     listItem,
     loading: loading.effects['purchaseOrder/query'],
@@ -114,214 +64,24 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
     }
   }
 
-  const modalProductProps = {
-    location,
-    dispatch,
-    loading,
-    purchase,
-    purchaseOrder,
-    modalProductVisible,
-    modalInvoiceVisible,
-    visible: modalProductVisible || modalInvoiceVisible,
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    showProductQty (data) {
-      dispatch({
-        type: 'purchase/showProductQty',
-        payload: {
-          data
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'purchase/hideProductModal'
-      })
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          modalInvoiceVisible: false,
-          modalProductVisible: false
-        }
-      })
-    },
-    onChooseItem (item) {
-      if (!item.productId) {
-        item.productId = item.id
-      }
-      dispatch({
-        type: 'purchaseOrder/addItem',
-        payload: {
-          item
-        }
-      })
-    },
-    onInvoiceHeader () {
-      dispatch({
-        type: 'purchase/getInvoicePayable',
-        payload: {
-          order: 'transDate'
-        }
-      })
-    },
-    onChooseInvoice (item) {
-      dispatch({
-        type: 'purchaseOrder/getInvoiceDetailPurchase',
-        payload: item
-      })
-    }
-  }
-
-  const handleProductBrowse = (reset, query, checked) => {
-    if (reset) {
-      if (query) {
-        dispatch({
-          type: 'purchaseOrder/updateState',
-          payload: {
-            modalProductVisible: true
-          }
-        })
-        dispatch({
-          type: 'purchaseOrder/queryProduct'
-        })
-      } else if (!checked || checked === undefined) {
-        dispatch({
-          type: 'purchaseOrder/updateState',
-          payload: {
-            listProduct: [],
-            listItem: [],
-            pagination: {
-              total: 0,
-              current: 0,
-              pageSize: 0
-            }
-          }
-        })
-        dispatch({
-          type: 'purchaseOrder/queryProduct'
-        })
-      }
-    } else {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          modalProductVisible: true,
-          pagination: {
-            total: 0,
-            current: 0,
-            pageSize: 0
-          }
-        }
-      })
-    }
-  }
-
-  const formEditProps = {
-    visible: modalEditItemVisible,
-    reference,
-    listPurchaseLatestDetail,
-    loadingPurchaseLatest: loading.effects['purchase/getPurchaseLatestDetail'],
-    referenceNo,
-    item: currentItem,
-    listStore: lstorage.getListUserStores(),
-    currentItemList,
-    modalProductProps,
-    handleProductBrowse,
-    onOkList (item) {
-      dispatch({
-        type: 'purchaseOrder/editItem',
-        payload: {
-          item
-        }
-      })
-    },
-    onCancelList () {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          currentItemList: {},
-          modalEditItemVisible: false
-        }
-      })
-    },
-    onDeleteItem (item) {
-      dispatch({
-        type: 'purchaseOrder/deleteItem',
-        payload: {
-          item
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          currentItemList: {},
-          modalEditItemVisible: false
-        }
-      })
-    }
-  }
-
-  const formConfirmProps = {
-    visible: modalConfirmVisible,
-    modalConfirmVisible,
-    itemPrint: currentItem,
-    user,
-    storeInfo,
-    onShowModal () {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          modalConfirmVisible: true
-        }
-      })
-    },
-    onOkPrint () {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          modalConfirmVisible: false
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          modalConfirmVisible: false
-        }
-      })
-    }
-  }
-
   const formProps = {
-    modalType,
-    reference,
-    referenceNo,
-    listProps,
-    listSupplier,
-    formConfirmProps,
-    modalConfirmVisible,
-    listTrans: listReturnPurchase,
-    listItem,
-    listStore: lstorage.getListUserStores(),
     item: currentItem,
-    modalProductVisible,
-    modalInvoiceVisible,
-    loadingButton: loading,
-    purchase,
-    disabled: false,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data, listItem, resetFields) {
+    listSupplier,
+    listItemProps,
+    onSubmit (data, reset) {
       dispatch({
-        type: `purchaseOrder/${modalType}`,
+        type: 'purchaseOrder/add',
         payload: {
           data,
-          detail: listItem,
-          resetFields
+          reset
         }
       })
+    },
+    onGetProduct () {
+      dispatch({ type: 'purchaseOrder/queryProduct', payload: {} })
+    },
+    onGetQuotation () {
+      dispatch({ type: 'purchaseOrder/queryCount', payload: {} })
     },
     onCancel () {
       const { pathname } = location
@@ -332,153 +92,60 @@ const PurchaseOrder = ({ location, purchaseOrder, purchase, app, dispatch, loadi
         }
       }))
       dispatch({
-        type: 'journalentry/updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {},
-          listItem: []
-        }
-      })
-    },
-    resetItem () {
-      dispatch({
         type: 'purchaseOrder/updateState',
         payload: {
-          reference: null,
-          referenceNo: null,
-          formType: 'add',
-          currentItem: {},
-          currentItemList: {}
-        }
-      })
-    },
-    resetListItem () {
-      dispatch({
-        type: 'purchaseOrder/updateState',
-        payload: {
-          reference: null,
-          referenceNo: null,
-          formType: 'add',
-          listItem: [],
-          currentItemList: {}
-        }
-      })
-    },
-    handleProductBrowse
-  }
-
-  const browseProps = {
-    dataSource: listReturnPurchase,
-    user,
-    storeInfo,
-    pagination,
-    loading: loading.effects['purchaseOrder/query'],
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize
-        }
-      }))
-    },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0,
-          edit: item.id
-        }
-      }))
-    },
-    deleteItem (id) {
-      dispatch({
-        type: 'purchaseOrder/delete',
-        payload: id
-      })
-    },
-    approveItem (id) {
-      dispatch({
-        type: 'purchaseOrder/approve',
-        payload: {
-          id
+          currentItem: {}
         }
       })
     }
   }
 
-  const filterProps = {
-    onFilterChange (value) {
+  const modalQuotationProps = {
+    visible: modalQuotationVisible,
+    loading,
+    listTrans: listQuotationTrans,
+    listSupplier: listQuotationSupplier,
+    onGetDataSupplier (transId) {
       dispatch({
-        type: 'purchaseOrder/query',
+        type: 'purchaseOrder/querySupplierCount',
         payload: {
-          ...value
+          transId
+        }
+      })
+    },
+    onChooseSupplier (transId, supplierId) {
+      dispatch({
+        type: 'purchaseOrder/chooseQuotation',
+        payload: {
+          transId,
+          supplierId
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          modalQuotationVisible: false
         }
       })
     }
-  }
-
-
-  const clickBrowse = () => {
-    dispatch({
-      type: 'purchaseOrder/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
-  }
-
-  const changeTab = (key) => {
-    dispatch({
-      type: 'purchaseOrder/changeTab',
-      payload: { key }
-    })
-    const { query, pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        activeKey: key
-      }
-    }))
-    dispatch({ type: 'purchaseOrder/updateState', payload: { listAccountCode: [] } })
   }
 
   return (
     <div className="content-inner">
-      <Tabs type="card" activeKey={activeKey} tabBarExtraContent={moreButtonTab} onChange={key => changeTab(key)}>
-        <TabPane tab={`Form ${modalType === 'add' ? 'Add' : 'Update'}`} key="0">
-          <Form {...formProps} />
-        </TabPane>
-        <TabPane tab="Browse" key="1">
-          <Filter {...filterProps} />
-          <List {...browseProps} />
-        </TabPane>
-      </Tabs>
-      {modalEditItemVisible && <ModalItem {...formEditProps} />}
-      {modalProductVisible && <Browse {...modalProductProps} />}
-      {modalInvoiceVisible && <Browse {...modalProductProps} />}
+      <Form {...formProps} />
+      {modalQuotationVisible && <ModalQuotation {...modalQuotationProps} />}
     </div>
   )
 }
 
-PurchaseOrder.propTypes = {
+Counter.propTypes = {
   purchaseOrder: PropTypes.object,
-  purchase: PropTypes.object,
-  app: PropTypes.object,
+  loading: PropTypes.object,
   location: PropTypes.object,
-  dispatch: PropTypes.func,
-  loading: PropTypes.object
+  app: PropTypes.object,
+  dispatch: PropTypes.func
 }
 
-
-export default connect(({ purchaseOrder, purchase, app, loading }) => ({ purchaseOrder, purchase, app, loading }))(PurchaseOrder)
+export default connect(({ purchaseOrder, purchase, loading, app }) => ({ purchaseOrder, purchase, loading, app }))(Counter)

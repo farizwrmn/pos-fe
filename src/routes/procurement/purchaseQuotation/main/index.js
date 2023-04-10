@@ -8,6 +8,7 @@ const Counter = ({ purchaseQuotation, dispatch, loading, location }) => {
   const {
     listTrans,
     listSupplier,
+
     modalType,
     currentItem
   } = purchaseQuotation
