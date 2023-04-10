@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -42,6 +42,19 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  const onQuotationClick = () => {
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        onGetQuotation()
+        resetFields()
+      },
+      onCancel () {
+
+      }
+    })
+  }
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -80,7 +93,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Deadline Receive" {...formItemLayout}>
             {getFieldDecorator('deadlineDate', {
-              initialValue: moment().add('14', 'days'),
+              initialValue: item.expectedArrival ? moment.utc(item.expectedArrival, 'YYYY-MM-DD') : moment().add('5', 'days'),
               rules: [{
                 required: true,
                 message: 'Required'
@@ -105,10 +118,22 @@ const FormCounter = ({
               {supplierData}
             </Select>)}
           </FormItem>
-          <Button type="default" size="large" onClick={() => onGetProduct()}>Product</Button>
-          <Button type="primary" size="large" onClick={() => onGetQuotation()} style={{ marginLeft: '10px' }}>Quotation</Button>
+          {item && !item.supplierId && <Button type="default" size="large" onClick={() => onGetProduct()}>Product</Button>}
+          <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>
         </Col>
         <Col {...col}>
+          <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('deliveryFee', {
+              initialValue: item.deliveryFee || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber min={0} style={{ width: '100%' }} />
+            )}
+          </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               initialValue: item.description,

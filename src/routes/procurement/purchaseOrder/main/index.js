@@ -82,6 +82,17 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
     },
     onGetQuotation () {
       dispatch({ type: 'purchaseOrder/queryCount', payload: {} })
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          currentItem: {
+            transNo: currentItem.transNo
+          },
+          listItem: [],
+          modalQuotationVisible: true
+        }
+      })
+      dispatch({ type: 'purchaseOrder/querySequence' })
     },
     onCancel () {
       const { pathname } = location

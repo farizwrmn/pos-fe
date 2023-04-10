@@ -49,11 +49,10 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * querySequence ({ payload = {} }, { select, call, put }) {
+    * querySequence (payload, { select, call, put }) {
       const invoice = {
         seqCode: 'PO',
-        type: lstorage.getCurrentUserStore(),
-        ...payload
+        type: lstorage.getCurrentUserStore()
       }
       const data = yield call(querySequence, invoice)
       const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
@@ -67,6 +66,43 @@ export default modelExtend(pageModel, {
           }
         }
       })
+    },
+
+    * chooseQuotation ({ payload = {} }, { select, call, put }) {
+      const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
+      const response = yield call(querySupplierDetail, {
+        transId: payload.transId,
+        storeId: lstorage.getCurrentUserStore(),
+        supplierId: payload.supplierId
+      })
+      if (response.success && response.data) {
+        if (response.data[0]) {
+          const listItem = response.data.map((item, index) => {
+            return ({
+              no: index + 1,
+              productId: item.productId,
+              productCode: item.productCode,
+              productName: item.productName,
+              qty: item.qty,
+              purchasePrice: item.purchasePrice,
+              total: item.total
+            })
+          })
+          currentItem.supplierId = response.data[0].supplierId
+          currentItem.supplierName = response.data[0].supplierName
+          yield put({
+            type: 'updateState',
+            payload: {
+              listItem,
+              modalQuotationVisible: false
+            }
+          })
+        } else {
+          message.error('Not found item')
+        }
+      } else {
+        throw response
+      }
     },
 
     * querySupplierDetail ({ payload = {} }, { select, call, put }) {
