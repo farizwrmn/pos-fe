@@ -650,6 +650,22 @@ const Routers = function ({ history, app }) {
             }, 'transaction-procurement-quotation-detail')
           }
         }, {
+          path: 'transaction/procurement/receive',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseReceive'))
+              cb(null, require('./routes/procurement/purchaseReceive/main'))
+            }, 'transaction-procurement-receive')
+          }
+        }, {
+          path: 'transaction/procurement/receive/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/procurement/purchaseReceive'))
+              cb(null, require('./routes/procurement/purchaseReceive/detail'))
+            }, 'transaction-procurement-receive-detail')
+          }
+        }, {
           path: 'transaction/procurement/safety',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
