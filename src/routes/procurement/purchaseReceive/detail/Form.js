@@ -31,6 +31,7 @@ const FormCounter = ({
   item = {},
   listItemProps,
   onSubmit,
+  loading,
   form: {
     getFieldDecorator,
     resetFields,
@@ -130,7 +131,7 @@ const FormCounter = ({
         <Col {...column} />
       </Row>
       <ListItem {...listItemProps} />
-      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
+      <Button type="primary" onClick={handleSubmit} disabled={loading} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
     </Form>
   )
 }
