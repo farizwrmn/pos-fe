@@ -23,10 +23,8 @@ const formItemLayout = {
 }
 
 const column = {
-  sm: { span: 24 },
   md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  lg: { span: 12 }
 }
 
 const FormCounter = ({
@@ -139,6 +137,7 @@ const FormCounter = ({
             })(<Input disabled />)}
           </FormItem>
         </Col>
+        <Col {...column} />
       </Row>
       {item && item.hasRFQ ? <PrintXLS data={listItemProps.dataSource} name="Export" {...printProps} /> : null}
       {item && item.hasRFQ ? <span>

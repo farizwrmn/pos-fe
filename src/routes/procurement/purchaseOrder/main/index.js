@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import ModalQuotation from './ModalQuotation'
 import Form from './Form'
+import ModalEdit from './ModalEdit'
 
 const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
   const {
@@ -11,11 +12,14 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
     listQuotationSupplier,
     modalQuotationVisible,
     currentItem,
-    listItem
+    listItem,
+    modalEditVisible,
+    modalEditItem
   } = purchaseOrder
 
   const {
-    listSupplier
+    listSupplier,
+    listPurchaseLatestDetail
   } = purchase
 
   const listItemProps = {
@@ -33,18 +37,19 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
         }
       })
     },
-    onModalVisible (record) {
+    onModalVisible (record, header) {
       dispatch({
         type: 'purchaseOrder/updateState',
         payload: {
-          currentItemList: record,
-          modalEditItemVisible: true
+          modalEditItem: record,
+          modalEditVisible: true,
+          modalEditHeader: header
         }
       })
       dispatch({
         type: 'purchase/getPurchaseLatestDetail',
         payload: {
-          productId: record.id
+          productId: record.productId
         }
       })
     },
@@ -153,10 +158,47 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
     }
   }
 
+  const modalEditProps = {
+    visible: modalEditVisible,
+    loading,
+    currentItem,
+    item: currentItem,
+    listPurchaseLatestDetail,
+    loadingPurchaseLatest: loading.effects['purchase/getPurchaseLatestDetail'],
+    currentItemList: modalEditItem,
+    onOk (data) {
+      dispatch({
+        type: 'purchaseOrder/editItem',
+        payload: {
+          data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          modalEditItem: {},
+          modalEditVisible: false,
+          modalEditHeader: {}
+        }
+      })
+    },
+    onDeleteItem (item) {
+      dispatch({
+        type: 'purchaseOrder/deleteItem',
+        payload: {
+          item
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Form {...formProps} />
       {modalQuotationVisible && <ModalQuotation {...modalQuotationProps} />}
+      {modalEditVisible && <ModalEdit {...modalEditProps} />}
     </div>
   )
 }

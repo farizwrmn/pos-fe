@@ -23,6 +23,7 @@ const ListItem = ({
         return (
           <div>
             <div><b>{record.productCode}</b>{` ${record.productName}`}</div>
+            <div>D: {record.dimension} P: {record.dimensionPack} B: {record.dimensionBox}</div>
           </div>
         )
       }
@@ -32,14 +33,27 @@ const ListItem = ({
       dataIndex: 'qty',
       key: 'qty',
       width: '100px',
-      render: text => (text || 0).toLocaleString()
+      render: (text, record) => {
+        return (
+          <div>
+            <div>Qty: {(text || 0).toLocaleString()}</div>
+            <div>Price: Rp {(record.purchasePrice || 0).toLocaleString()}</div>
+          </div>
+        )
+      }
     },
     {
       title: 'Subtotal',
       dataIndex: 'total',
       key: 'total',
       width: '100px',
-      render: text => (text || 0).toLocaleString()
+      render: (text, record) => {
+        return (
+          <div>
+            <div>Total: Rp {(record.total || 0).toLocaleString()}</div>
+          </div>
+        )
+      }
     }
   ]
 

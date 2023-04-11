@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import { message } from 'antd'
 import { query as querySequence } from 'services/sequence'
+import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import {
   queryCount,
   querySupplierCount,
@@ -23,12 +24,15 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    modalEditHeader: {},
+    modalEditItem: {},
     modalType: 'add',
     activeKey: '0',
     list: [],
     listQuotationTrans: [],
     listQuotationSupplier: [],
     modalQuotationVisible: false,
+    modalEditVisible: false,
     listItem: [],
     pagination: {
       showSizeChanger: true,
@@ -75,9 +79,65 @@ export default modelExtend(pageModel, {
       })
     },
 
-    * changeTotalData ({ payload = {} }, { select, call, put }) {
+    * editItem ({ payload }, { select, put }) {
+      const { data } = payload
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
+      const modalEditHeader = yield select(({ purchaseOrder }) => purchaseOrder.modalEditHeader)
+      const exists = listItem.filter(filtered => filtered.productId === data.productId)
+      if (exists && exists.length > 0) {
+        const newListItem = listItem.map((item) => {
+          if (item.productId === data.productId) {
+            return ({
+              ...item,
+              ...data
+            })
+          }
+          return item
+        })
+        yield put({
+          type: 'changeTotalData',
+          payload: {
+            header: modalEditHeader,
+            listItem: newListItem
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditHeader: {},
+            modalEditItem: {},
+            modalEditVisible: false
+          }
+        })
+      } else {
+        message.warning('Product not exists')
+      }
+    },
+
+    * changeTotalData ({ payload = {} }, { put }) {
       const { listItem, header } = payload
-      console.log('listItem', listItem, header)
+      let ppnType = header.taxType
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const dataProduct = listItem
+      for (let key = 0; key < dataProduct.length; key += 1) {
+        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
+        const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
+        if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
+          dataProduct[key].deliveryFee = dataProduct[key].portion * header.deliveryFee
+        } else {
+          dataProduct[key].deliveryFee = 0
+        }
+        dataProduct[key].DPP = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
+        dataProduct[key].PPN = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (dataProduct[key].DPP * getDenominatorPPNExclude()) : 0))
+        dataProduct[key].total = parseFloat(dataProduct[key].DPP + dataProduct[key].PPN)
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: dataProduct
+        }
+      })
     },
 
     * chooseQuotation ({ payload = {} }, { select, call, put }) {
@@ -97,6 +157,9 @@ export default modelExtend(pageModel, {
               productId: item.productId,
               productCode: item.productCode,
               productName: item.productName,
+              dimension: item.dimension,
+              dimensionBox: item.dimensionBox,
+              dimensionPack: item.dimensionPack,
               qty: item.qty,
               purchasePrice: item.purchasePrice,
               discPercent: 0,
@@ -239,27 +302,38 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload = {} }, { call, put }) {
+    * add ({ payload = {} }, { select, call, put }) {
       console.log('payload', payload)
-      // const response = yield call(add, payload.data)
-      // if (response.success) {
-      //   success()
-      //   yield put({
-      //     type: 'updateState',
-      //     payload: {
-      //       modalType: 'add',
-      //       currentItem: {}
-      //     }
-      //   })
-      //   yield put({
-      //     type: 'query'
-      //   })
-      //   if (payload.reset) {
-      //     payload.reset()
-      //   }
-      // } else {
-      //   throw response
-      // }
+      yield put({
+        type: 'changeTotalData',
+        payload: {
+          header: payload.header,
+          listItem: payload.listItem
+        }
+      })
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
+      const response = yield call(add, {
+        header: payload.header,
+        detail: listItem
+      })
+      if (response.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
+        yield put({
+          type: 'query'
+        })
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
+        throw response
+      }
     },
 
     * edit ({ payload }, { select, call, put }) {
@@ -323,16 +397,6 @@ export default modelExtend(pageModel, {
         activeKey: key,
         modalType: 'add',
         currentItem: {}
-      }
-    },
-
-    editItem (state, { payload }) {
-      const { item } = payload
-      return {
-        ...state,
-        modalType: 'edit',
-        activeKey: '0',
-        currentItem: item
       }
     }
   }

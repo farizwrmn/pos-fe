@@ -2,9 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from 'themes/index.less'
-import { numberFormatter } from 'utils/string'
 
-const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
+const ListItem = ({ listItem, deliveryFee, onModalVisible, ...tableProps }) => {
   const handleMenuClick = (record) => {
     onModalVisible(record)
   }
@@ -25,31 +24,17 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
       }
     },
     {
-      title: 'Code',
-      dataIndex: 'productCode',
-      key: 'productCode',
-      width: '130px',
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{text}</div>
-        }
-      }
-    },
-    {
-      title: 'Name',
+      title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
-      width: '250px',
+      width: '350px',
       render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{text}</div>
-        }
+        return (
+          <div>
+            <div><b>{record.productCode}</b> {record.productName}</div>
+            <div>D: {record.dimension} P: {record.dimensionPack} B: {record.dimensionBox}</div>
+          </div>
+        )
       }
     },
     {
@@ -70,16 +55,16 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
     },
     {
       title: 'Price',
-      dataIndex: 'disc1',
-      key: 'disc1',
+      dataIndex: 'purchasePrice',
+      key: 'purchasePrice',
       width: '140px',
       className: styles.alignRight,
       render: (text, record) => {
         return (
           <div>
-            <div><b>Price: {(record.price || '-').toLocaleString()}</b></div>
-            <div>Disc (%): {(text || '-').toLocaleString()}</div>
-            <div>Disc (N): {(record.discount || '-').toLocaleString()}</div>
+            <div><b>Price: {(record.purchasePrice || '-').toLocaleString()}</b></div>
+            <div>Disc (%): {(record.discPercent || '-').toLocaleString()}</div>
+            <div>Disc (N): {(record.discNominal || '-').toLocaleString()}</div>
           </div>
         )
       }
@@ -93,7 +78,7 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
       render: (text, record) => {
         return (
           <div>
-            <div><b>DPP: {(text || '-').toLocaleString()}</b></div>
+            <div><b>DPP: {(record.DPP || '-').toLocaleString()}</b></div>
             <div>PPN: {(record.PPN || '-').toLocaleString()}</div>
           </div>
         )
@@ -143,8 +128,8 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
         footer={() => {
           return (
             <div>
-              <div>Qty: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0)}</div>
-              <div>Total: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) : 0)}</div>
+              <div>Qty: {(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0).toLocaleString()}</div>
+              <div>Total: {(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) + deliveryFee : 0).toLocaleString()}</div>
             </div>
           )
         }}

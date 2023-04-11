@@ -39,6 +39,7 @@ const FormCounter = ({
   onChangeTotalData,
   listItem,
   form: {
+    getFieldValue,
     getFieldDecorator,
     validateFields,
     getFieldsValue,
@@ -82,6 +83,14 @@ const FormCounter = ({
       ...getFieldsValue()
     }
     onChangeTotalData(data, listItem)
+  }
+
+  const onShowModal = (record) => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    listItemProps.onModalVisible(record, data)
   }
 
   const supplierData = (listSupplier || []).length > 0 ?
@@ -131,7 +140,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxType', {
-              initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
+              initialValue: 'E',
               rules: [{
                 required: true,
                 message: 'Required'
@@ -146,18 +155,6 @@ const FormCounter = ({
           <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>
         </Col>
         <Col {...col}>
-          <FormItem label="Disc (N)" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('discInvoiceNominal', {
-              initialValue: item.discInvoiceNominal || 0,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
-            )}
-          </FormItem>
           <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
@@ -168,6 +165,18 @@ const FormCounter = ({
               ]
             })(
               <InputNumber onBlur={onChangeTotal} min={0} max={100} style={{ width: '100%' }} />
+            )}
+          </FormItem>
+          <FormItem label="Disc (N)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discInvoiceNominal', {
+              initialValue: item.discInvoiceNominal || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
             )}
           </FormItem>
           <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
@@ -194,7 +203,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
-      <ListItem {...listItemProps} style={{ marginTop: '10px' }} />
+      <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
       <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
     </Form>
   )
