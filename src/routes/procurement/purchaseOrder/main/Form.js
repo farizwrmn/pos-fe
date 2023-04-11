@@ -32,7 +32,7 @@ const col = {
 const FormCounter = ({
   item = {},
   onSubmit,
-  onGetProduct,
+  // onGetProduct,
   onGetQuotation,
   listSupplier,
   listItemProps,
@@ -151,7 +151,7 @@ const FormCounter = ({
               <Option value="S">Exclude ({getVATPercentage()}%)</Option>
             </Select>)}
           </FormItem>
-          {item && !item.supplierId && <Button type="default" size="large" onClick={() => onGetProduct()}>Product</Button>}
+          {/* {item && !item.supplierId && <Button type="default" size="large" onClick={() => onGetProduct()}>Product</Button>} */}
           <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>
         </Col>
         <Col {...col}>
