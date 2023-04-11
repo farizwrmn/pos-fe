@@ -215,7 +215,10 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const response = yield call(add, {
-        transNoId: payload.transNoId
+        transNoId: payload.transNoId,
+        reference: payload.reference,
+        ...payload.data,
+        storeId: lstorage.getCurrentUserStore()
       })
       if (response.success) {
         success()
@@ -223,12 +226,11 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
+            listItem: [],
             currentItem: {}
           }
         })
-        yield put({
-          type: 'query'
-        })
+        yield put(routerRedux.push('/transaction/procurement/receive'))
         if (payload.reset) {
           payload.reset()
         }

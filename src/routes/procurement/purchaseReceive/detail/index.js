@@ -42,11 +42,13 @@ const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     loading: loading.effects['purchaseReceive/add']
       || loading.effects['purchaseReceive/createPurchaseOrder'],
-    onSubmit (reset) {
+    onSubmit (data, reset) {
       dispatch({
         type: 'purchaseReceive/add',
         payload: {
           transNoId: currentItem.id,
+          reference: data.reference,
+          data,
           reset
         }
       })

@@ -4,6 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Modal, Form, Input, Row, Col, InputNumber, message } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -34,6 +35,7 @@ const FormCounter = ({
     getFieldDecorator,
     resetFields,
     validateFields,
+    getFieldValue,
     getFieldsValue
   }
 }) => {
@@ -48,9 +50,7 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       const total = listItemProps.listItem.reduce((prev, next) => prev + next.total, 0)
-      console.log('data', data)
-      console.log('data.deliveryFee', data.deliveryFee)
-      if ((total + data.deliveryFee) !== data.invoiceTotal) {
+      if (total !== data.invoiceTotal) {
         message.error('Invoice Total is not equal to Final Total')
         return
       }
@@ -87,8 +87,39 @@ const FormCounter = ({
               }]
             })(<Input disabled />)}
           </FormItem>
-          <FormItem label="Invoice Total + Delivery Fee" {...formItemLayout}>
+          <FormItem label="Reference" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('reference', {
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Input maxLength={30} />)}
+          </FormItem>
+          <FormItem label="Tempo" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('tempo', {
+              initialValue: 30,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^\d+$/gi
+              }]
+            })(<InputNumber min={0} style={{ width: '100%' }} />)}
+          </FormItem>
+          <FormItem label="Due Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('dueDate', {
+              initialValue: moment().add(getFieldValue('tempo'), 'days').format('YYYY-MM-DD')
+            })(<Input disabled />)}
+          </FormItem>
+          <FormItem label="Invoice Total" {...formItemLayout}>
             {getFieldDecorator('invoiceTotal', {
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<InputNumber min={0} style={{ width: '100%' }} />)}
+          </FormItem>
+          <FormItem label="Delivery Fee" {...formItemLayout}>
+            {getFieldDecorator('deliveryFee', {
               rules: [{
                 required: true,
                 message: 'Required'
