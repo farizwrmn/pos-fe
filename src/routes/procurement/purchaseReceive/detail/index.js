@@ -47,7 +47,7 @@ const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
         type: 'purchaseReceive/add',
         payload: {
           transNoId: currentItem.id,
-          reference: data.reference,
+          listItem,
           data,
           reset
         }

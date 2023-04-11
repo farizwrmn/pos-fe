@@ -214,9 +214,15 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      yield put({
+        type: 'changeTotalData',
+        payload: {
+          header: payload.data,
+          listItem: payload.listItem
+        }
+      })
       const response = yield call(add, {
         transNoId: payload.transNoId,
-        reference: payload.reference,
         ...payload.data,
         storeId: lstorage.getCurrentUserStore()
       })
@@ -235,12 +241,6 @@ export default modelExtend(pageModel, {
           payload.reset()
         }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw response
       }
     },

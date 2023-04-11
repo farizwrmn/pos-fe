@@ -303,7 +303,6 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload = {} }, { select, call, put }) {
-      console.log('payload', payload)
       yield put({
         type: 'changeTotalData',
         payload: {

@@ -91,8 +91,8 @@ const Detail = ({
     },
     {
       title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
+      dataIndex: 'netto',
+      key: 'netto',
       width: '140px',
       render: (text) => {
         return (
