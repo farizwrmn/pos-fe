@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/procurement/purchaseReceive'
+import { querySupplier, add, edit, remove } from 'services/procurement/purchaseReceive'
+import { query as getPurchaseOrder } from 'services/procurement/purchaseOrder'
 import { pageModel } from 'models/common'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('Purchase Receive has been saved')
@@ -15,6 +17,9 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    listTrans: [],
+    listDetail: [],
+    listItem: [],
     list: [],
     pagination: {
       showSizeChanger: true,
@@ -26,16 +31,11 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/transaction/procurement/receive') {
           dispatch({
-            type: 'updateState',
-            payload: {
-              activeKey: activeKey || '0'
-            }
+            type: 'queryHeader'
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
       })
     }
@@ -43,20 +43,53 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * query ({ payload = {} }, { call, put }) {
-      const response = yield call(query, payload)
-      if (response.success) {
+    * queryHeader (payload, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listTrans: []
+        }
+      })
+      const response = yield call(querySupplier, {
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response.success && response.data) {
         yield put({
-          type: 'querySuccess',
+          type: 'updateState',
           payload: {
-            list: response.data,
-            pagination: {
-              current: Number(response.page) || 1,
-              pageSize: Number(response.pageSize) || 10,
-              total: response.total
-            }
+            listTrans: response.data
           }
         })
+      } else {
+        throw response
+      }
+    },
+
+    * queryDetail ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listDetail: []
+        }
+      })
+      const response = yield call(getPurchaseOrder, {
+        storeId: lstorage.getCurrentUserStore(),
+        supplierId: payload.supplierId,
+        type: 'all',
+        status: 1
+      })
+      if (response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetail: response.data.map((item, index) => ({
+              ...item,
+              no: index + 1
+            }))
+          }
+        })
+      } else {
+        throw response
       }
     },
 

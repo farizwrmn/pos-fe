@@ -10,6 +10,16 @@ export async function query (params) {
   })
 }
 
+export async function querySupplier (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-receive-request/supplier',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

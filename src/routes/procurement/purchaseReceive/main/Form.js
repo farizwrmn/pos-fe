@@ -1,123 +1,44 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Collapse, Spin } from 'antd'
+import { Link } from 'dva/router'
+import Detail from './Detail'
 
-const FormItem = Form.Item
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
-  },
-  wrapperCol: {
-    xs: { span: 16 },
-    sm: { span: 14 },
-    md: { span: 14 }
-  }
-}
-
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
-}
+const { Panel } = Collapse
 
 const FormCounter = ({
-  item = {},
-  onSubmit,
-  onCancel,
-  modalType,
-  button,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-    resetFields
-  }
+  onGetDetailData,
+  loading,
+  listTrans,
+  listDetail
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
+  const onGetDetail = (value) => {
+    if (value) {
+      onGetDetailData(value)
     }
   }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
-    })
-  }
-
   return (
     <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Input maxLength={50} />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
+      {listTrans ? (
+        <Collapse accordion onChange={onGetDetail}>
+          {listTrans.map(item => (
+            <Panel header={`${item.supplierName} Count: ${item.countSupplier}`} key={item.supplierId}>
+              {listDetail
+                && !loading.effects['purchaseReceive/queryDetail']
+                ? <Detail loading={loading} dataSource={listDetail} /> : <Spin />}
+            </Panel>
+          ))}
+        </Collapse>
+      ) : <div>No Transaction. To create new <Link to="/transaction/procurement/order">click here</Link></div>}
     </Form>
   )
 }
 
 FormCounter.propTypes = {
-  form: PropTypes.object.isRequired,
-  item: PropTypes.object,
-  onSubmit: PropTypes.func,
-  button: PropTypes.string
+  onGetDetailData: PropTypes.func,
+  loading: PropTypes.object,
+  listTrans: PropTypes.array,
+  listDetail: PropTypes.array
 }
 
-export default Form.create()(FormCounter)
+export default FormCounter
