@@ -170,7 +170,8 @@ const AutoReconciliation = ({
           selectedPaymentRowKeys,
           accountId,
           from,
-          to
+          to,
+          location
         }
       })
     },

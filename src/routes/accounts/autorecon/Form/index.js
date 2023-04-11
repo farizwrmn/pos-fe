@@ -106,8 +106,8 @@ const FormAutoCounter = ({
           </Col>
           <Col {...buttonColumnProps}>
             <FormItem>
-              <Button style={{ marginRight: '10px' }} type="secondary" icon="download" onClick={() => showImportModal()} loading={loading.effects['autorecon/autoRecon']} >Import</Button>
-              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon']} > Start Reconciliation</Button>
+              <Button style={{ marginRight: '10px' }} type="secondary" icon="download" onClick={() => showImportModal()} loading={loading.effects['autorecon/autoRecon'] || loading.effects['autorecon/add']} >Import</Button>
+              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon'] || loading.effects['autorecon/add']} > Start Reconciliation</Button>
             </FormItem>
           </Col>
         </Row>

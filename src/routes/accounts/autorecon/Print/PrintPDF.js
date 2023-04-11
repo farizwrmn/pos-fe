@@ -44,6 +44,7 @@ const PrintPDF = ({ dataSource, user, name }) => {
       { text: 'NO', style: 'tableHeader' },
       { text: 'TANGGAL', style: 'tableHeader' },
       { text: 'TRANS NO', style: 'tableHeader' },
+      { text: 'TYPE', style: 'tableHeader' },
       { text: 'APPROVAL CODE', style: 'tableHeader' },
       { text: 'GROSS AMOUNT', style: 'tableHeader' },
       { text: 'MDR AMOUNT', style: 'tableHeader' },
@@ -62,7 +63,8 @@ const PrintPDF = ({ dataSource, user, name }) => {
           row.push({ text: count, alignment: 'center' })
           row.push({ text: (tableBody[key].payment.transDate ? moment(tableBody[key].payment.transDate).format('DD MMM YYYY') : ''), alignment: 'center' })
           row.push({ text: tableBody[key].payment.posPayment.transNo || '', alignment: 'left' })
-          row.push({ text: paymentImport.approvalCode || '', alignment: 'left' })
+          row.push({ text: paymentImport.type || '', alignment: 'center' })
+          row.push({ text: paymentImport.approvalCode || '', alignment: 'center' })
           row.push({ text: currencyFormatter(paymentImport.grossAmount), alignment: 'center' })
           row.push({ text: currencyFormatter(paymentImport.mdrAmount || 0), alignment: 'center' })
           row.push({ text: `${Number((paymentImport.mdrAmount / paymentImport.grossAmount) * 100).toFixed(2)} %`, alignment: 'center' })
@@ -121,7 +123,7 @@ const PrintPDF = ({ dataSource, user, name }) => {
     buttonSize: '',
     name,
     className: '',
-    width: ['4%', '10%', '17%', '15%', '20%', '15%', '19%'],
+    width: ['4%', '10%', '17%', '5%', '15%', '15%', '15%', '19%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

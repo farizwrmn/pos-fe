@@ -176,7 +176,7 @@ const FormConflicted = ({
             icon="rollback"
             onClick={() => handleSubmit()}
             disabled={!selectedCsvRowKeys[0] || !selectedPaymentRowKeys[0]}
-            loading={loading.effects['autorecon/add']}
+            loading={loading.effects['autorecon/add'] || loading.effects['autorecon/autoRecon']}
           >
             Mark as Conflicted
           </Button>

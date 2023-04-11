@@ -4,6 +4,7 @@ import modelExtend from 'dva-model-extend'
 import { add as importCsv, autoRecon } from 'services/payment/paymentValidationImport'
 import { query, queryDetail, queryAdd, queryResolve, queryAll } from 'services/payment/paymentValidationConflict'
 import pathToRegexp from 'path-to-regexp'
+import { routerRedux } from 'dva/router'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -53,7 +54,7 @@ export default modelExtend(pageModel, {
           })
         }
         if (pathname === '/auto-recon') {
-          if (accountId && from && to) {
+          if (accountId && from && to && activeKey === '1') {
             dispatch({
               type: 'query',
               payload: {
@@ -150,9 +151,22 @@ export default modelExtend(pageModel, {
           payload: {
             ...payload,
             conflictedCSV: conflictedImportData,
-            conflictedPayment: accountLedger
+            conflictedPayment: accountLedger,
+            selectedCsvRowKeys: [],
+            selectedPaymentRowKeys: []
           }
         })
+        const { location, from, to, accountId } = payload
+        const { pathname, query } = location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            from,
+            to,
+            accountId
+          }
+        }))
         message.success(`Berhasil! ${(conflictedImportData.length > 0 || accountLedger.length > 0) ? 'Terdapat conflict, selesaikan secara manual!' : ''}`)
       } else {
         message.error(`Gagal: ${response.message}`)
