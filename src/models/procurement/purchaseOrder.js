@@ -42,6 +42,13 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/transaction/procurement/order') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listItem: [],
+              currentItem: {}
+            }
+          })
           dispatch({ type: 'querySequence' })
         }
       })
@@ -68,6 +75,11 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * changeTotalData ({ payload = {} }, { select, call, put }) {
+      const { listItem, header } = payload
+      console.log('listItem', listItem, header)
+    },
+
     * chooseQuotation ({ payload = {} }, { select, call, put }) {
       const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
       const response = yield call(querySupplierDetail, {
@@ -77,7 +89,9 @@ export default modelExtend(pageModel, {
       })
       if (response.success && response.data) {
         if (response.data[0]) {
+          const totalPrice = response.data.reduce((prev, next) => prev + (next.qty * next.purchasePrice), 0)
           const listItem = response.data.map((item, index) => {
+            const total = item.qty * item.purchasePrice
             return ({
               no: index + 1,
               productId: item.productId,
@@ -85,9 +99,16 @@ export default modelExtend(pageModel, {
               productName: item.productName,
               qty: item.qty,
               purchasePrice: item.purchasePrice,
-              total: item.total
+              discPercent: 0,
+              discNominal: 0,
+              deliveryFee: 0,
+              portion: totalPrice > 0 ? total / totalPrice : 0,
+              DPP: total,
+              PPN: 0,
+              total
             })
           })
+          currentItem.requisitionId = payload.transId
           currentItem.supplierId = response.data[0].supplierId
           currentItem.supplierName = response.data[0].supplierName
           yield put({
@@ -218,32 +239,27 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload.data)
-      if (response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({
-          type: 'query'
-        })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw response
-      }
+    * add ({ payload = {} }, { call, put }) {
+      console.log('payload', payload)
+      // const response = yield call(add, payload.data)
+      // if (response.success) {
+      //   success()
+      //   yield put({
+      //     type: 'updateState',
+      //     payload: {
+      //       modalType: 'add',
+      //       currentItem: {}
+      //     }
+      //   })
+      //   yield put({
+      //     type: 'query'
+      //   })
+      //   if (payload.reset) {
+      //     payload.reset()
+      //   }
+      // } else {
+      //   throw response
+      // }
     },
 
     * edit ({ payload }, { select, call, put }) {

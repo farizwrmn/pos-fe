@@ -68,12 +68,22 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
     item: currentItem,
     listSupplier,
     listItemProps,
+    listItem,
     onSubmit (data, reset) {
       dispatch({
         type: 'purchaseOrder/add',
         payload: {
           data,
+          listItem,
           reset
+        }
+      })
+    },
+    onChangeTotalData (header, listItem) {
+      dispatch({
+        type: 'purchaseOrder/changeTotalData',
+        payload: {
+          header, listItem
         }
       })
     },

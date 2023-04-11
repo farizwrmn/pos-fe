@@ -14,6 +14,7 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
       title: 'No',
       dataIndex: 'no',
       key: 'no',
+      width: '60px',
       render (text, record) {
         return {
           props: {
@@ -27,6 +28,7 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
       title: 'Code',
       dataIndex: 'productCode',
       key: 'productCode',
+      width: '130px',
       render (text, record) {
         return {
           props: {
@@ -40,6 +42,7 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
       title: 'Name',
       dataIndex: 'productName',
       key: 'productName',
+      width: '250px',
       render (text, record) {
         return {
           props: {
@@ -53,6 +56,7 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
       title: 'Qty',
       dataIndex: 'qty',
       key: 'qty',
+      width: '70px',
       className: styles.alignRight,
       // render: text => (text || '-').toLocaleString()
       render (text, record) {
@@ -66,32 +70,62 @@ const ListItem = ({ listItem, onModalVisible, ...tableProps }) => {
     },
     {
       title: 'Price',
-      dataIndex: 'purchasePrice',
-      key: 'purchasePrice',
+      dataIndex: 'disc1',
+      key: 'disc1',
+      width: '140px',
       className: styles.alignRight,
-      // render: text => (text || '-').toLocaleString()
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{(text || '-').toLocaleString()}</div>
-        }
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>Price: {(record.price || '-').toLocaleString()}</b></div>
+            <div>Disc (%): {(text || '-').toLocaleString()}</div>
+            <div>Disc (N): {(record.discount || '-').toLocaleString()}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'TAX',
+      dataIndex: 'DPP',
+      key: 'DPP',
+      width: '140px',
+      className: styles.alignRight,
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>DPP: {(text || '-').toLocaleString()}</b></div>
+            <div>PPN: {(record.PPN || '-').toLocaleString()}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Delivery',
+      dataIndex: 'deliveryFee',
+      key: 'deliveryFee',
+      width: '140px',
+      className: styles.alignRight,
+      render: (text, record) => {
+        return (
+          <div>
+            <div><b>Portion: {(parseFloat(record.portion || 0).toFixed(2) || '-').toLocaleString()}</b></div>
+            <div><b>Delivery: {(Math.round(record.deliveryFee || 0) || '-').toLocaleString()}</b></div>
+          </div>
+        )
       }
     },
     {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
+      width: '140px',
       className: styles.alignRight,
-      // render: text => (text || '-').toLocaleString()
-      render (text, record) {
-        return {
-          props: {
-            style: { background: record.color }
-          },
-          children: <div>{(record.qty * record.purchasePrice || '-').toLocaleString()}</div>
-        }
+      render: (text) => {
+        return (
+          <div>
+            <div><b>Total: {(text || '-').toLocaleString()}</b></div>
+          </div>
+        )
       }
     }
   ]

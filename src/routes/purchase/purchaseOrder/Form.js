@@ -52,7 +52,6 @@ const FormAdd = ({
         ...item,
         ...getFieldsValue()
       }
-      data.supplierId = data.supplierId
       data.storeId = lstorage.getCurrentUserStore()
       Modal.confirm({
         title: 'Save this transaction',

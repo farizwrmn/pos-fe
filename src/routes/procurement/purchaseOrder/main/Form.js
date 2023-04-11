@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { getVATPercentage } from 'utils/tax'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -35,6 +36,8 @@ const FormCounter = ({
   onGetQuotation,
   listSupplier,
   listItemProps,
+  onChangeTotalData,
+  listItem,
   form: {
     getFieldDecorator,
     validateFields,
@@ -73,6 +76,14 @@ const FormCounter = ({
     })
   }
 
+  const onChangeTotal = () => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    onChangeTotalData(data, listItem)
+  }
+
   const supplierData = (listSupplier || []).length > 0 ?
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
@@ -92,7 +103,7 @@ const FormCounter = ({
             })(<Input disabled maxLength={20} />)}
           </FormItem>
           <FormItem label="Deadline Receive" {...formItemLayout}>
-            {getFieldDecorator('deadlineDate', {
+            {getFieldDecorator('expectedArrival', {
               initialValue: item.expectedArrival ? moment.utc(item.expectedArrival, 'YYYY-MM-DD') : moment().add('5', 'days'),
               rules: [{
                 required: true,
@@ -118,10 +129,47 @@ const FormCounter = ({
               {supplierData}
             </Select>)}
           </FormItem>
+          <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxType', {
+              initialValue: localStorage.getItem('taxType') ? localStorage.getItem('taxType') : 'E',
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select onBlur={onChangeTotal}>
+              <Option value="I">Include</Option>
+              <Option value="E">Exclude (0%)</Option>
+              <Option value="S">Exclude ({getVATPercentage()}%)</Option>
+            </Select>)}
+          </FormItem>
           {item && !item.supplierId && <Button type="default" size="large" onClick={() => onGetProduct()}>Product</Button>}
           <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>
         </Col>
         <Col {...col}>
+          <FormItem label="Disc (N)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discInvoiceNominal', {
+              initialValue: item.discInvoiceNominal || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
+            )}
+          </FormItem>
+          <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discInvoicePercent', {
+              initialValue: item.discInvoicePercent || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} max={100} style={{ width: '100%' }} />
+            )}
+          </FormItem>
           <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
             {getFieldDecorator('deliveryFee', {
               initialValue: item.deliveryFee || 0,
@@ -131,7 +179,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <InputNumber min={0} style={{ width: '100%' }} />
+              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
             )}
           </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
