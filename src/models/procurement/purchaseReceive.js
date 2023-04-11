@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
 import { querySupplier, query, queryId, add, edit, remove } from 'services/procurement/purchaseReceive'
+import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as getPurchaseOrder } from 'services/procurement/purchaseOrder'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
@@ -16,6 +17,8 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    modalEditVisible: false,
+    modalEditItem: {},
     modalType: 'add',
     activeKey: '0',
     listTrans: [],
@@ -41,6 +44,13 @@ export default modelExtend(pageModel, {
         const match = pathToRegexp('/transaction/procurement/receive/:id').exec(location.pathname)
         if (match) {
           dispatch({
+            type: 'updateState',
+            payload: {
+              currentItem: [],
+              listItem: []
+            }
+          })
+          dispatch({
             type: 'queryPurchaseOrder',
             payload: {
               id: match[1]
@@ -54,13 +64,6 @@ export default modelExtend(pageModel, {
   effects: {
 
     * queryPurchaseOrder ({ payload = {} }, { call, put }) {
-      yield put({
-        type: 'updateState',
-        payload: {
-          currentItem: [],
-          listItem: []
-        }
-      })
       const response = yield call(queryId, {
         id: payload.id
       })
@@ -74,6 +77,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'queryPurchaseOrderDetail',
           payload: {
+            header: response.data,
             transNoId: payload.id
           }
         })
@@ -83,19 +87,15 @@ export default modelExtend(pageModel, {
     },
 
     * queryPurchaseOrderDetail ({ payload = {} }, { call, put }) {
-      yield put({
-        type: 'updateState',
-        payload: {
-          listItem: []
-        }
-      })
       const response = yield call(query, {
-        transNoId: payload.transNoId
+        transNoId: payload.transNoId,
+        type: 'all'
       })
       if (response.success && response.data) {
         yield put({
-          type: 'updateState',
+          type: 'changeTotalData',
           payload: {
+            header: payload.header,
             listItem: response.data.map((item, index) => ({
               ...item,
               no: index + 1
@@ -105,6 +105,53 @@ export default modelExtend(pageModel, {
       } else {
         throw response
       }
+    },
+
+    * receive ({ payload = {} }, { call, put }) {
+      const response = yield call(edit, payload)
+      if (response.success) {
+        yield put({
+          type: 'queryPurchaseOrder',
+          payload: {
+            id: payload.id
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditVisible: false,
+            modalEditItem: {}
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * changeTotalData ({ payload = {} }, { put }) {
+      const { listItem, header } = payload
+      let ppnType = header.taxType
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.receivedQty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const dataProduct = listItem
+      for (let key = 0; key < dataProduct.length; key += 1) {
+        const discItem = ((((dataProduct[key].receivedQty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
+        const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
+        if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
+          dataProduct[key].deliveryFee = dataProduct[key].portion * header.deliveryFee
+        } else {
+          dataProduct[key].deliveryFee = 0
+        }
+        dataProduct[key].DPP = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
+        dataProduct[key].PPN = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (dataProduct[key].DPP * getDenominatorPPNExclude()) : 0))
+        dataProduct[key].total = parseFloat(dataProduct[key].DPP + dataProduct[key].PPN)
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: dataProduct
+        }
+      })
     },
 
     * queryHeader (payload, { call, put }) {
@@ -167,7 +214,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload.data)
+      const response = yield call(add, {
+        transNoId: payload.transNoId
+      })
       if (response.success) {
         success()
         yield put({

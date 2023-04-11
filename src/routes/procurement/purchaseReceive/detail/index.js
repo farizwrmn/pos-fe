@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
+import ModalEdit from './ModalEdit'
 
 const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
-  const { modalType, listItem, currentItem } = purchaseReceive
+  const { modalEditVisible, modalEditItem, modalType, listItem, currentItem } = purchaseReceive
   const { user, storeInfo } = app
 
   const listItemProps = {
@@ -15,7 +16,16 @@ const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
     item: currentItem,
     loading: loading.effects['purchaseReceive/queryRequisitionDetail']
       || loading.effects['purchaseReceive/add']
-      || loading.effects['purchaseReceive/createPurchaseOrder']
+      || loading.effects['purchaseReceive/createPurchaseOrder'],
+    onModalVisible (modalEditItem) {
+      dispatch({
+        type: 'purchaseReceive/updateState',
+        payload: {
+          modalEditItem,
+          modalEditVisible: true
+        }
+      })
+    }
   }
 
   const printProps = {
@@ -32,14 +42,12 @@ const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     loading: loading.effects['purchaseReceive/add']
       || loading.effects['purchaseReceive/createPurchaseOrder'],
-    onSubmit (transNo, data) {
+    onSubmit (reset) {
       dispatch({
         type: 'purchaseReceive/add',
         payload: {
-          transId: currentItem.id,
-          supplierId: currentItem.supplierId,
-          transNo,
-          data
+          transNoId: currentItem.id,
+          reset
         }
       })
     },
@@ -60,9 +68,45 @@ const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
     }
   }
 
+  const modalEditProps = {
+    visible: modalEditVisible,
+    loading,
+    currentItem,
+    item: currentItem,
+    currentItemList: modalEditItem,
+    onOk (data) {
+      dispatch({
+        type: 'purchaseReceive/receive',
+        payload: {
+          id: currentItem.id,
+          productId: data.productId,
+          receivedQty: data.receivedQty
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseReceive/updateState',
+        payload: {
+          modalEditItem: {},
+          modalEditVisible: false
+        }
+      })
+    },
+    onDeleteItem (item) {
+      dispatch({
+        type: 'purchaseOrder/deleteItem',
+        payload: {
+          item
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Form {...formProps} />
+      {modalEditVisible && <ModalEdit {...modalEditProps} />}
     </div>
   )
 }

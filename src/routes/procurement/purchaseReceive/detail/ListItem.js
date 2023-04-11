@@ -5,6 +5,7 @@ const ListItem = ({
   listItem,
   loading,
   item,
+  onModalVisible,
   ...otherProps
 }) => {
   const columns = [
@@ -12,7 +13,8 @@ const ListItem = ({
       title: 'No',
       dataIndex: 'no',
       key: 'no',
-      width: '50px'
+      width: '50px',
+      render: (text, record) => <div style={{ color: record.qty !== record.receivedQty ? 'red' : 'initial' }}>{(text || '').toLocaleString()}</div>
     },
     {
       title: 'Product',
@@ -21,7 +23,7 @@ const ListItem = ({
       width: '300px',
       render: (text, record) => {
         return (
-          <div>
+          <div style={{ color: record.qty !== record.receivedQty ? 'red' : 'initial' }}>
             <div><b>{record.product.productCode}</b>{` ${record.product.productName}`}</div>
             <div>D: {record.product.dimension} P: {record.product.dimensionPack} B: {record.product.dimensionBox}</div>
           </div>
@@ -33,20 +35,20 @@ const ListItem = ({
       dataIndex: 'qty',
       key: 'qty',
       width: '100px',
-      render: text => (text || '').toLocaleString()
+      render: (text, record) => <div style={{ color: record.qty !== record.receivedQty ? 'red' : 'initial' }}>{(text || '').toLocaleString()}</div>
     },
     {
       title: 'Received',
       dataIndex: 'receivedQty',
       key: 'receivedQty',
       width: '100px',
-      render: text => (text || '').toLocaleString()
+      render: (text, record) => <div style={{ color: record.qty !== record.receivedQty ? 'red' : 'initial' }}>{(text || '').toLocaleString()}</div>
     }
   ]
 
   return (
     <div>
-      <div><h1>{item.supplierName} Items</h1></div>
+      <div><h1>Items</h1></div>
       <div>
         <Table
           {...otherProps}
@@ -55,6 +57,7 @@ const ListItem = ({
           columns={columns}
           scroll={{ x: 1000 }}
           simple
+          onRowClick={record => onModalVisible(record)}
           rowKey={record => record.id}
           footer={() => (
             <div style={{ textAlign: 'right' }}>
@@ -62,8 +65,12 @@ const ListItem = ({
                 return prev + next.qty
               }, 0).toLocaleString()}</div>
               <div>Total: Rp {listItem.reduce((prev, next) => {
-                return prev + (next.total)
+                return prev + next.total
               }, 0).toLocaleString()}</div>
+              <div>Delivery Fee: Rp {(item.deliveryFee || 0).toLocaleString()}</div>
+              <div>Total: Rp {(listItem.reduce((prev, next) => {
+                return prev + next.total
+              }, 0) + item.deliveryFee).toLocaleString()}</div>
             </div>)
           }
         />
