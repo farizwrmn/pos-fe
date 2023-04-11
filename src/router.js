@@ -1556,6 +1556,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/bankentry'))
               registerModel(app, require('./models/accounts/autorecon'))
               registerModel(app, require('./models/accounts/accountRule'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/bank'))
               cb(null, require('./routes/accounts/autorecon'))
             }, 'finance-bank-auto-recon')
           }

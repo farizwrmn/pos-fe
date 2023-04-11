@@ -3,6 +3,7 @@ import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import { add as importCsv, autoRecon } from 'services/payment/paymentValidationImport'
 import { query, queryDetail, queryAdd, queryResolve, queryAll } from 'services/payment/paymentValidationConflict'
+import { query as queryBankMerchant, add as addMerchant, edit as editMerchant } from 'services/payment/paymentValidationImportBank'
 import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { pageModel } from './../common'
@@ -15,6 +16,7 @@ export default modelExtend(pageModel, {
     modalVisible: false,
     resolveModalVisible: false,
     conflictModalVisible: false,
+    BankMerchantModalVisible: false,
     formModalVisible: false,
     pagination: {
       pageSize: 15,
@@ -25,6 +27,8 @@ export default modelExtend(pageModel, {
     ledgerEntry: [],
     currentLedgerEntry: {},
     list: [],
+    listBankMerchant: [],
+    currentBankMerchant: [],
     conflictedCSV: [],
     selectedCsvRowKeys: [],
     conflictedPayment: [],
@@ -67,6 +71,16 @@ export default modelExtend(pageModel, {
               }
             })
           }
+          if (activeKey === '2') {
+            dispatch({
+              type: 'queryBankMerchant',
+              payload: {
+                page: page || 1,
+                pageSize: pageSize || 15,
+                q
+              }
+            })
+          }
           if (activeKey) {
             dispatch({
               type: 'updateState',
@@ -88,6 +102,25 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list: response.data,
+            pagination: {
+              pageSize: 15,
+              current: Number(payload.page),
+              total: Number(response.meta.count),
+              simple: true
+            }
+          }
+        })
+      } else {
+        message.error(`Failed to get data: ${response.message}`)
+      }
+    },
+    * queryBankMerchant ({ payload = {} }, { call, put }) {
+      const response = yield call(queryBankMerchant, payload)
+      if (response && response.success && response.meta && response.data) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listBankMerchant: response.data,
             pagination: {
               pageSize: 15,
               current: Number(payload.page),
@@ -207,6 +240,54 @@ export default modelExtend(pageModel, {
           type: 'queryDetail',
           payload: {
             id: payload.paymentConflict.id
+          }
+        })
+        message.success('Berhasil')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * addMerchant ({ payload = {} }, { call, put }) {
+      const response = yield call(addMerchant, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            BankMerchantModalVisible: false
+          }
+        })
+        const { location } = payload
+        const { query } = location
+        const { page = 1, pageSize = 15 } = query
+        yield put({
+          type: 'queryBankMerchant',
+          payload: {
+            page,
+            pageSize
+          }
+        })
+        message.success('Berhasil')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * editMerchant ({ payload = {} }, { call, put }) {
+      const response = yield call(editMerchant, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            BankMerchantModalVisible: false
+          }
+        })
+        const { location } = payload
+        const { query } = location
+        const { page = 1, pageSize = 15 } = query
+        yield put({
+          type: 'queryBankMerchant',
+          payload: {
+            page,
+            pageSize
           }
         })
         message.success('Berhasil')

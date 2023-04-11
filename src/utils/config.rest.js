@@ -109,6 +109,7 @@ module.exports = {
     mobileBooking: '/mobile/booking',
     paymentOpts: '/payment',
     paymentValidationImport: '/payment-validation-import',
+    paymentValidationImportBank: '/payment-validation-import-bank',
     paymentValidationConflict: '/payment-validation-conflict',
     paymentMachine: '/payment-machine',
     paymentCost: '/payment-cost',

@@ -38,7 +38,8 @@ export default modelExtend(pageModel, {
         const match = pathToRegexp('/master/paymentoption/cost/:id').exec(location.pathname)
         if (match
           || location.pathname === '/marketing/promo'
-          || location.pathname === '/bank-entry') {
+          || location.pathname === '/bank-entry'
+          || (location.pathname === '/auto-recon' && location.query.activeKey === '2')) {
           dispatch({
             type: 'query',
             payload: {

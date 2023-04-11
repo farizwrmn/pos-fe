@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Dropdown, Icon, Menu, Row, Tabs } from 'antd'
+import { Button, Col, Dropdown, Icon, Menu, Row, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import Form from './Form/index'
 import FormImport from './Form/Import'
@@ -9,14 +9,17 @@ import List from './List'
 import FormSearch from './Form/Search'
 import FormConflicted from './Form/Conflicted'
 import ModalPrint from './Print/ModalPrint'
+import BankMerchant from './BankMerchant'
 
 const TabPane = Tabs.TabPane
 
 const AutoReconciliation = ({
+  bank,
   loading,
   accountRule,
   dispatch,
   autorecon,
+  store,
   location,
   app
 }) => {
@@ -48,7 +51,8 @@ const AutoReconciliation = ({
       pathname,
       query: {
         ...query,
-        activeKey: key
+        activeKey: key,
+        page: 1
       }
     }))
   }
@@ -265,39 +269,55 @@ const AutoReconciliation = ({
     }
   }
 
+  const bankMerchantProps = {
+    loading,
+    dispatch,
+    autorecon,
+    store,
+    bank,
+    location
+  }
+
   return (
     <div className="content-inner">
       {showPDFModal && (
         <ModalPrint {...modalPrintProps} />
       )}
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={moreButtonTab}>
-        <TabPane key="0" tab="Auto Reconcile">
-          <FormImport {...formImportProps} />
-          <Row>
-            <Form {...formProps} />
-          </Row>
-          {conflictedCSV && conflictedPayment && conflictedCSV.length > 0 && conflictedPayment.length > 0 && (
+      <Col span={24}>
+        <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={moreButtonTab}>
+          <TabPane key="0" tab="Auto Reconcile">
+            <FormImport {...formImportProps} />
             <Row>
-              <FormConflicted {...formConflictedProps} />
+              <Form {...formProps} />
             </Row>
-          )}
-          <Row>
-            <ConflictedList {...conflictedListProps} />
-          </Row>
-        </TabPane>
-        <TabPane key="1" tab="List">
-          <FormSearch {...formSearchProps} />
-          <List {...listProps} />
-        </TabPane>
-      </Tabs>
+            {conflictedCSV && conflictedPayment && conflictedCSV.length > 0 && conflictedPayment.length > 0 && (
+              <Row>
+                <FormConflicted {...formConflictedProps} />
+              </Row>
+            )}
+            <Row>
+              <ConflictedList {...conflictedListProps} />
+            </Row>
+          </TabPane>
+          <TabPane key="1" tab="List">
+            <FormSearch {...formSearchProps} />
+            <List {...listProps} />
+          </TabPane>
+          <TabPane key="2" tab="Bank Merchant">
+            <BankMerchant {...bankMerchantProps} />
+          </TabPane>
+        </Tabs>
+      </Col>
     </div>
   )
 }
 
 export default connect(({
+  store,
+  bank,
   accountRule,
   autorecon,
   loading,
   pos,
   app
-}) => ({ loading, pos, autorecon, accountRule, app }))(AutoReconciliation)
+}) => ({ loading, pos, autorecon, bank, accountRule, app, store }))(AutoReconciliation)
