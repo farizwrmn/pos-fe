@@ -307,14 +307,25 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'changeTotalData',
         payload: {
-          header: payload.header,
+          header: payload.data,
           listItem: payload.listItem
         }
       })
       const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
       const response = yield call(add, {
-        header: payload.header,
-        detail: listItem
+        header: payload.data,
+        detail: listItem.map(item => ({
+          productId: item.productId,
+          qty: item.qty,
+          purchasePrice: item.purchasePrice,
+          discPercent: item.discPercent,
+          discNominal: item.discNominal,
+          deliveryFee: item.deliveryFee,
+          DPP: item.DPP,
+          PPN: item.PPN,
+          portion: item.portion,
+          total: item.total
+        }))
       })
       if (response.success) {
         success()
@@ -322,11 +333,14 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            listItem: [],
+            modalEditHeader: {},
+            modalEditItem: {}
           }
         })
         yield put({
-          type: 'query'
+          type: 'querySequence'
         })
         if (payload.reset) {
           payload.reset()

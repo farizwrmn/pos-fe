@@ -145,13 +145,16 @@ class TransferModal extends Component {
                   initialValue: currentItemList.discPercent || 0,
                   rules: [
                     {
-                      required: true
+                      required: true,
+                      pattern: /^([0-9]{0,3})$/i,
+                      message: 'Invalid discount'
                     }
                   ]
                 })(
                   <InputNumber
                     min={0}
                     max={100}
+                    step={1}
                     onKeyDown={(e) => {
                       if (e.keyCode === 13) {
                         handleOk()

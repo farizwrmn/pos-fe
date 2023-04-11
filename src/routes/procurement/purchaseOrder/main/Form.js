@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import { getVATPercentage } from 'utils/tax'
+import { lstorage } from 'utils'
 import ListItem from './ListItem'
 
 const FormItem = Form.Item
@@ -65,7 +66,12 @@ const FormCounter = ({
         return
       }
       const data = {
+        ...item,
+        storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
+      }
+      if (data.expectedArrival) {
+        data.expectedArrival = moment(data.expectedArrival).format('YYYY-MM-DD')
       }
       Modal.confirm({
         title: 'Do you want to save this item?',
@@ -160,11 +166,13 @@ const FormCounter = ({
               initialValue: item.discInvoicePercent || 0,
               rules: [
                 {
-                  required: true
+                  required: true,
+                  pattern: /^([0-9]{0,3})$/i,
+                  message: 'Invalid discount'
                 }
               ]
             })(
-              <InputNumber onBlur={onChangeTotal} min={0} max={100} style={{ width: '100%' }} />
+              <InputNumber onBlur={onChangeTotal} min={0} max={100} step={1} style={{ width: '100%' }} />
             )}
           </FormItem>
           <FormItem label="Disc (N)" hasFeedback {...formItemLayout}>
