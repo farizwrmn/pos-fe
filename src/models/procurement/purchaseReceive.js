@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { querySupplier, add, edit, remove } from 'services/procurement/purchaseReceive'
+import pathToRegexp from 'path-to-regexp'
+import { querySupplier, query, queryId, add, edit, remove } from 'services/procurement/purchaseReceive'
 import { query as getPurchaseOrder } from 'services/procurement/purchaseOrder'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
@@ -37,11 +38,74 @@ export default modelExtend(pageModel, {
             type: 'queryHeader'
           })
         }
+        const match = pathToRegexp('/transaction/procurement/receive/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryPurchaseOrder',
+            payload: {
+              id: match[1]
+            }
+          })
+        }
       })
     }
   },
 
   effects: {
+
+    * queryPurchaseOrder ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: [],
+          listItem: []
+        }
+      })
+      const response = yield call(queryId, {
+        id: payload.id
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: response.data
+          }
+        })
+        yield put({
+          type: 'queryPurchaseOrderDetail',
+          payload: {
+            transNoId: payload.id
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * queryPurchaseOrderDetail ({ payload = {} }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: []
+        }
+      })
+      const response = yield call(query, {
+        transNoId: payload.transNoId
+      })
+      if (response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: response.data.map((item, index) => ({
+              ...item,
+              no: index + 1
+            }))
+          }
+        })
+      } else {
+        throw response
+      }
+    },
 
     * queryHeader (payload, { call, put }) {
       yield put({
