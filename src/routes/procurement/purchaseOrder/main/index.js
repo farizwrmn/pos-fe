@@ -93,7 +93,10 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
       })
     },
     onGetProduct () {
-      dispatch({ type: 'purchaseOrder/queryProduct', payload: {} })
+      dispatch({ type: 'purchaseOrder/showModalProduct' })
+    },
+    onProductAdd () {
+      dispatch({ type: 'purchaseOrder/showModalAddProduct' })
     },
     onGetQuotation () {
       dispatch({ type: 'purchaseOrder/queryCount', payload: {} })
