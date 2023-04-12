@@ -19,7 +19,7 @@ const FormCounter = ({
   }
   return (
     <Form layout="horizontal">
-      {listTrans ? (
+      {listTrans && listTrans.length > 0 ? (
         <Collapse accordion onChange={onGetDetail}>
           {listTrans.map(item => (
             <Panel header={`${item.supplierName} Count: ${item.countSupplier}`} key={item.supplierId}>
