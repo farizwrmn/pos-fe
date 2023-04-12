@@ -3,7 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
-import { Form, Input, Row, Col, message } from 'antd'
+import { Form, Input, Modal, Button, Row, Col, message } from 'antd'
 import ListItem from './ListItem'
 import PrintXLS from './PrintXLS'
 
@@ -108,6 +108,23 @@ const FormCounter = ({
     }
   }
 
+  const handleSkip = () => {
+    if (listItemProps
+      && listItemProps.dataSource
+      && listItemProps.dataSource.length > 0) {
+      Modal.confirm({
+        title: 'Do you want to skil this quotation?',
+        onOk () {
+          onSubmit(item.transNo, listItemProps.dataSource.map(item => ({
+            productCode: item.productCode,
+            qty: item.qty,
+            purchasePrice: item.purchasePrice
+          })))
+        }
+      })
+    }
+  }
+
   const uploadProps = {
     name: 'file',
     processData: false
@@ -159,6 +176,7 @@ const FormCounter = ({
         />
       </span> : null}
       <ListItem {...listItemProps} />
+      {item && item.hasRFQ ? <Button type="primary" onClick={() => handleSkip()} style={{ float: 'right', marginTop: '10px' }}>Skip</Button> : null}
     </Form>
   )
 }
