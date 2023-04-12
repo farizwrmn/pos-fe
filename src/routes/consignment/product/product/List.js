@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { DropOption } from 'components'
 import { IMAGEURL, CONSIGNMENTIMAGEURL } from 'utils/config.company'
+import { currencyFormatter } from 'utils/string'
 
 const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
   const handleMenuClick = (record, event) => {
@@ -55,6 +56,13 @@ const List = ({ ...tableProps, showConfirm, onFilterChange }) => {
       dataIndex: 'product_name',
       key: 'product_name',
       width: 150
+    },
+    {
+      title: 'Harga Jual',
+      dataIndex: 'stock',
+      key: 'stock',
+      width: 150,
+      render: value => (value ? currencyFormatter(Number(value.price)) : currencyFormatter(0))
     },
     {
       title: 'Barcode',
