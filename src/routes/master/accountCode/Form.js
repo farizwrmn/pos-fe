@@ -229,7 +229,7 @@ const FormCounter = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^[a-z0-9.-/]{1,9}$/i
+                  pattern: /^[a-z0-9.-/]{1,12}$/i
                 }
               ]
             })(<Input maxLength={50} autoFocus disabled={modalType === 'edit'} />)}
