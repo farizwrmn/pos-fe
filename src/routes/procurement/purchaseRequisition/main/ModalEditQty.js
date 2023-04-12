@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, message, Input, Form, Button, Table, InputNumber } from 'antd'
+import { Modal, Input, Form, Button, Table, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 
@@ -29,13 +29,69 @@ class ModalEditQty extends Component {
     const {
       listStock,
       listPurchaseOrder,
+      listPurchaseHistory,
       loading,
       item,
-      form: { getFieldsValue, getFieldValue, validateFields, getFieldDecorator },
+      form: { getFieldsValue, validateFields, getFieldDecorator },
       onChangeQty,
       onCancel,
       ...modalProps
     } = this.props
+
+    const columnsPurchase = [
+      {
+        title: 'No',
+        dataIndex: 'transNo',
+        key: 'transNo'
+      },
+      {
+        title: 'Date',
+        dataIndex: 'transDate',
+        key: 'transDate'
+      },
+      {
+        title: 'Qty',
+        dataIndex: 'qty',
+        key: 'qty',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Price',
+        dataIndex: 'purchasePrice',
+        key: 'purchasePrice',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Disc (%)',
+        dataIndex: 'discPercent',
+        key: 'discPercent',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Disc (N)',
+        dataIndex: 'discNominal',
+        key: 'discNominal',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Inv.Disc (%)',
+        dataIndex: 'discInvoicePercent',
+        key: 'discInvoicePercent',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Inv.Disc (N)',
+        dataIndex: 'discInvoiceNominal',
+        key: 'discInvoiceNominal',
+        render: text => (text || 0).toLocaleString()
+      },
+      {
+        title: 'Delivery Fee',
+        dataIndex: 'deliveryFee',
+        key: 'deliveryFee',
+        render: (text, record) => (((text || 0) * (record.portion || 0)) / (record.qty || 1)).toLocaleString()
+      }
+    ]
 
     const columns = [
       {
@@ -121,13 +177,6 @@ class ModalEditQty extends Component {
         if (record) {
           data.qty = record.qty
         }
-        if (data.qty < item.recommendToBuy
-          && (!data.notFulfilledQtyMemo
-            || (data.notFulfilledQtyMemo
-              && data.notFulfilledQtyMemo.length < 10))) {
-          message.error('Why buying less than recommended is required')
-          return
-        }
         onChangeQty({
           qty: data.qty,
           notFulfilledQtyMemo: data.notFulfilledQtyMemo
@@ -171,7 +220,7 @@ class ModalEditQty extends Component {
             initialValue: item.notFulfilledQtyMemo,
             rules: [
               {
-                required: getFieldValue('qty') < item.recommendToBuy,
+                required: false,
                 pattern: /^[a-z0-9/\n _-]{10,100}$/i,
                 message: 'At least 10 character'
               }
@@ -183,6 +232,7 @@ class ModalEditQty extends Component {
           )}
         </FormItem>
         <br />
+        <h1>Purchase Order</h1>
         <Table
           pagination={false}
           bordered
@@ -195,6 +245,18 @@ class ModalEditQty extends Component {
             qty: record.qty,
             notFulfilledQtyMemo: record.notFulfilledQtyMemo
           })}
+        />
+        <br />
+        <h1>Purchase Invoice</h1>
+        <Table
+          pagination={false}
+          bordered
+          columns={columnsPurchase}
+          simple
+          loading={loading}
+          rowKey={record => record.id}
+          dataSource={listPurchaseHistory}
+          onRowClick={record => onSubmit(record)}
         />
         <br />
         <Table

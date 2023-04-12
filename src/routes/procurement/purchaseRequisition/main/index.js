@@ -220,6 +220,7 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
     title: `Edit ${currentItemEdit && currentItemEdit.product ? currentItemEdit.product.productName : ''} from ${currentItemEdit && currentItemEdit.product ? currentItemEdit.desiredSupplier.supplierName : ''}`,
     listStock,
     listPurchaseOrder,
+    listPurchaseHistory,
     visible: modalEditQtyVisible,
     item: currentItemEdit,
     loading: loading.effects['purchaseRequisition/showModalEditQty']

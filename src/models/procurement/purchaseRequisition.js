@@ -237,7 +237,9 @@ export default modelExtend(pageModel, {
           modalEditSupplierVisible: false,
           listItem: listItem.map((item) => {
             if (item.id === currentItemEdit.id) {
-              item.supplierChangeMemo = payload.supplier.supplierChangeMemo
+              if (payload.supplier) {
+                item.supplierChangeMemo = payload.supplier.supplierChangeMemo
+              }
               item.storeSupplier = {
                 id: supplier.id,
                 supplierCode: supplier.supplierCode,
@@ -467,7 +469,23 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * showModalEditCost ({ payload = {} }, { call, put }) {
+    * showModalEditCost ({ payload = {} }, { select, call, put }) {
+      const listItem = yield select(({ purchaseRequisition }) => purchaseRequisition.listItem)
+      if (listItem && listItem.length > 0) {
+        const filteredItem = listItem.filter((filtered) => {
+          if (filtered.storeSupplier && payload.currentItemEdit && payload.currentItemEdit.storeSupplier) {
+            if (filtered.storeSupplier.supplierId === payload.currentItemEdit.storeSupplier.supplierId
+              && filtered.productId !== payload.currentItemEdit.productId) {
+              return true
+            }
+            return false
+          }
+          return false
+        })
+        if (filteredItem && filteredItem.length > 0) {
+          payload.currentItemEdit.changingCostMemoOther = filteredItem[0].changingCostMemo
+        }
+      }
       yield put({
         type: 'updateState',
         payload: {
@@ -510,8 +528,18 @@ export default modelExtend(pageModel, {
             listStock: response.data
           }
         })
-      } else {
-        throw response
+      }
+      const responsePurchase = yield call(queryPurchaseHistory, {
+        productId: payload.currentItemEdit.productId,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (responsePurchase && responsePurchase.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseHistory: responsePurchase.data
+          }
+        })
       }
       const responseStore = yield call(queryPurchaseOrderProduct, {
         productId: payload.currentItemEdit.productId,
@@ -525,7 +553,7 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        throw response
+        throw responseStore
       }
     },
 
