@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { request, config, crypt, lstorage } from '../utils'
 // const { apiURL, apiPrefix, api } = config
 const { pos, posdetail } = config.api
@@ -98,7 +99,7 @@ export async function queryDetailConsignment (params) {
 
 export async function create (params) {
   const apiHeaderToken = crypt.apiheader()
-  const url = `${pos}/code/${encodeURIComponent(params.transNo)}`
+  const url = `${pos}/code/${encodeURIComponent(params.transNo)}?uuid=${uuidv4()}`
   return request({
     url,
     method: 'post',

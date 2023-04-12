@@ -133,7 +133,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select disabled={loading}>
+              <Select disabled={loading || formType === 'edit'}>
                 {categoryOption}
               </Select>
             )}
@@ -142,7 +142,7 @@ const FormCounter = ({
             {getFieldDecorator('vendorCode', {
               initialValue: formType === 'add' ? (
                 `${getFieldsValue().type && getFieldsValue().type === 2 ? 'F' : 'V'}${String(lastVendor.id + 1).padStart(5, '0')}`
-              ) : `${selectedVendor.category === 2 ? 'F' : 'V'}${String(selectedVendor.id).padStart(5, '0')}`,
+              ) : selectedVendor.vendor_code,
               rules: [
                 {
                   required: true
