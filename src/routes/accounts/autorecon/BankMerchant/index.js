@@ -1,6 +1,23 @@
 import { Button, Col, Row, Table } from 'antd'
 import { routerRedux } from 'dva/router'
 import ModalForm from './ModalForm'
+import Filter from './Filter'
+
+const columnProps = {
+  xs: 24,
+  sm: 24,
+  md: 24,
+  lg: 16,
+  xl: 12
+}
+
+const filterColumnProps = {
+  xs: 24,
+  sm: 24,
+  md: 8,
+  lg: 6,
+  xl: 6
+}
 
 const BankMerchant = ({ dispatch, loading, autorecon, store, bank, location }) => {
   const { listBankMerchant, currentBankMerchant, pagination, BankMerchantModalVisible } = autorecon
@@ -49,14 +66,6 @@ const BankMerchant = ({ dispatch, loading, autorecon, store, bank, location }) =
       render: (_, record) => <div style={{ textAlign: 'center' }}><Button type="primary" size="small" onClick={() => editBankMerchant(record.id)}>Edit</Button></div>
     }
   ]
-
-  const columnProps = {
-    xs: 24,
-    sm: 24,
-    md: 24,
-    lg: 16,
-    xl: 12
-  }
 
   const showModalForm = () => {
     dispatch({
@@ -115,11 +124,30 @@ const BankMerchant = ({ dispatch, loading, autorecon, store, bank, location }) =
     }
   }
 
+  const filterProps = {
+    handleSearch (value) {
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: 1,
+          q: value
+        }
+      }))
+    }
+  }
+
   return (
     <div>
       <ModalForm {...modalFormProps} />
-      <Row style={{ marginBottom: '10px' }}>
+      <Row style={{ marginBottom: '10px' }} type="flex">
         <Button icon="plus-circle-o" type="primary" onClick={() => showModalForm()}>New</Button>
+      </Row>
+      <Row style={{ marginBottom: '10px' }}>
+        <Col {...filterColumnProps} style={{ alignSelf: 'flex-end' }}>
+          <Filter {...filterProps} />
+        </Col>
       </Row>
       <Row>
         <Col {...columnProps}>
