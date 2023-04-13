@@ -8,7 +8,7 @@ import ModalProduct from './ModalProduct'
 import ModalEdit from './ModalEdit'
 import ModalAddProduct from './ModalAddProduct'
 
-const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loading, dispatch, location }) => {
+const Counter = ({ purchaseSafetyStock, purchaseOrder, productbrand, productcategory, purchase, loading, dispatch, location }) => {
   const {
     listQuotationTrans,
     listQuotationSupplier,
@@ -20,6 +20,11 @@ const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loadi
     modalAddProductVisible,
     modalProductVisible
   } = purchaseOrder
+
+  const {
+    listStore,
+    listDistributionCenter
+  } = purchaseSafetyStock
 
   const { listCategory } = productcategory
 
@@ -82,6 +87,7 @@ const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loadi
 
   const formProps = {
     item: currentItem,
+    listStore: listDistributionCenter.concat(listStore),
     listSupplier,
     listItemProps,
     listItem,
@@ -361,6 +367,7 @@ const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loadi
 }
 
 Counter.propTypes = {
+  purchaseSafetyStock: PropTypes.object,
   purchaseOrder: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -368,4 +375,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchaseOrder, productcategory, productbrand, purchase, loading, app }) => ({ purchaseOrder, productcategory, productbrand, purchase, loading, app }))(Counter)
+export default connect(({ purchaseSafetyStock, purchaseOrder, productcategory, productbrand, purchase, loading, app }) => ({ purchaseSafetyStock, purchaseOrder, productcategory, productbrand, purchase, loading, app }))(Counter)

@@ -34,7 +34,8 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/transaction/procurement/safety'
-          || pathname === '/transaction/procurement/requisition') {
+          || pathname === '/transaction/procurement/requisition'
+          || pathname === '/transaction/procurement/order') {
           dispatch({
             type: 'getDistributionCenterList',
             payload: {
@@ -65,7 +66,10 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listDistributionCenter: [response.data[0]],
+            listDistributionCenter: [{
+              ...response.data[0],
+              sellingStore: response.data[0].dcStore
+            }],
             listStore: response.data
           }
         })

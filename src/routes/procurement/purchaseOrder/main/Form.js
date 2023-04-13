@@ -40,6 +40,7 @@ const FormCounter = ({
   listItemProps,
   onChangeTotalData,
   listItem,
+  listStore,
   form: {
     getFieldValue,
     getFieldDecorator,
@@ -146,6 +147,10 @@ const FormCounter = ({
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
 
+  const storeData = (listStore || []).length > 0 ?
+    listStore.map(store => <Option title={`${store.sellingStore.address01}`} value={store.sellingStore.id} key={store.sellingStore.id}>{store.sellingStore.storeName}</Option>)
+    : []
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -185,6 +190,23 @@ const FormCounter = ({
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
             >
               {supplierData}
+            </Select>)}
+          </FormItem>
+          <FormItem required label="Deliver To" {...formItemLayout}>
+            {getFieldDecorator('deliveryStore', {
+              initialValue: lstorage.getCurrentUserStore(),
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              optionFilterProp="children"
+              style={{ width: '100%' }}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >
+              {storeData}
             </Select>)}
           </FormItem>
           <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
