@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import List from './ListDetail'
 
-const FormPayment = ({
+const TransDetail = ({
   dataSource,
   form: {
     resetFields
@@ -28,7 +28,7 @@ const FormPayment = ({
   )
 }
 
-FormPayment.propTypes = {
+TransDetail.propTypes = {
   form: PropTypes.object.isRequired,
   disabled: PropTypes.string,
   item: PropTypes.object,
@@ -39,4 +39,4 @@ FormPayment.propTypes = {
   button: PropTypes.string
 }
 
-export default Form.create()(FormPayment)
+export default Form.create()(TransDetail)

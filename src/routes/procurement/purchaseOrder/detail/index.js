@@ -5,18 +5,16 @@ import { routerRedux } from 'dva/router'
 import {
   Row,
   Col,
-  // Tag,
   Button
 } from 'antd'
 import TransDetail from './TransDetail'
-import FormAccounting from './FormAccounting'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
 
 
-const Detail = ({ app, journalentry, dispatch }) => {
+const Detail = ({ app, purchaseOrder, dispatch }) => {
   const { user, storeInfo } = app
-  const { listDetail, listAccounting, data } = journalentry
+  const { listDetail, data } = purchaseOrder
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -32,7 +30,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/journal-entry?activeKey=1'))
+    dispatch(routerRedux.push('/transaction/procurement/order'))
   }
 
   const formDetailProps = {
@@ -70,15 +68,6 @@ const Detail = ({ app, journalentry, dispatch }) => {
             <TransDetail {...formDetailProps} />
           </Row>
         </div>
-
-        {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-          <div className="content-inner-zero-min-height">
-            <h1>Accounting Journal</h1>
-            <Row style={{ padding: '10px', margin: '4px' }}>
-              <FormAccounting listAccounting={listAccounting} />
-            </Row>
-          </div>
-        )}
       </Col>
     </Row>
   </div>)
@@ -86,7 +75,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
 
 Detail.propTypes = {
   app: PropTypes.object,
-  journalentry: PropTypes.object
+  purchaseOrder: PropTypes.object
 }
 
-export default connect(({ app, journalentry }) => ({ app, journalentry }))(Detail)
+export default connect(({ app, purchaseOrder }) => ({ app, purchaseOrder }))(Detail)

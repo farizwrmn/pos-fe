@@ -4,6 +4,7 @@ import { lstorage } from 'utils'
 import { message } from 'antd'
 import { query as querySequence } from 'services/sequence'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
+import pathToRegexp from 'path-to-regexp'
 import {
   queryCount,
   querySupplierCount,
@@ -11,7 +12,8 @@ import {
   query,
   add,
   edit,
-  remove
+  remove,
+  queryById
 } from 'services/procurement/purchaseOrder'
 import { query as queryProductCost } from 'services/product/productCost'
 import {
@@ -61,11 +63,36 @@ export default modelExtend(pageModel, {
           })
           dispatch({ type: 'querySequence' })
         }
+        const match = pathToRegexp('/transaction/procurement/order/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
       })
     }
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryById, payload)
+      if (response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: response.data,
+            listDetail: response.detail
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * querySequence (payload, { select, call, put }) {
       const invoice = {
         seqCode: 'PO',
@@ -509,6 +536,7 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
+        yield put(routerRedux.push(`/transaction/procurement/order/${response.data.id}`))
       } else {
         throw response
       }
