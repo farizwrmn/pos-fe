@@ -73,6 +73,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryLov ({ payload = {} }, { call, put }) {
+      const storeId = lstorage.getCurrentUserStore()
       const cachedCost = lstorage.getCost()
       if (cachedCost && cachedCost[0]) {
         yield put({
@@ -82,7 +83,7 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        const data = yield call(queryLov, payload)
+        const data = yield call(queryLov, { ...payload, storeId })
         if (data.success) {
           lstorage.setCost(data.data)
           yield put({
