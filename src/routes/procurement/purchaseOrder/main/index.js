@@ -27,7 +27,10 @@ const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loadi
 
   const {
     listSupplier,
-    listPurchaseLatestDetail
+    listPurchaseLatestDetail,
+    searchText,
+    listProduct,
+    pagination
   } = purchase
 
   const listItemProps = {
@@ -110,6 +113,12 @@ const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loadi
           }
         })
       }
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          active: 1
+        }
+      })
       dispatch({
         type: 'purchaseOrder/updateState',
         payload: {
@@ -260,10 +269,67 @@ const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loadi
   }
 
   const modalProductProps = {
-    listCategory,
-    listBrand,
     visible: modalProductVisible,
-    loading,
+    searchText,
+    dataSource: listProduct,
+    loading: loading.effects['purchase/getProducts'],
+    loadingProduct: loading,
+    location,
+    pagination,
+    handleChange (e) {
+      const { value } = e.target
+
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchText: value
+        }
+      })
+    },
+    handleSearch () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: searchText
+        }
+      })
+    },
+    handleReset () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: null
+        }
+      })
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChange (e) {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: e.current,
+          pageSize: e.pageSize,
+          active: 1,
+          q: searchText === '' ? null : searchText
+        }
+      })
+    },
+    onChooseItem (record) {
+      console.log('record', record)
+      dispatch({
+        type: 'purchaseOrder/addItem',
+        payload: record
+      })
+    },
     onOk (data, reset) {
       dispatch({
         type: 'purchaseOrder/addStagingProduct',

@@ -13,6 +13,7 @@ import {
   edit,
   remove
 } from 'services/procurement/purchaseOrder'
+import { query as queryProductCost } from 'services/product/productCost'
 import {
   add as addStagingProduct
 } from 'services/procurement/purchaseStaging'
@@ -216,6 +217,77 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * addItem ({ payload = {} }, { select, call, put }) {
+      const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
+      const modalEditHeader = yield select(({ purchaseOrder }) => purchaseOrder.modalEditHeader)
+      const newListItem = [
+        ...listItem
+      ]
+      const productCost = yield call(queryProductCost, {
+        productId: payload.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (productCost && productCost.success && productCost.data && productCost.data[0]) {
+        const item = productCost.data[0]
+        payload.costPrice = item.costPrice
+      }
+      newListItem.push({
+        no: newListItem.length + 1,
+        productId: payload.id,
+        productCode: payload.productCode,
+        productName: payload.productName,
+        dimension: payload.dimension,
+        dimensionBox: payload.dimensionBox,
+        dimensionPack: payload.dimensionPack,
+        qty: 1,
+        purchasePrice: payload.costPrice,
+        discPercent: 0,
+        discNominal: 0,
+        deliveryFee: 0,
+        portion: 0,
+        DPP: payload.costPrice,
+        PPN: 0,
+        total: payload.costPrice
+      })
+      yield put({
+        type: 'changeTotalData',
+        payload: {
+          header: modalEditHeader,
+          listItem: newListItem
+        }
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
+
+      const filteredItem = newListItem.filter(filtered => filtered.productId === payload.id)
+      if (filteredItem && filteredItem[0]) {
+        const record = filteredItem[0]
+        yield put({
+          type: 'purchaseOrder/updateState',
+          payload: {
+            currentItem: {
+              ...currentItem,
+              addProduct: true
+            },
+            modalEditItem: record,
+            modalEditVisible: true
+          }
+        })
+      }
+
+      yield put({
+        type: 'purchase/getPurchaseLatestDetail',
+        payload: {
+          productId: payload.id
+        }
+      })
+    },
+
     * chooseQuotation ({ payload = {} }, { select, call, put }) {
       const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
       const response = yield call(querySupplierDetail, {
@@ -383,17 +455,30 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload = {} }, { select, call, put }) {
-      yield put({
-        type: 'changeTotalData',
-        payload: {
-          header: payload.data,
-          listItem: payload.listItem
-        }
-      })
       const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
+      const header = payload.data
+      let ppnType = header.taxType
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const dataProduct = [
+        ...listItem
+      ]
+      for (let key = 0; key < dataProduct.length; key += 1) {
+        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
+        const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
+        if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
+          dataProduct[key].deliveryFee = dataProduct[key].portion * header.deliveryFee
+        } else {
+          dataProduct[key].deliveryFee = 0
+        }
+        dataProduct[key].DPP = parseFloat(totalDpp / (ppnType === 'I' ? getDenominatorDppInclude() : 1))
+        dataProduct[key].PPN = parseFloat((ppnType === 'I' ? totalDpp / getDenominatorPPNInclude() : ppnType === 'S' ? (dataProduct[key].DPP * getDenominatorPPNExclude()) : 0))
+        dataProduct[key].total = parseFloat(dataProduct[key].DPP + dataProduct[key].PPN)
+      }
+
       const response = yield call(add, {
         header: payload.data,
-        detail: listItem.map(item => ({
+        detail: dataProduct.map(item => ({
           productId: item.productId,
           qty: item.qty,
           purchasePrice: item.purchasePrice,

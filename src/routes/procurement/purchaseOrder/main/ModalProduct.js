@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Button } from 'antd'
-import { formatBox, formatPack, formatDimension } from 'utils/dimension'
+import { Form, Input, Icon, Modal, Table, Button } from 'antd'
+import { getDistPriceName } from 'utils/string'
+import styles from '../../../../themes/index.less'
 
 const FormItem = Form.Item
 
-const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 14 }
-}
-
-class ModalAddProduct extends Component {
+class ModalProduct extends Component {
   componentDidMount () {
     setTimeout(() => {
       const selector = document.getElementById('productCode')
@@ -25,117 +21,105 @@ class ModalAddProduct extends Component {
     const {
       onCancel,
       onOk,
-      form: { getFieldDecorator, validateFields, getFieldsValue, getFieldValue, resetFields },
-      ...formEditProps
+      onChooseItem,
+      handleReset,
+      loadingProduct,
+      handleSearch,
+      handleChange,
+      searchText,
+      ...tableProps
     } = this.props
-    const handleOk = () => {
-      validateFields((errors) => {
-        if (errors) {
-          return
-        }
-
-        const data = {
-          ...getFieldsValue()
-        }
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onOk(data, resetFields)
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        render: text => (text || '-').toLocaleString()
+      },
+      {
+        title: 'Product Code',
+        dataIndex: 'productCode',
+        key: 'productCode'
+      }, {
+        title: 'Product Name',
+        dataIndex: 'productName',
+        key: 'productName'
+      },
+      {
+        title: 'Cost Price',
+        dataIndex: 'costPrice',
+        key: 'costPrice',
+        className: styles.alignRight,
+        render: text => (text || '-').toLocaleString()
+      },
+      {
+        title: getDistPriceName('sellPrice'),
+        dataIndex: 'sellPrice',
+        key: 'sellPrice',
+        className: styles.alignRight,
+        render: text => (text || '-').toLocaleString()
+      },
+      {
+        title: 'Qty',
+        dataIndex: 'count',
+        key: 'count',
+        className: styles.alignRight,
+        render: (text) => {
+          if (!loadingProduct.effects['pos/showProductQty']) {
+            return text || 0
           }
-        })
-      })
-    }
-    const handleCancel = () => {
-      onCancel()
-    }
-    const modalOpts = {
-      ...formEditProps,
-      onOk: handleOk
+          return <Icon type="loading" />
+        }
+      }
+    ]
+
+    const handleMenuClick = (record) => {
+      onChooseItem(record)
     }
 
     return (
       <Modal
+        width="80%"
+        height="80%"
         onCancel={onCancel}
-        {...modalOpts}
-        footer={[
-          <Button size="large" key="back" onClick={handleCancel}>Cancel</Button>,
-          <Button size="large" key="submit" type="primary" onClick={handleOk}>
-            Ok
-          </Button>
-        ]}
+        {...tableProps}
+        footer={null}
       >
-        <Form layout="horizontal">
-          <FormItem label="Product Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('productCode', {
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9/-]{3,30}$/i,
-                  message: 'a-Z & 0-9'
-                }
-              ]
-            })(<Input maxLength={30} autoFocus />)}
+        <Form layout="inline">
+          <FormItem>
+            <Input placeholder="Search Product Name"
+              value={searchText}
+              ref={input => input && input.focus()}
+              size="small"
+              onChange={e => handleChange(e)}
+              onPressEnter={handleSearch}
+              style={{ marginBottom: 16 }}
+            />
           </FormItem>
-          <FormItem label="Product Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('productName', {
-              rules: [
-                {
-                  required: true,
-                  message: 'a-Z & 0-9',
-                  pattern: /^[A-Za-z0-9-.,%'"=><$#@^&*!() _/]{3,85}$/i
-                }
-              ]
-            })(<Input maxLength={85} onChange={this.changeName} />)}
+          <FormItem>
+            <Button size="small" type="primary" onClick={handleSearch}>Search</Button>
           </FormItem>
-          <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('barCode01', {
-              initialValue: getFieldValue('productCode')
-            })(<Input />)}
-          </FormItem>
-          <FormItem label="Dimension" {...formItemLayout}>
-            {getFieldDecorator('dimension', {
-              initialValue: formatDimension(getFieldValue('productName')),
-              rules: [
-                {
-                  required: true,
-                  message: 'Required when product image is filled'
-                }
-              ]
-            })(<Input maxLength={30} />)}
-          </FormItem>
-          <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
-            {getFieldDecorator('dimensionBox', {
-              initialValue: formatBox(formatDimension(getFieldValue('productName'))),
-              rules: [
-                {
-                  required: true,
-                  pattern: /^([0-9]{1,5})$/,
-                  message: 'Required when product image is filled'
-                }
-              ]
-            })(<Input maxLength={25} />)}
-          </FormItem>
-          <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
-            {getFieldDecorator('dimensionPack', {
-              initialValue: formatPack(formatDimension(getFieldValue('productName'))),
-              rules: [
-                {
-                  required: true,
-                  pattern: /^([0-9]{1,5})$/,
-                  message: 'Required when product image is filled'
-                }
-              ]
-            })(<Input maxLength={25} />)}
+          <FormItem>
+            <Button size="small" type="primary" onClick={handleReset}>Reset</Button>
           </FormItem>
         </Form>
+
+        <Table
+          {...tableProps}
+          bordered
+          columns={columns}
+          simple
+          size="small"
+          onRowClick={_record => handleMenuClick(_record)}
+        />
       </Modal>
     )
   }
 }
 
-ModalAddProduct.propTypes = {
+ModalProduct.propTypes = {
   form: PropTypes.object.isRequired,
   onOk: PropTypes.func
 }
 
-export default Form.create()(ModalAddProduct)
+export default ModalProduct
