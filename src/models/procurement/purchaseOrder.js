@@ -13,6 +13,9 @@ import {
   edit,
   remove
 } from 'services/procurement/purchaseOrder'
+import {
+  add as addStagingProduct
+} from 'services/procurement/purchaseStaging'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -32,6 +35,8 @@ export default modelExtend(pageModel, {
     listQuotationTrans: [],
     listQuotationSupplier: [],
     modalQuotationVisible: false,
+    modalAddProductVisible: false,
+    modalProductVisible: false,
     modalEditVisible: false,
     listItem: [],
     pagination: {
@@ -140,6 +145,77 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * addStagingProduct ({ payload = {} }, { select, call, put }) {
+      const response = yield call(addStagingProduct, payload.data)
+      const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
+      const modalEditHeader = yield select(({ purchaseOrder }) => purchaseOrder.modalEditHeader)
+      const newListItem = [
+        ...listItem
+      ]
+      if (response.success && response.data) {
+        if (payload.reset) {
+          payload.reset()
+        }
+        newListItem.push({
+          no: newListItem.length + 1,
+          productId: response.data.id,
+          productCode: payload.data.productCode,
+          productName: payload.data.productName,
+          dimension: payload.data.dimension,
+          dimensionBox: payload.data.dimensionBox,
+          dimensionPack: payload.data.dimensionPack,
+          qty: 1,
+          purchasePrice: 0,
+          discPercent: 0,
+          discNominal: 0,
+          deliveryFee: 0,
+          portion: 0,
+          DPP: 0,
+          PPN: 0,
+          total: 0
+        })
+        yield put({
+          type: 'changeTotalData',
+          payload: {
+            header: modalEditHeader,
+            listItem: newListItem
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalAddProductVisible: false
+          }
+        })
+
+        const filteredItem = newListItem.filter(filtered => filtered.productId === response.data.id)
+        if (filteredItem && filteredItem[0]) {
+          const record = filteredItem[0]
+          yield put({
+            type: 'purchaseOrder/updateState',
+            payload: {
+              currentItem: {
+                ...currentItem,
+                addProduct: true
+              },
+              modalEditItem: record,
+              modalEditVisible: true
+            }
+          })
+        }
+
+        yield put({
+          type: 'purchase/getPurchaseLatestDetail',
+          payload: {
+            productId: response.data.id
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * chooseQuotation ({ payload = {} }, { select, call, put }) {
       const currentItem = yield select(({ purchaseOrder }) => purchaseOrder.currentItem)
       const response = yield call(querySupplierDetail, {
@@ -178,6 +254,10 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               listItem,
+              currentItem: {
+                ...currentItem,
+                addProduct: false
+              },
               modalQuotationVisible: false
             }
           })

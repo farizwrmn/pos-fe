@@ -10,7 +10,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-class TransferModal extends Component {
+class ModalEdit extends Component {
   componentDidMount () {
     setTimeout(() => {
       const selector = document.getElementById('qty')
@@ -190,7 +190,7 @@ class TransferModal extends Component {
   }
 }
 
-TransferModal.propTypes = {
+ModalEdit.propTypes = {
   form: PropTypes.object.isRequired,
   type: PropTypes.string,
   item: PropTypes.object,
@@ -198,4 +198,4 @@ TransferModal.propTypes = {
   enablePopover: PropTypes.func
 }
 
-export default Form.create()(TransferModal)
+export default Form.create()(ModalEdit)

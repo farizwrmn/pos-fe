@@ -206,7 +206,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/product/stockLocation'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
-              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/specificationStock'))
               registerModel(app, require('./models/k3express/product/productCategory'))
               registerModel(app, require('./models/k3express/product/productBrand'))
@@ -217,7 +217,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/variant'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/master/customer'))
-              registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/store'))
               registerModel(app, require('./models/shopee/shopeeCategory'))
@@ -588,6 +587,8 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/procurement/purchaseOrder'))
               cb(null, require('./routes/procurement/purchaseOrder/main'))
             }, 'transaction-procurement-order')

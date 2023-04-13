@@ -4,9 +4,11 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import ModalQuotation from './ModalQuotation'
 import Form from './Form'
+import ModalProduct from './ModalProduct'
 import ModalEdit from './ModalEdit'
+import ModalAddProduct from './ModalAddProduct'
 
-const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
+const Counter = ({ purchaseOrder, productbrand, productcategory, purchase, loading, dispatch, location }) => {
   const {
     listQuotationTrans,
     listQuotationSupplier,
@@ -14,8 +16,14 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
     currentItem,
     listItem,
     modalEditVisible,
-    modalEditItem
+    modalEditItem,
+    modalAddProductVisible,
+    modalProductVisible
   } = purchaseOrder
+
+  const { listCategory } = productcategory
+
+  const { listBrand } = productbrand
 
   const {
     listSupplier,
@@ -92,11 +100,41 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
         }
       })
     },
-    onGetProduct () {
+    onGetProduct (header) {
       dispatch({ type: 'purchaseOrder/showModalProduct' })
+      if (currentItem && !currentItem.addProduct) {
+        dispatch({
+          type: 'purchaseOrder/updateState',
+          payload: {
+            listItem: []
+          }
+        })
+      }
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          modalProductVisible: true,
+          modalEditHeader: header
+        }
+      })
     },
-    onProductAdd () {
+    onProductAdd (header) {
       dispatch({ type: 'purchaseOrder/showModalAddProduct' })
+      if (currentItem && !currentItem.addProduct) {
+        dispatch({
+          type: 'purchaseOrder/updateState',
+          payload: {
+            listItem: []
+          }
+        })
+      }
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          modalAddProductVisible: true,
+          modalEditHeader: header
+        }
+      })
     },
     onGetQuotation () {
       dispatch({ type: 'purchaseOrder/queryCount', payload: {} })
@@ -197,9 +235,59 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location }) => {
     }
   }
 
+  const modalAddProductProps = {
+    listCategory,
+    listBrand,
+    visible: modalAddProductVisible,
+    loading,
+    onOk (data, reset) {
+      dispatch({
+        type: 'purchaseOrder/addStagingProduct',
+        payload: {
+          data,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          modalAddProductVisible: false
+        }
+      })
+    }
+  }
+
+  const modalProductProps = {
+    listCategory,
+    listBrand,
+    visible: modalProductVisible,
+    loading,
+    onOk (data, reset) {
+      dispatch({
+        type: 'purchaseOrder/addStagingProduct',
+        payload: {
+          data,
+          reset
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Form {...formProps} />
+      {modalProductVisible && <ModalProduct {...modalProductProps} />}
+      {modalAddProductVisible && <ModalAddProduct {...modalAddProductProps} />}
       {modalQuotationVisible && <ModalQuotation {...modalQuotationProps} />}
       {modalEditVisible && <ModalEdit {...modalEditProps} />}
     </div>
@@ -214,4 +302,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchaseOrder, purchase, loading, app }) => ({ purchaseOrder, purchase, loading, app }))(Counter)
+export default connect(({ purchaseOrder, productcategory, productbrand, purchase, loading, app }) => ({ purchaseOrder, productcategory, productbrand, purchase, loading, app }))(Counter)

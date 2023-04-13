@@ -34,6 +34,7 @@ const FormCounter = ({
   item = {},
   onSubmit,
   onGetProduct,
+  onProductAdd,
   onGetQuotation,
   listSupplier,
   listItemProps,
@@ -99,6 +100,42 @@ const FormCounter = ({
     listItemProps.onModalVisible(record, data)
   }
 
+  const showModalProduct = () => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        onGetProduct(data)
+        resetFields()
+      },
+      onCancel () {
+
+      }
+    })
+  }
+
+  const showModalProductAdd = () => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        onProductAdd(data)
+        resetFields()
+      },
+      onCancel () {
+
+      }
+    })
+  }
+
   const supplierData = (listSupplier || []).length > 0 ?
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
@@ -157,8 +194,13 @@ const FormCounter = ({
               <Option value="S">Exclude ({getVATPercentage()}%)</Option>
             </Select>)}
           </FormItem>
-          {item && !item.supplierId && <Button type="default" size="large" onClick={() => onGetProduct()}>Product</Button>}
-          <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>
+          {item && !item.supplierId && (
+            <Button.Group>
+              <Button type="default" size="large" icon="plus" onClick={() => showModalProductAdd()} />
+              <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
+            </Button.Group>
+          )}
+          {item && !item.addProduct && <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>}
         </Col>
         <Col {...col}>
           <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
@@ -213,7 +255,7 @@ const FormCounter = ({
       </Row>
       <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
       <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
-    </Form>
+    </Form >
   )
 }
 
