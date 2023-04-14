@@ -75,7 +75,7 @@ export default modelExtend(pageModel, {
     * queryLov ({ payload = {} }, { call, put }) {
       const storeId = lstorage.getCurrentUserStore()
       const cachedCost = lstorage.getCost()
-      if (cachedCost && cachedCost[0]) {
+      if (cachedCost && cachedCost[0] && cachedCost[0].storeId === storeId) {
         yield put({
           type: 'querySuccessLov',
           payload: {

@@ -174,7 +174,7 @@ export default modelExtend(pageModel, {
     * queryLov ({ payload = {} }, { call, put }) {
       const storeId = lstorage.getCurrentUserStore()
       const cachedEdc = lstorage.getEdc()
-      if (cachedEdc && cachedEdc[0]) {
+      if (cachedEdc && cachedEdc[0] && cachedEdc[0].storeId === storeId) {
         let paymentLov = cachedEdc
         if (storeId) {
           paymentLov = paymentLov.filter((filtered) => {
