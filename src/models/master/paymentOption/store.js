@@ -20,12 +20,16 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey } = location.query
-        const { pathname } = location
+        const { pathname, query } = location
         if (pathname === '/master/paymentoption') {
           if (activeKey === '2') {
+            const { page, pageSize } = query
             dispatch({
               type: 'query',
-              payload: {}
+              payload: {
+                page: page || 1,
+                pageSize: pageSize || 10
+              }
             })
           }
         }
@@ -47,7 +51,7 @@ export default modelExtend(pageModel, {
               showQuickJumper: true,
               current: Number(payload.page || 1),
               pageSize: Number(payload.pageSize || 10),
-              count: Number(response.meta.count || 1)
+              total: Number(response.meta.count || 1)
             }
           }
         })
