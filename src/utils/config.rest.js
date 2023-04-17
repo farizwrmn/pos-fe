@@ -112,6 +112,7 @@ module.exports = {
     paymentValidationImportBank: '/payment-validation-import-bank',
     paymentValidationConflict: '/payment-validation-conflict',
     paymentMachine: '/payment-machine',
+    paymentMachineStore: '/payment-machine-store',
     paymentCost: '/payment-cost',
     workOrder: '/wo',
     maintenance: '/maintenance',
