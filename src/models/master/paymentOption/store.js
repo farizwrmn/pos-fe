@@ -23,10 +23,11 @@ export default modelExtend(pageModel, {
         const { pathname, query } = location
         if (pathname === '/master/paymentoption') {
           if (activeKey === '2') {
-            const { page, pageSize } = query
+            const { page, pageSize, q } = query
             dispatch({
               type: 'query',
               payload: {
+                q,
                 page: page || 1,
                 pageSize: pageSize || 10
               }
