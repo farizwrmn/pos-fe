@@ -412,7 +412,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/paymentOption'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              registerModel(app, require('./models/payment/paymentOption/store'))
+              registerModel(app, require('./models/master/paymentOption/store'))
               cb(null, require('./routes/master/paymentOption/'))
             }, 'master-payment-option')
           }
