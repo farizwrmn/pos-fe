@@ -2,6 +2,43 @@ import { Form, Input } from 'antd'
 
 const FormItem = Form.Item
 
+const formItemColumnProps = {
+  labelCol: {
+    xs: {
+      span: 6
+    },
+    sm: {
+      span: 6
+    },
+    md: {
+      span: 6
+    },
+    lg: {
+      span: 6
+    },
+    xl: {
+      span: 6
+    }
+  },
+  wrapperCol: {
+    xs: {
+      span: 18
+    },
+    sm: {
+      span: 18
+    },
+    md: {
+      span: 18
+    },
+    lg: {
+      span: 18
+    },
+    xl: {
+      span: 18
+    }
+  }
+}
+
 const FilterForm = ({
   handleSearch,
   form: {
@@ -21,8 +58,8 @@ const FilterForm = ({
   }
 
   return (
-    <Form layout="vertical">
-      <FormItem>
+    <Form layout="horizontal">
+      <FormItem label="Search" {...formItemColumnProps}>
         {getFieldDecorator('q')(
           <Input placeholder="Cari merchant di sini" onPressEnter={handleSubmit} size="default" />
         )}

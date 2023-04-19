@@ -144,8 +144,8 @@ const BankMerchant = ({ dispatch, loading, autorecon, store, bank, location }) =
       <Row style={{ marginBottom: '10px' }} type="flex">
         <Button icon="plus-circle-o" type="primary" onClick={() => showModalForm()}>New</Button>
       </Row>
-      <Row style={{ marginBottom: '10px' }}>
-        <Col {...filterColumnProps} style={{ alignSelf: 'flex-end' }}>
+      <Row style={{ marginBottom: '10px' }} type="flex" justify="end">
+        <Col {...filterColumnProps}>
           <Filter {...filterProps} />
         </Col>
       </Row>
