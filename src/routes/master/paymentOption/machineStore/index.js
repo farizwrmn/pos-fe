@@ -12,14 +12,21 @@ const filterColumnProps = {
 }
 
 const MachineStore = ({
+  userStore,
   paymentMachineStore,
   loading,
   dispatch,
   location
 }) => {
-  const { list, pagination } = paymentMachineStore
+  const { currentMachine, currentMachineStore, list, pagination, modalVisible } = paymentMachineStore
+  const { listAllStores } = userStore
 
   const listProps = {
+    currentMachine,
+    currentMachineStore,
+    modalVisible,
+    dispatch,
+    listAllStores,
     dataSource: list,
     pagination,
     loading: loading.effects['paymentMachineStore/query'],

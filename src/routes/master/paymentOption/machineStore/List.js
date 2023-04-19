@@ -1,7 +1,8 @@
 import { Row, Table } from 'antd'
 import { color } from 'utils/theme'
+import ModalForm from './ModalForm'
 
-const List = ({ ...tableProps, handlePagination }) => {
+const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagination, listAllStores, dispatch, modalVisible }) => {
   const columns = [
     {
       title: 'Name',
@@ -24,8 +25,38 @@ const List = ({ ...tableProps, handlePagination }) => {
     }
   ]
 
+  const handleShowModal = (record) => {
+    dispatch({
+      type: 'paymentMachineStore/updateState',
+      payload: {
+        modalVisible: true,
+        currentMachine: record,
+        currentMachineStore: (record.machineStoreList || []).map(record => String(record.storeId))
+      }
+    })
+  }
+
+  const modalProps = {
+    currentMachine,
+    currentMachineStore,
+    listAllStores,
+    visible: modalVisible,
+    title: 'Store associated with account',
+    onCancel: () => {
+      dispatch({
+        type: 'paymentMachineStore/updateState',
+        payload: {
+          modalVisible: false,
+          currentMachine: {},
+          currentMachineStore: []
+        }
+      })
+    }
+  }
+
   return (
     <div>
+      <ModalForm {...modalProps} />
       <Row>
         <div style={{ color: color.error }}>
           * Klik data di bawah ini untuk melihat store yang terhubung dengan jenis payment
@@ -37,6 +68,7 @@ const List = ({ ...tableProps, handlePagination }) => {
           bordered
           columns={columns}
           onChange={handlePagination}
+          onRowClick={handleShowModal}
         />
       </Row>
     </div>

@@ -7,6 +7,9 @@ export default modelExtend(pageModel, {
   namespace: 'paymentMachineStore',
 
   state: {
+    currentMachineStore: [],
+    currentMachine: {},
+    modalVisible: false,
     activeKey: '0',
     list: [],
     pagination: {
