@@ -14,7 +14,7 @@ const ListPayment = ({
   paymentData,
   loading
 }) => {
-  if (loading.effects['autorecon/queryDetail']) {
+  if (loading.effects['autorecon/queryDetail'] || typeof paymentData === 'undefined') {
     return (
       <Card
         loading
