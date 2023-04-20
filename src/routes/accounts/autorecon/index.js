@@ -284,7 +284,7 @@ const AutoReconciliation = ({
         <ModalPrint {...modalPrintProps} />
       )}
       <Col span={24}>
-        <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={moreButtonTab}>
+        <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={activeKey === '1' ? moreButtonTab : null}>
           <TabPane key="0" tab="Auto Reconcile">
             <FormImport {...formImportProps} />
             <Row>
