@@ -11,3 +11,13 @@ export async function query (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryAdd (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: paymentMachineStore,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
