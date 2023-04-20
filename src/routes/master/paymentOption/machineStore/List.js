@@ -2,7 +2,7 @@ import { Row, Table } from 'antd'
 import { color } from 'utils/theme'
 import ModalForm from './ModalForm'
 
-const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagination, listAllStores, dispatch, modalVisible }) => {
+const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagination, listAllStores, dispatch, modalVisible, loading, location }) => {
   const columns = [
     {
       title: 'Name',
@@ -41,6 +41,7 @@ const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagina
     currentMachineStore,
     listAllStores,
     visible: modalVisible,
+    confirmLoading: loading.effects['paymentMachineStore/queryAdd'],
     title: 'Store associated with account',
     onCancel: () => {
       dispatch({
@@ -49,6 +50,25 @@ const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagina
           modalVisible: false,
           currentMachine: {},
           currentMachineStore: []
+        }
+      })
+    },
+    onOk: () => {
+      dispatch({
+        type: 'paymentMachineStore/queryAdd',
+        payload: {
+          machine: currentMachine,
+          storeList: currentMachineStore,
+          location
+        }
+      })
+    },
+    handleRowCheck: (checkedList) => {
+      const { checked: checkedNode } = checkedList
+      dispatch({
+        type: 'paymentMachineStore/updateState',
+        payload: {
+          currentMachineStore: checkedNode
         }
       })
     }
@@ -69,6 +89,7 @@ const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagina
           columns={columns}
           onChange={handlePagination}
           onRowClick={handleShowModal}
+          loading={loading.effects['paymentMachineStore/query']}
         />
       </Row>
     </div>
