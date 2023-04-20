@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
-import { query } from 'services/master/paymentOption/paymentMachineStoreService'
+import { query, queryAdd } from 'services/master/paymentOption/paymentMachineStoreService'
 import { pageModel } from 'common'
 import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
   namespace: 'paymentMachineStore',
@@ -49,6 +50,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
+            ...payload,
             list: response.data,
             pagination: {
               showSizeChanger: true,
@@ -61,6 +63,24 @@ export default modelExtend(pageModel, {
         })
       } else {
         message.error(`${response.message} - Failed to get data`)
+      }
+    },
+    * queryAdd ({ payload = {} }, { call, put }) {
+      const response = yield call(queryAdd, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalVisible: false
+          }
+        })
+        const { pathname, query } = payload.location
+        yield put(routerRedux.push({
+          pathname,
+          query
+        }))
+      } else {
+        message.error(response.message)
       }
     }
   },
