@@ -11,10 +11,9 @@ const renderTreeNodes = (data) => {
 const ModalForm = ({
   ...modalProps,
   listAllStores,
-  currentMachineStore
+  currentMachineStore,
+  handleRowCheck
 }) => {
-  console.log('currentMachineStore', currentMachineStore)
-  console.log('listAllStores', listAllStores)
   return (
     <Modal {...modalProps}>
       <Tree
@@ -22,6 +21,7 @@ const ModalForm = ({
         checkStrictly
         autoExpandParent
         checkedKeys={currentMachineStore}
+        onCheck={handleRowCheck}
       >
         {renderTreeNodes(listAllStores)}
       </Tree>
