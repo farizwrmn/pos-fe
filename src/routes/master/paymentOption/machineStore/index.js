@@ -22,6 +22,7 @@ const MachineStore = ({
   const { listAllStores } = userStore
 
   const listProps = {
+    location,
     currentMachine,
     currentMachineStore,
     modalVisible,
@@ -29,7 +30,7 @@ const MachineStore = ({
     listAllStores,
     dataSource: list,
     pagination,
-    loading: loading.effects['paymentMachineStore/query'],
+    loading,
     handlePagination (paginationValue) {
       const { current: page, pageSize } = paginationValue
       const { pathname, query } = location
