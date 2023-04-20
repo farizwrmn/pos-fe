@@ -14,12 +14,14 @@ const Counter = ({ rentRequest, loading, dispatch, location, app }) => {
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
-      dispatch({
-        type: 'rentRequest/query',
-        payload: {
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
           ...value
         }
-      })
+      }))
     }
   }
 
