@@ -76,7 +76,9 @@ const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagina
 
   return (
     <div>
-      <ModalForm {...modalProps} />
+      {modalVisible && (
+        <ModalForm {...modalProps} />
+      )}
       <Row>
         <div style={{ color: color.error }}>
           * Klik data di bawah ini untuk melihat store yang terhubung dengan jenis payment

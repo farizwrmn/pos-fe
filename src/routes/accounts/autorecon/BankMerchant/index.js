@@ -140,7 +140,9 @@ const BankMerchant = ({ dispatch, loading, autorecon, store, bank, location }) =
 
   return (
     <div>
-      <ModalForm {...modalFormProps} />
+      {BankMerchantModalVisible && (
+        <ModalForm {...modalFormProps} />
+      )}
       <Row style={{ marginBottom: '10px' }} type="flex">
         <Button icon="plus-circle-o" type="primary" onClick={() => showModalForm()}>New</Button>
       </Row>
