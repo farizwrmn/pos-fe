@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from 'themes/index.less'
 
-const ListItem = ({ listItem, deliveryFee, onModalVisible, ...tableProps }) => {
+const ListItem = ({ listItem, deliveryFee, rounding, onModalVisible, ...tableProps }) => {
   const handleMenuClick = (record) => {
     onModalVisible(record)
   }
@@ -129,7 +129,7 @@ const ListItem = ({ listItem, deliveryFee, onModalVisible, ...tableProps }) => {
           return (
             <div>
               <div>Qty: {(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0).toLocaleString()}</div>
-              <div>Total: {(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) + deliveryFee : 0).toLocaleString()}</div>
+              <div>Total: {(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) + deliveryFee + rounding : 0).toLocaleString()}</div>
             </div>
           )
         }}

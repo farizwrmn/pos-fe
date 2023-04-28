@@ -93,6 +93,21 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
         }
       })
     },
+    onGetReceive (header) {
+      dispatch({ type: 'purchaseInvoice/showModalReceive' })
+      dispatch({
+        type: 'purchaseInvoice/queryReceive'
+      })
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          listItem: [],
+          modalReceiveVisible: true,
+          modalEditHeader: header
+        }
+      })
+      dispatch({ type: 'purchaseOrder/querySequence' })
+    },
     onGetProduct (header) {
       dispatch({ type: 'purchaseInvoice/showModalProduct' })
       if (currentItem && !currentItem.addProduct) {

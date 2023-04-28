@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Checkbox, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import { getVATPercentage } from 'utils/tax'
 import { lstorage } from 'utils'
 import ListItem from './ListItem'
@@ -24,8 +24,12 @@ const formItemLayout = {
 }
 
 const col = {
+  md: {
+    span: 24,
+    offset: 0
+  },
   lg: {
-    span: 12,
+    span: 8,
     offset: 0
   }
 }
@@ -38,6 +42,7 @@ const FormCounter = ({
   listItemProps,
   onChangeTotalData,
   listItem,
+  onGetReceive,
   form: {
     getFieldValue,
     getFieldDecorator,
@@ -85,12 +90,43 @@ const FormCounter = ({
     listItemProps.onModalVisible(record, data)
   }
 
+  const showModalReceive = () => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    Modal.confirm({
+      title: 'Reset unsaved process',
+      content: 'this action will reset your current process',
+      onOk () {
+        onGetReceive(data)
+        resetFields()
+      },
+      onCancel () {
+
+      }
+    })
+  }
+
   const showModalProduct = () => {
     const data = {
       ...item,
       ...getFieldsValue()
     }
-    onGetProduct(data)
+    if (item && item.addProduct) {
+      onGetProduct(data)
+    } else {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          onGetProduct(data)
+        },
+        onCancel () {
+
+        }
+      })
+    }
   }
 
   const supplierData = (listSupplier || []).length > 0 ?
@@ -101,7 +137,8 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...col}>
-          <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
+          <h1>Invoice Info</h1>
+          <FormItem label="No. Trans" hasFeedback {...formItemLayout}>
             {getFieldDecorator('transNo', {
               initialValue: item.transNo,
               rules: [
@@ -111,14 +148,42 @@ const FormCounter = ({
               ]
             })(<Input disabled maxLength={20} />)}
           </FormItem>
-          <FormItem label="Deadline Receive" {...formItemLayout}>
-            {getFieldDecorator('expectedArrival', {
-              initialValue: item.expectedArrival ? moment.utc(item.expectedArrival, 'YYYY-MM-DD') : moment().add('5', 'days'),
+          <FormItem label="Reference" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('reference', {
+              initialValue: item.reference,
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Input maxLength={30} />)}
+          </FormItem>
+          <FormItem label="Invoice Date" {...formItemLayout}>
+            {getFieldDecorator('transDate', {
+              initialValue: item.transDate ? moment.utc(item.transDate, 'YYYY-MM-DD') : moment(),
               rules: [{
                 required: true,
                 message: 'Required'
               }]
             })(<DatePicker />)}
+          </FormItem>
+          <FormItem label="Tempo" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('tempo', {
+              initialValue: 0,
+              rules: [{
+                required: true,
+                message: 'Required',
+                pattern: /^\d+$/gi
+              }]
+            })(<InputNumber min={0} maxLength={5} />)}
+          </FormItem>
+          <FormItem label="Due Date" {...formItemLayout}>
+            {getFieldDecorator('dueDate', {
+              initialValue: moment().add(getFieldValue('tempo') !== '' && getFieldValue('tempo') != null && getFieldValue('tempo') !== '0' ? Number(getFieldValue('tempo')) : 0, 'days'),
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<DatePicker disabled />)}
           </FormItem>
           <FormItem required label="Supplier" {...formItemLayout}>
             {getFieldDecorator('supplierId', {
@@ -138,22 +203,9 @@ const FormCounter = ({
               {supplierData}
             </Select>)}
           </FormItem>
-          <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('taxType', {
-              initialValue: 'E',
-              rules: [{
-                required: true,
-                message: 'Required'
-              }]
-            })(<Select onBlur={onChangeTotal}>
-              <Option value="I">Include</Option>
-              <Option value="E">Exclude (0%)</Option>
-              <Option value="S">Exclude ({getVATPercentage()}%)</Option>
-            </Select>)}
-          </FormItem>
-          <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
         </Col>
         <Col {...col}>
+          <h1>Additional Cost/Discount</h1>
           <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
@@ -171,6 +223,18 @@ const FormCounter = ({
           <FormItem label="Disc (N)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoiceNominal', {
               initialValue: item.discInvoiceNominal || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
+            )}
+          </FormItem>
+          <FormItem label="Rounding" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('rounding', {
+              initialValue: item.rounding || 0,
               rules: [
                 {
                   required: true
@@ -203,8 +267,48 @@ const FormCounter = ({
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 5 }} />)}
           </FormItem>
         </Col>
+        <Col {...col}>
+          <h1>Tax Info</h1>
+          <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxType', {
+              initialValue: 'E',
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select onBlur={onChangeTotal}>
+              <Option value="I">Include</Option>
+              <Option value="E">Exclude (0%)</Option>
+              <Option value="S">Exclude ({getVATPercentage()}%)</Option>
+            </Select>)}
+          </FormItem>
+          <FormItem label="Is Tax Invoice" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxInvoice', {
+              valuePropName: 'checked'
+            })(<Checkbox />)}
+          </FormItem>
+          <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxInvoiceNo', {
+              rules: [{
+                required: false,
+                message: 'Required',
+                pattern: /^[a-z0-9./-]{6,25}$/i
+              }]
+            })(<Input maxLength={25} placeholder="Tax Invoice No" />)}
+          </FormItem>
+          <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxDate', {
+              rules: [{
+                required: false,
+                message: 'Required'
+              }]
+            })(<DatePicker placeholder="Tax Date" />)}
+          </FormItem>
+        </Col>
       </Row>
-      <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
+      <Button type="primary" size="large" onClick={() => showModalReceive()} style={{ marginRight: '10px' }}>Receive</Button>
+      <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
+      <ListItem {...listItemProps} rounding={getFieldValue('rounding') || 0} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
       <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
     </Form >
   )
