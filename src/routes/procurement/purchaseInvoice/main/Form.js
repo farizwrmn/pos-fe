@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { lstorage, alertModal } from 'utils'
 import { Form, Input, Checkbox, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { prefix } from 'utils/config.main'
 import { getVATPercentage } from 'utils/tax'
-import { lstorage } from 'utils'
 import ListItem from './ListItem'
+
+const { checkPermissionMonthTransaction } = alertModal
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -61,16 +64,37 @@ const FormCounter = ({
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
-      if (data.expectedArrival) {
-        data.expectedArrival = moment(data.expectedArrival).format('YYYY-MM-DD')
+      if (data.transDate) {
+        data.transDate = moment(data.transDate).format('YYYY-MM-DD')
       }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data, resetFields)
-        },
-        onCancel () { }
-      })
+      if (data.taxDate) {
+        data.taxDate = moment(data.taxDate).format('YYYY-MM-DD')
+      }
+      if (data.dueDate) {
+        data.dueDate = moment(data.dueDate).format('YYYY-MM-DD')
+      }
+      const startPeriod = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)).startPeriod : {}
+      const transDate = moment(data.transDate).format('YYYY-MM-DD')
+      const formattedStartPeriod = moment(startPeriod).format('YYYY-MM-DD')
+
+      const checkPermission = checkPermissionMonthTransaction(transDate)
+      if (checkPermission) {
+        return
+      }
+      if (transDate >= formattedStartPeriod) {
+        Modal.confirm({
+          title: 'Do you want to save this item?',
+          onOk () {
+            onSubmit(data, resetFields)
+          },
+          onCancel () { }
+        })
+      } else {
+        Modal.warning({
+          title: 'Period has been closed',
+          content: 'This period has been closed'
+        })
+      }
     })
   }
 
