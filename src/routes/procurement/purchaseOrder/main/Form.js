@@ -231,7 +231,7 @@ const FormCounter = ({
           {item && !item.addProduct && <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>}
         </Col>
         <Col {...col}>
-          {/* <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
+          <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
               rules: [
@@ -256,7 +256,7 @@ const FormCounter = ({
             })(
               <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
             )}
-          </FormItem> */}
+          </FormItem>
           <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
             {getFieldDecorator('deliveryFee', {
               initialValue: item.deliveryFee || 0,

@@ -129,7 +129,7 @@ const ListItem = ({ listItem, deliveryFee, onModalVisible, ...tableProps }) => {
           return (
             <div>
               <div>Qty: {(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0).toLocaleString()}</div>
-              <div>Total: {(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) + deliveryFee : 0).toLocaleString()}</div>
+              <div>Total: {(listItem ? listItem.reduce((prev, next) => prev + next.total, 0) + (deliveryFee || 0) : 0).toLocaleString()}</div>
             </div>
           )
         }}

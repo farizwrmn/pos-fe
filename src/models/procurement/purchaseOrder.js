@@ -542,6 +542,35 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * deleteItem ({ payload }, { select, put }) {
+      console.log('payload.item', payload.item)
+      const modalEditHeader = yield select(({ purchaseOrder }) => purchaseOrder.modalEditHeader)
+      const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
+      const newListItem = listItem.filter(filtered => filtered.productId !== payload.item.productId)
+        .map((item, index) => {
+          item.no = index + 1
+          return item
+        })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listItem: listItem.filter(filtered => filtered.productId !== payload.item.productId)
+            .map((item, index) => {
+              item.no = index + 1
+              return item
+            }),
+          modalEditVisible: false
+        }
+      })
+      yield put({
+        type: 'changeTotalData',
+        payload: {
+          header: modalEditHeader,
+          listItem: newListItem
+        }
+      })
+    },
+
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ purchaseOrder }) => purchaseOrder.currentItem.id)
       const newCounter = { ...payload.data, id }
