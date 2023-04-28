@@ -157,6 +157,24 @@ const FormCounter = ({
               }]
             })(<Input maxLength={30} />)}
           </FormItem>
+          <FormItem required label="Supplier" {...formItemLayout}>
+            {getFieldDecorator('supplierId', {
+              initialValue: item.supplierId,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              optionFilterProp="children"
+              style={{ width: '100%' }}
+              disabled={item.supplierId}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >
+              {supplierData}
+            </Select>)}
+          </FormItem>
           <FormItem label="Invoice Date" {...formItemLayout}>
             {getFieldDecorator('transDate', {
               initialValue: item.transDate ? moment.utc(item.transDate, 'YYYY-MM-DD') : moment(),
@@ -184,24 +202,6 @@ const FormCounter = ({
                 message: 'Required'
               }]
             })(<DatePicker disabled />)}
-          </FormItem>
-          <FormItem required label="Supplier" {...formItemLayout}>
-            {getFieldDecorator('supplierId', {
-              initialValue: item.supplierId,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Select
-              showSearch
-              optionFilterProp="children"
-              style={{ width: '100%' }}
-              disabled={item.supplierId}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-            >
-              {supplierData}
-            </Select>)}
           </FormItem>
         </Col>
         <Col {...col}>
@@ -290,7 +290,7 @@ const FormCounter = ({
           <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxInvoiceNo', {
               rules: [{
-                required: false,
+                required: getFieldValue('taxInvoice'),
                 message: 'Required',
                 pattern: /^[a-z0-9./-]{6,25}$/i
               }]
@@ -299,7 +299,7 @@ const FormCounter = ({
           <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxDate', {
               rules: [{
-                required: false,
+                required: getFieldValue('taxInvoice'),
                 message: 'Required'
               }]
             })(<DatePicker placeholder="Tax Date" />)}

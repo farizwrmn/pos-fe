@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 import ModalProduct from './ModalProduct'
 import ModalEdit from './ModalEdit'
+import ModalReceive from './ModalReceive'
 
 const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => {
   const {
@@ -12,7 +13,12 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     listItem,
     modalEditVisible,
     modalEditItem,
-    modalProductVisible
+    modalProductVisible,
+    modalReceiveVisible,
+
+    searchReceive,
+    listReceive,
+    paginationReceive
   } = purchaseInvoice
 
   const {
@@ -94,7 +100,12 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
       })
     },
     onGetReceive (header) {
-      dispatch({ type: 'purchaseInvoice/showModalReceive' })
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          modalReceiveVisible: true
+        }
+      })
       dispatch({
         type: 'purchaseInvoice/queryReceive'
       })
@@ -256,11 +267,86 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     }
   }
 
+  const modalReceiveTableProps = {
+    dataSource: listReceive,
+    onChange (e) {
+      dispatch({
+        type: 'purchaseInvoice/getReceive',
+        payload: {
+          page: e.current,
+          pageSize: e.pageSize,
+          active: 1,
+          q: searchReceive === '' ? null : searchReceive
+        }
+      })
+    }
+  }
+
+  const modalReceiveProps = {
+    visible: modalReceiveVisible,
+    loading,
+    pagination: paginationReceive,
+    modalReceiveTableProps,
+    handleChange (e) {
+      const { value } = e.target
+
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          searchReceive: value
+        }
+      })
+    },
+    handleSearch () {
+      dispatch({
+        type: 'purchaseInvoice/queryReceive',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: searchText
+        }
+      })
+    },
+    handleReset () {
+      dispatch({
+        type: 'purchaseInvoice/queryReceive',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: null
+        }
+      })
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          searchReceive: null
+        }
+      })
+    },
+    onChooseInvoice (header) {
+      dispatch({
+        type: 'purchaseInvoice/chooseInvoice',
+        payload: {
+          header
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          modalReceiveVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Form {...formProps} />
       {modalProductVisible && <ModalProduct {...modalProductProps} />}
       {modalEditVisible && <ModalEdit {...modalEditProps} />}
+      {modalReceiveVisible && <ModalReceive {...modalReceiveProps} />}
     </div>
   )
 }

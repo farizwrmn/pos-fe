@@ -23,6 +23,15 @@ export default modelExtend(pageModel, {
     modalEditItem: false,
     modalAddProductVisible: false,
     modalProductVisible: false,
+    modalReceiveVisible: false,
+
+    searchReceive: '',
+    listReceive: [],
+    paginationReceive: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
 
     modalType: 'add',
     activeKey: '0',
