@@ -1,8 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import moment from 'moment'
+import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
+import { getVATPercentage } from 'utils/tax'
+import { lstorage } from 'utils'
+import ListItem from './ListItem'
 
 const FormItem = Form.Item
+const { TextArea } = Input
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -17,56 +23,41 @@ const formItemLayout = {
   }
 }
 
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+const col = {
+  lg: {
+    span: 12,
+    offset: 0
+  }
 }
 
 const FormCounter = ({
   item = {},
   onSubmit,
-  onCancel,
-  modalType,
-  button,
+  onGetProduct,
+  listSupplier,
+  listItemProps,
+  onChangeTotalData,
+  listItem,
   form: {
+    getFieldValue,
     getFieldDecorator,
     validateFields,
     getFieldsValue,
     resetFields
   }
 }) => {
-  const tailFormItemLayout = {
-    wrapperCol: {
-      span: 24,
-      xs: {
-        offset: modalType === 'edit' ? 10 : 19
-      },
-      sm: {
-        offset: modalType === 'edit' ? 15 : 20
-      },
-      md: {
-        offset: modalType === 'edit' ? 15 : 19
-      },
-      lg: {
-        offset: modalType === 'edit' ? 13 : 18
-      }
-    }
-  }
-
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
       const data = {
+        ...item,
+        storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
+      }
+      if (data.expectedArrival) {
+        data.expectedArrival = moment(data.expectedArrival).format('YYYY-MM-DD')
       }
       Modal.confirm({
         title: 'Do you want to save this item?',
@@ -78,38 +69,159 @@ const FormCounter = ({
     })
   }
 
+  const onChangeTotal = () => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    onChangeTotalData(data, listItem)
+  }
+
+  const onShowModal = (record) => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    listItemProps.onModalVisible(record, data)
+  }
+
+  const showModalProduct = () => {
+    const data = {
+      ...item,
+      ...getFieldsValue()
+    }
+    if (item && item.addProduct) {
+      onGetProduct(data)
+    } else {
+      Modal.confirm({
+        title: 'Reset unsaved process',
+        content: 'this action will reset your current process',
+        onOk () {
+          onGetProduct(data)
+        },
+        onCancel () {
+
+        }
+      })
+    }
+  }
+
+  const supplierData = (listSupplier || []).length > 0 ?
+    listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
+    : []
+
   return (
     <Form layout="horizontal">
       <Row>
-        <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+        <Col {...col}>
+          <FormItem label="No. Transaction" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('transNo', {
+              initialValue: item.transNo,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input disabled maxLength={20} />)}
           </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          <FormItem label="Deadline Receive" {...formItemLayout}>
+            {getFieldDecorator('expectedArrival', {
+              initialValue: item.expectedArrival ? moment.utc(item.expectedArrival, 'YYYY-MM-DD') : moment().add('5', 'days'),
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<DatePicker />)}
+          </FormItem>
+          <FormItem required label="Supplier" {...formItemLayout}>
+            {getFieldDecorator('supplierId', {
+              initialValue: item.supplierId,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              optionFilterProp="children"
+              style={{ width: '100%' }}
+              disabled={item.supplierId}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >
+              {supplierData}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('taxType', {
+              initialValue: 'E',
+              rules: [{
+                required: true,
+                message: 'Required'
+              }]
+            })(<Select onBlur={onChangeTotal}>
+              <Option value="I">Include</Option>
+              <Option value="E">Exclude (0%)</Option>
+              <Option value="S">Exclude ({getVATPercentage()}%)</Option>
+            </Select>)}
+          </FormItem>
+          {item && !item.supplierId && (
+            <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
+          )}
+        </Col>
+        <Col {...col}>
+          {/* <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discInvoicePercent', {
+              initialValue: item.discInvoicePercent || 0,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^([0-9]{0,3})$/i,
+                  message: 'Invalid discount'
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} max={100} step={1} style={{ width: '100%' }} />
+            )}
+          </FormItem>
+          <FormItem label="Disc (N)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discInvoiceNominal', {
+              initialValue: item.discInvoiceNominal || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
+            )}
+          </FormItem> */}
+          <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('deliveryFee', {
+              initialValue: item.deliveryFee || 0,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
+            )}
+          </FormItem>
+          <FormItem label="Description" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: item.description,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 5 }} />)}
           </FormItem>
         </Col>
       </Row>
-    </Form>
+      <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
+      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
+    </Form >
   )
 }
 

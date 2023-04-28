@@ -2,101 +2,118 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Button, Tabs } from 'antd'
 import Form from './Form'
-import List from './List'
-import Filter from './Filter'
+import ModalProduct from './ModalProduct'
+import ModalEdit from './ModalEdit'
 
-const TabPane = Tabs.TabPane
+const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => {
+  const {
+    currentItem,
+    listItem,
+    modalEditVisible,
+    modalEditItem,
+    modalProductVisible
+  } = purchaseInvoice
 
-const Counter = ({ purchaseInvoice, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = purchaseInvoice
-  const { user, storeInfo } = app
-  const filterProps = {
-    onFilterChange (value) {
+  const {
+    listSupplier,
+    listPurchaseLatestDetail,
+    searchText,
+    listProduct,
+    pagination
+  } = purchase
+
+  const listItemProps = {
+    dataSource: listItem,
+    listItem,
+    loading: loading.effects['purchaseInvoice/query'],
+    pagination: false,
+    location,
+    onChange (page) {
       dispatch({
         type: 'purchaseInvoice/query',
         payload: {
-          ...value
-        }
-      })
-    }
-  }
-
-  const listProps = {
-    dataSource: list,
-    user,
-    storeInfo,
-    pagination,
-    loading: loading.effects['purchaseInvoice/query'],
-    location,
-    onChange (page) {
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
           page: page.current,
           pageSize: page.pageSize
         }
-      }))
-    },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
-      dispatch({
-        type: 'purchaseInvoice/editItem',
-        payload: { item }
       })
     },
-    deleteItem (id) {
+    onModalVisible (record, header) {
       dispatch({
-        type: 'purchaseInvoice/delete',
-        payload: id
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          modalEditItem: record,
+          modalEditVisible: true,
+          modalEditHeader: header
+        }
+      })
+      dispatch({
+        type: 'purchase/getPurchaseLatestDetail',
+        payload: {
+          productId: record.productId
+        }
+      })
+    },
+    editItem (item) {
+      dispatch({
+        type: 'purchaseInvoice/changeTab',
+        payload: {
+          formType: 'edit',
+          activeKey: '0',
+          currentItem: item,
+          disable: 'disabled'
+        }
+      })
+      dispatch({
+        type: 'purchaseInvoice/query'
       })
     }
   }
 
-  const changeTab = (key) => {
-    dispatch({
-      type: 'purchaseInvoice/changeTab',
-      payload: { key }
-    })
-    const { query, pathname } = location
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        activeKey: key
-      }
-    }))
-    dispatch({ type: 'purchaseInvoice/updateState', payload: { list: [] } })
-  }
-
-  const clickBrowse = () => {
-    dispatch({
-      type: 'purchaseInvoice/updateState',
-      payload: {
-        activeKey: '1'
-      }
-    })
-  }
-
   const formProps = {
-    modalType,
     item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    listSupplier,
+    listItemProps,
+    listItem,
     onSubmit (data, reset) {
       dispatch({
-        type: `purchaseInvoice/${modalType}`,
+        type: 'purchaseInvoice/add',
         payload: {
           data,
+          listItem,
           reset
+        }
+      })
+    },
+    onChangeTotalData (header, listItem) {
+      dispatch({
+        type: 'purchaseInvoice/changeTotalData',
+        payload: {
+          header, listItem
+        }
+      })
+    },
+    onGetProduct (header) {
+      dispatch({ type: 'purchaseInvoice/showModalProduct' })
+      if (currentItem && !currentItem.addProduct) {
+        dispatch({
+          type: 'purchaseInvoice/updateState',
+          payload: {
+            listItem: []
+          }
+        })
+      }
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          active: 1
+        }
+      })
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          modalProductVisible: true,
+          modalEditHeader: header
         }
       })
     },
@@ -117,26 +134,118 @@ const Counter = ({ purchaseInvoice, loading, dispatch, location, app }) => {
     }
   }
 
-  let moreButtonTab
-  if (activeKey === '0') {
-    moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
+  const modalEditProps = {
+    visible: modalEditVisible,
+    loading,
+    currentItem,
+    item: currentItem,
+    listPurchaseLatestDetail,
+    loadingPurchaseLatest: loading.effects['purchase/getPurchaseLatestDetail'],
+    currentItemList: modalEditItem,
+    onOk (data) {
+      dispatch({
+        type: 'purchaseInvoice/editItem',
+        payload: {
+          data
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          modalEditItem: {},
+          modalEditVisible: false,
+          modalEditHeader: {}
+        }
+      })
+    },
+    onDeleteItem (item) {
+      dispatch({
+        type: 'purchaseInvoice/deleteItem',
+        payload: {
+          item
+        }
+      })
+    }
+  }
+
+  const modalProductProps = {
+    visible: modalProductVisible,
+    searchText,
+    dataSource: listProduct,
+    loading: loading.effects['purchase/getProducts'],
+    loadingProduct: loading,
+    location,
+    pagination,
+    handleChange (e) {
+      const { value } = e.target
+
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchText: value
+        }
+      })
+    },
+    handleSearch () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: searchText
+        }
+      })
+    },
+    handleReset () {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: 1,
+          pageSize: pagination.pageSize,
+          q: null
+        }
+      })
+      dispatch({
+        type: 'purchase/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChange (e) {
+      dispatch({
+        type: 'purchase/getProducts',
+        payload: {
+          page: e.current,
+          pageSize: e.pageSize,
+          active: 1,
+          q: searchText === '' ? null : searchText
+        }
+      })
+    },
+    onChooseItem (record) {
+      dispatch({
+        type: 'purchaseInvoice/addItem',
+        payload: record
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'purchaseInvoice/updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
+    }
   }
 
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
-        <TabPane tab="Form" key="0" >
-          {activeKey === '0' && <Form {...formProps} />}
-        </TabPane>
-        <TabPane tab="Browse" key="1" >
-          {activeKey === '1' &&
-            <div>
-              <Filter {...filterProps} />
-              <List {...listProps} />
-            </div>
-          }
-        </TabPane>
-      </Tabs>
+      <Form {...formProps} />
+      {modalProductVisible && <ModalProduct {...modalProductProps} />}
+      {modalEditVisible && <ModalEdit {...modalEditProps} />}
     </div>
   )
 }
@@ -149,4 +258,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchaseInvoice, loading, app }) => ({ purchaseInvoice, loading, app }))(Counter)
+export default connect(({ purchaseInvoice, purchase, loading, app }) => ({ purchaseInvoice, purchase, loading, app }))(Counter)
