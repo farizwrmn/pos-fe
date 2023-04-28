@@ -623,10 +623,9 @@ const Routers = function ({ history, app }) {
           path: 'transaction/procurement/invoice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              // registerModel(app, require('./models/procurement/purchaseInvoice'))
-              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/procurement/purchaseInvoice'))
               registerModel(app, require('./models/purchase'))
-              cb(null, require('./routes/transaction/purchase'))
+              cb(null, require('./routes/procurement/purchaseInvoice/main'))
             }, 'transaction-procurement-invoice')
           }
         }, {

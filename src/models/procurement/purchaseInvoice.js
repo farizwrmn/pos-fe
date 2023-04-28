@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import pathToRegexp from 'path-to-regexp'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from 'services/sequence'
 import { queryById, query, add, edit, remove } from 'services/procurement/purchaseInvoice'
@@ -36,16 +37,26 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/account') {
+        if (pathname === '/transaction/procurement/invoice') {
           dispatch({
             type: 'updateState',
             payload: {
-              activeKey: activeKey || '0'
+              listItem: [],
+              currentItem: {}
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          dispatch({ type: 'querySequence' })
+        }
+        const match = pathToRegexp('/transaction/procurement/invoice/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
         }
       })
     }

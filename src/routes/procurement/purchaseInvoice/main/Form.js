@@ -90,20 +90,7 @@ const FormCounter = ({
       ...item,
       ...getFieldsValue()
     }
-    if (item && item.addProduct) {
-      onGetProduct(data)
-    } else {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          onGetProduct(data)
-        },
-        onCancel () {
-
-        }
-      })
-    }
+    onGetProduct(data)
   }
 
   const supplierData = (listSupplier || []).length > 0 ?
@@ -164,12 +151,10 @@ const FormCounter = ({
               <Option value="S">Exclude ({getVATPercentage()}%)</Option>
             </Select>)}
           </FormItem>
-          {item && !item.supplierId && (
-            <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
-          )}
+          <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
         </Col>
         <Col {...col}>
-          {/* <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
+          <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
               rules: [
@@ -194,7 +179,7 @@ const FormCounter = ({
             })(
               <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
             )}
-          </FormItem> */}
+          </FormItem>
           <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
             {getFieldDecorator('deliveryFee', {
               initialValue: item.deliveryFee || 0,
