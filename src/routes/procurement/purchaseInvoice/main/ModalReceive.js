@@ -22,8 +22,8 @@ const ModalReceive = ({
     },
     {
       title: 'Reference',
-      dataIndex: 'reference',
-      key: 'reference'
+      dataIndex: 'referenceTransNo',
+      key: 'referenceTransNo'
     },
     {
       title: 'Date',

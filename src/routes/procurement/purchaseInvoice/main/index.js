@@ -269,9 +269,10 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
 
   const modalReceiveTableProps = {
     dataSource: listReceive,
+    loading: loading.effects['purchaseInvoice/queryReceive'],
     onChange (e) {
       dispatch({
-        type: 'purchaseInvoice/getReceive',
+        type: 'purchaseInvoice/queryReceive',
         payload: {
           page: e.current,
           pageSize: e.pageSize,
@@ -285,6 +286,7 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
   const modalReceiveProps = {
     visible: modalReceiveVisible,
     loading,
+    searchReceive,
     pagination: paginationReceive,
     modalReceiveTableProps,
     handleChange (e) {
@@ -303,7 +305,7 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
         payload: {
           page: 1,
           pageSize: pagination.pageSize,
-          q: searchText
+          q: searchReceive
         }
       })
     },

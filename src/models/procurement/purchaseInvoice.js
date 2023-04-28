@@ -4,6 +4,7 @@ import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from 'services/sequence'
+import { query as queryReceive } from 'services/procurement/purchaseReceive'
 import { queryById, query, add, edit, remove } from 'services/procurement/purchaseInvoice'
 import { query as queryProductCost } from 'services/product/productCost'
 import { pageModel } from 'models/common'
@@ -237,6 +238,29 @@ export default modelExtend(pageModel, {
           productId: payload.id
         }
       })
+    },
+
+    * queryReceive ({ payload = {} }, { call, put }) {
+      const response = yield call(queryReceive, {
+        ...payload,
+        status: 1,
+        storeId: lstorage.getCurrentUserStore(),
+        pageSize: 25,
+        order: 'transDate'
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listReceive: response.data,
+            paginationReceive: {
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total
+            }
+          }
+        })
+      }
     },
 
     * query ({ payload = {} }, { call, put }) {
