@@ -704,7 +704,7 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-add')
           }
         }, {
-          path: 'transaction/procurement/order',
+          path: 'transaction/purchase/order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchase'))
@@ -713,7 +713,7 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-order')
           }
         }, {
-          path: 'transaction/procurement/order/:id',
+          path: 'transaction/purchase/order/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
