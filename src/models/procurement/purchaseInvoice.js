@@ -4,7 +4,7 @@ import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { query as querySequence } from 'services/sequence'
-import { query as queryReceive } from 'services/procurement/purchaseReceive'
+import { queryId as queryPurchaseReceiveById, query as queryReceive } from 'services/procurement/purchaseReceive'
 import { queryById, query, add, edit, remove } from 'services/procurement/purchaseInvoice'
 import { query as queryProductCost } from 'services/product/productCost'
 import { pageModel } from 'models/common'
@@ -169,6 +169,79 @@ export default modelExtend(pageModel, {
       })
     },
 
+    * chooseReceive ({ payload = {} }, { select, call, put }) {
+      const { header } = payload
+      const response = yield call(queryPurchaseReceiveById, { id: header.id, storeId: lstorage.getCurrentUserStore() })
+      const currentItem = yield select(({ purchaseInvoice }) => purchaseInvoice.currentItem)
+      const modalEditHeader = yield select(({ purchaseInvoice }) => purchaseInvoice.modalEditHeader)
+
+      if (response.success) {
+        const { detail: listDetail } = response
+        if (listDetail && listDetail.length > 0) {
+          const newListItem = []
+          for (let key in listDetail) {
+            const detail = listDetail[key]
+            newListItem.push({
+              no: newListItem.length + 1,
+              productId: detail.productId,
+              productCode: detail.productCode,
+              productName: detail.productName,
+              dimension: detail.dimension,
+              dimensionBox: detail.dimensionBox,
+              dimensionPack: detail.dimensionPack,
+              qty: detail.qty,
+              purchasePrice: detail.purchasePrice,
+              discPercent: detail.discPercent,
+              discNominal: detail.discNominal,
+              deliveryFee: detail.deliveryFee,
+              portion: detail.portion,
+              DPP: detail.DPP,
+              PPN: detail.PPN,
+              total: detail.DPP + detail.PPN
+            })
+          }
+
+          modalEditHeader.referenceTransNo = header.referenceTransNo
+          modalEditHeader.supplierId = header.supplierId
+          modalEditHeader.discInvoiceNominal = header.discInvoiceNominal
+          modalEditHeader.discInvoicePercent = header.discInvoicePercent
+          modalEditHeader.deliveryFee = header.deliveryFee
+          modalEditHeader.description = header.description
+
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: {
+                ...currentItem,
+                referenceTransNo: header.referenceTransNo,
+                supplierId: header.supplierId,
+                discInvoiceNominal: header.discInvoiceNominal,
+                discInvoicePercent: header.discInvoicePercent,
+                deliveryFee: header.deliveryFee,
+                description: header.description,
+
+                addProduct: false,
+                receiveItem: true
+              },
+              modalReceiveVisible: false
+            }
+          })
+
+          yield put({
+            type: 'changeTotalData',
+            payload: {
+              header: modalEditHeader,
+              listItem: newListItem
+            }
+          })
+        } else {
+          message.error('This Purchase Receive has no Item')
+        }
+      } else {
+        throw response
+      }
+    },
+
     * addItem ({ payload = {} }, { select, call, put }) {
       const currentItem = yield select(({ purchaseInvoice }) => purchaseInvoice.currentItem)
       const listItem = yield select(({ purchaseInvoice }) => purchaseInvoice.listItem)
@@ -224,7 +297,8 @@ export default modelExtend(pageModel, {
           payload: {
             currentItem: {
               ...currentItem,
-              addProduct: true
+              addProduct: true,
+              receiveItem: false
             },
             modalEditItem: record,
             modalEditVisible: true
@@ -314,15 +388,19 @@ export default modelExtend(pageModel, {
       const response = yield call(add, {
         header: payload.data,
         detail: dataProduct.map(item => ({
+          storeId: lstorage.getCurrentUserStore(),
           productId: item.productId,
+          productName: item.productName,
           qty: item.qty,
           purchasePrice: item.purchasePrice,
+          sellingPrice: 0,
           discPercent: item.discPercent,
           discNominal: item.discNominal,
           deliveryFee: item.deliveryFee,
           DPP: item.DPP,
           PPN: item.PPN,
           portion: item.portion,
+          void: 0,
           total: item.total
         }))
       })

@@ -83,7 +83,7 @@ class ModalEdit extends Component {
         title={`${currentItemList.productCode} - ${currentItemList.productName}`}
         {...modalOpts}
         footer={[
-          <Button size="large" key="delete" type="danger" onClick={handleDelete} disabled={item && item.requisitionId}>Delete</Button>,
+          <Button size="large" key="delete" type="danger" onClick={handleDelete} disabled={item && item.receiveItem}>Delete</Button>,
           <Button size="large" key="back" onClick={handleCancel}>Cancel</Button>,
           <Button size="large" key="submit" type="primary" onClick={handleOk}>
             Ok

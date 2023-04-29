@@ -85,7 +85,20 @@ const FormCounter = ({
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(data, resetFields)
+            console.log('onSubmit', data, listItem)
+            onSubmit({
+              discInvoiceNominal: data.discInvoiceNominal,
+              discInvoicePercent: data.discInvoicePercent,
+              dueDate: data.dueDate,
+              nettoTotal: data.nettoTotal,
+              rounding: data.rounding,
+              storeId: lstorage.getCurrentUserStore(),
+              supplierId: data.supplierId,
+              taxType: data.taxType,
+              tempo: data.tempo,
+              deliveryFee: data.deliveryFee,
+              transNo: data.transNo
+            }, resetFields)
           },
           onCancel () { }
         })
@@ -173,8 +186,8 @@ const FormCounter = ({
             })(<Input disabled maxLength={20} />)}
           </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('reference', {
-              initialValue: item.reference,
+            {getFieldDecorator('referenceTransNo', {
+              initialValue: item.referenceTransNo,
               rules: [{
                 required: true,
                 message: 'Required'
@@ -193,7 +206,7 @@ const FormCounter = ({
               showSearch
               optionFilterProp="children"
               style={{ width: '100%' }}
-              disabled={item.supplierId}
+              disabled={item.supplierId && item.receiveItem}
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
             >
               {supplierData}
@@ -206,11 +219,11 @@ const FormCounter = ({
                 required: true,
                 message: 'Required'
               }]
-            })(<DatePicker />)}
+            })(<DatePicker disabled={item.supplierId && item.receiveItem} allowClear={false} />)}
           </FormItem>
           <FormItem label="Tempo" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tempo', {
-              initialValue: 0,
+              initialValue: item.tempo || 30,
               rules: [{
                 required: true,
                 message: 'Required',
@@ -220,7 +233,9 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Due Date" {...formItemLayout}>
             {getFieldDecorator('dueDate', {
-              initialValue: moment().add(getFieldValue('tempo') !== '' && getFieldValue('tempo') != null && getFieldValue('tempo') !== '0' ? Number(getFieldValue('tempo')) : 0, 'days'),
+              initialValue: getFieldValue('transDate')
+                ? moment(getFieldValue('transDate')).add(getFieldValue('tempo') !== '' && getFieldValue('tempo') != null && getFieldValue('tempo') !== '0' ? Number(getFieldValue('tempo')) : 0, 'days')
+                : moment().add(getFieldValue('tempo') !== '' && getFieldValue('tempo') != null && getFieldValue('tempo') !== '0' ? Number(getFieldValue('tempo')) : 0, 'days'),
               rules: [{
                 required: true,
                 message: 'Required'
@@ -285,7 +300,7 @@ const FormCounter = ({
               initialValue: item.description,
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 5 }} />)}
@@ -331,7 +346,7 @@ const FormCounter = ({
         </Col>
       </Row>
       <Button type="primary" size="large" onClick={() => showModalReceive()} style={{ marginRight: '10px' }}>Receive</Button>
-      <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
+      {item && !item.receiveItem && <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>}
       <ListItem {...listItemProps} rounding={getFieldValue('rounding') || 0} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
       <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
     </Form >

@@ -15,6 +15,7 @@ export async function queryId (params) {
   return request({
     url: `/procurement-receive/${params.id}`,
     method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }

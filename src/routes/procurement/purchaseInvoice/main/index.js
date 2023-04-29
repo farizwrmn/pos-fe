@@ -101,16 +101,11 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     },
     onGetReceive (header) {
       dispatch({
-        type: 'purchaseInvoice/updateState',
-        payload: {
-          modalReceiveVisible: true
-        }
-      })
-      dispatch({
         type: 'purchaseInvoice/queryReceive'
       })
+      console.log('header', header)
       dispatch({
-        type: 'purchaseOrder/updateState',
+        type: 'purchaseInvoice/updateState',
         payload: {
           listItem: [],
           modalReceiveVisible: true,
@@ -327,7 +322,7 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     },
     onChooseInvoice (header) {
       dispatch({
-        type: 'purchaseInvoice/chooseInvoice',
+        type: 'purchaseInvoice/chooseReceive',
         payload: {
           header
         }
