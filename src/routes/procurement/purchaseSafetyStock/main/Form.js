@@ -90,7 +90,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <RangePicker size="large" format="DD-MMM-YYYY" />
+              <RangePicker disabled size="large" format="DD-MMM-YYYY" />
             )}
           </FormItem>
           <Row>
