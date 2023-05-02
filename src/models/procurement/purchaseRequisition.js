@@ -368,7 +368,8 @@ export default modelExtend(pageModel, {
       const response = yield call(querySafetyStock, {
         storeId: payload.storeId,
         order: '-rangeDateTo',
-        pageSize: 1
+        pageSize: 1,
+        status: 1
       })
       if (response.success && response.data && response.data[0]) {
         const currentSafety = response.data[0]
