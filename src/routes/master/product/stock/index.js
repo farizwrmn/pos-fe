@@ -365,7 +365,7 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
     modalSpecificationVisible,
     modalProductVisible,
     dispatch,
-    disabled: `${modalType === 'edit' && currentItem.isStaging != null ? !currentItem.isStaging : ''}`,
+    disabled: modalType === 'edit' && currentItem.isStaging != null ? !currentItem.isStaging : '',
     button: `${modalType === 'add' ? 'Save' : 'Update'}`,
     onSubmit (id, data, reset) {
       dispatch({
