@@ -72,7 +72,7 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
           row.push({ text: `Rp ${Number(tableBody[key].total || 0).toLocaleString()}`, alignment: 'right' })
         } else {
           row.push({ text: count, alignment: 'center' })
-          row.push({ text: (tableBody[key].created_at ? moment(tableBody[key].created_at).format('DD MMM YYYY') : '').toString(), alignment: 'center' })
+          row.push({ text: (tableBody[key].created_at ? moment(tableBody[key].created_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY') : '').toString(), alignment: 'center' })
           row.push({ text: (tableBody[key].number || '').toString(), alignment: 'center' })
           row.push({ text: (tableBody[key].product_name || '').toString(), alignment: 'left' })
           row.push({ text: (tableBody[key].quantity || 0).toString(), alignment: 'center' })

@@ -50,7 +50,7 @@ const PrintXLS = ({ dataSource, selectedVendor, dateRange }) => {
           row.push({ value: list[key].total, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         } else {
           row.push({ value: start, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
-          row.push({ value: list[key].created_at ? moment(list[key].created_at).format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
+          row.push({ value: list[key].created_at ? moment(list[key].created_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY') : '-', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
           row.push({ value: list[key].number || '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
           row.push({ value: list[key].product_name || '', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
           row.push({ value: list[key].quantity || 0, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableBody, border: styles.tableBorder })
