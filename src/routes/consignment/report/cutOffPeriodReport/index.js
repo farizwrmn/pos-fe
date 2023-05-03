@@ -71,11 +71,10 @@ function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch, loading 
               {list && list.length > 0 &&
                 <Row gutter={24}>
                   {list.map(record => (
-                    <Col lg={6} md={12} style={{ marginTop: '8px' }} key={record.id}>
+                    <Col lg={4} md={6} xs={12} sm={12} style={{ marginTop: '8px' }} key={record.id}>
                       <Card>
-                        <div style={{ height: '60px' }}>
+                        <div style={{ marginBottom: '15px' }}>
                           <div>{moment(record.period).format('DD MMM YYYY')}</div>
-                          <div>{record['outlet.outlet_name']}</div>
                         </div>
                         <Button icon="mail" type="primary" onClick={() => sendEmail(record)} loading={loading.effects['consignmentCutOffPeriodReport/querySendEmail']} disabled={record.emailSent === 2}>
                           {record.emailSent === 2 ? 'Sent' : 'Kirim Email'}

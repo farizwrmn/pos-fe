@@ -142,7 +142,6 @@ export default modelExtend(pageModel, {
     * edit ({ payload = {} }, { call, put }) {
       const params = {
         id: payload.id,
-        vendorCode: payload.vendorCode,
         vendorName: payload.name,
         identityNo: payload.identityNumber,
         identityType: payload.identityType,
@@ -150,8 +149,7 @@ export default modelExtend(pageModel, {
         email: payload.email,
         bankName: payload.bankName,
         accountName: payload.accountName,
-        accountNumber: payload.accountNumber,
-        categoryId: payload.type
+        accountNumber: payload.accountNumber
       }
       const response = yield call(queryEdit, params)
       if (response && response.meta && response.success) {

@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/master/paymentOption/paymentCostService'
+import { query, add, edit, remove, queryLov } from 'services/master/paymentOption/paymentCostService'
 import { pageModel } from 'common'
+import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
 const success = () => {
@@ -16,6 +17,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     listPayment: [],
+    paymentLov: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -37,6 +39,12 @@ export default modelExtend(pageModel, {
               machineId: match[1],
               type: 'all'
             }
+          })
+        }
+        if (pathname === '/transaction/pos') {
+          dispatch({
+            type: 'queryLov',
+            payload: {}
           })
         }
       })
@@ -61,6 +69,32 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw data
+      }
+    },
+
+    * queryLov ({ payload = {} }, { call, put }) {
+      const storeId = lstorage.getCurrentUserStore()
+      const cachedCost = lstorage.getCost()
+      if (cachedCost && cachedCost[0] && cachedCost[0].storeId === storeId) {
+        yield put({
+          type: 'querySuccessLov',
+          payload: {
+            paymentLov: cachedCost
+          }
+        })
+      } else {
+        const data = yield call(queryLov, { ...payload, storeId })
+        if (data.success) {
+          lstorage.setCost(data.data)
+          yield put({
+            type: 'querySuccessLov',
+            payload: {
+              paymentLov: data.data
+            }
+          })
+        } else {
+          throw data
+        }
       }
     },
 
@@ -134,6 +168,13 @@ export default modelExtend(pageModel, {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+
+    querySuccessLov (state, action) {
+      return {
+        ...state,
+        paymentLov: action.payload.paymentLov
       }
     },
 

@@ -58,3 +58,13 @@ export async function queryAdd (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function querySendEmail (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    fullUrl: `${rest.apiConsignmentURL}/cut-off-email`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
