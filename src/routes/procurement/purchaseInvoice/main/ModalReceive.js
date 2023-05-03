@@ -21,6 +21,11 @@ const ModalReceive = ({
       key: 'transNo'
     },
     {
+      title: 'Supplier',
+      dataIndex: 'supplier.supplierName',
+      key: 'supplier.supplierName'
+    },
+    {
       title: 'Reference',
       dataIndex: 'referenceTransNo',
       key: 'referenceTransNo'

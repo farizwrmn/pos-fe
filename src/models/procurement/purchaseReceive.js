@@ -2,9 +2,9 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
-import { querySupplier, query, queryId, add, edit, remove } from 'services/procurement/purchaseReceive'
+import { querySupplier, add, edit, remove } from 'services/procurement/purchaseReceive'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
-import { query as getPurchaseOrder } from 'services/procurement/purchaseOrder'
+import { query as getPurchaseOrder, queryById as getPurchaseOrderById } from 'services/procurement/purchaseOrder'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -64,8 +64,9 @@ export default modelExtend(pageModel, {
   effects: {
 
     * queryPurchaseOrder ({ payload = {} }, { call, put }) {
-      const response = yield call(queryId, {
-        id: payload.id
+      const response = yield call(getPurchaseOrderById, {
+        id: payload.id,
+        storeId: lstorage.getCurrentUserStore()
       })
       if (response.success) {
         yield put({
@@ -75,28 +76,10 @@ export default modelExtend(pageModel, {
           }
         })
         yield put({
-          type: 'queryPurchaseOrderDetail',
-          payload: {
-            header: response.data,
-            transNoId: payload.id
-          }
-        })
-      } else {
-        throw response
-      }
-    },
-
-    * queryPurchaseOrderDetail ({ payload = {} }, { call, put }) {
-      const response = yield call(query, {
-        transNoId: payload.transNoId,
-        type: 'all'
-      })
-      if (response.success && response.data) {
-        yield put({
           type: 'changeTotalData',
           payload: {
-            header: payload.header,
-            listItem: response.data.map((item, index) => ({
+            header: response.data,
+            listItem: response.detail.map((item, index) => ({
               ...item,
               no: index + 1
             }))
