@@ -84,6 +84,7 @@ export default modelExtend(pageModel, {
         if (pathname === '/cash-entry'
           || pathname === '/transfer-entry'
           || pathname === '/bank-recon'
+          || pathname === '/auto-recon'
           || pathname === '/balance/finance/petty-cash'
           || pathname === '/balance/finance/history'
           || pathname === '/master/paymentoption'
@@ -175,8 +176,10 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        const matchAutoRecon = pathToRegexp('/auto-recon/:id').exec(pathname)
         if (
           pathname === '/journal-entry'
+          || matchAutoRecon
           || pathname === '/tools/transaction/journal-entry') {
           if (activeKey !== '1') {
             dispatch({

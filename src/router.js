@@ -412,6 +412,8 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/master/paymentOption'))
               registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/master/paymentOption/store'))
               cb(null, require('./routes/master/paymentOption/'))
             }, 'master-payment-option')
           }
@@ -1548,6 +1550,27 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/accounts/accountRule'))
               cb(null, require('./routes/accounts/transferentry/'))
             }, 'finance-transfer-entry')
+          }
+        }, {
+          path: 'auto-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/bankentry'))
+              registerModel(app, require('./models/accounts/autorecon'))
+              registerModel(app, require('./models/accounts/accountRule'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/bank'))
+              cb(null, require('./routes/accounts/autorecon'))
+            }, 'finance-bank-auto-recon')
+          }
+        }, {
+          path: 'auto-recon/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/autorecon'))
+              registerModel(app, require('./models/accounts/accountRule'))
+              cb(null, require('./routes/accounts/autorecon/Detail'))
+            }, 'finance-bank-auto-recon-detail')
           }
         }, {
           path: 'bank-recon',

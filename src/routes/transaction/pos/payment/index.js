@@ -35,10 +35,10 @@ const Payment = ({
     woNumber,
     companyInfo } = payment
   const {
-    listPayment: listEdc
+    paymentLov: listEdc
   } = paymentEdc
   const {
-    listPayment: listCost
+    paymentLov: listCost
   } = paymentCost
   const { memberInformation,
     mechanicInformation,
@@ -252,6 +252,8 @@ const Payment = ({
       if (loading.effects['payment/create']) {
         return
       }
+      dispatch({ type: 'paymentEdc/queryLov', payload: {} })
+      dispatch({ type: 'paymentCost/queryLov', payload: {} })
       const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
       dispatch({
         type: 'payment/create',
