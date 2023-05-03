@@ -6,10 +6,11 @@ import { Button, Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import MachineStore from './machineStore'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ paymentOption, accountRule, loading, dispatch, location, app }) => {
+const Counter = ({ userStore, paymentMachineStore, paymentOption, accountRule, loading, dispatch, location, app }) => {
   const { listPayment, pagination, modalType, currentItem, activeKey } = paymentOption
   const { listAccountCode } = accountRule
   const { user, storeInfo } = app
@@ -118,6 +119,14 @@ const Counter = ({ paymentOption, accountRule, loading, dispatch, location, app 
     }
   }
 
+  const machineStoreProps = {
+    paymentMachineStore,
+    loading,
+    dispatch,
+    location,
+    userStore
+  }
+
   let moreButtonTab
   if (activeKey === '0') {
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
@@ -137,6 +146,13 @@ const Counter = ({ paymentOption, accountRule, loading, dispatch, location, app 
             </div>
           }
         </TabPane>
+        <TabPane tab="Store" key="2" >
+          {activeKey === '2' &&
+            <div>
+              <MachineStore {...machineStoreProps} />
+            </div>
+          }
+        </TabPane>
       </Tabs>
     </div>
   )
@@ -151,4 +167,11 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ paymentOption, accountRule, loading, app }) => ({ paymentOption, accountRule, loading, app }))(Counter)
+export default connect(({
+  userStore,
+  paymentMachineStore,
+  paymentOption,
+  accountRule,
+  loading,
+  app
+}) => ({ userStore, paymentMachineStore, paymentOption, accountRule, loading, app }))(Counter)

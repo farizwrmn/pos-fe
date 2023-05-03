@@ -24,6 +24,35 @@ const Option = Select.Option
 const TreeNode = TreeSelect.TreeNode
 // const Option = Select.Option
 
+const printDateVisible = false
+const taxVisible = false
+const cardVisible = true
+
+const ammountItemLayout = {
+  labelCol: {
+    xs: {
+      span: 3
+    },
+    sm: {
+      span: 3
+    },
+    md: {
+      span: 3
+    }
+  },
+  wrapperCol: {
+    xs: {
+      span: 24
+    },
+    sm: {
+      span: 24
+    },
+    md: {
+      span: 24
+    }
+  }
+}
+
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -60,20 +89,20 @@ class FormPayment extends React.Component {
 
   componentDidMount () {
     const {
-      selectedPaymentShortcut,
-      currentBundlePayment,
-      onGetMachine,
-      onResetMachine
+      selectedPaymentShortcut
+      // currentBundlePayment,
+      // onGetMachine,
+      // onResetMachine
     } = this.props
-    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
-      onResetMachine()
-      if (currentBundlePayment && currentBundlePayment.paymentBankId) {
-        onGetMachine(currentBundlePayment.paymentOption)
-      } else {
-        onGetMachine(selectedPaymentShortcut.typeCode)
-      }
-      // onGetCost(selectedPaymentShortcut.machine)
-    }
+    // if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
+    //   onResetMachine()
+    //   if (currentBundlePayment && currentBundlePayment.paymentBankId) {
+    //     onGetMachine(currentBundlePayment.paymentOption)
+    //   } else {
+    //     onGetMachine(selectedPaymentShortcut.typeCode)
+    //   }
+    //   // onGetCost(selectedPaymentShortcut.machine)
+    // }
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       typeCode: selectedPaymentShortcut.typeCode,
@@ -103,8 +132,8 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
-      onGetMachine,
-      onGetCost,
+      // onGetMachine,
+      // onGetCost,
       onResetMachine,
       curTotal,
       listEdc,
@@ -135,6 +164,21 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
+    const filteredPaymentList = listEdc.filter((filtered) => {
+      if (filtered.paymentOption === typeCode) {
+        return true
+      }
+      return false
+    })
+
+    const filteredCostList = listCost.filter((filtered) => {
+      const filteredList = filteredPaymentList.filter(filteredEDC => filteredEDC.id === filtered.machine.id)
+      if (filteredList && filteredList[0]) {
+        return true
+      }
+      return false
+    })
+
     const handleSubmit = () => {
       validateFields((errors) => {
         if (errors) {
@@ -146,7 +190,7 @@ class FormPayment extends React.Component {
           ...getFieldsValue()
         }
         data.amount = parseFloat(data.amount)
-        const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
+        const selectedBank = filteredCostList ? filteredCostList.filter(filtered => filtered.id === data.bank) : []
 
         if (modalType === 'add') {
           data.id = listAmount.length + 1
@@ -271,7 +315,10 @@ class FormPayment extends React.Component {
       })
       validateFields()
       onResetMachine()
-      onGetMachine(value)
+      this.setState({
+        typeCode: value
+      })
+      // onGetMachine(value)
     }
 
     const onChangeMachine = (machineId) => {
@@ -279,9 +326,9 @@ class FormPayment extends React.Component {
         bank: undefined
       })
       validateFields()
-      onGetCost(machineId)
-      if (listEdc && listEdc.length > 0) {
-        const filteredMachine = listEdc.filter(filtered => filtered.id === machineId)
+      // onGetCost(machineId)
+      if (filteredCostList && filteredCostList.length > 0) {
+        const filteredMachine = filteredCostList.filter(filtered => filtered.id === machineId)
         if (filteredMachine && filteredMachine[0] && filteredMachine[0].qrisImage) {
           setQrisImage(filteredMachine[0].qrisImage)
           message.info('Send Qris Image to Customer View')
@@ -300,6 +347,40 @@ class FormPayment extends React.Component {
 
     return (
       <Form layout="horizontal">
+        <Col>
+          <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
+            {getFieldDecorator('amount', {
+              initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
+                  message: '0-9 please insert the value'
+                }
+              ]
+            })(
+              <Input
+                style={{ width: '100%', fontSize: '30px', height: '60px' }}
+                onChange={value => changeToNumber(value)}
+                // addonBefore={(
+                //   <Button
+                //     onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
+                //   >
+                //     Netto
+                //   </Button>
+                // )}
+                autoFocus
+                maxLength={10}
+                size="large"
+              />
+            )}
+          </FormItem>
+          <Button
+            onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
+          >
+            Netto
+          </Button>
+        </Col>
         <Row>
           <Col md={12} sm={24}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
@@ -327,24 +408,48 @@ class FormPayment extends React.Component {
                 </TreeSelect>
               )}
             </FormItem>
-            <FormItem label="Amount" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('amount', {
-                initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+            <FormItem label="EDC" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('machine', {
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
+                  filteredPaymentList && filteredPaymentList.length === 1 ? filteredPaymentList[0].id : parseFloat(selectedPaymentShortcut.machine)
+                ) : (item.machine || undefined),
                 rules: [
                   {
-                    required: true,
-                    pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
-                    message: '0-9 please insert the value'
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && filteredPaymentList.length > 0)
                   }
                 ]
-              })(<Input style={{ width: '100%', fontSize: '14pt' }} onChange={value => changeToNumber(value)} addonBefore={(<Button size="small" onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}>Netto</Button>)} autoFocus maxLength={10} />)}
+              })(
+                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {filteredPaymentList.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
+                </Select>
+              )}
             </FormItem>
-            <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
-              <Input maxLength={25} value={taxInvoiceNo} onChange={e => this.onChangeTaxInvoiceNo(e)} placeholder="Tax Invoice No" />
+            <FormItem label="Card" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('bank', {
+                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
+                  filteredCostList && filteredCostList.length === 1 ? filteredCostList[0].id : parseFloat(selectedPaymentShortcut.bank)
+                ) : (item.bank || undefined),
+                rules: [
+                  {
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && filteredCostList.length > 0)
+                  }
+                ]
+              })(
+                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank)} style={{ width: '100%' }} min={0} maxLength={10}>
+                  {filteredCostList.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                </Select>
+              )}
             </FormItem>
-            <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
-              <DatePicker value={taxDate} onChange={e => this.onChangeTaxDate(e)} placeholder="Tax Date" />
-            </FormItem>
+            {taxVisible &&
+              <div>
+                <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+                  <Input maxLength={25} value={taxInvoiceNo} onChange={e => this.onChangeTaxInvoiceNo(e)} placeholder="Tax Invoice No" />
+                </FormItem>
+                <FormItem label="Tax Date" hasFeedback {...formItemLayout}>
+                  <DatePicker value={taxDate} onChange={e => this.onChangeTaxDate(e)} placeholder="Tax Date" />
+                </FormItem>
+              </div>
+            }
           </Col>
           <Col md={12} sm={24}>
             <FormItem label="Note" hasFeedback {...formItemLayout}>
@@ -359,81 +464,66 @@ class FormPayment extends React.Component {
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
             </FormItem>
-            <FormItem label="EDC" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('machine', {
-                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  listEdc && listEdc.length === 1 ? listEdc[0].id : parseFloat(selectedPaymentShortcut.machine)
-                ) : item.machine,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
-                  }
-                ]
-              })(
-                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem label="Card" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('bank', {
-                initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
-                ) : item.bank,
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
-                  }
-                ]
-              })(
-                <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank)} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem
-              label="Print Date"
-              hasFeedback
-              style={{
-                display: getFieldValue('typeCode') === 'C' ? 'none' : ''
-              }}
-              {...formItemLayout}
-            >
-              {getFieldDecorator('printDate', {
-                initialValue: (currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank) ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
-                  item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss')
-                    : null),
-                rules: [
-                  {
-                    required: getFieldValue('typeCode') !== 'C',
-                    message: 'please insert the value'
-                  }
-                ]
-              })(
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  placeholder="Select Time"
-                  disabled
-                  style={{ width: '100%', fontSize: '14pt' }}
-                />
-              )}
-            </FormItem>
-            {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Card Name" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('cardName', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
+            {printDateVisible &&
+              <FormItem
+                label="Print Date"
+                hasFeedback
+                style={{
+                  display: getFieldValue('typeCode') === 'C' ? 'none' : ''
+                }}
+                {...formItemLayout}
+              >
+                {getFieldDecorator('printDate', {
+                  initialValue: (currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank) ? moment.utc(moment(), 'YYYY-MM-DD HH:mm:ss') : (
+                    item.printDate ? moment.utc(item.printDate, 'YYYY-MM-DD HH:mm:ss')
+                      : null),
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',
-                      pattern: /^[a-z0-9 -.,_]+$/i,
                       message: 'please insert the value'
                     }
                   ]
+                })(
+                  <DatePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="Select Time"
+                    disabled
+                    style={{ width: '100%', fontSize: '14pt' }}
+                  />
+                )}
+              </FormItem>
+            }
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('cardName', {
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
+                    ? [
+                      {
+                        required: true,
+                        pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
+                        message: '0-9 please insert the value (max. 6 digits)'
+                      }
+                    ] : (getFieldValue('typeCode') === 'QR')
+                      ? [
+                        {
+                          required: true,
+                          pattern: /^(?!(.)\1+$)[qQrR0]+$/,
+                          message: 'please insert the value(ex. 0 or QR)'
+                        }
+                      ] :
+                      [
+                        {
+                          required: getFieldValue('typeCode') !== 'C',
+                          pattern: /^[a-z0-9 -.,_]+$/i,
+                          message: 'please insert the value'
+                        }
+                      ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
               </FormItem>
             )}
-            {getFieldValue('typeCode') !== 'C' && (
+            {cardVisible && getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
@@ -451,30 +541,42 @@ class FormPayment extends React.Component {
           <Col lg={8} md={12} sm={24} />
         </Row>
         <FormItem {...formItemLayout}>
-          <Button type="primary" onClick={handleSubmit}>{`${modalType === 'add' ? 'Add' : 'Edit'} Payment Method (Ctrl + B)`}</Button>
           {modalType === 'edit' && <Button type="dashed" onClick={() => onCancelEdit()}>Cancel edit</Button>}
+          <Button type="primary" onClick={handleSubmit}>{`${modalType === 'add' ? 'Add' : 'Edit'} Payment Method (Ctrl + B)`}</Button>
         </FormItem>
         <List {...listProps} />
         <Row>
           <Col md={12} sm={24} style={{ float: 'right', textAlign: 'right' }}>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
-              <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Charge" {...formItemLayout}>
-              <Input value={curCharge.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
-              <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Dine In Tax" {...formItemLayout}>
-              <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
-              <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
-            <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
-              <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
-            </FormItem>
+            {curTotal !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Total" {...formItemLayout}>
+                <Input value={curTotal.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curChange !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Charge" {...formItemLayout}>
+                <Input value={curCharge.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curRounding !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Rounding" {...formItemLayout}>
+                <Input value={curRounding.toLocaleString()} defaultValue="0" style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {dineIn !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Dine In Tax" {...formItemLayout}>
+                <Input value={dineIn.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curNetto !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Netto" {...formItemLayout}>
+                <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
+            {curChange !== 0 && (
+              <FormItem style={{ fontSize: '20px', marginBottom: 2, marginTop: 2 }} label="Change" {...formItemLayout}>
+                <Input value={curChange.toLocaleString()} style={{ width: '100%', fontSize: '20', textAlign: 'right' }} size="large" />
+              </FormItem>
+            )}
             <Form layout="vertical">
               <FormItem>
                 <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" >Back To Transaction Detail</Button>

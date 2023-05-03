@@ -48,7 +48,7 @@ const PrintPDF = ({ dataSource, user, selectedVendor, dateRange }) => {
       if (tableBody.hasOwnProperty(key)) {
         let row = []
         row.push({ text: count, alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
-        row.push({ text: (tableBody[key].created_at ? moment(tableBody[key].created_at).format('DD MMM YYYY') : '').toString(), alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
+        row.push({ text: (tableBody[key].created_at ? moment(tableBody[key].created_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY') : '').toString(), alignment: 'center', color: tableBody[key].type === 'rtn' ? 'red' : 'black' })
         row.push({
           text: `${tableBody[key].number}
         Produk: ${tableBody[key].product_name}

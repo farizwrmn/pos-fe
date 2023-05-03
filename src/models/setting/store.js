@@ -26,7 +26,8 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/report/fifo/summary' && location.query.activeKey === '3') {
           dispatch({ type: 'getStore', payload: { type: 'all' } })
         }
-        if (location.pathname === '/setting/store') {
+        if (location.pathname === '/setting/store' ||
+          (location.pathname === '/auto-recon' && location.query.activeKey === '2')) {
           dispatch({ type: 'getAllStores' })
           dispatch({ type: 'refreshSetting' })
         } else if (

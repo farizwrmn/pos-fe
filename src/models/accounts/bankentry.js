@@ -255,7 +255,6 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-
     * updateBankRecon ({ payload = {} }, { call, put, select }) {
       let {
         accountId,

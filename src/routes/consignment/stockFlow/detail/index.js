@@ -128,7 +128,7 @@ function Detail ({
             <div className={styles.content}>
               <Row>
                 <Col span={12}><strong>ID Permintaan Mutasi</strong></Col>
-                <Col span={12}><strong>SF-{moment(currentItem.createdAt).format('YYMM')}{String(currentItem.id).padStart(8, '0')}</strong></Col>
+                <Col span={12}><strong>SF-{moment(currentItem.createdAt, 'YYYY-MM-DD HH:mm:ss').format('YYMM')}{String(currentItem.id).padStart(8, '0')}</strong></Col>
               </Row>
               <Row>
                 <Col span={12}>Tipe Permintaan</Col>
@@ -140,7 +140,7 @@ function Detail ({
               </Row>
               <Row>
                 <Col span={12}>Tanggal Permintaan</Col>
-                <Col span={12}>{currentItem && currentItem.createdAt ? moment(currentItem.createdAt).format('DD MMM YYYY, HH:mm:SS') : '-'}</Col>
+                <Col span={12}>{currentItem && currentItem.createdAt ? moment(currentItem.createdAt, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY, HH:mm:ss') : '-'}</Col>
               </Row>
               <Row>
                 <Col span={12}>Vendor</Col>
