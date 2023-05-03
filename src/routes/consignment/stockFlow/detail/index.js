@@ -140,7 +140,7 @@ function Detail ({
               </Row>
               <Row>
                 <Col span={12}>Tanggal Permintaan</Col>
-                <Col span={12}>{currentItem && currentItem.createdAt ? moment(currentItem.createdAt, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY, HH:mm:SS') : '-'}</Col>
+                <Col span={12}>{currentItem && currentItem.createdAt ? moment(currentItem.createdAt, 'YYYY-MM-DD HH:mm:ss').format('DD MMM YYYY, HH:mm:ss') : '-'}</Col>
               </Row>
               <Row>
                 <Col span={12}>Vendor</Col>
