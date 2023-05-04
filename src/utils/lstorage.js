@@ -165,7 +165,7 @@ const setBundleTrans = (data) => {
 }
 
 const setEdc = (data) => {
-  const ttl = moment().add(5, 'minutes')
+  const ttl = moment().set({ hours: 23, minutes: 59, seconds: 59 })
   return localStorage.setItem('payment_edc', JSON.stringify({ data, ttl }))
 }
 
@@ -182,7 +182,7 @@ const getEdc = () => {
 }
 
 const setCost = (data) => {
-  const ttl = moment().add(5, 'minutes')
+  const ttl = moment().set({ hours: 23, minutes: 59, seconds: 59 })
   return localStorage.setItem('payment_cost', JSON.stringify({ data, ttl }))
 }
 
@@ -226,6 +226,8 @@ const removeItemKeys = () => {
   localStorage.removeItem('woNumber')
   localStorage.removeItem('bundle_promo')
   localStorage.removeItem('workorder')
+  localStorage.removeItem('payment_cost')
+  localStorage.removeItem('payment_edc')
 }
 
 const removeAllKey = () => {
