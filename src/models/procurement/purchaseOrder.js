@@ -63,6 +63,12 @@ export default modelExtend(pageModel, {
           })
           dispatch({ type: 'querySequence' })
         }
+        if (pathname === '/transaction/procurement/order-history') {
+          dispatch({
+            type: 'query',
+            payload: location.query
+          })
+        }
         const match = pathToRegexp('/transaction/procurement/order/:id').exec(location.pathname)
         if (match) {
           dispatch({
@@ -456,7 +462,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
-      const response = yield call(query, payload)
+      const response = yield call(query, { order: '-id', ...payload })
       if (response.success) {
         yield put({
           type: 'querySuccess',
