@@ -22,6 +22,16 @@ const formatNumberIndonesia = (text) => {
   return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+const formatNumberQty = (text) => {
+  if (!text) {
+    text = '-'
+  }
+  if (typeof text === 'number') {
+    return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+  }
+  return text.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+}
+
 const toColumnName = (num) => {
   let ret = ''
   for (let a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
@@ -49,6 +59,7 @@ const numberFormatter = (currency) => {
 module.exports = {
   formatNumberInExcel,
   formatNumberIndonesia,
+  formatNumberQty,
   toColumnName,
   numberFormatter,
   numberToLetters

@@ -7,7 +7,7 @@ import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
 
-const formatNumberIndonesia = numberFormat.formatNumberIndonesia
+const formatNumberIndonesia = numberFormat.formatNumberQty
 
 const PrintPDF = ({ user, listItem, itemPrint }) => {
   // Declare Function
@@ -23,9 +23,6 @@ const PrintPDF = ({ user, listItem, itemPrint }) => {
         row.push({ text: `${data.product.productCode}`, alignment: 'left', fontSize: 10 })
         row.push({ text: `${data.product.productName}`, alignment: 'left', fontSize: 10 })
         row.push({ text: formatNumberIndonesia(data.qty), alignment: 'right', fontSize: 10 })
-        row.push({ text: formatNumberIndonesia(data.purchasePrice), alignment: 'right', fontSize: 10 })
-        row.push({ text: formatNumberIndonesia((data.qty * data.purchasePrice) - (data.DPP + data.PPN)), alignment: 'right', fontSize: 10 })
-        row.push({ text: formatNumberIndonesia(parseFloat(data.DPP) + parseFloat(data.PPN)), alignment: 'right', fontSize: 10 })
         body.push(row)
       }
       count += 1
@@ -197,10 +194,7 @@ const PrintPDF = ({ user, listItem, itemPrint }) => {
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'KODE BARANG', style: 'tableHeader', alignment: 'left' },
       { fontSize: 12, text: 'NAMA BARANG', style: 'tableHeader', alignment: 'left' },
-      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: '@', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'DISKON', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 12, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' }
+      { fontSize: 12, text: 'QTY (PCS)', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
@@ -211,17 +205,12 @@ const PrintPDF = ({ user, listItem, itemPrint }) => {
   }
 
   const qtyTotal = listItem.reduce((prev, next) => prev + next.qty, 0)
-  const discountTotal = listItem.reduce((prev, next) => prev + ((next.qty * next.purchasePrice) - (next.DPP + next.PPN)), 0)
-  const grandTotal = listItem.reduce((prev, next) => prev + next.DPP + next.PPN, 0)
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 11 },
+      { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 11 },
       {},
       {},
-      { text: formatNumberIndonesia(parseFloat(qtyTotal)), alignment: 'right', fontSize: 11 },
-      {},
-      { text: formatNumberIndonesia(parseFloat(discountTotal)), alignment: 'right', fontSize: 11 },
-      { text: formatNumberIndonesia(parseFloat(grandTotal)), alignment: 'right', fontSize: 11 }
+      { text: formatNumberIndonesia(parseFloat(qtyTotal)), alignment: 'right', fontSize: 11 }
     ]
   ]
   const tableLayout = {
@@ -241,7 +230,7 @@ const PrintPDF = ({ user, listItem, itemPrint }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['5%', '15%', '32%', '12%', '12%', '12%', '12%'],
+    width: ['5%', '15%', '58%', '22%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
