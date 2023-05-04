@@ -45,6 +45,7 @@ export default modelExtend(pageModel, {
           || pathname === '/stock'
           || pathname === '/tools/sellprice'
           || pathname === '/marketing/target'
+          || pathname === '/transaction/procurement/order'
           || pathname === '/tools/transaction/sales'
           || pathname === '/tools/transaction/purchase'
           || pathname === '/master/product/stock/import'

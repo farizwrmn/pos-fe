@@ -1,0 +1,80 @@
+import { request, crypt } from 'utils'
+
+export async function query (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-safety',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryDetail ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function querySupplier ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety-supplier/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryBrand ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety-brand/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryCategory ({ id, ...other }) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety-category/${id}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
+export async function add (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-safety',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function remove (id) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety/${id}`,
+    method: 'delete',
+    headers: apiHeaderToken
+  })
+}
+
+export async function edit (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/procurement-safety/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

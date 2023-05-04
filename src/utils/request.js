@@ -163,9 +163,9 @@ export default function request (options) {
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
-      detail = data.detail
-      msg = data.message || statusText
-      dat = data.data || {}
+      detail = data && data.detail
+      msg = (data || { message: 'Network Error' }).message || statusText
+      dat = data && data.data ? data.data : {}
     } else {
       statusCode = 600
       if (Object.prototype.hasOwnProperty.call(error, 'message')) {

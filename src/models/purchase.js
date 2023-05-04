@@ -100,7 +100,9 @@ export default modelExtend(pageModel, {
         }
         if (location.pathname === '/report/accounts/payable'
           || location.pathname === '/transaction/purchase/return'
-          || location.pathname === '/transaction/purchase/order') {
+          || location.pathname === '/transaction/purchase/order'
+          || location.pathname === '/transaction/procurement/order'
+          || location.pathname === '/transaction/procurement/invoice') {
           dispatch({
             type: 'querySupplier',
             payload: {
@@ -108,7 +110,8 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (location.pathname === '/transaction/purchase/add') {
+        if (location.pathname === '/transaction/purchase/add'
+          || location.pathname === '/transaction/procurement/invoice') {
           localStorage.removeItem('product_detail')
           localStorage.removeItem('purchase_void')
           dispatch({ type: 'modalEditHide' })
@@ -570,19 +573,19 @@ export default modelExtend(pageModel, {
                 if (exists.length === 0) {
                   const data = {
                     no: newDataProductDetail.length + 1,
-                    code: item.product.id,
+                    code: item.productId,
                     productCode: item.product.productCode,
                     name: item.product.productName,
                     qty: item.qty,
                     price: item.purchasePrice,
-                    discount: 0,
-                    disc1: 0,
-                    portion: 0,
-                    deliveryFee: 0,
-                    dpp: item.total,
-                    ppn: 0,
+                    discount: item.discNominal,
+                    disc1: item.discPercent,
+                    portion: item.portion,
+                    deliveryFee: item.deliveryFee,
+                    dpp: item.DPP,
+                    ppn: item.PPN,
                     ket: '',
-                    total: item.total
+                    total: item.DPP + item.PPN
                   }
                   newDataProductDetail.push(data)
                 }
