@@ -95,6 +95,7 @@ const FormCounter = ({
               taxInvoiceNo: data.taxInvoiceNo,
               taxType: data.taxType,
               dueDate: data.dueDate,
+              referenceTransNo: data.referenceTransNo,
               nettoTotal: data.nettoTotal,
               rounding: data.rounding,
               storeId: lstorage.getCurrentUserStore(),
