@@ -19,7 +19,7 @@ const PrintPDF = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
         row.push({ text: (data.qty || '').toString(), alignment: 'center', fontSize: 11 })
         row.push({ text: (data.purchasePrice || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.ppn || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.dpp || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.dpp + data.ppn || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1

@@ -47,6 +47,7 @@ export default modelExtend(pageModel, {
         } else if (pathname === '/marketing/promo'
           || pathname === '/master/product/stock/import'
           || pathname === '/stock'
+          || pathname === '/transaction/procurement/order'
           || pathname === '/tools/transaction/sales'
           || pathname === '/tools/transaction/purchase'
           || pathname === '/tools/sellprice') {

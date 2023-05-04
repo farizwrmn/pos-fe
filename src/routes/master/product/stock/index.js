@@ -47,7 +47,6 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
     modalType,
     currentItem,
     activeKey,
-    disable,
     show,
     pagination,
     stockLoading,
@@ -366,7 +365,7 @@ const ProductStock = ({ stockLocation, expressProductCategory, expressProductBra
     modalSpecificationVisible,
     modalProductVisible,
     dispatch,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
+    disabled: modalType === 'edit' && currentItem.isStaging != null ? !currentItem.isStaging : '',
     button: `${modalType === 'add' ? 'Save' : 'Update'}`,
     onSubmit (id, data, reset) {
       dispatch({

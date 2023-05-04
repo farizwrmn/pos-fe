@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, edit, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/transaction/purchase/order/:id').exec(location.pathname)
+        const match = pathToRegexp('/transaction/procurement/order/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryPurchaseOrderDetail',
@@ -64,7 +64,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/transaction/purchase/order') {
+        if (pathname === '/transaction/procurement/order') {
           dispatch({
             type: 'updateState',
             payload: {
