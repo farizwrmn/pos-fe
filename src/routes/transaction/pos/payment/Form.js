@@ -55,25 +55,19 @@ const ammountItemLayout = {
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 13
-    },
-    sm: {
-      span: 8
-    },
     md: {
-      span: 7
+      span: 24
+    },
+    lg: {
+      span: 8
     }
   },
   wrapperCol: {
-    xs: {
-      span: 11
-    },
-    sm: {
-      span: 14
-    },
     md: {
-      span: 14
+      span: 24
+    },
+    lg: {
+      span: 16
     }
   }
 }
@@ -103,6 +97,14 @@ class FormPayment extends React.Component {
     //   }
     //   // onGetCost(selectedPaymentShortcut.machine)
     // }
+    // eslint-disable-next-line react/no-did-mount-set-state
+    setTimeout(() => {
+      const selector = document.getElementById('amount')
+      if (selector) {
+        selector.focus()
+        selector.select()
+      }
+    }, 100)
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       typeCode: selectedPaymentShortcut.typeCode,
@@ -347,42 +349,45 @@ class FormPayment extends React.Component {
 
     return (
       <Form layout="horizontal">
-        <Col>
-          <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
-            {getFieldDecorator('amount', {
-              initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
-                  message: '0-9 please insert the value'
+        <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
+          {getFieldDecorator('amount', {
+            initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+            rules: [
+              {
+                required: true,
+                pattern: /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/,
+                message: '0-9 please insert the value'
+              }
+            ]
+          })(
+            <Input
+              style={{ width: '100%', fontSize: '30px', height: '60px' }}
+              onChange={value => changeToNumber(value)}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleSubmit()
                 }
-              ]
-            })(
-              <Input
-                style={{ width: '100%', fontSize: '30px', height: '60px' }}
-                onChange={value => changeToNumber(value)}
-                // addonBefore={(
-                //   <Button
-                //     onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
-                //   >
-                //     Netto
-                //   </Button>
-                // )}
-                autoFocus
-                maxLength={10}
-                size="large"
-              />
-            )}
-          </FormItem>
-          <Button
-            onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
-          >
-            Netto
-          </Button>
-        </Col>
+              }}
+              // addonBefore={(
+              //   <Button
+              //     onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
+              //   >
+              //     Netto
+              //   </Button>
+              // )}
+              autoFocus
+              maxLength={10}
+              size="large"
+            />
+          )}
+        </FormItem>
+        <Button
+          onClick={() => useNetto(parseFloat(curTotal) + parseFloat(curRounding))}
+        >
+          Netto
+        </Button>
         <Row>
-          <Col md={12} sm={24}>
+          <Col md={24} lg={12}>
             <FormItem label="Type" hasFeedback {...formItemLayout}>
               {getFieldDecorator('typeCode', {
                 initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
@@ -451,19 +456,7 @@ class FormPayment extends React.Component {
               </div>
             }
           </Col>
-          <Col md={12} sm={24}>
-            <FormItem label="Note" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('description', {
-                initialValue: item.description,
-                rules: [
-                  {
-                    required: false,
-                    pattern: /^[a-z0-9 -.%#@${}?!/()_]+$/i,
-                    message: 'please insert the value'
-                  }
-                ]
-              })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
-            </FormItem>
+          <Col md={24} lg={12}>
             {printDateVisible &&
               <FormItem
                 label="Print Date"
@@ -537,8 +530,19 @@ class FormPayment extends React.Component {
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
               </FormItem>
             )}
+            <FormItem label="Note" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: item.description,
+                rules: [
+                  {
+                    required: false,
+                    pattern: /^[a-z0-9 -.%#@${}?!/()_]+$/i,
+                    message: 'please insert the value'
+                  }
+                ]
+              })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+            </FormItem>
           </Col>
-          <Col lg={8} md={12} sm={24} />
         </Row>
         <FormItem {...formItemLayout}>
           {modalType === 'edit' && <Button type="dashed" onClick={() => onCancelEdit()}>Cancel edit</Button>}
