@@ -165,7 +165,7 @@ const setBundleTrans = (data) => {
 }
 
 const setEdc = (data) => {
-  const ttl = moment().set({ hours: 23, minutes: 59, seconds: 59 })
+  const ttl = moment().set({ hours: 23, minutes: 59, seconds: 59 }).valueOf()
   return localStorage.setItem('payment_edc', JSON.stringify({ data, ttl }))
 }
 
@@ -173,7 +173,9 @@ const getEdc = () => {
   let cachedData = localStorage.getItem('payment_edc') ? JSON.parse(localStorage.getItem('payment_edc')) : null
   if (cachedData) {
     const { data, ttl } = cachedData
-    if (moment(ttl).isAfter(moment())) {
+    let ttlTimestamp = Number(ttl)
+    let currentTimeStamp = moment().valueOf()
+    if (ttlTimestamp > currentTimeStamp) {
       return data
     }
     return null
@@ -182,7 +184,7 @@ const getEdc = () => {
 }
 
 const setCost = (data) => {
-  const ttl = moment().set({ hours: 23, minutes: 59, seconds: 59 })
+  const ttl = moment().set({ hours: 23, minutes: 59, seconds: 59 }).valueOf()
   return localStorage.setItem('payment_cost', JSON.stringify({ data, ttl }))
 }
 
@@ -190,7 +192,9 @@ const getCost = () => {
   let cachedData = localStorage.getItem('payment_cost') ? JSON.parse(localStorage.getItem('payment_cost')) : null
   if (cachedData) {
     const { data, ttl } = cachedData
-    if (moment(ttl).isAfter(moment())) {
+    let ttlTimestamp = Number(ttl)
+    let currentTimeStamp = moment().valueOf()
+    if (ttlTimestamp > currentTimeStamp) {
       return data
     }
     return null
