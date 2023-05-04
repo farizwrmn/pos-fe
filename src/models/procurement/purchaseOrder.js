@@ -462,7 +462,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
-      const response = yield call(query, { order: '-id', ...payload })
+      const response = yield call(query, { order: '-id', storeId: lstorage.getCurrentUserStore(), ...payload })
       if (response.success) {
         yield put({
           type: 'querySuccess',
