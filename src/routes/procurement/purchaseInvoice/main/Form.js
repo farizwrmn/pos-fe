@@ -89,12 +89,17 @@ const FormCounter = ({
             onSubmit({
               discInvoiceNominal: data.discInvoiceNominal,
               discInvoicePercent: data.discInvoicePercent,
+              transDate: data.transDate,
+              taxDate: data.taxDate,
+              taxInvoice: data.taxInvoice,
+              taxInvoiceNo: data.taxInvoiceNo,
+              taxType: data.taxType,
               dueDate: data.dueDate,
+              referenceTransNo: data.referenceTransNo,
               nettoTotal: data.nettoTotal,
               rounding: data.rounding,
               storeId: lstorage.getCurrentUserStore(),
               supplierId: data.supplierId,
-              taxType: data.taxType,
               tempo: data.tempo,
               deliveryFee: data.deliveryFee,
               transNo: data.transNo

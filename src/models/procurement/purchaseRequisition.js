@@ -142,6 +142,12 @@ export default modelExtend(pageModel, {
                 supplierName: filteredProductCost[0].supplierName
               }
               item.product.costPrice = filteredProductCost[0].costPrice
+            } else {
+              item.storeSupplier = {
+                id: item.desiredSupplier.id,
+                supplierCode: item.desiredSupplier.supplierCode,
+                supplierName: item.desiredSupplier.supplierName
+              }
             }
             item.no = index + 1
             return item
@@ -434,6 +440,7 @@ export default modelExtend(pageModel, {
           }
         }
       }
+      console.log('newListItem', newListItem)
       yield put({
         type: 'updateState',
         payload: {

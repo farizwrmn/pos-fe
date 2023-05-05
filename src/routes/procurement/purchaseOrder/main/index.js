@@ -151,6 +151,18 @@ const Counter = ({ purchaseSafetyStock, purchaseOrder, productbrand, productcate
         }
       })
     },
+    onOpenHistory () {
+      dispatch({
+        type: 'purchaseOrder/updateState',
+        payload: {
+          currentItem: {
+            transNo: currentItem.transNo
+          },
+          listItem: []
+        }
+      })
+      dispatch(routerRedux.push('/transaction/procurement/order-history'))
+    },
     onGetQuotation () {
       dispatch({ type: 'purchaseOrder/queryCount', payload: {} })
       dispatch({

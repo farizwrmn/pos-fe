@@ -45,6 +45,11 @@ class ModalEditQty extends Component {
         key: 'transNo'
       },
       {
+        title: 'Supplier',
+        dataIndex: 'supplierName',
+        key: 'supplierName'
+      },
+      {
         title: 'Date',
         dataIndex: 'transDate',
         key: 'transDate'
@@ -116,6 +121,11 @@ class ModalEditQty extends Component {
         title: 'No',
         dataIndex: 'transNo',
         key: 'transNo'
+      },
+      {
+        title: 'Supplier',
+        dataIndex: 'supplierName',
+        key: 'supplierName'
       },
       {
         title: 'Date',

@@ -1,24 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { Link } from 'dva/router'
 
-const Detail = ({
-  loading,
-  ...otherProps
-}) => {
+const List = (tableProps) => {
   const columns = [
-    {
-      title: 'No',
-      dataIndex: 'no',
-      key: 'no',
-      width: '50px'
-    },
     {
       title: 'Trans',
       dataIndex: 'transNo',
       key: 'transNo',
       width: '130px',
-      render: (text, record) => <Link to={`/transaction/procurement/receive/${record.id}`}>{text}</Link>
+      render: (text, record) => <Link target="_blank" to={`/transaction/procurement/order/${record.id}`}>{text}</Link>
     },
     {
       title: 'Supplier',
@@ -75,7 +67,6 @@ const Detail = ({
       render: (text, record) => {
         return (
           <div>
-            <div><b>Portion: {(parseFloat(record.portion || 0).toFixed(2) || '-').toLocaleString()}</b></div>
             <div><b>Delivery: {(Math.round(record.deliveryFee || 0) || '-').toLocaleString()}</b></div>
           </div>
         )
@@ -93,32 +84,25 @@ const Detail = ({
           </div>
         )
       }
-    },
-    {
-      title: 'Print',
-      dataIndex: 'print',
-      key: 'print',
-      width: '100px',
-      render: (text, record) => <Link target="_blank" to={`/transaction/procurement/order/${record.id}`}>Print</Link>
     }
   ]
 
   return (
     <div>
-      <div>
-        <Table
-          {...otherProps}
-          pagination={false}
-          loading={loading.effects['purchaseReceive/queryDetail']}
-          bordered
-          columns={columns}
-          scroll={{ x: 1000 }}
-          simple
-          rowKey={record => record.id}
-        />
-      </div>
+      <Table {...tableProps}
+        bordered
+        columns={columns}
+        simple
+        scroll={{ x: 1000 }}
+        rowKey={record => record.id}
+      />
     </div>
   )
 }
 
-export default Detail
+List.propTypes = {
+  editItem: PropTypes.func,
+  deleteItem: PropTypes.func
+}
+
+export default List

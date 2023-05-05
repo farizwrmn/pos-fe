@@ -36,7 +36,7 @@ import BottomButton from './components/BottomButton'
 import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
-import PaymentModal from './paymentModal'
+import ModalPayment from './ModalPayment'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
@@ -2221,7 +2221,7 @@ const Pos = ({
               </Row>
             </Form>
 
-            {paymentModalVisible && <PaymentModal {...modalPaymentTypeProps} />}
+            {paymentModalVisible && <ModalPayment {...modalPaymentTypeProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}

@@ -102,6 +102,7 @@ export default modelExtend(pageModel, {
           || location.pathname === '/transaction/purchase/return'
           || location.pathname === '/transaction/purchase/order'
           || location.pathname === '/transaction/procurement/order'
+          || location.pathname === '/transaction/procurement/order-history'
           || location.pathname === '/transaction/procurement/invoice') {
           dispatch({
             type: 'querySupplier',
