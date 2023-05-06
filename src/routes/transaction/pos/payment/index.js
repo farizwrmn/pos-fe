@@ -252,8 +252,6 @@ const Payment = ({
       if (loading.effects['payment/create']) {
         return
       }
-      dispatch({ type: 'paymentEdc/queryLov', payload: {} })
-      dispatch({ type: 'paymentCost/queryLov', payload: {} })
       const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
       dispatch({
         type: 'payment/create',
