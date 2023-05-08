@@ -360,10 +360,16 @@ class FormPayment extends React.Component {
     }
 
     const onConfirm = () => {
-      const { taxInvoiceNo, taxDate } = this.state
-      confirmPayment({
-        taxInvoiceNo, taxDate
-      })
+      const listAmountFiltered = listAmount.filter(filtered => filtered !== 'V')
+
+      if (listAmountFiltered && listAmountFiltered.length === 0) {
+        handleSubmit()
+      } else {
+        const { taxInvoiceNo, taxDate } = this.state
+        confirmPayment({
+          taxInvoiceNo, taxDate
+        })
+      }
     }
 
     return (
@@ -633,7 +639,7 @@ class FormPayment extends React.Component {
                 <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} style={{ marginTop: '10%' }} className="margin-right" width="100%" >Back To Transaction Detail</Button>
               </FormItem>
               <FormItem>
-                <Button type="primary" size="large" onClick={() => onConfirm()} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" > Confirm Payment </Button>
+                <Button type="primary" size="large" onClick={() => onConfirm()} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%">Confirm Payment</Button>
               </FormItem>
             </Form>
           </Col>
