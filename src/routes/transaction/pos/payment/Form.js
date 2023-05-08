@@ -508,7 +508,7 @@ class FormPayment extends React.Component {
             }
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('cardName', {
+                {getFieldDecorator('batchNumber', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
                     ? [
@@ -547,6 +547,34 @@ class FormPayment extends React.Component {
                     }
                   ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Card Name" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('cardName', {
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
+                    ? [
+                      {
+                        required: true,
+                        message: 'required'
+                      }
+                    ] : (getFieldValue('typeCode') === 'QR')
+                      ? [
+                        {
+                          required: true,
+                          pattern: /^(?!(.)\1+$)[qQrR0]+$/,
+                          message: 'please insert the value(ex. 0 or QR)'
+                        }
+                      ] :
+                      [
+                        {
+                          required: getFieldValue('typeCode') !== 'C',
+                          pattern: /^[a-z0-9 -.,_]+$/i,
+                          message: 'please insert the value'
+                        }
+                      ]
+                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
               </FormItem>
             )}
             <FormItem label="Note" hasFeedback {...formItemLayout}>
