@@ -84,19 +84,7 @@ class FormPayment extends React.Component {
   componentDidMount () {
     const {
       selectedPaymentShortcut
-      // currentBundlePayment,
-      // onResetMachine
     } = this.props
-    // if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
-    //   onResetMachine()
-    //   if (currentBundlePayment && currentBundlePayment.paymentBankId) {
-    //     onGetMachine(currentBundlePayment.paymentOption)
-    //   } else {
-    //     onGetMachine(selectedPaymentShortcut.typeCode)
-    //   }
-    //   // onGetCost(selectedPaymentShortcut.machine)
-    // }
-    // eslint-disable-next-line react/no-did-mount-set-state
     setTimeout(() => {
       const selector = document.getElementById('amount')
       if (selector) {
@@ -133,12 +121,12 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
-      onGetMachine,
-      onGetCost,
-      onResetMachine,
+      dispatch,
       curTotal,
       listEdc,
       listCost,
+      listAllEdc,
+      listAllCost,
       modalType,
       // curTotalDiscount,
       memberInformation,
@@ -293,18 +281,56 @@ class FormPayment extends React.Component {
 
     const onChangePaymentType = (value) => {
       removeQrisImage()
-      resetFields()
       setFieldsValue({
         printDate: moment(),
         machine: undefined,
         bank: undefined
       })
-      validateFields()
-      onResetMachine()
       this.setState({
         typeCode: value
       })
-      onGetMachine(value)
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === value)
+      if (listEdc && listEdc.length > 0) {
+        setFieldsValue({
+          machine: listEdc[0].id
+        })
+      }
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+
+      if (listEdc && listEdc.length > 0) {
+        if (listEdc && listEdc[0] && listEdc[0].qrisImage) {
+          setQrisImage(listEdc[0].qrisImage)
+          message.info('Send Qris Image to Customer View')
+        } else {
+          removeQrisImage()
+        }
+        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+        if (listCost && listCost.length > 0) {
+          setFieldsValue({
+            bank: listCost[0].id
+          })
+        }
+      }
+
+      validateFields()
+      setTimeout(() => {
+        const selector = document.getElementById('cardName')
+        if (selector) {
+          selector.focus()
+          selector.select()
+        }
+      }, 100)
     }
 
     const onChangeMachine = (machineId) => {
@@ -312,14 +338,25 @@ class FormPayment extends React.Component {
         bank: undefined
       })
       validateFields()
-      onGetCost(machineId)
+      const listCost = listAllCost.filter(filtered => filtered.machineId === machineId)
+      dispatch({
+        type: 'paymentCost/updateState',
+        payload: {
+          paymentLovFiltered: listCost
+        }
+      })
+      if (listCost && listCost.length > 0) {
+        setFieldsValue({
+          bank: listCost[0].id
+        })
+      }
       const filteredMachine = listEdc.filter(filtered => filtered.id === machineId)
       if (filteredMachine && filteredMachine[0] && filteredMachine[0].qrisImage) {
         setQrisImage(filteredMachine[0].qrisImage)
         message.info('Send Qris Image to Customer View')
-        return
+      } else {
+        removeQrisImage()
       }
-      removeQrisImage()
     }
 
     const onConfirm = () => {
@@ -565,7 +602,7 @@ class FormPayment extends React.Component {
             )}
             <Form layout="vertical">
               <FormItem>
-                <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" >Back To Transaction Detail</Button>
+                <Button type="default" size="large" onEnter={cancelPayment} onClick={cancelPayment} disabled={loading && loading.effects['payment/create']} style={{ marginTop: '10%' }} className="margin-right" width="100%" >Back To Transaction Detail</Button>
               </FormItem>
               <FormItem>
                 <Button type="primary" size="large" onClick={() => onConfirm()} disabled={loading && loading.effects['payment/create']} className="margin-right" width="100%" > Confirm Payment </Button>

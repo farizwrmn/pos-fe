@@ -136,21 +136,6 @@ const Payment = ({
     })
   }
 
-  const onResetMachine = () => {
-    dispatch({
-      type: 'paymentEdc/updateState',
-      payload: {
-        listPayment: []
-      }
-    })
-    dispatch({
-      type: 'paymentCost/updateState',
-      payload: {
-        listPayment: []
-      }
-    })
-  }
-
   const formPaymentProps = {
     currentGrabOrder,
     currentBundlePayment,
@@ -174,9 +159,9 @@ const Payment = ({
     cashierBalance,
     listEdc,
     listCost,
-    onGetMachine,
-    onGetCost,
-    onResetMachine,
+    dispatch,
+    listAllEdc,
+    listAllCost,
     onSubmit (data) {
       if (data.typeCode === 'V') {
         message.error('Cannot add voucher from this form')
@@ -208,7 +193,6 @@ const Payment = ({
           itemPayment: {}
         }
       })
-      onResetMachine()
     },
     editItem (data) {
       if (data && data.typeCode) {
