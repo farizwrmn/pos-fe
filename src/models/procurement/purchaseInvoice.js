@@ -206,7 +206,7 @@ export default modelExtend(pageModel, {
             })
           }
 
-          modalEditHeader.referenceTransNo = header.referenceTransNo
+          modalEditHeader.reference = header.referenceTransNo
           modalEditHeader.supplierId = header.supplierId
           modalEditHeader.discInvoiceNominal = header.discInvoiceNominal
           modalEditHeader.discInvoicePercent = header.discInvoicePercent
@@ -218,7 +218,7 @@ export default modelExtend(pageModel, {
             payload: {
               currentItem: {
                 ...currentItem,
-                referenceTransNo: header.referenceTransNo,
+                reference: header.referenceTransNo,
                 supplierId: header.supplierId,
                 discInvoiceNominal: header.discInvoiceNominal,
                 discInvoicePercent: header.discInvoicePercent,
@@ -339,7 +339,7 @@ export default modelExtend(pageModel, {
         status: 1,
         storeId: lstorage.getCurrentUserStore(),
         pageSize: 25,
-        order: 'transDate'
+        order: '-id'
       })
       if (response.success) {
         yield put({

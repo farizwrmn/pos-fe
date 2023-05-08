@@ -95,7 +95,7 @@ const FormCounter = ({
               taxInvoiceNo: data.taxInvoiceNo,
               taxType: data.taxType,
               dueDate: data.dueDate,
-              referenceTransNo: data.referenceTransNo,
+              reference: data.reference,
               nettoTotal: data.nettoTotal,
               rounding: data.rounding,
               storeId: lstorage.getCurrentUserStore(),
@@ -191,8 +191,8 @@ const FormCounter = ({
             })(<Input disabled maxLength={20} />)}
           </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('referenceTransNo', {
-              initialValue: item.referenceTransNo,
+            {getFieldDecorator('reference', {
+              initialValue: item.reference,
               rules: [{
                 required: true,
                 message: 'Required'
