@@ -79,7 +79,7 @@ const PrintPDF = ({ user, listItem, itemPrint }) => {
           widths: ['15%', '1%', '27%', '10%', '15%', '1%', '32%'],
           body: [
             [{ text: 'NO PO', fontSize: 11 }, ':', { text: (`${itemPrint.transNo}\n${itemPrint.supplier.supplierName}` || '').toString(), fontSize: 11 }, {}, { text: 'DELIVERY TO', fontSize: 11 }, ':', { text: (itemPrint.delivery.address01 || '').toString(), fontSize: 11 }],
-            [{ text: 'NPWP', fontSize: 11 }, ':', { text: (`${itemPrint.delivery.taxID} a/n ${itemPrint.delivery.companyName}`).toString(), fontSize: 11 }, {}, { text: 'MEMO', fontSize: 11 }, ':', { text: (`${itemPrint.delivery.address02 || ''}\n${itemPrint.description}`).toString(), fontSize: 11 }]
+            [{ text: 'NPWP', fontSize: 11 }, ':', { text: (`${itemPrint.delivery.taxID} a/n ${itemPrint.delivery.companyName}`).toString(), fontSize: 11 }, {}, { text: 'MEMO', fontSize: 11 }, ':', { text: (`${itemPrint.delivery.address02 || ''}\n${itemPrint.description || ''}`).toString(), fontSize: 11 }]
           ]
         },
         layout: 'noBorders'
