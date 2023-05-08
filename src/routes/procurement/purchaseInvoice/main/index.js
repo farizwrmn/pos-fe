@@ -82,6 +82,7 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     listSupplier,
     listItemProps,
     listItem,
+    loading,
     onSubmit (data, reset) {
       dispatch({
         type: 'purchaseInvoice/add',
