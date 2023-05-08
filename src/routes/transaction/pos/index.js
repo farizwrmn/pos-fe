@@ -101,6 +101,9 @@ function requestFullScreen (element) {
 
 const Pos = ({
   pospromo,
+  paymentEdc,
+  paymentCost,
+  paymentOpts,
   location,
   customer,
   loading,
@@ -189,6 +192,14 @@ const Pos = ({
     paymentModalVisible,
     woNumber
   } = payment
+
+  const {
+    paymentLov: listAllEdc
+  } = paymentEdc
+  const { listOpts } = paymentOpts
+  const {
+    paymentLov: listAllCost
+  } = paymentCost
 
   let currentCashier = {
     cashierId: null,
@@ -1933,6 +1944,44 @@ const Pos = ({
     dispatch({
       type: 'payment/showPaymentModal'
     })
+
+    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listEdcId = listEdc.map(item => item.id)
+        const listCost = listAllCost.filter(filtered => listEdcId.includes(filtered.machineId))
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    } else if (listOpts && listOpts.length > 0) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === listOpts[0].typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    }
+
     if (bundleItem && bundleItem.length > 0) {
       const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
       if (filteredBundlePayment && filteredBundlePayment[0]) {
@@ -2385,7 +2434,41 @@ Pos.propTypes = {
 }
 
 export default connect(({
-  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo,
+  paymentEdc,
+  paymentCost,
+  paymentOpts,
+  pettyCashDetail,
+  productBookmarkGroup,
+  productBookmark,
+  pos,
+  shift,
+  promo,
+  counter,
+  unit,
+  customer,
+  login,
+  app,
+  loading,
+  customerunit,
+  payment
 }) => ({
-  pospromo, pettyCashDetail, productBookmarkGroup, productBookmark, pos, shift, promo, counter, unit, customer, login, app, loading, customerunit, payment
+  pospromo,
+  paymentEdc,
+  paymentCost,
+  paymentOpts,
+  pettyCashDetail,
+  productBookmarkGroup,
+  productBookmark,
+  pos,
+  shift,
+  promo,
+  counter,
+  unit,
+  customer,
+  login,
+  app,
+  loading,
+  customerunit,
+  payment
 }))(Pos)

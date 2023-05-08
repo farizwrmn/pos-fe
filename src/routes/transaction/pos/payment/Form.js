@@ -85,7 +85,6 @@ class FormPayment extends React.Component {
     const {
       selectedPaymentShortcut
       // currentBundlePayment,
-      // onGetMachine,
       // onResetMachine
     } = this.props
     // if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
@@ -134,8 +133,8 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
-      // onGetMachine,
-      // onGetCost,
+      onGetMachine,
+      onGetCost,
       onResetMachine,
       curTotal,
       listEdc,
@@ -166,21 +165,6 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
-    const filteredPaymentList = listEdc.filter((filtered) => {
-      if (filtered.paymentOption === typeCode) {
-        return true
-      }
-      return false
-    })
-
-    const filteredCostList = listCost.filter((filtered) => {
-      const filteredList = filteredPaymentList.filter(filteredEDC => filteredEDC.id === filtered.machine.id)
-      if (filteredList && filteredList[0]) {
-        return true
-      }
-      return false
-    })
-
     const handleSubmit = () => {
       validateFields((errors) => {
         if (errors) {
@@ -192,7 +176,7 @@ class FormPayment extends React.Component {
           ...getFieldsValue()
         }
         data.amount = parseFloat(data.amount)
-        const selectedBank = filteredCostList ? filteredCostList.filter(filtered => filtered.id === data.bank) : []
+        const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
 
         if (modalType === 'add') {
           data.id = listAmount.length + 1
@@ -320,7 +304,7 @@ class FormPayment extends React.Component {
       this.setState({
         typeCode: value
       })
-      // onGetMachine(value)
+      onGetMachine(value)
     }
 
     const onChangeMachine = (machineId) => {
@@ -328,14 +312,12 @@ class FormPayment extends React.Component {
         bank: undefined
       })
       validateFields()
-      // onGetCost(machineId)
-      if (filteredCostList && filteredCostList.length > 0) {
-        const filteredMachine = filteredCostList.filter(filtered => filtered.id === machineId)
-        if (filteredMachine && filteredMachine[0] && filteredMachine[0].qrisImage) {
-          setQrisImage(filteredMachine[0].qrisImage)
-          message.info('Send Qris Image to Customer View')
-          return
-        }
+      onGetCost(machineId)
+      const filteredMachine = listEdc.filter(filtered => filtered.id === machineId)
+      if (filteredMachine && filteredMachine[0] && filteredMachine[0].qrisImage) {
+        setQrisImage(filteredMachine[0].qrisImage)
+        message.info('Send Qris Image to Customer View')
+        return
       }
       removeQrisImage()
     }
@@ -416,32 +398,32 @@ class FormPayment extends React.Component {
             <FormItem label="EDC" hasFeedback {...formItemLayout}>
               {getFieldDecorator('machine', {
                 initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  filteredPaymentList && filteredPaymentList.length === 1 ? filteredPaymentList[0].id : parseFloat(selectedPaymentShortcut.machine)
+                  listEdc && listEdc.length === 1 ? listEdc[0].id : parseFloat(selectedPaymentShortcut.machine)
                 ) : (item.machine || undefined),
                 rules: [
                   {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && filteredPaymentList.length > 0)
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listEdc.length > 0)
                   }
                 ]
               })(
                 <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)} onChange={onChangeMachine} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {filteredPaymentList.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
+                  {listEdc.map(list => <Option value={parseFloat(list.id)}>{list.name}</Option>)}
                 </Select>
               )}
             </FormItem>
             <FormItem label="Card" hasFeedback {...formItemLayout}>
               {getFieldDecorator('bank', {
                 initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  filteredCostList && filteredCostList.length === 1 ? filteredCostList[0].id : parseFloat(selectedPaymentShortcut.bank)
+                  listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
                 ) : (item.bank || undefined),
                 rules: [
                   {
-                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && filteredCostList.length > 0)
+                    required: getFieldValue('typeCode') !== 'C' || (getFieldValue('typeCode') === 'C' && listCost.length > 0)
                   }
                 ]
               })(
                 <Select disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.bank)} style={{ width: '100%' }} min={0} maxLength={10}>
-                  {filteredCostList.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
+                  {listCost.map(list => <Option value={parseFloat(list.id)}>{`${list.bank ? list.bank.bankName : ''} (${list.bank ? list.bank.bankCode : ''})`}</Option>)}
                 </Select>
               )}
             </FormItem>

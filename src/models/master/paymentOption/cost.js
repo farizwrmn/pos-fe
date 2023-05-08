@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     listPayment: [],
     paymentLov: [],
+    paymentLovFiltered: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
