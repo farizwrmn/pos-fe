@@ -78,3 +78,23 @@ export async function edit (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function updateFinish (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-receive-request/finish',
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function updateCancel (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/procurement-receive-request/cancel',
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

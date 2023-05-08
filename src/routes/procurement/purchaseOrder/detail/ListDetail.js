@@ -3,18 +3,8 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from '../../../../themes/index.less'
 
-const List = ({ editList, ...tableProps }) => {
-  const handleMenuClick = (record) => {
-    editList(record)
-  }
-
+const List = (tableProps) => {
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 40
-    },
     {
       title: 'Product',
       dataIndex: 'accountCode.accountCode',
@@ -72,11 +62,10 @@ const List = ({ editList, ...tableProps }) => {
     <div>
       <Table {...tableProps}
         bordered={false}
-        scroll={{ x: 500, y: '100%' }}
         columns={columns}
+        pagination={false}
         simple
-        rowKey={record => record.no}
-        onRowClick={record => handleMenuClick(record)}
+        rowKey={record => record.id}
         footer={() => {
           return (
             <div>

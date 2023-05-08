@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 import { Link } from 'dva/router'
 
 const List = (tableProps) => {
@@ -11,6 +11,24 @@ const List = (tableProps) => {
       key: 'transNo',
       width: '130px',
       render: (text, record) => <Link target="_blank" to={`/transaction/procurement/order/${record.id}`}>{text}</Link>
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '100px',
+      render: (text) => {
+        if (text === 1) {
+          return <Tag color="blue">On-Going</Tag>
+        }
+        if (text === 2) {
+          return <Tag color="green">Finished</Tag>
+        }
+        if (text === 0) {
+          return <Tag color="red">Cancelled</Tag>
+        }
+        return null
+      }
     },
     {
       title: 'Supplier',

@@ -13,8 +13,13 @@ import {
   add,
   edit,
   remove,
-  queryById
+  queryById,
+  updateFinish,
+  updateCancel
 } from 'services/procurement/purchaseOrder'
+import {
+  query as queryPurchaseReceive
+} from 'services/procurement/purchaseReceive'
 import { query as queryProductCost } from 'services/product/productCost'
 import {
   add as addStagingProduct
@@ -35,6 +40,7 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listPurchaseReceive: [],
     listQuotationTrans: [],
     listQuotationSupplier: [],
     modalQuotationVisible: false,
@@ -94,6 +100,85 @@ export default modelExtend(pageModel, {
             listDetail: response.detail
           }
         })
+        yield put({
+          type: 'queryPurchaseReceive',
+          payload: {
+            id: response.data.id
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: {},
+            listDetail: []
+          }
+        })
+        throw response
+      }
+    },
+
+    * queryPurchaseReceive ({ payload = {} }, { call, put }) {
+      const response = yield call(
+        queryPurchaseReceive,
+        {
+          purchaseOrderId: payload.id
+        })
+      if (response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseReceive: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPurchaseReceive: []
+          }
+        })
+        throw response
+      }
+    },
+
+    * updateFinish ({ payload = {} }, { call, put }) {
+      const response = yield call(updateFinish, {
+        id: payload.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: {},
+            listDetail: [],
+            listPurchaseReceive: []
+          }
+        })
+        success()
+        yield put(routerRedux.push('/transaction/procurement/order-history'))
+      } else {
+        throw response
+      }
+    },
+
+    * updateCancel ({ payload = {} }, { call, put }) {
+      const response = yield call(updateCancel, {
+        id: payload.id,
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: {},
+            listDetail: [],
+            listPurchaseReceive: []
+          }
+        })
+        success()
+        yield put(routerRedux.push('/transaction/procurement/order-history'))
       } else {
         throw response
       }

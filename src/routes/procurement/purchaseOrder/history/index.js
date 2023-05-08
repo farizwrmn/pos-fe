@@ -11,6 +11,7 @@ const Counter = ({ purchaseOrder, purchase, loading, dispatch, location, app }) 
   const { user, storeInfo } = app
   const filterProps = {
     supplierId: location.query.supplierId,
+    status: location.query.status,
     from: location.query.from,
     to: location.query.to,
     listSupplier,
