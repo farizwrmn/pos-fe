@@ -224,7 +224,8 @@ export default modelExtend(pageModel, {
                 discInvoicePercent: header.discInvoicePercent,
                 deliveryFee: header.deliveryFee,
                 description: header.description,
-
+                purchaseReceiveId: header.id,
+                purchaseOrderId: header.purchaseOrderId,
                 addProduct: false,
                 receiveItem: true
               },

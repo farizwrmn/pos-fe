@@ -40,6 +40,7 @@ const col = {
 const FormCounter = ({
   item = {},
   onSubmit,
+  loading,
   onGetProduct,
   listSupplier,
   listItemProps,
@@ -85,7 +86,6 @@ const FormCounter = ({
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            console.log('onSubmit', data, listItem)
             onSubmit({
               discInvoiceNominal: data.discInvoiceNominal,
               discInvoicePercent: data.discInvoicePercent,
@@ -98,6 +98,8 @@ const FormCounter = ({
               reference: data.reference,
               nettoTotal: data.nettoTotal,
               rounding: data.rounding,
+              purchaseReceiveId: data.purchaseReceiveId,
+              purchaseOrderId: data.purchaseOrderId,
               storeId: lstorage.getCurrentUserStore(),
               supplierId: data.supplierId,
               tempo: data.tempo,
@@ -353,7 +355,7 @@ const FormCounter = ({
       {item && !item.addProduct && <Button type="primary" size="large" onClick={() => showModalReceive()} style={{ marginRight: '10px' }}>Receive</Button>}
       {item && !item.receiveItem && <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>}
       <ListItem {...listItemProps} rounding={getFieldValue('rounding') || 0} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
-      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>
+      <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }} disabled={loading.effects['purchaseInvoice/add']}>Save</Button>
     </Form >
   )
 }

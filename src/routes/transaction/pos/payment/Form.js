@@ -153,6 +153,60 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
+    const onChangePaymentType = (value) => {
+      removeQrisImage()
+      setFieldsValue({
+        printDate: moment(),
+        machine: undefined,
+        bank: undefined
+      })
+      this.setState({
+        typeCode: value
+      })
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === value)
+      if (listEdc && listEdc.length > 0) {
+        setFieldsValue({
+          machine: listEdc[0].id
+        })
+      }
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+
+      validateFields()
+      if (listEdc && listEdc.length > 0) {
+        if (listEdc && listEdc[0] && listEdc[0].qrisImage) {
+          setQrisImage(listEdc[0].qrisImage)
+          message.info('Send Qris Image to Customer View')
+        } else {
+          removeQrisImage()
+        }
+        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+        if (listCost && listCost.length > 0) {
+          setFieldsValue({
+            bank: listCost[0].id
+          })
+        }
+      }
+
+      setTimeout(() => {
+        const selector = document.getElementById('batchNumber')
+        if (selector) {
+          selector.focus()
+          selector.select()
+        }
+      }, 100)
+    }
+
     const handleSubmit = () => {
       validateFields((errors) => {
         if (errors) {
@@ -182,7 +236,7 @@ class FormPayment extends React.Component {
                 }
               }
               onSubmit(data)
-              resetFields()
+              onChangePaymentType(data.typeCode)
             },
             onCancel () { }
           })
@@ -192,7 +246,7 @@ class FormPayment extends React.Component {
             title: 'Change this payment ?',
             onOk () {
               onEdit(data)
-              resetFields()
+              onChangePaymentType(data.typeCode)
             },
             onCancel () { }
           })
@@ -277,60 +331,6 @@ class FormPayment extends React.Component {
         }
         return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
       })
-    }
-
-    const onChangePaymentType = (value) => {
-      removeQrisImage()
-      setFieldsValue({
-        printDate: moment(),
-        machine: undefined,
-        bank: undefined
-      })
-      this.setState({
-        typeCode: value
-      })
-      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === value)
-      if (listEdc && listEdc.length > 0) {
-        setFieldsValue({
-          machine: listEdc[0].id
-        })
-      }
-      dispatch({
-        type: 'paymentEdc/updateState',
-        payload: {
-          paymentLovFiltered: listEdc
-        }
-      })
-
-      if (listEdc && listEdc.length > 0) {
-        if (listEdc && listEdc[0] && listEdc[0].qrisImage) {
-          setQrisImage(listEdc[0].qrisImage)
-          message.info('Send Qris Image to Customer View')
-        } else {
-          removeQrisImage()
-        }
-        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
-        dispatch({
-          type: 'paymentCost/updateState',
-          payload: {
-            paymentLovFiltered: listCost
-          }
-        })
-        if (listCost && listCost.length > 0) {
-          setFieldsValue({
-            bank: listCost[0].id
-          })
-        }
-      }
-
-      validateFields()
-      setTimeout(() => {
-        const selector = document.getElementById('cardName')
-        if (selector) {
-          selector.focus()
-          selector.select()
-        }
-      }, 100)
     }
 
     const onChangeMachine = (machineId) => {
@@ -457,7 +457,7 @@ class FormPayment extends React.Component {
             <FormItem label="Card" hasFeedback {...formItemLayout}>
               {getFieldDecorator('bank', {
                 initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
-                  listCost && listCost.length === 1 ? listCost[0].id : parseFloat(selectedPaymentShortcut.bank)
+                  listCost && listCost.length === 1 ? listCost[0].id : (selectedPaymentShortcut.bank ? parseFloat(selectedPaymentShortcut.bank) : undefined)
                 ) : (item.bank || undefined),
                 rules: [
                   {
@@ -533,7 +533,7 @@ class FormPayment extends React.Component {
                       ] :
                       [
                         {
-                          required: getFieldValue('typeCode') !== 'C',
+                          required: getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'D',
                           pattern: /^[a-z0-9 -.,_]+$/i,
                           message: 'please insert the value'
                         }
