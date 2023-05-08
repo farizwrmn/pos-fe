@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { DropOption } from 'components'
 import { Table, Icon } from 'antd'
-import { routerRedux } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import styles from '../../../themes/index.less'
 
 const List = ({ ...tableProps, dispatch, printInvoice }) => {
@@ -31,7 +31,8 @@ const List = ({ ...tableProps, dispatch, printInvoice }) => {
       title: 'No',
       dataIndex: 'transNo',
       sorter: () => { },
-      key: 'transNo'
+      key: 'transNo',
+      render: (text, record) => <Link target="_blank" to={`/transaction/procurement/invoice/${record.id}`}>{text}</Link>
     },
     {
       title: 'Ref',
