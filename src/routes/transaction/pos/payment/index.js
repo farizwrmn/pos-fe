@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 // import { routerRedux } from 'dva/router'
-import { lstorage } from 'utils'
 import { prefix } from 'utils/config.main'
 import {
   Row,
@@ -35,10 +34,12 @@ const Payment = ({
     woNumber,
     companyInfo } = payment
   const {
-    paymentLov: listEdc
+    paymentLov: listAllEdc,
+    paymentLovFiltered: listEdc
   } = paymentEdc
   const {
-    paymentLov: listCost
+    paymentLov: listAllCost,
+    paymentLovFiltered: listCost
   } = paymentCost
   const { memberInformation,
     mechanicInformation,
@@ -121,15 +122,7 @@ const Payment = ({
     dispatch({
       type: 'paymentEdc/updateState',
       payload: {
-        listPayment: []
-      }
-    })
-
-    dispatch({
-      type: 'paymentEdc/query',
-      payload: {
-        paymentOption,
-        storeId: lstorage.getCurrentUserStore()
+        paymentLovFiltered: listAllEdc.filter(filtered => filtered.paymentOption === paymentOption)
       }
     })
   }
@@ -138,29 +131,7 @@ const Payment = ({
     dispatch({
       type: 'paymentCost/updateState',
       payload: {
-        listPayment: []
-      }
-    })
-    dispatch({
-      type: 'paymentCost/query',
-      payload: {
-        machineId,
-        relationship: 1
-      }
-    })
-  }
-
-  const onResetMachine = () => {
-    dispatch({
-      type: 'paymentEdc/updateState',
-      payload: {
-        listPayment: []
-      }
-    })
-    dispatch({
-      type: 'paymentCost/updateState',
-      payload: {
-        listPayment: []
+        paymentLovFiltered: listAllCost.filter(filtered => filtered.machineId === machineId)
       }
     })
   }
@@ -188,9 +159,9 @@ const Payment = ({
     cashierBalance,
     listEdc,
     listCost,
-    onGetMachine,
-    onGetCost,
-    onResetMachine,
+    dispatch,
+    listAllEdc,
+    listAllCost,
     onSubmit (data) {
       if (data.typeCode === 'V') {
         message.error('Cannot add voucher from this form')
@@ -222,7 +193,6 @@ const Payment = ({
           itemPayment: {}
         }
       })
-      onResetMachine()
     },
     editItem (data) {
       if (data && data.typeCode) {

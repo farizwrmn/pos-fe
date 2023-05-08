@@ -8,7 +8,7 @@ const PaymentModal = ({
 }) => {
   return (
     <div>
-      <Modal {...other}>
+      <Modal {...other} width="80%">
         <Payment selectedPaymentShortcut={selectedPaymentShortcut} />
       </Modal>
     </div>
