@@ -28,6 +28,10 @@ export default modelExtend(pageModel, {
 
     searchReceive: '',
     listReceive: [],
+
+    filterPurchaseReceive: {
+
+    },
     paginationReceive: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -53,7 +57,8 @@ export default modelExtend(pageModel, {
             type: 'updateState',
             payload: {
               listItem: [],
-              currentItem: {}
+              currentItem: {},
+              filterPurchaseReceive: {}
             }
           })
           dispatch({ type: 'querySequence' })
@@ -201,7 +206,7 @@ export default modelExtend(pageModel, {
             })
           }
 
-          modalEditHeader.referenceTransNo = header.referenceTransNo
+          modalEditHeader.reference = header.referenceTransNo
           modalEditHeader.supplierId = header.supplierId
           modalEditHeader.discInvoiceNominal = header.discInvoiceNominal
           modalEditHeader.discInvoicePercent = header.discInvoicePercent
@@ -213,7 +218,7 @@ export default modelExtend(pageModel, {
             payload: {
               currentItem: {
                 ...currentItem,
-                referenceTransNo: header.referenceTransNo,
+                reference: header.referenceTransNo,
                 supplierId: header.supplierId,
                 discInvoiceNominal: header.discInvoiceNominal,
                 discInvoicePercent: header.discInvoicePercent,
@@ -314,13 +319,27 @@ export default modelExtend(pageModel, {
       })
     },
 
-    * queryReceive ({ payload = {} }, { call, put }) {
+    * updateFilterReceive ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          filterPurchaseReceive: payload
+        }
+      })
+      yield put({
+        type: 'queryReceive',
+        payload: {}
+      })
+    },
+
+    * queryReceive (payload, { select, call, put }) {
+      const filterPurchaseReceive = yield select(({ purchaseInvoice }) => purchaseInvoice.filterPurchaseReceive)
       const response = yield call(queryReceive, {
-        ...payload,
+        ...filterPurchaseReceive,
         status: 1,
         storeId: lstorage.getCurrentUserStore(),
         pageSize: 25,
-        order: 'transDate'
+        order: '-id'
       })
       if (response.success) {
         yield put({

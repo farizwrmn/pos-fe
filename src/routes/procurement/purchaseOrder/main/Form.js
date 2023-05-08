@@ -283,7 +283,7 @@ const FormCounter = ({
               initialValue: item.description,
               rules: [
                 {
-                  required: true
+                  required: false
                 }
               ]
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 5 }} />)}

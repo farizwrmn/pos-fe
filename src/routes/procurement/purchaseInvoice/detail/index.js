@@ -9,14 +9,13 @@ import {
   Button
 } from 'antd'
 import TransDetail from './TransDetail'
-import FormAccounting from './FormAccounting'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
 
 
-const Detail = ({ app, journalentry, dispatch }) => {
+const Detail = ({ app, purchaseInvoice, dispatch }) => {
   const { user, storeInfo } = app
-  const { listDetail, listAccounting, data } = journalentry
+  const { listDetail, data } = purchaseInvoice
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -32,7 +31,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/journal-entry?activeKey=1'))
+    dispatch(routerRedux.push('/transaction/procurement/invoice'))
   }
 
   const formDetailProps = {
@@ -43,6 +42,8 @@ const Detail = ({ app, journalentry, dispatch }) => {
     // listItem: listProducts,
     // itemPrint: transHeader,
     // itemHeader: transHeader,
+    invoiceInfo: data,
+    invoiceItem: listDetail,
     listItem: listDetail,
     itemPrint: data,
     itemHeader: data,
@@ -70,15 +71,6 @@ const Detail = ({ app, journalentry, dispatch }) => {
             <TransDetail {...formDetailProps} />
           </Row>
         </div>
-
-        {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-          <div className="content-inner-zero-min-height">
-            <h1>Accounting Journal</h1>
-            <Row style={{ padding: '10px', margin: '4px' }}>
-              <FormAccounting listAccounting={listAccounting} />
-            </Row>
-          </div>
-        )}
       </Col>
     </Row>
   </div>)
@@ -86,7 +78,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
 
 Detail.propTypes = {
   app: PropTypes.object,
-  journalentry: PropTypes.object
+  purchaseInvoice: PropTypes.object
 }
 
-export default connect(({ app, journalentry }) => ({ app, journalentry }))(Detail)
+export default connect(({ app, purchaseInvoice }) => ({ app, purchaseInvoice }))(Detail)

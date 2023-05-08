@@ -5,16 +5,18 @@ import { routerRedux } from 'dva/router'
 import {
   Row,
   Col,
-  Button
+  Button,
+  Modal
 } from 'antd'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
+import PurchaseReceiveList from './PurchaseReceiveList'
 
 
-const Detail = ({ app, purchaseOrder, dispatch }) => {
+const Detail = ({ app, loading, purchaseOrder, dispatch }) => {
   const { user, storeInfo } = app
-  const { listDetail, data } = purchaseOrder
+  const { listDetail, listPurchaseReceive, data } = purchaseOrder
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -30,11 +32,51 @@ const Detail = ({ app, purchaseOrder, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/transaction/procurement/order'))
+    dispatch(routerRedux.push('/transaction/procurement/order-history'))
+  }
+
+  const onFinished = (id) => {
+    Modal.confirm({
+      title: 'Update Transaction',
+      content: 'are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'purchaseOrder/updateFinish',
+          payload: {
+            id
+          }
+        })
+      },
+      onCancel () {
+
+      }
+    })
+  }
+
+  const onCancel = (id) => {
+    Modal.confirm({
+      title: 'Cancel Transaction',
+      content: 'this action cannot be undone, are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'purchaseOrder/updateCancel',
+          payload: {
+            id
+          }
+        })
+      },
+      onCancel () {
+
+      }
+    })
   }
 
   const formDetailProps = {
     dataSource: listDetail
+  }
+
+  const formReceiveProps = {
+    dataSource: listPurchaseReceive
   }
 
   const printProps = {
@@ -62,8 +104,14 @@ const Detail = ({ app, purchaseOrder, dispatch }) => {
       </Col>
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
-          <h1>Items</h1>
           {listDetail && listDetail.length && <PrintPDFInvoice {...printProps} />}
+          {listPurchaseReceive && listPurchaseReceive.length > 0 ? <Button type="primary" icon="check" disabled={loading.effects['purchaseOrder/updateFinish']} onClick={() => onFinished(data.id)}>Finished</Button> : null}
+          {listPurchaseReceive && listPurchaseReceive.length === 0 ? <Button type="danger" icon="close" disabled={loading.effects['purchaseOrder/updateCancel']} onClick={() => onCancel(data.id)}>Cancel</Button> : null}
+          <h1>Purchase Receive List</h1>
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <PurchaseReceiveList {...formReceiveProps} />
+          </Row>
+          <h1>Purchase Order Items</h1>
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
@@ -78,4 +126,4 @@ Detail.propTypes = {
   purchaseOrder: PropTypes.object
 }
 
-export default connect(({ app, purchaseOrder }) => ({ app, purchaseOrder }))(Detail)
+export default connect(({ app, loading, purchaseOrder }) => ({ app, loading, purchaseOrder }))(Detail)

@@ -18,6 +18,7 @@ const searchBarLayout = {
 const Filter = ({
   from,
   to,
+  status,
   onFilterChange,
   location,
   supplierId,
@@ -49,6 +50,14 @@ const Filter = ({
     })
   }
 
+  const onStatus = (selectedValue) => {
+    console.log('selectedValue', selectedValue)
+    onFilterChange({
+      ...location.query,
+      status: selectedValue
+    })
+  }
+
   const supplierData = (listSupplier || []).length > 0 ?
     listSupplier.map(b => <Option value={b.id} key={b.id}>{b.supplierName}</Option>)
     : []
@@ -56,7 +65,30 @@ const Filter = ({
   return (
     <div>
       <Row>
-        <Col span={12}>
+        <Col md={24} lg={8}>
+          <FormItem required label="Status">
+            {getFieldDecorator('status', {
+              initialValue: status ? Number(status) : undefined,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Select
+                allowClear
+                optionFilterProp="children"
+                style={{ width: '100%', maxWidth: '200px' }}
+                onChange={onStatus}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              >
+                <Option value={0} key={0}>Cancelled</Option>
+                <Option value={1} key={1}>On-Going</Option>
+                <Option value={2} key={2}>Finished</Option>
+              </Select>)}
+          </FormItem>
+        </Col>
+        <Col md={24} lg={8}>
           <FormItem required label="Supplier">
             {getFieldDecorator('supplierId', {
               initialValue: supplierId ? Number(supplierId) : undefined,
@@ -69,7 +101,7 @@ const Filter = ({
               showSearch
               allowClear
               optionFilterProp="children"
-              style={{ width: '100%' }}
+              style={{ width: '100%', maxWidth: '200px' }}
               onChange={onSupplierChange}
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
             >
@@ -77,10 +109,8 @@ const Filter = ({
             </Select>)}
           </FormItem>
         </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <FormItem>
+        <Col md={24} lg={8}>
+          <FormItem required label="Date">
             {getFieldDecorator('rangeDate', {
               initialValue: from && to ? [moment.utc(from), moment.utc(to)] : undefined,
               rules: [
@@ -91,6 +121,9 @@ const Filter = ({
             )}
           </FormItem>
         </Col>
+      </Row>
+      <Row>
+        <Col span={12} />
         <Col {...searchBarLayout} >
           <FormItem >
             {getFieldDecorator('q')(

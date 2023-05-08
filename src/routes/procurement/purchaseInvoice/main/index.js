@@ -15,6 +15,7 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     modalEditItem,
     modalProductVisible,
     modalReceiveVisible,
+    filterPurchaseReceive,
 
     searchReceive,
     listReceive,
@@ -267,8 +268,9 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     loading: loading.effects['purchaseInvoice/queryReceive'],
     onChange (e) {
       dispatch({
-        type: 'purchaseInvoice/queryReceive',
+        type: 'purchaseInvoice/updateFilterReceive',
         payload: {
+          ...filterPurchaseReceive,
           page: e.current,
           pageSize: e.pageSize,
           active: 1,
@@ -284,6 +286,20 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     searchReceive,
     pagination: paginationReceive,
     modalReceiveTableProps,
+    from: filterPurchaseReceive.to,
+    to: filterPurchaseReceive.from,
+    supplierId: filterPurchaseReceive.supplierId,
+    listSupplier,
+    onFilterChange (value) {
+      const { filterPurchaseReceive } = purchaseInvoice
+      dispatch({
+        type: 'purchaseInvoice/updateFilterReceive',
+        payload: {
+          ...filterPurchaseReceive,
+          ...value
+        }
+      })
+    },
     handleChange (e) {
       const { value } = e.target
 
@@ -296,8 +312,9 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     },
     handleSearch () {
       dispatch({
-        type: 'purchaseInvoice/queryReceive',
+        type: 'purchaseInvoice/updateFilterReceive',
         payload: {
+          ...filterPurchaseReceive,
           page: 1,
           pageSize: pagination.pageSize,
           q: searchReceive
@@ -306,8 +323,9 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     },
     handleReset () {
       dispatch({
-        type: 'purchaseInvoice/queryReceive',
+        type: 'purchaseInvoice/updateFilterReceive',
         payload: {
+          ...filterPurchaseReceive,
           page: 1,
           pageSize: pagination.pageSize,
           q: null
