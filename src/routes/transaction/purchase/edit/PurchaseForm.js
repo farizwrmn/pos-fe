@@ -69,13 +69,13 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
     let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
     let ppnType = data.taxType
     localStorage.setItem('taxType', ppnType)
-    const totalPrice = dataProduct.reduce((cnt, o) => cnt + (o.qty * o.price), 0)
+    const totalPrice = dataProduct.reduce((prev, next) => prev + ((((next.qty * next.price) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (data.discInvoicePercent / 100))), 0)
     const x = dataProduct
     for (let key = 0; key < x.length; key += 1) {
       const total = (x[key].qty * x[key].price)
       const discItem = ((((x[key].qty * x[key].price) * (1 - ((x[key].disc1 / 100)))) - x[key].discount) * (1 - (data.discInvoicePercent / 100)))
       const totalDpp = parseFloat(discItem - ((total / (totalPrice === 0 ? 1 : totalPrice)) * data.discInvoiceNominal))
-      x[key].portion = totalPrice > 0 ? total / totalPrice : 0
+      x[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
       if (data.deliveryFee && data.deliveryFee !== '' && data.deliveryFee > 0) {
         x[key].deliveryFee = x[key].portion * data.deliveryFee
       } else {
