@@ -214,7 +214,7 @@ export default modelExtend(pageModel, {
 
     * queryLastAdjust ({ payload = {} }, { call, put }) {
       const invoice = {
-        seqCode: 'PS',
+        seqCode: 'ST',
         type: 1,
         ...payload
       }
