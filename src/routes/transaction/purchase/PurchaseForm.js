@@ -106,7 +106,7 @@ const PurchaseForm = ({
     let dataProduct = localStorage.getItem('product_detail') ? JSON.parse(localStorage.getItem('product_detail')) : []
     let ppnType = data.taxType
     localStorage.setItem('taxType', ppnType)
-    const totalPrice = dataProduct.reduce((prev, next) => prev + ((((next.qty * next.price) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (data.discInvoicePercent / 100))), 0)
+    const totalPrice = dataProduct.reduce((prev, next) => prev + ((((next.qty * next.price) * (1 - ((next.disc1 / 100)))) - next.discount) * (1 - (data.discInvoicePercent / 100))), 0)
     const x = dataProduct
     for (let key = 0; key < x.length; key += 1) {
       const total = (x[key].qty * x[key].price)
