@@ -523,21 +523,14 @@ class FormPayment extends React.Component {
                         pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
                         message: '0-9 please insert the value (max. 6 digits)'
                       }
-                    ] : (getFieldValue('typeCode') === 'QR')
-                      ? [
-                        {
-                          required: true,
-                          pattern: /^(?!(.)\1+$)[qQrR0]+$/,
-                          message: 'please insert the value(ex. 0 or QR)'
-                        }
-                      ] :
-                      [
-                        {
-                          required: getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'D',
-                          pattern: /^[a-z0-9 -.,_]+$/i,
-                          message: 'please insert the value'
-                        }
-                      ]
+                    ] :
+                    [
+                      {
+                        required: false,
+                        pattern: /^[0-9]+$/i,
+                        message: 'please insert the value'
+                      }
+                    ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
               </FormItem>
             )}

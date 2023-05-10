@@ -327,7 +327,7 @@ const PurchaseForm = ({
                   </FormItem>
                   <FormItem label="Tempo" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('tempo', {
-                      intialValue: tempo,
+                      initialValue: tempo,
                       rules: [{
                         required: true,
                         message: 'Required',

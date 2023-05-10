@@ -148,7 +148,7 @@ const FormCounter = ({
 
 
   const disabledDate = (current) => {
-    if (user.permissions.role === 'SPR' || user.permissions.role === 'OWN') {
+    if (user.permissions.role === 'MCON' || user.permissions.role === 'OWN') {
       return false
     }
     return current < moment(new Date()).add(-1, 'days').endOf('day')
@@ -217,7 +217,7 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
-              disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
+              disabled={!(user.permissions.role === 'MCON' || user.permissions.role === 'OWN')}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -232,7 +232,7 @@ const FormCounter = ({
                 }
               ]
             })(<InputNumber
-              disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
+              disabled={!(user.permissions.role === 'MCON' || user.permissions.role === 'OWN')}
               min={0}
               max={9999999999}
               style={{ width: '100%' }}
@@ -246,7 +246,7 @@ const FormCounter = ({
                 message: 'Required'
               }]
             })(<Select
-              disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
+              disabled={!(user.permissions.role === 'MCON' || user.permissions.role === 'OWN')}
             >
               <Option value="I">Include</Option>
               <Option value="E">Exclude (0%)</Option>
