@@ -283,31 +283,33 @@ const AutoReconciliation = ({
       {showPDFModal && (
         <ModalPrint {...modalPrintProps} />
       )}
-      <Col span={24}>
-        <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={activeKey === '1' ? moreButtonTab : null}>
-          <TabPane key="0" tab="Auto Reconcile">
-            <FormImport {...formImportProps} />
-            <Row>
-              <Form {...formProps} />
-            </Row>
-            {conflictedCSV && conflictedPayment && conflictedCSV.length > 0 && conflictedPayment.length > 0 && (
+      <Row>
+        <Col span={24}>
+          <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card" tabBarExtraContent={activeKey === '1' ? moreButtonTab : null}>
+            <TabPane key="0" tab="Auto Reconcile">
+              <FormImport {...formImportProps} />
               <Row>
-                <FormConflicted {...formConflictedProps} />
+                <Form {...formProps} />
               </Row>
-            )}
-            <Row>
-              <ConflictedList {...conflictedListProps} />
-            </Row>
-          </TabPane>
-          <TabPane key="1" tab="List">
-            <FormSearch {...formSearchProps} />
-            <List {...listProps} />
-          </TabPane>
-          <TabPane key="2" tab="Bank Merchant">
-            <BankMerchant {...bankMerchantProps} />
-          </TabPane>
-        </Tabs>
-      </Col>
+              {conflictedCSV && conflictedPayment && conflictedCSV.length > 0 && conflictedPayment.length > 0 && (
+                <Row>
+                  <FormConflicted {...formConflictedProps} />
+                </Row>
+              )}
+              <Row>
+                <ConflictedList {...conflictedListProps} />
+              </Row>
+            </TabPane>
+            <TabPane key="1" tab="List">
+              <FormSearch {...formSearchProps} />
+              <List {...listProps} />
+            </TabPane>
+            <TabPane key="2" tab="Bank Merchant">
+              <BankMerchant {...bankMerchantProps} />
+            </TabPane>
+          </Tabs>
+        </Col>
+      </Row>
     </div>
   )
 }
