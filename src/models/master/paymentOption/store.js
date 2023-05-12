@@ -3,15 +3,12 @@ import { query, queryAdd } from 'services/master/paymentOption/paymentMachineSto
 import { pageModel } from 'common'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'paymentMachineStore',
 
   state: {
-    currentMachineStore: [],
-    currentMachine: {},
-    modalVisible: false,
-    activeKey: '0',
     list: [],
     pagination: {
       showSizeChanger: true,
@@ -25,6 +22,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey } = location.query
         const { pathname, query } = location
+        const storeId = lstorage.getCurrentUserStore()
         if (pathname === '/master/paymentoption') {
           if (activeKey === '2') {
             const { page, pageSize, q } = query
@@ -33,7 +31,8 @@ export default modelExtend(pageModel, {
               payload: {
                 q,
                 page: page || 1,
-                pageSize: pageSize || 10
+                pageSize: pageSize || 10,
+                storeId
               }
             })
           }

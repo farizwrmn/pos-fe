@@ -1,8 +1,6 @@
-import { Row, Table } from 'antd'
-import { color } from 'utils/theme'
-import ModalForm from './ModalForm'
+import { Button, Col, Row, Table } from 'antd'
 
-const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagination, listAllStores, dispatch, modalVisible, loading, location }) => {
+const List = ({ ...tableProps, handlePagination, dispatch, loading }) => {
   const columns = [
     {
       title: 'Name',
@@ -19,9 +17,19 @@ const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagina
     },
     {
       title: 'Account',
-      key: 'accountCode.accountName',
-      dataIndex: 'accountCode.accountName',
-      width: 100
+      key: 'accountName',
+      dataIndex: 'accountName',
+      width: 100,
+      render: (value, record) => `${record.accountCode} - ${value}`
+    },
+    {
+      title: 'Action',
+      width: 30,
+      render: () => (
+        <div style={{ textAlign: 'center' }}>
+          <Button type="primary" size="small">Remove</Button>
+        </div>
+      )
     }
   ]
 
@@ -36,63 +44,19 @@ const List = ({ ...tableProps, currentMachine, currentMachineStore, handlePagina
     })
   }
 
-  const modalProps = {
-    currentMachine,
-    currentMachineStore,
-    listAllStores,
-    visible: modalVisible,
-    confirmLoading: loading.effects['paymentMachineStore/queryAdd'],
-    title: 'Store associated with account',
-    onCancel: () => {
-      dispatch({
-        type: 'paymentMachineStore/updateState',
-        payload: {
-          modalVisible: false,
-          currentMachine: {},
-          currentMachineStore: []
-        }
-      })
-    },
-    onOk: () => {
-      dispatch({
-        type: 'paymentMachineStore/queryAdd',
-        payload: {
-          machine: currentMachine,
-          storeList: currentMachineStore,
-          location
-        }
-      })
-    },
-    handleRowCheck: (checkedList) => {
-      const { checked: checkedNode } = checkedList
-      dispatch({
-        type: 'paymentMachineStore/updateState',
-        payload: {
-          currentMachineStore: checkedNode
-        }
-      })
-    }
-  }
-
   return (
     <div>
-      {modalVisible && (
-        <ModalForm {...modalProps} />
-      )}
       <Row>
-        <div style={{ color: color.error }}>
-          * Klik data di bawah ini untuk melihat store yang terhubung dengan jenis payment
-        </div>
-      </Row>
-      <Row>
-        <Table
-          {...tableProps}
-          bordered
-          columns={columns}
-          onChange={handlePagination}
-          onRowClick={handleShowModal}
-          loading={loading.effects['paymentMachineStore/query']}
-        />
+        <Col>
+          <Table
+            {...tableProps}
+            bordered
+            columns={columns}
+            onChange={handlePagination}
+            onRowClick={handleShowModal}
+            loading={loading.effects['paymentMachineStore/query']}
+          />
+        </Col>
       </Row>
     </div>
   )

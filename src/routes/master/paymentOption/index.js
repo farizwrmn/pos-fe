@@ -10,7 +10,7 @@ import MachineStore from './machineStore'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ userStore, paymentMachineStore, paymentOption, accountRule, loading, dispatch, location, app }) => {
+const Counter = ({ paymentMachineStore, paymentOption, accountRule, loading, dispatch, location, app }) => {
   const { listPayment, pagination, modalType, currentItem, activeKey } = paymentOption
   const { listAccountCode } = accountRule
   const { user, storeInfo } = app
@@ -123,8 +123,7 @@ const Counter = ({ userStore, paymentMachineStore, paymentOption, accountRule, l
     paymentMachineStore,
     loading,
     dispatch,
-    location,
-    userStore
+    location
   }
 
   let moreButtonTab
@@ -168,10 +167,9 @@ Counter.propTypes = {
 }
 
 export default connect(({
-  userStore,
   paymentMachineStore,
   paymentOption,
   accountRule,
   loading,
   app
-}) => ({ userStore, paymentMachineStore, paymentOption, accountRule, loading, app }))(Counter)
+}) => ({ paymentMachineStore, paymentOption, accountRule, loading, app }))(Counter)
