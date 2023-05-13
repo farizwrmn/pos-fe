@@ -12,6 +12,20 @@ export async function query (params) {
   })
 }
 
+export async function queryUnrelated (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const { storeId, ...other } = params
+  if (!storeId) {
+    return false
+  }
+  return request({
+    url: `${paymentMachineStore}/unrelated/${storeId}`,
+    method: 'get',
+    data: other,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAdd (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
