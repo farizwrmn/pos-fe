@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryAdd } from 'services/master/paymentOption/paymentMachineStoreService'
+import { query, queryAdd, queryUnrelated } from 'services/master/paymentOption/paymentMachineStoreService'
 import { pageModel } from 'common'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
@@ -9,6 +9,14 @@ export default modelExtend(pageModel, {
   namespace: 'paymentMachineStore',
 
   state: {
+    modalVisible: false,
+    listUnrelated: [],
+    unrelatedPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
+
     list: [],
     pagination: {
       showSizeChanger: true,
@@ -57,6 +65,28 @@ export default modelExtend(pageModel, {
               current: Number(payload.page || 1),
               pageSize: Number(payload.pageSize || 10),
               total: Number(response.meta.count || 1)
+            }
+          }
+        })
+      } else {
+        message.error(`${response.message} - Failed to get data`)
+      }
+    },
+    * queryUnrelated ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const response = yield call(queryUnrelated, payload)
+      if (response && response.success && response.meta) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            listUnrelated: response.data,
+            unrelatedPagination: {
+              showSizeChanger: true,
+              showQuickJumper: true,
+              current: Number(payload.page),
+              pageSize: Number(payload.pageSize),
+              total: response.meta.total
             }
           }
         })
