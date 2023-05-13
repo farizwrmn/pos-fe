@@ -1,7 +1,8 @@
-import { Col, Row } from 'antd'
+import { Button, Col, Row } from 'antd'
 import { routerRedux } from 'dva/router'
 import List from './List'
 import Filter from './Filter'
+import ModalForm from './Modal'
 
 const filterColumnProps = {
   xs: 24,
@@ -17,7 +18,7 @@ const MachineStore = ({
   dispatch,
   location
 }) => {
-  const { list, pagination } = paymentMachineStore
+  const { list, listUnrelated, unrelatedPagination, pagination, modalVisible } = paymentMachineStore
 
   const listProps = {
     dispatch,
@@ -53,6 +54,45 @@ const MachineStore = ({
     }
   }
 
+  const handleShowModal = () => {
+    if (!modalVisible && listUnrelated.length === 0) {
+      dispatch({
+        type: 'paymentMachineStore/queryUnrelated',
+        payload: {
+          page: 1,
+          pageSize: 10
+        }
+      })
+    }
+    dispatch({
+      type: 'paymentMachineStore/updateState',
+      payload: {
+        modalVisible: !modalVisible
+      }
+    })
+  }
+
+  const modalFormProps = {
+    title: 'Add new machine to this store?',
+    listUnrelated,
+    pagination: unrelatedPagination,
+    visible: modalVisible,
+    handleSubmit: () => {
+
+    },
+    handleCancel: handleShowModal,
+    handleUnrelatedPagination: (pageOpt) => {
+      const { current: page, pageSize } = pageOpt
+      dispatch({
+        type: 'paymentMachineStore/queryUnrelated',
+        payload: {
+          page,
+          pageSize
+        }
+      })
+    }
+  }
+
   return (
     <div>
       <Row type="flex" justify="end">
@@ -60,11 +100,19 @@ const MachineStore = ({
           <Filter {...filterProps} />
         </Col>
       </Row>
+      <Row style={{ marginBottom: '10px' }}>
+        <Col {...filterColumnProps}>
+          <Button type="primary" size="small" icon="plus" onClick={handleShowModal}>Add New</Button>
+        </Col>
+      </Row>
       <Row>
         <Col>
           <List {...listProps} />
         </Col>
       </Row>
+      {modalVisible && (
+        <ModalForm {...modalFormProps} />
+      )}
     </div>
   )
 }
