@@ -12,7 +12,7 @@ const List = ({ ...tableProps, handlePagination, dispatch, loading }) => {
       title: 'Payment Option',
       key: 'paymentOption',
       dataIndex: 'paymentOption',
-      width: 40,
+      width: 100,
       render: value => <div style={{ textAlign: 'center' }}>{value}</div>
     },
     {
@@ -27,7 +27,7 @@ const List = ({ ...tableProps, handlePagination, dispatch, loading }) => {
       width: 30,
       render: () => (
         <div style={{ textAlign: 'center' }}>
-          <Button type="primary" size="small">Remove</Button>
+          <Button type="danger" size="small" icon="minus">Remove</Button>
         </div>
       )
     }
