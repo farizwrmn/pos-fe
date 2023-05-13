@@ -2,7 +2,6 @@ import modelExtend from 'dva-model-extend'
 import { query, queryAdd, queryUnrelated } from 'services/master/paymentOption/paymentMachineStoreService'
 import { pageModel } from 'common'
 import { message } from 'antd'
-import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 
 export default modelExtend(pageModel, {
@@ -99,17 +98,15 @@ export default modelExtend(pageModel, {
     * queryAdd ({ payload = {} }, { call, put }) {
       const response = yield call(queryAdd, payload)
       if (response && response.success) {
+        const { page, pageSize, q } = payload
         yield put({
-          type: 'updateState',
+          type: 'queryUnrelated',
           payload: {
-            modalVisible: false
+            page,
+            pageSize,
+            q
           }
         })
-        const { pathname, query } = payload.location
-        yield put(routerRedux.push({
-          pathname,
-          query
-        }))
       } else {
         message.error(response.message)
       }

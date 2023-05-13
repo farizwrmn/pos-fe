@@ -12,6 +12,14 @@ const ModalForm = ({
   handleUnrelatedPagination,
   handleSearch
 }) => {
+  const modalConfirm = (record) => {
+    Modal.confirm({
+      title: `Add ${record.name}`,
+      content: 'Are you sure?',
+      onOk: () => handleSubmit(record.id)
+    })
+  }
+
   const column = [
     {
       title: 'Name',
@@ -33,12 +41,13 @@ const ModalForm = ({
     }, {
       title: 'Action',
       width: 100,
-      render: () => (
+      render: (_, record) => (
         <div style={{ textAlign: 'center' }}>
           <Button
             type="primary"
             size="small"
             icon="plus"
+            onClick={() => modalConfirm(record)}
           >
             Add
           </Button>
@@ -57,7 +66,6 @@ const ModalForm = ({
       visible={visible}
       onCancel={handleCancel}
       title={title}
-      onOk={handleSubmit}
     >
       <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
         <Col>

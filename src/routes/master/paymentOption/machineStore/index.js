@@ -1,5 +1,6 @@
 import { Button, Col, Row } from 'antd'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import List from './List'
 import Filter from './Filter'
 import ModalForm from './Modal'
@@ -80,8 +81,18 @@ const MachineStore = ({
     listUnrelated,
     pagination: unrelatedPagination,
     visible: modalVisible,
-    handleSubmit: () => {
-
+    handleSubmit: (machineId) => {
+      const params = {
+        storeId: lstorage.getCurrentUserStore(),
+        machineId,
+        page: unrelatedPagination.current || 1,
+        pageSize: unrelatedPagination.pageSize || 10,
+        q: unrelatedSearchKey || ''
+      }
+      dispatch({
+        type: 'paymentMachineStore/queryAdd',
+        payload: params
+      })
     },
     handleCancel: handleShowModal,
     handleUnrelatedPagination: (pageOpt) => {
