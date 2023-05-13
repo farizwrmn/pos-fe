@@ -2,13 +2,15 @@ import { Button, Col, Modal, Row, Table } from 'antd'
 import Filter from './Filter'
 
 const ModalForm = ({
+  unrelatedSearchKey,
   listUnrelated,
   pagination,
   visible,
   title,
   handleCancel,
   handleSubmit,
-  handleUnrelatedPagination
+  handleUnrelatedPagination,
+  handleSearch
 }) => {
   const column = [
     {
@@ -45,6 +47,11 @@ const ModalForm = ({
     }
   ]
 
+  const filterProps = {
+    q: unrelatedSearchKey,
+    handleSearch
+  }
+
   return (
     <Modal
       visible={visible}
@@ -54,7 +61,7 @@ const ModalForm = ({
     >
       <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
         <Col>
-          <Filter />
+          <Filter {...filterProps} />
         </Col>
       </Row>
       <Row>

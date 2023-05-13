@@ -18,7 +18,7 @@ const MachineStore = ({
   dispatch,
   location
 }) => {
-  const { list, listUnrelated, unrelatedPagination, pagination, modalVisible } = paymentMachineStore
+  const { list, listUnrelated, unrelatedPagination, unrelatedSearchKey, pagination, modalVisible } = paymentMachineStore
 
   const listProps = {
     dispatch,
@@ -56,11 +56,13 @@ const MachineStore = ({
 
   const handleShowModal = () => {
     if (!modalVisible && listUnrelated.length === 0) {
+      const { current: page = 1, pageSize = 10 } = unrelatedPagination
       dispatch({
         type: 'paymentMachineStore/queryUnrelated',
         payload: {
-          page: 1,
-          pageSize: 10
+          page,
+          pageSize,
+          q: unrelatedSearchKey
         }
       })
     }
@@ -73,7 +75,8 @@ const MachineStore = ({
   }
 
   const modalFormProps = {
-    title: 'Add new machine to this store?',
+    title: 'Add new machine to this store',
+    unrelatedSearchKey,
     listUnrelated,
     pagination: unrelatedPagination,
     visible: modalVisible,
@@ -87,7 +90,18 @@ const MachineStore = ({
         type: 'paymentMachineStore/queryUnrelated',
         payload: {
           page,
-          pageSize
+          pageSize,
+          q: unrelatedSearchKey
+        }
+      })
+    },
+    handleSearch: (value) => {
+      dispatch({
+        type: 'paymentMachineStore/queryUnrelated',
+        payload: {
+          page: 1,
+          pageSize: 10,
+          q: value
         }
       })
     }

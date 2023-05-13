@@ -10,6 +10,7 @@ export default modelExtend(pageModel, {
 
   state: {
     modalVisible: false,
+    unrelatedSearchKey: '',
     listUnrelated: [],
     unrelatedPagination: {
       showSizeChanger: true,
@@ -87,7 +88,8 @@ export default modelExtend(pageModel, {
               current: Number(payload.page),
               pageSize: Number(payload.pageSize),
               total: response.meta.total
-            }
+            },
+            unrelatedSearchKey: payload.q
           }
         })
       } else {
