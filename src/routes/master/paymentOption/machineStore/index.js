@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'antd'
+import { Button, Col, Modal, Row } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import List from './List'
@@ -22,7 +22,6 @@ const MachineStore = ({
   const { list, listUnrelated, unrelatedPagination, unrelatedSearchKey, pagination, modalVisible } = paymentMachineStore
 
   const listProps = {
-    dispatch,
     dataSource: list,
     pagination,
     loading,
@@ -37,6 +36,21 @@ const MachineStore = ({
           pageSize
         }
       }))
+    },
+    handleDelete: (record) => {
+      Modal.confirm({
+        title: 'Delete this machine',
+        content: 'Are you sure?',
+        onOk: () => {
+          dispatch({
+            type: 'paymentMachineStore/queryDelete',
+            payload: {
+              location,
+              id: record.id
+            }
+          })
+        }
+      })
     }
   }
 

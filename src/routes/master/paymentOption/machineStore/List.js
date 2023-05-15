@@ -1,6 +1,6 @@
 import { Button, Col, Row, Table } from 'antd'
 
-const List = ({ ...tableProps, handlePagination, dispatch, loading }) => {
+const List = ({ ...tableProps, handlePagination, handleDelete, loading }) => {
   const columns = [
     {
       title: 'Name',
@@ -25,24 +25,13 @@ const List = ({ ...tableProps, handlePagination, dispatch, loading }) => {
     {
       title: 'Action',
       width: 30,
-      render: () => (
+      render: (_, record) => (
         <div style={{ textAlign: 'center' }}>
-          <Button type="danger" size="small" icon="minus">Remove</Button>
+          <Button type="danger" size="small" icon="minus" onClick={() => handleDelete(record)} loading={loading.effects['paymentMachineStore/queryDelete']}>Remove</Button>
         </div>
       )
     }
   ]
-
-  const handleShowModal = (record) => {
-    dispatch({
-      type: 'paymentMachineStore/updateState',
-      payload: {
-        modalVisible: true,
-        currentMachine: record,
-        currentMachineStore: (record.machineStoreList || []).map(record => String(record.storeId))
-      }
-    })
-  }
 
   return (
     <div>
@@ -53,7 +42,6 @@ const List = ({ ...tableProps, handlePagination, dispatch, loading }) => {
             bordered
             columns={columns}
             onChange={handlePagination}
-            onRowClick={handleShowModal}
             loading={loading.effects['paymentMachineStore/query']}
           />
         </Col>

@@ -1,8 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryAdd, queryUnrelated } from 'services/master/paymentOption/paymentMachineStoreService'
+import { query, queryAdd, queryDelete, queryUnrelated } from 'services/master/paymentOption/paymentMachineStoreService'
 import { pageModel } from 'common'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
   namespace: 'paymentMachineStore',
@@ -49,7 +50,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
       if (response && response.success && response.meta) {
@@ -105,6 +105,20 @@ export default modelExtend(pageModel, {
             q
           }
         })
+        message.success('Data berhasil ditambahkan')
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryDelete ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDelete, payload)
+      if (response && response.success) {
+        const { pathname, query } = payload.location
+        yield put(routerRedux.push({
+          pathname,
+          query
+        }))
+        message.success('Data berhasil dihapus')
       } else {
         message.error(response.message)
       }
