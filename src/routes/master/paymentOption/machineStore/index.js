@@ -46,6 +46,7 @@ const MachineStore = ({
     })
   }
 
+  // list props
   const listProps = {
     dataSource: list,
     pagination,
