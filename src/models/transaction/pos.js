@@ -46,12 +46,9 @@ import {
 } from '../../services/master/employee'
 import {
   query as queryProductStock,
-  queryPOSproduct,
-  queryPOSstock as queryProductsInStock,
-  queryByBarcode
-  // queryByBarcodeBundleOffline,
-  // queryByBarcodeOffline,
-  // getListIndex
+  queryPOSProductSales,
+  queryByBarcode,
+  queryPOSstock as queryProductsInStock
 } from '../../services/master/productstock'
 import {
   query as queryConsignment
@@ -1242,7 +1239,7 @@ export default {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const newData = data.map(x => x.id)
 
-      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
       if (listProductData.success) {
         for (let n = 0; n < (listProductData.data || []).length; n += 1) {
           data = data.map((x) => {
@@ -1279,7 +1276,7 @@ export default {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const newData = data.map(x => x.productId)
 
-      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+      const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
       if (listProductData.success) {
         for (let n = 0; n < (listProductData.data || []).length; n += 1) {
           data = data.map((x) => {
@@ -1335,7 +1332,7 @@ export default {
       const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       // Call Products
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
+      const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
       const listProduct = listProductData.data
       let tempListProduct = []
       function getSetting (setting) {
@@ -1427,7 +1424,7 @@ export default {
       let totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
       // Call Products
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
+      const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: data.productId })
       let arrayProd = getCashierTrans()
       const listProduct = listProductData.data
       let tempListProduct = []
@@ -1874,7 +1871,7 @@ export default {
               const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
               const newData = listProduct.map(x => x.id)
 
-              const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
+              const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: (newData || []).toString() })
               if (listProductData.success) {
                 listFormItem = listProduct.map((record) => {
                   const filteredProduct = listProductData.data.filter(filtered => filtered.productId === record.id)
@@ -2038,7 +2035,7 @@ export default {
         return
       }
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-      const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: listProductId.toString() })
+      const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: listProductId.toString() })
       if (listProductData && listProductData.success && listProductQty && listProductQty.length > 0) {
         let success = false
         let message = ''
