@@ -12,7 +12,6 @@ export default modelExtend(pageModel, {
     unrelatedSearchKey: '',
     listUnrelated: [],
     unrelatedPagination: {
-      showSizeChanger: true,
       showQuickJumper: true,
       current: 1
     },
@@ -82,7 +81,6 @@ export default modelExtend(pageModel, {
             ...payload,
             listUnrelated: response.data,
             unrelatedPagination: {
-              showSizeChanger: true,
               showQuickJumper: true,
               current: Number(payload.page),
               pageSize: Number(payload.pageSize),

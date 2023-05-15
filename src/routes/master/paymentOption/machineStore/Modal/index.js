@@ -2,6 +2,7 @@ import { Button, Col, Modal, Row, Table } from 'antd'
 import Filter from './Filter'
 
 const ModalForm = ({
+  loading,
   unrelatedSearchKey,
   listUnrelated,
   pagination,
@@ -48,6 +49,7 @@ const ModalForm = ({
             size="small"
             icon="plus"
             onClick={() => modalConfirm(record)}
+            loading={loading.effects['paymentMachineStore/queryAdd']}
           >
             Add
           </Button>
@@ -66,6 +68,9 @@ const ModalForm = ({
       visible={visible}
       onCancel={handleCancel}
       title={title}
+      footer={(
+        <Button type="ghost">Close</Button>
+      )}
     >
       <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
         <Col>
@@ -80,6 +85,7 @@ const ModalForm = ({
             scroll={{ x: 400 }}
             pagination={pagination}
             onChange={handleUnrelatedPagination}
+            loading={loading.effects['paymentMachineStore/queryUnrelated']}
           />
         </Col>
       </Row>

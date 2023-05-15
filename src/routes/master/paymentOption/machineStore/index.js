@@ -57,7 +57,7 @@ const MachineStore = ({
 
   const handleShowModal = () => {
     if (!modalVisible && listUnrelated.length === 0) {
-      const { current: page = 1, pageSize = 10 } = unrelatedPagination
+      const { current: page = 1, pageSize = 5 } = unrelatedPagination
       dispatch({
         type: 'paymentMachineStore/queryUnrelated',
         payload: {
@@ -76,6 +76,7 @@ const MachineStore = ({
   }
 
   const modalFormProps = {
+    loading,
     title: 'Add new machine to this store',
     unrelatedSearchKey,
     listUnrelated,
@@ -96,7 +97,7 @@ const MachineStore = ({
     },
     handleCancel: handleShowModal,
     handleUnrelatedPagination: (pageOpt) => {
-      const { current: page, pageSize } = pageOpt
+      const { current: page, pageSize = 5 } = pageOpt
       dispatch({
         type: 'paymentMachineStore/queryUnrelated',
         payload: {
@@ -107,11 +108,12 @@ const MachineStore = ({
       })
     },
     handleSearch: (value) => {
+      const { pageSize = 5 } = unrelatedPagination
       dispatch({
         type: 'paymentMachineStore/queryUnrelated',
         payload: {
           page: 1,
-          pageSize: 10,
+          pageSize,
           q: value
         }
       })
