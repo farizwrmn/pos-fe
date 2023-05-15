@@ -1,4 +1,4 @@
-import { Button, Col, Modal, Row } from 'antd'
+import { Button, Col, Modal, Row, message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import List from './List'
@@ -26,7 +26,8 @@ const MachineStore = ({
     unrelatedSearchKey,
     pagination,
     modalVisible,
-    selectedRemoveList
+    selectedRemoveList,
+    selectedAddList
   } = paymentMachineStore
 
   const handleDeleteMachine = () => {
@@ -109,16 +110,21 @@ const MachineStore = ({
   }
 
   const modalFormProps = {
+    selectedAddList,
     loading,
     title: 'Add new machine to this store',
     unrelatedSearchKey,
     listUnrelated,
     pagination: unrelatedPagination,
     visible: modalVisible,
-    handleSubmit: (machineId) => {
+    handleSubmit: () => {
+      if (selectedAddList.length === 0) {
+        message.error('No machine selected to be added!')
+        return
+      }
       const params = {
         storeId: lstorage.getCurrentUserStore(),
-        machineId,
+        machineId: selectedAddList,
         page: unrelatedPagination.current || 1,
         pageSize: unrelatedPagination.pageSize || 10,
         q: unrelatedSearchKey || '',
@@ -149,6 +155,15 @@ const MachineStore = ({
           page: 1,
           pageSize,
           q: value
+        }
+      })
+    },
+    handleAdd: (value, record) => {
+      const { checked } = value.target
+      dispatch({
+        type: 'paymentMachineStore/updateState',
+        payload: {
+          selectedAddList: checked ? selectedAddList.concat(record.id) : selectedAddList.filter(filtered => filtered !== record.id)
         }
       })
     }

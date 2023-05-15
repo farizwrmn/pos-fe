@@ -1,7 +1,8 @@
-import { Button, Col, Modal, Row, Table } from 'antd'
+import { Checkbox, Col, Modal, Row, Table } from 'antd'
 import Filter from './Filter'
 
 const ModalForm = ({
+  selectedAddList,
   loading,
   unrelatedSearchKey,
   listUnrelated,
@@ -11,16 +12,9 @@ const ModalForm = ({
   handleCancel,
   handleSubmit,
   handleUnrelatedPagination,
-  handleSearch
+  handleSearch,
+  handleAdd
 }) => {
-  const modalConfirm = (record) => {
-    Modal.confirm({
-      title: `Add ${record.name}`,
-      content: 'Are you sure?',
-      onOk: () => handleSubmit(record.id)
-    })
-  }
-
   const column = [
     {
       title: 'Name',
@@ -42,19 +36,15 @@ const ModalForm = ({
     }, {
       title: 'Action',
       width: 100,
-      render: (_, record) => (
-        <div style={{ textAlign: 'center' }}>
-          <Button
-            type="primary"
-            size="small"
-            icon="plus"
-            onClick={() => modalConfirm(record)}
-            loading={loading.effects['paymentMachineStore/queryAdd']}
-          >
-            Add
-          </Button>
-        </div>
-      )
+      render: (_, record) => {
+        const filteredAddList = selectedAddList.filter(filtered => filtered === record.id)
+        const checked = (filteredAddList && filteredAddList[0])
+        return (
+          <div style={{ textAlign: 'center' }}>
+            <Checkbox checked={checked} onChange={(event) => { handleAdd(event, record) }} />
+          </div>
+        )
+      }
     }
   ]
 
@@ -68,9 +58,7 @@ const ModalForm = ({
       visible={visible}
       onCancel={handleCancel}
       title={title}
-      footer={(
-        <Button type="ghost">Close</Button>
-      )}
+      onOk={handleSubmit}
     >
       <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
         <Col>
