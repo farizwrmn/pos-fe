@@ -1,4 +1,3 @@
-import { message } from 'antd'
 import { request, config, crypt } from 'utils'
 
 const { paymentMachineStore } = config.api
@@ -39,15 +38,10 @@ export async function queryAdd (params) {
 
 export async function queryDelete (params) {
   const apiHeaderToken = crypt.apiheader()
-  const { id, ...other } = params
-  if (!id) {
-    message.error('Id is required to delete data')
-    return
-  }
   return request({
-    url: `${paymentMachineStore}/${id}`,
+    url: `${paymentMachineStore}`,
     method: 'put',
-    data: other,
+    data: params,
     headers: apiHeaderToken
   })
 }

@@ -17,6 +17,9 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
+    selectedRemoveList: [],
+    selectedAddList: [],
+
     list: [],
     pagination: {
       showSizeChanger: true,
@@ -118,6 +121,12 @@ export default modelExtend(pageModel, {
           pathname,
           query
         }))
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRemoveList: []
+          }
+        })
         message.success('Data berhasil dihapus')
       } else {
         message.error(response.message)

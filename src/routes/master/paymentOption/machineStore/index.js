@@ -19,12 +19,37 @@ const MachineStore = ({
   dispatch,
   location
 }) => {
-  const { list, listUnrelated, unrelatedPagination, unrelatedSearchKey, pagination, modalVisible } = paymentMachineStore
+  const {
+    list,
+    listUnrelated,
+    unrelatedPagination,
+    unrelatedSearchKey,
+    pagination,
+    modalVisible,
+    selectedRemoveList
+  } = paymentMachineStore
+
+  const handleDeleteMachine = () => {
+    Modal.confirm({
+      title: 'Delete machine from this store',
+      content: 'Are you sure?',
+      onOk: () => {
+        dispatch({
+          type: 'paymentMachineStore/queryDelete',
+          payload: {
+            id: selectedRemoveList,
+            location
+          }
+        })
+      }
+    })
+  }
 
   const listProps = {
     dataSource: list,
     pagination,
     loading,
+    selectedRemoveList,
     handlePagination (paginationValue) {
       const { current: page, pageSize } = paginationValue
       const { pathname, query } = location
@@ -37,18 +62,12 @@ const MachineStore = ({
         }
       }))
     },
-    handleDelete: (record) => {
-      Modal.confirm({
-        title: 'Delete this machine',
-        content: 'Are you sure?',
-        onOk: () => {
-          dispatch({
-            type: 'paymentMachineStore/queryDelete',
-            payload: {
-              location,
-              id: record.id
-            }
-          })
+    handleDelete: (value, record) => {
+      const { checked } = value.target
+      dispatch({
+        type: 'paymentMachineStore/updateState',
+        payload: {
+          selectedRemoveList: checked ? selectedRemoveList.concat(record.id) : selectedRemoveList.filter(filtered => filtered !== record.id)
         }
       })
     }
@@ -102,7 +121,8 @@ const MachineStore = ({
         machineId,
         page: unrelatedPagination.current || 1,
         pageSize: unrelatedPagination.pageSize || 10,
-        q: unrelatedSearchKey || ''
+        q: unrelatedSearchKey || '',
+        location
       }
       dispatch({
         type: 'paymentMachineStore/queryAdd',
@@ -143,7 +163,14 @@ const MachineStore = ({
       </Row>
       <Row style={{ marginBottom: '10px' }}>
         <Col {...filterColumnProps}>
-          <Button type="primary" size="small" icon="plus" onClick={handleShowModal}>Add New</Button>
+          <Row gutter={10} type="flex" justify="start">
+            <Col>
+              <Button type="primary" size="small" icon="plus" onClick={handleShowModal}>Add New</Button>
+            </Col>
+            <Col>
+              <Button type="danger" size="small" icon="minus" onClick={handleDeleteMachine} disabled={selectedRemoveList.length === 0}>Remove Machine</Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row>

@@ -1,6 +1,12 @@
-import { Button, Col, Row, Table } from 'antd'
+import { Checkbox, Col, Row, Table } from 'antd'
 
-const List = ({ ...tableProps, handlePagination, handleDelete, loading }) => {
+const List = ({
+  ...tableProps,
+  handlePagination,
+  handleDelete,
+  loading,
+  selectedRemoveList
+}) => {
   const columns = [
     {
       title: 'Name',
@@ -23,13 +29,17 @@ const List = ({ ...tableProps, handlePagination, handleDelete, loading }) => {
       render: (value, record) => `${record.accountCode} - ${value}`
     },
     {
-      title: 'Action',
+      title: 'Remove',
       width: 30,
-      render: (_, record) => (
-        <div style={{ textAlign: 'center' }}>
-          <Button type="danger" size="small" icon="minus" onClick={() => handleDelete(record)} loading={loading.effects['paymentMachineStore/queryDelete']}>Remove</Button>
-        </div>
-      )
+      render: (_, record) => {
+        const filteredSelectedRemoveList = selectedRemoveList.filter(filtered => filtered === record.id)
+        const checked = (filteredSelectedRemoveList && filteredSelectedRemoveList[0])
+        return (
+          <div style={{ textAlign: 'center' }}>
+            <Checkbox checked={checked} onChange={(event) => { handleDelete(event, record) }} />
+          </div>
+        )
+      }
     }
   ]
 
