@@ -59,6 +59,8 @@ const ModalForm = ({
       onCancel={handleCancel}
       title={title}
       onOk={handleSubmit}
+      confirmLoading={loading.effects['paymentMachineStore/queryAdd']}
+      closable={false}
     >
       <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
         <Col>

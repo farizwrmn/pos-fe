@@ -99,7 +99,8 @@ export default modelExtend(pageModel, {
     * queryAdd ({ payload = {} }, { call, put }) {
       const response = yield call(queryAdd, payload)
       if (response && response.success) {
-        const { page, pageSize, q } = payload
+        const { page, pageSize, q, location } = payload
+        const { pathname, query } = location
         yield put({
           type: 'queryUnrelated',
           payload: {
@@ -108,6 +109,16 @@ export default modelExtend(pageModel, {
             q
           }
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedAddList: []
+          }
+        })
+        yield put(routerRedux.push({
+          pathname,
+          query
+        }))
         message.success('Data berhasil ditambahkan')
       } else {
         message.error(response.message)
@@ -124,7 +135,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            selectedRemoveList: []
+            selectedRemoveList: [],
+            listUnrelated: []
           }
         })
         message.success('Data berhasil dihapus')

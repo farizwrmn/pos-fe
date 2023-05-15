@@ -123,17 +123,23 @@ const MachineStore = ({
         message.error('No machine selected to be added!')
         return
       }
-      const params = {
-        storeId: lstorage.getCurrentUserStore(),
-        machineId: selectedAddList,
-        page: unrelatedPagination.current || 1,
-        pageSize: unrelatedPagination.pageSize || 10,
-        q: unrelatedSearchKey || '',
-        location
-      }
-      dispatch({
-        type: 'paymentMachineStore/queryAdd',
-        payload: params
+      Modal.confirm({
+        title: 'Add this machine',
+        content: 'Are you sure?',
+        onOk: () => {
+          const params = {
+            storeId: lstorage.getCurrentUserStore(),
+            machineId: selectedAddList,
+            page: unrelatedPagination.current || 1,
+            pageSize: unrelatedPagination.pageSize || 10,
+            q: unrelatedSearchKey || '',
+            location
+          }
+          dispatch({
+            type: 'paymentMachineStore/queryAdd',
+            payload: params
+          })
+        }
       })
     },
     handleCancel: handleShowModal,
@@ -184,7 +190,7 @@ const MachineStore = ({
               <Button type="primary" size="small" icon="plus" onClick={handleShowModal}>Add New</Button>
             </Col>
             <Col>
-              <Button type="danger" size="small" icon="minus" onClick={handleDeleteMachine} disabled={selectedRemoveList.length === 0}>Remove Machine</Button>
+              <Button type="danger" size="small" icon="minus" onClick={handleDeleteMachine} disabled={selectedRemoveList.length === 0} loading={loading.effects['paymentMachineStore/queryDelete']}>Remove Machine</Button>
             </Col>
           </Row>
         </Col>
