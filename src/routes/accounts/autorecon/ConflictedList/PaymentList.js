@@ -56,7 +56,9 @@ const PaymentList = ({
                   title={(
                     <div>
                       <Checkbox style={{ marginRight: '10px' }} onChange={() => onSelect(item.transactionId, isChecked)} checked={isChecked} />
-                      {getName(item.transactionType)}
+                      <a target="__blank" href={`/accounts/payment/${encodeURIComponent(item.transNo)}`}>
+                        {getName(item.transactionType)}
+                      </a>
                     </div>
                   )}
                   style={{ marginBottom: '1em' }}
@@ -84,6 +86,30 @@ const PaymentList = ({
                     </Col>
                     <Col span={12}>
                       {item.description}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={12}>
+                      <div>EDC Batch Number:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.batchNumber || '-'}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={12}>
+                      <div>Card Name:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.cardName || '-'}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={12}>
+                      <div>Type:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.type || '-'}
                     </Col>
                   </Row>
                 </Card>
