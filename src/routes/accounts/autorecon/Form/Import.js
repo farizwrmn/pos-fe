@@ -85,7 +85,6 @@ const convertCSVtoArray = (string) => {
   reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
     || String(filtered.recordSource).trim() === 'TF'
     || String(filtered.recordSource).trim() === 'TC'
-    || String(filtered.recordSource).trim() === 'TQ'
   )
 
   currentArray = reformatArray.map((record) => {
@@ -98,10 +97,6 @@ const convertCSVtoArray = (string) => {
 
     if (String(record.recordSource).trim() === 'TC') {
       type = 'K'
-    }
-
-    if (String(record.recordSource).trim() === 'TQ') {
-      type = 'QR'
     }
 
     return ({
