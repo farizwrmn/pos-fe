@@ -38,6 +38,14 @@ const ListPayment = ({
               EDC Batch Number
             </Col>
             <Col {...columnProps}>
+              {paymentData.batchNumber || '-'}
+            </Col>
+          </Row>
+          <Row>
+            <Col {...columnProps}>
+              Card Name
+            </Col>
+            <Col {...columnProps}>
               {paymentData.cardName}
             </Col>
           </Row>
