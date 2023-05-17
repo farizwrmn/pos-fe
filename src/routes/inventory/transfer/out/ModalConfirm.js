@@ -54,8 +54,8 @@ const ModalConfirm = ({
       ]}
       {...modalOpts}
     >
-      {<PrintPDF listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
-      {<PrintPDFv2 listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
+      {formConfirmProps.itemPrint && <PrintPDF listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
+      {formConfirmProps.itemPrint && <PrintPDFv2 listItem={listItem} storeInfo={storeInfo} user={user} printNo={1} {...formConfirmProps} />}
     </Modal>
   )
 }
