@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col } from 'antd'
+import { Row, Col, Button } from 'antd'
 import {
   generateListBank
 } from 'utils/payment'
@@ -83,6 +83,11 @@ const Counter = ({
 
   return (
     <div className="content-inner">
+      <Row>
+        <Col>
+          <Button type="primary" icon="rollback" onClick={() => { dispatch(routerRedux.goBack()) }}>Back</Button>
+        </Col>
+      </Row>
       <Row>
         <Col md={24} lg={12}>
           <Form {...formProps} />
