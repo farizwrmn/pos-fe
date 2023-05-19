@@ -1,11 +1,12 @@
-import { Checkbox, Col, Row, Table } from 'antd'
+import { Button, Checkbox, Col, Row, Table } from 'antd'
 
 const List = ({
   ...tableProps,
   handlePagination,
   handleDelete,
   loading,
-  selectedRemoveList
+  selectedRemoveList,
+  handleCostSettingMenu
 }) => {
   const columns = [
     {
@@ -40,6 +41,15 @@ const List = ({
           </div>
         )
       }
+    },
+    {
+      title: 'Cost',
+      width: 100,
+      render: (_, record) => (
+        <div style={{ textAlign: 'center' }}>
+          <Button type="primary" onClick={() => { handleCostSettingMenu(record) }} size="small">Edit Cost</Button>
+        </div>
+      )
     }
   ]
 

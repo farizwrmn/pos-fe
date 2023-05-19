@@ -72,6 +72,9 @@ const MachineStore = ({
           selectedRemoveList: checked ? selectedRemoveList.concat(record.id) : selectedRemoveList.filter(filtered => filtered !== record.id)
         }
       })
+    },
+    handleCostSettingMenu: (record) => {
+      dispatch(routerRedux.push(`/master/paymentoption/cost/${record.machineId}`))
     }
   }
 
