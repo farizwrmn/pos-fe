@@ -1,17 +1,25 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryAdd } from 'services/master/paymentOption/paymentMachineStoreService'
+import { query, queryAdd, queryDelete, queryUnrelated } from 'services/master/paymentOption/paymentMachineStoreService'
 import { pageModel } from 'common'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
   namespace: 'paymentMachineStore',
 
   state: {
-    currentMachineStore: [],
-    currentMachine: {},
     modalVisible: false,
-    activeKey: '0',
+    unrelatedSearchKey: '',
+    listUnrelated: [],
+    unrelatedPagination: {
+      showQuickJumper: true,
+      current: 1
+    },
+
+    selectedRemoveList: [],
+    selectedAddList: [],
+
     list: [],
     pagination: {
       showSizeChanger: true,
@@ -25,6 +33,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey } = location.query
         const { pathname, query } = location
+        const storeId = lstorage.getCurrentUserStore()
         if (pathname === '/master/paymentoption') {
           if (activeKey === '2') {
             const { page, pageSize, q } = query
@@ -33,7 +42,8 @@ export default modelExtend(pageModel, {
               payload: {
                 q,
                 page: page || 1,
-                pageSize: pageSize || 10
+                pageSize: pageSize || 10,
+                storeId
               }
             })
           }
@@ -43,7 +53,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
       if (response && response.success && response.meta) {
@@ -65,20 +74,72 @@ export default modelExtend(pageModel, {
         message.error(`${response.message} - Failed to get data`)
       }
     },
+    * queryUnrelated ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const response = yield call(queryUnrelated, payload)
+      if (response && response.success && response.meta) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            ...payload,
+            listUnrelated: response.data,
+            unrelatedPagination: {
+              showQuickJumper: true,
+              current: Number(payload.page),
+              pageSize: Number(payload.pageSize),
+              total: response.meta.total
+            },
+            unrelatedSearchKey: payload.q
+          }
+        })
+      } else {
+        message.error(`${response.message} - Failed to get data`)
+      }
+    },
     * queryAdd ({ payload = {} }, { call, put }) {
       const response = yield call(queryAdd, payload)
       if (response && response.success) {
+        const { page, pageSize, q, location } = payload
+        const { pathname, query } = location
+        yield put({
+          type: 'queryUnrelated',
+          payload: {
+            page,
+            pageSize,
+            q
+          }
+        })
         yield put({
           type: 'updateState',
           payload: {
-            modalVisible: false
+            selectedAddList: []
           }
         })
+        yield put(routerRedux.push({
+          pathname,
+          query
+        }))
+        message.success('Data berhasil ditambahkan')
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryDelete ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDelete, payload)
+      if (response && response.success) {
         const { pathname, query } = payload.location
         yield put(routerRedux.push({
           pathname,
           query
         }))
+        yield put({
+          type: 'updateState',
+          payload: {
+            selectedRemoveList: [],
+            listUnrelated: []
+          }
+        })
+        message.success('Data berhasil dihapus')
       } else {
         message.error(response.message)
       }
