@@ -120,7 +120,11 @@ export default modelExtend(pageModel, {
           }
         })
         yield put({
-          type: 'query'
+          type: 'query',
+          payload: {
+            machineId: payload.machineId,
+            type: 'all'
+          }
         })
       } else {
         yield put({
