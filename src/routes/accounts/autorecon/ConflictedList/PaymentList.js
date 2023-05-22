@@ -93,7 +93,7 @@ const PaymentList = ({
                       <div>EDC Batch Number:</div>
                     </Col>
                     <Col span={12}>
-                      {item.batchNumber || '-'}
+                      {item.edcBatchNumber || '-'}
                     </Col>
                   </Row>
                   <Row>
