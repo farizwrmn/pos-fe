@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import moment from 'moment'
-import { Button, Card, Col, Pagination, Row, Tabs } from 'antd'
+import { Button, Card, Col, Modal, Pagination, Row, Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
 import Information from './Information'
 import LastCutOff from './LastCutOff'
@@ -30,10 +30,16 @@ function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch, loading 
   }
 
   const sendEmail = (record) => {
-    dispatch({
-      type: 'consignmentCutOffPeriodReport/querySendEmail',
-      payload: {
-        record
+    Modal.confirm({
+      title: 'Blast Cut Off Emails',
+      content: 'Are you sure?',
+      onOk: () => {
+        dispatch({
+          type: 'consignmentCutOffPeriodReport/querySendEmail',
+          payload: {
+            record
+          }
+        })
       }
     })
   }
@@ -76,8 +82,8 @@ function CutOffPeriodReport ({ consignmentCutOffPeriodReport, dispatch, loading 
                         <div style={{ marginBottom: '15px' }}>
                           <div>{moment(record.period).format('DD MMM YYYY')}</div>
                         </div>
-                        <Button icon="mail" type="primary" onClick={() => sendEmail(record)} loading={loading.effects['consignmentCutOffPeriodReport/querySendEmail']} disabled={record.emailSent === 2}>
-                          {record.emailSent === 2 ? 'Sent' : 'Kirim Email'}
+                        <Button icon="mail" type="primary" onClick={() => sendEmail(record)} loading={loading.effects['consignmentCutOffPeriodReport/querySendEmail']} disabled={record.emailSent !== 1}>
+                          {record.emailSent === 1 ? 'Kirim Email' : 'Sent'}
                         </Button>
                       </Card>
                     </Col>
