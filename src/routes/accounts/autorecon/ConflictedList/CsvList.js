@@ -92,6 +92,14 @@ const CsvList = ({
                       {item.redeemAmount && item.redeemAmount != null ? <div>{`${currencyFormatter(Number(item.redeemAmount))}`}</div> : currencyFormatter(0)}
                     </Col>
                   </Row>
+                  <Row>
+                    <Col span={12}>
+                      <div>Reason:</div>
+                    </Col>
+                    <Col span={12}>
+                      {item.reason}
+                    </Col>
+                  </Row>
                 </Card>
               </div>
             )
