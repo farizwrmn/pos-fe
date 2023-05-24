@@ -78,7 +78,7 @@ export default modelExtend(pageModel, {
       }
       const response = yield call(querySendEmail, params)
       if (response && response.success) {
-        message.success('Berhasil!')
+        message.success('Berhasil! Email akan di jadwalkan sesuai dengan sistem!')
         yield put({
           type: 'query',
           payload: {}
