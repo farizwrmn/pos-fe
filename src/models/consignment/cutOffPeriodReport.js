@@ -77,8 +77,15 @@ export default modelExtend(pageModel, {
         period: payload.record.period
       }
       const response = yield call(querySendEmail, params)
-      const date = moment(response.data.period).format('DD MMM YYYY')
-      yield put({ type: 'querySuccess', payload: { lastCutOffDate: date, ...payload } })
+      if (response && response.success) {
+        message.success('Berhasil! Email akan di jadwalkan sesuai dengan sistem!')
+        yield put({
+          type: 'query',
+          payload: {}
+        })
+      } else {
+        message.error(response.message)
+      }
     },
     * queryAdd ({ payload = {} }, { call, put }) {
       const response = yield call(queryAdd, payload)
