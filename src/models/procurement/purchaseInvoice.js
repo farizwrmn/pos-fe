@@ -510,16 +510,6 @@ export default modelExtend(pageModel, {
         modalType: 'add',
         currentItem: {}
       }
-    },
-
-    editItem (state, { payload }) {
-      const { item } = payload
-      return {
-        ...state,
-        modalType: 'edit',
-        activeKey: '0',
-        currentItem: item
-      }
     }
   }
 })
