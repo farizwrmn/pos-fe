@@ -30,7 +30,7 @@ class ModalEdit extends Component {
       onDeleteItem,
       listPurchaseLatestDetail,
       loadingPurchaseLatest,
-      form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+      form: { getFieldDecorator, validateFields, getFieldValue, getFieldsValue, resetFields },
       ...formEditProps
     } = this.props
     const handleOk = () => {
@@ -179,6 +179,20 @@ class ModalEdit extends Component {
                         handleOk()
                       }
                     }}
+                  />
+                )}
+              </FormItem>
+              <FormItem label="Total" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('tempTotal', {
+                  initialValue: (((getFieldValue('qty') || 0) * (getFieldValue('purchasePrice') || 0)) * (1 - ((getFieldValue('discPercent') || 0) / 100))) - (getFieldValue('discNominal') || 0),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(
+                  <InputNumber
+                    disabled
                   />
                 )}
               </FormItem>
