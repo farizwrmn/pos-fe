@@ -111,14 +111,6 @@ const Counter = ({ purchaseSafetyStock, purchaseOrder, productbrand, productcate
     },
     onGetProduct (header) {
       dispatch({ type: 'purchaseOrder/showModalProduct' })
-      if (currentItem && !currentItem.addProduct) {
-        dispatch({
-          type: 'purchaseOrder/updateState',
-          payload: {
-            listItem: []
-          }
-        })
-      }
       dispatch({
         type: 'purchase/getProducts',
         payload: {
