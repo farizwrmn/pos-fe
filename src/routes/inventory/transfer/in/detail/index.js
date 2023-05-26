@@ -225,12 +225,17 @@ class Detail extends Component {
                 <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
               </Col>
               <Col lg={10} md={10} offset={2}>
-                {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-                  <div>
-                    {!showPrint && <Button onClick={() => clickPrint()}>Print</Button>}
-                    {showPrint && <PrintPDF {...printProps} />}
-                  </div>
-                )}
+                {(user.permissions.role === 'OWN'
+                  || user.permissions.role === 'SPR'
+                  || user.permissions.role === 'HPC'
+                  || user.permissions.role === 'SPC'
+                  || user.permissions.role === 'HFC'
+                  || user.permissions.role === 'SFC') && (
+                    <div>
+                      {!showPrint && <Button onClick={() => clickPrint()}>Print</Button>}
+                      {showPrint && <PrintPDF {...printProps} />}
+                    </div>
+                  )}
               </Col>
             </Row>
             <h1>Invoice Info</h1>
@@ -242,9 +247,14 @@ class Detail extends Component {
         <Col lg={17}>
           <div className="content-inner-zero-min-height">
             <h1>Items</h1>
-            {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-              <Button type="danger" icon="delete" disabled={data.length > 0 ? !data[0].active : 1} onClick={() => voidTrans()}>Void</Button>
-            )}
+            {(user.permissions.role === 'OWN'
+              || user.permissions.role === 'SPR'
+              || user.permissions.role === 'HPC'
+              || user.permissions.role === 'SPC'
+              || user.permissions.role === 'HFC'
+              || user.permissions.role === 'SFC') && (
+                <Button type="danger" icon="delete" disabled={data.length > 0 ? !data[0].active : 1} onClick={() => voidTrans()}>Void</Button>
+              )}
             {printMode === 'default' && <Button type="primary" style={{ marginLeft: '10px' }} icon="barcode" disabled={data.length > 0 ? !data[0].active : 1} onClick={() => onPrintBarcode()}>Print Barcode</Button>}
             {selectedRowKeys && selectedRowKeys.length > 0 && (
               <span style={{ marginLeft: '10px' }}>
@@ -257,14 +267,19 @@ class Detail extends Component {
             </Row>
           </div>
 
-          {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-            <div className="content-inner-zero-min-height">
-              <h1>Accounting Journal</h1>
-              <Row style={{ padding: '10px', margin: '4px' }}>
-                <FormAccounting listAccounting={listAccounting} />
-              </Row>
-            </div>
-          )}
+          {(user.permissions.role === 'OWN'
+            || user.permissions.role === 'SPR'
+            || user.permissions.role === 'HPC'
+            || user.permissions.role === 'SPC'
+            || user.permissions.role === 'HFC'
+            || user.permissions.role === 'SFC') && (
+              <div className="content-inner-zero-min-height">
+                <h1>Accounting Journal</h1>
+                <Row style={{ padding: '10px', margin: '4px' }}>
+                  <FormAccounting listAccounting={listAccounting} />
+                </Row>
+              </div>
+            )}
         </Col>
       </Row>
       {modalCancelVisible && <ModalCancel {...modalCancelProps} />}

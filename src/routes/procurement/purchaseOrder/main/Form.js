@@ -290,12 +290,10 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
-      {item && !item.supplierId && (
-        <Button.Group>
-          <Button type="default" size="large" icon="plus" onClick={() => showModalProductAdd()} />
-          <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
-        </Button.Group>
-      )}
+      <Button.Group>
+        <Button type="default" size="large" icon="plus" onClick={() => showModalProductAdd()} />
+        <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
+      </Button.Group>
       {item && !item.addProduct && <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>}
       <Button type="primary" size="large" onClick={() => onHistoryClick()} style={{ marginLeft: '10px', float: 'right' }}>History</Button>
       <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />

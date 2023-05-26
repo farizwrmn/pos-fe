@@ -118,14 +118,6 @@ const Counter = ({ purchaseInvoice, purchase, loading, dispatch, location }) => 
     },
     onGetProduct (header) {
       dispatch({ type: 'purchaseInvoice/showModalProduct' })
-      if (currentItem && !currentItem.addProduct) {
-        dispatch({
-          type: 'purchaseInvoice/updateState',
-          payload: {
-            listItem: []
-          }
-        })
-      }
       dispatch({
         type: 'purchase/getProducts',
         payload: {

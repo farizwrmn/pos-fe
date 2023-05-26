@@ -286,7 +286,11 @@ const ModalEntry = ({
                 <DatePicker
                   format="YYYY-MM-DD"
                   placeholder="Select Date"
-                  disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')}
+                  disabled={!(
+                    user.permissions.role === 'SPR'
+                    || user.permissions.role === 'HFC'
+                    || user.permissions.role === 'OWN'
+                  )}
                   style={{ width: '100%', fontSize: '14pt' }}
                 />
               )}

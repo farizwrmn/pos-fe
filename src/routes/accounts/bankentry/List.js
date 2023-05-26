@@ -77,7 +77,12 @@ const List = ({
               {
                 key: '2',
                 name: 'Delete',
-                disabled: !(user.permissions.role === 'SPR' || user.permissions.role === 'OWN' || user.permissions.role === 'ADM')
+                disabled: !(
+                  user.permissions.role === 'HFC'
+                  || user.permissions.role === 'SFC'
+                  || user.permissions.role === 'SPR'
+                  || user.permissions.role === 'OWN'
+                )
               }
             ]}
           />

@@ -411,9 +411,17 @@ const List = ({
     <div>
       <Table {...tableProps}
         bordered
-        columns={(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')
+        columns={(user.permissions.role === 'SPR'
+          || user.permissions.role === 'OWN'
+          || user.permissions.role === 'HPC'
+          || user.permissions.role === 'SPC'
+          || user.permissions.role === 'HFC'
+          || user.permissions.role === 'SFC'
+          || user.permissions.role === 'PCS')
           ? columns
-          : (user.permissions.role === 'ADF' ?
+          : (user.permissions.role === 'ADF'
+            || user.permissions.role === 'HWR'
+            || user.permissions.role === 'AWR' ?
             columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'margin')
             : columns.filter(filtered => filtered.key !== 'costPrice' && filtered.key !== 'supplierId' && filtered.key !== 'margin'))}
         simple
