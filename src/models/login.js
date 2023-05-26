@@ -68,7 +68,10 @@ export default {
       if (data.profile.role === 'OWN'
         || data.profile.role === 'SPR'
         || data.profile.role === 'HFC'
-        || data.profile.role === 'SFC') {
+        || data.profile.role === 'SFC'
+        || data.profile.role === 'PCS'
+        || data.profile.role === 'HPC'
+        || data.profile.role === 'SPC') {
         yield put({
           type: 'updateState',
           payload: {
