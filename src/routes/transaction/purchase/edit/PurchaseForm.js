@@ -195,7 +195,14 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                     required: true,
                     message: 'Required'
                   }]
-                })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
+                })(<DatePicker disabled={!(
+                  user.permissions.role === 'SPR'
+                  || user.permissions.role === 'OWN'
+                  || user.permissions.role === 'HPC'
+                  || user.permissions.role === 'SPC'
+                  || user.permissions.role === 'HFC'
+                  || user.permissions.role === 'SFC')}
+                />)}
               </FormItem>
               <FormItem label="Supplier" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierCode', {
@@ -308,7 +315,14 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                     required: true,
                     message: 'Required'
                   }]
-                })(<DatePicker disabled={!(user.permissions.role === 'SPR' || user.permissions.role === 'OWN')} />)}
+                })(<DatePicker disabled={!(user.permissions.role === 'SPR'
+                  || user.permissions.role === 'OWN'
+                  || user.permissions.role === 'HPC'
+                  || user.permissions.role === 'SPC'
+                  || user.permissions.role === 'HFC'
+                  || user.permissions.role === 'SFC'
+                )}
+                />)}
               </FormItem>
               <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('deliveryFee', {

@@ -258,14 +258,21 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
             <FormPayment {...formProps} />
           </Row>
         </div>
-        {(user.permissions.role === 'OWN' || user.permissions.role === 'SPR' || user.permissions.role === 'ADM') && (
-          <div className="content-inner-zero-min-height">
-            <h1>Accounting Journal</h1>
-            <Row style={{ padding: '10px', margin: '4px' }}>
-              <FormAccounting {...formProps} />
-            </Row>
-          </div>
-        )}
+        {(
+          user.permissions.role === 'OWN'
+          || user.permissions.role === 'SPR'
+          || user.permissions.role === 'HPC'
+          || user.permissions.role === 'SPC'
+          || user.permissions.role === 'HFC'
+          || user.permissions.role === 'SFC'
+        ) && (
+            <div className="content-inner-zero-min-height">
+              <h1>Accounting Journal</h1>
+              <Row style={{ padding: '10px', margin: '4px' }}>
+                <FormAccounting {...formProps} />
+              </Row>
+            </div>
+          )}
       </Col>
     </Row>
     {modalCancelVisible && <ModalCancel {...modalCancelProps} />}

@@ -67,6 +67,8 @@ export default {
       const { data } = payload
       if (data.profile.role === 'OWN'
         || data.profile.role === 'SPR'
+        || data.permissions.role === 'HFC'
+        || data.permissions.role === 'SFC'
         || data.profile.role === 'ADM') {
         yield put({
           type: 'updateState',
