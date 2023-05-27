@@ -20,7 +20,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: data.paid < 0 && data.discountAccountCode ? `${data.discountAccountCode} ${data.discountAccountName}` : (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data && data.transDate ? moment(data.transDate, 'YYYY-MM-DD').format('DD-MMM-YYYY') : '' || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(parseFloat(data.paid)), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
