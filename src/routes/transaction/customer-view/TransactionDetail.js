@@ -30,7 +30,9 @@ class TransactionDetail extends Component {
         .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
         .concat(service.map(item => ({ ...item, type: 'Service' })))
         .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
-        .map((item, index) => ({ ...item, no: index + 1 })),
+        .sort((a, b) => b.inputTime - a.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no),
       loading
     } = this.props
 
@@ -65,9 +67,7 @@ class TransactionDetail extends Component {
             {
               title: 'No',
               width: '60px',
-              dataIndex: 'no',
-              sortOrder: 'descend',
-              sorter: (a, b) => a.no - b.no
+              dataIndex: 'no'
             },
             {
               title: 'Product',

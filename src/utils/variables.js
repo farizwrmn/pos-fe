@@ -80,6 +80,7 @@ const insertCashierTrans = (dataObject) => {
       if (item.code == filter[0].code && item.bundleId == filter[0].bundleId && item.categoryCode == filter[0].categoryCode) {
         item.qty += dataObject.qty
         item.sellingPrice = dataObject.price
+        item.inputTime = new Date().valueOf()
         item.total = posTotal(item)
         return item
       }
@@ -105,6 +106,7 @@ const insertCashierTrans = (dataObject) => {
       replaceable: dataObject.replaceable,
       oldValue: dataObject.oldValue,
       newValue: dataObject.newValue,
+      inputTime: new Date().valueOf(),
       retailPrice: dataObject.retailPrice,
       distPrice01: dataObject.distPrice01,
       distPrice02: dataObject.distPrice02,
@@ -146,6 +148,7 @@ const insertConsignment = (dataObject) => {
     martSellPrice: dataObject.martSellPrice,
     commissionGrab: dataObject.commissionGrab,
     originalSellPrice: dataObject.originalSellPrice,
+    inputTime: new Date().valueOf(),
     qty: dataObject.qty,
     typeCode: dataObject.typeCode,
     sellPrice: dataObject.sellPrice,

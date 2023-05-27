@@ -391,6 +391,7 @@ export default {
     * paymentEdit ({ payload }, { select, put }) {
       const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
       let dataPos = getCashierTrans()
+      payload.inputTime = new Date().valueOf()
       dataPos[payload.no - 1] = payload
       setCashierTrans(JSON.stringify(dataPos))
       if (currentBuildComponent && currentBuildComponent.no) {
@@ -421,6 +422,7 @@ export default {
 
     * serviceEdit ({ payload }, { put }) {
       let dataService = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      payload.inputTime = new Date().valueOf()
       dataService[payload.no - 1] = payload
       setServiceTrans(JSON.stringify(dataService))
       yield put({ type: 'hideServiceModal' })
@@ -436,6 +438,7 @@ export default {
         })
         return
       }
+      payload.inputTime = new Date().valueOf()
       dataConsignment[payload.no - 1] = payload
       setConsignment(JSON.stringify(dataConsignment))
       yield put({ type: 'hideConsignmentModal' })
@@ -1708,6 +1711,7 @@ export default {
         productId: item.id,
         name: item.product.product_name,
         oldValue: item.oldValue,
+        inputTime: new Date().valueOf(),
         newValue: item.newValue,
         retailPrice: item.sellPrice,
         distPrice01: item.distPrice01,
@@ -1767,6 +1771,7 @@ export default {
           }
           return filtered
         })
+        data.inputTime = new Date().valueOf()
         yield put({
           type: 'pos/checkQuantityEditConsignment',
           payload: {
@@ -1787,6 +1792,7 @@ export default {
             return
           }
         }
+        data.inputTime = new Date().valueOf()
         data.total = data.price * data.qty
         arrayProd.push(data)
         yield put({
@@ -2155,6 +2161,7 @@ export default {
               distPrice07: item.item.distPrice07,
               distPrice08: item.item.distPrice08,
               distPrice09: item.item.distPrice09,
+              inputTime: new Date().valueOf(),
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
@@ -2344,6 +2351,7 @@ export default {
             employeeId: mechanicInformation.employeeId,
             employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
             typeCode: 'S',
+            inputTime: new Date().valueOf(),
             qty: item.qty,
             sellPrice: selectedPrice,
             price: selectedPrice,
