@@ -37,7 +37,8 @@ export default {
             type: 'queryOptionMaster',
             payload: {
               type: 'all',
-              order: 'sort'
+              order: 'sort',
+              status: 1
             }
           })
         }
