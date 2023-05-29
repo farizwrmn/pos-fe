@@ -4,7 +4,9 @@
 import moment from 'moment'
 import {
   queryProfitLoss,
+  queryProfitLossDetailStore,
   queryBalanceSheet,
+  queryBalanceSheetDetailStore,
   queryCashFlow
 } from 'services/report/accounting/accountingStatement'
 
@@ -15,6 +17,7 @@ export default {
     listProfit: [],
     listProfitCompare: [],
     listBalanceSheet: [],
+    listDetailStore: [],
     listBalanceSheetCompare: [],
     listCashflow: [],
     from: '',
@@ -127,6 +130,22 @@ export default {
         }
       })
     },
+
+    * queryDetailStore ({ payload }, { call, put }) {
+      const response = yield call(queryProfitLossDetailStore, {
+        storeId: payload.storeId,
+        from: payload.from,
+        to: payload.to,
+        accountId: payload.accountId
+      })
+      yield put({
+        type: 'updateState',
+        payload: {
+          listDetailStore: response.data
+        }
+      })
+    },
+
     * queryProfitCompare ({ payload }, { call, put }) {
       const data = yield call(queryProfitLoss, {
         storeId: payload.storeId,
@@ -154,6 +173,17 @@ export default {
               total: data.total
             },
             to: payload.to
+          }
+        })
+      }
+    },
+    * queryBalanceSheetDetailStore ({ payload }, { call, put }) {
+      const response = yield call(queryBalanceSheetDetailStore, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetailStore: response.data
           }
         })
       }

@@ -28,6 +28,7 @@ export const createTableBodyBrowse = (tabledata, groupCompare, bodyStruct) => {
         grandTotalCompare += compare
       }
       dataSource.push({
+        id: item.accountId,
         key: item.accountName,
         accountName: (item.accountName || '').toString(),
         value: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`,

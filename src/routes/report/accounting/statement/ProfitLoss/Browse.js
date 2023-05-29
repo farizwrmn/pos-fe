@@ -10,7 +10,7 @@ import { createTableBody } from './utils'
 
 const { formatNumberIndonesia } = numberFormat
 
-const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, ...browseProps }) => {
+const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, listCompare, ...browseProps }) => {
   let dataSource = []
   let groupBy = (xs, key) => {
     return xs
@@ -151,6 +151,10 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, ...b
     ])
   }
 
+  const onClickDetail = (record) => {
+    onGetDetail(record)
+  }
+
   return (
     <Table
       {...browseProps}
@@ -159,6 +163,7 @@ const Browse = ({ from, to, compareFrom, compareTo, listTrans, listCompare, ...b
       bordered
       columns={columns}
       simple
+      onRowClick={record => onClickDetail(record)}
       size="small"
     />
   )
