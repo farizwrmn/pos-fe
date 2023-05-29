@@ -31,6 +31,7 @@ export const createTableBody = (tabledata, {
       ]
       groupBody.push(row)
       dataBody.push({
+        id: item.accountId,
         key: item.accountCode,
         accountName: `${item.accountCode} - ${item.accountName}`,
         value: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`
@@ -54,6 +55,7 @@ export const createTableBody = (tabledata, {
           })
         } else {
           dataBody.push({
+            id: item.accountId,
             key: item.accountCode,
             accountName: `${item.accountCode} - ${item.accountName}`,
             compare: total >= 0 ? formatNumberIndonesia(total) : `(${formatNumberIndonesia(total * -1)})`

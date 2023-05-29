@@ -4,16 +4,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
+import { message } from 'antd'
 import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
+import ModalBalanceSheetDetail from './ModalBalanceSheetDetail'
 
 const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }) => {
-  const { listBalanceSheet: listTrans, listBalanceSheetCompare: listCompare, listProfit, listProfitCompare, compareFrom, compareTo, from, to, productCode } = accountingStatementReport
+  const { modalBalanceSheetDetailVisible, listDetailStore, listBalanceSheet: listTrans, listBalanceSheetCompare: listCompare, listProfit, listProfitCompare, compareFrom, compareTo, from, to, productCode } = accountingStatementReport
   const { listAllStores } = userStore
   const { user, storeInfo } = app
   const browseProps = {
-    loading: loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query'],
+    loading: loading.effects['accountingStatementReport/queryBalanceSheet']
+      || loading.effects['accountingStatementReport/queryBalanceSheetDetailStore']
+      || loading.effects['accountingStatementReport/query']
+      || loading.effects['accountingStatementReport/queryDetailStore'],
     listTrans,
     listCompare,
     listProfit,
@@ -24,7 +29,27 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
     compareTo,
     from,
     to,
-    productCode
+    productCode,
+    onGetDetail (record) {
+      if (record.id) {
+        dispatch({
+          type: 'accountingStatementReport/updateState',
+          payload: {
+            modalBalanceSheetDetailVisible: true,
+            listDetailStore: []
+          }
+        })
+        dispatch({
+          type: 'accountingStatementReport/queryBalanceSheetDetailStore',
+          payload: {
+            accountId: record.id,
+            to
+          }
+        })
+      } else {
+        message.warning('Cannot get detail of this account, please use general ledger')
+      }
+    }
   }
 
   const filterProps = {
@@ -61,8 +86,28 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
     }
   }
 
+  const modalBalanceSheetDetailProps = {
+    footer: null,
+    visible: modalBalanceSheetDetailVisible,
+    loading: loading.effects['accountingStatementReport/queryBalanceSheet']
+      || loading.effects['accountingStatementReport/queryBalanceSheetDetailStore']
+      || loading.effects['accountingStatementReport/query']
+      || loading.effects['accountingStatementReport/queryDetailStore'],
+    listDetailStore,
+    onCancel () {
+      dispatch({
+        type: 'accountingStatementReport/updateState',
+        payload: {
+          modalBalanceSheetDetailVisible: false,
+          listDetailStore: []
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
+      {modalBalanceSheetDetailVisible && <ModalBalanceSheetDetail {...modalBalanceSheetDetailProps} />}
       <Filter {...filterProps} />
       <Browse {...browseProps} />
     </div>
