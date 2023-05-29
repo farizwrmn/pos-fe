@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
+import { IMAGEURL } from 'utils/config.company'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -47,6 +48,23 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
         if (record.type === 'BUNDLE') {
           return record.bundle.name
         }
+      }
+    },
+    {
+      title: 'Bookmark Image',
+      dataIndex: 'bookmarkImage',
+      key: 'bookmarkImage',
+      render: (text) => {
+        if (text
+          && text != null
+          && text !== '["no_image.png"]'
+          && text !== '"no_image.png"'
+          && text !== 'no_image.png') {
+          if (text) {
+            return <img height="70px" src={`${IMAGEURL}/${text}`} alt="no_image" />
+          }
+        }
+        return null
       }
     },
     {

@@ -171,6 +171,7 @@ const Detail = ({
   const modalBookmarkProps = {
     visible: modalBookmarkVisible,
     item: modalBookmarkItem,
+    loading: loading.effects['productBookmarkDetail/updateBookmarkDetail'],
     onSubmit (data) {
       dispatch({
         type: 'productBookmarkDetail/updateBookmarkDetail',

@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
+import FormData from 'form-data'
 import { message } from 'antd'
+import { uploadBookmarkImage } from 'services/utils/imageUploader'
 import { edit } from '../../services/product/bookmark'
 import { queryById } from '../../services/product/bookmarkGroup'
 import { pageModel } from './../common'
@@ -56,26 +58,49 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * updateBookmarkDetail ({ payload = {} }, { call, put }) {
-      const response = yield call(edit, {
-        id: payload.id,
-        shortcutCode: payload.shortcutCode,
-        groupId: payload.groupId,
-        productId: payload.productId,
-        type: payload.type
+    * updateBookmarkDetail ({ payload = {} }, { select, call, put }) {
+      const id = yield select(({ productBookmarkDetail }) => {
+        return productBookmarkDetail.modalBookmarkItem.id
       })
-      if (response.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalBookmarkItem: {},
-            modalBookmarkVisible: false
-          }
-        })
-        yield put({ type: 'query', payload: { id: payload.groupId } })
-        success()
+      const bookmarkImage = yield select(({ productBookmarkDetail }) => {
+        return productBookmarkDetail.modalBookmarkItem.bookmarkImage
+      })
+      const newUser = { ...payload, bookmarkImage, id }
+      const formData = new FormData()
+      let imagePass = true
+      if (
+        payload
+        && payload.bookmarkImage
+        && typeof payload.bookmarkImage === 'object'
+        && payload.bookmarkImage.file
+      ) {
+        formData.append('file', payload.bookmarkImage.file.originFileObj)
+        const imageUpload = yield call(uploadBookmarkImage, formData)
+        if (imageUpload && imageUpload.success) {
+          newUser.bookmarkImage = imageUpload.data.filename
+        } else {
+          imagePass = false
+          throw imageUpload
+        }
+      }
+
+      if (imagePass) {
+        const response = yield call(edit, newUser)
+        if (response.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalBookmarkItem: {},
+              modalBookmarkVisible: false
+            }
+          })
+          yield put({ type: 'query', payload: { id: payload.groupId } })
+          success()
+        } else {
+          throw response
+        }
       } else {
-        throw response
+        message.error('Failed to upload image')
       }
     }
   },

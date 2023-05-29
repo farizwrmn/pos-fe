@@ -36,6 +36,7 @@ const groupProduct = (list, dataBundle = []) => {
       price,
       sellPrice: price,
       type: 'Bundle',
+      inputTime: filteredBundle && filteredBundle[0] ? filteredBundle[0].inputTime : 0,
       qty: filteredBundle && filteredBundle[0] ? filteredBundle[0].qty : 1,
       total: price
     })

@@ -265,6 +265,7 @@ export default modelExtend(pageModel, {
     },
     * setBundleAlreadyExists ({ payload = {} }, { put }) {
       const currentBundle = payload.currentBundle
+      payload.item.inputTime = new Date().valueOf()
       const item = payload.item
       let arrayProd = currentBundle.map((data) => {
         if (data.bundleId === item.id) {
@@ -294,6 +295,7 @@ export default modelExtend(pageModel, {
         type: item.type,
         code: item.code,
         name: item.name,
+        inputTime: new Date().valueOf(),
         minimumPayment: item.minimumPayment,
         paymentOption: item.paymentOption,
         paymentBankId: item.paymentBankId,
@@ -348,6 +350,7 @@ export default modelExtend(pageModel, {
               oldValue: reward.oldValue,
               newValue: reward.newValue,
               retailPrice: reward.sellPrice,
+              inputTime: new Date().valueOf(),
               distPrice01: reward.distPrice01,
               distPrice02: reward.distPrice02,
               distPrice03: reward.distPrice03,
@@ -400,6 +403,7 @@ export default modelExtend(pageModel, {
               replaceable: reward.replaceable,
               oldValue: reward.oldValue,
               newValue: reward.newValue,
+              inputTime: new Date().valueOf(),
               retailPrice: reward.sellPrice,
               distPrice01: reward.distPrice01,
               distPrice02: reward.distPrice02,
@@ -501,6 +505,7 @@ export default modelExtend(pageModel, {
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'S',
+              inputTime: new Date().valueOf(),
               qty: selectedProduct.qty + reward.qty,
               sellPrice: reward.sellPrice,
               sellingPrice: reward.sellPrice,
@@ -530,6 +535,7 @@ export default modelExtend(pageModel, {
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'S',
+              inputTime: new Date().valueOf(),
               qty: reward.qty,
               sellPrice: reward.sellPrice,
               sellingPrice: reward.sellPrice,

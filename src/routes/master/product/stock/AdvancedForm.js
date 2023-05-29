@@ -1104,14 +1104,6 @@ class AdvancedForm extends Component {
                     </Select>)}
                   </FormItem>
                 ) : null}
-                <FormItem label="Return Policy" {...formItemLayout}>
-                  {getFieldDecorator('returnPolicy', {
-                    valuePropName: 'checked',
-                    initialValue: item.returnPolicy === undefined
-                      ? false
-                      : item.returnPolicy
-                  })(<Checkbox>Sold item can be returned</Checkbox>)}
-                </FormItem>
               </div>) : null}
             </Card>
             <Card {...cardProps} title={<h3>Shopee</h3>}>
@@ -1378,6 +1370,15 @@ class AdvancedForm extends Component {
                   valuePropName: 'checked',
                   initialValue: item.active === undefined ? true : item.active
                 })(<Checkbox>Active</Checkbox>)}
+              </FormItem>
+
+              <FormItem label="Return Policy" {...formItemLayout}>
+                {getFieldDecorator('returnPolicy', {
+                  valuePropName: 'checked',
+                  initialValue: item.returnPolicy === undefined
+                    ? false
+                    : item.returnPolicy
+                })(<Checkbox>Bought Item can be return to supplier</Checkbox>)}
               </FormItem>
               <FormItem label="Under Cost" {...formItemLayout}>
                 {getFieldDecorator('exception01', {

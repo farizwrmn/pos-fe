@@ -147,7 +147,11 @@ class TransactionDetail extends Component {
       .concat(bundle.map(item => ({ ...item, posit: item.no, typeTrans: 'Bundle' })))
       .concat(service.filter(filtered => !filtered.bundleId).map(item => ({ ...item, posit: item.no, typeTrans: 'Service' })))
       .concat(consignment.map(item => ({ ...item, posit: item.no, typeTrans: 'Consignment' })))
+      .sort((a, b) => a.inputTime - b.inputTime)
       .map((item, index) => ({ ...item, no: index + 1 }))
+      .sort((a, b) => b.no - a.no)
+
+    console.log('listTrans', listTrans)
 
     return (
       <Tabs activeKey="1">
@@ -164,9 +168,7 @@ class TransactionDetail extends Component {
               {
                 title: 'No',
                 width: '60px',
-                dataIndex: 'no',
-                sortOrder: 'descend',
-                sorter: (a, b) => a.no - b.no
+                dataIndex: 'no'
               },
               {
                 title: 'Type',
