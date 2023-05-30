@@ -24,15 +24,6 @@ class TransactionDetail extends Component {
       bundle,
       service,
       consignment,
-      listTrans = product
-        .filter(filtered => !filtered.bundleId)
-        .map(item => ({ ...item, type: 'Product' }))
-        .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
-        .concat(service.map(item => ({ ...item, type: 'Service' })))
-        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
-        .sort((a, b) => a.inputTime - b.inputTime)
-        .map((item, index) => ({ ...item, no: index + 1 }))
-        .sort((a, b) => b.no - a.no),
       loading
     } = this.props
 
@@ -45,21 +36,24 @@ class TransactionDetail extends Component {
     //   })
     // }
 
+    const listTrans = product
+      .filter(filtered => !filtered.bundleId)
+      .map(item => ({ ...item, type: 'Product' }))
+      .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+      .concat(service.map(item => ({ ...item, type: 'Service' })))
+      .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+      .sort((a, b) => a.inputTime - b.inputTime)
+      .map((item, index) => ({ ...item, no: index + 1 }))
+      .sort((a, b) => b.no - a.no)
+
+    console.log('listTrans', listTrans)
+
     return (
       <div>
         <Table
-          // title={() => (
-          //   <div style={{ textAlign: 'right' }}>
-          //     <div>Qty: {qty.toLocaleString()}</div>
-          //     <div><strong>Netto: {netto.toLocaleString()}</strong></div>
-          //   </div>
-          // )}
-          loading={loading}
           rowKey={(record, key) => key}
           bordered
-          pagination={false}
           size="small"
-          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
           locale={{
             emptyText: 'Your Payment List'
           }}
@@ -103,6 +97,9 @@ class TransactionDetail extends Component {
               }
             }
           ]}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
+          loading={loading}
+          pagination={false}
           dataSource={listTrans}
           style={{ marginBottom: 16 }}
         />

@@ -151,8 +151,6 @@ class TransactionDetail extends Component {
       .map((item, index) => ({ ...item, no: index + 1 }))
       .sort((a, b) => b.no - a.no)
 
-    console.log('listTrans', listTrans)
-
     return (
       <Tabs activeKey="1">
         <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="1">
