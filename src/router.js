@@ -713,49 +713,6 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/transaction/purchase/edit'))
             }, 'transaction-purchase-add')
           }
-        },
-        // {
-        //   path: 'transaction/purchase/order',
-        //   getComponent (nextState, cb) {
-        //     require.ensure([], (require) => {
-        //       registerModel(app, require('./models/purchase'))
-        //       registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
-        //       cb(null, require('./routes/purchase/purchaseOrder'))
-        //     }, 'transaction-purchase-order')
-        //   }
-        // }, {
-        //   path: 'transaction/purchase/order/:id',
-        //   getComponent (nextState, cb) {
-        //     require.ensure([], (require) => {
-        //       registerModel(app, require('./models/purchaseOrder/purchaseOrder'))
-        //       cb(null, require('./routes/purchase/purchaseOrder/detail'))
-        //     }, 'transaction-purchase-order-detail')
-        //   }
-        // },
-        {
-          path: 'inventory/transfer/demand',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transferRequest/transferDemand'))
-              cb(null, require('./routes/transferRequest/transferDemand'))
-            }, 'inventory-transfer-demand')
-          }
-        }, {
-          path: 'inventory/transfer/fulfillment',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transferRequest/transferDemand'))
-              cb(null, require('./routes/transferRequest/transferDemand'))
-            }, 'inventory-transfer-demand')
-          }
-        }, {
-          path: 'inventory/transfer/schedule',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transferRequest/transferSchedule'))
-              cb(null, require('./routes/transferRequest/transferSchedule'))
-            }, 'inventory-transfer-schedule')
-          }
         }, {
           path: 'transaction/purchase/return',
           getComponent (nextState, cb) {
