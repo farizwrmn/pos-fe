@@ -12,13 +12,3 @@ export async function query (params) {
     headers: apiHeaderToken
   })
 }
-
-export async function increase (params) {
-  const url = `${sequence}/increase?seqCode=${params.seqCode}&type=${params.type}`
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url,
-    method: 'put',
-    headers: apiHeaderToken
-  })
-}
