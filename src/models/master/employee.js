@@ -6,7 +6,7 @@ import {
 } from 'services/fingerprint/fingerprintEmployee'
 import moment from 'moment'
 import { query, queryField, add, edit, remove, getReportCheckin } from '../../services/master/employee'
-import { query as querySequence, increase as increaseSequence } from '../../services/sequence'
+import { query as querySequence } from '../../services/sequence'
 import { pageModel } from './../common'
 
 const success = (id) => {
@@ -138,14 +138,7 @@ export default modelExtend(pageModel, {
       if (sequence.data !== null) {
         data = yield call(add, { id: sequence.data, data: employeeData })
         if (data.success) {
-          // yield put({ type: 'query' })
-          const employeeIncrease = yield call(increaseSequence, seqDetail)
-          if (employeeIncrease.success) {
-            success(sequence.data)
-          } else {
-            console.log('employeeIncrease :', employeeIncrease.message)
-            throw data
-          }
+          success(sequence.data)
           yield put({
             type: 'querySequenceEmployee'
           })

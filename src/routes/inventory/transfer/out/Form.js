@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input, message, InputNumber, Button, Checkbox, Row, Col, Select } from 'antd'
+import { Modal, Form, Input, message, InputNumber, Button, Row, Col, Select } from 'antd'
 import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
@@ -164,11 +164,11 @@ const FormAdd = ({
                 ]
               })(<Input disabled maxLength={20} />)}
             </FormItem>
-            <FormItem label="Delivery Order" {...formItemLayout}>
+            {/* <FormItem label="Delivery Order" {...formItemLayout}>
               {getFieldDecorator('deliveryOrder', {
                 valuePropName: 'checked'
               })(<Checkbox>Delivery Order</Checkbox>)}
-            </FormItem>
+            </FormItem> */}
             <FormItem label="reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
                 initialValue: item.referenceNo,
