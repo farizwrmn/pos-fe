@@ -6,7 +6,7 @@ import { Modal } from 'antd'
 import { lstorage } from 'utils'
 import { query as queryAllPeriod, create as createPeriod, queryLastActive, update as updatePeriod } from '../services/period'
 import { queryFifo } from '../services/report/fifo'
-import { query as querySequence, increase as increaseSequence } from '../services/sequence'
+import { query as querySequence } from '../services/sequence'
 
 
 export default {
@@ -110,7 +110,6 @@ export default {
       payload.endPeriod = moment(payload.startPeriod).endOf('month')
       const data = yield call(createPeriod, { id: payload.accountNumber, data: payload })
       if (data.success) {
-        yield call(increaseSequence, invoice)
         // yield put({ type: 'modalHide' })
         yield put({ type: 'queryPeriod' })
         Modal.info({
