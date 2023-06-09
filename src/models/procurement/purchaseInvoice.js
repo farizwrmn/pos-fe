@@ -212,6 +212,7 @@ export default modelExtend(pageModel, {
           modalEditHeader.discInvoicePercent = header.discInvoicePercent
           modalEditHeader.deliveryFee = header.deliveryFee
           modalEditHeader.description = header.description
+          modalEditHeader.taxType = header.taxType
 
           yield put({
             type: 'updateState',
