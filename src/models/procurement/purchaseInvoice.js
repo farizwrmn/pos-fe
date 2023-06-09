@@ -218,6 +218,7 @@ export default modelExtend(pageModel, {
             payload: {
               currentItem: {
                 ...currentItem,
+                taxType: header.taxType,
                 reference: header.referenceTransNo,
                 supplierId: header.supplierId,
                 discInvoiceNominal: header.discInvoiceNominal,
