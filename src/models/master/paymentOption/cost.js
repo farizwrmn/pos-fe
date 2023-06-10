@@ -31,7 +31,6 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         const match = pathToRegexp('/master/paymentoption/cost/:id').exec(pathname)
-          || pathToRegexp('/accounts/payment/:id').exec(pathname)
           || pathToRegexp('/accounts/payable/:id').exec(pathname)
         if (match) {
           dispatch({
@@ -42,7 +41,8 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/transaction/pos') {
+        if (pathname === '/transaction/pos'
+          || pathToRegexp('/accounts/payment/:id').exec(pathname)) {
           dispatch({
             type: 'queryLov',
             payload: {}

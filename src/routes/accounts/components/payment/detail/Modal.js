@@ -24,17 +24,17 @@ const formItemLayout = {
 }
 
 const ModalEntry = ({
+  dispatch,
   onOk,
   onCancel,
   item = {},
   data,
   listAmount,
   cashierInformation,
+  listAllEdc,
+  listAllCost,
   listEdc,
   listCost,
-  onResetMachine,
-  onGetMachine,
-  onGetCost,
   curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.paid), 0),
   options,
   form: {
@@ -52,6 +52,23 @@ const ModalEntry = ({
       if (errors) {
         return
       }
+
+      const data = {
+        ...getFieldsValue()
+      }
+
+      const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
+      if (!filteredEdc) {
+        const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
+        if (filteredAllEdc && filteredAllEdc[0]) {
+          const filteredCost = listAllCost.filter(filtered => filtered.machineId === data.machine)
+          if (filteredCost && filteredCost[0]) {
+            data.machine = filteredAllEdc[0].id
+            data.bank = filteredCost[0].id
+          }
+        }
+      }
+
       const item = {
         reference: data[0].id,
         transNo: data[0].transNo,
@@ -114,15 +131,18 @@ const ModalEntry = ({
 
   const onChangePaymentType = (value) => {
     resetFields()
-    onResetMachine()
     setFieldsValue({
       printDate: moment(),
       machine: undefined,
       bank: undefined
     })
     validateFields()
-    onResetMachine()
-    onGetMachine(value)
+    dispatch({
+      type: 'paymentEdc/updateState',
+      payload: {
+        paymentLovFiltered: listAllEdc.filter(filtered => filtered.paymentOption === value)
+      }
+    })
   }
 
   const onChangeMachine = (machineId) => {
@@ -130,7 +150,12 @@ const ModalEntry = ({
       bank: undefined
     })
     validateFields()
-    onGetCost(machineId)
+    dispatch({
+      type: 'paymentCost/updateState',
+      payload: {
+        paymentLovFiltered: listAllCost.filter(filtered => filtered.machineId === machineId)
+      }
+    })
   }
 
   return (
@@ -242,6 +267,20 @@ const ModalEntry = ({
                 />
               )}
             </FormItem>
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('batchNumber', {
+                  initialValue: item.cardName,
+                  rules: [
+                    {
+                      required: getFieldValue('typeCode') !== 'C',
+                      pattern: /^[a-z0-9 -.,_]+$/i,
+                      message: 'please insert the value'
+                    }
+                  ]
+                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card Name" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardName', {
