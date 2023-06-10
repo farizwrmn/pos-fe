@@ -32,7 +32,7 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSale
   }
 
   const browseReturnTotalProps = {
-    loading: loading.effects['returnSalesDetail/query'],
+    loading: loading.effects['returnSalesDetail/query'] || loading.effects['posPaymentReport/query'],
     list,
     dataSource: list,
     pagination: false
@@ -41,7 +41,8 @@ const Report = ({ dispatch, paymentOpts, dashboard, posPaymentReport, returnSale
   const browseTotalProps = {
     listOpts,
     dataSource: [],
-    pagination: false
+    pagination: false,
+    loading: loading.effects['posPaymentReport/query']
   }
 
   const filterProps = {
