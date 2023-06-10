@@ -59,6 +59,14 @@ const Counter = ({ purchaseSafetyStock, purchaseRequisition, loading, dispatch, 
         }
       })
     },
+    onShowModalStock (currentItemEdit) {
+      dispatch({
+        type: 'purchaseRequisition/showModalStock',
+        payload: {
+          currentItemEdit
+        }
+      })
+    },
     handleSubmitAll () {
       dispatch({
         type: 'purchaseRequisition/addMultiItem',

@@ -42,7 +42,7 @@ const ListItem = ({
         let qtyToBuy = getRecommendedQtyToBuy({
           stock: record.stock,
           orderedQty: record.orderedQty,
-          safetyStock: record.safetyStock
+          safetyStock: record.greasleyStock
         })
         if (qtyToBuy < 0) {
           qtyToBuy = 0
@@ -68,13 +68,13 @@ const ListItem = ({
         let qtyToBuy = getRecommendedQtyToBuy({
           stock: record.stock,
           orderedQty: record.orderedQty,
-          safetyStock: record.safetyStock
+          safetyStock: record.greasleyStock
         })
         let boxToBuy = getRecommendedBoxToBuy({
           dimensionBox: record.product.dimensionBox,
           stock: record.stock,
           orderedQty: record.orderedQty,
-          safetyStock: record.safetyStock
+          safetyStock: record.greasleyStock
         })
         if (qtyToBuy < 0) {
           qtyToBuy = 0
@@ -82,8 +82,7 @@ const ListItem = ({
 
         return (
           <div>
-            <div>Safety Stock: {(record.safetyStock || 0).toLocaleString()}</div>
-            <div><b>Recommended: </b>{(record.greasleyStock || 0).toLocaleString()}</div>
+            <div>Safety Stock: {(record.greasleyStock || 0).toLocaleString()}</div>
             <div onClick={() => onShowModalStock(record)} style={{ color: 'green' }}>Stock All Related Store: {(record.stock || 0).toLocaleString()} <Icon type="eye-o" /></div>
             <div onClick={() => onShowModalStock(record)} style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>Buy: {(qtyToBuy || 0).toLocaleString()} Pcs</div>
             {boxToBuy > 0 ? <div onClick={() => onShowModalStock(record)} style={{ color: qtyToBuy > 0 ? 'green' : 'initial' }}>{(boxToBuy || 0).toLocaleString()} Boxes</div> : null}
@@ -106,7 +105,7 @@ const ListItem = ({
         let qtyToBuy = getRecommendedQtyToBuy({
           stock: record.stock,
           orderedQty: record.orderedQty,
-          safetyStock: record.safetyStock
+          safetyStock: record.greasleyStock
         })
         if (qtyToBuy < 0) {
           qtyToBuy = 0

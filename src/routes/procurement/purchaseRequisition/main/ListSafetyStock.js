@@ -26,6 +26,7 @@ const ListSafetyStock = ({
   onFilterChange,
   updateSelectedKey,
   selectedRowKeysSafety,
+  onShowModalStock,
   handleSubmitAll,
   loading,
   form: { getFieldDecorator, getFieldsValue },
@@ -97,9 +98,8 @@ const ListSafetyStock = ({
       render: (text, record) => {
         return (
           <div>
-            <div>Safety Stock: {record.safetyStock}</div>
-            <div><b>Recommended: </b>{record.greasleyStock}</div>
-            <div>Stock All Related Store: {record.stock}</div>
+            <div>Safety Stock: {record.greasleyStock}</div>
+            <div onClick={() => onShowModalStock(record)} style={{ color: 'green' }}>Stock All Related Store: {record.stock}</div>
           </div>
         )
       }
@@ -141,7 +141,7 @@ const ListSafetyStock = ({
         let qtyToBuy = getRecommendedQtyToBuy({
           stock: record.stock,
           orderedQty: record.orderedQty,
-          safetyStock: record.safetyStock
+          safetyStock: record.greasleyStock
         })
         if (qtyToBuy < 0) {
           qtyToBuy = 0
@@ -150,7 +150,7 @@ const ListSafetyStock = ({
           dimensionBox: record.product.dimensionBox,
           stock: record.stock,
           orderedQty: record.orderedQty,
-          safetyStock: record.safetyStock
+          safetyStock: record.greasleyStock
         })
         if (boxToBuy > 0) {
           return (

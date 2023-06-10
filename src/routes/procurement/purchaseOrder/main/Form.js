@@ -122,20 +122,7 @@ const FormCounter = ({
       ...item,
       ...getFieldsValue()
     }
-    if (item && item.addProduct) {
-      onGetProduct(data)
-    } else {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          onGetProduct(data)
-        },
-        onCancel () {
-
-        }
-      })
-    }
+    onGetProduct(data)
   }
 
   const showModalProductAdd = () => {
@@ -143,20 +130,7 @@ const FormCounter = ({
       ...item,
       ...getFieldsValue()
     }
-    if (item && item.addProduct) {
-      onProductAdd(data)
-    } else {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          onProductAdd(data)
-        },
-        onCancel () {
-
-        }
-      })
-    }
+    onProductAdd(data)
   }
 
   const supplierData = (listSupplier || []).length > 0 ?

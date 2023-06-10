@@ -212,12 +212,14 @@ export default modelExtend(pageModel, {
           modalEditHeader.discInvoicePercent = header.discInvoicePercent
           modalEditHeader.deliveryFee = header.deliveryFee
           modalEditHeader.description = header.description
+          modalEditHeader.taxType = header.taxType
 
           yield put({
             type: 'updateState',
             payload: {
               currentItem: {
                 ...currentItem,
+                taxType: header.taxType,
                 reference: header.referenceTransNo,
                 supplierId: header.supplierId,
                 discInvoiceNominal: header.discInvoiceNominal,
