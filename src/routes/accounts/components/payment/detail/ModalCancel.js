@@ -15,6 +15,7 @@ const ModalEntry = ({
   onOk,
   item = {},
   data,
+  loading,
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   ...modalProps
 }) => {
@@ -46,7 +47,7 @@ const ModalEntry = ({
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
+        <Button key="submit" onClick={() => handleOk()} type="primary" disabled={loading.effects['paymentDetail/add']}>Process</Button>
       ]}
     >
       <Form>
