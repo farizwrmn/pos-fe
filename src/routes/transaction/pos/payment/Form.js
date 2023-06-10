@@ -222,10 +222,11 @@ class FormPayment extends React.Component {
         if (!filteredEdc) {
           const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
           if (filteredAllEdc && filteredAllEdc[0]) {
-            data.machine = filteredAllEdc[0].id
-            const filteredCost = listAllCost.filter(filtered => filtered.machine.id === data.machine)
-
-            data.bank = filteredCost[0].id
+            const filteredCost = listAllCost.filter(filtered => filtered.machineId === data.machine)
+            if (filteredCost && filteredCost[0]) {
+              data.machine = filteredAllEdc[0].id
+              data.bank = filteredCost[0].id
+            }
           }
         }
 
