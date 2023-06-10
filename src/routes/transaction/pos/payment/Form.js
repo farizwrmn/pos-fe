@@ -217,6 +217,18 @@ class FormPayment extends React.Component {
           // cashierName: cashierInformation.cashierName,
           ...getFieldsValue()
         }
+
+        const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
+        if (!filteredEdc) {
+          const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
+          if (filteredAllEdc && filteredAllEdc[0]) {
+            data.machine = filteredAllEdc[0].id
+            const filteredCost = listAllCost.filter(filtered => filtered.machine.id === data.machine)
+
+            data.bank = filteredCost[0].id
+          }
+        }
+
         data.amount = parseFloat(data.amount)
         const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
 
