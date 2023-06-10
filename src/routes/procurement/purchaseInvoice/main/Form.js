@@ -157,20 +157,7 @@ const FormCounter = ({
       ...item,
       ...getFieldsValue()
     }
-    if (item && item.addProduct) {
-      onGetProduct(data)
-    } else {
-      Modal.confirm({
-        title: 'Reset unsaved process',
-        content: 'this action will reset your current process',
-        onOk () {
-          onGetProduct(data)
-        },
-        onCancel () {
-
-        }
-      })
-    }
+    onGetProduct(data)
   }
 
   const supplierData = (listSupplier || []).length > 0 ?
