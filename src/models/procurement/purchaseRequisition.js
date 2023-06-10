@@ -419,7 +419,7 @@ export default modelExtend(pageModel, {
             const qtyToBuy = getRecommendedQtyToBuy({
               stock: filteredSafety[0].stock,
               orderedQty: filteredSafety[0].orderedQty,
-              safetyStock: filteredSafety[0].safetyStock
+              safetyStock: filteredSafety[0].greasleyStock
             })
             let boxToBuy = getRecommendedBoxToBuy({
               dimensionBox: filteredSafety[0].product.dimensionBox,

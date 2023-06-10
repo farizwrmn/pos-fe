@@ -317,7 +317,7 @@ const FormCounter = ({
           <h1>Tax Info</h1>
           <FormItem label="Tax Type" hasFeedback {...formItemLayout}>
             {getFieldDecorator('taxType', {
-              initialValue: 'E',
+              initialValue: item.taxType || 'E',
               rules: [{
                 required: true,
                 message: 'Required'
