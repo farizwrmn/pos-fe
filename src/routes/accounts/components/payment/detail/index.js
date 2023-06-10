@@ -11,7 +11,7 @@ import FormAccounting from './FormAccounting'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
-const Detail = ({ app, paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
+const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
   const { user } = app
   const { listDetail, listAccounting, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
   const {
@@ -109,6 +109,7 @@ const Detail = ({ app, paymentDetail, paymentEdc, paymentCost, paymentOpts, pos,
   const modalCancelProps = {
     data,
     item: itemCancel,
+    loading,
     visible: modalCancelVisible,
     onOk (e) {
       dispatch({
@@ -135,6 +136,7 @@ const Detail = ({ app, paymentDetail, paymentEdc, paymentCost, paymentOpts, pos,
     data,
     listAccounting,
     listAmount,
+    loading,
     cashierInformation,
     openModal (e) {
       dispatch({
