@@ -30,7 +30,6 @@ export default {
           || location.pathname === '/balance/closing'
           || location.pathname === '/balance/history'
           || location.pathname === '/balance/approvement'
-          || location.pathname === '/report/pos/payment'
           || matchEdc
         ) {
           dispatch({
@@ -39,6 +38,15 @@ export default {
               type: 'all',
               order: 'sort',
               status: 1
+            }
+          })
+        }
+        if (location.pathname === '/report/pos/payment') {
+          dispatch({
+            type: 'queryOptionMaster',
+            payload: {
+              type: 'all',
+              order: 'sort'
             }
           })
         }
