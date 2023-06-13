@@ -135,6 +135,7 @@ export default {
             cost: payment.data[n].cost,
             cardNo: payment.data[n].cardNo,
             cardName: payment.data[n].cardName,
+            batchNumber: payment.data[n].batchNumber,
             chargeNominal: payment.data[n].chargeNominal,
             chargePercent: payment.data[n].chargePercent,
             chargeTotal: payment.data[n].chargeTotal,
