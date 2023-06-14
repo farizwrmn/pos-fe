@@ -50,7 +50,7 @@ const FormComponent = ({
             </Select>
           )}
         </FormItem>
-        <FormItem label="Assign To" hasFeedback {...formItemLayout}>
+        <FormItem label="Shift Selanjutnya" hasFeedback {...formItemLayout}>
           {getFieldDecorator('approveUserId', {
             rules: [
               {

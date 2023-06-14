@@ -1,5 +1,5 @@
 import React from 'react'
-import { BALANCE_TYPE_TRANSACTION } from 'utils/variable'
+import { BALANCE_TYPE_CLOSING } from 'utils/variable'
 import BodyItem from './BodyItem'
 import styles from './index.less'
 
@@ -11,11 +11,17 @@ const Body = ({
       <div className={styles.borderedSection}>
         {dataPos && dataPos
           .filter(filtered => filtered.balanceIn > 0
-            && filtered.balanceType === BALANCE_TYPE_TRANSACTION
+            && filtered.balanceType === BALANCE_TYPE_CLOSING
             && filtered.paymentOption.typeCode === 'C')
           .map((item, index) => {
             return (
-              <BodyItem key={index} item={item} />
+              <BodyItem
+                dataSource={dataPos
+                  .filter(filtered => filtered.balanceIn > 0
+                    && filtered.paymentOption.typeCode === 'C')}
+                key={index}
+                item={item}
+              />
             )
           })}
       </div>
