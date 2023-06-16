@@ -15,7 +15,10 @@ export default {
         const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname) || pathToRegexp('/accounts/payable/:id').exec(location.pathname)
         if (match) {
           dispatch({
-            type: 'queryOpts'
+            type: 'queryOpts',
+            payload: {
+              status: 1
+            }
           })
         }
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
