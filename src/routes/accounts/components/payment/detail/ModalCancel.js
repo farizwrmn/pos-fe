@@ -47,7 +47,7 @@ const ModalEntry = ({
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" disabled={loading.effects['paymentDetail/add']}>Process</Button>
+        <Button key="submit" onClick={() => handleOk()} type="primary" disabled={loading.effects['paymentDetail/cancelPayment']}>Process</Button>
       ]}
     >
       <Form>

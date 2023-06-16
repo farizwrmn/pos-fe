@@ -51,6 +51,7 @@ const formItemLayout = {
 }
 
 const ModalEntry = ({
+  loading,
   dispatch,
   onOk,
   onCancel,
@@ -186,7 +187,13 @@ const ModalEntry = ({
   }
 
   return (
-    <Modal {...modalOpts}>
+    <Modal
+      {...modalOpts}
+      footer={[
+        <Button disabled={loading.effects['paymentDetail/add']} onClick={handleCancel}>Cancel</Button>,
+        <Button type="primary" disabled={loading.effects['paymentDetail/add']} onClick={handleOk}>OK</Button>
+      ]}
+    >
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
           {getFieldDecorator('amount', {

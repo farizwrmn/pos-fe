@@ -49,13 +49,8 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
     cashierInformation,
     options: listOpts,
     visible: modalVisible,
+    loading,
     onOk (e) {
-      dispatch({
-        type: 'paymentDetail/updateState',
-        payload: {
-          modalVisible: false
-        }
-      })
       dispatch({
         type: 'paymentDetail/add',
         payload: {
