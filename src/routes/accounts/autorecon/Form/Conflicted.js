@@ -2,6 +2,7 @@ import { Button, Card, Col, Icon, Modal, Row, message } from 'antd'
 import moment from 'moment'
 import { getName } from 'utils/link'
 import { currencyFormatter } from 'utils/string'
+import ModalCanceled from './ModalCanceled'
 
 const cardContentColumnProps = {
   xs: 24,
@@ -20,6 +21,10 @@ const parentContentColumnProps = {
 }
 
 const FormConflicted = ({
+  location,
+  dispatch,
+  canceledModalVisible,
+  canceledReconciledPayment,
   selectedCsvRowKeys,
   selectedPaymentRowKeys,
   conflictedCSV,
@@ -150,6 +155,32 @@ const FormConflicted = ({
     handleModal()
   }
 
+  const handleModalCanceled = () => {
+    dispatch({
+      type: 'autorecon/updateState',
+      payload: {
+        canceledModalVisible: !canceledModalVisible
+      }
+    })
+  }
+
+  const modalCanceledProps = {
+    loading,
+    visible: canceledModalVisible,
+    title: 'Canceled Reconciled Payment List',
+    list: canceledReconciledPayment,
+    onCancel: handleModalCanceled,
+    ackPayment: (id) => {
+      dispatch({
+        type: 'autorecon/ackPayment',
+        payload: {
+          id,
+          location
+        }
+      })
+    }
+  }
+
   return (
     <Col {...parentContentColumnProps}>
       <Modal
@@ -170,18 +201,35 @@ const FormConflicted = ({
       </Modal>
       <Row>
         <Row style={{ marginBottom: '15px', marginTop: '15px' }}>
-          <Button
-            type="primary"
-            size="default"
-            icon="rollback"
-            onClick={() => handleSubmit()}
-            disabled={!selectedCsvRowKeys[0] || !selectedPaymentRowKeys[0]}
-            loading={loading.effects['autorecon/add'] || loading.effects['autorecon/autoRecon']}
-          >
-            Mark as Conflicted
-          </Button>
+          {conflictedCSV && conflictedPayment && (conflictedCSV.length > 0 || conflictedPayment > 0) && (
+            <Button
+              type="primary"
+              size="default"
+              icon="rollback"
+              onClick={() => handleSubmit()}
+              disabled={!selectedCsvRowKeys[0] || !selectedPaymentRowKeys[0]}
+              loading={loading.effects['autorecon/add'] || loading.effects['autorecon/autoRecon']}
+            >
+              Mark as Conflicted
+            </Button>
+          )
+          }
+          {canceledReconciledPayment && canceledReconciledPayment.length > 0 && (
+            <Button
+              type="ghost"
+              size="default"
+              icon="exclamation-circle-o"
+              onClick={handleModalCanceled}
+              style={{ marginLeft: '10px' }}
+            >
+              Canceled Reconciled Payment
+            </Button>
+          )}
         </Row>
       </Row>
+      {canceledModalVisible && (
+        <ModalCanceled {...modalCanceledProps} />
+      )}
     </Col>
   )
 }

@@ -24,11 +24,13 @@ const AutoReconciliation = ({
   app
 }) => {
   const {
+    canceledModalVisible,
     modalVisible,
     formModalVisible,
     conflictModalVisible,
     conflictedCSV,
     conflictedPayment,
+    canceledReconciledPayment,
     selectedPaymentRowKeys,
     selectedCsvRowKeys,
     list,
@@ -160,6 +162,10 @@ const AutoReconciliation = ({
   }
 
   const formConflictedProps = {
+    location,
+    dispatch,
+    canceledModalVisible,
+    canceledReconciledPayment,
     selectedCsvRowKeys,
     selectedPaymentRowKeys,
     conflictedCSV,
@@ -291,11 +297,9 @@ const AutoReconciliation = ({
               <Row>
                 <Form {...formProps} />
               </Row>
-              {conflictedCSV && conflictedPayment && conflictedCSV.length > 0 && conflictedPayment.length > 0 && (
-                <Row>
-                  <FormConflicted {...formConflictedProps} />
-                </Row>
-              )}
+              <Row>
+                <FormConflicted {...formConflictedProps} />
+              </Row>
               <Row>
                 <ConflictedList {...conflictedListProps} />
               </Row>
