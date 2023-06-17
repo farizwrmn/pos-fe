@@ -35,7 +35,7 @@ export async function queryCanceledPayment (params) {
 export async function ackPayment (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${paymentValidationImport}/ack-payment`,
+    url: '/canceled-payment/ack-payment',
     method: 'put',
     data: params,
     headers: apiHeaderToken
