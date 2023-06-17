@@ -21,3 +21,23 @@ export async function autoRecon (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryCanceledPayment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/canceled-payment',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function ackPayment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentValidationImport}/ack-payment`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
