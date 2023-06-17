@@ -1,7 +1,7 @@
 import { lstorage } from 'utils'
 import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
-import { add as importCsv, autoRecon } from 'services/payment/paymentValidationImport'
+import { add as importCsv, autoRecon, ackPayment, queryCanceledPayment } from 'services/payment/paymentValidationImport'
 import { query, queryDetail, queryAdd, queryResolve, queryAll } from 'services/payment/paymentValidationConflict'
 import { query as queryBankMerchant, add as addMerchant, edit as editMerchant } from 'services/payment/paymentValidationImportBank'
 import pathToRegexp from 'path-to-regexp'
@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     modalVisible: false,
     resolveModalVisible: false,
     conflictModalVisible: false,
+    canceledModalVisible: false,
     BankMerchantModalVisible: false,
     formModalVisible: false,
     pagination: {
@@ -33,6 +34,7 @@ export default modelExtend(pageModel, {
     selectedCsvRowKeys: [],
     conflictedPayment: [],
     selectedPaymentRowKeys: [],
+    canceledReconciledPayment: [],
     accountId: null,
     from: null,
     to: null,
@@ -178,13 +180,14 @@ export default modelExtend(pageModel, {
       const response = yield call(autoRecon, payload)
       if (response && response.success && response.conflictedRecord) {
         const { conflictedRecord } = response
-        const { conflictedImportData = [], accountLedger = [] } = conflictedRecord
+        const { conflictedImportData = [], accountLedger = [], nonActivePaymentDataReconciled = [] } = conflictedRecord
         yield put({
           type: 'updateState',
           payload: {
             ...payload,
             conflictedCSV: conflictedImportData,
             conflictedPayment: accountLedger,
+            canceledReconciledPayment: nonActivePaymentDataReconciled,
             selectedCsvRowKeys: [],
             selectedPaymentRowKeys: []
           }
@@ -288,6 +291,40 @@ export default modelExtend(pageModel, {
           payload: {
             page,
             pageSize
+          }
+        })
+        message.success('Berhasil')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * ackPayment ({ payload = {} }, { call, put }) {
+      const storeId = lstorage.getCurrentUserStore()
+      const response = yield call(ackPayment, payload)
+      if (response && response.success) {
+        const { query } = payload.location
+        const { from, to } = query
+        yield put({
+          type: 'queryCanceledPayment',
+          payload: {
+            from,
+            to,
+            storeId
+          }
+        })
+        message.success('Berhasil')
+      } else {
+        message.error(`Gagal: ${response.message}`)
+      }
+    },
+    * queryCanceledPayment ({ payload = {} }, { call, put }) {
+      const response = yield call(queryCanceledPayment, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            canceledReconciledPayment: response.data,
+            canceledModalVisible: (response.data || []).length > 0
           }
         })
         message.success('Berhasil')
