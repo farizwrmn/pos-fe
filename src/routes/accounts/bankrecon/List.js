@@ -44,6 +44,27 @@ const List = ({
     })
   }
 
+  const handleSelectAll = () => {
+    dispatch({
+      type: 'bankentry/updateState',
+      payload: {
+        selectedRowKeys: listBankRecon.map(record => ({
+          id: record.id,
+          total: (record.debit || 0) - (record.credit || 0)
+        }))
+      }
+    })
+  }
+
+  const handleDeselectAll = () => {
+    dispatch({
+      type: 'bankentry/updateState',
+      payload: {
+        selectedRowKeys: []
+      }
+    })
+  }
+
   return (
     <div>
       <div style={{ position: 'fixed', minWidth: '300px', bottom: 10, right: 0, zIndex: 2 }}>
@@ -83,6 +104,25 @@ const List = ({
             </div>
           )}
         </Col>
+      </Row>
+      <Row style={{ marginBottom: '10px' }}>
+        <Button
+          type="primary"
+          onClick={handleSelectAll}
+          icon="check"
+        >
+          Select All
+        </Button>
+        {selectedRowKeys && selectedRowKeys.length > 0 && (
+          <Button
+            type="danger"
+            onClick={handleDeselectAll}
+            icon="close"
+            style={{ marginLeft: '10px' }}
+          >
+            Deselect All
+          </Button>
+        )}
       </Row>
       <Row style={{ zIndex: 1 }}>
         <Col md={24} lg={12}>

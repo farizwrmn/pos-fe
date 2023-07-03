@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { lstorage } from 'utils'
 import { Row, Col, Tag, Button } from 'antd'
 import ModalPayment from './Modal'
 import ModalCancel from './ModalCancel'
@@ -15,10 +14,12 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
   const { user } = app
   const { listDetail, listAccounting, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
   const {
-    listPayment: listEdc
+    paymentLov: listAllEdc,
+    paymentLovFiltered: listEdc
   } = paymentEdc
   const {
-    listPayment: listCost
+    paymentLov: listAllCost,
+    paymentLovFiltered: listCost
   } = paymentCost
   const { listOpts } = paymentOpts
   const { cashierInformation } = pos
@@ -37,54 +38,19 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
   }
 
   const modalProps = {
+    dispatch,
     width: '68%',
     data,
+    listAllEdc,
+    listAllCost,
     listEdc,
     listCost,
     listAmount,
     cashierInformation,
     options: listOpts,
     visible: modalVisible,
-    onGetCost (machineId) {
-      dispatch({
-        type: 'paymentCost/query',
-        payload: {
-          machineId,
-          relationship: 1
-        }
-      })
-    },
-    onGetMachine (paymentOption) {
-      console.log('onGetMachine')
-      dispatch({
-        type: 'paymentEdc/query',
-        payload: {
-          paymentOption,
-          storeId: lstorage.getCurrentUserStore()
-        }
-      })
-    },
-    onResetMachine () {
-      dispatch({
-        type: 'paymentEdc/updateState',
-        payload: {
-          listPayment: []
-        }
-      })
-      dispatch({
-        type: 'paymentCost/updateState',
-        payload: {
-          listPayment: []
-        }
-      })
-    },
+    loading,
     onOk (e) {
-      dispatch({
-        type: 'paymentDetail/updateState',
-        payload: {
-          modalVisible: false
-        }
-      })
       dispatch({
         type: 'paymentDetail/add',
         payload: {
@@ -147,10 +113,9 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
       })
       console.log('openModal')
       dispatch({
-        type: 'paymentEdc/query',
+        type: 'paymentEdc/updateState',
         payload: {
-          paymentOption: 'C',
-          storeId: lstorage.getCurrentUserStore()
+          paymentLovFiltered: listAllEdc.filter(filtered => filtered.paymentOption === 'C')
         }
       })
     },
