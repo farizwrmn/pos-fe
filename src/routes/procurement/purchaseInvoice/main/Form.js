@@ -274,7 +274,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <InputNumber onBlur={onChangeTotal} min={0} style={{ width: '100%' }} />
+              <InputNumber onBlur={onChangeTotal} style={{ width: '100%' }} />
             )}
           </FormItem>
           <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
