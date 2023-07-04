@@ -1522,6 +1522,30 @@ const Routers = function ({ history, app }) {
             }, 'k3express/product/k3expressconsignment')
           }
         }, {
+          path: 'k3express/kiosk-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/kiosk/kioskCategory'))
+              cb(null, require('./routes/k3express/kiosk/kioskCategory'))
+            }, 'k3express/kiosk/kioskCategory')
+          }
+        }, {
+          path: 'k3express/kiosk-product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/kiosk/kioskProduct'))
+              cb(null, require('./routes/k3express/kiosk/kioskProduct'))
+            }, 'k3express/kiosk/kioskProduct')
+          }
+        }, {
+          path: 'k3express/kiosk-product-properties',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/kiosk/kioskProductProperties'))
+              cb(null, require('./routes/k3express/kiosk/kioskProductProperties'))
+            }, 'k3express/kiosk/kioskProductProperties')
+          }
+        }, {
           path: 'cash-entry/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
