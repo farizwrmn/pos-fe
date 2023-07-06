@@ -50,7 +50,6 @@ module.exports = {
     sequence: '/sequence',
     employees: '/employees',
     jobposition: '/employees/positions',
-    employeehris: '/employees/hris',
     customers: '/members',
     assets: '/assets',
     customergroup: '/members/groups',
