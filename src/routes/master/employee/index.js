@@ -8,7 +8,6 @@ import List from './List'
 import Filter from './Filter'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
-import Report from './Report'
 
 const TabPane = Tabs.TabPane
 
@@ -214,10 +213,6 @@ const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch,
     storeInfo
   }
 
-  const reportProps = {
-
-  }
-
   const menu = (
     <Menu>
       <Menu.Item key="1"><PrintPDF {...printProps} /></Menu.Item>
@@ -240,9 +235,6 @@ const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch,
         <TabPane tab="Browse" key="1">
           <Filter {...filterProps} />
           <List {...listProps} />
-        </TabPane>
-        <TabPane tab="HRIS" key="2">
-          <Report {...reportProps} />
         </TabPane>
       </Tabs>
     </div>
