@@ -37,6 +37,7 @@ import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import ModalPayment from './ModalPayment'
+import ModalQrisPayment from './ModalQrisPayment'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
@@ -45,6 +46,7 @@ import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
+import DynamicQrisButton from './components/BottomDynamicQrisButton'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -132,6 +134,8 @@ const Pos = ({
     modalProductVisible,
     modalConsignmentVisible,
     modalPaymentVisible,
+    modalQrisPaymentVisible,
+    modalQrisPaymentType,
     listAdvertising,
     curQty,
     totalItem,
@@ -180,6 +184,7 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
+    curRounding,
     currentGrabOrder
   } = pos
   const { listEmployee } = pettyCashDetail
@@ -190,7 +195,8 @@ const Pos = ({
   const {
     // usingWo,
     paymentModalVisible,
-    woNumber
+    woNumber,
+    listAmount
   } = payment
 
   const {
@@ -935,6 +941,57 @@ const Pos = ({
       }
     }
   }
+
+  const modalQrisPaymentProps = {
+    dispatch,
+    modalType: modalQrisPaymentType,
+    footer: null,
+    visible: modalQrisPaymentVisible,
+    item: itemPayment,
+    loading,
+    location,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel: () => {
+      dispatch({
+        type: 'payment/hidePaymentModal'
+      })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentVisible: !modalQrisPaymentVisible,
+          modalQrisPaymentType: 'waiting'
+        }
+      })
+    },
+    createPayment: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentVisible: !modalQrisPaymentVisible,
+          modalQrisPaymentType: 'waiting'
+        }
+      })
+    },
+    acceptPayment: (paymentTransactionId) => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentType: 'success',
+          paymentTransactionId
+        }
+      })
+    },
+    paymentFailed: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentType: 'failed'
+        }
+      })
+    }
+  }
+
   const ModalServiceListProps = {
     location,
     loading,
@@ -2000,6 +2057,131 @@ const Pos = ({
     }
   }
 
+  const onPaymentDynamicQris = () => {
+    let defaultRole = ''
+    const localId = localStorage.getItem(`${prefix}udi`)
+    if (localId && localId.indexOf('#') > -1) {
+      defaultRole = localId.split(/[# ]+/).pop()
+    }
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+    const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'Member Unit is not Defined '
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are inserting Member Unit without Work Order'
+      })
+    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are Work Order without Member Unit'
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
+    }
+    dispatch({ type: 'pos/setCurTotal' })
+
+    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+    if (listVoucher && listVoucher.length > 0) {
+      dispatch({
+        type: 'payment/addMethodVoucher',
+        payload: {
+          list: listVoucher
+        }
+      })
+    }
+
+    // Untuk tipe page
+    // dispatch(routerRedux.push('/transaction/pos/payment'))
+    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listEdcId = listEdc.map(item => item.id)
+        const listCost = listAllCost.filter(filtered => listEdcId.includes(filtered.machineId))
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    } else if (listOpts && listOpts.length > 0) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === listOpts[0].typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    }
+
+    if (bundleItem && bundleItem.length > 0) {
+      const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
+      if (filteredBundlePayment && filteredBundlePayment[0]) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            currentBundlePayment: {
+              paymentOption: filteredBundlePayment[0].paymentOption,
+              paymentBankId: filteredBundlePayment[0].paymentBankId
+            }
+          }
+        })
+      }
+    }
+
+    const storeId = lstorage.getCurrentUserStore()
+    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
+    if (paymentValue > 0) {
+      dispatch({
+        type: 'payment/createDynamicQrisPayment',
+        payload: {
+          location,
+          paymentType: 'qris',
+          storeId,
+          amount: paymentValue
+        }
+      })
+    } else {
+      message.error('Amount cannot be 0')
+    }
+  }
+
   const buttomButtonProps = {
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
@@ -2078,6 +2260,13 @@ const Pos = ({
           })
         }
       })
+    }
+  }
+
+  const dynamicQrisButtonProps = {
+    loading,
+    handleDynamicQrisButton: () => {
+      onPaymentDynamicQris()
     }
   }
 
@@ -2273,6 +2462,7 @@ const Pos = ({
             </Form>
 
             {paymentModalVisible && <ModalPayment {...modalPaymentTypeProps} />}
+            {modalQrisPaymentVisible && <ModalQrisPayment {...modalQrisPaymentProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
@@ -2381,6 +2571,7 @@ const Pos = ({
             </Row>
           </Card>
           <BottomButton {...buttomButtonProps} />
+          <DynamicQrisButton {...dynamicQrisButtonProps} />
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
