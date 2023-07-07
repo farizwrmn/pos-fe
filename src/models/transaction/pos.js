@@ -116,6 +116,8 @@ export default {
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
+    modalQrisPaymentVisible: false,
+    modalQrisPaymentType: 'waiting',
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
     modalConfirmVisible: false,
