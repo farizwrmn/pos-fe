@@ -1,6 +1,7 @@
 {
   "private": true,
   "dependencies": {
+    "ant-design-pro": "^2.3.2",
     "antd": "^2.13.2",
     "axios": "^0.27.2",
     "classnames": "^2.2.5",
