@@ -1,9 +1,10 @@
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
+import { queryAdd as createTransaction } from 'services/payment/paymentTransactionService'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -313,7 +314,8 @@ export default {
               policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
               change: payload.totalChange,
               woReference: payload.woNumber,
-              listAmount: payload.listAmount
+              listAmount: payload.listAmount,
+              paymentTransactionId: payload.paymentTransactionId
             }
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
@@ -409,7 +411,12 @@ export default {
               // })
               Modal.info({
                 title: 'Information',
-                content: 'Transaction has been saved...!'
+                content: 'Transaction has been saved...!',
+                onOk: () => {
+                  if (payload.createPayment) {
+                    payload.createPayment()
+                  }
+                }
               })
               localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
               localStorage.setItem('dineInTax', 0)
@@ -622,6 +629,29 @@ export default {
             ...sequenceData
           }
         })
+      }
+    },
+    * createDynamicQrisPayment ({ payload }, { call, put }) {
+      const response = yield call(createTransaction, payload)
+      console.log('response', response)
+      if (response && response.success && response.data && response.data.payment) {
+        const { pathname, query } = payload.location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            paymentTransactionId: response.data.payment.id
+          }
+        }))
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: true,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
+      } else {
+        message.error(response.message)
       }
     }
   },
