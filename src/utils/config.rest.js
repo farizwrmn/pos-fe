@@ -116,6 +116,7 @@ module.exports = {
     paymentCost: '/payment-cost',
     workOrder: '/wo',
     maintenance: '/maintenance',
-    marketing: '/marketing'
+    marketing: '/marketing',
+    paymentTransaction: '/payment-transaction'
   }
 }
