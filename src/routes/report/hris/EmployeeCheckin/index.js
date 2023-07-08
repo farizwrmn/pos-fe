@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router'
 import Filter from './Filter'
 import Browse from './Browse'
 
-const Report = ({
+const EmployeeCheckin = ({
   employee,
   app,
   loading,
@@ -55,4 +55,4 @@ const Report = ({
   )
 }
 
-export default connect(({ employee, loading, app }) => ({ employee, loading, app }))(Report)
+export default connect(({ employee, loading, app }) => ({ employee, loading, app }))(EmployeeCheckin)
