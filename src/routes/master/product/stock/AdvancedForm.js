@@ -893,7 +893,7 @@ class AdvancedForm extends Component {
         </Card>
         <Row>
           <Col {...parentThreeDivision}>
-            <Card {...cardProps} title={<h3>Pricing</h3>}>
+            <Card {...cardProps} title={<h3>Global Pricing</h3>}>
               <Row>
                 <FormItem label={getDistPriceName('sellPrice')} help={getDistPriceDescription('sellPrice')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('sellPrice', {
