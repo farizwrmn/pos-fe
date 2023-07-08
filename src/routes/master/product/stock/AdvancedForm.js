@@ -822,12 +822,12 @@ class AdvancedForm extends Component {
               </FormItem> */}
             </Col>
             <Col {...column}>
-              <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
+              <FormItem label="Barcode Product" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('barCode01', {
                   initialValue: modalType === 'edit' ? item.barCode01 : getFieldValue('productCode')
                 })(<Input />)}
               </FormItem>
-              <FormItem label="Barcode 2" hasFeedback {...formItemLayout}>
+              <FormItem label="Barcode Box" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('barCode02', {
                   initialValue: modalType === 'edit' ? item.barCode02 : getFieldValue('productCode')
                 })(<Input />)}
