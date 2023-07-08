@@ -3,7 +3,6 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import { query as querySequence } from 'services/sequence'
-import { queryInventoryType } from 'services/transType'
 import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
@@ -42,7 +41,6 @@ export default modelExtend(pageModel, {
     modalGrabmartCampaignVisible: false,
     modalProductType: '',
     listPrintAllStock: [],
-    listInventory: [],
     tmpProductData: [],
     productInformation: {},
     filteredInfo: {},
@@ -132,16 +130,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * loadDataValue ({ payload = {} }, { call, put }) {
-      const dataType = yield call(queryInventoryType, payload)
-      if (dataType.success && dataType.data && dataType.data.length > 0) {
-        yield put({
-          type: 'updateState',
-          payload: { listInventory: dataType.data }
-        })
-      }
-    },
-
     * hideModalStorePrice (payload, { put }) {
       yield put({
         type: 'updateState',
