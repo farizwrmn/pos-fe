@@ -763,12 +763,87 @@ class AdvancedForm extends Component {
                 >{productBrand}
                 </Select>)}
               </FormItem>
-              {/* <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
-                <Button.Group>
-                  {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
-                  <Button disabled={getFieldValue('categoryId') ? !getFieldValue('categoryId').key : null} onClick={handleShowSpecification}>Specification</Button>
-                </Button.Group>
-              </FormItem> */}
+
+              <FormItem label="Image" {...formItemLayout}>
+                {getFieldDecorator('productImage', {
+                  initialValue: item.productImage
+                    && item.productImage != null
+                    && item.productImage !== '["no_image.png"]'
+                    && item.productImage !== '"no_image.png"'
+                    && item.productImage !== 'no_image.png' ?
+                    {
+                      fileList: JSON.parse(item.productImage).map((detail, index) => {
+                        return ({
+                          uid: index + 1,
+                          name: detail,
+                          status: 'done',
+                          url: `${IMAGEURL}/${detail}`,
+                          thumbUrl: `${IMAGEURL}/${detail}`
+                        })
+                      })
+                    }
+                    : [],
+                  rules: [
+                    {
+                      required: getFieldValue('enableShopee')
+                    }
+                  ]
+                })(
+                  <Upload
+                    {...props}
+                    multiple
+                    showUploadList={{
+                      showPreviewIcon: true
+                    }}
+                    defaultFileList={item.productImage
+                      && item.productImage != null
+                      && item.productImage !== '["no_image.png"]'
+                      && item.productImage !== '"no_image.png"'
+                      && item.productImage !== 'no_image.png' ?
+                      JSON.parse(item.productImage).map((detail, index) => {
+                        return ({
+                          uid: index + 1,
+                          name: detail,
+                          status: 'done',
+                          url: `${IMAGEURL}/${detail}`,
+                          thumbUrl: `${IMAGEURL}/${detail}`
+                        })
+                      })
+                      : []}
+                    listType="picture"
+                    action={`${apiCompanyURL}/time/time`}
+                    onPreview={file => console.log('file', file)}
+                    onChange={(info) => {
+                      if (info.file.status !== 'uploading') {
+                        console.log('pending', info.fileList)
+                      }
+                      if (info.file.status === 'done') {
+                        console.log('success', info)
+                        message.success(`${info.file.name} file staged success`)
+                      } else if (info.file.status === 'error') {
+                        console.log('error', info)
+                        message.error(`${info.file.name} file staged failed.`)
+                      }
+                    }}
+                  >
+                    <Button>
+                      <Icon type="upload" /> Click to Upload
+                    </Button>
+                  </Upload>
+                )}
+              </FormItem>
+              <FormItem label="Description" {...formItemLayout}>
+                {getFieldDecorator('description', {
+                  initialValue: item.description,
+                  rules: [
+                    {
+                      pattern: getFieldValue('enableShopee') || getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
+                      required: getFieldValue('enableShopee') || getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
+                      message: getFieldValue('enableShopee') || getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
+                    }
+                  ]
+                })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
+              </FormItem>
             </Col>
             <Col {...column}>
               <FormItem label="Barcode Product" hasFeedback {...formItemLayout}>
@@ -939,24 +1014,6 @@ class AdvancedForm extends Component {
                     : item.activeShop
                 })(<Checkbox>Publish</Checkbox>)}
               </FormItem>
-              <FormItem label="Track Qty" {...formItemLayout}>
-                {getFieldDecorator('trackQty', {
-                  valuePropName: 'checked',
-                  initialValue: item.trackQty == null ? true : !!item.trackQty
-                })(<Checkbox>Track</Checkbox>)}
-              </FormItem>
-              <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('alertQty', {
-                  initialValue: item.alertQty == null ? 1 : item.alertQty,
-                  rules: [
-                    {
-                      required: getFieldValue('trackQty'),
-                      pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9'
-                    }
-                  ]
-                })(<InputNumber {...InputNumberProps} />)}
-              </FormItem>
               <FormItem label="Halal" {...formItemLayout}>
                 {getFieldDecorator('isHalal', {
                   initialValue: item.isHalal
@@ -1023,15 +1080,6 @@ class AdvancedForm extends Component {
                   initialValue: item.active === undefined ? true : item.active
                 })(<Checkbox>Active</Checkbox>)}
               </FormItem>
-
-              <FormItem label="Return Policy" {...formItemLayout}>
-                {getFieldDecorator('returnPolicy', {
-                  valuePropName: 'checked',
-                  initialValue: item.returnPolicy === undefined
-                    ? false
-                    : item.returnPolicy
-                })(<Checkbox>Bought Item can be return to supplier</Checkbox>)}
-              </FormItem>
               <FormItem label="Under Cost" {...formItemLayout}>
                 {getFieldDecorator('exception01', {
                   valuePropName: 'checked',
@@ -1041,7 +1089,7 @@ class AdvancedForm extends Component {
             </Card>
 
             <Card {...cardProps} title={<h3>Planogram</h3>}>
-              <FormItem label="Dimension" {...formItemLayout}>
+              <FormItem label="Dimension Product" {...formItemLayout}>
                 {getFieldDecorator('dimension', {
                   initialValue: modalType === 'add' ?
                     formatDimension(getFieldValue('productName')) : item.dimension,
@@ -1053,9 +1101,21 @@ class AdvancedForm extends Component {
                   ]
                 })(<Input maxLength={30} />)}
               </FormItem>
-              <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
-                {getFieldDecorator('dimensionBox', {
-                  initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
+              <FormItem label="Dimension Box" {...formItemLayout}>
+                {getFieldDecorator('dimensionBatch', {
+                  initialValue: modalType === 'add' ?
+                    formatDimension(getFieldValue('productName')) : item.dimension,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
+                {getFieldDecorator('dimensionPack', {
+                  initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
                   rules: [
                     {
                       required: true,
@@ -1065,9 +1125,9 @@ class AdvancedForm extends Component {
                   ]
                 })(<Input maxLength={25} />)}
               </FormItem>
-              <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
-                {getFieldDecorator('dimensionPack', {
-                  initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
+              <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
+                {getFieldDecorator('dimensionBox', {
+                  initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
                   rules: [
                     {
                       required: true,
@@ -1138,86 +1198,6 @@ class AdvancedForm extends Component {
                   </FormItem>
                 ) : null}
               </div>) : null}
-              <FormItem label="Image" {...formItemLayout}>
-                {getFieldDecorator('productImage', {
-                  initialValue: item.productImage
-                    && item.productImage != null
-                    && item.productImage !== '["no_image.png"]'
-                    && item.productImage !== '"no_image.png"'
-                    && item.productImage !== 'no_image.png' ?
-                    {
-                      fileList: JSON.parse(item.productImage).map((detail, index) => {
-                        return ({
-                          uid: index + 1,
-                          name: detail,
-                          status: 'done',
-                          url: `${IMAGEURL}/${detail}`,
-                          thumbUrl: `${IMAGEURL}/${detail}`
-                        })
-                      })
-                    }
-                    : [],
-                  rules: [
-                    {
-                      required: getFieldValue('enableShopee')
-                    }
-                  ]
-                })(
-                  <Upload
-                    {...props}
-                    multiple
-                    showUploadList={{
-                      showPreviewIcon: true
-                    }}
-                    defaultFileList={item.productImage
-                      && item.productImage != null
-                      && item.productImage !== '["no_image.png"]'
-                      && item.productImage !== '"no_image.png"'
-                      && item.productImage !== 'no_image.png' ?
-                      JSON.parse(item.productImage).map((detail, index) => {
-                        return ({
-                          uid: index + 1,
-                          name: detail,
-                          status: 'done',
-                          url: `${IMAGEURL}/${detail}`,
-                          thumbUrl: `${IMAGEURL}/${detail}`
-                        })
-                      })
-                      : []}
-                    listType="picture"
-                    action={`${apiCompanyURL}/time/time`}
-                    onPreview={file => console.log('file', file)}
-                    onChange={(info) => {
-                      if (info.file.status !== 'uploading') {
-                        console.log('pending', info.fileList)
-                      }
-                      if (info.file.status === 'done') {
-                        console.log('success', info)
-                        message.success(`${info.file.name} file staged success`)
-                      } else if (info.file.status === 'error') {
-                        console.log('error', info)
-                        message.error(`${info.file.name} file staged failed.`)
-                      }
-                    }}
-                  >
-                    <Button>
-                      <Icon type="upload" /> Click to Upload
-                    </Button>
-                  </Upload>
-                )}
-              </FormItem>
-              <FormItem label="Description" {...formItemLayout}>
-                {getFieldDecorator('description', {
-                  initialValue: item.description,
-                  rules: [
-                    {
-                      pattern: getFieldValue('enableShopee') || getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
-                      required: getFieldValue('enableShopee') || getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
-                      message: getFieldValue('enableShopee') || getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
-                    }
-                  ]
-                })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
-              </FormItem>
             </Card>
             <Card {...cardProps} title={<h3>Grabmart</h3>}>
               <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
