@@ -926,6 +926,8 @@ class AdvancedForm extends Component {
                 </FormItem>
               </Row>
             </Card>
+            <Card {...cardProps} title={<h3>Purchase Price</h3>} />
+            <Card {...cardProps} title={<h3>Sell Price</h3>} />
           </Col>
           <Col {...parentThreeDivision}>
             <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
