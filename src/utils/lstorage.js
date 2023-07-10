@@ -135,15 +135,6 @@ const setQrisImage = (data) => {
   return localStorage.setItem('qris_image', data)
 }
 
-
-const getShopeeRequireLogin = () => {
-  return localStorage.getItem('requireLoginShopee') ? parseFloat(localStorage.getItem('requireLoginShopee')) : 1
-}
-
-const setShopeeRequireLogin = (data) => {
-  return localStorage.setItem('requireLoginShopee', parseFloat(data))
-}
-
 const removeQrisImage = () => {
   return localStorage.removeItem('qris_image')
 }
@@ -360,8 +351,6 @@ module.exports = {
   getVoucherList,
   setVoucherList,
   removeQrisImage,
-  getShopeeRequireLogin,
-  setShopeeRequireLogin,
   getConsignmentId,
   getGrabmartOrder,
   setGrabmartOrder,

@@ -56,12 +56,6 @@ const parentThreeDivision = {
 }
 
 class AdvancedForm extends Component {
-  constructor (props) {
-    super(props)
-    this.changeName = this.changeName.bind(this)
-    this.changeBrand = this.changeBrand.bind(this)
-  }
-
   state = {
     name: '',
     typing: false,
@@ -72,72 +66,11 @@ class AdvancedForm extends Component {
     brandTypingTimeout: 0
   }
 
-  changeBrand = (value) => {
-    const self = this
-    console.log('changeBrand', value)
-
-    if (self.state.brandTypingTimeout) {
-      clearTimeout(self.state.brandTypingTimeout)
-    }
-
-    self.setState({
-      brandName: value,
-      brandTyping: false,
-      brandTypingTimeout: setTimeout(() => {
-        self.searchShopeeBrand(self.state.brandName)
-      }, 1000)
-    })
-  }
-
-  changeName = (event) => {
-    const self = this
-
-    if (self.state.typingTimeout) {
-      clearTimeout(self.state.typingTimeout)
-    }
-
-    self.setState({
-      name: event.target.value,
-      typing: false,
-      typingTimeout: setTimeout(() => {
-        self.sendToParent(self.state.name)
-      }, 1000)
-    })
-  }
-
-  sendToParent = (productName) => {
-    const {
-      onGetShopeeCategory
-    } = this.props
-    if (productName && productName !== '') {
-      onGetShopeeCategory(productName)
-    }
-  }
-
-  searchShopeeBrand = (q) => {
-    const {
-      form: {
-        getFieldValue
-      },
-      onGetShopeeBrand
-    } = this.props
-    const categoryId = getFieldValue('shopeeCategoryId')
-    const category_id = categoryId && categoryId.key ? categoryId.key : null
-    if (q && q !== '' && category_id) {
-      onGetShopeeBrand(q, category_id)
-    }
-  }
-
   render () {
     const {
       lastTrans,
       listK3ExpressCategory,
       listK3ExpressBrand,
-      listShopeeCategory,
-      listShopeeBrand,
-      getShopeeBrand,
-      getShopeeAttribute,
-      listShopeeAttribute,
       item = {},
       onSubmit,
       onCancel,
@@ -147,12 +80,10 @@ class AdvancedForm extends Component {
       modalVariantVisible,
       modalSpecificationVisible,
       modalProductVisible,
-      listShopeeLogistic,
       listVariantStock,
       listGrabCategory,
       listInventory,
       listProductCountry,
-      onGetShopeeCategory,
       editItemProductById,
       supplierInformation,
       dispatch,
@@ -178,7 +109,6 @@ class AdvancedForm extends Component {
       listSpecification,
       listSpecificationCode,
       showProductModal,
-      listShopeeCategoryRecommend,
       modalGrabmartCampaignProps,
       listStockLocation,
       form: {
@@ -275,12 +205,6 @@ class AdvancedForm extends Component {
           title: 'Do you want to save this item?',
           onOk () {
             const data = getFieldsValue()
-
-            data.shopeeCategoryname = data.shopeeCategoryId && data.shopeeCategoryId.label ? data.shopeeCategoryId.label : null
-            data.shopeeCategoryId = data.shopeeCategoryId && data.shopeeCategoryId.key ? data.shopeeCategoryId.key : null
-
-            data.shopeeBrandName = data.shopeeBrandId && data.shopeeBrandId.label ? data.shopeeBrandId.label : null
-            data.shopeeBrandId = data.shopeeBrandId && data.shopeeBrandId.key ? data.shopeeBrandId.key : null
 
             data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
             data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
@@ -785,7 +709,7 @@ class AdvancedForm extends Component {
                     : [],
                   rules: [
                     {
-                      required: getFieldValue('enableShopee')
+                      required: false
                     }
                   ]
                 })(
@@ -837,9 +761,9 @@ class AdvancedForm extends Component {
                   initialValue: item.description,
                   rules: [
                     {
-                      pattern: getFieldValue('enableShopee') || getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
-                      required: getFieldValue('enableShopee') || getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
-                      message: getFieldValue('enableShopee') || getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
+                      pattern: getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
+                      required: getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
+                      message: getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
                     }
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
@@ -1188,7 +1112,6 @@ class AdvancedForm extends Component {
                     })(<Select
                       showSearch
                       allowClear
-                      onSearch={this.changeBrand}
                       optionFilterProp="children"
                       labelInValue
                       notFoundContent={loadingButton.effects['expressProductBrand/queryLove'] ? <Spin size="small" /> : null}
