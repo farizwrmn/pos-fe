@@ -14,7 +14,7 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans, getConsignment, removeQrisImage, setDynamicQrisImage, removeDynamicQrisImage, setPaymentTransactionId } = lstorage
+const { getCashierTrans, getConsignment, removeQrisImage, setDynamicQrisImage, removeDynamicQrisImage } = lstorage
 const { getSetting } = variables
 
 const { create } = cashierService
@@ -56,6 +56,7 @@ export default {
     lastMeter: 0,
     modalCreditVisible: false,
     paymentModalVisible: false,
+    paymentTransactionId: null,
     listCreditCharge: [],
     listAmount: [],
     creditCardType: '',
@@ -632,12 +633,17 @@ export default {
         })
       }
     },
-    * createDynamicQrisPayment ({ payload }, { call }) {
-      const response = yield call(createTransaction, payload)
-      console.log('response', response)
+    * createDynamicQrisPayment ({ payload }, { call, put }) {
+      const response = yield call(createTransaction, payload.params)
       if (response && response.success && response.data && response.data.payment) {
         setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
-        setPaymentTransactionId(response.data.payment.id)
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionId: response.data.payment.id
+          }
+        })
+        payload.connectSocket({ paymentTransactionId: response.data.payment.id, dispatch: payload.dispatch })
       } else {
         message.error(response.message)
       }

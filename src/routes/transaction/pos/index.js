@@ -950,6 +950,9 @@ const Pos = ({
     item: itemPayment,
     loading,
     location,
+    payment,
+    pos,
+    app,
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
@@ -974,12 +977,11 @@ const Pos = ({
         }
       })
     },
-    acceptPayment: (paymentTransactionId) => {
+    acceptPayment: () => {
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalQrisPaymentType: 'success',
-          paymentTransactionId
+          modalQrisPaymentType: 'success'
         }
       })
     },

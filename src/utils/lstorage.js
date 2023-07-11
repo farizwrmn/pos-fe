@@ -147,18 +147,6 @@ const removeDynamicQrisImage = () => {
   return localStorage.removeItem('dynamic_qris_image')
 }
 
-const getPaymentTransactionId = () => {
-  return localStorage.getItem('payment_transaction_id') ? localStorage.getItem('payment_transaction_id') : null
-}
-
-const setPaymentTransactionId = (data) => {
-  return localStorage.setItem('payment_transaction_id', data)
-}
-
-const removePaymentTransactionId = () => {
-  return localStorage.removeItem('payment_transaction_id')
-}
-
 const getShopeeRequireLogin = () => {
   return localStorage.getItem('requireLoginShopee') ? parseFloat(localStorage.getItem('requireLoginShopee')) : 1
 }
@@ -394,8 +382,5 @@ module.exports = {
   setEdc,
   getEdc,
   setCost,
-  getCost,
-  getPaymentTransactionId,
-  setPaymentTransactionId,
-  removePaymentTransactionId
+  getCost
 }
