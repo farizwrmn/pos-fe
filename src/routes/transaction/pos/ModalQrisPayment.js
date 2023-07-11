@@ -3,12 +3,14 @@ import React from 'react'
 import { connect } from 'dva'
 import { prefix } from 'utils/config.main'
 import moment from 'moment'
-import { routerRedux } from 'dva/router'
 import { APISOCKET } from 'utils/config.company'
+import { lstorage } from 'utils'
 import io from 'socket.io-client'
 import QrisPayment from './qrisPayment'
 import Success from './qrisPayment/Success'
 import Failed from './qrisPayment/Failed'
+
+const { removeDynamicQrisImage, getPaymentTransactionId, removePaymentTransactionId, setPaymentTransactionId } = lstorage
 
 const getDate = (mode) => {
   let today = new Date()
@@ -59,29 +61,36 @@ const socket = io(APISOCKET, options)
 
 class ModalQrisPayment extends React.Component {
   componentDidMount () {
-    const { acceptPayment, location } = this.props
-    const { paymentTransactionId } = location.query
-    const url = `dev_payment_transaction/${paymentTransactionId}`
-    console.log('url componentDidMount', url)
-    socket.on(url, () => {
-      acceptPayment()
-    })
-    this.onSubmit()
+    window.addEventListener('storage', this.handleStorageChange)
   }
 
   componentWillUnmount () {
-    const { dispatch, location } = this.props
-    const { pathname, query } = location
-    const { paymentTransactionId, ...other } = query
+    const { dispatch } = this.props
+    const paymentTransactionId = getPaymentTransactionId()
     const url = `dev_payment_transaction/${paymentTransactionId}`
     socket.off(url)
     dispatch({
       type: 'payment/hidePaymentModal'
     })
-    dispatch(routerRedux.push({
-      pathname,
-      query: other
-    }))
+    window.removeEventListener('storage', this.handleStorageChange)
+    removePaymentTransactionId()
+    removeDynamicQrisImage()
+  }
+
+  // eslint-disable-next-line react/sort-comp
+  handleStorageChange = (event) => {
+    console.log('event', event)
+    if (event.key === 'payment_transaction_id') {
+      // Handle the storage change here
+      const { acceptPayment } = this.props
+      const paymentTransactionId = getPaymentTransactionId()
+      if (paymentTransactionId != null) {
+        const url = `dev_payment_transaction/${paymentTransactionId}`
+        socket.on(url, () => {
+          acceptPayment(paymentTransactionId)
+        })
+      }
+    }
   }
 
   onSubmit () {
@@ -110,6 +119,7 @@ class ModalQrisPayment extends React.Component {
       paymentLov: listAllCost,
       paymentLovFiltered: listCost
     } = paymentCost
+    const storeId = lstorage.getCurrentUserStore()
     const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
     const usageLoyalty = memberInformation.useLoyalty || 0
     const totalDiscount = usageLoyalty
@@ -172,6 +182,16 @@ class ModalQrisPayment extends React.Component {
         data
       }
     })
+
+    dispatch({
+      type: 'payment/createDynamicQrisPayment',
+      payload: {
+        location,
+        paymentType: 'qris',
+        storeId,
+        amount: paymentValue
+      }
+    })
   }
 
   createPayment () {
@@ -181,8 +201,7 @@ class ModalQrisPayment extends React.Component {
       payment,
       app,
       loading,
-      dispatch,
-      location
+      dispatch
     } = this.props
     const {
       memberInformation,
@@ -203,7 +222,7 @@ class ModalQrisPayment extends React.Component {
       companyInfo
     } = payment
     const { user, setting } = app
-    const { paymentTransactionId } = location.query
+    const paymentTransactionId = getPaymentTransactionId()
     const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
     if (loading.effects['payment/create']) {
       return

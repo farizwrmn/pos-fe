@@ -54,8 +54,10 @@ const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
   // setCashierTrans, setBundleTrans,
   setServiceTrans,
-  getVoucherList, setVoucherList,
-  removeQrisImage
+  getVoucherList,
+  setVoucherList,
+  removeQrisImage,
+  removeDynamicQrisImage
 } = lstorage
 // const FormItem = Form.Item
 
@@ -184,7 +186,6 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
-    curRounding,
     currentGrabOrder
   } = pos
   const { listEmployee } = pettyCashDetail
@@ -195,8 +196,7 @@ const Pos = ({
   const {
     // usingWo,
     paymentModalVisible,
-    woNumber,
-    listAmount
+    woNumber
   } = payment
 
   const {
@@ -953,6 +953,7 @@ const Pos = ({
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
+      removeDynamicQrisImage()
       dispatch({
         type: 'payment/hidePaymentModal'
       })
@@ -983,6 +984,7 @@ const Pos = ({
       })
     },
     paymentFailed: () => {
+      removeDynamicQrisImage()
       dispatch({
         type: 'pos/updateState',
         payload: {
@@ -2164,22 +2166,13 @@ const Pos = ({
       }
     }
 
-    const storeId = lstorage.getCurrentUserStore()
-    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
-    if (paymentValue > 0) {
-      dispatch({
-        type: 'payment/createDynamicQrisPayment',
-        payload: {
-          location,
-          paymentType: 'qris',
-          storeId,
-          amount: paymentValue
-        }
-      })
-    } else {
-      message.error('Amount cannot be 0')
-    }
+    dispatch({
+      type: 'pos/updateState',
+      payload: {
+        modalQrisPaymentVisible: !modalQrisPaymentVisible,
+        modalQrisPaymentType: 'waiting'
+      }
+    })
   }
 
   const buttomButtonProps = {
