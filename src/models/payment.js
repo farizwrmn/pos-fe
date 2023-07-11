@@ -14,7 +14,7 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans, getConsignment, removeQrisImage } = lstorage
+const { getCashierTrans, getConsignment, removeQrisImage, setDynamicQrisImage, removeDynamicQrisImage, setPaymentTransactionId } = lstorage
 const { getSetting } = variables
 
 const { create } = cashierService
@@ -335,6 +335,7 @@ export default {
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
+                removeDynamicQrisImage()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -631,25 +632,12 @@ export default {
         })
       }
     },
-    * createDynamicQrisPayment ({ payload }, { call, put }) {
+    * createDynamicQrisPayment ({ payload }, { call }) {
       const response = yield call(createTransaction, payload)
       console.log('response', response)
       if (response && response.success && response.data && response.data.payment) {
-        const { pathname, query } = payload.location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            paymentTransactionId: response.data.payment.id
-          }
-        }))
-        yield put({
-          type: 'pos/updateState',
-          payload: {
-            modalQrisPaymentVisible: true,
-            modalQrisPaymentType: 'waiting'
-          }
-        })
+        setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
+        setPaymentTransactionId(response.data.payment.id)
       } else {
         message.error(response.message)
       }
