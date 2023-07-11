@@ -135,6 +135,29 @@ const setQrisImage = (data) => {
   return localStorage.setItem('qris_image', data)
 }
 
+const getDynamicQrisImage = () => {
+  return localStorage.getItem('dynamic_qris_image') ? localStorage.getItem('dynamic_qris_image') : null
+}
+
+const setDynamicQrisImage = (data) => {
+  return localStorage.setItem('dynamic_qris_image', data)
+}
+
+const removeDynamicQrisImage = () => {
+  return localStorage.removeItem('dynamic_qris_image')
+}
+
+const getPaymentTransactionId = () => {
+  return localStorage.getItem('payment_transaction_id') ? localStorage.getItem('payment_transaction_id') : null
+}
+
+const setPaymentTransactionId = (data) => {
+  return localStorage.setItem('payment_transaction_id', data)
+}
+
+const removePaymentTransactionId = () => {
+  return localStorage.removeItem('payment_transaction_id')
+}
 
 const getShopeeRequireLogin = () => {
   return localStorage.getItem('requireLoginShopee') ? parseFloat(localStorage.getItem('requireLoginShopee')) : 1
@@ -357,6 +380,9 @@ module.exports = {
   setPaymentShortcutSelected,
   getQrisImage,
   setQrisImage,
+  getDynamicQrisImage,
+  setDynamicQrisImage,
+  removeDynamicQrisImage,
   getVoucherList,
   setVoucherList,
   removeQrisImage,
@@ -368,5 +394,8 @@ module.exports = {
   setEdc,
   getEdc,
   setCost,
-  getCost
+  getCost,
+  getPaymentTransactionId,
+  setPaymentTransactionId,
+  removePaymentTransactionId
 }
