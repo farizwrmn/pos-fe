@@ -19,7 +19,7 @@ class QrisPayment extends Component {
   }
 
   render () {
-    const { cancelQrisPayment, acceptPayment } = this.props
+    const { cancelQrisPayment } = this.props
     return (
       <Row style={{ padding: '0 20px 0 20px' }}>
         <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', fontSize: '24px', marginBottom: '20px  ' }}>
@@ -41,9 +41,6 @@ class QrisPayment extends Component {
           <Row style={{ display: 'flex', flexDirection: 'row-reverse' }}>
             <Button type="danger" onClick={cancelQrisPayment} size="large" style={{ padding: '0 20px 0 20px' }}>
               Cancel
-            </Button>
-            <Button type="danger" onClick={acceptPayment} size="large" style={{ padding: '0 20px 0 20px' }}>
-              Testing Success
             </Button>
           </Row>
         </Col>
