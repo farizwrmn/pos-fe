@@ -59,9 +59,20 @@ const options = {
 
 const socket = io(APISOCKET, options)
 
+const handleUnload = () => {
+  return 'Are you sure you want to leave this page?' // Confirmation message
+}
+
+const handleBeforeUnload = (event) => {
+  event.preventDefault()
+  event.returnValue = '' // Required for Chrome
+}
+
 class ModalQrisPayment extends React.Component {
   componentDidMount () {
     this.onSubmit()
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener('unload', handleUnload)
   }
 
   componentWillUnmount () {
@@ -72,10 +83,9 @@ class ModalQrisPayment extends React.Component {
     dispatch({
       type: 'payment/hidePaymentModal'
     })
-    dispatch({
-      type: 'payment/hidePaymentModal'
-    })
     removeDynamicQrisImage()
+    window.removeEventListener('beforeunload', handleBeforeUnload)
+    window.removeEventListener('unload', handleUnload)
   }
 
   // eslint-disable-next-line react/sort-comp, class-methods-use-this
@@ -301,7 +311,6 @@ class ModalQrisPayment extends React.Component {
     const qrisPaymentProps = {
       cancelQrisPayment: onCancel,
       selectedPaymentShortcut,
-      acceptPayment,
       paymentFailed
     }
     const qrisPaymentSuccess = {
