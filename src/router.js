@@ -1204,6 +1204,18 @@ const Routers = function ({ history, app }) {
             }, 'report-marketing-promo')
           }
         }, {
+          path: 'report/hris/employee-checkin',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/employee'))
+              registerModel(app, require('./models/master/jobposition'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/report/hris'))
+            }, 'report-employee-checkin')
+          }
+        }, {
           path: 'accounts/payment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
