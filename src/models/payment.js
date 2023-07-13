@@ -360,9 +360,13 @@ export default {
                 yield put({
                   type: 'hidePaymentModal'
                 })
-                if (payload.createPayment) {
-                  payload.createPayment()
-                }
+                yield put({
+                  type: 'pos/updateState',
+                  payload: {
+                    modalQrisPaymentVisible: false,
+                    modalQrisPaymentType: 'waiting'
+                  }
+                })
               } catch (e) {
                 Modal.error({
                   title: 'Error, Something Went Wrong!',

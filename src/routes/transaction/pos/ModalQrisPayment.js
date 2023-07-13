@@ -211,7 +211,6 @@ class ModalQrisPayment extends React.Component {
 
   createPayment () {
     const {
-      createPayment,
       pos,
       payment,
       app,
@@ -238,7 +237,6 @@ class ModalQrisPayment extends React.Component {
       paymentTransactionId
     } = payment
     const { user, setting } = app
-    console.log('createPayment paymentTransactionId', paymentTransactionId)
     const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
     if (loading.effects['payment/create']) {
       return
@@ -294,7 +292,6 @@ class ModalQrisPayment extends React.Component {
         curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
         usingWo: !((woNumber === '' || woNumber === null)),
         woNumber: woNumber === '' ? null : woNumber,
-        createPayment,
         paymentTransactionId
       }
     })
