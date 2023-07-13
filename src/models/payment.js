@@ -360,6 +360,9 @@ export default {
                 yield put({
                   type: 'hidePaymentModal'
                 })
+                if (payload.createPayment) {
+                  payload.createPayment()
+                }
               } catch (e) {
                 Modal.error({
                   title: 'Error, Something Went Wrong!',
@@ -415,9 +418,6 @@ export default {
                 title: 'Information',
                 content: 'Transaction has been saved...!'
               })
-              if (payload.createPayment) {
-                payload.createPayment()
-              }
               localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
               localStorage.setItem('dineInTax', 0)
               yield put({
