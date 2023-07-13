@@ -10,8 +10,6 @@ import QrisPayment from './qrisPayment'
 import Success from './qrisPayment/Success'
 import Failed from './qrisPayment/Failed'
 
-const { removeDynamicQrisImage } = lstorage
-
 const getDate = (mode) => {
   let today = new Date()
   let dd = today.getDate()
@@ -76,14 +74,19 @@ class ModalQrisPayment extends React.Component {
   }
 
   componentWillUnmount () {
-    const { dispatch, pos } = this.props
-    const { paymentTransactionId } = pos
+    const { dispatch, payment } = this.props
+    const { paymentTransactionId } = payment
     const url = `dev_payment_transaction/${paymentTransactionId}`
     socket.off(url)
     dispatch({
       type: 'payment/hidePaymentModal'
     })
-    removeDynamicQrisImage()
+    dispatch({
+      type: 'payment/cancelDynamicQrisPayment',
+      payload: {
+        paymentTransactionId
+      }
+    })
     window.removeEventListener('beforeunload', handleBeforeUnload)
     window.removeEventListener('unload', handleUnload)
   }
@@ -139,7 +142,7 @@ class ModalQrisPayment extends React.Component {
       amount: paymentValue,
       bank: 0,
       machine: 0,
-      typeCode: 'QR',
+      typeCode: 'PQ',
       chargeNominal: 0,
       chargePercent: 0,
       chargeTotal: 0,

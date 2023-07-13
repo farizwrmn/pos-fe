@@ -4,7 +4,7 @@ import { query as queryEdc } from 'services/master/paymentOption/paymentMachineS
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
-import { queryAdd as createTransaction } from 'services/payment/paymentTransactionService'
+import { queryAdd as createDynamicQrisPayment, queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -634,7 +634,7 @@ export default {
       }
     },
     * createDynamicQrisPayment ({ payload }, { call, put }) {
-      const response = yield call(createTransaction, payload.params)
+      const response = yield call(createDynamicQrisPayment, payload.params)
       if (response && response.success && response.data && response.data.payment) {
         setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
         yield put({
@@ -652,6 +652,14 @@ export default {
             modalQrisPaymentType: 'waiting'
           }
         })
+        message.error(response.message)
+      }
+    },
+    * cancelDynamicQrisPayment ({ payload }, { call }) {
+      const response = yield call(cancelDynamicQrisPayment, payload)
+      if (response && response.success) {
+        removeDynamicQrisImage()
+      } else {
         message.error(response.message)
       }
     }
