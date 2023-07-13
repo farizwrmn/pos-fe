@@ -18,7 +18,7 @@ const DynamicQrisButton = ({
           type="ghost"
           icon="qrcode"
           onClick={handleDynamicQrisButton}
-          loading={loading.effects['payment/createDynamicQrisPayment']}
+          loading={loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
         >
           Dynamic QRIS
         </Button>

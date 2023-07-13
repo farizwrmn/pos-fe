@@ -19,7 +19,7 @@ class QrisPayment extends Component {
   }
 
   render () {
-    const { cancelQrisPayment } = this.props
+    const { cancelQrisPayment, loading } = this.props
     return (
       <Row style={{ padding: '0 20px 0 20px' }}>
         <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', fontSize: '24px', marginBottom: '20px  ' }}>
@@ -39,7 +39,7 @@ class QrisPayment extends Component {
             <CountDown style={{ fontSize: 20 }} target={new Date().getTime() + (5 * 60 * 1000)} />
           </Row>
           <Row style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-            <Button type="danger" onClick={cancelQrisPayment} size="large" style={{ padding: '0 20px 0 20px' }}>
+            <Button type="danger" onClick={cancelQrisPayment} size="large" style={{ padding: '0 20px 0 20px' }} loading={loading.effects['payment/createDynamicQrisPayment']}>
               Cancel
             </Button>
           </Row>

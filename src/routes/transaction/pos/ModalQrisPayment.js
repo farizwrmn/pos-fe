@@ -314,7 +314,8 @@ class ModalQrisPayment extends React.Component {
     const qrisPaymentProps = {
       cancelQrisPayment: onCancel,
       selectedPaymentShortcut,
-      paymentFailed
+      paymentFailed,
+      loading
     }
     const qrisPaymentSuccess = {
       createPayment: () => {
