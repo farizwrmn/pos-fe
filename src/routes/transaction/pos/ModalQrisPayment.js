@@ -76,7 +76,7 @@ class ModalQrisPayment extends React.Component {
   componentWillUnmount () {
     const { dispatch, payment } = this.props
     const { paymentTransactionId } = payment
-    const url = `dev_payment_transaction/${paymentTransactionId}`
+    const url = `payment_transaction/${paymentTransactionId}`
     socket.off(url)
     dispatch({
       type: 'payment/hidePaymentModal'
@@ -93,7 +93,7 @@ class ModalQrisPayment extends React.Component {
 
   // eslint-disable-next-line react/sort-comp, class-methods-use-this
   connectSocket ({ paymentTransactionId, dispatch }) {
-    const url = `dev_payment_transaction/${paymentTransactionId}`
+    const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
       dispatch({
         type: 'pos/updateState',
