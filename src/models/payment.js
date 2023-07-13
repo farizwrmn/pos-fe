@@ -413,13 +413,11 @@ export default {
               // })
               Modal.info({
                 title: 'Information',
-                content: 'Transaction has been saved...!',
-                onOk: () => {
-                  if (payload.createPayment) {
-                    payload.createPayment()
-                  }
-                }
+                content: 'Transaction has been saved...!'
               })
+              if (payload.createPayment) {
+                payload.createPayment()
+              }
               localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
               localStorage.setItem('dineInTax', 0)
               yield put({
