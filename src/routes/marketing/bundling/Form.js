@@ -337,12 +337,6 @@ class FormCounter extends Component {
         const data = {
           ...getFieldsValue()
         }
-        data.shopeeCategoryname = data.shopeeCategoryId && data.shopeeCategoryId.label ? data.shopeeCategoryId.label : null
-        data.shopeeCategoryId = data.shopeeCategoryId && data.shopeeCategoryId.key ? data.shopeeCategoryId.key : null
-
-        data.shopeeBrandName = data.shopeeBrandId && data.shopeeBrandId.label ? data.shopeeBrandId.label : null
-        data.shopeeBrandId = data.shopeeBrandId && data.shopeeBrandId.key ? data.shopeeBrandId.key : null
-
         data.type = '1'
         data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
         data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
@@ -509,53 +503,6 @@ class FormCounter extends Component {
         marginBottom: 8
       }
     }
-
-    const {
-      listShopeeBrand,
-      listShopeeCategory,
-      listShopeeCategoryRecommend,
-      listShopeeAttribute,
-      listShopeeLogistic,
-      onGetShopeeCategory,
-      getShopeeBrand,
-      getShopeeAttribute,
-      form: { setFieldsValue }
-    } = this.props
-
-    const getShopeeCategoryRecommendation = () => {
-      const productName = getFieldValue('productName')
-      if (productName !== '' && productName) {
-        onGetShopeeCategory(productName)
-      }
-    }
-
-    const onChangeShopeeCategory = (event) => {
-      setFieldsValue({
-        shopeeBrandId: {}
-      })
-      if (event && event.key) {
-        getShopeeBrand(event.key)
-        getShopeeAttribute(event.key)
-      }
-    }
-
-    const onSetCategoryShopee = (id, name) => {
-      setFieldsValue({
-        shopeeCategoryId: {
-          key: id,
-          label: name
-        },
-        shopeeBrandId: {}
-      })
-      message.success(`Success set category shopee to ${name}`)
-      if (id) {
-        getShopeeBrand(id)
-      }
-    }
-
-    const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
-    const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
-    const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
 
     const tailFormItemLayout = {
       wrapperCol: {
@@ -928,133 +875,6 @@ class FormCounter extends Component {
                   ]
                 })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 6 }} />)}
               </FormItem>
-            </Card>
-          </Col>
-          <Col {...column}>
-            <Card {...cardProps} title={<h3>Shopee</h3>}>
-              <FormItem label="Enable Shopee" {...formItemLayout}>
-                {getFieldDecorator('enableShopee', {
-                  valuePropName: 'checked',
-                  initialValue: item.enableShopee === undefined
-                    ? false
-                    : item.enableShopee
-                })(<Checkbox
-                  onFocus={() => {
-                    getShopeeCategoryRecommendation()
-                  }}
-                >Publish</Checkbox>)}
-              </FormItem>
-              {getFieldValue('enableShopee') ? (<div>
-                <FormItem label="Shopee Category" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('shopeeCategoryId', {
-                    initialValue: item.shopeeCategoryId ? {
-                      key: item.shopeeCategoryId,
-                      label: item.shopeeCategoryName
-                    } : {},
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    showSearch
-                    allowClear
-                    optionFilterProp="children"
-                    labelInValue
-                    onChange={onChangeShopeeCategory}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >{shopeeCategory}
-                  </Select>)}
-                </FormItem>
-
-                {listShopeeCategoryRecommend && listShopeeCategoryRecommend.length > 0 ? (
-                  <div>
-                    {'Recommend Category: '}
-                    {listShopeeCategoryRecommend.map((item) => {
-                      let categoryName = item
-                      const filteredCategory = listShopeeCategory.filter(filtered => parseFloat(filtered.category_id) === parseFloat(item))
-                      if (filteredCategory && filteredCategory[0]) {
-                        const c = filteredCategory[0]
-                        categoryName = `${c.original_category_name} | ${c.display_category_name}`
-                      }
-                      return (
-                        <div><a onClick={() => onSetCategoryShopee(item, categoryName)}>{categoryName}</a></div>
-                      )
-                    })}
-                  </div>) : null}
-
-                {getFieldValue('shopeeCategoryId') && getFieldValue('shopeeCategoryId').key ? (
-                  <FormItem label="Shopee Brand" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('shopeeBrandId', {
-                      initialValue: item.shopeeBrandId ? {
-                        key: item.shopeeBrandId,
-                        label: item.shopeeBrandName
-                      } : {},
-                      rules: [
-                        {
-                          required: true
-                        }
-                      ]
-                    })(<Select
-                      showSearch
-                      allowClear
-                      optionFilterProp="children"
-                      labelInValue
-                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                    >{shopeeBrand}
-                    </Select>)}
-                  </FormItem>
-                ) : null}
-                {getFieldValue('shopeeCategoryId')
-                  && getFieldValue('shopeeCategoryId').key ? listShopeeAttribute.map((attribute) => {
-                    if (attribute.input_type === 'COMBO_BOX') {
-                      return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
-                        {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
-                          initialValue: attribute.initialValue,
-                          rules: [
-                            {
-                              required: attribute.is_mandatory
-                            }
-                          ]
-                        })(<Select
-                          showSearch
-                          allowClear
-                          optionFilterProp="children"
-                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                        >{
-                            (attribute.attribute_value_list || []).length > 0
-                              ? attribute.attribute_value_list.map(c => <Option value={c.value_id} key={c.value_id} title={`${c.display_value_name}`}>{`${c.display_value_name}`}</Option>) : []}
-                        </Select>)}
-                      </FormItem>)
-                    }
-                    return null
-                  }) : null}
-                <FormItem label="Shopee Logistic" help={`${getFieldValue('shopeeLogistic') && getFieldValue('shopeeLogistic').length ? getFieldValue('shopeeLogistic').length : 0} Logistics Selected`} hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('shopeeLogistic', {
-                    initialValue: item.shopeeLogistic || [],
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    showSearch
-                    multiple
-                    allowClear
-                    optionFilterProp="children"
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >{shopeeLogistic}
-                  </Select>)}
-                </FormItem>
-                <FormItem label="Dangerous Item" help="won't appear on the Android/IOS" {...formItemLayout}>
-                  {getFieldDecorator('shopeeItemDangerous', {
-                    valuePropName: 'checked',
-                    initialValue: item.shopeeItemDangerous === undefined
-                      ? false
-                      : item.shopeeItemDangerous
-                  })(<Checkbox>Dangerous</Checkbox>)}
-                </FormItem>
-              </div>) : null}
             </Card>
           </Col>
         </Row>
