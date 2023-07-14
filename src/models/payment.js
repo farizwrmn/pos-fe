@@ -654,7 +654,10 @@ export default {
             modalQrisPaymentType: 'waiting'
           }
         })
-        message.error(response.message)
+        Modal.error({
+          title: 'Dynamic QRIS Failed',
+          content: 'Failed to create Dynamic QRIS Payment'
+        })
       }
     },
     * cancelDynamicQrisPayment ({ payload }, { call }) {
