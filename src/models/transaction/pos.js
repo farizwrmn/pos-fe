@@ -119,7 +119,7 @@ export default {
     modalPaymentVisible: false,
     modalQrisPaymentVisible: false,
     modalQrisPaymentType: 'waiting',
-    dynamicQrisPaymentAvailability: false,
+    dynamicQrisPaymentAvailability: true,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
     modalConfirmVisible: false,
@@ -3448,16 +3448,14 @@ export default {
         const storeArray = String(storeStringArray).split(',')
         const currentStore = lstorage.getCurrentUserStore()
         const checkStore = storeArray.find(item => Number(item) === Number(currentStore))
-        if (checkStore) {
+        if (!checkStore) {
           yield put({
             type: 'updateState',
             payload: {
-              dynamicQrisPaymentAvailability: true
+              dynamicQrisPaymentAvailability: false
             }
           })
         }
-      } else {
-        message.error(`Failed to check store dynamic qris avaibility - ${response.message}`)
       }
     }
   },
