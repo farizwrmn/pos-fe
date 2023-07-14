@@ -110,8 +110,7 @@ class ModalQrisPayment extends React.Component {
       payment,
       pos,
       paymentEdc,
-      paymentCost,
-      onCancel
+      paymentCost
     } = this.props
     const {
       curTotal,
@@ -148,16 +147,6 @@ class ModalQrisPayment extends React.Component {
       chargeTotal: 0,
       description: undefined,
       id: 1
-    }
-    if (data.amount <= 0) {
-      Modal.error({
-        title: 'Failed to create payment',
-        content: 'Total Amount couldn\'t be 0',
-        onOk: () => {
-          onCancel()
-        }
-      })
-      return
     }
 
     const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
