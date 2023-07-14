@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input, message, InputNumber, Button, Row, Col, Select } from 'antd'
+import { Link } from 'dva/router'
 import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
@@ -213,11 +214,6 @@ const FormAdd = ({
                 </Select>
               )}
             </FormItem>
-            <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Purchase</Button>
-            <Button disabled={loading.effects['transferOut/showModalDemand']} type="default" size="large" onClick={() => onClickDemand()} style={{ marginRight: '10px' }}>Demand</Button>
-            <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
-            {modalProductVisible && <Browse {...modalProductOpts} />}
-            {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
           </Col>
           <Col {...col}>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
@@ -266,6 +262,16 @@ const FormAdd = ({
             </FormItem>
           </Col>
         </Row>
+
+        <Row>
+          <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Purchase</Button>
+          <Button disabled={loading.effects['transferOut/showModalDemand']} type="default" size="large" onClick={() => onClickDemand()} style={{ marginRight: '10px' }}>Demand</Button>
+          <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
+          {modalProductVisible && <Browse {...modalProductOpts} />}
+          {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
+          <Link target="_blank" to={'/inventory/transfer/out-import'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="default" size="large">Import</Button></Link>
+        </Row>
+
         <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
         <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>

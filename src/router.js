@@ -1865,6 +1865,17 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-out-detail')
           }
         }, {
+          path: 'inventory/transfer/out-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importTransferOut'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/inventory/transfer/importTransferOut'))
+            }, 'inventory-transfer-out-import')
+          }
+        }, {
           path: 'integration/grabmart-compliance',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
