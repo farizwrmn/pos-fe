@@ -1845,6 +1845,7 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/out',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importTransferOut'))
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/product/stockLocation'))

@@ -86,7 +86,6 @@ const ImportTransferOut = ({
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
               const qty = row.values[5]
-              console.log('row.values', row.values)
               if (rowIndex >= 6 && typeof productId !== 'undefined' && typeof qty !== 'undefined') {
                 const data = {
                   productId: Number(productId),

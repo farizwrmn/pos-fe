@@ -1,4 +1,15 @@
-import { request, crypt } from 'utils'
+import { request, crypt, lstorage } from 'utils'
+
+export async function queryTransferOut (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: '/transfer-import-out',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()

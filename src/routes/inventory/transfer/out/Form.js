@@ -7,6 +7,7 @@ import ListItem from './ListItem'
 import Browse from './Browse'
 import ModalConfirm from './ModalConfirm'
 import ModalItem from './Modal'
+import ModalImportProduct from './ModalImportProduct'
 
 const { Option } = Select
 const FormItem = Form.Item
@@ -45,6 +46,7 @@ const FormAdd = ({
   listStore,
   getEmployee,
   hideEmployee,
+  modalImportProductProps,
   modalProductDemandProps,
   ...listProps,
   // ...filterProps,
@@ -62,7 +64,7 @@ const FormAdd = ({
   }
 }) => {
   const { pagination, onChange, ...otherListProps } = listProps
-  const { handleProductBrowse, handleInvoiceBrowse, handleProductDemandBrowse, loading } = modalProductProps
+  const { handleProductBrowse, handleImportedBrowse, handleInvoiceBrowse, handleProductDemandBrowse, loading } = modalProductProps
   let qtyTotal = listItem.length > 0 ? listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0) : 0
 
   const onClickDemand = () => {
@@ -266,6 +268,7 @@ const FormAdd = ({
         <Row>
           <Button type="default" size="large" onClick={() => handleInvoiceBrowse()} style={{ marginRight: '10px' }}>Purchase</Button>
           <Button disabled={loading.effects['transferOut/showModalDemand']} type="default" size="large" onClick={() => onClickDemand()} style={{ marginRight: '10px' }}>Demand</Button>
+          <Button type="default" size="large" style={{ marginRight: '10px' }} onClick={handleImportedBrowse}>Excel</Button>
           <Button type="primary" size="large" onClick={handleProductBrowse}>Product</Button>
           {modalProductVisible && <Browse {...modalProductOpts} />}
           {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
@@ -284,6 +287,7 @@ const FormAdd = ({
             {...modalProductDemandProps}
           />
         )}
+        {modalImportProductProps.visible && (<ModalImportProduct {...modalImportProductProps} />)}
         {formEditProps.visible && <ModalItem {...formEditProps} />}
         {modalConfirmVisible && <ModalConfirm {...formConfirmOpts} />}
       </Form>

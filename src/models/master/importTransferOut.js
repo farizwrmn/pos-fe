@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import {
+  queryTransferOut,
   query,
   add
 } from 'services/master/importTransferOut'
@@ -18,6 +19,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     list: [],
+    listImported: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -38,6 +40,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryTransferOut ({ payload = {} }, { call, put }) {
+      const data = yield call(queryTransferOut, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listImported: data.data
+          }
+        })
+      } else {
+        throw data
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       payload.updated = 0
