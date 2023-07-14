@@ -1,6 +1,6 @@
 import { Button, Col, Icon, Row } from 'antd'
-import CountDown from 'ant-design-pro/lib/CountDown'
 import { Component } from 'react'
+import CountdownTimer from './CountDownTimer'
 
 let paymentTimeout
 
@@ -20,6 +20,12 @@ class QrisPayment extends Component {
 
   render () {
     const { cancelQrisPayment, loading } = this.props
+
+    const countDownProps = {
+      onTimerFinish: cancelQrisPayment,
+      duration: 5 * 60
+    }
+
     return (
       <Row style={{ padding: '0 20px 0 20px' }}>
         <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', fontSize: '24px', marginBottom: '20px  ' }}>
@@ -36,7 +42,7 @@ class QrisPayment extends Component {
             Waktu pembayaran tersisa:
           </Row>
           <Row style={{ marginBottom: '30px', fontSize: '15px', color: '#808080', fontWeight: 'bolder' }}>
-            <CountDown style={{ fontSize: 20 }} target={new Date().getTime() + (5 * 60 * 1000)} />
+            <CountdownTimer {...countDownProps} />
           </Row>
           <Row style={{ display: 'flex', flexDirection: 'row-reverse' }}>
             <Button type="danger" onClick={cancelQrisPayment} size="large" style={{ padding: '0 20px 0 20px' }} loading={loading.effects['payment/createDynamicQrisPayment']}>
