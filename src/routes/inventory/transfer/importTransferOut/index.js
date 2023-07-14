@@ -3,7 +3,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, message, Modal
+  Button, Icon, message
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
@@ -84,14 +84,12 @@ const ImportTransferOut = ({
           const sheet = workbook.getWorksheet('POS 1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productId = row.values[4]
-              const qty = row.values[18]
-              const price = row.values[19]
-              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined' && typeof price !== 'undefined' && Number(price) > 0) {
+              const productId = row.values[3]
+              const qty = row.values[6]
+              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined') {
                 const data = {
                   productId: Number(productId),
-                  qty: Number(qty),
-                  price: Number(price)
+                  qty: Number(qty)
                 }
                 uploadData.push(data)
               }
@@ -110,28 +108,6 @@ const ImportTransferOut = ({
           }
         })
     }
-  }
-
-  const handleExecute = () => {
-    Modal.confirm({
-      title: 'Do you want to execute this list ?',
-      onOk () {
-        dispatch({
-          type: 'importTransferOut/execute'
-        })
-      }
-    })
-  }
-
-  const handleCancel = () => {
-    Modal.confirm({
-      title: 'Do you want to cancel this list ?',
-      onOk () {
-        dispatch({
-          type: 'importTransferOut/cancel'
-        })
-      }
-    })
   }
 
   return (
@@ -158,25 +134,6 @@ const ImportTransferOut = ({
         </span>
       </div>
       <List {...listProps} />
-      <span
-        style={{ textAlign: 'right', marginTop: '15px' }}
-      >
-        <Button
-          style={{ marginRight: '15px' }}
-          type="danger"
-          onClick={handleCancel}
-          disabled={loading.effects['importTransferOut/execute'] || loading.effects['importTransferOut/cancel'] || loading.effects['importTransferOut/add'] || loading.effects['importTransferOut/bulkInsert']}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="primary"
-          onClick={handleExecute}
-          disabled={loading.effects['importTransferOut/execute'] || loading.effects['importTransferOut/cancel'] || loading.effects['importTransferOut/add'] || loading.effects['importTransferOut/bulkInsert']}
-        >
-          Execute
-        </Button>
-      </span>
     </div>
   )
 }

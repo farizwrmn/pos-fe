@@ -1,19 +1,11 @@
 import modelExtend from 'dva-model-extend'
-import { message, Modal } from 'antd'
+import { message } from 'antd'
 import {
   query,
-  add,
-  opnameStock,
-  cancelOpname,
-  edit,
-  remove
+  add
 } from 'services/master/importTransferOut'
-import { bulkInsert } from 'services/master/productstock'
-import { queryLastActive } from 'services/period'
-import { getDateTime } from 'services/setting/time'
 import { pageModel } from 'common'
 import { lstorage } from 'utils'
-import moment from 'moment'
 
 const success = () => {
   message.success('Stock has been saved')
@@ -38,7 +30,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/product/stock/import') {
+        if (pathname === '/inventory/transfer/out-import') {
           dispatch({ type: 'query', payload: other })
         }
       })
@@ -65,15 +57,6 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
-    },
-
     * add ({ payload }, { call, put }) {
       payload.header = {
         storeId: lstorage.getCurrentUserStore()
@@ -91,97 +74,6 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-
-    * execute (payload, { call, put }) {
-      const store = lstorage.getCurrentUserStore()
-      const period = yield call(queryLastActive)
-      let startPeriod
-      if (period.data[0]) {
-        startPeriod = moment(period.data[0].startPeriod).format('YYYY-MM-DD')
-      }
-      const time = yield call(getDateTime, {
-        id: 'date'
-      })
-      if (moment(time.data).format('YYYY-MM-DD') >= startPeriod) {
-        const stock = {
-          date: {
-            from: startPeriod,
-            to: time.data
-          },
-          store
-        }
-        const response = yield call(opnameStock, {
-          stock
-        })
-        if (response && response.success) {
-          yield put({
-            type: 'query'
-          })
-        } else {
-          throw response
-        }
-      } else {
-        Modal.warning({
-          title: 'Period Has been closed',
-          content: 'can`t insert new transaction'
-        })
-      }
-    },
-
-    * cancel (payload, { call, put }) {
-      const response = yield call(cancelOpname, {
-        storeId: lstorage.getCurrentUserStore()
-      })
-      if (response && response.success) {
-        yield put({
-          type: 'query'
-        })
-        message.success('Success cancel opname')
-      } else {
-        throw response
-      }
-    },
-
-    * bulkInsert ({ payload }, { call, put }) {
-      const data = yield call(bulkInsert, payload)
-      if (data.success) {
-        success()
-        yield put({ type: 'query' })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ importTransferOut }) => importTransferOut.currentItem.id)
-      const newCounter = { ...payload, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {}
-          }
-        })
-        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',
