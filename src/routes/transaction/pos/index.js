@@ -186,7 +186,8 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
-    currentGrabOrder
+    currentGrabOrder,
+    dynamicQrisPaymentAvailability
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -2566,7 +2567,7 @@ const Pos = ({
             </Row>
           </Card>
           <BottomButton {...buttomButtonProps} />
-          <DynamicQrisButton {...dynamicQrisButtonProps} />
+          {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}

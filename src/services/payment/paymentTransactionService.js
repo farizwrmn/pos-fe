@@ -22,3 +22,12 @@ export const queryCancel = (params) => {
     headers: apiHeaderToken
   })
 }
+
+export const queryCheckStoreAvailability = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/check-store`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
