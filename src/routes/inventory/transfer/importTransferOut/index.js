@@ -84,9 +84,10 @@ const ImportTransferOut = ({
           const sheet = workbook.getWorksheet('POS 1')
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productId = row.values[3]
-              const qty = row.values[6]
-              if (rowIndex >= 7 && typeof productId !== 'undefined' && typeof qty !== 'undefined') {
+              const productId = row.values[2]
+              const qty = row.values[5]
+              console.log('row.values', row.values)
+              if (rowIndex >= 6 && typeof productId !== 'undefined' && typeof qty !== 'undefined') {
                 const data = {
                   productId: Number(productId),
                   qty: Number(qty)
