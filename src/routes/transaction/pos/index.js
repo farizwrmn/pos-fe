@@ -968,10 +968,6 @@ const Pos = ({
           modalQrisPaymentType: 'waiting'
         }
       })
-      Modal.error({
-        title: 'Waktu Pembayaran Berakhir',
-        content: 'Waktu pembayaran yang telah diberikan terlah berakhir'
-      })
     },
     createPayment: () => {
       dispatch({
@@ -2173,13 +2169,21 @@ const Pos = ({
       }
     }
 
-    dispatch({
-      type: 'pos/updateState',
-      payload: {
-        modalQrisPaymentVisible: !modalQrisPaymentVisible,
-        modalQrisPaymentType: 'waiting'
-      }
-    })
+    let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+    if (grandTotal > 0) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentVisible: !modalQrisPaymentVisible,
+          modalQrisPaymentType: 'waiting'
+        }
+      })
+    } else {
+      Modal.error({
+        title: 'Failed Create QRIS Payment',
+        content: 'Tidak bisa membuat payment qris dengan total 0'
+      })
+    }
   }
 
   const buttomButtonProps = {
