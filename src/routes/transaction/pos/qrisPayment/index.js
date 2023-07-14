@@ -1,4 +1,4 @@
-import { Button, Col, Icon, Row } from 'antd'
+import { Button, Col, Icon, Modal, Row } from 'antd'
 import { Component } from 'react'
 import CountdownTimer from './CountDownTimer'
 
@@ -22,7 +22,13 @@ class QrisPayment extends Component {
     const { cancelQrisPayment, loading } = this.props
 
     const countDownProps = {
-      onTimerFinish: cancelQrisPayment,
+      onTimerFinish: () => {
+        Modal.error({
+          title: 'Waktu Pembayaran Berakhir',
+          content: 'Waktu pembayaran yang telah diberikan terlah berakhir'
+        })
+        cancelQrisPayment()
+      },
       duration: 5 * 60
     }
 
