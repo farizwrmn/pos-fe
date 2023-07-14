@@ -968,6 +968,10 @@ const Pos = ({
           modalQrisPaymentType: 'waiting'
         }
       })
+      Modal.error({
+        title: 'Waktu Pembayaran Berakhir',
+        content: 'Waktu pembayaran yang telah diberikan terlah berakhir'
+      })
     },
     createPayment: () => {
       dispatch({
