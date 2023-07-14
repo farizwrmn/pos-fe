@@ -267,11 +267,11 @@ const Detail = ({ paymentEdc, app, paymentCost, payableDetail, bank, supplierBan
           || user.permissions.role === 'SFC'
         ) && (
             <div className="content-inner-zero-min-height">
-              <h1>Accounting Journal</h1>
-              <Row style={{ padding: '10px', margin: '4px' }}>
+          <h1>Accounting Journal</h1>
+          <Row style={{ padding: '10px', margin: '4px' }}>
                 <FormAccounting {...formProps} />
               </Row>
-            </div>
+        </div>
           )}
       </Col>
     </Row>

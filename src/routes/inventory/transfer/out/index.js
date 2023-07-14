@@ -13,8 +13,9 @@ import FilterTransfer from './FilterTransferOut'
 const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
-const Transfer = ({ location, stockLocation, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
-  const { listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+const Transfer = ({ location, importTransferOut, stockLocation, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
+  const { modalImportProductVisible, listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+  const { listImported } = importTransferOut
   const { query } = location
   const { list: listStockLocation } = stockLocation
   const { modalProductVisible, listProductData, searchText } = pos
@@ -167,6 +168,68 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     }
   }
 
+  const modalImportProductProps = {
+    visible: modalImportProductVisible,
+    dataSource: listImported,
+    loading,
+    width: 1000,
+    onOk () {
+      let arrayProd = []
+      for (let key in listImported) {
+        const item = listImported[key]
+        const data = {
+          no: arrayProd.length + 1,
+          brandName: item.brandName,
+          categoryName: item.categoryName,
+          productImage: item.productImage,
+          productCode: item.productCode,
+          dimension: item.dimension,
+          dimensionBox: item.dimensionBox,
+          dimensionPack: item.dimensionPack,
+          productId: item.productId,
+          transType: 'MUOUT',
+          productName: item.productName,
+          qty: item.qty,
+          qtyDemand: undefined,
+          qtyStore: undefined,
+          stock: item.stock || 0,
+          description: null
+        }
+        if (item.qty > 0) {
+          arrayProd.push(data)
+        }
+      }
+
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          listItem: arrayProd,
+          modalImportProductVisible: false
+        }
+      })
+      dispatch({
+        type: 'importTransferOut/updateState',
+        payload: {
+          listImported: []
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalImportProductVisible: false
+        }
+      })
+      dispatch({
+        type: 'importTransferOut/updateState',
+        payload: {
+          listImported: []
+        }
+      })
+    }
+  }
+
   const modalProductDemandProps = {
     listProductDemand,
     listCategory,
@@ -300,6 +363,18 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
         }
       })
     },
+    handleImportedBrowse () {
+      dispatch({
+        type: 'importTransferOut/queryTransferOut'
+      })
+
+      dispatch({
+        type: 'transferOut/updateState',
+        payload: {
+          modalImportProductVisible: true
+        }
+      })
+    },
     handleInvoiceBrowse () {
       dispatch({
         type: 'transferOut/getInvoice'
@@ -336,6 +411,9 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
           transType: 'MUOUT',
           productName: item.productName,
           qty: 1,
+          qtyDemand: undefined,
+          qtyStore: undefined,
+          stock: item.count || 0,
           description: null
         }
         const check = {
@@ -489,6 +567,7 @@ const Transfer = ({ location, stockLocation, transferOut, productcategory, produ
     listStore,
     listEmployee,
     item: currentItem,
+    modalImportProductProps,
     modalProductDemandProps,
     modalProductProps,
     modalProductVisible,
@@ -731,4 +810,4 @@ Transfer.propTypes = {
 }
 
 
-export default connect(({ stockLocation, transferOut, pos, productcategory, productbrand, employee, app, loading }) => ({ stockLocation, transferOut, pos, productcategory, productbrand, employee, app, loading }))(Transfer)
+export default connect(({ stockLocation, importTransferOut, transferOut, pos, productcategory, productbrand, employee, app, loading }) => ({ stockLocation, importTransferOut, transferOut, pos, productcategory, productbrand, employee, app, loading }))(Transfer)

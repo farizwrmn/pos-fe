@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link, routerRedux } from 'dva/router'
-import { Form, Input, Spin, InputNumber, DatePicker, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
+import { Form, Input, Spin, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
 import { IMAGEURL, rest } from 'utils/config.company'
@@ -14,7 +14,6 @@ import ModalSupplier from './ModalSupplier'
 const { apiCompanyURL } = rest
 const { Variant, Specification, Stock } = DataQuery
 const { TextArea } = Input
-const { MonthPicker } = DatePicker
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -57,12 +56,6 @@ const parentThreeDivision = {
 }
 
 class AdvancedForm extends Component {
-  constructor (props) {
-    super(props)
-    this.changeName = this.changeName.bind(this)
-    this.changeBrand = this.changeBrand.bind(this)
-  }
-
   state = {
     name: '',
     typing: false,
@@ -73,72 +66,11 @@ class AdvancedForm extends Component {
     brandTypingTimeout: 0
   }
 
-  changeBrand = (value) => {
-    const self = this
-    console.log('changeBrand', value)
-
-    if (self.state.brandTypingTimeout) {
-      clearTimeout(self.state.brandTypingTimeout)
-    }
-
-    self.setState({
-      brandName: value,
-      brandTyping: false,
-      brandTypingTimeout: setTimeout(() => {
-        self.searchShopeeBrand(self.state.brandName)
-      }, 1000)
-    })
-  }
-
-  changeName = (event) => {
-    const self = this
-
-    if (self.state.typingTimeout) {
-      clearTimeout(self.state.typingTimeout)
-    }
-
-    self.setState({
-      name: event.target.value,
-      typing: false,
-      typingTimeout: setTimeout(() => {
-        self.sendToParent(self.state.name)
-      }, 1000)
-    })
-  }
-
-  sendToParent = (productName) => {
-    const {
-      onGetShopeeCategory
-    } = this.props
-    if (productName && productName !== '') {
-      onGetShopeeCategory(productName)
-    }
-  }
-
-  searchShopeeBrand = (q) => {
-    const {
-      form: {
-        getFieldValue
-      },
-      onGetShopeeBrand
-    } = this.props
-    const categoryId = getFieldValue('shopeeCategoryId')
-    const category_id = categoryId && categoryId.key ? categoryId.key : null
-    if (q && q !== '' && category_id) {
-      onGetShopeeBrand(q, category_id)
-    }
-  }
-
   render () {
     const {
       lastTrans,
       listK3ExpressCategory,
       listK3ExpressBrand,
-      listShopeeCategory,
-      listShopeeBrand,
-      getShopeeBrand,
-      getShopeeAttribute,
-      listShopeeAttribute,
       item = {},
       onSubmit,
       onCancel,
@@ -148,12 +80,10 @@ class AdvancedForm extends Component {
       modalVariantVisible,
       modalSpecificationVisible,
       modalProductVisible,
-      listShopeeLogistic,
       listVariantStock,
       listGrabCategory,
       listInventory,
       listProductCountry,
-      onGetShopeeCategory,
       editItemProductById,
       supplierInformation,
       dispatch,
@@ -179,7 +109,6 @@ class AdvancedForm extends Component {
       listSpecification,
       listSpecificationCode,
       showProductModal,
-      listShopeeCategoryRecommend,
       modalGrabmartCampaignProps,
       listStockLocation,
       form: {
@@ -277,12 +206,6 @@ class AdvancedForm extends Component {
           onOk () {
             const data = getFieldsValue()
 
-            data.shopeeCategoryname = data.shopeeCategoryId && data.shopeeCategoryId.label ? data.shopeeCategoryId.label : null
-            data.shopeeCategoryId = data.shopeeCategoryId && data.shopeeCategoryId.key ? data.shopeeCategoryId.key : null
-
-            data.shopeeBrandName = data.shopeeBrandId && data.shopeeBrandId.label ? data.shopeeBrandId.label : null
-            data.shopeeBrandId = data.shopeeBrandId && data.shopeeBrandId.key ? data.shopeeBrandId.key : null
-
             data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
             data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
             data.expressCategoryName = data.expressCategoryId ? data.expressCategoryId.label : null
@@ -366,10 +289,7 @@ class AdvancedForm extends Component {
     // }
     const productLocation = (listStockLocation || []).length > 0 ? listStockLocation.map(c => <Option value={c.id} key={c.id} title={`${c.locationName}`}>{`${c.locationName}`}</Option>) : []
     const productCountry = (listProductCountry || []).length > 0 ? listProductCountry.map(c => <Option value={c.countryName} key={c.countryName} title={`${c.countryCode} - ${c.countryName}`}>{`${c.countryCode} - ${c.countryName}`}</Option>) : []
-    const shopeeLogistic = (listShopeeLogistic || []).length > 0 ? listShopeeLogistic.map(c => <Option value={c.logistics_channel_id} key={c.logistics_channel_id} title={`${c.logistics_channel_name} - ${c.logistics_description}`}>{`${c.logistics_channel_name}`}</Option>) : []
-    const shopeeCategory = (listShopeeCategory || []).length > 0 ? listShopeeCategory.filter(filtered => !filtered.has_children).map(c => <Option value={c.category_id} key={c.category_id} title={`${c.original_category_name} | ${c.display_category_name}`}>{`${c.original_category_name} | ${c.display_category_name}`}</Option>) : []
     const k3expressCategory = (listK3ExpressCategory || []).length > 0 ? listK3ExpressCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.categoryCode}`}>{`${c.categoryName} | ${c.categoryName}`}</Option>) : []
-    const shopeeBrand = (listShopeeBrand || []).length > 0 ? listShopeeBrand.map(c => <Option value={c.brand_id} key={c.brand_id} title={`${c.original_brand_name} | ${c.display_brand_name}`}>{`${c.original_brand_name} | ${c.display_brand_name}`}</Option>) : []
     const k3expressBrand = (listK3ExpressBrand || []).length > 0 ? listK3ExpressBrand.map(c => <Option value={c.id} key={c.id} title={`${c.brandName} | ${c.brandCode}`}>{`${c.brandName} | ${c.brandCode}`}</Option>) : []
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
@@ -560,21 +480,6 @@ class AdvancedForm extends Component {
       }
     }
 
-    const handleSelectAll = () => {
-      const listSelected = getFieldValue('shopeeLogistic')
-      const listAvail = listShopeeLogistic.map(item => item.logistics_channel_id)
-      if (listSelected.length === listAvail.length) {
-        setFieldsValue({
-          shopeeLogistic: []
-        })
-      } else {
-        setFieldsValue({
-          shopeeLogistic: listShopeeLogistic.map(item => item.logistics_channel_id)
-        })
-      }
-    }
-
-
     const hdlGetSupplier = () => {
       onGetSupplier()
       dispatch({
@@ -647,16 +552,6 @@ class AdvancedForm extends Component {
       }
     }
 
-    const onChangeShopeeCategory = (event) => {
-      setFieldsValue({
-        shopeeBrandId: {}
-      })
-      if (event && event.key) {
-        getShopeeBrand(event.key)
-        getShopeeAttribute(event.key)
-      }
-    }
-
     const handleMenuClick = (record) => {
       let a = getFieldValue('transDate')
       onChooseSupplier(record)
@@ -695,28 +590,6 @@ class AdvancedForm extends Component {
         width: '45%'
       }
     ]
-
-    const getShopeeCategoryRecommendation = () => {
-      const productName = getFieldValue('productName')
-      if (productName !== '' && productName) {
-        onGetShopeeCategory(productName)
-      }
-    }
-
-    const onSetCategoryShopee = (id, name) => {
-      setFieldsValue({
-        shopeeCategoryId: {
-          key: id,
-          label: name
-        },
-        shopeeBrandId: {}
-      })
-      message.success(`Success set category shopee to ${name}`)
-      if (id) {
-        getShopeeBrand(id)
-        getShopeeAttribute(id)
-      }
-    }
 
     const onDistPrice = () => {
       const sellPrice = getFieldValue('sellPrice')
@@ -814,86 +687,109 @@ class AdvancedForm extends Component {
                 >{productBrand}
                 </Select>)}
               </FormItem>
-              {/* <FormItem help={!(getFieldValue('categoryId') || {}).key ? 'Fill category field' : `${modalType === 'add' ? listSpecification.length : listSpecificationCode.length} Specification`} label="Manage" {...formItemLayout}>
-                <Button.Group>
-                  {modalType === 'edit' && variantIdFromItem && <Button disabled={modalType === 'add'} onClick={handleShowVariant} type="primary">Variant</Button>}
-                  <Button disabled={getFieldValue('categoryId') ? !getFieldValue('categoryId').key : null} onClick={handleShowSpecification}>Specification</Button>
-                </Button.Group>
-              </FormItem> */}
+
+              <FormItem label="Image" {...formItemLayout}>
+                {getFieldDecorator('productImage', {
+                  initialValue: item.productImage
+                    && item.productImage != null
+                    && item.productImage !== '["no_image.png"]'
+                    && item.productImage !== '"no_image.png"'
+                    && item.productImage !== 'no_image.png' ?
+                    {
+                      fileList: JSON.parse(item.productImage).map((detail, index) => {
+                        return ({
+                          uid: index + 1,
+                          name: detail,
+                          status: 'done',
+                          url: `${IMAGEURL}/${detail}`,
+                          thumbUrl: `${IMAGEURL}/${detail}`
+                        })
+                      })
+                    }
+                    : [],
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(
+                  <Upload
+                    {...props}
+                    multiple
+                    showUploadList={{
+                      showPreviewIcon: true
+                    }}
+                    defaultFileList={item.productImage
+                      && item.productImage != null
+                      && item.productImage !== '["no_image.png"]'
+                      && item.productImage !== '"no_image.png"'
+                      && item.productImage !== 'no_image.png' ?
+                      JSON.parse(item.productImage).map((detail, index) => {
+                        return ({
+                          uid: index + 1,
+                          name: detail,
+                          status: 'done',
+                          url: `${IMAGEURL}/${detail}`,
+                          thumbUrl: `${IMAGEURL}/${detail}`
+                        })
+                      })
+                      : []}
+                    listType="picture"
+                    action={`${apiCompanyURL}/time/time`}
+                    onPreview={file => console.log('file', file)}
+                    onChange={(info) => {
+                      if (info.file.status !== 'uploading') {
+                        console.log('pending', info.fileList)
+                      }
+                      if (info.file.status === 'done') {
+                        console.log('success', info)
+                        message.success(`${info.file.name} file staged success`)
+                      } else if (info.file.status === 'error') {
+                        console.log('error', info)
+                        message.error(`${info.file.name} file staged failed.`)
+                      }
+                    }}
+                  >
+                    <Button>
+                      <Icon type="upload" /> Click to Upload
+                    </Button>
+                  </Upload>
+                )}
+              </FormItem>
+              <FormItem label="Description" {...formItemLayout}>
+                {getFieldDecorator('description', {
+                  initialValue: item.description,
+                  rules: [
+                    {
+                      pattern: getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
+                      required: getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
+                      message: getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
+                    }
+                  ]
+                })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
+              </FormItem>
             </Col>
             <Col {...column}>
-              <FormItem label="Barcode 1" hasFeedback {...formItemLayout}>
+              <FormItem label="Barcode Product" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('barCode01', {
                   initialValue: modalType === 'edit' ? item.barCode01 : getFieldValue('productCode')
                 })(<Input />)}
               </FormItem>
-              <FormItem label="Barcode 2" hasFeedback {...formItemLayout}>
+              <FormItem label="Barcode Box" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('barCode02', {
                   initialValue: modalType === 'edit' ? item.barCode02 : getFieldValue('productCode')
                 })(<Input />)}
               </FormItem>
 
-              <FormItem label="Supplier" {...formItemLayout}>
+              <FormItem label="Master Active Supplier" {...formItemLayout}>
                 <Button {...buttonSupplierProps} size="default">{item.supplierId && item.supplierName ? `${item.supplierName.substring(0, 12)} (${item.supplierCode})` : 'Search Supplier'}</Button>
               </FormItem>
-
-              {/* {(modalType === 'add' || !variantIdFromItem) &&
-                <FormItem
-                  label="Use Variant"
-                  {...formItemLayout}
-                >
-                  {getFieldDecorator('useVariant', {
-                    valuePropName: 'checked',
-                    initialValue: !!item.useVariant || !!item.variantId
-                  })(<Checkbox>Use Variant</Checkbox>)}
-                </FormItem>} */}
-
-              {/* {(modalType === 'add' || !variantIdFromItem) && getFieldValue('useVariant') &&
-                (
-                  <div>
-                    <FormItem
-                      validateStatus={!getFieldValue('variant') && !item.productParentId ? 'error' : ''}
-                      help={!getFieldValue('variant') && !item.productParentId ? 'Must Choose Product' : ''}
-                      label="Variant"
-                      {...formItemLayout}
-                    >
-                      {getFieldDecorator('variant', {
-                        valuePropName: 'checked',
-                        initialValue: (item.variant ? item.variant : modalType === 'add') || !!item.variantId
-                      })(<Checkbox onChange={onChangeCheckBox}>{getFieldValue('variant') ? 'New' : 'Old'} Product</Checkbox>)}
-                      {!getFieldValue('variant') &&
-                        (<span>
-                          <Button type="primary" onClick={handleShowProduct}>Product</Button>
-                          <br />
-                          {item.productParentName ? `Variant of "${item.productParentName}" ${getFieldValue('variantId') ? `as ${getFieldValue('variantId').label || ''}` : ''}` : ''}
-                        </span>)}
-                    </FormItem>
-                    <FormItem label="Variant Name" hasFeedback {...formItemLayout}>
-                      {getFieldDecorator('variantId', {
-                        initialValue: item.variant ? { key: item.variantId, label: item.variantName } : {},
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Select
-                        showSearch
-                        allowClear
-                        onFocus={() => variant()}
-                        optionFilterProp="children"
-                        labelInValue
-                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                      >{productVariant}
-                      </Select>)}
-                    </FormItem>
-                  </div>
-                )} */}
             </Col>
           </Row>
         </Card>
         <Row>
           <Col {...parentThreeDivision}>
-            <Card {...cardProps} title={<h3>Pricing</h3>}>
+            <Card {...cardProps} title={<h3>Global Pricing</h3>}>
               <Row>
                 <FormItem label={getDistPriceName('sellPrice')} help={getDistPriceDescription('sellPrice')} hasFeedback {...formItemLayout}>
                   {getFieldDecorator('sellPrice', {
@@ -1029,239 +925,10 @@ class AdvancedForm extends Component {
                 </FormItem>
               </Row>
             </Card>
+            <Card {...cardProps} title={<h3>Purchase Price</h3>} />
+            <Card {...cardProps} title={<h3>Sell Price</h3>} />
           </Col>
           <Col {...parentThreeDivision}>
-            <Card {...cardProps} title={<h3>K3Express</h3>}>
-              <FormItem label="Enable K3Express" {...formItemLayout}>
-                {getFieldDecorator('expressActive', {
-                  valuePropName: 'checked',
-                  initialValue: item.expressActive === undefined
-                    ? false
-                    : item.expressActive
-                })(<Checkbox
-                  disabled={modalType === 'edit' && item.expressActive}
-                >Publish</Checkbox>)}
-              </FormItem>
-              {getFieldValue('expressActive') ? (<div>
-                <FormItem label={(<Link target="_blank" to={'/k3express/product-category'}>Category</Link>)} hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('expressCategoryId', {
-                    initialValue: item.expressCategoryId ? {
-                      key: item.expressCategoryId,
-                      label: item.expressCategoryName
-                    } : {},
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    showSearch
-                    allowClear
-                    optionFilterProp="children"
-                    labelInValue
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >{k3expressCategory}
-                  </Select>)}
-                </FormItem>
-
-                {getFieldValue('expressCategoryId') && getFieldValue('expressCategoryId').key ? (
-                  <FormItem label={(<Link target="_blank" to={'/k3express/product-brand'}>Brand</Link>)} hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('expressBrandId', {
-                      initialValue: item.expressBrandId ? {
-                        key: item.expressBrandId,
-                        label: item.expressBrandName
-                      } : {},
-                      rules: [
-                        {
-                          required: true
-                        }
-                      ]
-                    })(<Select
-                      showSearch
-                      allowClear
-                      onSearch={this.changeBrand}
-                      optionFilterProp="children"
-                      labelInValue
-                      notFoundContent={loadingButton.effects['expressProductBrand/queryLove'] ? <Spin size="small" /> : null}
-                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                    >{k3expressBrand}
-                    </Select>)}
-                  </FormItem>
-                ) : null}
-              </div>) : null}
-            </Card>
-            <Card {...cardProps} title={<h3>Shopee</h3>}>
-              <FormItem label="Enable Shopee" {...formItemLayout}>
-                {getFieldDecorator('enableShopee', {
-                  valuePropName: 'checked',
-                  initialValue: item.enableShopee === undefined
-                    ? false
-                    : item.enableShopee
-                })(<Checkbox
-                  disabled={modalType === 'edit' && item.enableShopee}
-                  onFocus={() => {
-                    getShopeeCategoryRecommendation()
-                  }}
-                >Publish</Checkbox>)}
-              </FormItem>
-              {getFieldValue('enableShopee') ? (<div>
-                <FormItem label="Shopee Category" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('shopeeCategoryId', {
-                    initialValue: item.shopeeCategoryId ? {
-                      key: item.shopeeCategoryId,
-                      label: item.shopeeCategoryName
-                    } : {},
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    showSearch
-                    allowClear
-                    optionFilterProp="children"
-                    labelInValue
-                    onChange={onChangeShopeeCategory}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >{shopeeCategory}
-                  </Select>)}
-                </FormItem>
-
-                {listShopeeCategoryRecommend && listShopeeCategoryRecommend.length > 0 ? (
-                  <div>
-                    {'Recommend Category: '}
-                    {listShopeeCategoryRecommend.map((item) => {
-                      let categoryName = item
-                      const filteredCategory = listShopeeCategory.filter(filtered => parseFloat(filtered.category_id) === parseFloat(item))
-                      if (filteredCategory && filteredCategory[0]) {
-                        const c = filteredCategory[0]
-                        categoryName = `${c.original_category_name} | ${c.display_category_name}`
-                      }
-                      return (
-                        <div><a onClick={() => onSetCategoryShopee(item, categoryName)}>{categoryName}</a></div>
-                      )
-                    })}
-                  </div>) : null}
-
-                {getFieldValue('shopeeCategoryId') && getFieldValue('shopeeCategoryId').key ? (
-                  <FormItem label="Shopee Brand" hasFeedback {...formItemLayout}>
-                    {getFieldDecorator('shopeeBrandId', {
-                      initialValue: item.shopeeBrandId ? {
-                        key: item.shopeeBrandId,
-                        label: item.shopeeBrandName
-                      } : {},
-                      rules: [
-                        {
-                          required: true
-                        }
-                      ]
-                    })(<Select
-                      showSearch
-                      allowClear
-                      onSearch={this.changeBrand}
-                      optionFilterProp="children"
-                      labelInValue
-                      notFoundContent={loadingButton.effects['shopeeCategory/queryBrand'] ? <Spin size="small" /> : null}
-                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                    >{shopeeBrand}
-                    </Select>)}
-                  </FormItem>
-                ) : null}
-                {getFieldValue('shopeeCategoryId')
-                  && getFieldValue('shopeeCategoryId').key ? listShopeeAttribute.map((attribute) => {
-                    if (attribute.input_type === 'COMBO_BOX' || attribute.input_type === 'DROP_DOWN' || attribute.input_type === 'MULTIPLE_SELECT_COMBO_BOX' || attribute.input_type === 'MULTIPLE_SELECT') {
-                      return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
-                        {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
-                          initialValue: attribute.initialValue,
-                          rules: [
-                            {
-                              required: attribute.is_mandatory
-                            }
-                          ]
-                        })(<Select
-                          showSearch
-                          allowClear
-                          optionFilterProp="children"
-                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                        >{
-                            (attribute.attribute_value_list || []).length > 0
-                              ? attribute.attribute_value_list.map(c => <Option value={c.value_id} key={c.value_id} title={`${c.display_value_name}`}>{`${c.display_value_name}`}</Option>) : []}
-                        </Select>)}
-                      </FormItem>)
-                    }
-
-                    if (attribute.input_type === 'TEXT_FILED') {
-                      if (attribute.input_validation_type === 'STRING_TYPE') {
-                        return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
-                          {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
-                            initialValue: attribute.initialValue,
-                            rules: [
-                              {
-                                required: attribute.is_mandatory
-                              }
-                            ]
-                          })(<Input maxLength={100} />)}
-                        </FormItem>)
-                      }
-                      if (attribute.input_validation_type === 'DATE_TYPE') {
-                        if (attribute.date_format_type === 'YEAR_MONTH') {
-                          return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
-                            {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
-                              initialValue: attribute.initialValue,
-                              rules: [
-                                {
-                                  required: attribute.is_mandatory
-                                }
-                              ]
-                            })(<MonthPicker placeholder="Select month" />)}
-                          </FormItem>)
-                        }
-                        if (attribute.date_format_type === 'YEAR_MONTH_DATE') {
-                          return (<FormItem label={attribute.display_attribute_name} hasFeedback {...formItemLayout}>
-                            {getFieldDecorator(`attribute-${attribute.attribute_id}`, {
-                              initialValue: attribute.initialValue && typeof attribute.initialValue === 'string' ? moment(attribute.initialValue) : moment().add(6, 'months'),
-                              rules: [
-                                {
-                                  required: attribute.is_mandatory
-                                }
-                              ]
-                            })(<DatePicker placeholder="Select date" />)}
-                          </FormItem>)
-                        }
-                      }
-                    }
-                    return null
-                  }) : null}
-                <Button type="primary" onClick={() => handleSelectAll()}>{getFieldValue('shopeeLogistic') && listShopeeLogistic && listShopeeLogistic.length > 0 && getFieldValue('shopeeLogistic').length === listShopeeLogistic.length ? 'DE' : ''}SELECT ALL LOGISTIC</Button>
-                <FormItem label="Shopee Logistic" help={`${getFieldValue('shopeeLogistic') && getFieldValue('shopeeLogistic').length ? getFieldValue('shopeeLogistic').length : 0} Logistics Selected`} hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('shopeeLogistic', {
-                    initialValue: item.shopeeLogistic || [],
-                    rules: [
-                      {
-                        required: true
-                      }
-                    ]
-                  })(<Select
-                    showSearch
-                    size="large"
-                    multiple
-                    allowClear
-                    optionFilterProp="children"
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  >
-                    {shopeeLogistic}
-                  </Select>)}
-                </FormItem>
-                <FormItem label="Dangerous Item" help="won't appear on the Android/IOS" {...formItemLayout}>
-                  {getFieldDecorator('shopeeItemDangerous', {
-                    valuePropName: 'checked',
-                    initialValue: item.shopeeItemDangerous === undefined
-                      ? false
-                      : item.shopeeItemDangerous
-                  })(<Checkbox>Dangerous</Checkbox>)}
-                </FormItem>
-              </div>) : null}
-            </Card>
             <Card {...cardProps} title={<h3>Advance Product Utility</h3>}>
               <FormItem label="Publish on e-commerce" {...formItemLayout}>
                 {getFieldDecorator('activeShop', {
@@ -1270,24 +937,6 @@ class AdvancedForm extends Component {
                     ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
                     : item.activeShop
                 })(<Checkbox>Publish</Checkbox>)}
-              </FormItem>
-              <FormItem label="Track Qty" {...formItemLayout}>
-                {getFieldDecorator('trackQty', {
-                  valuePropName: 'checked',
-                  initialValue: item.trackQty == null ? true : !!item.trackQty
-                })(<Checkbox>Track</Checkbox>)}
-              </FormItem>
-              <FormItem label="Alert Qty" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('alertQty', {
-                  initialValue: item.alertQty == null ? 1 : item.alertQty,
-                  rules: [
-                    {
-                      required: getFieldValue('trackQty'),
-                      pattern: /^(?:0|[1-9][0-9]{0,20})$/,
-                      message: '0-9'
-                    }
-                  ]
-                })(<InputNumber {...InputNumberProps} />)}
               </FormItem>
               <FormItem label="Halal" {...formItemLayout}>
                 {getFieldDecorator('isHalal', {
@@ -1355,15 +1004,6 @@ class AdvancedForm extends Component {
                   initialValue: item.active === undefined ? true : item.active
                 })(<Checkbox>Active</Checkbox>)}
               </FormItem>
-
-              <FormItem label="Return Policy" {...formItemLayout}>
-                {getFieldDecorator('returnPolicy', {
-                  valuePropName: 'checked',
-                  initialValue: item.returnPolicy === undefined
-                    ? false
-                    : item.returnPolicy
-                })(<Checkbox>Bought Item can be return to supplier</Checkbox>)}
-              </FormItem>
               <FormItem label="Under Cost" {...formItemLayout}>
                 {getFieldDecorator('exception01', {
                   valuePropName: 'checked',
@@ -1371,8 +1011,117 @@ class AdvancedForm extends Component {
                 })(<Checkbox>Allow</Checkbox>)}
               </FormItem>
             </Card>
+
+            <Card {...cardProps} title={<h3>Planogram</h3>}>
+              <FormItem label="Dimension Product" {...formItemLayout}>
+                {getFieldDecorator('dimension', {
+                  initialValue: modalType === 'add' ?
+                    formatDimension(getFieldValue('productName')) : item.dimension,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Dimension Box" {...formItemLayout}>
+                {getFieldDecorator('dimensionBatch', {
+                  initialValue: modalType === 'add' ?
+                    formatDimension(getFieldValue('productName')) : item.dimension,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
+                {getFieldDecorator('dimensionPack', {
+                  initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^([0-9]{1,5})$/,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={25} />)}
+              </FormItem>
+              <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
+                {getFieldDecorator('dimensionBox', {
+                  initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
+                  rules: [
+                    {
+                      required: true,
+                      pattern: /^([0-9]{1,5})$/,
+                      message: 'Required when product image is filled'
+                    }
+                  ]
+                })(<Input maxLength={25} />)}
+              </FormItem>
+            </Card>
           </Col>
           <Col {...parentThreeDivision}>
+            <Card {...cardProps} title={<h3>K3Express</h3>}>
+              <FormItem label="Enable K3Express" {...formItemLayout}>
+                {getFieldDecorator('expressActive', {
+                  valuePropName: 'checked',
+                  initialValue: item.expressActive === undefined
+                    ? false
+                    : item.expressActive
+                })(<Checkbox
+                  disabled={modalType === 'edit' && item.expressActive}
+                >Publish</Checkbox>)}
+              </FormItem>
+              {getFieldValue('expressActive') ? (<div>
+                <FormItem label={(<Link target="_blank" to={'/k3express/product-category'}>Category</Link>)} hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('expressCategoryId', {
+                    initialValue: item.expressCategoryId ? {
+                      key: item.expressCategoryId,
+                      label: item.expressCategoryName
+                    } : {},
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Select
+                    showSearch
+                    allowClear
+                    optionFilterProp="children"
+                    labelInValue
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  >{k3expressCategory}
+                  </Select>)}
+                </FormItem>
+
+                {getFieldValue('expressCategoryId') && getFieldValue('expressCategoryId').key ? (
+                  <FormItem label={(<Link target="_blank" to={'/k3express/product-brand'}>Brand</Link>)} hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('expressBrandId', {
+                      initialValue: item.expressBrandId ? {
+                        key: item.expressBrandId,
+                        label: item.expressBrandName
+                      } : {},
+                      rules: [
+                        {
+                          required: true
+                        }
+                      ]
+                    })(<Select
+                      showSearch
+                      allowClear
+                      optionFilterProp="children"
+                      labelInValue
+                      notFoundContent={loadingButton.effects['expressProductBrand/queryLove'] ? <Spin size="small" /> : null}
+                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                    >{k3expressBrand}
+                    </Select>)}
+                  </FormItem>
+                ) : null}
+              </div>) : null}
+            </Card>
             <Card {...cardProps} title={<h3>Grabmart</h3>}>
               <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('grabCategoryId', {
@@ -1394,6 +1143,7 @@ class AdvancedForm extends Component {
                 >{grabCategory}
                 </Select>)}
               </FormItem>
+
               <FormItem
                 label="Weight"
                 help="Example: 500 g, 10 kg, 12 per pack, 12 ml, 1 L"
@@ -1409,122 +1159,6 @@ class AdvancedForm extends Component {
                     }
                   ]
                 })(<Input maxLength={20} />)}
-              </FormItem>
-              <FormItem label="Image" {...formItemLayout}>
-                {getFieldDecorator('productImage', {
-                  initialValue: item.productImage
-                    && item.productImage != null
-                    && item.productImage !== '["no_image.png"]'
-                    && item.productImage !== '"no_image.png"'
-                    && item.productImage !== 'no_image.png' ?
-                    {
-                      fileList: JSON.parse(item.productImage).map((detail, index) => {
-                        return ({
-                          uid: index + 1,
-                          name: detail,
-                          status: 'done',
-                          url: `${IMAGEURL}/${detail}`,
-                          thumbUrl: `${IMAGEURL}/${detail}`
-                        })
-                      })
-                    }
-                    : [],
-                  rules: [
-                    {
-                      required: getFieldValue('enableShopee')
-                    }
-                  ]
-                })(
-                  <Upload
-                    {...props}
-                    multiple
-                    showUploadList={{
-                      showPreviewIcon: true
-                    }}
-                    defaultFileList={item.productImage
-                      && item.productImage != null
-                      && item.productImage !== '["no_image.png"]'
-                      && item.productImage !== '"no_image.png"'
-                      && item.productImage !== 'no_image.png' ?
-                      JSON.parse(item.productImage).map((detail, index) => {
-                        return ({
-                          uid: index + 1,
-                          name: detail,
-                          status: 'done',
-                          url: `${IMAGEURL}/${detail}`,
-                          thumbUrl: `${IMAGEURL}/${detail}`
-                        })
-                      })
-                      : []}
-                    listType="picture"
-                    action={`${apiCompanyURL}/time/time`}
-                    onPreview={file => console.log('file', file)}
-                    onChange={(info) => {
-                      if (info.file.status !== 'uploading') {
-                        console.log('pending', info.fileList)
-                      }
-                      if (info.file.status === 'done') {
-                        console.log('success', info)
-                        message.success(`${info.file.name} file staged success`)
-                      } else if (info.file.status === 'error') {
-                        console.log('error', info)
-                        message.error(`${info.file.name} file staged failed.`)
-                      }
-                    }}
-                  >
-                    <Button>
-                      <Icon type="upload" /> Click to Upload
-                    </Button>
-                  </Upload>
-                )}
-              </FormItem>
-              <FormItem label="Dimension" {...formItemLayout}>
-                {getFieldDecorator('dimension', {
-                  initialValue: modalType === 'add' ?
-                    formatDimension(getFieldValue('productName')) : item.dimension,
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Required when product image is filled'
-                    }
-                  ]
-                })(<Input maxLength={30} />)}
-              </FormItem>
-              <FormItem label="Per Box" {...formItemLayout} help="Isi Dalam 1 Karton Pengiriman">
-                {getFieldDecorator('dimensionBox', {
-                  initialValue: modalType === 'add' ? formatBox(formatDimension(getFieldValue('productName'))) : item.dimensionBox,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^([0-9]{1,5})$/,
-                      message: 'Required when product image is filled'
-                    }
-                  ]
-                })(<Input maxLength={25} />)}
-              </FormItem>
-              <FormItem label="Per Pack" {...formItemLayout} help="Isi Dalam 1 Produk">
-                {getFieldDecorator('dimensionPack', {
-                  initialValue: modalType === 'add' ? formatPack(formatDimension(getFieldValue('productName'))) : item.dimensionPack,
-                  rules: [
-                    {
-                      required: true,
-                      pattern: /^([0-9]{1,5})$/,
-                      message: 'Required when product image is filled'
-                    }
-                  ]
-                })(<Input maxLength={25} />)}
-              </FormItem>
-              <FormItem label="Description" {...formItemLayout}>
-                {getFieldDecorator('description', {
-                  initialValue: item.description,
-                  rules: [
-                    {
-                      pattern: getFieldValue('enableShopee') || getFieldValue('expressActive') ? /^[\s\S]{20,65535}$/ : undefined,
-                      required: getFieldValue('enableShopee') || getFieldValue('expressActive') || (getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0),
-                      message: getFieldValue('enableShopee') || getFieldValue('expressActive') ? 'Min 20 Character' : 'Required when product image is filled'
-                    }
-                  ]
-                })(<TextArea maxLength={65535} autosize={{ minRows: 2, maxRows: 10 }} />)}
               </FormItem>
             </Card>
           </Col>

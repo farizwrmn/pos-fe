@@ -14,7 +14,7 @@ import BirthdayList from './BirthdayList'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, dispatch, switchSider, siderFold, isNavbar,
+const Header = ({ user, logout, switchSider, siderFold, isNavbar,
   menuPopoverVisible, visibleItem, visiblePw, visibleTotp, handleShortcutKeyShow,
   handleShortcutKeyHide, handleMyProfileShow, handleChangePwShow, handleChangePwHide, handleTogglePw, handleSavePw,
   handleChangeTotpShow, handleChangeTotpHide, handleSaveTotp, totp,
@@ -184,8 +184,6 @@ const Header = ({ user, logout, dispatch, switchSider, siderFold, isNavbar,
     changeSiderColor(color)
   }
 
-  const shopeeLogin = lstorage.getShopeeRequireLogin()
-
   return (
     <div className={classnames(styles.header, styles.store1)}>
       {isNavbar
@@ -209,19 +207,6 @@ const Header = ({ user, logout, dispatch, switchSider, siderFold, isNavbar,
         {/* <HeaderMenu prompt="home" clickRoute="/dashboard" /> */}
         {/* <HeaderMenu prompt="setting" /> */}
         {/* <HeaderMenu prompt="calculator" /> */}
-        {shopeeLogin && user && user.permissions && user.permissions.role && (user.permissions.role === 'OWN') ? (
-          <HeaderMenu
-            prompt="Require Login"
-            title="Require Login"
-            logo="/logo-shopee.jpg"
-            onClick={() => {
-              dispatch({
-                type: 'app/loginShopee'
-              })
-            }}
-            addClass="shopee"
-          />
-        ) : null}
         <HeaderMenu
           prompt="Customer View"
           title="Customer View"

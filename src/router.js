@@ -219,7 +219,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/store'))
-              registerModel(app, require('./models/shopee/shopeeCategory'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
           }
@@ -1859,6 +1858,7 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/out',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importTransferOut'))
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/product/stockLocation'))
@@ -1876,6 +1876,17 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
             }, 'inventory-transfer-out-detail')
+          }
+        }, {
+          path: 'inventory/transfer/out-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importTransferOut'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/inventory/transfer/importTransferOut'))
+            }, 'inventory-transfer-out-import')
           }
         }, {
           path: 'integration/grabmart-compliance',
@@ -1919,62 +1930,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customertype'))
               cb(null, require('./routes/setting/configure/'))
             }, 'setting-misc')
-          }
-        }, {
-          path: 'integration/shopee/set-code',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/shopee/shopeeIntegration'))
-              cb(null, require('./routes/integration/setCode'))
-            }, 'integration-shopee-setCode')
-          }
-        }, {
-          path: 'integration/shopee/product',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeProduct'))
-              cb(null, require('./routes/integration/shopee/shopeeProduct'))
-            }, 'integration-shopee-product')
-          }
-        }, {
-          path: 'integration/shopee/image-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeImage'))
-              cb(null, require('./routes/integration/shopee/shopeeImage'))
-            }, 'integration-shopee-image')
-          }
-        }, {
-          path: 'integration/shopee/logistic-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeLogistic'))
-              cb(null, require('./routes/integration/shopee/shopeeLogistic'))
-            }, 'integration-shopee-logistic')
-          }
-        }, {
-          path: 'integration/shopee/category-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeCategory'))
-              cb(null, require('./routes/integration/shopee/shopeeCategory'))
-            }, 'integration-shopee-category')
-          }
-        }, {
-          path: 'integration/shopee/brand-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeBrand'))
-              cb(null, require('./routes/integration/shopee/shopeeBrand'))
-            }, 'integration-shopee-brand')
-          }
-        }, {
-          path: 'integration/shopee/queue-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeQueue'))
-              cb(null, require('./routes/integration/shopee/shopeeQueue'))
-            }, 'integration-shopee-queue')
           }
         }, {
           path: 'integration/grabmart-campaign',
@@ -2075,7 +2030,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/marketing/bundlingCategory'))
-              registerModel(app, require('./models/shopee/shopeeCategory'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))

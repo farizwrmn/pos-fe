@@ -11,8 +11,7 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Master = ({ shopeeCategory, bundlingCategory, bundling, bank, paymentOpts, grabCategory, userStore, loading, dispatch, location, app }) => {
-  const { list: listShopeeCategory, listAttribute: listShopeeAttribute, listBrand: listShopeeBrand, listRecommend: listShopeeCategoryRecommend, listLogistic: listShopeeLogistic } = shopeeCategory
+const Master = ({ bundlingCategory, bundling, bank, paymentOpts, grabCategory, userStore, loading, dispatch, location, app }) => {
   const { typeModal, pagination, modalCancelVisible, invoiceCancel, listBundling, itemEditListRules, itemEditListReward, modalEditRulesVisible, modalEditRewardVisible, listRules, listReward, modalType, currentItem, activeKey, modalProductVisible } = bundling
   const { list: listBundlingCategory } = bundlingCategory
   const { listAllStores } = userStore
@@ -121,16 +120,6 @@ const Master = ({ shopeeCategory, bundlingCategory, bundling, bank, paymentOpts,
               listBundling: [], listRules: [], listReward: []
             }
           })
-          dispatch({
-            type: 'shopeeCategory/updateState',
-            payload: {
-              listRecommend: [],
-              listAttribute: [],
-              listLogistic: [],
-              listBrand: [],
-              lastProductName: undefined
-            }
-          })
         }
       })
     } else {
@@ -146,16 +135,6 @@ const Master = ({ shopeeCategory, bundlingCategory, bundling, bank, paymentOpts,
           activeKey: key
         }
       }))
-      dispatch({
-        type: 'shopeeCategory/updateState',
-        payload: {
-          listRecommend: [],
-          listAttribute: [],
-          listLogistic: [],
-          listBrand: [],
-          lastProductName: undefined
-        }
-      })
       dispatch({
         type: 'bundling/updateState',
         payload: {
@@ -192,35 +171,6 @@ const Master = ({ shopeeCategory, bundlingCategory, bundling, bank, paymentOpts,
     modalProductVisible,
     loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    listShopeeBrand,
-    listShopeeCategory,
-    listShopeeCategoryRecommend,
-    listShopeeAttribute,
-    listShopeeLogistic,
-    getShopeeAttribute (category_id) {
-      dispatch({
-        type: 'shopeeCategory/queryAttribute',
-        payload: {
-          category_id
-        }
-      })
-    },
-    getShopeeBrand (category_id) {
-      dispatch({
-        type: 'shopeeCategory/queryBrand',
-        payload: {
-          category_id
-        }
-      })
-    },
-    onGetShopeeCategory (productName) {
-      dispatch({
-        type: 'shopeeCategory/queryRecommend',
-        payload: {
-          productName
-        }
-      })
-    },
     onSubmit (data, listRules, listReward, reset) {
       if (modalType === 'add') {
         let haveReplace = false
@@ -282,16 +232,6 @@ const Master = ({ shopeeCategory, bundlingCategory, bundling, bank, paymentOpts,
         type: 'bundling/updateState',
         payload: {
           currentItem: {}
-        }
-      })
-      dispatch({
-        type: 'shopeeCategory/updateState',
-        payload: {
-          listRecommend: [],
-          listAttribute: [],
-          listLogistic: [],
-          listBrand: [],
-          lastProductName: undefined
         }
       })
     },
@@ -502,4 +442,4 @@ Master.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ bundlingCategory, shopeeCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }) => ({ bundlingCategory, shopeeCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }))(Master)
+export default connect(({ bundlingCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }) => ({ bundlingCategory, bundling, bank, paymentOpts, grabCategory, productstock, service, userStore, loading, app }))(Master)

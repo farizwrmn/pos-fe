@@ -39,6 +39,7 @@ export default modelExtend(pageModel, {
     currentItemList: {},
     currentItemPrint: {},
     filterSearch: {},
+    modalImportProductVisible: false,
     modalProductDemandVisible: false,
     modalVisible: false,
     modalConfirmVisible: false,
