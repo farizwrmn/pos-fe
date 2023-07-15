@@ -3,7 +3,7 @@ import { Table, Tag } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 
-const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
+const List = ({ ...tableProps, onFilterChange }) => {
   const onChange = (pagination, filters) => {
     let status
     if (filters.status) {
@@ -40,10 +40,9 @@ const List = ({ ...tableProps, onFilterChange, selectedOutlet }) => {
     },
     {
       title: 'Outlet',
-      dataIndex: 'outlet_id',
-      key: 'outlet_id',
-      width: 180,
-      render: value => (value === selectedOutlet.id ? selectedOutlet.outlet_name : '-')
+      dataIndex: 'outletName',
+      key: 'outletName',
+      width: 180
     },
     {
       title: 'Tipe',
