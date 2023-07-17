@@ -2217,6 +2217,14 @@ const Pos = ({
       }
 
       dispatch({
+        type: 'payment/addMethod',
+        payload: {
+          listAmount: [],
+          data
+        }
+      })
+
+      dispatch({
         type: 'payment/createDynamicQrisPayment',
         payload: {
           params: {

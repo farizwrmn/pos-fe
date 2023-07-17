@@ -662,7 +662,7 @@ export default {
         })
         Modal.error({
           title: 'Dynamic QRIS Failed',
-          content: 'Failed to create Dynamic QRIS Payment'
+          content: response.message
         })
       }
     },
