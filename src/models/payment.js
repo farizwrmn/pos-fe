@@ -648,7 +648,7 @@ export default {
       if (response && response.success && response.data && response.data.payment) {
         const paymentTransactionLimitTime = response.data.paymentTimeLimit
         setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
-        setDynamicQrisTimeLimit(paymentTransactionLimitTime)
+        setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
         yield put({
           type: 'updateState',
           payload: {

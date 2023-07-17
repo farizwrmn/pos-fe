@@ -1,7 +1,16 @@
 import { currencyFormatter } from 'utils/string'
 import { color } from 'utils/theme'
+import { lstorage } from 'utils'
+import CountdownTimer from './CountDownTimer'
 
-const DynamicQrisTemplate = ({ qrisImage, total }) => {
+const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit }) => {
+  const countDownTimerProps = {
+    onTimerFinish: () => {
+      lstorage.removeDynamicQrisTimeLimit()
+    },
+    duration: dynamicQrisTimeLimit * 60
+  }
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px' }}>
       <div style={{ width: '100%', height: 'auto', alignSelf: 'center' }}>
@@ -21,7 +30,8 @@ const DynamicQrisTemplate = ({ qrisImage, total }) => {
             <img src="/k3mart-text-logo.png" alt="" style={{ margin: '20px 0 20px 0', maxWidth: '250px' }} width="100%" height="auto" />
           </div>
           <div style={{ fontSize: '20px', color: color.charcoal }}>Total Belanja :</div>
-          <div style={{ fontSize: '20px', fontWeight: 'bold', color: color.black, marginBottom: '30px' }}>{currencyFormatter(total)}</div>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', color: color.black }}>{currencyFormatter(total)}</div>
+          <CountdownTimer {...countDownTimerProps} />
         </div>
         <div style={{ textAlign: 'center', fontSize: '14px' }}>
           Buka Aplikasi e-wallet atau m-Banking anda dan scan QR-Code untuk membayar pesanan

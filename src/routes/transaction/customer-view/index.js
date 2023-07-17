@@ -15,7 +15,15 @@ import { groupProduct } from './utils'
 import Advertising from '../pos/Advertising'
 import DynamicQrisTemplate from './DynamicQrisTemplate'
 
-const { getQrisImage, getDynamicQrisImage, getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
+const {
+  getQrisImage,
+  getDynamicQrisImage,
+  getCashierTrans,
+  getBundleTrans,
+  getServiceTrans,
+  getConsignment,
+  getDynamicQrisTimeLimit
+} = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -48,7 +56,8 @@ class Pos extends Component {
     consignment: [],
     memberInformation: {},
     qrisImage: null,
-    dynamicQrisImage: null
+    dynamicQrisImage: null,
+    dynamicQrisTimeLimit: null
   }
 
   componentDidMount () {
@@ -56,6 +65,7 @@ class Pos extends Component {
     this.setListData({ key: 'cashier_trans' })
     this.setListData({ key: 'qris_image' })
     this.setListData({ key: 'dynamic_qris_image' })
+    this.setListData({ key: 'dynamic_qris_time_limit' })
   }
 
   componentWillUnmount () {
@@ -63,6 +73,10 @@ class Pos extends Component {
   }
 
   setListData (data) {
+    if (data && data.key === 'dynamic_qris_time_limit') {
+      const timeLimit = getDynamicQrisTimeLimit()
+      this.setState({ dynamicQrisTimeLimit: Number(timeLimit) })
+    }
     if (data && data.key === 'qris_image') {
       const qrisImage = getQrisImage()
       this.setState({ qrisImage })
@@ -102,7 +116,8 @@ class Pos extends Component {
       loading,
       memberInformation,
       qrisImage,
-      dynamicQrisImage
+      dynamicQrisImage,
+      dynamicQrisTimeLimit
     } = this.state
     const { listAdvertisingCustomer } = pos
 
@@ -117,7 +132,8 @@ class Pos extends Component {
 
     const dynamicQrisTemplateProps = {
       total: totalPayment,
-      qrisImage: dynamicQrisImage
+      qrisImage: dynamicQrisImage,
+      dynamicQrisTimeLimit
     }
 
     return (
@@ -153,7 +169,7 @@ class Pos extends Component {
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
-                : dynamicQrisImage ? (
+                : (dynamicQrisImage && dynamicQrisTimeLimit > 0) ? (
                   <DynamicQrisTemplate {...dynamicQrisTemplateProps} />
                 ) : (
                   <Advertising list={listAdvertisingCustomer} />
