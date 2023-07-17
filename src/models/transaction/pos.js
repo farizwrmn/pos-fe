@@ -3446,13 +3446,22 @@ export default {
       if (response && response.success && response.data && response.data.paramValue) {
         const storeStringArray = response.data.paramValue
         const storeArray = String(storeStringArray).split(',')
-        const currentStore = lstorage.getCurrentUserStore()
-        const checkStore = storeArray.find(item => Number(item) === Number(currentStore))
-        if (!checkStore) {
+        if (storeArray.length > 0) {
+          const currentStore = lstorage.getCurrentUserStore()
+          const checkStore = storeArray.find(item => Number(item) === Number(currentStore))
+          if (!checkStore) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                dynamicQrisPaymentAvailability: false
+              }
+            })
+          }
+        } else {
           yield put({
             type: 'updateState',
             payload: {
-              dynamicQrisPaymentAvailability: false
+              dynamicQrisPaymentAvailability: true
             }
           })
         }
