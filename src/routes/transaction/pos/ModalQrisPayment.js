@@ -83,7 +83,7 @@ class ModalQrisPayment extends React.Component {
     window.addEventListener('keydown', event => this.keydown(event, this.state.ctrlKeyDown))
     window.addEventListener('keyup', event => this.keyup(event))
 
-    const url = `payment_dev_pos_1/${paymentTransactionId}`
+    const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
       lstorage.removeDynamicQrisImage()
       this.createPayment()
@@ -99,7 +99,7 @@ class ModalQrisPayment extends React.Component {
   componentWillUnmount () {
     const { dispatch, payment } = this.props
     const { paymentTransactionId } = payment
-    const url = `payment_dev_pos_1/${paymentTransactionId}`
+    const url = `payment_transaction/${paymentTransactionId}`
     socket.off(url)
     dispatch({
       type: 'payment/hidePaymentModal'
