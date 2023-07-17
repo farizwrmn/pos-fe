@@ -28,7 +28,7 @@ class QrisPayment extends Component {
   }
 
   render () {
-    const { cancelQrisPayment, loading, paymentTransactionLimitTime } = this.props
+    const { cancelQrisPayment, loading, paymentTransactionLimitTime, refreshPayment } = this.props
 
     const countDownProps = {
       onTimerFinish: () => {
@@ -60,9 +60,14 @@ class QrisPayment extends Component {
             <CountdownTimer {...countDownProps} />
           </Row>
           <Row style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-            <Button type="danger" onClick={cancelQrisPayment} size="large" style={{ padding: '0 20px 0 20px' }} loading={loading.effects['payment/createDynamicQrisPayment']}>
+            <Button type="danger" onClick={cancelQrisPayment} size="large" style={{ padding: '0 20px 0 20px' }} disabled={loading.effects['payment/createDynamicQrisPayment']} loading={loading.effects['payment/createDynamicQrisPayment']}>
               Cancel
             </Button>
+            <div style={{ flex: 1 }}>
+              <Button type="primary" onClick={refreshPayment} size="large" style={{ padding: '0 20px 0 20px' }} disabled={loading.effects['pos/refreshDynamicQrisPayment']} loading={loading.effects['pos/refreshDynamicQrisPayment']}>
+                Refresh
+              </Button>
+            </div>
           </Row>
         </Col>
       </Row>

@@ -23,6 +23,17 @@ export const queryCancel = (params) => {
   })
 }
 
+export const queryById = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  const { paymentTransactionId } = params
+  return request({
+    url: `${paymentTransaction}/${paymentTransactionId}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export const queryCheckStoreAvailability = () => {
   const apiHeaderToken = crypt.apiheader()
   return request({
