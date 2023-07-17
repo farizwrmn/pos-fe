@@ -197,7 +197,8 @@ const Pos = ({
   const {
     // usingWo,
     paymentModalVisible,
-    woNumber
+    woNumber,
+    paymentTransactionId
   } = payment
 
   const {
@@ -960,6 +961,12 @@ const Pos = ({
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
       removeDynamicQrisImage()
+      dispatch({
+        type: 'payment/cancelDynamicQrisPayment',
+        payload: {
+          paymentTransactionId
+        }
+      })
       dispatch({
         type: 'payment/hidePaymentModal'
       })

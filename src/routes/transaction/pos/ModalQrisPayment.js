@@ -92,12 +92,6 @@ class ModalQrisPayment extends React.Component {
     dispatch({
       type: 'payment/hidePaymentModal'
     })
-    dispatch({
-      type: 'payment/cancelDynamicQrisPayment',
-      payload: {
-        paymentTransactionId
-      }
-    })
     window.removeEventListener('beforeunload', handleBeforeUnload)
     window.removeEventListener('unload', handleUnload)
   }

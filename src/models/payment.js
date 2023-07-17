@@ -666,10 +666,16 @@ export default {
         })
       }
     },
-    * cancelDynamicQrisPayment ({ payload }, { call }) {
+    * cancelDynamicQrisPayment ({ payload }, { call, put }) {
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionId: null
+          }
+        })
       } else {
         message.error(response.message)
       }
