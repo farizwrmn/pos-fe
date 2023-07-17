@@ -57,21 +57,34 @@ const options = {
 
 const socket = io(APISOCKET, options)
 
-const handleUnload = () => {
-  return 'Are you sure you want to leave this page?' // Confirmation message
+const handleUnload = (event) => {
+  if (event) {
+    event.preventDefault()
+  }
+  return 'Are you sure you want to leave this page?'
 }
 
 const handleBeforeUnload = (event) => {
   event.preventDefault()
-  event.returnValue = '' // Required for Chrome
+  const confirmationMessage = 'Are you sure you want to leave this page?'
+  event.returnValue = confirmationMessage
+  return confirmationMessage
 }
 
 class ModalQrisPayment extends React.Component {
+  state = {
+    ctrlKeyDown: false
+  }
+
   componentDidMount () {
     const { payment, dispatch } = this.props
     const { paymentTransactionId } = payment
     window.addEventListener('beforeunload', handleBeforeUnload)
     window.addEventListener('unload', handleUnload)
+
+    window.addEventListener('keydown', event => this.keydown(event, this.state.ctrlKeyDown))
+    window.addEventListener('keyup', event => this.keyup(event))
+
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
       lstorage.removeDynamicQrisImage()
@@ -94,6 +107,24 @@ class ModalQrisPayment extends React.Component {
     })
     window.removeEventListener('beforeunload', handleBeforeUnload)
     window.removeEventListener('unload', handleUnload)
+  }
+
+  keydown (event, ctrlKeyDown) {
+    console.log('event.keyCode', event.keyCode, ctrlKeyDown)
+    if ((event.which || event.keyCode) === 116 || ((event.which || event.keyCode) === 82 && ctrlKeyDown)) {
+      // Pressing F5 or Ctrl+R
+      event.preventDefault()
+    } else if ((event.which || event.keyCode) === 17 || (event.which || event.keyCode) === 91) {
+      // Pressing  only Ctrl
+      this.setState({ ctrlKeyDown: true })
+    }
+  }
+
+  keyup (event) {
+    // Key up Ctrl
+    if ((event.which || event.keyCode) === 17 || (event.which || event.keyCode) === 91) {
+      this.setState({ ctrlKeyDown: false })
+    }
   }
 
   createPayment () {
