@@ -95,6 +95,7 @@ class ModalQrisPayment extends React.Component {
   connectSocket ({ paymentTransactionId, dispatch }) {
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
+      lstorage.removeDynamicQrisImage()
       dispatch({
         type: 'pos/updateState',
         payload: {
