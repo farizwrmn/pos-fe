@@ -25,24 +25,15 @@ export default modelExtend(pageModel, {
 
   subscriptions: {
     setup ({ history, dispatch }) {
+      const consignmentId = getConsignmentId()
       history.listen((location) => {
-        if (location.pathname === '/integration/consignment/outlet' ||
-          location.pathname === '/integration/consignment/dashboard' ||
-          location.pathname === '/integration/consignment/stock-adjustment' ||
-          location.pathname === '/integration/consignment/return-report' ||
-          location.pathname === '/integration/consignment/sales-return' ||
-          location.pathname === '/integration/consignment/cut-off-report' ||
-          location.pathname === '/integration/consignment/journal-report' ||
-          location.pathname === '/integration/consignment/rent-report' ||
-          location.pathname === '/integration/consignment/profit-report' ||
-          location.pathname === '/integration/consignment/stock-flow' ||
-          location.pathname === '/integration/consignment/payments' ||
-          location.pathname === '/integration/consignment/users') {
+        if (location.pathname === '/integration/consignment/outlet') {
           dispatch({
             type: 'query',
             payload: {
               current: 1,
-              pageSize: 10
+              pageSize: 10,
+              outlet_id: consignmentId
             }
           })
           if (location.pathname === '/integration/consignment/outlet') {
@@ -63,6 +54,27 @@ export default modelExtend(pageModel, {
             }
           }
         }
+
+        if (location.pathname === '/integration/consignment/dashboard' ||
+          location.pathname === '/integration/consignment/stock-adjustment' ||
+          location.pathname === '/integration/consignment/return-report' ||
+          location.pathname === '/integration/consignment/sales-return' ||
+          location.pathname === '/integration/consignment/cut-off-report' ||
+          location.pathname === '/integration/consignment/journal-report' ||
+          location.pathname === '/integration/consignment/rent-report' ||
+          location.pathname === '/integration/consignment/profit-report' ||
+          location.pathname === '/integration/consignment/stock-flow' ||
+          location.pathname === '/integration/consignment/payments' ||
+          location.pathname === '/integration/consignment/users') {
+          dispatch({
+            type: 'query',
+            payload: {
+              current: 1,
+              pageSize: 10,
+              id: consignmentId
+            }
+          })
+        }
       })
     }
   },
@@ -70,11 +82,12 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const consignmentId = getConsignmentId()
-      const { q, current, pageSize } = payload
+      const { q, current, pageSize, id } = payload
       const params = {
         q,
         page: current,
-        pageSize
+        pageSize,
+        id
       }
       if (consignmentId) {
         const data = yield call(query, params)
