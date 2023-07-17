@@ -68,9 +68,20 @@ const handleBeforeUnload = (event) => {
 
 class ModalQrisPayment extends React.Component {
   componentDidMount () {
-    this.onSubmit()
+    const { payment, dispatch } = this.props
+    const { paymentTransactionId } = payment
     window.addEventListener('beforeunload', handleBeforeUnload)
     window.addEventListener('unload', handleUnload)
+    const url = `payment_transaction/${paymentTransactionId}`
+    socket.on(url, () => {
+      lstorage.removeDynamicQrisImage()
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentType: 'success'
+        }
+      })
+    })
   }
 
   componentWillUnmount () {
@@ -89,114 +100,6 @@ class ModalQrisPayment extends React.Component {
     })
     window.removeEventListener('beforeunload', handleBeforeUnload)
     window.removeEventListener('unload', handleUnload)
-  }
-
-  // eslint-disable-next-line react/sort-comp, class-methods-use-this
-  connectSocket ({ paymentTransactionId, dispatch }) {
-    const url = `payment_transaction/${paymentTransactionId}`
-    socket.on(url, () => {
-      lstorage.removeDynamicQrisImage()
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalQrisPaymentType: 'success'
-        }
-      })
-    })
-  }
-
-  onSubmit () {
-    const {
-      dispatch,
-      payment,
-      pos,
-      paymentEdc,
-      paymentCost
-    } = this.props
-    const {
-      curTotal,
-      memberInformation,
-      curRounding,
-      dineInTax
-    } = pos
-    const {
-      listAmount
-    } = payment
-    const {
-      paymentLov: listAllEdc,
-      paymentLovFiltered: listEdc
-    } = paymentEdc
-    const {
-      paymentLov: listAllCost,
-      paymentLovFiltered: listCost
-    } = paymentCost
-    const storeId = lstorage.getCurrentUserStore()
-    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
-    const usageLoyalty = memberInformation.useLoyalty || 0
-    const totalDiscount = usageLoyalty
-    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
-    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-    const dineIn = curNetto * (dineInTax / 100)
-    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
-    const data = {
-      amount: paymentValue,
-      bank: 0,
-      machine: 0,
-      typeCode: 'PQ',
-      chargeNominal: 0,
-      chargePercent: 0,
-      chargeTotal: 0,
-      description: undefined,
-      id: 1
-    }
-
-    const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
-    if (!filteredEdc) {
-      const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
-      if (filteredAllEdc && filteredAllEdc[0]) {
-        const filteredCost = listAllCost.filter(filtered => filtered.machineId === filteredAllEdc[0].id)
-        if (filteredCost && filteredCost[0]) {
-          data.machine = filteredAllEdc[0].id
-          data.bank = filteredCost[0].id
-        }
-      }
-    }
-    const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
-    data.id = listAmount.length + 1
-
-    if (selectedBank && selectedBank[0]) {
-      data.chargeNominal = selectedBank[0].chargeNominal
-      data.chargePercent = selectedBank[0].chargePercent
-      data.chargeTotal = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
-      if (data.chargeTotal > 0) {
-        Modal.error({
-          title: 'There are credit charge for this payment'
-        })
-      }
-    }
-
-
-    dispatch({
-      type: 'payment/addMethod',
-      payload: {
-        listAmount,
-        data
-      }
-    })
-
-    dispatch({
-      type: 'payment/createDynamicQrisPayment',
-      payload: {
-        params: {
-          location,
-          paymentType: 'qris',
-          storeId,
-          amount: paymentValue
-        },
-        connectSocket: this.connectSocket,
-        dispatch
-      }
-    })
   }
 
   createPayment () {

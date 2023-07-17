@@ -201,11 +201,13 @@ const Pos = ({
   } = payment
 
   const {
-    paymentLov: listAllEdc
+    paymentLov: listAllEdc,
+    paymentLovFiltered: listEdc
   } = paymentEdc
   const { listOpts } = paymentOpts
   const {
-    paymentLov: listAllCost
+    paymentLov: listAllCost,
+    paymentLovFiltered: listCost
   } = paymentCost
 
   let currentCashier = {
@@ -2171,11 +2173,58 @@ const Pos = ({
 
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
     if (grandTotal > 0) {
+      const storeId = lstorage.getCurrentUserStore()
+      const curCharge = 0
+      const usageLoyalty = memberInformation.useLoyalty || 0
+      const totalDiscount = usageLoyalty
+      const curNetto = ((parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(curCharge)) || 0
+      const dineIn = curNetto * (dineInTax / 100)
+      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(dineIn)
+      const data = {
+        amount: paymentValue,
+        bank: 0,
+        machine: 0,
+        typeCode: 'PQ',
+        chargeNominal: 0,
+        chargePercent: 0,
+        chargeTotal: 0,
+        description: undefined,
+        id: 1
+      }
+
+      const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
+      if (!filteredEdc) {
+        const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
+        if (filteredAllEdc && filteredAllEdc[0]) {
+          const filteredCost = listAllCost.filter(filtered => filtered.machineId === filteredAllEdc[0].id)
+          if (filteredCost && filteredCost[0]) {
+            data.machine = filteredAllEdc[0].id
+            data.bank = filteredCost[0].id
+          }
+        }
+      }
+      const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
+
+      if (selectedBank && selectedBank[0]) {
+        data.chargeNominal = selectedBank[0].chargeNominal
+        data.chargePercent = selectedBank[0].chargePercent
+        data.chargeTotal = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
+        if (data.chargeTotal > 0) {
+          Modal.error({
+            title: 'There are credit charge for this payment'
+          })
+        }
+      }
+
       dispatch({
-        type: 'pos/updateState',
+        type: 'payment/createDynamicQrisPayment',
         payload: {
-          modalQrisPaymentVisible: !modalQrisPaymentVisible,
-          modalQrisPaymentType: 'waiting'
+          params: {
+            location,
+            paymentType: 'qris',
+            storeId,
+            amount: paymentValue
+          }
         }
       })
     } else {

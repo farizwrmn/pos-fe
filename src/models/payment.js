@@ -645,7 +645,13 @@ export default {
             paymentTransactionId: response.data.payment.id
           }
         })
-        payload.connectSocket({ paymentTransactionId: response.data.payment.id, dispatch: payload.dispatch })
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: true,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
       } else {
         yield put({
           type: 'pos/updateState',
