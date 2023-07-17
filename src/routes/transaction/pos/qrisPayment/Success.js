@@ -1,6 +1,6 @@
 import { Button, Col, Icon, Row } from 'antd'
 
-const QrisPaymentSuccess = ({ createPayment, loading }) => {
+const QrisPaymentSuccess = ({ loading }) => {
   return (
     <Row style={{ padding: '0 20px 0 20px' }}>
       <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', fontSize: '24px', marginBottom: '20px  ' }}>
@@ -14,7 +14,7 @@ const QrisPaymentSuccess = ({ createPayment, loading }) => {
           Silahkan tekan tombol OK untuk mencetak struk penjualan
         </Row>
         <Row style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button type="primary" onClick={createPayment} size="large" style={{ padding: '0 20px 0 20px' }} loading={loading.effects['payment/create']}>
+          <Button type="primary" disabled size="large" style={{ padding: '0 20px 0 20px' }} loading={loading.effects['payment/create']}>
             Ok
           </Button>
         </Row>

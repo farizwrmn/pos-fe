@@ -85,9 +85,10 @@ class ModalQrisPayment extends React.Component {
     window.addEventListener('keydown', event => this.keydown(event, this.state.ctrlKeyDown))
     window.addEventListener('keyup', event => this.keyup(event))
 
-    const url = `payment_transaction/${paymentTransactionId}`
+    const url = `payment_dev_pos_1/${paymentTransactionId}`
     socket.on(url, () => {
       lstorage.removeDynamicQrisImage()
+      this.createPayment()
       dispatch({
         type: 'pos/updateState',
         payload: {
@@ -100,7 +101,7 @@ class ModalQrisPayment extends React.Component {
   componentWillUnmount () {
     const { dispatch, payment } = this.props
     const { paymentTransactionId } = payment
-    const url = `payment_transaction/${paymentTransactionId}`
+    const url = `payment_dev_pos_1/${paymentTransactionId}`
     socket.off(url)
     dispatch({
       type: 'payment/hidePaymentModal'
@@ -217,6 +218,7 @@ class ModalQrisPayment extends React.Component {
 
   render () {
     const {
+      dispatch,
       loading,
       selectedPaymentShortcut,
       acceptPayment,
@@ -238,7 +240,13 @@ class ModalQrisPayment extends React.Component {
     }
     const qrisPaymentSuccess = {
       createPayment: () => {
-        this.createPayment()
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
       },
       loading
     }

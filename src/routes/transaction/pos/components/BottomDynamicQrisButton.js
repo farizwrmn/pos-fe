@@ -6,7 +6,7 @@ const DynamicQrisButton = ({
   loading
 }) => {
   return (
-    <Row style={{ marginTop: '20px' }}>
+    <Row style={{ marginTop: '60px' }}>
       <Col span={24} >
         <Button
           style={{
