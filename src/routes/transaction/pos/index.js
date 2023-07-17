@@ -52,6 +52,7 @@ const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
+  getCurrentUserStoreName,
   // setCashierTrans, setBundleTrans,
   setServiceTrans,
   getVoucherList,
@@ -960,21 +961,19 @@ const Pos = ({
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
-      removeDynamicQrisImage()
       dispatch({
-        type: 'payment/cancelDynamicQrisPayment',
+        type: 'pos/showModalLogin',
         payload: {
-          paymentTransactionId
+          modalLoginType: 'resetPaymentPaylabsQRIS'
         }
       })
       dispatch({
-        type: 'payment/hidePaymentModal'
-      })
-      dispatch({
-        type: 'pos/updateState',
+        type: 'login/updateState',
         payload: {
-          modalQrisPaymentVisible: !modalQrisPaymentVisible,
-          modalQrisPaymentType: 'waiting'
+          modalLoginData: {
+            transNo: paymentTransactionId,
+            memo: `Cancel Payment Paylabs QRIS ${getCurrentUserStoreName()}`
+          }
         }
       })
     },
@@ -2322,7 +2321,7 @@ const Pos = ({
             payload: {
               modalLoginData: {
                 transNo: user.username,
-                memo: 'Cancel Input POS'
+                memo: `Cancel Input POS ${getCurrentUserStoreName()}`
               }
             }
           })
