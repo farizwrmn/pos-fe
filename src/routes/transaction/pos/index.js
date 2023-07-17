@@ -37,6 +37,7 @@ import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import ModalPayment from './ModalPayment'
+import ModalQrisPayment from './ModalQrisPayment'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
@@ -45,15 +46,19 @@ import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
+import DynamicQrisButton from './components/BottomDynamicQrisButton'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
+  getCurrentUserStoreName,
   // setCashierTrans, setBundleTrans,
   setServiceTrans,
-  getVoucherList, setVoucherList,
-  removeQrisImage
+  getVoucherList,
+  setVoucherList,
+  removeQrisImage,
+  removeDynamicQrisImage
 } = lstorage
 // const FormItem = Form.Item
 
@@ -132,6 +137,8 @@ const Pos = ({
     modalProductVisible,
     modalConsignmentVisible,
     modalPaymentVisible,
+    modalQrisPaymentVisible,
+    modalQrisPaymentType,
     listAdvertising,
     curQty,
     totalItem,
@@ -180,7 +187,8 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
-    currentGrabOrder
+    currentGrabOrder,
+    dynamicQrisPaymentAvailability
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -190,15 +198,18 @@ const Pos = ({
   const {
     // usingWo,
     paymentModalVisible,
-    woNumber
+    woNumber,
+    paymentTransactionId
   } = payment
 
   const {
-    paymentLov: listAllEdc
+    paymentLov: listAllEdc,
+    paymentLovFiltered: listEdc
   } = paymentEdc
   const { listOpts } = paymentOpts
   const {
-    paymentLov: listAllCost
+    paymentLov: listAllCost,
+    paymentLovFiltered: listCost
   } = paymentCost
 
   let currentCashier = {
@@ -935,6 +946,75 @@ const Pos = ({
       }
     }
   }
+
+  const modalQrisPaymentProps = {
+    dispatch,
+    modalType: modalQrisPaymentType,
+    footer: null,
+    visible: modalQrisPaymentVisible,
+    item: itemPayment,
+    loading,
+    location,
+    payment,
+    pos,
+    app,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel: () => {
+      if (modalQrisPaymentType === 'waiting') {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'resetPaymentPaylabsQRIS'
+          }
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: {
+              transNo: paymentTransactionId,
+              memo: `Cancel Payment Paylabs QRIS ${getCurrentUserStoreName()}`
+            }
+          }
+        })
+      } else if (modalQrisPaymentType === 'failed') {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
+      }
+    },
+    createPayment: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentVisible: !modalQrisPaymentVisible,
+          modalQrisPaymentType: 'waiting'
+        }
+      })
+    },
+    acceptPayment: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentType: 'success'
+        }
+      })
+    },
+    paymentFailed: () => {
+      removeDynamicQrisImage()
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentType: 'failed'
+        }
+      })
+    }
+  }
+
   const ModalServiceListProps = {
     location,
     loading,
@@ -2000,6 +2080,185 @@ const Pos = ({
     }
   }
 
+  const onPaymentDynamicQris = () => {
+    let defaultRole = ''
+    const localId = localStorage.getItem(`${prefix}udi`)
+    if (localId && localId.indexOf('#') > -1) {
+      defaultRole = localId.split(/[# ]+/).pop()
+    }
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+    const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'Member Unit is not Defined '
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are inserting Member Unit without Work Order'
+      })
+    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are Work Order without Member Unit'
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
+    }
+    dispatch({ type: 'pos/setCurTotal' })
+
+    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+    if (listVoucher && listVoucher.length > 0) {
+      dispatch({
+        type: 'payment/addMethodVoucher',
+        payload: {
+          list: listVoucher
+        }
+      })
+    }
+
+    // Untuk tipe page
+    // dispatch(routerRedux.push('/transaction/pos/payment'))
+    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listEdcId = listEdc.map(item => item.id)
+        const listCost = listAllCost.filter(filtered => listEdcId.includes(filtered.machineId))
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    } else if (listOpts && listOpts.length > 0) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === listOpts[0].typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    }
+
+    if (bundleItem && bundleItem.length > 0) {
+      const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
+      if (filteredBundlePayment && filteredBundlePayment[0]) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            currentBundlePayment: {
+              paymentOption: filteredBundlePayment[0].paymentOption,
+              paymentBankId: filteredBundlePayment[0].paymentBankId
+            }
+          }
+        })
+      }
+    }
+
+    let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+    if (grandTotal > 0) {
+      const storeId = lstorage.getCurrentUserStore()
+      const curCharge = 0
+      const usageLoyalty = memberInformation.useLoyalty || 0
+      const totalDiscount = usageLoyalty
+      const curNetto = ((parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(curCharge)) || 0
+      const dineIn = curNetto * (dineInTax / 100)
+      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(dineIn)
+      const data = {
+        amount: paymentValue,
+        bank: 0,
+        machine: 0,
+        typeCode: 'PQ',
+        chargeNominal: 0,
+        chargePercent: 0,
+        chargeTotal: 0,
+        description: undefined,
+        id: 1
+      }
+
+      const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
+      if (!filteredEdc) {
+        const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
+        if (filteredAllEdc && filteredAllEdc[0]) {
+          const filteredCost = listAllCost.filter(filtered => filtered.machineId === filteredAllEdc[0].id)
+          if (filteredCost && filteredCost[0]) {
+            data.machine = filteredAllEdc[0].id
+            data.bank = filteredCost[0].id
+          }
+        }
+      }
+      const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
+
+      if (selectedBank && selectedBank[0]) {
+        data.chargeNominal = selectedBank[0].chargeNominal
+        data.chargePercent = selectedBank[0].chargePercent
+        data.chargeTotal = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
+        if (data.chargeTotal > 0) {
+          Modal.error({
+            title: 'There are credit charge for this payment'
+          })
+        }
+      }
+
+      dispatch({
+        type: 'payment/addMethod',
+        payload: {
+          listAmount: [],
+          data
+        }
+      })
+
+      dispatch({
+        type: 'payment/createDynamicQrisPayment',
+        payload: {
+          params: {
+            location,
+            paymentType: 'qris',
+            storeId,
+            amount: paymentValue
+          }
+        }
+      })
+    } else {
+      Modal.error({
+        title: 'Failed Create QRIS Payment',
+        content: 'Tidak bisa membuat payment qris dengan total 0'
+      })
+    }
+  }
+
   const buttomButtonProps = {
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
@@ -2072,12 +2331,19 @@ const Pos = ({
             payload: {
               modalLoginData: {
                 transNo: user.username,
-                memo: 'Cancel Input POS'
+                memo: `Cancel Input POS ${getCurrentUserStoreName()}`
               }
             }
           })
         }
       })
+    }
+  }
+
+  const dynamicQrisButtonProps = {
+    loading,
+    handleDynamicQrisButton: () => {
+      onPaymentDynamicQris()
     }
   }
 
@@ -2273,6 +2539,7 @@ const Pos = ({
             </Form>
 
             {paymentModalVisible && <ModalPayment {...modalPaymentTypeProps} />}
+            {modalQrisPaymentVisible && <ModalQrisPayment {...modalQrisPaymentProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
@@ -2381,6 +2648,7 @@ const Pos = ({
             </Row>
           </Card>
           <BottomButton {...buttomButtonProps} />
+          {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}

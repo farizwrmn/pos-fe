@@ -1,9 +1,10 @@
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
+import { queryAdd as createDynamicQrisPayment, queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -13,7 +14,14 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans, getConsignment, removeQrisImage } = lstorage
+const {
+  getCashierTrans,
+  getConsignment,
+  removeQrisImage,
+  setDynamicQrisImage,
+  removeDynamicQrisImage,
+  setDynamicQrisTimeLimit
+} = lstorage
 const { getSetting } = variables
 
 const { create } = cashierService
@@ -55,6 +63,8 @@ export default {
     lastMeter: 0,
     modalCreditVisible: false,
     paymentModalVisible: false,
+    paymentTransactionId: null,
+    paymentTransactionLimitTime: null,
     listCreditCharge: [],
     listAmount: [],
     creditCardType: '',
@@ -313,7 +323,8 @@ export default {
               policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
               change: payload.totalChange,
               woReference: payload.woNumber,
-              listAmount: payload.listAmount
+              listAmount: payload.listAmount,
+              paymentTransactionId: payload.paymentTransactionId
             }
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
@@ -333,6 +344,7 @@ export default {
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
+                removeDynamicQrisImage()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -355,6 +367,13 @@ export default {
                 })
                 yield put({
                   type: 'hidePaymentModal'
+                })
+                yield put({
+                  type: 'pos/updateState',
+                  payload: {
+                    modalQrisPaymentVisible: false,
+                    modalQrisPaymentType: 'waiting'
+                  }
                 })
               } catch (e) {
                 Modal.error({
@@ -622,6 +641,54 @@ export default {
             ...sequenceData
           }
         })
+      }
+    },
+    * createDynamicQrisPayment ({ payload }, { call, put }) {
+      const response = yield call(createDynamicQrisPayment, payload.params)
+      if (response && response.success && response.data && response.data.payment) {
+        const paymentTransactionLimitTime = response.data.paymentTimeLimit
+        setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
+        setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionId: response.data.payment.id,
+            paymentTransactionLimitTime
+          }
+        })
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: true,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
+      } else {
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
+        Modal.error({
+          title: 'Dynamic QRIS Failed',
+          content: response.message
+        })
+      }
+    },
+    * cancelDynamicQrisPayment ({ payload }, { call, put }) {
+      const response = yield call(cancelDynamicQrisPayment, payload)
+      if (response && response.success) {
+        removeDynamicQrisImage()
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionId: null
+          }
+        })
+      } else {
+        message.error(response.message)
       }
     }
   },

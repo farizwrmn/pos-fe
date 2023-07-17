@@ -57,6 +57,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
+import { queryCheckStoreAvailability } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -116,6 +117,9 @@ export default {
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
+    modalQrisPaymentVisible: false,
+    modalQrisPaymentType: 'waiting',
+    dynamicQrisPaymentAvailability: true,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
     modalConfirmVisible: false,
@@ -233,6 +237,9 @@ export default {
           })
           dispatch({
             type: 'getGrabmartOrder'
+          })
+          dispatch({
+            type: 'checkStoreDynamicQrisAvaibility'
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
@@ -3431,6 +3438,33 @@ export default {
         })
       } else {
         throw data
+      }
+    },
+
+    * checkStoreDynamicQrisAvaibility ({ payload = {} }, { call, put }) {
+      const response = yield call(queryCheckStoreAvailability, payload)
+      if (response && response.success && response.data && response.data.paramValue) {
+        const storeStringArray = response.data.paramValue
+        const storeArray = String(storeStringArray).split(',')
+        if (storeArray.length > 0) {
+          const currentStore = lstorage.getCurrentUserStore()
+          const checkStore = storeArray.find(item => Number(item) === Number(currentStore))
+          if (!checkStore) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                dynamicQrisPaymentAvailability: false
+              }
+            })
+          }
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              dynamicQrisPaymentAvailability: true
+            }
+          })
+        }
       }
     }
   },

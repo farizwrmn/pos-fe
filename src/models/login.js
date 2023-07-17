@@ -5,6 +5,8 @@ import { APPNAME } from 'utils/config.company'
 import { prefix } from 'utils/config.main'
 import { login, getUserRole, getUserStore } from '../services/login'
 
+
+const { removeDynamicQrisImage } = lstorage
 const { apiCompanyProtocol, apiCompanyHost, apiCompanyPort } = configCompany.rest
 
 
@@ -90,6 +92,25 @@ export default {
         }
         if (modalLoginType === 'cancelHistory') {
           yield put({ type: 'pos/cancelInvoice', payload: modalLoginData })
+        }
+        if (modalLoginType === 'resetPaymentPaylabsQRIS') {
+          removeDynamicQrisImage()
+          yield put({
+            type: 'payment/cancelDynamicQrisPayment',
+            payload: {
+              paymentTransactionId: modalLoginData.transNo
+            }
+          })
+          yield put({
+            type: 'payment/hidePaymentModal'
+          })
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              modalQrisPaymentVisible: false,
+              modalQrisPaymentType: 'waiting'
+            }
+          })
         }
         if (modalLoginType === 'resetAllPosInput') {
           yield put({

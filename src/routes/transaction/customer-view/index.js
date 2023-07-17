@@ -13,8 +13,17 @@ import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
 import Advertising from '../pos/Advertising'
+import DynamicQrisTemplate from './DynamicQrisTemplate'
 
-const { getQrisImage, getCashierTrans, getBundleTrans, getServiceTrans, getConsignment } = lstorage
+const {
+  getQrisImage,
+  getDynamicQrisImage,
+  getCashierTrans,
+  getBundleTrans,
+  getServiceTrans,
+  getConsignment,
+  getDynamicQrisTimeLimit
+} = lstorage
 const FormItem = Form.Item
 
 const formItemLayout1 = {
@@ -46,13 +55,17 @@ class Pos extends Component {
     service: [],
     consignment: [],
     memberInformation: {},
-    qrisImage: null
+    qrisImage: null,
+    dynamicQrisImage: null,
+    dynamicQrisTimeLimit: null
   }
 
   componentDidMount () {
     addHandler(window, 'storage', data => this.setListData(data))
     this.setListData({ key: 'cashier_trans' })
     this.setListData({ key: 'qris_image' })
+    this.setListData({ key: 'dynamic_qris_image' })
+    this.setListData({ key: 'dynamic_qris_time_limit' })
   }
 
   componentWillUnmount () {
@@ -60,9 +73,17 @@ class Pos extends Component {
   }
 
   setListData (data) {
+    if (data && data.key === 'dynamic_qris_time_limit') {
+      const timeLimit = getDynamicQrisTimeLimit()
+      this.setState({ dynamicQrisTimeLimit: Number(timeLimit) })
+    }
     if (data && data.key === 'qris_image') {
       const qrisImage = getQrisImage()
       this.setState({ qrisImage })
+    }
+    if (data && data.key === 'dynamic_qris_image') {
+      const dynamicQrisImage = getDynamicQrisImage()
+      this.setState({ dynamicQrisImage })
     }
     if (data && (data.key === 'dineInTax' || data.key === 'member' || data.key === 'bundle_promo' || data.key === 'cashier_trans' || data.key === 'consignment' || data.key === 'service_detail')) {
       this.setState({ loading: true })
@@ -94,7 +115,9 @@ class Pos extends Component {
       consignment,
       loading,
       memberInformation,
-      qrisImage
+      qrisImage,
+      dynamicQrisImage,
+      dynamicQrisTimeLimit
     } = this.state
     const { listAdvertisingCustomer } = pos
 
@@ -107,10 +130,16 @@ class Pos extends Component {
     const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
     const dineIn = curNetto * (dineInTax / 100)
 
+    const dynamicQrisTemplateProps = {
+      total: totalPayment,
+      qrisImage: dynamicQrisImage,
+      dynamicQrisTimeLimit
+    }
+
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          <Row>
+          <Row style={{ overflowY: 'scroll' }}>
             <Col span={14}>
               <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>
@@ -140,7 +169,9 @@ class Pos extends Component {
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
-                : (
+                : (dynamicQrisImage && dynamicQrisTimeLimit > 0) ? (
+                  <DynamicQrisTemplate {...dynamicQrisTemplateProps} />
+                ) : (
                   <Advertising list={listAdvertisingCustomer} />
                 )}
               {/* <img src={`${IMAGEURL}/${currentStore.photoQris}`} width="auto" height="400px" alt="img_qris.png" /> */}

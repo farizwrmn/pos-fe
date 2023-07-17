@@ -206,7 +206,8 @@ export default modelExtend(pageModel, {
       if (response.success) {
         if (modalLoginType === 'editPayment'
           || modalLoginType === 'cancelHistory'
-          || modalLoginType === 'resetAllPosInput') {
+          || modalLoginType === 'resetAllPosInput'
+          || modalLoginType === 'resetPaymentPaylabsQRIS') {
           yield put({
             type: 'salesDiscount/add',
             payload: {
