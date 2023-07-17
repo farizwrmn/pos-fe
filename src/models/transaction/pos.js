@@ -57,7 +57,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -3465,6 +3465,105 @@ export default {
             }
           })
         }
+      }
+    },
+
+    * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
+      const { paymentTransactionId, ...other } = payload
+      const response = yield call(queryPaymentTransactionById, { paymentTransactionId })
+      if (response && response.success && response.data) {
+        const paymentTransaction = response.data
+        if (paymentTransaction.validPayment === 1 && paymentTransaction.transId === null) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalQrisPaymentType: 'success'
+            }
+          })
+
+          const {
+            pos,
+            payment,
+            app
+          } = other
+          const {
+            memberInformation,
+            mechanicInformation,
+            curTotalDiscount,
+            curTotal,
+            curRounding,
+            curShift,
+            curCashierNo
+          } = pos
+          const {
+            totalPayment,
+            totalChange,
+            lastTransNo,
+            listAmount,
+            taxInfo,
+            woNumber,
+            companyInfo,
+            paymentTransactionId
+          } = payment
+          const { user, setting } = app
+          const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+          const usageLoyalty = memberInformation.useLoyalty || 0
+          const totalDiscount = usageLoyalty
+          const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
+          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
+          yield put({
+            type: 'payment/create',
+            payload: {
+              periode: moment().format('MMYY'),
+              transDate: other.getDate(1),
+              transDate2: other.getDate(3),
+              transTime: other.setTime(),
+              grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
+              totalPayment,
+              creditCardNo: '',
+              creditCardType: '',
+              creditCardCharge: 0,
+              curNetto,
+              totalCreditCard: 0,
+              transDatePrint: moment().format('DD MMM YYYY HH:mm'),
+              company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+              gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+              phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+              address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+              lastTransNo,
+              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+              // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+              paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
+              totalChange,
+              unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+              totalDiscount: curTotalDiscount,
+              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+              rounding: curRounding,
+              memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
+              memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
+              memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+              useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
+              technicianId: mechanicInformation.employeeCode,
+              curShift,
+              printNo: 1,
+              curCashierNo,
+              cashierId: user.userid,
+              userName: user.username,
+              taxInfo,
+              setting,
+              listAmount,
+              companyInfo,
+              curTotalPayment,
+              curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
+              usingWo: !((woNumber === '' || woNumber === null)),
+              woNumber: woNumber === '' ? null : woNumber,
+              paymentTransactionId
+            }
+          })
+        }
+      } else {
+        Modal.error(response.message)
       }
     }
   },

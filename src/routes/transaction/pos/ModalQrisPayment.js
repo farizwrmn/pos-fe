@@ -1,8 +1,6 @@
 import { Modal } from 'antd'
 import React from 'react'
 import { connect } from 'dva'
-import { prefix } from 'utils/config.main'
-import moment from 'moment'
 import { APISOCKET } from 'utils/config.company'
 import { lstorage } from 'utils'
 import io from 'socket.io-client'
@@ -128,94 +126,6 @@ class ModalQrisPayment extends React.Component {
     }
   }
 
-  createPayment () {
-    const {
-      pos,
-      payment,
-      app,
-      loading,
-      dispatch
-    } = this.props
-    const {
-      memberInformation,
-      mechanicInformation,
-      curTotalDiscount,
-      curTotal,
-      curRounding,
-      curShift,
-      curCashierNo
-    } = pos
-    const {
-      totalPayment,
-      totalChange,
-      lastTransNo,
-      listAmount,
-      taxInfo,
-      woNumber,
-      companyInfo,
-      paymentTransactionId
-    } = payment
-    const { user, setting } = app
-    const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-    if (loading.effects['payment/create']) {
-      return
-    }
-    const usageLoyalty = memberInformation.useLoyalty || 0
-    const totalDiscount = usageLoyalty
-    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
-    const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
-    dispatch({
-      type: 'payment/create',
-      payload: {
-        periode: moment().format('MMYY'),
-        transDate: getDate(1),
-        transDate2: getDate(3),
-        transTime: setTime(),
-        grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
-        totalPayment,
-        creditCardNo: '',
-        creditCardType: '',
-        creditCardCharge: 0,
-        curNetto,
-        totalCreditCard: 0,
-        transDatePrint: moment().format('DD MMM YYYY HH:mm'),
-        company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-        gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-        phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-        address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-        lastTransNo,
-        lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-        // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
-        paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
-        totalChange,
-        unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
-        totalDiscount: curTotalDiscount,
-        policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-        rounding: curRounding,
-        memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
-        memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-        employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
-        memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-        useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
-        technicianId: mechanicInformation.employeeCode,
-        curShift,
-        printNo: 1,
-        curCashierNo,
-        cashierId: user.userid,
-        userName: user.username,
-        taxInfo,
-        setting,
-        listAmount,
-        companyInfo,
-        curTotalPayment,
-        curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
-        usingWo: !((woNumber === '' || woNumber === null)),
-        woNumber: woNumber === '' ? null : woNumber,
-        paymentTransactionId
-      }
-    })
-  }
-
   render () {
     const {
       dispatch,
@@ -226,17 +136,33 @@ class ModalQrisPayment extends React.Component {
       payment,
       modalType,
       onCancel,
+      pos,
+      app,
       ...modalProps
     } = this.props
     const {
-      paymentTransactionLimitTime
+      paymentTransactionLimitTime,
+      paymentTransactionId
     } = payment
     const qrisPaymentProps = {
       cancelQrisPayment: onCancel,
       selectedPaymentShortcut,
       paymentFailed,
       loading,
-      paymentTransactionLimitTime
+      paymentTransactionLimitTime,
+      refreshPayment: () => {
+        dispatch({
+          type: 'pos/refreshDynamicQrisPayment',
+          payload: {
+            paymentTransactionId,
+            getDate,
+            setTime,
+            pos,
+            payment,
+            app
+          }
+        })
+      }
     }
     const qrisPaymentSuccess = {
       createPayment: () => {
