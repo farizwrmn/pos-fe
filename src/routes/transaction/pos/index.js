@@ -961,21 +961,31 @@ const Pos = ({
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
-      dispatch({
-        type: 'pos/showModalLogin',
-        payload: {
-          modalLoginType: 'resetPaymentPaylabsQRIS'
-        }
-      })
-      dispatch({
-        type: 'login/updateState',
-        payload: {
-          modalLoginData: {
-            transNo: paymentTransactionId,
-            memo: `Cancel Payment Paylabs QRIS ${getCurrentUserStoreName()}`
+      if (modalQrisPaymentType === 'waiting') {
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'resetPaymentPaylabsQRIS'
           }
-        }
-      })
+        })
+        dispatch({
+          type: 'login/updateState',
+          payload: {
+            modalLoginData: {
+              transNo: paymentTransactionId,
+              memo: `Cancel Payment Paylabs QRIS ${getCurrentUserStoreName()}`
+            }
+          }
+        })
+      } else if (modalQrisPaymentType === 'failed') {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
+      }
     },
     createPayment: () => {
       dispatch({
