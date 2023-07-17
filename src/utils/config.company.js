@@ -1,12 +1,12 @@
 /* eslint-disable no-constant-condition */
 const production = process.env.NODE_ENV === 'production'
 const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart' // 'localhost'
-const APICOMPANYPROTOCOL = production ? 'https' : 'https' // 'localhost'
+const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
 const MAIN_WEBSITE = production ? (process.env.MAIN_WEBSITE || 'k3mart.id') : 'k3mart.id'
-const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'kpos.k3mart.id' // 'localhost'
+const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'localhost' // 'localhost'
 const COUCH_NAME = production ? (process.env.CLOUDANT_NAME || 'k3mart') : 'k3mart' // 'localhost'
 const COUCH_URL = production ? (process.env.CLOUDANT_URL || 'http://k3mart:123456@localhost:5984/k3mart') : 'http://k3mart:123456@localhost:5984/k3mart' // 'localhost'
-const APICOMPANYPORT = production ? 443 : 443
+const APICOMPANYPORT = production ? 443 : 6402
 const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
 const APISOCKET = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}`
