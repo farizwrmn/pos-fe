@@ -147,6 +147,18 @@ const removeDynamicQrisImage = () => {
   return localStorage.removeItem('dynamic_qris_image')
 }
 
+const getDynamicQrisTimeLimit = () => {
+  return localStorage.getItem('dynamic_qris_time_limit') ? localStorage.getItem('dynamic_qris_time_limit') : null
+}
+
+const setDynamicQrisTimeLimit = (data) => {
+  return localStorage.setItem('dynamic_qris_time_limit', data)
+}
+
+const removeDynamicQrisTimeLimit = () => {
+  return localStorage.removeItem('dynamic_qris_time_limit')
+}
+
 const removeQrisImage = () => {
   return localStorage.removeItem('qris_image')
 }
@@ -363,6 +375,9 @@ module.exports = {
   getDynamicQrisImage,
   setDynamicQrisImage,
   removeDynamicQrisImage,
+  getDynamicQrisTimeLimit,
+  setDynamicQrisTimeLimit,
+  removeDynamicQrisTimeLimit,
   getVoucherList,
   setVoucherList,
   removeQrisImage,

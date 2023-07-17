@@ -195,11 +195,15 @@ class ModalQrisPayment extends React.Component {
       onCancel,
       ...modalProps
     } = this.props
+    const {
+      paymentTransactionLimitTime
+    } = payment
     const qrisPaymentProps = {
       cancelQrisPayment: onCancel,
       selectedPaymentShortcut,
       paymentFailed,
-      loading
+      loading,
+      paymentTransactionLimitTime
     }
     const qrisPaymentSuccess = {
       createPayment: () => {
