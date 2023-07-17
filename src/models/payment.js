@@ -14,7 +14,14 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans, getConsignment, removeQrisImage, setDynamicQrisImage, removeDynamicQrisImage } = lstorage
+const {
+  getCashierTrans,
+  getConsignment,
+  removeQrisImage,
+  setDynamicQrisImage,
+  removeDynamicQrisImage,
+  setDynamicQrisTimeLimit
+} = lstorage
 const { getSetting } = variables
 
 const { create } = cashierService
@@ -57,6 +64,7 @@ export default {
     modalCreditVisible: false,
     paymentModalVisible: false,
     paymentTransactionId: null,
+    paymentTransactionLimitTime: null,
     listCreditCharge: [],
     listAmount: [],
     creditCardType: '',
@@ -638,11 +646,14 @@ export default {
     * createDynamicQrisPayment ({ payload }, { call, put }) {
       const response = yield call(createDynamicQrisPayment, payload.params)
       if (response && response.success && response.data && response.data.payment) {
+        const paymentTransactionLimitTime = response.data.paymentTimeLimit
         setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
+        setDynamicQrisTimeLimit(paymentTransactionLimitTime)
         yield put({
           type: 'updateState',
           payload: {
-            paymentTransactionId: response.data.payment.id
+            paymentTransactionId: response.data.payment.id,
+            paymentTransactionLimitTime
           }
         })
         yield put({

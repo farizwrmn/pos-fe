@@ -1,14 +1,22 @@
 import { Button, Col, Icon, Modal, Row } from 'antd'
 import { Component } from 'react'
+import { lstorage } from 'utils'
 import CountdownTimer from './CountDownTimer'
 
 let paymentTimeout
 
+const second = 60
+const millisecond = 1000
+
+const {
+  removeDynamicQrisTimeLimit
+} = lstorage
+
 class QrisPayment extends Component {
   componentDidMount () {
-    const { paymentFailed } = this.props
+    const { paymentFailed, paymentTransactionLimitTime } = this.props
     // 5 minutes
-    const timeoutTime = 5 * 60 * 1000
+    const timeoutTime = paymentTransactionLimitTime * second * millisecond
     paymentTimeout = setTimeout(() => {
       paymentFailed()
     }, timeoutTime)
@@ -16,10 +24,11 @@ class QrisPayment extends Component {
 
   componentWillUnmount () {
     clearTimeout(paymentTimeout)
+    removeDynamicQrisTimeLimit()
   }
 
   render () {
-    const { cancelQrisPayment, loading } = this.props
+    const { cancelQrisPayment, loading, paymentTransactionLimitTime } = this.props
 
     const countDownProps = {
       onTimerFinish: () => {
@@ -29,7 +38,7 @@ class QrisPayment extends Component {
         })
         cancelQrisPayment()
       },
-      duration: 5 * 60
+      duration: paymentTransactionLimitTime * second
     }
 
     return (
