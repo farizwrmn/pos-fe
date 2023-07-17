@@ -123,7 +123,7 @@ class Pos extends Component {
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          <Row>
+          <Row style={{ overflowY: 'scroll' }}>
             <Col span={14}>
               <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
                 <Form>

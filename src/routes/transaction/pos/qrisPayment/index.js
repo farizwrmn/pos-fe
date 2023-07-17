@@ -24,8 +24,8 @@ class QrisPayment extends Component {
     const countDownProps = {
       onTimerFinish: () => {
         Modal.error({
-          title: 'Waktu Pembayaran Berakhir',
-          content: 'Waktu pembayaran yang telah diberikan terlah berakhir'
+          title: 'Timeout',
+          content: 'Waktu pembayaran telah berakhir'
         })
         cancelQrisPayment()
       },
