@@ -3,32 +3,19 @@ import { Component } from 'react'
 import { lstorage } from 'utils'
 import CountdownTimer from './CountDownTimer'
 
-let paymentTimeout
-
 const second = 60
-const millisecond = 1000
 
 const {
   removeDynamicQrisTimeLimit
 } = lstorage
 
 class QrisPayment extends Component {
-  componentDidMount () {
-    const { paymentFailed, paymentTransactionLimitTime } = this.props
-    // 5 minutes
-    const timeoutTime = paymentTransactionLimitTime * second * millisecond
-    paymentTimeout = setTimeout(() => {
-      paymentFailed()
-    }, timeoutTime)
-  }
-
   componentWillUnmount () {
-    clearTimeout(paymentTimeout)
     removeDynamicQrisTimeLimit()
   }
 
   render () {
-    const { cancelQrisPayment, loading, paymentTransactionLimitTime, refreshPayment } = this.props
+    const { cancelQrisPayment, paymentFailed, loading, paymentTransactionLimitTime, refreshPayment, paymentTransactionId } = this.props
 
     const countDownProps = {
       onTimerFinish: () => {
@@ -36,7 +23,7 @@ class QrisPayment extends Component {
           title: 'Timeout',
           content: 'Waktu pembayaran telah berakhir'
         })
-        cancelQrisPayment()
+        paymentFailed(paymentTransactionId)
       },
       duration: paymentTransactionLimitTime * second
     }

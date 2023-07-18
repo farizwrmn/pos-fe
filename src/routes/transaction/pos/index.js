@@ -1004,8 +1004,14 @@ const Pos = ({
         }
       })
     },
-    paymentFailed: () => {
+    paymentFailed: (paymentTransactionId) => {
       removeDynamicQrisImage()
+      dispatch({
+        type: 'payment/cancelDynamicQrisPayment',
+        payload: {
+          paymentTransactionId
+        }
+      })
       dispatch({
         type: 'pos/updateState',
         payload: {
