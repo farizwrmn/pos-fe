@@ -239,6 +239,7 @@ class ModalQrisPayment extends React.Component {
       selectedPaymentShortcut,
       paymentFailed,
       loading,
+      paymentTransactionId,
       paymentTransactionLimitTime,
       refreshPayment: () => {
         dispatch({
@@ -267,7 +268,21 @@ class ModalQrisPayment extends React.Component {
       loading
     }
     const qrisPaymentFailed = {
-      cancelQrisPayment: onCancel
+      cancelQrisPayment: () => {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
+        dispatch({
+          type: 'payment/updateState',
+          payload: {
+            paymentTransactionId: null
+          }
+        })
+      }
     }
     return (
       <Modal
