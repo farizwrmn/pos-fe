@@ -17,7 +17,7 @@ import { arrayToTree, lstorage } from 'utils'
 import moment from 'moment'
 import List from './List'
 
-const { setQrisImage, removeQrisImage } = lstorage
+const { setQrisImage, removeQrisImage, getPaymentTransactionId } = lstorage
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -83,7 +83,9 @@ class FormPayment extends React.Component {
 
   componentDidMount () {
     const {
-      selectedPaymentShortcut
+      selectedPaymentShortcut,
+      listAllEdc,
+      listAllCost
     } = this.props
     setTimeout(() => {
       const selector = document.getElementById('amount')
@@ -92,12 +94,25 @@ class FormPayment extends React.Component {
         selector.select()
       }
     }, 100)
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      typeCode: selectedPaymentShortcut.typeCode,
-      machine: selectedPaymentShortcut.machine,
-      bank: selectedPaymentShortcut.bank
-    })
+    const paymentTransactionId = getPaymentTransactionId()
+    if (!paymentTransactionId) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({
+        typeCode: selectedPaymentShortcut.typeCode,
+        machine: selectedPaymentShortcut.machine,
+        bank: selectedPaymentShortcut.bank
+      })
+    } else {
+      const typeCode = 'PQ'
+      const machine = listAllEdc.find(item => item.paymentOption === typeCode)
+      const cost = listAllCost.find(item => item.machineId === machine.id)
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({
+        typeCode,
+        machine: machine.id,
+        cost: cost.id
+      })
+    }
   }
 
   onChangeTaxInvoiceNo (e) {
@@ -334,8 +349,9 @@ class FormPayment extends React.Component {
     }
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
-
-    const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+    const paymentTransactionId = getPaymentTransactionId()
+    const array = paymentTransactionId ? options.filter(filtered => filtered.parentId !== '-1' && filtered.typeCode === 'PQ').sort((x, y) => x.id - y.id) : options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id)
+    const menuTree = arrayToTree(array, 'id', 'parentId')
 
     const getMenus = (menuTreeN) => {
       return menuTreeN.map((item) => {
