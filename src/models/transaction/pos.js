@@ -3596,7 +3596,7 @@ export default {
         const response = yield call(queryPaymentTransactionById, payload)
         if (response && response.success && response.data) {
           const paymentTransaction = response.data
-          if (paymentTransaction.validPayment !== 1) {
+          if (paymentTransaction.validPayment !== 1 || paymentTransaction.transId !== null) {
             lstorage.removePaymentTransactionId()
           }
         }
