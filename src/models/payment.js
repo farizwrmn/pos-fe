@@ -64,6 +64,7 @@ export default {
     modalCreditVisible: false,
     paymentModalVisible: false,
     paymentTransactionId: null,
+    paymentTransactionInvoiceWindow: null,
     paymentTransactionLimitTime: null,
     listCreditCharge: [],
     listAmount: [],
@@ -368,13 +369,6 @@ export default {
                 yield put({
                   type: 'hidePaymentModal'
                 })
-                yield put({
-                  type: 'pos/updateState',
-                  payload: {
-                    modalQrisPaymentVisible: false,
-                    modalQrisPaymentType: 'waiting'
-                  }
-                })
               } catch (e) {
                 Modal.error({
                   title: 'Error, Something Went Wrong!',
@@ -441,6 +435,12 @@ export default {
                 }
               })
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              yield put({
+                type: 'updateState',
+                payload: {
+                  paymentTransactionInvoiceWindow: invoiceWindow
+                }
+              })
               invoiceWindow.focus()
               // }
             } else {

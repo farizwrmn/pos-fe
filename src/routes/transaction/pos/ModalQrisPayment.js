@@ -232,7 +232,8 @@ class ModalQrisPayment extends React.Component {
     } = this.props
     const {
       paymentTransactionLimitTime,
-      paymentTransactionId
+      paymentTransactionId,
+      paymentTransactionInvoiceWindow
     } = payment
     const qrisPaymentProps = {
       cancelQrisPayment: onCancel,
@@ -264,6 +265,15 @@ class ModalQrisPayment extends React.Component {
             modalQrisPaymentType: 'waiting'
           }
         })
+        if (paymentTransactionInvoiceWindow) {
+          paymentTransactionInvoiceWindow.focus()
+          dispatch({
+            type: 'payment/updateState',
+            payload: {
+              paymentTransactionInvoiceWindow: null
+            }
+          })
+        }
       },
       loading
     }
