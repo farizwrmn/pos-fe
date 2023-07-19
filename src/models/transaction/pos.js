@@ -3587,6 +3587,20 @@ export default {
           }
         })
       }
+    },
+
+    * checkPaymentTransactionId ({ payload = {} }, { call }) {
+      const paymentTransactionId = lstorage.getPaymentTransactionId()
+      if (paymentTransactionId) {
+        payload.paymentTransactionId = paymentTransactionId
+        const response = yield call(queryPaymentTransactionById, payload)
+        if (response && response.success && response.data) {
+          const paymentTransaction = response.data
+          if (paymentTransaction.validPayment !== 1) {
+            lstorage.removePaymentTransactionId()
+          }
+        }
+      }
     }
   },
 
