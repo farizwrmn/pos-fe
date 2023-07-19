@@ -57,7 +57,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -119,6 +119,9 @@ export default {
     modalPaymentVisible: false,
     modalQrisPaymentVisible: false,
     modalQrisPaymentType: 'waiting',
+    qrisLatestTransaction: {},
+    listQrisLatestTransaction: [],
+    modalQrisLatestTransactionVisible: false,
     dynamicQrisPaymentAvailability: true,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
@@ -240,6 +243,12 @@ export default {
           })
           dispatch({
             type: 'checkStoreDynamicQrisAvaibility'
+          })
+          dispatch({
+            type: 'getDynamicQrisLatestTransaction',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
@@ -3564,6 +3573,19 @@ export default {
         }
       } else {
         Modal.error(response.message)
+      }
+    },
+
+    * getDynamicQrisLatestTransaction ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionLatest, payload)
+      if (response && response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            qrisLatestTransaction: response.data[0],
+            listQrisLatestTransaction: response.data
+          }
+        })
       }
     }
   },

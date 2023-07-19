@@ -369,6 +369,12 @@ export default {
                 yield put({
                   type: 'hidePaymentModal'
                 })
+                yield put({
+                  type: 'pos/getDynamicQrisLatestTransaction',
+                  payload: {
+                    storeId: lstorage.getCurrentUserStore()
+                  }
+                })
               } catch (e) {
                 Modal.error({
                   title: 'Error, Something Went Wrong!',
