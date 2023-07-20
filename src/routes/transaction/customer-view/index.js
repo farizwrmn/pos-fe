@@ -7,7 +7,8 @@ import {
   Input,
   Row,
   Col,
-  Card
+  Card,
+  Tag
 } from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
@@ -22,7 +23,8 @@ const {
   getBundleTrans,
   getServiceTrans,
   getConsignment,
-  getDynamicQrisTimeLimit
+  getDynamicQrisTimeLimit,
+  getQrisPaymentLastTransaction
 } = lstorage
 const FormItem = Form.Item
 
@@ -57,7 +59,8 @@ class Pos extends Component {
     memberInformation: {},
     qrisImage: null,
     dynamicQrisImage: null,
-    dynamicQrisTimeLimit: null
+    dynamicQrisTimeLimit: null,
+    dynamicQrisLatestTransaction: null
   }
 
   componentDidMount () {
@@ -66,6 +69,7 @@ class Pos extends Component {
     this.setListData({ key: 'qris_image' })
     this.setListData({ key: 'dynamic_qris_image' })
     this.setListData({ key: 'dynamic_qris_time_limit' })
+    this.setListData({ key: 'qris_latest_transaction' })
   }
 
   componentWillUnmount () {
@@ -73,6 +77,10 @@ class Pos extends Component {
   }
 
   setListData (data) {
+    if (data && data.key === 'qris_latest_transaction') {
+      const qrisLatestTransaction = getQrisPaymentLastTransaction()
+      this.setState({ dynamicQrisLatestTransaction: qrisLatestTransaction })
+    }
     if (data && data.key === 'dynamic_qris_time_limit') {
       const timeLimit = getDynamicQrisTimeLimit()
       this.setState({ dynamicQrisTimeLimit: Number(timeLimit) })
@@ -117,7 +125,8 @@ class Pos extends Component {
       memberInformation,
       qrisImage,
       dynamicQrisImage,
-      dynamicQrisTimeLimit
+      dynamicQrisTimeLimit,
+      dynamicQrisLatestTransaction
     } = this.state
     const { listAdvertisingCustomer } = pos
 
@@ -139,6 +148,11 @@ class Pos extends Component {
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
+          {dynamicQrisLatestTransaction && (
+            <Row>
+              <Tag color="green" style={{ width: '100%' }}>{dynamicQrisLatestTransaction}</Tag>
+            </Row>
+          )}
           <Row style={{ overflowY: 'scroll' }}>
             <Col span={14}>
               <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>

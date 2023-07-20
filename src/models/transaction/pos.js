@@ -18,6 +18,7 @@ import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
+import { currencyFormatter } from 'utils/string'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -65,7 +66,8 @@ const {
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
-  getGrabmartOrder, setGrabmartOrder
+  getGrabmartOrder, setGrabmartOrder,
+  setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -3579,13 +3581,17 @@ export default {
     * getDynamicQrisLatestTransaction ({ payload = {} }, { call, put }) {
       const response = yield call(queryPaymentTransactionLatest, payload)
       if (response && response.success && response.data && response.data.length > 0) {
+        const qrisLatestTransaction = response.data[0]
         yield put({
           type: 'updateState',
           payload: {
-            qrisLatestTransaction: response.data[0],
+            qrisLatestTransaction,
             listQrisLatestTransaction: response.data
           }
         })
+        setQrisPaymentLastTransaction(`Latest Dynamic Qris Transaction | Invoice Number: ${qrisLatestTransaction.transNo}; Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
+      } else {
+        removeQrisPaymentLastTransaction()
       }
     },
 

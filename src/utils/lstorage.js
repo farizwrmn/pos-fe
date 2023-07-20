@@ -171,6 +171,18 @@ const removePaymentTransactionId = () => {
   return localStorage.removeItem('payment_transaction_id')
 }
 
+const getQrisPaymentLastTransaction = () => {
+  return localStorage.getItem('qris_latest_transaction') ? localStorage.getItem('qris_latest_transaction') : null
+}
+
+const setQrisPaymentLastTransaction = (data) => {
+  return localStorage.setItem('qris_latest_transaction', data)
+}
+
+const removeQrisPaymentLastTransaction = () => {
+  return localStorage.removeItem('qris_latest_transaction')
+}
+
 const removeQrisImage = () => {
   return localStorage.removeItem('qris_image')
 }
@@ -393,6 +405,9 @@ module.exports = {
   getPaymentTransactionId,
   setPaymentTransactionId,
   removePaymentTransactionId,
+  getQrisPaymentLastTransaction,
+  setQrisPaymentLastTransaction,
+  removeQrisPaymentLastTransaction,
   getVoucherList,
   setVoucherList,
   removeQrisImage,

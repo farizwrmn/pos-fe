@@ -2,7 +2,6 @@ import { Modal } from 'antd'
 import React from 'react'
 import { connect } from 'dva'
 import { APISOCKET } from 'utils/config.company'
-import { lstorage } from 'utils'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
 import io from 'socket.io-client'
@@ -87,7 +86,6 @@ class ModalQrisPayment extends React.Component {
 
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
-      lstorage.removeDynamicQrisImage()
       this.createPayment()
       dispatch({
         type: 'pos/updateState',

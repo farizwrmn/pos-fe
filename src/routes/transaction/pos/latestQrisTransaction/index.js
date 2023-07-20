@@ -1,5 +1,6 @@
 import { Col, Row, Tag } from 'antd'
 import moment from 'moment'
+import { currencyFormatter } from 'utils/string'
 import ModalList from './ModalList'
 
 const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction, handleClickLatestTransaction }) => {
@@ -22,7 +23,7 @@ const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction,
               style={{ width: '100%' }}
               onClick={handleClickLatestTransaction}
             >
-              {`Latest Dynamic Qris Transaction | Invoice Number: ${latestTransaction.transNo}; Trans Date: ${moment(latestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${latestTransaction.amount}; (click to show more)`}
+              {`Latest Dynamic Qris Transaction | Invoice Number: ${latestTransaction.transNo}; Trans Date: ${moment(latestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(latestTransaction.amount)}; (click to show more)`}
             </Tag>
           </Col>
         )
