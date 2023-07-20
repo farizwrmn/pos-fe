@@ -2495,7 +2495,9 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
-          <LatestQrisTransaction {...latestQrisTransactionProps} />
+          {qrisLatestTransaction && qrisLatestTransaction.transNo && (
+            <LatestQrisTransaction {...latestQrisTransactionProps} />
+          )}
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />

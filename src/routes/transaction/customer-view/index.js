@@ -79,6 +79,7 @@ class Pos extends Component {
   setListData (data) {
     if (data && data.key === 'qris_latest_transaction') {
       const qrisLatestTransaction = getQrisPaymentLastTransaction()
+      console.log('qrisLatestTransaction', qrisLatestTransaction)
       this.setState({ dynamicQrisLatestTransaction: qrisLatestTransaction })
     }
     if (data && data.key === 'dynamic_qris_time_limit') {
@@ -148,11 +149,6 @@ class Pos extends Component {
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          {dynamicQrisLatestTransaction !== null && (
-            <Row>
-              <Tag color="green" style={{ width: '100%' }}>{dynamicQrisLatestTransaction}</Tag>
-            </Row>
-          )}
           <Row style={{ overflowY: 'scroll' }}>
             <Col span={14}>
               <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
@@ -182,6 +178,9 @@ class Pos extends Component {
               />
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
+              {dynamicQrisLatestTransaction && (
+                <Tag color="green" style={{ width: '100%' }}>{dynamicQrisLatestTransaction}</Tag>
+              )}
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
                 : (dynamicQrisImage !== null && dynamicQrisTimeLimit > 0) ? (
                   <DynamicQrisTemplate {...dynamicQrisTemplateProps} />
