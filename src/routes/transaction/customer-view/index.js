@@ -148,7 +148,7 @@ class Pos extends Component {
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          {dynamicQrisLatestTransaction && (
+          {dynamicQrisLatestTransaction !== null && (
             <Row>
               <Tag color="green" style={{ width: '100%' }}>{dynamicQrisLatestTransaction}</Tag>
             </Row>
@@ -183,7 +183,7 @@ class Pos extends Component {
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
-                : (dynamicQrisImage && dynamicQrisTimeLimit > 0) ? (
+                : (dynamicQrisImage !== null && dynamicQrisTimeLimit > 0) ? (
                   <DynamicQrisTemplate {...dynamicQrisTemplateProps} />
                 ) : (
                   <Advertising list={listAdvertisingCustomer} />
