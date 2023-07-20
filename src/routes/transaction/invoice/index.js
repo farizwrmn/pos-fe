@@ -14,20 +14,27 @@ import Member from './Member'
 import { groupProduct } from './utils'
 import ModalConfirm from './ModalConfirm'
 
-let timeout
-
 class Invoice extends React.Component {
+  state = {
+    timeout: null
+  }
+
   componentDidMount () {
     const millisecond = 1000
     const second = 60
     const minute = 5
     const totalTime = minute * second * millisecond
-    timeout = setTimeout(() => {
+    let timeout = setTimeout(() => {
       window.close()
     }, totalTime)
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      timeout
+    })
   }
 
   componentWillUnmount () {
+    const { timeout } = this.state
     clearTimeout(timeout)
   }
 
