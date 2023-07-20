@@ -654,9 +654,9 @@ export default {
     },
     * createDynamicQrisPayment ({ payload }, { call, put }) {
       const response = yield call(createDynamicQrisPayment, payload.params)
-      if (response && response.success && response.data && response.data.payment) {
+      if (response && response.success && response.data && response.data.payment && response.data.onlinePaymentResponse.qrCode) {
         const paymentTransactionLimitTime = response.data.paymentTimeLimit
-        setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
+        setDynamicQrisImage(response.data.onlinePaymentResponse.qrCode)
         setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
         setPaymentTransactionId(response.data.payment.id)
         yield put({
