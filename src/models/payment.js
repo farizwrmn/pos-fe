@@ -20,9 +20,7 @@ const {
   removeQrisImage,
   setDynamicQrisImage,
   removeDynamicQrisImage,
-  setDynamicQrisTimeLimit,
-  setPaymentTransactionId,
-  removePaymentTransactionId
+  setDynamicQrisTimeLimit
 } = lstorage
 const { getSetting } = variables
 
@@ -348,7 +346,6 @@ export default {
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
                 removeDynamicQrisImage()
-                removePaymentTransactionId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -654,11 +651,10 @@ export default {
     },
     * createDynamicQrisPayment ({ payload }, { call, put }) {
       const response = yield call(createDynamicQrisPayment, payload.params)
-      if (response && response.success && response.data && response.data.payment) {
+      if (response && response.success && response.data && response.data.payment && response.data.onlinePaymentResponse.qrCode) {
         const paymentTransactionLimitTime = response.data.paymentTimeLimit
-        setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
+        setDynamicQrisImage(response.data.onlinePaymentResponse.qrCode)
         setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
-        setPaymentTransactionId(response.data.payment.id)
         yield put({
           type: 'updateState',
           payload: {
@@ -691,7 +687,6 @@ export default {
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
-        removePaymentTransactionId()
         yield put({
           type: 'updateState',
           payload: {
