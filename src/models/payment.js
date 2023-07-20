@@ -20,7 +20,9 @@ const {
   removeQrisImage,
   setDynamicQrisImage,
   removeDynamicQrisImage,
-  setDynamicQrisTimeLimit
+  setDynamicQrisTimeLimit,
+  setPaymentTransactionId,
+  removePaymentTransactionId
 } = lstorage
 const { getSetting } = variables
 
@@ -64,6 +66,7 @@ export default {
     modalCreditVisible: false,
     paymentModalVisible: false,
     paymentTransactionId: null,
+    paymentTransactionInvoiceWindow: null,
     paymentTransactionLimitTime: null,
     listCreditCharge: [],
     listAmount: [],
@@ -345,6 +348,7 @@ export default {
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
                 removeDynamicQrisImage()
+                removePaymentTransactionId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -369,10 +373,9 @@ export default {
                   type: 'hidePaymentModal'
                 })
                 yield put({
-                  type: 'pos/updateState',
+                  type: 'pos/getDynamicQrisLatestTransaction',
                   payload: {
-                    modalQrisPaymentVisible: false,
-                    modalQrisPaymentType: 'waiting'
+                    storeId: lstorage.getCurrentUserStore()
                   }
                 })
               } catch (e) {
@@ -441,6 +444,12 @@ export default {
                 }
               })
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              yield put({
+                type: 'updateState',
+                payload: {
+                  paymentTransactionInvoiceWindow: invoiceWindow
+                }
+              })
               invoiceWindow.focus()
               // }
             } else {
@@ -649,6 +658,7 @@ export default {
         const paymentTransactionLimitTime = response.data.paymentTimeLimit
         setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
         setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
+        setPaymentTransactionId(response.data.payment.id)
         yield put({
           type: 'updateState',
           payload: {
@@ -681,6 +691,7 @@ export default {
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
+        removePaymentTransactionId()
         yield put({
           type: 'updateState',
           payload: {

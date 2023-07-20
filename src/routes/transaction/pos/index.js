@@ -47,6 +47,7 @@ import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
+import LatestQrisTransaction from './latestQrisTransaction'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -188,7 +189,10 @@ const Pos = ({
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
     currentGrabOrder,
-    dynamicQrisPaymentAvailability
+    dynamicQrisPaymentAvailability,
+    qrisLatestTransaction,
+    listQrisLatestTransaction,
+    modalQrisLatestTransactionVisible
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -2450,6 +2454,29 @@ const Pos = ({
     }
   }
 
+  const latestQrisTransactionProps = {
+    loading,
+    latestTransaction: qrisLatestTransaction,
+    list: listQrisLatestTransaction,
+    modalVisible: modalQrisLatestTransactionVisible,
+    handleClickLatestTransaction: () => {
+      if (!modalQrisLatestTransactionVisible) {
+        dispatch({
+          type: 'pos/getDynamicQrisLatestTransaction',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+      }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisLatestTransactionVisible: !modalQrisLatestTransactionVisible
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -2468,6 +2495,9 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
+          {qrisLatestTransaction && qrisLatestTransaction.transNo && (
+            <LatestQrisTransaction {...latestQrisTransactionProps} />
+          )}
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />

@@ -2,7 +2,6 @@ import { Modal } from 'antd'
 import React from 'react'
 import { connect } from 'dva'
 import { APISOCKET } from 'utils/config.company'
-import { lstorage } from 'utils'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
 import io from 'socket.io-client'
@@ -87,7 +86,6 @@ class ModalQrisPayment extends React.Component {
 
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
-      lstorage.removeDynamicQrisImage()
       this.createPayment()
       dispatch({
         type: 'pos/updateState',
@@ -232,7 +230,8 @@ class ModalQrisPayment extends React.Component {
     } = this.props
     const {
       paymentTransactionLimitTime,
-      paymentTransactionId
+      paymentTransactionId,
+      paymentTransactionInvoiceWindow
     } = payment
     const qrisPaymentProps = {
       cancelQrisPayment: onCancel,
@@ -264,6 +263,15 @@ class ModalQrisPayment extends React.Component {
             modalQrisPaymentType: 'waiting'
           }
         })
+        if (paymentTransactionInvoiceWindow) {
+          paymentTransactionInvoiceWindow.focus()
+          dispatch({
+            type: 'payment/updateState',
+            payload: {
+              paymentTransactionInvoiceWindow: null
+            }
+          })
+        }
       },
       loading
     }
