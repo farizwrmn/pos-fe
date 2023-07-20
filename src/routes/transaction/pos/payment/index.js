@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 // import { routerRedux } from 'dva/router'
-import { lstorage } from 'utils'
 import { prefix } from 'utils/config.main'
 import {
   Row,
@@ -270,8 +269,7 @@ const Payment = ({
           curTotalPayment,
           curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
           usingWo: !((woNumber === '' || woNumber === null)),
-          woNumber: woNumber === '' ? null : woNumber,
-          paymentTransactionId: lstorage.getPaymentTransactionId()
+          woNumber: woNumber === '' ? null : woNumber
         }
       })
     },

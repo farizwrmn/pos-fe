@@ -17,7 +17,7 @@ import { arrayToTree, lstorage } from 'utils'
 import moment from 'moment'
 import List from './List'
 
-const { setQrisImage, removeQrisImage, getPaymentTransactionId } = lstorage
+const { setQrisImage, removeQrisImage } = lstorage
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -83,9 +83,7 @@ class FormPayment extends React.Component {
 
   componentDidMount () {
     const {
-      selectedPaymentShortcut,
-      listAllEdc,
-      listAllCost
+      selectedPaymentShortcut
     } = this.props
     setTimeout(() => {
       const selector = document.getElementById('amount')
@@ -94,25 +92,12 @@ class FormPayment extends React.Component {
         selector.select()
       }
     }, 100)
-    const paymentTransactionId = getPaymentTransactionId()
-    if (!paymentTransactionId) {
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({
-        typeCode: selectedPaymentShortcut.typeCode,
-        machine: selectedPaymentShortcut.machine,
-        bank: selectedPaymentShortcut.bank
-      })
-    } else {
-      const typeCode = 'PQ'
-      const machine = listAllEdc.find(item => item.paymentOption === typeCode)
-      const cost = listAllCost.find(item => item.machineId === machine.id)
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({
-        typeCode,
-        machine: machine.id,
-        cost: cost.id
-      })
-    }
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      typeCode: selectedPaymentShortcut.typeCode,
+      machine: selectedPaymentShortcut.machine,
+      bank: selectedPaymentShortcut.bank
+    })
   }
 
   onChangeTaxInvoiceNo (e) {
@@ -349,9 +334,7 @@ class FormPayment extends React.Component {
     }
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
-    const paymentTransactionId = getPaymentTransactionId()
-    const array = paymentTransactionId ? options.filter(filtered => filtered.parentId !== '-1' && filtered.typeCode === 'PQ').sort((x, y) => x.id - y.id) : options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id)
-    const menuTree = arrayToTree(array, 'id', 'parentId')
+    const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
     const getMenus = (menuTreeN) => {
       return menuTreeN.map((item) => {
