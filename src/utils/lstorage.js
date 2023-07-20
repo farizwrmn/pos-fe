@@ -271,6 +271,10 @@ const removeItemKeys = () => {
   localStorage.removeItem('workorder')
   localStorage.removeItem('payment_cost')
   localStorage.removeItem('payment_edc')
+  localStorage.removeItem('dynamic_qris_image')
+  localStorage.removeItem('payment_transaction_id')
+  localStorage.removeItem('dynamic_qris_time_limit')
+  localStorage.removeItem('qris_latest_transaction')
 }
 
 const removeAllKey = () => {
