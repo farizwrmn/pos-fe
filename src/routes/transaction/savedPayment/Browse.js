@@ -4,7 +4,7 @@ import { Table, Modal, Icon, Input, Tag, Form, Row, Col, DatePicker } from 'antd
 import { DropOption } from 'components'
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
-import { alertModal } from 'utils'
+import { alertModal, lstorage } from 'utils'
 import { prefix } from 'utils/config.main'
 import styles from 'themes/index.less'
 
@@ -56,6 +56,17 @@ const BrowseGroup = ({
         return
       }
 
+      if (record && record.paymentVia && record.paymentVia === 'PQ') {
+        const userRole = lstorage.getCurrentUserRole()
+        if (userRole !== 'OWN') {
+          Modal.error({
+            title: 'Can`t Void this Invoice',
+            content: 'Please contact administrator to void this invoice'
+          })
+          return
+        }
+      }
+
       if (transDate >= storeInfo.startPeriod) {
         onShowCancelModal(record)
       } else {
@@ -80,6 +91,18 @@ const BrowseGroup = ({
     }).filter(record => !!record)
     onSearchChange(newData)
   }
+
+  const dropOptionWithPermission = [
+    { key: '1', name: 'Print', icon: 'printer' },
+    { key: '2', name: 'Payment', icon: 'pay-circle-o' },
+    { key: '3', name: 'Void', icon: 'delete' }
+  ]
+
+  const dropOptionWithoutPermission = [
+    { key: '1', name: 'Print', icon: 'printer' },
+    { key: '3', name: 'Void', icon: 'delete' }
+  ]
+
   const columns = [
     {
       title: 'No',
@@ -153,14 +176,7 @@ const BrowseGroup = ({
             || user.permissions.role === 'SPC'
             || user.permissions.role === 'HFC'
             || user.permissions.role === 'SFC'
-          ) ? [
-              { key: '1', name: 'Print', icon: 'printer' },
-              { key: '2', name: 'Payment', icon: 'pay-circle-o' },
-              { key: '3', name: 'Void', icon: 'delete' }
-            ] : [
-              { key: '1', name: 'Print', icon: 'printer' },
-              { key: '3', name: 'Void', icon: 'delete' }
-            ]}
+          ) ? dropOptionWithPermission : dropOptionWithoutPermission}
         />)
       }
     }
