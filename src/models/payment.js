@@ -20,7 +20,8 @@ const {
   removeQrisImage,
   setDynamicQrisImage,
   removeDynamicQrisImage,
-  setDynamicQrisTimeLimit
+  setDynamicQrisTimeLimit,
+  getQrisPaymentTimeLimit
 } = lstorage
 const { getSetting } = variables
 
@@ -652,14 +653,14 @@ export default {
     * createDynamicQrisPayment ({ payload }, { call, put }) {
       const response = yield call(createDynamicQrisPayment, payload.params)
       if (response && response.success && response.data && response.data.payment && response.data.onlinePaymentResponse.qrCode) {
-        const paymentTransactionLimitTime = response.data.paymentTimeLimit
+        const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
         setDynamicQrisImage(response.data.onlinePaymentResponse.qrCode)
-        setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
+        setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
         yield put({
           type: 'updateState',
           payload: {
             paymentTransactionId: response.data.payment.id,
-            paymentTransactionLimitTime
+            paymentTransactionLimitTime: Number(paymentTransactionLimitTime || 15)
           }
         })
         yield put({

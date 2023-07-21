@@ -52,3 +52,21 @@ export const queryCheckStoreAvailability = () => {
     headers: apiHeaderToken
   })
 }
+
+export const queryTimeLimit = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/time-limit`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export const queryCustomerViewTimeLimit = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/customer-view-time-limit`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}

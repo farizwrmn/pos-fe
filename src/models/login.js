@@ -3,10 +3,16 @@ import moment from 'moment'
 import { configCompany, queryURL, lstorage, messageInfo } from 'utils'
 import { APPNAME } from 'utils/config.company'
 import { prefix } from 'utils/config.main'
+import { queryTimeLimit as queryInvoiceTimeLimit } from 'services/master/invoice'
+import { queryCustomerViewTimeLimit as queryCustomerViewTransactionTimeLimit, queryTimeLimit as queryQrisPaymentTimeLimit } from 'services/payment/paymentTransactionService'
 import { login, getUserRole, getUserStore } from '../services/login'
 
-
-const { removeDynamicQrisImage } = lstorage
+const {
+  removeDynamicQrisImage,
+  setInvoiceTimeLimit,
+  setCustomerViewLastTransactionTimeLimit,
+  setQrisPaymentTimeLimit
+} = lstorage
 const { apiCompanyProtocol, apiCompanyHost, apiCompanyPort } = configCompany.rest
 
 
@@ -230,6 +236,9 @@ export default {
       localStorage.setItem(`${prefix}iKen`, data.id_token)
       yield put({ type: 'getRole', payload: { userId: data.profile.userid } })
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })
+      yield put({ type: 'invoiceTimeLimit' })
+      yield put({ type: 'qrisPaymentTimeLimit' })
+      yield put({ type: 'customerViewTransactionTimeLimit' })
       const dataUdi = [
         data.profile.userid,
         data.profile.role,
@@ -250,6 +259,33 @@ export default {
       }
       messageInfo(data.profile.sessionid)
       messageInfo(`${data.message} at ${moment(data.profile.userlogintime).format('DD-MMM-YYYY HH:mm:ss')} from ${data.profile.useripaddr1}`, 'success')
+    },
+    * invoiceTimeLimit ({ payload = {} }, { call }) {
+      const response = yield call(queryInvoiceTimeLimit, payload)
+      if (response && response.success && response.data) {
+        const invoiceTimeLimit = response.data.paramValue || 15
+        setInvoiceTimeLimit(invoiceTimeLimit)
+      } else {
+        setInvoiceTimeLimit(15)
+      }
+    },
+    * qrisPaymentTimeLimit ({ payload = {} }, { call }) {
+      const response = yield call(queryQrisPaymentTimeLimit, payload)
+      if (response && response.success && response.data) {
+        const invoiceTimeLimit = response.data.paramValue || 15
+        setQrisPaymentTimeLimit(invoiceTimeLimit)
+      } else {
+        setQrisPaymentTimeLimit(15)
+      }
+    },
+    * customerViewTransactionTimeLimit ({ payload = {} }, { call }) {
+      const response = yield call(queryCustomerViewTransactionTimeLimit, payload)
+      if (response && response.success && response.data) {
+        const invoiceTimeLimit = response.data.paramValue || 15
+        setCustomerViewLastTransactionTimeLimit(invoiceTimeLimit)
+      } else {
+        setCustomerViewLastTransactionTimeLimit(15)
+      }
     }
   },
   reducers: {

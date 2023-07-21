@@ -171,6 +171,42 @@ const removeQrisPaymentLastTransaction = () => {
   return localStorage.removeItem('qris_latest_transaction')
 }
 
+const getInvoiceTimeLimit = () => {
+  return localStorage.getItem('invoice_time_limit') ? localStorage.getItem('invoice_time_limit') : null
+}
+
+const setInvoiceTimeLimit = (data) => {
+  return localStorage.setItem('invoice_time_limit', data)
+}
+
+const removeInvoiceTimeLimit = () => {
+  return localStorage.removeItem('invoice_time_limit')
+}
+
+const getQrisPaymentTimeLimit = () => {
+  return localStorage.getItem('qris_payment_time_limit') ? localStorage.getItem('qris_payment_time_limit') : null
+}
+
+const setQrisPaymentTimeLimit = (data) => {
+  return localStorage.setItem('qris_payment_time_limit', data)
+}
+
+const removeQrisPaymentTimeLimit = () => {
+  return localStorage.removeItem('qris_payment_time_limit')
+}
+
+const getCustomerViewLastTransactionTimeLimit = () => {
+  return localStorage.getItem('customer_view_transaction_time_limit') ? localStorage.getItem('customer_view_transaction_time_limit') : null
+}
+
+const setCustomerViewLastTransactionTimeLimit = (data) => {
+  return localStorage.setItem('customer_view_transaction_time_limit', data)
+}
+
+const removeCustomerViewLastTransactionTimeLimit = () => {
+  return localStorage.removeItem('customer_view_transaction_time_limit')
+}
+
 const removeQrisImage = () => {
   return localStorage.removeItem('qris_image')
 }
@@ -262,6 +298,9 @@ const removeItemKeys = () => {
   localStorage.removeItem('dynamic_qris_image')
   localStorage.removeItem('dynamic_qris_time_limit')
   localStorage.removeItem('qris_latest_transaction')
+  localStorage.removeItem('invoice_time_limit')
+  localStorage.removeItem('qris_payment_time_limit')
+  localStorage.removeItem('customer_view_transaction_time_limit')
 }
 
 const removeAllKey = () => {
@@ -405,5 +444,14 @@ module.exports = {
   setEdc,
   getEdc,
   setCost,
-  getCost
+  getCost,
+  getInvoiceTimeLimit,
+  setInvoiceTimeLimit,
+  removeInvoiceTimeLimit,
+  getCustomerViewLastTransactionTimeLimit,
+  setCustomerViewLastTransactionTimeLimit,
+  removeCustomerViewLastTransactionTimeLimit,
+  getQrisPaymentTimeLimit,
+  setQrisPaymentTimeLimit,
+  removeQrisPaymentTimeLimit
 }
