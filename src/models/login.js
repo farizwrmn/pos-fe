@@ -6,7 +6,7 @@ import { prefix } from 'utils/config.main'
 import { login, getUserRole, getUserStore } from '../services/login'
 
 
-const { removeDynamicQrisImage } = lstorage
+const { removeDynamicQrisImage, removeQrisMerchantTradeNo } = lstorage
 const { apiCompanyProtocol, apiCompanyHost, apiCompanyPort } = configCompany.rest
 
 
@@ -95,6 +95,7 @@ export default {
         }
         if (modalLoginType === 'resetPaymentPaylabsQRIS') {
           removeDynamicQrisImage()
+          removeQrisMerchantTradeNo()
           yield put({
             type: 'payment/cancelDynamicQrisPayment',
             payload: {

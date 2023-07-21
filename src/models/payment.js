@@ -19,7 +19,9 @@ const {
   getConsignment,
   removeQrisImage,
   setDynamicQrisImage,
+  setQrisMerchantTradeNo,
   removeDynamicQrisImage,
+  removeQrisMerchantTradeNo,
   setDynamicQrisTimeLimit
 } = lstorage
 const { getSetting } = variables
@@ -346,6 +348,7 @@ export default {
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
                 removeDynamicQrisImage()
+                removeQrisMerchantTradeNo()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -653,7 +656,10 @@ export default {
       const response = yield call(createDynamicQrisPayment, payload.params)
       if (response && response.success && response.data && response.data.payment && response.data.onlinePaymentResponse.qrCode) {
         const paymentTransactionLimitTime = response.data.paymentTimeLimit
-        setDynamicQrisImage(response.data.onlinePaymentResponse.qrCode)
+        const merchantTradeNo = response.data.onlinePaymentResponse.merchantTradeNo
+        const qrCode = response.data.onlinePaymentResponse.qrCode
+        setDynamicQrisImage(qrCode)
+        setQrisMerchantTradeNo(merchantTradeNo)
         setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
         yield put({
           type: 'updateState',
@@ -667,6 +673,12 @@ export default {
           payload: {
             modalQrisPaymentVisible: true,
             modalQrisPaymentType: 'waiting'
+          }
+        })
+        yield put({
+          type: 'pos/getDynamicQrisLatestTransaction',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
           }
         })
       } else {
@@ -687,6 +699,7 @@ export default {
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
+        removeQrisMerchantTradeNo()
         yield put({
           type: 'updateState',
           payload: {

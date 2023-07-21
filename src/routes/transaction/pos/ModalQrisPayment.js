@@ -1,5 +1,4 @@
 import { Modal } from 'antd'
-import { lstorage } from 'utils'
 import React from 'react'
 import { connect } from 'dva'
 import { APISOCKET } from 'utils/config.company'
@@ -92,12 +91,6 @@ class ModalQrisPayment extends React.Component {
         type: 'pos/updateState',
         payload: {
           modalQrisPaymentType: 'success'
-        }
-      })
-      dispatch({
-        type: 'pos/getDynamicQrisLatestTransaction',
-        payload: {
-          storeId: lstorage.getCurrentUserStore()
         }
       })
     })
