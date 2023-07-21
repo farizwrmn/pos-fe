@@ -64,6 +64,7 @@ export default {
     modalCreditVisible: false,
     paymentModalVisible: false,
     paymentTransactionId: null,
+    paymentTransactionInvoiceWindow: null,
     paymentTransactionLimitTime: null,
     listCreditCharge: [],
     listAmount: [],
@@ -369,10 +370,9 @@ export default {
                   type: 'hidePaymentModal'
                 })
                 yield put({
-                  type: 'pos/updateState',
+                  type: 'pos/getDynamicQrisLatestTransaction',
                   payload: {
-                    modalQrisPaymentVisible: false,
-                    modalQrisPaymentType: 'waiting'
+                    storeId: lstorage.getCurrentUserStore()
                   }
                 })
               } catch (e) {
@@ -441,6 +441,12 @@ export default {
                 }
               })
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              yield put({
+                type: 'updateState',
+                payload: {
+                  paymentTransactionInvoiceWindow: invoiceWindow
+                }
+              })
               invoiceWindow.focus()
               // }
             } else {
@@ -645,9 +651,9 @@ export default {
     },
     * createDynamicQrisPayment ({ payload }, { call, put }) {
       const response = yield call(createDynamicQrisPayment, payload.params)
-      if (response && response.success && response.data && response.data.payment) {
+      if (response && response.success && response.data && response.data.payment && response.data.onlinePaymentResponse.qrCode) {
         const paymentTransactionLimitTime = response.data.paymentTimeLimit
-        setDynamicQrisImage(response.data.onlinePaymentResponse.qrisUrl)
+        setDynamicQrisImage(response.data.onlinePaymentResponse.qrCode)
         setDynamicQrisTimeLimit(paymentTransactionLimitTime || 15)
         yield put({
           type: 'updateState',

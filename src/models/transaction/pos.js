@@ -18,6 +18,7 @@ import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
+import { currencyFormatter } from 'utils/string'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -57,7 +58,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -65,7 +66,8 @@ const {
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
-  getGrabmartOrder, setGrabmartOrder
+  getGrabmartOrder, setGrabmartOrder,
+  setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -119,6 +121,9 @@ export default {
     modalPaymentVisible: false,
     modalQrisPaymentVisible: false,
     modalQrisPaymentType: 'waiting',
+    qrisLatestTransaction: {},
+    listQrisLatestTransaction: [],
+    modalQrisLatestTransactionVisible: false,
     dynamicQrisPaymentAvailability: true,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
@@ -240,6 +245,12 @@ export default {
           })
           dispatch({
             type: 'checkStoreDynamicQrisAvaibility'
+          })
+          dispatch({
+            type: 'getDynamicQrisLatestTransaction',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
@@ -3564,6 +3575,23 @@ export default {
         }
       } else {
         Modal.error(response.message)
+      }
+    },
+
+    * getDynamicQrisLatestTransaction ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionLatest, payload)
+      if (response && response.success && response.data && response.data.length > 0) {
+        const qrisLatestTransaction = response.data[0]
+        yield put({
+          type: 'updateState',
+          payload: {
+            qrisLatestTransaction,
+            listQrisLatestTransaction: response.data
+          }
+        })
+        setQrisPaymentLastTransaction(`Latest Dynamic Qris Transaction | Invoice Number: ${qrisLatestTransaction.transNo}; Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
+      } else {
+        removeQrisPaymentLastTransaction()
       }
     }
   },
