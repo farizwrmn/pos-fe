@@ -19,6 +19,7 @@ import DynamicQrisTemplate from './DynamicQrisTemplate'
 const {
   getQrisImage,
   getDynamicQrisImage,
+  getQrisMerchantTradeNo,
   getCashierTrans,
   getBundleTrans,
   getServiceTrans,
@@ -59,6 +60,7 @@ class Pos extends Component {
     memberInformation: {},
     qrisImage: null,
     dynamicQrisImage: null,
+    qrisMerchantTradeNo: null,
     dynamicQrisTimeLimit: null,
     dynamicQrisLatestTransaction: null
   }
@@ -79,8 +81,11 @@ class Pos extends Component {
   setListData (data) {
     if (data && data.key === 'qris_latest_transaction') {
       const qrisLatestTransaction = getQrisPaymentLastTransaction()
-      console.log('qrisLatestTransaction', qrisLatestTransaction)
       this.setState({ dynamicQrisLatestTransaction: qrisLatestTransaction })
+    }
+    if (data && data.key === 'qris_merchant_trade_number') {
+      const qrisMerchantTradeNo = getQrisMerchantTradeNo()
+      this.setState({ qrisMerchantTradeNo })
     }
     if (data && data.key === 'dynamic_qris_time_limit') {
       const timeLimit = getDynamicQrisTimeLimit()
@@ -126,6 +131,7 @@ class Pos extends Component {
       memberInformation,
       qrisImage,
       dynamicQrisImage,
+      qrisMerchantTradeNo,
       dynamicQrisTimeLimit,
       dynamicQrisLatestTransaction
     } = this.state
@@ -143,7 +149,8 @@ class Pos extends Component {
     const dynamicQrisTemplateProps = {
       total: totalPayment,
       qrisImage: dynamicQrisImage,
-      dynamicQrisTimeLimit
+      dynamicQrisTimeLimit,
+      qrisMerchantTradeNo
     }
 
     return (
