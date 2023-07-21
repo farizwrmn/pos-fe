@@ -2134,15 +2134,6 @@ const Pos = ({
 
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
-    if (listVoucher && listVoucher.length > 0) {
-      dispatch({
-        type: 'payment/addMethodVoucher',
-        payload: {
-          list: listVoucher
-        }
-      })
-    }
-
     // Untuk tipe page
     // dispatch(routerRedux.push('/transaction/pos/payment'))
     if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
@@ -2276,19 +2267,10 @@ const Pos = ({
         }
       }
 
-      if (listVoucher && listVoucher.length > 0) {
-        dispatch({
-          type: 'payment/addMethodVoucher',
-          payload: {
-            list: listVoucher
-          }
-        })
-      }
-
       dispatch({
         type: 'payment/addMethod',
         payload: {
-          listAmount: [],
+          listAmount: listVoucherAmount,
           data
         }
       })
