@@ -2197,6 +2197,39 @@ const Pos = ({
       }
     }
 
+    let listVoucherAmount = []
+    if (listVoucher && listVoucher.length > 0) {
+      const voucherMachine = listAllEdc.filter(filtered => filtered.paymentOption === 'V')
+      if (voucherMachine && voucherMachine[0]) {
+        const voucherCost = listAllCost.filter(filtered => filtered.machineId === voucherMachine[0].id)
+        if (voucherCost && voucherCost[0]) {
+          listVoucherAmount = (listVoucher || []).map((record, index) => ({
+            id: index + 1,
+            amount: record.voucherValue,
+            bank: voucherCost[0].id,
+            chargeNominal: 0,
+            chargePercent: 0,
+            chargeTotal: 0,
+            description: record.voucherName,
+            voucherCode: record.generatedCode,
+            voucherId: record.voucherId,
+            machine: voucherMachine[0].id,
+            printDate: null,
+            typeCode: 'V'
+          }))
+        } else {
+          Modal.error({
+            title: 'Failed to create QRIS Payment',
+            content: 'Payment Cost is unavailable'
+          })
+        }
+      } else {
+        Modal.error({
+          title: 'Failed to create QRIS Payment',
+          content: 'Payment Machine is unavailable'
+        })
+      }
+    }
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
     if (grandTotal > 0) {
       const storeId = lstorage.getCurrentUserStore()
@@ -2205,7 +2238,8 @@ const Pos = ({
       const totalDiscount = usageLoyalty
       const curNetto = ((parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(curCharge)) || 0
       const dineIn = curNetto * (dineInTax / 100)
-      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(dineIn)
+      const curPayment = listVoucherAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(dineIn)
       const data = {
         amount: paymentValue,
         bank: 0,
@@ -2215,7 +2249,7 @@ const Pos = ({
         chargePercent: 0,
         chargeTotal: 0,
         description: undefined,
-        id: 1
+        id: listVoucherAmount.length + 1
       }
 
       const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
@@ -2240,6 +2274,15 @@ const Pos = ({
             title: 'There are credit charge for this payment'
           })
         }
+      }
+
+      if (listVoucher && listVoucher.length > 0) {
+        dispatch({
+          type: 'payment/addMethodVoucher',
+          payload: {
+            list: listVoucher
+          }
+        })
       }
 
       dispatch({
