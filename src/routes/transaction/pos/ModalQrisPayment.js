@@ -51,16 +51,16 @@ class ModalQrisPayment extends React.Component {
 
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
-      dispatch({
-        type: 'pos/resetPosLocalStorage'
-      })
+      const posId = getDynamicQrisPosTransId()
       dispatch({
         type: 'pos/updateState',
         payload: {
           modalQrisPaymentType: 'success'
         }
       })
-      const posId = getDynamicQrisPosTransId()
+      dispatch({
+        type: 'pos/resetPosLocalStorage'
+      })
       const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
       dispatch({
         type: 'updateState',
