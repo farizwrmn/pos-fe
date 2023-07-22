@@ -904,7 +904,8 @@ export default {
                   payload: {
                     modalQrisPaymentVisible: true,
                     modalQrisPaymentType: 'waiting',
-                    qrisPaymentCurrentTransNo: responsInsertPos.transNo
+                    qrisPaymentCurrentTransNo: responsInsertPos.transNo,
+                    modalConfirmQrisPaymentVisible: false
                   }
                 })
                 yield put({
