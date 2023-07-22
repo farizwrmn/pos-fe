@@ -237,8 +237,7 @@ const Pos = ({
     curTotalDiscount,
     curRounding,
     curShift,
-    curCashierNo,
-    qrisPaymentCurrentTransNo
+    curCashierNo
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -249,7 +248,6 @@ const Pos = ({
     // usingWo,
     paymentModalVisible,
     woNumber,
-    paymentTransactionId,
     totalChange,
     lastTransNo,
     taxInfo,
@@ -1015,41 +1013,12 @@ const Pos = ({
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
-      if (modalQrisPaymentType === 'waiting') {
-        dispatch({
-          type: 'pos/showModalLogin',
-          payload: {
-            modalLoginType: 'resetPaymentPaylabsQRIS'
-          }
-        })
-        dispatch({
-          type: 'login/updateState',
-          payload: {
-            modalLoginData: {
-              transNo: paymentTransactionId,
-              memo: `Cancel Payment Paylabs QRIS ${getCurrentUserStoreName()}`
-            }
-          }
-        })
-      } else if (modalQrisPaymentType === 'failed') {
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            modalQrisPaymentVisible: false,
-            modalQrisPaymentType: 'waiting'
-          }
-        })
-        dispatch({
-          type: 'payment/cancelDynamicQrisPayment',
-          payload: {
-            paymentTransactionId,
-            pos: {
-              transNo: qrisPaymentCurrentTransNo,
-              memo: 'Canceled Dynamic Qris Payment - Timeout'
-            }
-          }
-        })
-      }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCancelQrisPaymentVisible: true
+        }
+      })
     },
     createPayment: () => {
       dispatch({

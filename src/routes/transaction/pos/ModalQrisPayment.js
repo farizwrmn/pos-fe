@@ -7,6 +7,7 @@ import io from 'socket.io-client'
 import QrisPayment from './qrisPayment'
 import Success from './qrisPayment/Success'
 import Failed from './qrisPayment/Failed'
+import ModalCancel from './qrisPayment/ModalCancel'
 
 const {
   getDynamicQrisPosTransId
@@ -117,6 +118,10 @@ class ModalQrisPayment extends React.Component {
       ...modalProps
     } = this.props
     const {
+      modalCancelQrisPaymentVisible,
+      qrisPaymentCurrentTransNo
+    } = pos
+    const {
       paymentTransactionLimitTime,
       paymentTransactionId,
       paymentTransactionInvoiceWindow
@@ -171,6 +176,33 @@ class ModalQrisPayment extends React.Component {
         })
       }
     }
+    const modalCancelProps = {
+      loading,
+      visible: modalCancelQrisPaymentVisible,
+      maskClosable: false,
+      invoiceCancel: qrisPaymentCurrentTransNo,
+      title: 'Cancel the Transaction?',
+      confirmLoading: loading.effects['payment/cancelDynamicQrisPayment'],
+      wrapClassName: 'vertical-center-modal',
+      onOk (data) {
+        dispatch({
+          type: 'payment/cancelDynamicQrisPayment',
+          payload: {
+            paymentTransactionId,
+            pos: {
+              transNo: qrisPaymentCurrentTransNo,
+              memo: 'Canceled Dynamic Qris Payment - Canceled By Cashier',
+              transactionMemo: data.memo
+            }
+          }
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'pos/hidePrintModal'
+        })
+      }
+    }
     return (
       <Modal
         closable={false}
@@ -186,6 +218,9 @@ class ModalQrisPayment extends React.Component {
         )}
         {modalType === 'failed' && (
           <Failed {...qrisPaymentFailed} />
+        )}
+        {modalCancelQrisPaymentVisible && (
+          <ModalCancel {...modalCancelProps} />
         )}
       </Modal>
     )
