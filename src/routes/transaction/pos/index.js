@@ -25,6 +25,7 @@ import {
   Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
+import { currencyFormatter } from 'utils/string'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -2332,9 +2333,15 @@ const Pos = ({
         usingWo: !((woNumber === '' || woNumber === null)),
         woNumber: woNumber === '' ? null : woNumber
       }
-      dispatch({
-        type: 'payment/createDynamicQrisPayment',
-        payload: createDynamicQrisPaymendPayload
+      Modal.confirm({
+        title: 'Confirm Payment',
+        content: `Confirm payment with total amount ${currencyFormatter(paymentValue)}`,
+        onOk: () => {
+          dispatch({
+            type: 'payment/createDynamicQrisPayment',
+            payload: createDynamicQrisPaymendPayload
+          })
+        }
       })
     } else {
       Modal.error({
