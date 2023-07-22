@@ -14,11 +14,11 @@ export const queryAdd = (params) => {
 
 export const queryCancel = (params) => {
   const apiHeaderToken = crypt.apiheader()
-  const { paymentTransactionId } = params
+  const { paymentTransactionId, pos } = params
   return request({
     url: `${paymentTransaction}/${paymentTransactionId}`,
     method: 'put',
-    data: params,
+    data: pos,
     headers: apiHeaderToken
   })
 }

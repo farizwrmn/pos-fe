@@ -147,6 +147,18 @@ const removeDynamicQrisImage = () => {
   return localStorage.removeItem('dynamic_qris_image')
 }
 
+const getDynamicQrisPosTransId = () => {
+  return localStorage.getItem('dynamic_qris_pos_trans_id') ? localStorage.getItem('dynamic_qris_pos_trans_id') : null
+}
+
+const setDynamicQrisPosTransId = (data) => {
+  return localStorage.setItem('dynamic_qris_pos_trans_id', data)
+}
+
+const removeDynamicQrisPosTransId = () => {
+  return localStorage.removeItem('dynamic_qris_pos_trans_id')
+}
+
 const getDynamicQrisTimeLimit = () => {
   return localStorage.getItem('dynamic_qris_time_limit') ? localStorage.getItem('dynamic_qris_time_limit') : null
 }
@@ -301,6 +313,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('invoice_time_limit')
   localStorage.removeItem('qris_payment_time_limit')
   localStorage.removeItem('customer_view_transaction_time_limit')
+  localStorage.removeItem('dynamic_qris_pos_trans_id')
 }
 
 const removeAllKey = () => {
@@ -453,5 +466,8 @@ module.exports = {
   removeCustomerViewLastTransactionTimeLimit,
   getQrisPaymentTimeLimit,
   setQrisPaymentTimeLimit,
-  removeQrisPaymentTimeLimit
+  removeQrisPaymentTimeLimit,
+  getDynamicQrisPosTransId,
+  setDynamicQrisPosTransId,
+  removeDynamicQrisPosTransId
 }
