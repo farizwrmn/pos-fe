@@ -68,7 +68,9 @@ const {
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
-  getDynamicQrisPosTransId, removeQrisImage
+  getDynamicQrisPosTransId, removeQrisImage,
+  removeDynamicQrisImage,
+  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -794,6 +796,9 @@ export default {
         localStorage.removeItem('woNumber')
         localStorage.removeItem('voucher_list')
         removeQrisImage()
+        removeDynamicQrisImage()
+        removeQrisMerchantTradeNo()
+        removeDynamicQrisPosTransId()
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('payShortcutSelected')
         yield put({
@@ -3550,9 +3555,6 @@ export default {
       if (response && response.success && response.data) {
         const paymentTransaction = response.data
         if (paymentTransaction.validPayment === 1) {
-          yield put({
-            type: 'pos/resetPosLocalStorage'
-          })
           const posId = getDynamicQrisPosTransId()
           const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
           yield put({
@@ -3566,6 +3568,9 @@ export default {
             payload: {
               modalQrisPaymentType: 'success'
             }
+          })
+          yield put({
+            type: 'resetPosLocalStorage'
           })
           invoiceWindow.focus()
         }
