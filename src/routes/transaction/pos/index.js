@@ -60,8 +60,7 @@ const {
   setVoucherList,
   removeQrisImage,
   removeDynamicQrisImage,
-  removeQrisMerchantTradeNo,
-  removeDynamicQrisPosTransId
+  removeQrisMerchantTradeNo
 } = lstorage
 // const FormItem = Form.Item
 
@@ -1068,26 +1067,9 @@ const Pos = ({
         }
       })
     },
-    paymentFailed: (paymentTransactionId) => {
+    paymentFailed: () => {
       removeDynamicQrisImage()
       removeQrisMerchantTradeNo()
-      removeDynamicQrisPosTransId()
-      dispatch({
-        type: 'payment/cancelDynamicQrisPayment',
-        payload: {
-          paymentTransactionId,
-          pos: {
-            transNo: qrisPaymentCurrentTransNo,
-            memo: 'Canceled Dynamic Qris Payment - Timeout'
-          }
-        }
-      })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalQrisPaymentType: 'failed'
-        }
-      })
     }
   }
 
