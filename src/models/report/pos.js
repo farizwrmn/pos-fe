@@ -9,6 +9,7 @@ import {
 import {
   query as queryReport,
   queryTrans,
+  queryDate,
   queryAll,
   queryAllGroup,
   queryTransCancel,
@@ -253,6 +254,25 @@ export default {
         }
       })
     },
+    * queryDate ({ payload }, { call, put }) {
+      let data = []
+      if (payload) {
+        data = yield call(queryDate, payload)
+      } else {
+        data = yield call(queryDate)
+      }
+      yield put({
+        type: 'querySuccessTrans',
+        payload: {
+          listTrans: data.data,
+          pagination: {
+            total: data.total
+          },
+          fromDate: payload.from,
+          toDate: payload.to
+        }
+      })
+    },
     * queryDaily ({ payload }, { call, put }) {
       let data = yield call(queryPosDaily, payload)
       yield put({
@@ -278,7 +298,7 @@ export default {
       })
     },
 
-    * queryDailyRetrieveBrands ({ payload }, { call, put }) {
+    * d ({ payload }, { call, put }) {
       let data = yield call(queryPosDaily, payload)
       yield put({
         type: 'querySuccessDaily',
