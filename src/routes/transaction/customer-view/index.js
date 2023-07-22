@@ -7,14 +7,14 @@ import {
   Input,
   Row,
   Col,
-  Card,
-  Tag
+  Card
 } from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
 import Advertising from '../pos/Advertising'
 import DynamicQrisTemplate from './DynamicQrisTemplate'
+import LatestTransaction from './LatestTransaction'
 
 const {
   getQrisImage,
@@ -153,6 +153,15 @@ class Pos extends Component {
       qrisMerchantTradeNo
     }
 
+    const latestTransactionProps = {
+      dynamicQrisLatestTransaction,
+      onTimeOut: () => {
+        this.setState({
+          dynamicQrisLatestTransaction: null
+        })
+      }
+    }
+
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
@@ -186,7 +195,7 @@ class Pos extends Component {
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
               {dynamicQrisLatestTransaction && (
-                <Tag color="green" style={{ width: '100%' }}>{dynamicQrisLatestTransaction}</Tag>
+                <LatestTransaction {...latestTransactionProps} />
               )}
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
                 : (dynamicQrisImage !== null && dynamicQrisTimeLimit > 0) ? (

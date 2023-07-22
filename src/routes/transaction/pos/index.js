@@ -60,7 +60,8 @@ const {
   setVoucherList,
   removeQrisImage,
   removeDynamicQrisImage,
-  removeQrisMerchantTradeNo
+  removeQrisMerchantTradeNo,
+  removeDynamicQrisPosTransId
 } = lstorage
 // const FormItem = Form.Item
 
@@ -105,6 +106,45 @@ function requestFullScreen (element) {
     document.msExitFullscreen()
   }
 }
+
+const getDate = (mode) => {
+  let today = new Date()
+  let dd = today.getDate()
+  let mm = today.getMonth() + 1 // January is 0!
+  let yyyy = today.getFullYear()
+  if (dd < 10) {
+    dd = `0${dd}`
+  }
+  if (mm < 10) {
+    mm = `0${mm}`
+  }
+  if (mode === 1) {
+    today = dd + mm + yyyy
+  } else if (mode === 2) {
+    today = mm + yyyy
+  } else if (mode === 3) {
+    today = `${yyyy}-${mm}-${dd}`
+  }
+
+  return today
+}
+
+const checkTime = (i) => {
+  if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
+  return i
+}
+
+const setTime = () => {
+  let today = new Date()
+  let h = today.getHours()
+  let m = today.getMinutes()
+  let s = today.getSeconds()
+  m = checkTime(m)
+  s = checkTime(s)
+
+  return `${h}:${m}:${s}`
+}
+
 
 const Pos = ({
   pospromo,
@@ -193,7 +233,12 @@ const Pos = ({
     dynamicQrisPaymentAvailability,
     qrisLatestTransaction,
     listQrisLatestTransaction,
-    modalQrisLatestTransactionVisible
+    modalQrisLatestTransactionVisible,
+    curTotalDiscount,
+    curRounding,
+    curShift,
+    curCashierNo,
+    qrisPaymentCurrentTransNo
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -204,7 +249,11 @@ const Pos = ({
     // usingWo,
     paymentModalVisible,
     woNumber,
-    paymentTransactionId
+    paymentTransactionId,
+    totalChange,
+    lastTransNo,
+    taxInfo,
+    companyInfo
   } = payment
 
   const {
@@ -990,6 +1039,16 @@ const Pos = ({
             modalQrisPaymentType: 'waiting'
           }
         })
+        dispatch({
+          type: 'payment/cancelDynamicQrisPayment',
+          payload: {
+            paymentTransactionId,
+            pos: {
+              transNo: qrisPaymentCurrentTransNo,
+              memo: 'Canceled Dynamic Qris Payment - Timeout'
+            }
+          }
+        })
       }
     },
     createPayment: () => {
@@ -1012,10 +1071,15 @@ const Pos = ({
     paymentFailed: (paymentTransactionId) => {
       removeDynamicQrisImage()
       removeQrisMerchantTradeNo()
+      removeDynamicQrisPosTransId()
       dispatch({
         type: 'payment/cancelDynamicQrisPayment',
         payload: {
-          paymentTransactionId
+          paymentTransactionId,
+          pos: {
+            transNo: qrisPaymentCurrentTransNo,
+            memo: 'Canceled Dynamic Qris Payment - Timeout'
+          }
         }
       })
       dispatch({
@@ -2132,57 +2196,6 @@ const Pos = ({
       })
       return
     }
-    dispatch({ type: 'pos/setCurTotal' })
-
-    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
-
-    if (listVoucher && listVoucher.length > 0) {
-      dispatch({
-        type: 'payment/addMethodVoucher',
-        payload: {
-          list: listVoucher
-        }
-      })
-    }
-
-    // Untuk tipe page
-    // dispatch(routerRedux.push('/transaction/pos/payment'))
-    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
-      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
-      dispatch({
-        type: 'paymentEdc/updateState',
-        payload: {
-          paymentLovFiltered: listEdc
-        }
-      })
-      if (listEdc && listEdc.length > 0) {
-        const listEdcId = listEdc.map(item => item.id)
-        const listCost = listAllCost.filter(filtered => listEdcId.includes(filtered.machineId))
-        dispatch({
-          type: 'paymentCost/updateState',
-          payload: {
-            paymentLovFiltered: listCost
-          }
-        })
-      }
-    } else if (listOpts && listOpts.length > 0) {
-      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === listOpts[0].typeCode)
-      dispatch({
-        type: 'paymentEdc/updateState',
-        payload: {
-          paymentLovFiltered: listEdc
-        }
-      })
-      if (listEdc && listEdc.length > 0) {
-        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
-        dispatch({
-          type: 'paymentCost/updateState',
-          payload: {
-            paymentLovFiltered: listCost
-          }
-        })
-      }
-    }
 
     if (bundleItem && bundleItem.length > 0) {
       const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
@@ -2199,6 +2212,39 @@ const Pos = ({
       }
     }
 
+    let listAmount = []
+    if (listVoucher && listVoucher.length > 0) {
+      const voucherMachine = listAllEdc.filter(filtered => filtered.paymentOption === 'V')
+      if (voucherMachine && voucherMachine[0]) {
+        const voucherCost = listAllCost.filter(filtered => filtered.machineId === voucherMachine[0].id)
+        if (voucherCost && voucherCost[0]) {
+          listAmount = (listVoucher || []).map((record, index) => ({
+            id: index + 1,
+            amount: record.voucherValue,
+            bank: voucherCost[0].id,
+            chargeNominal: 0,
+            chargePercent: 0,
+            chargeTotal: 0,
+            description: record.voucherName,
+            voucherCode: record.generatedCode,
+            voucherId: record.voucherId,
+            machine: voucherMachine[0].id,
+            printDate: null,
+            typeCode: 'V'
+          }))
+        } else {
+          Modal.error({
+            title: 'Failed to create QRIS Payment',
+            content: 'Payment Cost is unavailable'
+          })
+        }
+      } else {
+        Modal.error({
+          title: 'Failed to create QRIS Payment',
+          content: 'Payment Machine is unavailable'
+        })
+      }
+    }
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
     if (grandTotal > 0) {
       const storeId = lstorage.getCurrentUserStore()
@@ -2207,7 +2253,8 @@ const Pos = ({
       const totalDiscount = usageLoyalty
       const curNetto = ((parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(curCharge)) || 0
       const dineIn = curNetto * (dineInTax / 100)
-      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(dineIn)
+      const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(dineIn)
       const data = {
         amount: paymentValue,
         bank: 0,
@@ -2217,7 +2264,7 @@ const Pos = ({
         chargePercent: 0,
         chargeTotal: 0,
         description: undefined,
-        id: 1
+        id: listAmount.length + 1
       }
 
       const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
@@ -2244,24 +2291,68 @@ const Pos = ({
         }
       }
 
-      dispatch({
-        type: 'payment/addMethod',
-        payload: {
-          listAmount: [],
-          data
-        }
-      })
+      listAmount.push(data)
 
+      const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+      if (loading.effects['payment/create']) {
+        return
+      }
+
+      const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
+      const createDynamicQrisPaymendPayload = {
+        params: {
+          paymentType: 'qris',
+          amount: paymentValue,
+          storeId
+        },
+        periode: moment().format('MMYY'),
+        transDate: getDate(1),
+        transDate2: getDate(3),
+        transTime: setTime(),
+        grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
+        totalPayment,
+        creditCardNo: '',
+        creditCardType: '',
+        creditCardCharge: 0,
+        curNetto,
+        totalCreditCard: 0,
+        transDatePrint: moment().format('DD MMM YYYY HH:mm'),
+        company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+        gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+        phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+        address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+        lastTransNo,
+        lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+        // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+        paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
+        totalChange,
+        unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+        totalDiscount: curTotalDiscount,
+        policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+        rounding: curRounding,
+        memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
+        memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+        employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
+        memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+        useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
+        technicianId: mechanicInformation.employeeCode,
+        curShift,
+        printNo: 1,
+        curCashierNo,
+        cashierId: user.userid,
+        userName: user.username,
+        taxInfo,
+        setting,
+        listAmount,
+        companyInfo,
+        curTotalPayment,
+        curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
+        usingWo: !((woNumber === '' || woNumber === null)),
+        woNumber: woNumber === '' ? null : woNumber
+      }
       dispatch({
         type: 'payment/createDynamicQrisPayment',
-        payload: {
-          params: {
-            location,
-            paymentType: 'qris',
-            storeId,
-            amount: paymentValue
-          }
-        }
+        payload: createDynamicQrisPaymendPayload
       })
     } else {
       Modal.error({
