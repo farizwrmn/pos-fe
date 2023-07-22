@@ -966,6 +966,7 @@ export default {
     },
     * cancelDynamicQrisPayment ({ payload }, { call, put }) {
       payload.pos.storeId = lstorage.getCurrentUserStore()
+      payload.pos.status = 'C'
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
