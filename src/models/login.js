@@ -8,8 +8,6 @@ import { queryCustomerViewTimeLimit as queryCustomerViewTransactionTimeLimit, qu
 import { login, getUserRole, getUserStore } from '../services/login'
 
 const {
-  removeDynamicQrisPosTransId,
-  removeDynamicQrisImage, removeQrisMerchantTradeNo,
   setInvoiceTimeLimit,
   setCustomerViewLastTransactionTimeLimit,
   setQrisPaymentTimeLimit
@@ -102,9 +100,6 @@ export default {
         }
         if (modalLoginType === 'resetPaymentPaylabsQRIS') {
           const qrisPaymentCurrentTransNo = yield select(({ pos }) => pos.qrisPaymentCurrentTransNo)
-          removeDynamicQrisImage()
-          removeQrisMerchantTradeNo()
-          removeDynamicQrisPosTransId()
           yield put({
             type: 'payment/cancelDynamicQrisPayment',
             payload: {
@@ -113,16 +108,6 @@ export default {
                 transNo: qrisPaymentCurrentTransNo,
                 memo: 'Canceled Dynamic Qris Payment - Canceled By Cashier'
               }
-            }
-          })
-          yield put({
-            type: 'payment/hidePaymentModal'
-          })
-          yield put({
-            type: 'pos/updateState',
-            payload: {
-              modalQrisPaymentVisible: false,
-              modalQrisPaymentType: 'waiting'
             }
           })
         }
