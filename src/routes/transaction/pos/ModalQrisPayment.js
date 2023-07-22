@@ -139,6 +139,11 @@ class ModalQrisPayment extends React.Component {
     }
     const qrisPaymentSuccess = {
       createPayment: () => {
+        if (paymentTransactionInvoiceWindow) {
+          paymentTransactionInvoiceWindow.focus()
+        }
+      },
+      CloseModal: () => {
         dispatch({
           type: 'pos/updateState',
           payload: {
@@ -146,15 +151,6 @@ class ModalQrisPayment extends React.Component {
             modalQrisPaymentType: 'waiting'
           }
         })
-        if (paymentTransactionInvoiceWindow) {
-          paymentTransactionInvoiceWindow.focus()
-          dispatch({
-            type: 'payment/updateState',
-            payload: {
-              paymentTransactionInvoiceWindow: null
-            }
-          })
-        }
       },
       loading
     }
