@@ -30,6 +30,25 @@ const ModalList = ({ loading, list, ...modalProps }) => {
           </div>
         )
       }
+    },
+    {
+      title: 'Invoice',
+      dataIndex: 'posId',
+      key: 'posId',
+      render: (value) => {
+        return (
+          <Button
+            type="primary"
+            onClick={() => {
+              if (window) {
+                window.open(`/transaction/pos/invoice/${value}`)
+              }
+            }}
+          >
+            Open Invoice
+          </Button>
+        )
+      }
     }
   ]
 
