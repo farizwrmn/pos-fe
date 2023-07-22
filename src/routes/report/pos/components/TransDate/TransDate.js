@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
-import { ModalFilter } from 'components'
+import ModalFilter from './ModalFilter'
 import Browse from './Browse'
 import Filter from './Filter'
 
@@ -37,9 +37,6 @@ const Report = ({ dispatch, loading, posReport, app }) => {
     onListReset () {
       dispatch({
         type: 'posReport/setListNull'
-      })
-      dispatch({
-        type: 'cashier/resetFilter'
       })
     }
   }

@@ -844,6 +844,15 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/report/pos/summary/'))
             }, 'report-pos-summary')
           }
+        },
+        {
+          path: 'report/pos/daily',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/daily/'))
+            }, 'report-pos-daily')
+          }
         }, {
           path: 'chart/pos',
           getComponent (nextState, cb) {

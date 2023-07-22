@@ -7,12 +7,8 @@ import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
-  let grandTotal = listTrans.reduce((cnt, o) => cnt + o.total, 0)
-  let discountTotal = listTrans.reduce((cnt, o) => cnt + o.discount, 0)
-  let dppTotal = listTrans.reduce((cnt, o) => cnt + o.DPP, 0)
-  let ppnTotal = listTrans.reduce((cnt, o) => cnt + o.PPN, 0)
+  let qtyTotal = listTrans.reduce((cnt, o) => cnt + o.qty, 0)
   let nettoTotal = listTrans.reduce((cnt, o) => cnt + o.netto, 0)
-  let dineInTotal = listTrans.reduce((cnt, o) => cnt + o.dineInTax, 0)
 
   const styles = {
     title: {
@@ -64,14 +60,9 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
         let row = [
           { value: start, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
           { value: '.', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: (data.transNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder },
           { value: moment(data.transDate).format('DD-MMM-YYYY'), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: parseFloat(data.total), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: parseFloat(data.discount), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: parseFloat(data.DPP), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: parseFloat(data.PPN), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: parseFloat(data.netto), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
-          { value: parseFloat(data.dineInTax), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
+          { value: parseFloat(data.qty), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder },
+          { value: parseFloat(data.netto), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder }
         ]
         body.push(row)
       }
@@ -81,7 +72,7 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
   }
 
   const title = [
-    { value: 'LAPORAN PENJUALAN PER FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
+    { value: 'LAPORAN PENJUALAN PER HARI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
     { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
     { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
@@ -90,14 +81,9 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     [
       { value: 'NO.', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NO_FAKTUR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'DISKON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'DPP', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'PPN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'DINE IN TAX', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
+      { value: 'qty', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NETTO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
 
@@ -112,14 +98,9 @@ const PrintXLS = ({ listTrans, fromDate, toDate, storeInfo }) => {
     [
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
-      { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter },
       { value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: grandTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: discountTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: dppTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: ppnTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: nettoTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
-      { value: dineInTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
+      { value: qtyTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder },
+      { value: nettoTotal, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder }
     ]
   ]
 
