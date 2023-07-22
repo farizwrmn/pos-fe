@@ -9,7 +9,7 @@ import { login, getUserRole, getUserStore } from '../services/login'
 
 const {
   removeDynamicQrisPosTransId,
-  removeDynamicQrisImage,
+  removeDynamicQrisImage, removeQrisMerchantTradeNo,
   setInvoiceTimeLimit,
   setCustomerViewLastTransactionTimeLimit,
   setQrisPaymentTimeLimit
@@ -103,6 +103,7 @@ export default {
         if (modalLoginType === 'resetPaymentPaylabsQRIS') {
           const qrisPaymentCurrentTransNo = yield select(({ pos }) => pos.qrisPaymentCurrentTransNo)
           removeDynamicQrisImage()
+          removeQrisMerchantTradeNo()
           removeDynamicQrisPosTransId()
           yield put({
             type: 'payment/cancelDynamicQrisPayment',

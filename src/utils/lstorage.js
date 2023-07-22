@@ -183,6 +183,18 @@ const removeQrisPaymentLastTransaction = () => {
   return localStorage.removeItem('qris_latest_transaction')
 }
 
+const getQrisMerchantTradeNo = () => {
+  return localStorage.getItem('qris_merchant_trade_number') ? localStorage.getItem('qris_merchant_trade_number') : null
+}
+
+const setQrisMerchantTradeNo = (data) => {
+  return localStorage.setItem('qris_merchant_trade_number', data)
+}
+
+const removeQrisMerchantTradeNo = () => {
+  return localStorage.removeItem('qris_merchant_trade_number')
+}
+
 const getInvoiceTimeLimit = () => {
   return localStorage.getItem('invoice_time_limit') ? localStorage.getItem('invoice_time_limit') : null
 }
@@ -310,6 +322,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('dynamic_qris_image')
   localStorage.removeItem('dynamic_qris_time_limit')
   localStorage.removeItem('qris_latest_transaction')
+  localStorage.removeItem('qris_merchant_trade_number')
   localStorage.removeItem('invoice_time_limit')
   localStorage.removeItem('qris_payment_time_limit')
   localStorage.removeItem('customer_view_transaction_time_limit')
@@ -458,6 +471,9 @@ module.exports = {
   getEdc,
   setCost,
   getCost,
+  getQrisMerchantTradeNo,
+  setQrisMerchantTradeNo,
+  removeQrisMerchantTradeNo,
   getInvoiceTimeLimit,
   setInvoiceTimeLimit,
   removeInvoiceTimeLimit,

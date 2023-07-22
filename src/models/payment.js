@@ -19,8 +19,10 @@ const {
   getConsignment,
   removeQrisImage,
   setDynamicQrisImage,
+  setQrisMerchantTradeNo,
   setDynamicQrisPosTransId,
   removeDynamicQrisImage,
+  removeQrisMerchantTradeNo,
   removeDynamicQrisPosTransId,
   setDynamicQrisTimeLimit,
   getQrisPaymentTimeLimit
@@ -349,6 +351,7 @@ export default {
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
                 removeDynamicQrisImage()
+                removeQrisMerchantTradeNo()
                 removeDynamicQrisPosTransId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
@@ -886,8 +889,10 @@ export default {
               const createQrisPaymentResponse = response.data.onlinePaymentResponse
               if (createQrisPaymentResponse && createQrisPaymentResponse.qrCode) {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
+                const merchantTradeNo = createQrisPaymentResponse.merchantTradeNo
                 setDynamicQrisPosTransId(responsInsertPos.id)
                 setDynamicQrisImage(createQrisPaymentResponse.qrCode)
+                setQrisMerchantTradeNo(merchantTradeNo)
                 setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
                 yield put({
                   type: 'updateState',
@@ -902,6 +907,12 @@ export default {
                     modalQrisPaymentVisible: true,
                     modalQrisPaymentType: 'waiting',
                     qrisPaymentCurrentTransNo: responsInsertPos.transNo
+                  }
+                })
+                yield put({
+                  type: 'pos/getDynamicQrisLatestTransaction',
+                  payload: {
+                    storeId: lstorage.getCurrentUserStore()
                   }
                 })
               } else {
@@ -960,6 +971,7 @@ export default {
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
+        removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
         yield put({
           type: 'updateState',

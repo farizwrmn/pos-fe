@@ -60,6 +60,7 @@ const {
   setVoucherList,
   removeQrisImage,
   removeDynamicQrisImage,
+  removeQrisMerchantTradeNo,
   removeDynamicQrisPosTransId
 } = lstorage
 // const FormItem = Form.Item
@@ -1069,6 +1070,7 @@ const Pos = ({
     },
     paymentFailed: (paymentTransactionId) => {
       removeDynamicQrisImage()
+      removeQrisMerchantTradeNo()
       removeDynamicQrisPosTransId()
       dispatch({
         type: 'payment/cancelDynamicQrisPayment',
@@ -2586,7 +2588,7 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
-          {qrisLatestTransaction && qrisLatestTransaction.transNo && (
+          {qrisLatestTransaction && (
             <LatestQrisTransaction {...latestQrisTransactionProps} />
           )}
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
