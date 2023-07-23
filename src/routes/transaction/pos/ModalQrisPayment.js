@@ -191,7 +191,7 @@ class ModalQrisPayment extends React.Component {
             paymentTransactionId,
             pos: {
               transNo: qrisPaymentCurrentTransNo,
-              memo: 'Canceled Dynamic Qris Payment - Canceled By Cashier',
+              memo: `${data.memo} - Canceled Dynamic Qris Payment - Canceled By Cashier`,
               transactionMemo: data.memo
             }
           }
