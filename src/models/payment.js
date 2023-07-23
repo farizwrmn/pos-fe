@@ -986,7 +986,8 @@ export default {
           type: 'pos/updateState',
           payload: {
             modalQrisPaymentVisible: false,
-            modalQrisPaymentType: 'waiting'
+            modalQrisPaymentType: 'waiting',
+            modalCancelQrisPaymentVisible: false
           }
         })
       } else {
