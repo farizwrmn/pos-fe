@@ -67,7 +67,10 @@ const {
   setCashierTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
-  setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction
+  setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
+  getDynamicQrisPosTransId, removeQrisImage,
+  removeDynamicQrisImage,
+  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -119,12 +122,15 @@ export default {
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
+    modalConfirmQrisPaymentVisible: false,
+    modalCancelQrisPaymentVisible: false,
     modalQrisPaymentVisible: false,
     modalQrisPaymentType: 'waiting',
     qrisLatestTransaction: {},
     listQrisLatestTransaction: [],
     modalQrisLatestTransactionVisible: false,
     dynamicQrisPaymentAvailability: true,
+    qrisPaymentCurrentTransNo: null,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
     modalConfirmVisible: false,
@@ -751,6 +757,7 @@ export default {
         })
       }
     },
+
     * cancelInvoice ({ payload }, { call, put }) {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
@@ -774,6 +781,72 @@ export default {
       } else {
         throw cancel
       }
+    },
+
+    * resetPosLocalStorage (_, { put }) {
+      try {
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('payShortcutSelected')
+        localStorage.removeItem('grabmartOrder')
+        localStorage.removeItem('member')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('lastMeter')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('woNumber')
+        localStorage.removeItem('voucher_list')
+        removeQrisImage()
+        removeDynamicQrisImage()
+        removeQrisMerchantTradeNo()
+        removeDynamicQrisPosTransId()
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('payShortcutSelected')
+        yield put({
+          type: 'pos/setAllNull'
+        })
+        yield put({
+          type: 'pospromo/setAllNull'
+        })
+        yield put({
+          type: 'pos/setPaymentShortcut'
+        })
+        yield put({
+          type: 'pos/getGrabmartOrder'
+        })
+        yield put({
+          type: 'pos/setDefaultMember'
+        })
+        yield put({
+          type: 'pos/setDefaultEmployee'
+        })
+        yield put({
+          type: 'hidePaymentModal'
+        })
+        yield put({
+          type: 'pos/getDynamicQrisLatestTransaction',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+      } catch (e) {
+        Modal.error({
+          title: 'Error, Something Went Wrong!',
+          content: `Cache is not cleared correctly :${e}`
+        })
+      }
+
+      localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
+      localStorage.setItem('dineInTax', 0)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: true,
+          typePembelian: TYPE_PEMBELIAN_UMUM,
+          dineInTax: 0
+        }
+      })
     },
 
     * queryPosDetail ({ payload }, { call, put }) {
@@ -3480,98 +3553,28 @@ export default {
     },
 
     * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
-      const { paymentTransactionId, ...other } = payload
-      const response = yield call(queryPaymentTransactionById, { paymentTransactionId })
+      const response = yield call(queryPaymentTransactionById, payload)
       if (response && response.success && response.data) {
         const paymentTransaction = response.data
-        if (paymentTransaction.validPayment === 1 && paymentTransaction.transId === null) {
+        if (paymentTransaction.validPayment === 1) {
+          const posId = getDynamicQrisPosTransId()
+          const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+          yield put({
+            type: 'payment/updateState',
+            payload: {
+              paymentTransactionInvoiceWindow: invoiceWindow
+            }
+          })
           yield put({
             type: 'updateState',
             payload: {
               modalQrisPaymentType: 'success'
             }
           })
-
-          const {
-            pos,
-            payment,
-            app
-          } = other
-          const {
-            memberInformation,
-            mechanicInformation,
-            curTotalDiscount,
-            curTotal,
-            curRounding,
-            curShift,
-            curCashierNo
-          } = pos
-          const {
-            totalPayment,
-            totalChange,
-            lastTransNo,
-            listAmount,
-            taxInfo,
-            woNumber,
-            companyInfo,
-            paymentTransactionId
-          } = payment
-          const { user, setting } = app
-          const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-          const usageLoyalty = memberInformation.useLoyalty || 0
-          const totalDiscount = usageLoyalty
-          const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding)) || 0
-          const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
           yield put({
-            type: 'payment/create',
-            payload: {
-              periode: moment().format('MMYY'),
-              transDate: other.getDate(1),
-              transDate2: other.getDate(3),
-              transTime: other.setTime(),
-              grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
-              totalPayment,
-              creditCardNo: '',
-              creditCardType: '',
-              creditCardCharge: 0,
-              curNetto,
-              totalCreditCard: 0,
-              transDatePrint: moment().format('DD MMM YYYY HH:mm'),
-              company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
-              gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
-              phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
-              address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
-              lastTransNo,
-              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
-              // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
-              paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
-              totalChange,
-              unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
-              totalDiscount: curTotalDiscount,
-              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-              rounding: curRounding,
-              memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
-              memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
-              employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
-              memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
-              useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
-              technicianId: mechanicInformation.employeeCode,
-              curShift,
-              printNo: 1,
-              curCashierNo,
-              cashierId: user.userid,
-              userName: user.username,
-              taxInfo,
-              setting,
-              listAmount,
-              companyInfo,
-              curTotalPayment,
-              curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
-              usingWo: !((woNumber === '' || woNumber === null)),
-              woNumber: woNumber === '' ? null : woNumber,
-              paymentTransactionId
-            }
+            type: 'resetPosLocalStorage'
           })
+          invoiceWindow.focus()
         }
       } else {
         Modal.error(response.message)
@@ -3589,7 +3592,7 @@ export default {
             listQrisLatestTransaction: response.data
           }
         })
-        setQrisPaymentLastTransaction(`Latest Dynamic Qris Transaction | Invoice Number: ${qrisLatestTransaction.transNo}; Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
+        setQrisPaymentLastTransaction(`Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
       } else {
         removeQrisPaymentLastTransaction()
       }

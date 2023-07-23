@@ -14,11 +14,11 @@ export const queryAdd = (params) => {
 
 export const queryCancel = (params) => {
   const apiHeaderToken = crypt.apiheader()
-  const { paymentTransactionId } = params
+  const { paymentTransactionId, pos } = params
   return request({
     url: `${paymentTransaction}/${paymentTransactionId}`,
     method: 'put',
-    data: params,
+    data: pos,
     headers: apiHeaderToken
   })
 }
@@ -48,6 +48,24 @@ export const queryCheckStoreAvailability = () => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/check-store`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export const queryTimeLimit = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/time-limit`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export const queryCustomerViewTimeLimit = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/customer-view-time-limit`,
     method: 'get',
     headers: apiHeaderToken
   })
