@@ -199,7 +199,10 @@ class ModalQrisPayment extends React.Component {
       },
       onCancel () {
         dispatch({
-          type: 'pos/hidePrintModal'
+          type: 'pos/updateState',
+          payload: {
+            modalCancelQrisPaymentVisible: false
+          }
         })
       }
     }
