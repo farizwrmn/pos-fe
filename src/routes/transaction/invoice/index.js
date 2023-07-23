@@ -22,7 +22,7 @@ class Invoice extends React.Component {
   componentDidMount () {
     const millisecond = 1000
     const second = 60
-    const minute = lstorage.getInvoiceTimeLimit() || 5
+    const minute = lstorage.getInvoiceTimeLimit() || 10
     const totalTime = Number(minute) * second * millisecond
     let timeout = setTimeout(() => {
       window.close()

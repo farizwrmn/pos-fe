@@ -1,10 +1,10 @@
-import { Modal, message } from 'antd'
+import { Modal } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
-import { queryAdd as createDynamicQrisPayment, queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
+import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -329,8 +329,7 @@ export default {
               policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
               change: payload.totalChange,
               woReference: payload.woNumber,
-              listAmount: payload.listAmount,
-              paymentTransactionId: payload.paymentTransactionId
+              listAmount: payload.listAmount
             }
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
@@ -847,57 +846,56 @@ export default {
             const goodsInfo = product.map(item => `${item.productId}:${item.qty}:${item.total}`).join(';')
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
-              posParams: {
-                dataPos: newArrayProd,
-                dataConsignment: consignment,
-                dataBundle,
-                grabOrder: lstorage.getGrabmartOrder(),
-                transNo: trans,
-                taxType: companySetting,
-                taxInvoiceNo: payload.taxInfo.taxInvoiceNo,
-                taxDate: payload.taxInfo.taxDate,
-                storeId: lstorage.getCurrentUserStore(),
-                memberCode: payload.memberCode,
-                discountLoyalty: payload.useLoyalty || 0,
-                useLoyalty: payload.useLoyalty || 0,
-                technicianId: payload.technicianId,
-                transTime: payload.transTime,
-                total: payload.grandTotal,
-                dineInTax: dineIn,
-                typePembelian: dineInTax === 10 ? TYPE_PEMBELIAN_DINEIN : (dineInTax === 0 ? typePembelian : TYPE_PEMBELIAN_UMUM),
-                lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
-                creditCardNo: payload.creditCardNo,
-                creditCardType: payload.creditCardType,
-                creditCardCharge: payload.creditCardCharge,
-                totalCreditCard: payload.totalCreditCard,
-                discount: payload.totalDiscount,
-                rounding: payload.rounding,
-                paid: payload.totalPayment,
-                woId: localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')).id : null,
-                paymentVia: payload.paymentVia,
-                policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
-                policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
-                change: payload.totalChange,
-                woReference: payload.woNumber,
-                listAmount: payload.listAmount
-              },
+              dataPos: newArrayProd,
+              dataConsignment: consignment,
+              dataBundle,
+              grabOrder: lstorage.getGrabmartOrder(),
+              transNo: trans,
+              taxType: companySetting,
+              taxInvoiceNo: payload.taxInfo.taxInvoiceNo,
+              taxDate: payload.taxInfo.taxDate,
+              storeId: lstorage.getCurrentUserStore(),
+              memberCode: payload.memberCode,
+              discountLoyalty: payload.useLoyalty || 0,
+              useLoyalty: payload.useLoyalty || 0,
+              technicianId: payload.technicianId,
+              transTime: payload.transTime,
+              total: payload.grandTotal,
+              dineInTax: dineIn,
+              typePembelian: dineInTax === 10 ? TYPE_PEMBELIAN_DINEIN : (dineInTax === 0 ? typePembelian : TYPE_PEMBELIAN_UMUM),
+              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
+              creditCardNo: payload.creditCardNo,
+              creditCardType: payload.creditCardType,
+              creditCardCharge: payload.creditCardCharge,
+              totalCreditCard: payload.totalCreditCard,
+              discount: payload.totalDiscount,
+              rounding: payload.rounding,
+              paid: payload.totalPayment,
+              woId: localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')).id : null,
+              paymentVia: payload.paymentVia,
+              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+              policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
+              change: payload.totalChange,
+              woReference: payload.woNumber,
+              listAmount: payload.listAmount,
               paymentTransactionParams
             }
-            const response = yield call(createDynamicQrisPayment, detailPOS)
+            const response = yield call(create, detailPOS)
             if (response.success) {
-              const responsInsertPos = response.data.pos
-              const createQrisPaymentResponse = response.data.onlinePaymentResponse
-              if (createQrisPaymentResponse && createQrisPaymentResponse.qrCode) {
+              const responsInsertPos = response.pos
+              const createdPaymentTransaction = responsInsertPos.createdPaymentTransaction
+              const createdQrisPaymentResponse = createdPaymentTransaction.onlinePaymentResponse
+              if (createdQrisPaymentResponse && createdQrisPaymentResponse.qrCode) {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
-                const merchantTradeNo = createQrisPaymentResponse.merchantTradeNo
+                const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
                 setDynamicQrisPosTransId(responsInsertPos.id)
-                setDynamicQrisImage(createQrisPaymentResponse.qrCode)
+                setDynamicQrisImage(createdQrisPaymentResponse.qrCode)
                 setQrisMerchantTradeNo(merchantTradeNo)
                 setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
                 yield put({
                   type: 'updateState',
                   payload: {
-                    paymentTransactionId: response.data.payment.id,
+                    paymentTransactionId: createdPaymentTransaction.payment.id,
                     paymentTransactionLimitTime: Number(paymentTransactionLimitTime || 15)
                   }
                 })
@@ -906,7 +904,8 @@ export default {
                   payload: {
                     modalQrisPaymentVisible: true,
                     modalQrisPaymentType: 'waiting',
-                    qrisPaymentCurrentTransNo: responsInsertPos.transNo
+                    qrisPaymentCurrentTransNo: responsInsertPos.transNo,
+                    modalConfirmQrisPaymentVisible: false
                   }
                 })
                 yield put({
@@ -968,6 +967,7 @@ export default {
     },
     * cancelDynamicQrisPayment ({ payload }, { call, put }) {
       payload.pos.storeId = lstorage.getCurrentUserStore()
+      payload.pos.status = 'C'
       const response = yield call(cancelDynamicQrisPayment, payload)
       if (response && response.success) {
         removeDynamicQrisImage()
@@ -979,8 +979,21 @@ export default {
             paymentTransactionId: null
           }
         })
+        yield put({
+          type: 'payment/hidePaymentModal'
+        })
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting'
+          }
+        })
       } else {
-        message.error(response.message)
+        Modal.error({
+          title: 'Cancel Payment Error',
+          content: 'Failed to cancel this payment, because its already paid, try to [ Refresh ] this payment'
+        })
       }
     }
   },

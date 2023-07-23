@@ -48,6 +48,7 @@ import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
+import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -60,8 +61,7 @@ const {
   setVoucherList,
   removeQrisImage,
   removeDynamicQrisImage,
-  removeQrisMerchantTradeNo,
-  removeDynamicQrisPosTransId
+  removeQrisMerchantTradeNo
 } = lstorage
 // const FormItem = Form.Item
 
@@ -234,11 +234,11 @@ const Pos = ({
     qrisLatestTransaction,
     listQrisLatestTransaction,
     modalQrisLatestTransactionVisible,
+    modalConfirmQrisPaymentVisible,
     curTotalDiscount,
     curRounding,
     curShift,
-    curCashierNo,
-    qrisPaymentCurrentTransNo
+    curCashierNo
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -249,7 +249,6 @@ const Pos = ({
     // usingWo,
     paymentModalVisible,
     woNumber,
-    paymentTransactionId,
     totalChange,
     lastTransNo,
     taxInfo,
@@ -1015,41 +1014,12 @@ const Pos = ({
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     onCancel: () => {
-      if (modalQrisPaymentType === 'waiting') {
-        dispatch({
-          type: 'pos/showModalLogin',
-          payload: {
-            modalLoginType: 'resetPaymentPaylabsQRIS'
-          }
-        })
-        dispatch({
-          type: 'login/updateState',
-          payload: {
-            modalLoginData: {
-              transNo: paymentTransactionId,
-              memo: `Cancel Payment Paylabs QRIS ${getCurrentUserStoreName()}`
-            }
-          }
-        })
-      } else if (modalQrisPaymentType === 'failed') {
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            modalQrisPaymentVisible: false,
-            modalQrisPaymentType: 'waiting'
-          }
-        })
-        dispatch({
-          type: 'payment/cancelDynamicQrisPayment',
-          payload: {
-            paymentTransactionId,
-            pos: {
-              transNo: qrisPaymentCurrentTransNo,
-              memo: 'Canceled Dynamic Qris Payment - Timeout'
-            }
-          }
-        })
-      }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCancelQrisPaymentVisible: true
+        }
+      })
     },
     createPayment: () => {
       dispatch({
@@ -1068,26 +1038,9 @@ const Pos = ({
         }
       })
     },
-    paymentFailed: (paymentTransactionId) => {
+    paymentFailed: () => {
       removeDynamicQrisImage()
       removeQrisMerchantTradeNo()
-      removeDynamicQrisPosTransId()
-      dispatch({
-        type: 'payment/cancelDynamicQrisPayment',
-        payload: {
-          paymentTransactionId,
-          pos: {
-            transNo: qrisPaymentCurrentTransNo,
-            memo: 'Canceled Dynamic Qris Payment - Timeout'
-          }
-        }
-      })
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalQrisPaymentType: 'failed'
-        }
-      })
     }
   }
 
@@ -2294,7 +2247,7 @@ const Pos = ({
       listAmount.push(data)
 
       const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-      if (loading.effects['payment/create']) {
+      if (loading.effects['payment/createDynamicQrisPayment']) {
         return
       }
 
@@ -2446,7 +2399,73 @@ const Pos = ({
   const dynamicQrisButtonProps = {
     loading,
     handleDynamicQrisButton: () => {
+      // onPaymentDynamicQris()
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmQrisPaymentVisible: true
+        }
+      })
+    }
+  }
+
+  const getCurrentpaymentValue = () => {
+    let listAmount = []
+    if (listVoucher && listVoucher.length > 0) {
+      const voucherMachine = listAllEdc.filter(filtered => filtered.paymentOption === 'V')
+      if (voucherMachine && voucherMachine[0]) {
+        const voucherCost = listAllCost.filter(filtered => filtered.machineId === voucherMachine[0].id)
+        if (voucherCost && voucherCost[0]) {
+          listAmount = (listVoucher || []).map((record, index) => ({
+            id: index + 1,
+            amount: record.voucherValue,
+            bank: voucherCost[0].id,
+            chargeNominal: 0,
+            chargePercent: 0,
+            chargeTotal: 0,
+            description: record.voucherName,
+            voucherCode: record.generatedCode,
+            voucherId: record.voucherId,
+            machine: voucherMachine[0].id,
+            printDate: null,
+            typeCode: 'V'
+          }))
+        } else {
+          Modal.error({
+            title: 'Failed to create QRIS Payment',
+            content: 'Payment Cost is unavailable'
+          })
+        }
+      } else {
+        Modal.error({
+          title: 'Failed to create QRIS Payment',
+          content: 'Payment Machine is unavailable'
+        })
+      }
+    }
+    let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+    const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(dineIn)
+    return paymentValue
+  }
+
+  const modalConfirmDynamicQrisPaymentProps = {
+    paymentValue: getCurrentpaymentValue(),
+    loading,
+    title: 'Confirm Payment',
+    visible: modalConfirmQrisPaymentVisible,
+    maskClosable: false,
+    closable: false,
+    onOk: () => {
       onPaymentDynamicQris()
+    },
+    onCancel: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmQrisPaymentVisible: false
+        }
+      })
     }
   }
 
@@ -2669,6 +2688,7 @@ const Pos = ({
 
             {paymentModalVisible && <ModalPayment {...modalPaymentTypeProps} />}
             {modalQrisPaymentVisible && <ModalQrisPayment {...modalQrisPaymentProps} />}
+            {modalConfirmQrisPaymentVisible && <ModalConfirmQrisPayment {...modalConfirmDynamicQrisPaymentProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}

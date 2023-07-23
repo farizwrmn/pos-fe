@@ -7,7 +7,7 @@ import QRCodeGenerator from './QRCodeGenerator'
 const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit, qrisMerchantTradeNo }) => {
   const countDownTimerProps = {
     onTimerFinish: () => {
-      lstorage.removeDynamicQrisTimeLimit()
+      lstorage.removeDynamicQrisImage()
     },
     duration: dynamicQrisTimeLimit * 60
   }

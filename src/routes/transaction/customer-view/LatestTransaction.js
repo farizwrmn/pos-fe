@@ -11,7 +11,7 @@ class LatestTransaction extends React.Component {
     const { onTimeOut } = this.props
     const millisecond = 1000
     const second = 60
-    const minute = lstorage.getCustomerViewLastTransactionTimeLimit() || 5
+    const minute = lstorage.getCustomerViewLastTransactionTimeLimit() || 3
     const totalTime = Number(minute) * second * millisecond
     let timeout = setTimeout(onTimeOut, totalTime)
     // eslint-disable-next-line react/no-did-mount-set-state
