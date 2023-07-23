@@ -29,6 +29,18 @@ export async function queryTrans (params) {
   })
 }
 
+export async function queryDate (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  const url = `${posreport}/date`
+  return request({
+    url,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryHourly (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
