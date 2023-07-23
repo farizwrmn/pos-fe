@@ -191,7 +191,7 @@ class ModalQrisPayment extends React.Component {
             paymentTransactionId,
             pos: {
               transNo: qrisPaymentCurrentTransNo,
-              memo: 'Canceled Dynamic Qris Payment - Canceled By Cashier',
+              memo: `Canceled Dynamic Qris Payment - Canceled By Cashier - ${data.memo}`,
               transactionMemo: data.memo
             }
           }
@@ -199,7 +199,10 @@ class ModalQrisPayment extends React.Component {
       },
       onCancel () {
         dispatch({
-          type: 'pos/hidePrintModal'
+          type: 'pos/updateState',
+          payload: {
+            modalCancelQrisPaymentVisible: false
+          }
         })
       }
     }
