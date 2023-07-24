@@ -19,6 +19,7 @@ import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
+import { checkOrderStatusInquiry } from 'services/paylabs/paylabsService'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -3556,7 +3557,16 @@ export default {
       const response = yield call(queryPaymentTransactionById, payload)
       if (response && response.success && response.data) {
         const paymentTransaction = response.data
-        if (paymentTransaction.validPayment === 1) {
+        const statusInquiryParams = {
+          storeId: paymentTransaction.storeId,
+          merchantTradeNo: paymentTransaction.merchantTradeNo
+        }
+        const checkPaylabsInquiryResponse = yield call(checkOrderStatusInquiry, statusInquiryParams)
+        let statusInquiry
+        if (checkPaylabsInquiryResponse && checkPaylabsInquiryResponse.success && checkPaylabsInquiryResponse.data) {
+          statusInquiry = checkPaylabsInquiryResponse.data
+        }
+        if (paymentTransaction.validPayment === 1 || (statusInquiry && statusInquiry.status === '02')) {
           const posId = getDynamicQrisPosTransId()
           const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
           yield put({
