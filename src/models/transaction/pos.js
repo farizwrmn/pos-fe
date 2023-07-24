@@ -59,7 +59,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById, queryCheckValidByPaymentReference } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -3550,6 +3550,19 @@ export default {
             }
           })
         }
+      }
+    },
+
+    * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
+      const response = yield call(queryCheckValidByPaymentReference, payload)
+      if (response && response.success) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        invoiceWindow.focus()
+      } else {
+        Modal.error({
+          title: 'Error Message',
+          content: response.message
+        })
       }
     },
 

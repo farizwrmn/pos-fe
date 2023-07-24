@@ -206,8 +206,17 @@ const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
     },
     onGetDetail (e) {
       // const { transNo } = e
-      const invoiceWindow = window.open(`/transaction/pos/invoice/${e.id}`)
-      invoiceWindow.focus()
+      if (e.paymentVia === 'PQ') {
+        dispatch({
+          type: 'pos/checkPaymentTransactionValidPaymentByPaymentReference',
+          payload: {
+            reference: e.id
+          }
+        })
+      } else {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${e.id}`)
+        invoiceWindow.focus()
+      }
       // dispatch({
       //   type: 'pos/queryPosDetail',
       //   payload: {

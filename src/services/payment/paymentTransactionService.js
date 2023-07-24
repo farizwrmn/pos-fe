@@ -70,3 +70,13 @@ export const queryCustomerViewTimeLimit = () => {
     headers: apiHeaderToken
   })
 }
+
+export const queryCheckValidByPaymentReference = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  const { reference } = params
+  return request({
+    url: `${paymentTransaction}/check-valid/payment/${reference}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
