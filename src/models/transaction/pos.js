@@ -780,6 +780,12 @@ export default {
           type: 'hidePrintModal'
         })
       } else {
+        if (cancel.detail) {
+          Modal.error({
+            title: 'Cancel Invoice Error',
+            content: cancel.detail
+          })
+        }
         throw cancel
       }
     },

@@ -58,7 +58,7 @@ const BrowseGroup = ({
 
       if (record && record.paymentVia && record.paymentVia === 'PQ') {
         const userRole = lstorage.getCurrentUserRole()
-        if (userRole !== 'OWN') {
+        if (userRole !== 'OWN' && userRole !== 'CAP') {
           Modal.error({
             title: 'Can`t Void this Invoice',
             content: 'Please contact administrator to void this invoice'
