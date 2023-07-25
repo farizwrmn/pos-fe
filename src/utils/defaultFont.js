@@ -22,6 +22,12 @@ const defaultFont = {
     bold: 'https://graph.k3mart.id/image/uploads/font/helvetica/HELVETICA75BOLD.ttf',
     italics: 'https://graph.k3mart.id/image/uploads/font/helvetica/HELVETICA56ITALIC.ttf',
     bolditalics: 'https://graph.k3mart.id/image/uploads/font/helvetica/HELVETICA76BOLDITALIC.ttf'
+  },
+  Times: {
+    normal: 'https://graph.k3mart.id/image/uploads/font/times/times.ttf',
+    bold: 'https://graph.k3mart.id/image/uploads/font/times/times-bold.ttf',
+    italics: 'https://graph.k3mart.id/image/uploads/font/times/times-italic.ttf',
+    bolditalics: 'https://graph.k3mart.id/image/uploads/font/times/times-bold-italic.ttf'
   }
 }
 
