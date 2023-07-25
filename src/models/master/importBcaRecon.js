@@ -30,7 +30,7 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting-bca-recon-import') {
-          dispatch({ type: 'pathname', payload: other })
+          dispatch({ type: 'query', payload: other })
         }
       })
     }
