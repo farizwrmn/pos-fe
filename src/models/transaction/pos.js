@@ -131,7 +131,7 @@ export default {
     listQrisLatestTransaction: [],
     modalQrisLatestTransactionVisible: false,
     listQrisTransactionFailed: [],
-    modalQrisTransactionFailedVisible: true,
+    modalQrisTransactionFailedVisible: false,
     dynamicQrisPaymentAvailability: true,
     qrisPaymentCurrentTransNo: null,
     modalServiceListVisible: false,
