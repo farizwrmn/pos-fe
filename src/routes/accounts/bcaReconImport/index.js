@@ -3,13 +3,10 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Row, Col, message } from 'antd'
 import moment from 'moment'
-import List from './List'
-
-let currentData = []
-const setData = (data) => {
-  currentData = data
-}
+import ListImportCSV from './ListImportCSV'
+import ListPayment from './ListPayment'
 
 const ImportBcaRecon = ({
   loading,
@@ -17,7 +14,41 @@ const ImportBcaRecon = ({
   importBcaRecon
 }) => {
   const { list, pagination } = importBcaRecon
-  const listProps = {
+  // const listProps = {
+  //   dataSource: list,
+  //   pagination,
+  //   loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+  //   onChange (page) {
+  //     const { query, pathname } = location
+  //     dispatch(routerRedux.push({
+  //       pathname,
+  //       query: {
+  //         ...query,
+  //         page: page.current,
+  //         pageSize: page.pageSize
+  //       }
+  //     }))
+  //   }
+  // }
+
+  const listImportCSV = {
+    dataSource: list,
+    pagination,
+    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    }
+  }
+
+  const listPaymentProps = {
     dataSource: list,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
@@ -119,7 +150,14 @@ const ImportBcaRecon = ({
         })
       })
       console.log('newDataObjects', reformatArray)
-      setData(reformatArray)
+      if (reformatArray && reformatArray.length > 0) {
+        dispatch({
+          type: 'importBcaRecon/bulkInsert',
+          payload: reformatArray
+        })
+      } else {
+        message.error('No Data to Upload')
+      }
     }
     reader.readAsText(file, { header: false })
   }
@@ -146,8 +184,14 @@ const ImportBcaRecon = ({
           />
         </span>
       </div>
-      {currentData}
-      <List {...listProps} />
+      <Row type="flex" justify="space-between">
+        <Col span={4}>col-4</Col>
+        <Col span={4}>Button Macthing</Col>
+        <Col span={4}>col-4</Col>
+      </Row>
+      <ListImportCSV {...listImportCSV} />
+      <ListPayment {...listPaymentProps} />
+      {/* <List {...listProps} /> */}
     </div>
   )
 }

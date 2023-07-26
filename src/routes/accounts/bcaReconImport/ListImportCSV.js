@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
-const List = ({ ...tableProps }) => {
+const ListImportCSV = ({ ...tableProps }) => {
   const columns = [
     {
       title: 'ID',
@@ -105,9 +105,9 @@ const List = ({ ...tableProps }) => {
   )
 }
 
-List.propTypes = {
+ListImportCSV.propTypes = {
   editItem: PropTypes.func,
   deleteItem: PropTypes.func
 }
 
-export default List
+export default ListImportCSV
