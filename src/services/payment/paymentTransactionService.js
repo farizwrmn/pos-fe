@@ -23,6 +23,16 @@ export const queryCancel = (params) => {
   })
 }
 
+export const queryFailed = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/failed`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export const queryLatest = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({

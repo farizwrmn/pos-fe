@@ -59,7 +59,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById, queryCheckValidByPaymentReference } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryById as queryPaymentTransactionById, queryCheckValidByPaymentReference } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -130,6 +130,8 @@ export default {
     qrisLatestTransaction: {},
     listQrisLatestTransaction: [],
     modalQrisLatestTransactionVisible: false,
+    listQrisTransactionFailed: [],
+    modalQrisTransactionFailedVisible: true,
     dynamicQrisPaymentAvailability: true,
     qrisPaymentCurrentTransNo: null,
     modalServiceListVisible: false,
@@ -255,6 +257,12 @@ export default {
           })
           dispatch({
             type: 'getDynamicQrisLatestTransaction',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'queryPaymentTransactionFailed',
             payload: {
               storeId: lstorage.getCurrentUserStore()
             }
@@ -3624,6 +3632,25 @@ export default {
         setQrisPaymentLastTransaction(`Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
       } else {
         removeQrisPaymentLastTransaction()
+      }
+    },
+    * queryPaymentTransactionFailed ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionFailed, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: response.data,
+            modalQrisTransactionFailedVisible: response.data.length > 0
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: []
+          }
+        })
       }
     }
   },
