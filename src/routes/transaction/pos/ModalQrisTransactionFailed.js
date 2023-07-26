@@ -1,4 +1,4 @@
-import { Button, Modal, Table } from 'antd'
+import { Button, Modal, Table, Tag } from 'antd'
 import moment from 'moment'
 import React from 'react'
 import { currencyFormatter } from 'utils/string'
@@ -28,6 +28,11 @@ class ModalQrisTransactionFailed extends React.Component {
 
     const columns = [
       {
+        title: 'PIC',
+        dataIndex: 'userName',
+        key: 'userName'
+      },
+      {
         title: 'Invoice Number',
         dataIndex: 'transNo',
         key: 'transNo'
@@ -40,6 +45,42 @@ class ModalQrisTransactionFailed extends React.Component {
           console.log('record.transTime', record.transTime)
           return (
             <div>{`${moment(value).format('DD MMM YYYY')}, ${moment(record.transTime, 'HH:mm:ss').format('HH:mm:ss')}`}</div>
+          )
+        }
+      },
+      {
+        title: 'Status Invoice',
+        dataIndex: 'status',
+        key: 'status',
+        render: (value) => {
+          return (
+            <div style={{ textAlign: 'center' }}>
+              {value === 'A' ? (
+                <Tag color="green">Active</Tag>
+
+              ) : (
+                <Tag color="red">Canceled</Tag>
+
+              )}
+            </div>
+          )
+        }
+      },
+      {
+        title: 'Status Pembayaran',
+        dataIndex: 'validPayment',
+        key: 'validPayment',
+        render: (value) => {
+          return (
+            <div style={{ textAlign: 'center' }}>
+              {value === 1 ? (
+                <Tag color="green">Telah dibayarkan</Tag>
+
+              ) : (
+                <Tag color="red">Belum dibayarkan</Tag>
+
+              )}
+            </div>
           )
         }
       },
@@ -115,6 +156,7 @@ class ModalQrisTransactionFailed extends React.Component {
             Close
           </Button>
         ]}
+        width="70%"
       >
         <Table
           {...tableProps}
