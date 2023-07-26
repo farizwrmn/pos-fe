@@ -42,7 +42,6 @@ class ModalQrisTransactionFailed extends React.Component {
         dataIndex: 'transDate',
         key: 'transDate',
         render: (value, record) => {
-          console.log('record.transTime', record.transTime)
           return (
             <div>{`${moment(value).format('DD MMM YYYY')}, ${moment(record.transTime, 'HH:mm:ss').format('HH:mm:ss')}`}</div>
           )
