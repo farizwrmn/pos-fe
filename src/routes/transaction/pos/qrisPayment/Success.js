@@ -1,5 +1,5 @@
 import { Button, Col, Row } from 'antd'
-import verified from '../../../../static/gif/verified.gif'
+import verified from '../../../../../public/gif/verified.gif'
 
 const QrisPaymentSuccess = ({ createPayment, CloseModal, loading }) => {
   return (
