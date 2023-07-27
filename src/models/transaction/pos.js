@@ -19,7 +19,6 @@ import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
-import { checkOrderStatusInquiry } from 'services/paylabs/paylabsService'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -60,7 +59,7 @@ import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from 
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
 import moneyRegistered from '../../../public/mp3/moneyRegistered.mp3'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryById as queryPaymentTransactionById, queryCheckValidByPaymentReference } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -3582,42 +3581,33 @@ export default {
     },
 
     * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
-      const response = yield call(queryPaymentTransactionById, payload)
-      if (response && response.success && response.data) {
-        const paymentTransaction = response.data
-        const statusInquiryParams = {
-          storeId: paymentTransaction.storeId,
-          merchantTradeNo: paymentTransaction.merchantTradeNo
-        }
-        const checkPaylabsInquiryResponse = yield call(checkOrderStatusInquiry, statusInquiryParams)
-        let statusInquiry
-        if (checkPaylabsInquiryResponse && checkPaylabsInquiryResponse.success && checkPaylabsInquiryResponse.data) {
-          statusInquiry = checkPaylabsInquiryResponse.data
-        }
-        if (paymentTransaction.validPayment === 1 || (statusInquiry && statusInquiry.status === '02')) {
-          const posId = getDynamicQrisPosTransId()
-          const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
-          // eslint-disable-next-line no-undef
-          new Audio(moneyRegistered).play()
-          yield put({
-            type: 'payment/updateState',
-            payload: {
-              paymentTransactionInvoiceWindow: invoiceWindow
-            }
-          })
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalQrisPaymentType: 'success'
-            }
-          })
-          yield put({
-            type: 'resetPosLocalStorage'
-          })
-          invoiceWindow.focus()
-        }
+      const response = yield call(queryCheckPaymentTransactionStatus, payload)
+      if (response && response.success) {
+        const posId = getDynamicQrisPosTransId()
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        // eslint-disable-next-line no-undef
+        new Audio(moneyRegistered).play()
+        yield put({
+          type: 'payment/updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalQrisPaymentType: 'success'
+          }
+        })
+        yield put({
+          type: 'resetPosLocalStorage'
+        })
+        invoiceWindow.focus()
       } else {
-        Modal.error(response.message)
+        Modal.error({
+          title: 'Check Status',
+          content: response.message
+        })
       }
     },
 
