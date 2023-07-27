@@ -90,3 +90,14 @@ export const queryCheckValidByPaymentReference = (params) => {
     headers: apiHeaderToken
   })
 }
+
+export const queryCheckStatus = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  const { paymentTransactionId } = params
+  return request({
+    url: `${paymentTransaction}/check-status/${paymentTransactionId}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
