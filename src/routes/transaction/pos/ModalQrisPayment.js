@@ -54,8 +54,12 @@ class ModalQrisPayment extends React.Component {
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
       const posId = getDynamicQrisPosTransId()
-      // eslint-disable-next-line no-undef
-      new Audio(moneyRegistered).play()
+      try {
+        // eslint-disable-next-line no-undef
+        new Audio(moneyRegistered).play()
+      } catch (error) {
+        console.log('error', error)
+      }
       dispatch({
         type: 'pos/updateState',
         payload: {

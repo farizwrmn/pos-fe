@@ -3585,8 +3585,12 @@ export default {
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
         const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
-        // eslint-disable-next-line no-undef
-        new Audio(moneyRegistered).play()
+        try {
+          // eslint-disable-next-line no-undef
+          new Audio(moneyRegistered).play()
+        } catch (error) {
+          console.log('error', error)
+        }
         yield put({
           type: 'payment/updateState',
           payload: {
