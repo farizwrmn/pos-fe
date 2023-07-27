@@ -67,7 +67,7 @@ class QrisPayment extends Component {
               disabled={loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
               loading={loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
             >
-              Cancel
+              Void Invoice
             </Button>
             <div style={{ flex: 1 }}>
               <Button
@@ -78,7 +78,7 @@ class QrisPayment extends Component {
                 disabled={loading.effects['pos/refreshDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
                 loading={loading.effects['pos/refreshDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
               >
-                Refresh
+                Get Status
               </Button>
             </div>
           </Row>

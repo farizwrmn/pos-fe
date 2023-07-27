@@ -60,7 +60,7 @@ const BasicInvoice = ({
       const content = createPdfLineItems(data)
       let docDefinition = {
         defaultStyle: {
-          font: 'Helvetica'
+          font: 'OpenSans'
         },
         pageSize,
         pageOrientation,
