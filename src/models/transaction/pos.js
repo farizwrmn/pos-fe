@@ -771,7 +771,7 @@ export default {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
       const cancel = yield call(updatePos, payload)
-      if (cancel.success) {
+      if (cancel && cancel.success) {
         const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
         yield put({
           type: 'queryHistory',
@@ -788,7 +788,7 @@ export default {
           type: 'hidePrintModal'
         })
       } else {
-        if (cancel.detail) {
+        if (cancel && cancel.detail) {
           Modal.error({
             title: 'Cancel Invoice Error',
             content: cancel.detail
@@ -3648,7 +3648,8 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            listQrisTransactionFailed: []
+            listQrisTransactionFailed: [],
+            modalQrisTransactionFailedVisible: false
           }
         })
       }
