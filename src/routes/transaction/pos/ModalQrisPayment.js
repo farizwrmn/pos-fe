@@ -58,7 +58,7 @@ class ModalQrisPayment extends React.Component {
         // eslint-disable-next-line no-undef
         new Audio(moneyRegistered).play()
       } catch (error) {
-        console.log('error', error)
+        console.log('Audio error:', error)
       }
       dispatch({
         type: 'pos/updateState',
