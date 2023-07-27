@@ -19,6 +19,7 @@ import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
+import { checkOrderStatusInquiry } from 'services/paylabs/paylabsService'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -58,7 +59,7 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryById as queryPaymentTransactionById, queryCheckValidByPaymentReference } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -129,6 +130,8 @@ export default {
     qrisLatestTransaction: {},
     listQrisLatestTransaction: [],
     modalQrisLatestTransactionVisible: false,
+    listQrisTransactionFailed: [],
+    modalQrisTransactionFailedVisible: false,
     dynamicQrisPaymentAvailability: true,
     qrisPaymentCurrentTransNo: null,
     modalServiceListVisible: false,
@@ -254,6 +257,12 @@ export default {
           })
           dispatch({
             type: 'getDynamicQrisLatestTransaction',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'queryPaymentTransactionFailed',
             payload: {
               storeId: lstorage.getCurrentUserStore()
             }
@@ -779,6 +788,12 @@ export default {
           type: 'hidePrintModal'
         })
       } else {
+        if (cancel.detail) {
+          Modal.error({
+            title: 'Cancel Invoice Error',
+            content: cancel.detail
+          })
+        }
         throw cancel
       }
     },
@@ -3552,11 +3567,33 @@ export default {
       }
     },
 
+    * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
+      const response = yield call(queryCheckValidByPaymentReference, payload)
+      if (response && response.success) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        invoiceWindow.focus()
+      } else {
+        Modal.error({
+          title: 'Error Message',
+          content: response.message
+        })
+      }
+    },
+
     * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
       const response = yield call(queryPaymentTransactionById, payload)
       if (response && response.success && response.data) {
         const paymentTransaction = response.data
-        if (paymentTransaction.validPayment === 1) {
+        const statusInquiryParams = {
+          storeId: paymentTransaction.storeId,
+          merchantTradeNo: paymentTransaction.merchantTradeNo
+        }
+        const checkPaylabsInquiryResponse = yield call(checkOrderStatusInquiry, statusInquiryParams)
+        let statusInquiry
+        if (checkPaylabsInquiryResponse && checkPaylabsInquiryResponse.success && checkPaylabsInquiryResponse.data) {
+          statusInquiry = checkPaylabsInquiryResponse.data
+        }
+        if (paymentTransaction.validPayment === 1 || (statusInquiry && statusInquiry.status === '02')) {
           const posId = getDynamicQrisPosTransId()
           const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
           yield put({
@@ -3595,6 +3632,25 @@ export default {
         setQrisPaymentLastTransaction(`Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
       } else {
         removeQrisPaymentLastTransaction()
+      }
+    },
+    * queryPaymentTransactionFailed ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionFailed, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: response.data,
+            modalQrisTransactionFailedVisible: response.data.length > 0
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: []
+          }
+        })
       }
     }
   },

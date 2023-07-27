@@ -64,7 +64,7 @@ class ModalQrisPayment extends React.Component {
       })
       const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
       dispatch({
-        type: 'updateState',
+        type: 'payment/updateState',
         payload: {
           paymentTransactionInvoiceWindow: invoiceWindow
         }
