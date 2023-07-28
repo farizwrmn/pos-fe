@@ -925,7 +925,7 @@ export default {
                 yield put({
                   type: 'payment/cancelDynamicQrisPayment',
                   payload: {
-                    paymentTransactionId: response.data.payment.id,
+                    paymentTransactionId: createdPaymentTransaction.payment.id,
                     pos: {
                       transNo: responsInsertPos.transNo,
                       memo: 'Canceled Dynamic Qris Payment - Qr Code is not provided'
