@@ -3589,7 +3589,7 @@ export default {
           // eslint-disable-next-line no-undef
           new Audio(moneyRegistered).play()
         } catch (error) {
-          console.log('error', error)
+          console.log('Audio error:', error)
         }
         yield put({
           type: 'payment/updateState',
