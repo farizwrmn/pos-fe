@@ -49,6 +49,7 @@ import ModalBookmark from './Bookmark/ModalBookmark'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
+import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -234,6 +235,8 @@ const Pos = ({
     qrisLatestTransaction,
     listQrisLatestTransaction,
     modalQrisLatestTransactionVisible,
+    listQrisTransactionFailed,
+    modalQrisTransactionFailedVisible,
     modalConfirmQrisPaymentVisible,
     curTotalDiscount,
     curRounding,
@@ -2469,6 +2472,24 @@ const Pos = ({
     }
   }
 
+  const modalQrisTransactionFailedProps = {
+    list: listQrisTransactionFailed,
+    loading,
+    dispatch,
+    title: 'Invoice Gantung',
+    visible: modalQrisTransactionFailedVisible,
+    maskClosable: false,
+    closable: false,
+    onClose: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisTransactionFailedVisible: false
+        }
+      })
+    }
+  }
+
   const modalVoucherProps = {
     visible: modalVoucherVisible,
     onOk (data) {
@@ -2689,6 +2710,7 @@ const Pos = ({
             {paymentModalVisible && <ModalPayment {...modalPaymentTypeProps} />}
             {modalQrisPaymentVisible && <ModalQrisPayment {...modalQrisPaymentProps} />}
             {modalConfirmQrisPaymentVisible && <ModalConfirmQrisPayment {...modalConfirmDynamicQrisPaymentProps} />}
+            {modalQrisTransactionFailedVisible && <ModalQrisTransactionFailed {...modalQrisTransactionFailedProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}

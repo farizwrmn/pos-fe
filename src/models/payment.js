@@ -925,7 +925,7 @@ export default {
                 yield put({
                   type: 'payment/cancelDynamicQrisPayment',
                   payload: {
-                    paymentTransactionId: response.data.payment.id,
+                    paymentTransactionId: createdPaymentTransaction.payment.id,
                     pos: {
                       transNo: responsInsertPos.transNo,
                       memo: 'Canceled Dynamic Qris Payment - Qr Code is not provided'
@@ -965,7 +965,8 @@ export default {
         })
       }
     },
-    * cancelDynamicQrisPayment ({ payload }, { call, put }) {
+    * cancelDynamicQrisPayment ({ payload }, { call, select, put }) {
+      const modalQrisTransactionFailedVisible = yield select(({ pos }) => (pos ? pos.modalQrisTransactionFailedVisible : false))
       payload.pos.storeId = lstorage.getCurrentUserStore()
       payload.pos.status = 'C'
       const response = yield call(cancelDynamicQrisPayment, payload)
@@ -990,6 +991,14 @@ export default {
             modalCancelQrisPaymentVisible: false
           }
         })
+        if (modalQrisTransactionFailedVisible) {
+          yield put({
+            type: 'pos/queryPaymentTransactionFailed',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
       } else {
         Modal.error({
           title: 'Cancel Payment Error',

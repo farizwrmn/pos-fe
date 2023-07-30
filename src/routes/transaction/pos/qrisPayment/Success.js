@@ -1,4 +1,5 @@
-import { Button, Col, Icon, Row } from 'antd'
+import { Button, Col, Row } from 'antd'
+import verified from '../../../../../public/gif/verified.gif'
 
 const QrisPaymentSuccess = ({ createPayment, CloseModal, loading }) => {
   return (
@@ -7,7 +8,7 @@ const QrisPaymentSuccess = ({ createPayment, CloseModal, loading }) => {
         <div style={{ flex: 1 }}>
           Pembayaran Berhasil
         </div>
-        <Icon type="pay-circle-o" style={{ color: '#5AC3BE', marginRight: '20px' }} />
+        <img src={verified} alt="no_gif" width="100%" height="auto" style={{ maxWidth: '40px', maxHeight: '40px' }} />
       </div>
       <Col span={24} style={{ fontSize: '20px' }} >
         <Row style={{ marginBottom: '30px' }}>

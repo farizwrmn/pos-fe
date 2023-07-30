@@ -58,7 +58,8 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryById as queryPaymentTransactionById } from '../../services/payment/paymentTransactionService'
+import moneyRegistered from '../../../public/mp3/moneyRegistered.mp3'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -129,6 +130,8 @@ export default {
     qrisLatestTransaction: {},
     listQrisLatestTransaction: [],
     modalQrisLatestTransactionVisible: false,
+    listQrisTransactionFailed: [],
+    modalQrisTransactionFailedVisible: false,
     dynamicQrisPaymentAvailability: true,
     qrisPaymentCurrentTransNo: null,
     modalServiceListVisible: false,
@@ -254,6 +257,12 @@ export default {
           })
           dispatch({
             type: 'getDynamicQrisLatestTransaction',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'queryPaymentTransactionFailed',
             payload: {
               storeId: lstorage.getCurrentUserStore()
             }
@@ -762,7 +771,7 @@ export default {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
       const cancel = yield call(updatePos, payload)
-      if (cancel.success) {
+      if (cancel && cancel.success) {
         const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
         yield put({
           type: 'queryHistory',
@@ -779,6 +788,12 @@ export default {
           type: 'hidePrintModal'
         })
       } else {
+        if (cancel && cancel.detail) {
+          Modal.error({
+            title: 'Cancel Invoice Error',
+            content: cancel.detail
+          })
+        }
         throw cancel
       }
     },
@@ -3552,32 +3567,51 @@ export default {
       }
     },
 
-    * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
-      const response = yield call(queryPaymentTransactionById, payload)
-      if (response && response.success && response.data) {
-        const paymentTransaction = response.data
-        if (paymentTransaction.validPayment === 1) {
-          const posId = getDynamicQrisPosTransId()
-          const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
-          yield put({
-            type: 'payment/updateState',
-            payload: {
-              paymentTransactionInvoiceWindow: invoiceWindow
-            }
-          })
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalQrisPaymentType: 'success'
-            }
-          })
-          yield put({
-            type: 'resetPosLocalStorage'
-          })
-          invoiceWindow.focus()
-        }
+    * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
+      const response = yield call(queryCheckValidByPaymentReference, payload)
+      if (response && response.success) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        invoiceWindow.focus()
       } else {
-        Modal.error(response.message)
+        Modal.error({
+          title: 'Error Message',
+          content: response.message
+        })
+      }
+    },
+
+    * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
+      const response = yield call(queryCheckPaymentTransactionStatus, payload)
+      if (response && response.success) {
+        const posId = getDynamicQrisPosTransId()
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        try {
+          // eslint-disable-next-line no-undef
+          new Audio(moneyRegistered).play()
+        } catch (error) {
+          console.log('error', error)
+        }
+        yield put({
+          type: 'payment/updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalQrisPaymentType: 'success'
+          }
+        })
+        yield put({
+          type: 'resetPosLocalStorage'
+        })
+        invoiceWindow.focus()
+      } else {
+        Modal.error({
+          title: 'Check Status',
+          content: response.message
+        })
       }
     },
 
@@ -3595,6 +3629,26 @@ export default {
         setQrisPaymentLastTransaction(`Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
       } else {
         removeQrisPaymentLastTransaction()
+      }
+    },
+    * queryPaymentTransactionFailed ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionFailed, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: response.data,
+            modalQrisTransactionFailedVisible: response.data.length > 0
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: [],
+            modalQrisTransactionFailedVisible: false
+          }
+        })
       }
     }
   },

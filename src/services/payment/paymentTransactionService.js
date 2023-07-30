@@ -23,6 +23,16 @@ export const queryCancel = (params) => {
   })
 }
 
+export const queryFailed = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/failed`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export const queryLatest = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -67,6 +77,27 @@ export const queryCustomerViewTimeLimit = () => {
   return request({
     url: `${paymentTransaction}/customer-view-time-limit`,
     method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export const queryCheckValidByPaymentReference = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  const { reference } = params
+  return request({
+    url: `${paymentTransaction}/check-valid/payment/${reference}`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export const queryCheckStatus = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  const { paymentTransactionId } = params
+  return request({
+    url: `${paymentTransaction}/check-status/${paymentTransactionId}`,
+    method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }
