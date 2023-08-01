@@ -14,15 +14,18 @@ import TransactionDetail from './TransactionDetail'
 import { groupProduct } from './utils'
 import Advertising from '../pos/Advertising'
 import DynamicQrisTemplate from './DynamicQrisTemplate'
+import LatestTransaction from './LatestTransaction'
 
 const {
   getQrisImage,
   getDynamicQrisImage,
+  getQrisMerchantTradeNo,
   getCashierTrans,
   getBundleTrans,
   getServiceTrans,
   getConsignment,
-  getDynamicQrisTimeLimit
+  getDynamicQrisTimeLimit,
+  getQrisPaymentLastTransaction
 } = lstorage
 const FormItem = Form.Item
 
@@ -57,7 +60,9 @@ class Pos extends Component {
     memberInformation: {},
     qrisImage: null,
     dynamicQrisImage: null,
-    dynamicQrisTimeLimit: null
+    qrisMerchantTradeNo: null,
+    dynamicQrisTimeLimit: null,
+    dynamicQrisLatestTransaction: null
   }
 
   componentDidMount () {
@@ -66,6 +71,7 @@ class Pos extends Component {
     this.setListData({ key: 'qris_image' })
     this.setListData({ key: 'dynamic_qris_image' })
     this.setListData({ key: 'dynamic_qris_time_limit' })
+    this.setListData({ key: 'qris_latest_transaction' })
   }
 
   componentWillUnmount () {
@@ -73,6 +79,14 @@ class Pos extends Component {
   }
 
   setListData (data) {
+    if (data && data.key === 'qris_latest_transaction') {
+      const qrisLatestTransaction = getQrisPaymentLastTransaction()
+      this.setState({ dynamicQrisLatestTransaction: qrisLatestTransaction })
+    }
+    if (data && data.key === 'qris_merchant_trade_number') {
+      const qrisMerchantTradeNo = getQrisMerchantTradeNo()
+      this.setState({ qrisMerchantTradeNo })
+    }
     if (data && data.key === 'dynamic_qris_time_limit') {
       const timeLimit = getDynamicQrisTimeLimit()
       this.setState({ dynamicQrisTimeLimit: Number(timeLimit) })
@@ -117,7 +131,9 @@ class Pos extends Component {
       memberInformation,
       qrisImage,
       dynamicQrisImage,
-      dynamicQrisTimeLimit
+      qrisMerchantTradeNo,
+      dynamicQrisTimeLimit,
+      dynamicQrisLatestTransaction
     } = this.state
     const { listAdvertisingCustomer } = pos
 
@@ -133,7 +149,17 @@ class Pos extends Component {
     const dynamicQrisTemplateProps = {
       total: totalPayment,
       qrisImage: dynamicQrisImage,
-      dynamicQrisTimeLimit
+      dynamicQrisTimeLimit,
+      qrisMerchantTradeNo
+    }
+
+    const latestTransactionProps = {
+      dynamicQrisLatestTransaction,
+      onTimeOut: () => {
+        this.setState({
+          dynamicQrisLatestTransaction: null
+        })
+      }
     }
 
     return (
@@ -168,8 +194,11 @@ class Pos extends Component {
               />
             </Col>
             <Col span={10} style={{ alignItems: 'center', textAlign: 'center' }} >
+              {dynamicQrisLatestTransaction && (
+                <LatestTransaction {...latestTransactionProps} />
+              )}
               {qrisImage ? <img src={`${IMAGEURL}/${qrisImage}`} width="auto" height="400px" alt="img_qris.png" />
-                : (dynamicQrisImage && dynamicQrisTimeLimit > 0) ? (
+                : (dynamicQrisImage !== null && dynamicQrisTimeLimit > 0) ? (
                   <DynamicQrisTemplate {...dynamicQrisTemplateProps} />
                 ) : (
                   <Advertising list={listAdvertisingCustomer} />

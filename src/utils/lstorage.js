@@ -147,6 +147,18 @@ const removeDynamicQrisImage = () => {
   return localStorage.removeItem('dynamic_qris_image')
 }
 
+const getDynamicQrisPosTransId = () => {
+  return localStorage.getItem('dynamic_qris_pos_trans_id') ? localStorage.getItem('dynamic_qris_pos_trans_id') : null
+}
+
+const setDynamicQrisPosTransId = (data) => {
+  return localStorage.setItem('dynamic_qris_pos_trans_id', data)
+}
+
+const removeDynamicQrisPosTransId = () => {
+  return localStorage.removeItem('dynamic_qris_pos_trans_id')
+}
+
 const getDynamicQrisTimeLimit = () => {
   return localStorage.getItem('dynamic_qris_time_limit') ? localStorage.getItem('dynamic_qris_time_limit') : null
 }
@@ -157,6 +169,66 @@ const setDynamicQrisTimeLimit = (data) => {
 
 const removeDynamicQrisTimeLimit = () => {
   return localStorage.removeItem('dynamic_qris_time_limit')
+}
+
+const getQrisPaymentLastTransaction = () => {
+  return localStorage.getItem('qris_latest_transaction') ? localStorage.getItem('qris_latest_transaction') : null
+}
+
+const setQrisPaymentLastTransaction = (data) => {
+  return localStorage.setItem('qris_latest_transaction', data)
+}
+
+const removeQrisPaymentLastTransaction = () => {
+  return localStorage.removeItem('qris_latest_transaction')
+}
+
+const getQrisMerchantTradeNo = () => {
+  return localStorage.getItem('qris_merchant_trade_number') ? localStorage.getItem('qris_merchant_trade_number') : null
+}
+
+const setQrisMerchantTradeNo = (data) => {
+  return localStorage.setItem('qris_merchant_trade_number', data)
+}
+
+const removeQrisMerchantTradeNo = () => {
+  return localStorage.removeItem('qris_merchant_trade_number')
+}
+
+const getInvoiceTimeLimit = () => {
+  return localStorage.getItem('invoice_time_limit') ? localStorage.getItem('invoice_time_limit') : null
+}
+
+const setInvoiceTimeLimit = (data) => {
+  return localStorage.setItem('invoice_time_limit', data)
+}
+
+const removeInvoiceTimeLimit = () => {
+  return localStorage.removeItem('invoice_time_limit')
+}
+
+const getQrisPaymentTimeLimit = () => {
+  return localStorage.getItem('qris_payment_time_limit') ? localStorage.getItem('qris_payment_time_limit') : null
+}
+
+const setQrisPaymentTimeLimit = (data) => {
+  return localStorage.setItem('qris_payment_time_limit', data)
+}
+
+const removeQrisPaymentTimeLimit = () => {
+  return localStorage.removeItem('qris_payment_time_limit')
+}
+
+const getCustomerViewLastTransactionTimeLimit = () => {
+  return localStorage.getItem('customer_view_transaction_time_limit') ? localStorage.getItem('customer_view_transaction_time_limit') : null
+}
+
+const setCustomerViewLastTransactionTimeLimit = (data) => {
+  return localStorage.setItem('customer_view_transaction_time_limit', data)
+}
+
+const removeCustomerViewLastTransactionTimeLimit = () => {
+  return localStorage.removeItem('customer_view_transaction_time_limit')
 }
 
 const removeQrisImage = () => {
@@ -247,6 +319,14 @@ const removeItemKeys = () => {
   localStorage.removeItem('workorder')
   localStorage.removeItem('payment_cost')
   localStorage.removeItem('payment_edc')
+  localStorage.removeItem('dynamic_qris_image')
+  localStorage.removeItem('dynamic_qris_time_limit')
+  localStorage.removeItem('qris_latest_transaction')
+  localStorage.removeItem('qris_merchant_trade_number')
+  localStorage.removeItem('invoice_time_limit')
+  localStorage.removeItem('qris_payment_time_limit')
+  localStorage.removeItem('customer_view_transaction_time_limit')
+  localStorage.removeItem('dynamic_qris_pos_trans_id')
 }
 
 const removeAllKey = () => {
@@ -378,6 +458,9 @@ module.exports = {
   getDynamicQrisTimeLimit,
   setDynamicQrisTimeLimit,
   removeDynamicQrisTimeLimit,
+  getQrisPaymentLastTransaction,
+  setQrisPaymentLastTransaction,
+  removeQrisPaymentLastTransaction,
   getVoucherList,
   setVoucherList,
   removeQrisImage,
@@ -387,5 +470,20 @@ module.exports = {
   setEdc,
   getEdc,
   setCost,
-  getCost
+  getCost,
+  getQrisMerchantTradeNo,
+  setQrisMerchantTradeNo,
+  removeQrisMerchantTradeNo,
+  getInvoiceTimeLimit,
+  setInvoiceTimeLimit,
+  removeInvoiceTimeLimit,
+  getCustomerViewLastTransactionTimeLimit,
+  setCustomerViewLastTransactionTimeLimit,
+  removeCustomerViewLastTransactionTimeLimit,
+  getQrisPaymentTimeLimit,
+  setQrisPaymentTimeLimit,
+  removeQrisPaymentTimeLimit,
+  getDynamicQrisPosTransId,
+  setDynamicQrisPosTransId,
+  removeDynamicQrisPosTransId
 }

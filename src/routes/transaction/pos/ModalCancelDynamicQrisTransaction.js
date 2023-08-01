@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Button } from 'antd'
-import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -12,32 +11,26 @@ const formItemLayout = {
 }
 
 const ModalEntry = ({
-  onOk,
-  item = {},
-  data,
   loading,
-  form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+  onOk,
+  invoiceCancel,
+  form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
-  let defaultRole = (lstorage.getStorageKey('udi')[3] || '')
   const handleOk = () => {
-    if (defaultRole === 'CSH' || defaultRole === 'HKS') return
     validateFields((errors) => {
       if (errors) return
-      const record = {
-        id: item ? item.id : '',
-        transNo: data.length > 0 ? data[0].transNo : '',
-        storeId: data.length > 0 ? data[0].storeId : '',
-        ...getFieldsValue()
+      const data = {
+        ...getFieldsValue(),
+        transNo: invoiceCancel
       }
       Modal.confirm({
-        title: `Void ${data[0].transNo}'s payment`,
+        title: `Void ${invoiceCancel}'s payment`,
         content: 'Are you sure ?',
         onOk () {
-          onOk(record)
+          onOk(data)
         }
       })
-      resetFields()
     })
   }
   const modalOpts = {
@@ -47,12 +40,12 @@ const ModalEntry = ({
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" disabled={loading.effects['paymentDetail/cancelPayment']}>Process</Button>
+        <Button key="submit" onClick={() => handleOk()} type="primary" loading={loading.effects['payment/cancelDynamicQrisPayment']}>Process</Button>
       ]}
     >
       <Form>
         <FormItem label="No" {...formItemLayout}>
-          <Input value={data.length > 0 ? data[0].transNo : ''} />
+          <Input value={invoiceCancel} />
         </FormItem>
         <FormItem label="Memo" {...formItemLayout}>
           {getFieldDecorator('memo', {

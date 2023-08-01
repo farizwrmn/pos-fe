@@ -2,11 +2,12 @@ import { currencyFormatter } from 'utils/string'
 import { color } from 'utils/theme'
 import { lstorage } from 'utils'
 import CountdownTimer from './CountDownTimer'
+import QRCodeGenerator from './QRCodeGenerator'
 
-const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit }) => {
+const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit, qrisMerchantTradeNo }) => {
   const countDownTimerProps = {
     onTimerFinish: () => {
-      lstorage.removeDynamicQrisTimeLimit()
+      lstorage.removeDynamicQrisImage()
     },
     duration: dynamicQrisTimeLimit * 60
   }
@@ -15,7 +16,8 @@ const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit }) => {
     <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px' }}>
       <div style={{ width: '100%', height: 'auto', alignSelf: 'center' }}>
         <img src="/qris-logo.png" alt="" width="100%" height="auto" style={{ marginTop: '30px' }} />
-        <img src={qrisImage} alt="no_img" width="100%" height="auto" style={{ minHeight: '200px', maxHeight: '250px', maxWidth: '250px', marginTop: '30px' }} />
+        <div style={{ width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: 'bolder' }}>{qrisMerchantTradeNo}</div>
+        <QRCodeGenerator data={qrisImage} />
         <div style={{
           height: 'auto',
           width: '100%',
