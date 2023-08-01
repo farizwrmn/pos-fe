@@ -243,7 +243,7 @@ export default {
       ]
       lstorage.putStorageKey('udi', dataUdi)
       yield put({ type: 'app/query', payload: data.profile })
-      if (data.profile.role && data.profile.role === 'CSH') {
+      if (data.profile.role && (data.profile.role === 'CSH' || data.profile.role === 'HKS')) {
         yield put(routerRedux.push('/transaction/pos'))
       } else if (from) {
         yield put(routerRedux.push(from))
