@@ -185,9 +185,8 @@ export default modelExtend(pageModel, {
           return
         }
 
-        const dataRewardList = dataReward.data
-        for (let index in dataRewardList) {
-          const currentDataReward = dataRewardList[index]
+        for (let index in itemRewardProduct) {
+          const currentDataReward = itemRewardProduct[index]
           if (currentDataReward.qty > currentDataReward.stock) {
             Modal.error({
               title: 'Failed to add bundle item',
