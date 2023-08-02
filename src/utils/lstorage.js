@@ -165,8 +165,6 @@ const getDynamicQrisImage = () => {
     const json = JSON.parse(stringJson)
     const ttl = json.ttl
     const currentUnix = moment().valueOf()
-    console.log('ttl', ttl)
-    console.log('currentUnix', currentUnix)
     if (Number(ttl) > Number(currentUnix)) {
       return json.qrisImage || null
     }
