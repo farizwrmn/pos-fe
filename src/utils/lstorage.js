@@ -151,7 +151,6 @@ const setDynamicQrisImage = (data) => {
     qrisImage: data,
     qrisDate: moment().format('YYYY-MM-DD')
   }
-  console.log('json getDynamicQrisImage', json)
   return localStorage.setItem('dynamic_qris_image', JSON.stringify(json))
 }
 
