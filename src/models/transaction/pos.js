@@ -237,6 +237,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          removeDynamicQrisImage()
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
