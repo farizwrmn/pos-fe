@@ -135,18 +135,6 @@ const setQrisImage = (data) => {
   return localStorage.setItem('qris_image', data)
 }
 
-const getDynamicQrisImage = () => {
-  return localStorage.getItem('dynamic_qris_image') ? localStorage.getItem('dynamic_qris_image') : null
-}
-
-const setDynamicQrisImage = (data) => {
-  return localStorage.setItem('dynamic_qris_image', data)
-}
-
-const removeDynamicQrisImage = () => {
-  return localStorage.removeItem('dynamic_qris_image')
-}
-
 const getDynamicQrisPosTransId = () => {
   return localStorage.getItem('dynamic_qris_pos_trans_id') ? localStorage.getItem('dynamic_qris_pos_trans_id') : null
 }
@@ -169,6 +157,33 @@ const setDynamicQrisTimeLimit = (data) => {
 
 const removeDynamicQrisTimeLimit = () => {
   return localStorage.removeItem('dynamic_qris_time_limit')
+}
+
+const getDynamicQrisImage = () => {
+  const stringJson = localStorage.getItem('paylabs_dynamic_qris_image')
+  if (stringJson) {
+    const json = JSON.parse(stringJson)
+    const ttl = json.ttl
+    const currentUnix = moment().valueOf()
+    if (Number(ttl) > Number(currentUnix)) {
+      return json.qrisImage || null
+    }
+  }
+  localStorage.removeItem('paylabs_dynamic_qris_image')
+  return null
+}
+
+const setDynamicQrisImage = (data) => {
+  const dynamicQrisImageTimeLimit = getDynamicQrisTimeLimit()
+  const json = {
+    qrisImage: data,
+    ttl: moment().add(Number(dynamicQrisImageTimeLimit || 10), 'minutes').valueOf()
+  }
+  return localStorage.setItem('paylabs_dynamic_qris_image', JSON.stringify(json))
+}
+
+const removeDynamicQrisImage = () => {
+  return localStorage.removeItem('paylabs_dynamic_qris_image')
 }
 
 const getQrisPaymentLastTransaction = () => {
@@ -319,7 +334,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('workorder')
   localStorage.removeItem('payment_cost')
   localStorage.removeItem('payment_edc')
-  localStorage.removeItem('dynamic_qris_image')
+  localStorage.removeItem('paylabs_dynamic_qris_image')
   localStorage.removeItem('dynamic_qris_time_limit')
   localStorage.removeItem('qris_latest_transaction')
   localStorage.removeItem('qris_merchant_trade_number')
