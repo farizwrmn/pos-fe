@@ -169,6 +169,7 @@ const getDynamicQrisImage = () => {
       return json.qrisImage || null
     }
   }
+  localStorage.removeItem('paylabs_dynamic_qris_image')
   return null
 }
 
