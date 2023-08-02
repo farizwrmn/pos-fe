@@ -136,11 +136,23 @@ const setQrisImage = (data) => {
 }
 
 const getDynamicQrisImage = () => {
-  return localStorage.getItem('dynamic_qris_image') ? localStorage.getItem('dynamic_qris_image') : null
+  const stringJson = localStorage.getItem('dynamic_qris_image')
+  if (stringJson) {
+    const json = JSON.parse(stringJson)
+    if (json && json.qrisDate && json.qrisDate === moment().format('YYYY-MM-DD')) {
+      return json.qrisImage || null
+    }
+  }
+  return null
 }
 
 const setDynamicQrisImage = (data) => {
-  return localStorage.setItem('dynamic_qris_image', data)
+  const json = {
+    qrisImage: data,
+    qrisDate: moment().format('YYYY-MM-DD')
+  }
+  console.log('json getDynamicQrisImage', json)
+  return localStorage.setItem('dynamic_qris_image', JSON.stringify(json))
 }
 
 const removeDynamicQrisImage = () => {
