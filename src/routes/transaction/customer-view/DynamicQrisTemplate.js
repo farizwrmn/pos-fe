@@ -1,13 +1,12 @@
 import { currencyFormatter } from 'utils/string'
 import { color } from 'utils/theme'
-import { lstorage } from 'utils'
 import CountdownTimer from './CountDownTimer'
 import QRCodeGenerator from './QRCodeGenerator'
 
 const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit, qrisMerchantTradeNo }) => {
   const countDownTimerProps = {
     onTimerFinish: () => {
-      lstorage.removeDynamicQrisImage()
+      console.log('Payment Timeout!')
     },
     duration: dynamicQrisTimeLimit * 60
   }

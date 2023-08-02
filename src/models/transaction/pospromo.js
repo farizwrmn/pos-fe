@@ -173,18 +173,6 @@ export default modelExtend(pageModel, {
           return
         }
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
-        const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
-        const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
-        const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
-        // eslint-disable-next-line eqeqeq
-        if (resultCompareBundle && resultCompareBundle[0] && item.applyMultiple == 0) {
-          Modal.warning({
-            title: 'Cannot Apply Multiple to this promo',
-            content: 'Call your stock administrator for this issue'
-          })
-          return
-        }
-
         for (let index in itemRewardProduct) {
           const currentDataReward = itemRewardProduct[index]
           if (currentDataReward.qty > currentDataReward.stock) {
@@ -196,6 +184,17 @@ export default modelExtend(pageModel, {
           }
         }
 
+        const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
+        const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
+        const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
+        // eslint-disable-next-line eqeqeq
+        if (resultCompareBundle && resultCompareBundle[0] && item.applyMultiple == 0) {
+          Modal.warning({
+            title: 'Cannot Apply Multiple to this promo',
+            content: 'Call your stock administrator for this issue'
+          })
+          return
+        }
         const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 

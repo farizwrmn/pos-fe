@@ -71,7 +71,8 @@ const {
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
-  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo
+  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
+  getDynamicQrisImage
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -237,6 +238,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          getDynamicQrisImage()
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
