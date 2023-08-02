@@ -19,7 +19,7 @@ const ModalEntry = ({
 }) => {
   let defaultRole = (lstorage.getStorageKey('udi')[3] || '')
   const handleOk = () => {
-    if (defaultRole === 'CSH') return
+    if (defaultRole === 'CSH' || defaultRole === 'HKS') return
 
     validateFields((errors) => {
       if (errors) return
