@@ -124,7 +124,6 @@ class ModalPrice extends Component {
               rules: [
                 {
                   required: true,
-                  pattern: /^(?:0|[1-9][0-9]{0,20})$/,
                   message: '0-9'
                 }
               ]
