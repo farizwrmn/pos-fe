@@ -173,6 +173,17 @@ export default modelExtend(pageModel, {
           return
         }
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
+        for (let index in itemRewardProduct) {
+          const currentDataReward = itemRewardProduct[index]
+          if (currentDataReward.qty > currentDataReward.stock) {
+            Modal.error({
+              title: 'Failed to add bundle item',
+              content: 'Bundle item out of stock!'
+            })
+            return
+          }
+        }
+
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
         const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
         const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
@@ -184,7 +195,6 @@ export default modelExtend(pageModel, {
           })
           return
         }
-
         const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
