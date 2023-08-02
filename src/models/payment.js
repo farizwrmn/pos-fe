@@ -916,7 +916,6 @@ export default {
                   }
                 })
               } else {
-                removeDynamicQrisImage()
                 yield put({
                   type: 'pos/updateState',
                   payload: {

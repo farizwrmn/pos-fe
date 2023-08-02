@@ -11,8 +11,7 @@ import ModalCancel from './qrisPayment/ModalCancel'
 import moneyRegistered from '../../../../public/mp3/moneyRegistered.mp3'
 
 const {
-  getDynamicQrisPosTransId,
-  removeDynamicQrisImage
+  getDynamicQrisPosTransId
 } = lstorage
 
 const options = {
@@ -157,7 +156,6 @@ class ModalQrisPayment extends React.Component {
         }
       },
       CloseModal: () => {
-        removeDynamicQrisImage()
         dispatch({
           type: 'pos/updateState',
           payload: {

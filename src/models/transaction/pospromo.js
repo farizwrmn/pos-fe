@@ -185,6 +185,18 @@ export default modelExtend(pageModel, {
           return
         }
 
+        const dataRewardList = dataReward.data
+        for (let index in dataRewardList) {
+          const currentDataReward = dataRewardList[index]
+          if (currentDataReward.qty > currentDataReward.stock) {
+            Modal.error({
+              title: 'Failed to add bundle item',
+              content: 'Bundle item out of stock!'
+            })
+            return
+          }
+        }
+
         const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
