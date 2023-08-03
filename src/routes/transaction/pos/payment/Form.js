@@ -334,7 +334,13 @@ class FormPayment extends React.Component {
     }
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
-    const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+    const currentShownPaymentOption = [
+      'C', 'D', 'K', 'QR'
+    ]
+    const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
+      || currentBundlePayment.paymentOption === filtered.typeCode
+      || typeCode === filtered.typeCode))
+    const menuTree = arrayToTree(filteredOptions.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
     const getMenus = (menuTreeN) => {
       return menuTreeN.map((item) => {
