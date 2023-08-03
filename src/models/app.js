@@ -156,8 +156,8 @@ export default {
         }
         storeInfo.stackHeader03 = [
           { text: (name || '') },
-          { text: (storeInfoData.address01 || '') },
-          { text: `${storeInfoData.mobileNumber || ''}/${storeInfoData.address02 || ''}` }
+          { text: (storeInfoData.address01 || '').substring(0, 40) },
+          { text: (`${storeInfoData.mobileNumber || ''}`).substring(0, 40) }
         ]
         for (let index of storeInfo.stackHeader03) {
           index.fontSize = 11
@@ -165,6 +165,7 @@ export default {
         }
         storeInfo.stackHeader02 = storeInfo.stackHeader03
 
+        console.log('storeInfo.stackHeader02', storeInfo.stackHeader02)
         if (storeInfo !== []) {
           localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
         } else {

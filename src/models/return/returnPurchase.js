@@ -106,7 +106,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            data: other,
+            data: {
+              supplierName: data.supplier ? data.supplier.supplierName : '',
+              supplierCode: data.supplier ? data.supplier.supplierCode : '',
+              ...other
+            },
             listDetail: returnPurchaseDetail
           }
         })
