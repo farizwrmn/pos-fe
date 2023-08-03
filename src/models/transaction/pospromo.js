@@ -181,7 +181,7 @@ export default modelExtend(pageModel, {
           const currentProduct = (product || []).filter(filtered => filtered.code === currentDataReward.productCode)
           const currentProductQty = (currentProduct || []).reduce((prev, curr) => { return prev + curr.qty }, 0)
           const checkQty = currentDataRewardQty + currentProductQty
-          if (checkQty > currentDataReward.stock && checkQty !== 0) {
+          if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
             Modal.error({
               title: 'Failed to add bundle item',
               content: 'Bundle item out of stock!'
