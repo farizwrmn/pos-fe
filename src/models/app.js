@@ -155,7 +155,7 @@ export default {
           index.alignment = 'left'
         }
         storeInfo.stackHeader03 = [
-          { text: (name || '') },
+          { text: (storeInfoData && storeInfoData.storeName ? storeInfoData.storeName : '') },
           { text: (storeInfoData.address01 || '').substring(0, 40) },
           { text: (`${storeInfoData.mobileNumber || ''}`).substring(0, 40) }
         ]
