@@ -3,9 +3,10 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, message } from 'antd'
+import { Row, Col, message, Button, Icon } from 'antd'
 import moment from 'moment'
 import ListImportCSV from './ListImportCSV'
+import ListPayment from './ListPayment'
 
 const ImportBcaRecon = ({
   loading,
@@ -33,6 +34,23 @@ const ImportBcaRecon = ({
   // }
 
   const listImportCSV = {
+    dataSource: list,
+    pagination,
+    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    }
+  }
+
+  const listPaymentProps = {
     dataSource: list,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
@@ -141,9 +159,7 @@ const ImportBcaRecon = ({
       if (reformatArray && reformatArray.length > 0) {
         dispatch({
           type: 'importBcaRecon/bulkInsert',
-          payload: {
-            data: reformatArray
-          }
+          payload: reformatArray
         })
       } else {
         message.error('No Data to Upload')
@@ -182,9 +198,23 @@ const ImportBcaRecon = ({
   // const handleAutoRecon = () => {
   // }
 
+  const ButtonDecision = (item) => {
+    if (item && item.length > 0) {
+      return (
+        <div>
+          <Button type="primary">
+            EQUAL
+            {item.checked ? <Icon type="check" /> : null}
+          </Button>
+        </div>
+      )
+    }
+    return null
+  }
+
   return (
     <div className="content-inner">
-      <h1>Bank Recon Import</h1>
+      <h1>Bank Recon</h1>
       <div>
         <span>
           <label htmlFor="importCsv" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Import</label>
@@ -209,7 +239,17 @@ const ImportBcaRecon = ({
         <Col span={4} />
         <Col span={4}><h3>Rekening Koran Bank</h3></Col>
       </Row>
-      <ListImportCSV {...listImportCSV} />
+      <Row type="flex" justify="space-between">
+        <Col span={4}>
+          <ListPayment {...listPaymentProps} />
+        </Col>
+        <Col span={4}>
+          <ButtonDecision />
+        </Col>
+        <Col span={4}>
+          <ListImportCSV {...listImportCSV} />
+        </Col>
+      </Row>
     </div>
   )
 }

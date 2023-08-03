@@ -17,6 +17,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     list: [],
+    listRecon: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -29,7 +30,10 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { ...other } = location.query
         const { pathname } = location
-        if (pathname === '/accounting-bca-recon-import') {
+        if (pathname === '/accounting/bca-recon') {
+          dispatch({ type: 'queryBcaRecon', payload: other })
+        }
+        if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'query', payload: other })
         }
       })
@@ -45,6 +49,23 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryBcaRecon ({ payload = {} }, { call, put }) {
+      payload.updated = 0
+      const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listRecon: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
