@@ -25,7 +25,9 @@ const {
   removeQrisMerchantTradeNo,
   removeDynamicQrisPosTransId,
   setDynamicQrisTimeLimit,
-  getQrisPaymentTimeLimit
+  getQrisPaymentTimeLimit,
+  setCurrentPaymentTransactionId,
+  removeCurrentPaymentTransactionId
 } = lstorage
 const { getSetting } = variables
 
@@ -893,6 +895,7 @@ export default {
                 setDynamicQrisImage(createdQrisPaymentResponse.qrCode)
                 setQrisMerchantTradeNo(merchantTradeNo)
                 setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
+                setCurrentPaymentTransactionId(createdPaymentTransaction.payment.id)
                 yield put({
                   type: 'updateState',
                   payload: {
@@ -975,6 +978,7 @@ export default {
         removeDynamicQrisImage()
         removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
+        removeCurrentPaymentTransactionId()
         yield put({
           type: 'updateState',
           payload: {

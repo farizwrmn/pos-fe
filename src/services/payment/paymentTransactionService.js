@@ -101,3 +101,14 @@ export const queryCheckStatus = (params) => {
     headers: apiHeaderToken
   })
 }
+
+export const queryCheckPaymentTransactionInvoice = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  const { paymentTransactionId } = params
+  return request({
+    url: `${paymentTransaction}/check-invoice-status/${paymentTransactionId}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

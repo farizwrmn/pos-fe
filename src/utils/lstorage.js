@@ -234,6 +234,18 @@ const removeQrisPaymentTimeLimit = () => {
   return localStorage.removeItem('qris_payment_time_limit')
 }
 
+const getCurrentPaymentTransactionId = () => {
+  return localStorage.getItem('current_payment_transaction_id') ? localStorage.getItem('current_payment_transaction_id') : null
+}
+
+const setCurrentPaymentTransactionId = (data) => {
+  return localStorage.setItem('current_payment_transaction_id', data)
+}
+
+const removeCurrentPaymentTransactionId = () => {
+  return localStorage.removeItem('current_payment_transaction_id')
+}
+
 const getCustomerViewLastTransactionTimeLimit = () => {
   return localStorage.getItem('customer_view_transaction_time_limit') ? localStorage.getItem('customer_view_transaction_time_limit') : null
 }
@@ -500,5 +512,8 @@ module.exports = {
   removeQrisPaymentTimeLimit,
   getDynamicQrisPosTransId,
   setDynamicQrisPosTransId,
-  removeDynamicQrisPosTransId
+  removeDynamicQrisPosTransId,
+  getCurrentPaymentTransactionId,
+  setCurrentPaymentTransactionId,
+  removeCurrentPaymentTransactionId
 }

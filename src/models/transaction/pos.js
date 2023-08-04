@@ -59,7 +59,7 @@ import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from 
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
 import moneyRegistered from '../../../public/mp3/moneyRegistered.mp3'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -72,7 +72,8 @@ const {
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
   removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
-  getDynamicQrisImage
+  getDynamicQrisImage,
+  removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -263,11 +264,14 @@ export default {
               storeId: lstorage.getCurrentUserStore()
             }
           })
+          // dispatch({
+          //   type: 'queryPaymentTransactionFailed',
+          //   payload: {
+          //     storeId: lstorage.getCurrentUserStore()
+          //   }
+          // })
           dispatch({
-            type: 'queryPaymentTransactionFailed',
-            payload: {
-              storeId: lstorage.getCurrentUserStore()
-            }
+            type: 'checkPaymentTransactionInvoice'
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
@@ -3608,6 +3612,7 @@ export default {
         yield put({
           type: 'resetPosLocalStorage'
         })
+        removeCurrentPaymentTransactionId()
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -3651,6 +3656,38 @@ export default {
             modalQrisTransactionFailedVisible: false
           }
         })
+      }
+    },
+    * checkPaymentTransactionInvoice (_, { call, put }) {
+      const paymentTransactionId = getCurrentPaymentTransactionId()
+      if (paymentTransactionId) {
+        const response = yield call(queryCheckPaymentTransactionInvoice, { paymentTransactionId })
+        if (response && response.success && response.data) {
+          const { removeStorage, paymentTransaction } = response.data
+          if (removeStorage) {
+            removeCurrentPaymentTransactionId()
+          } else {
+            yield put({
+              type: 'payment/updateState',
+              payload: {
+                paymentTransactionId: paymentTransaction.id
+              }
+            })
+            yield put({
+              type: 'updateState',
+              payload: {
+                modalQrisPaymentVisible: true,
+                modalQrisPaymentType: 'waiting',
+                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo
+              }
+            })
+          }
+        } else {
+          Modal.error({
+            title: 'Failed to get information',
+            content: `Failed to get information: ${response.message}`
+          })
+        }
       }
     }
   },
