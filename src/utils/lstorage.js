@@ -305,11 +305,7 @@ const getCost = () => {
 }
 
 const getAvailablePaymentType = () => {
-  const data = localStorage.getItem('pos_available_payment_type') ? localStorage.getItem('pos_available_payment_type') : null
-  if (data) {
-    return data
-  }
-  return null
+  return localStorage.getItem('pos_available_payment_type') ? localStorage.getItem('pos_available_payment_type') : null
 }
 
 const setAvailablePaymentType = (data) => {
