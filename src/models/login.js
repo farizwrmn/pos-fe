@@ -5,12 +5,14 @@ import { APPNAME } from 'utils/config.company'
 import { prefix } from 'utils/config.main'
 import { queryTimeLimit as queryInvoiceTimeLimit } from 'services/master/invoice'
 import { queryCustomerViewTimeLimit as queryCustomerViewTransactionTimeLimit, queryTimeLimit as queryQrisPaymentTimeLimit } from 'services/payment/paymentTransactionService'
+import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { login, getUserRole, getUserStore } from '../services/login'
 
 const {
   setInvoiceTimeLimit,
   setCustomerViewLastTransactionTimeLimit,
-  setQrisPaymentTimeLimit
+  setQrisPaymentTimeLimit,
+  setAvailablePaymentType
 } = lstorage
 const { apiCompanyProtocol, apiCompanyHost, apiCompanyPort } = configCompany.rest
 
@@ -231,6 +233,7 @@ export default {
       yield put({ type: 'getStore', payload: { userId: data.profile.userid } })
       yield put({ type: 'invoiceTimeLimit' })
       yield put({ type: 'qrisPaymentTimeLimit' })
+      yield put({ type: 'availablePaymentType' })
       yield put({ type: 'customerViewTransactionTimeLimit' })
       const dataUdi = [
         data.profile.userid,
@@ -260,6 +263,15 @@ export default {
         setInvoiceTimeLimit(invoiceTimeLimit)
       } else {
         setInvoiceTimeLimit(15)
+      }
+    },
+    * availablePaymentType (_, { call }) {
+      const response = yield call(queryAvailablePaymentType)
+      if (response && response.success && response.data) {
+        const availablePaymentType = response.data
+        setAvailablePaymentType(availablePaymentType)
+      } else {
+        setAvailablePaymentType('C')
       }
     },
     * qrisPaymentTimeLimit ({ payload = {} }, { call }) {

@@ -304,6 +304,22 @@ const getCost = () => {
   return null
 }
 
+const getAvailablePaymentType = () => {
+  const data = localStorage.getItem('pos_available_payment_type') ? localStorage.getItem('pos_available_payment_type') : null
+  if (data) {
+    return data
+  }
+  return null
+}
+
+const setAvailablePaymentType = (data) => {
+  return localStorage.setItem('pos_available_payment_type', data)
+}
+
+const removeAvailablePaymentType = () => {
+  return localStorage.removeItem('pos_available_payment_type')
+}
+
 // remove item
 const removeItemKey = (key) => {
   localStorage.removeItem(`${prefix}${key}`)
@@ -342,6 +358,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('qris_payment_time_limit')
   localStorage.removeItem('customer_view_transaction_time_limit')
   localStorage.removeItem('dynamic_qris_pos_trans_id')
+  localStorage.removeItem('pos_available_payment_type')
 }
 
 const removeAllKey = () => {
@@ -500,5 +517,8 @@ module.exports = {
   removeQrisPaymentTimeLimit,
   getDynamicQrisPosTransId,
   setDynamicQrisPosTransId,
-  removeDynamicQrisPosTransId
+  removeDynamicQrisPosTransId,
+  getAvailablePaymentType,
+  setAvailablePaymentType,
+  removeAvailablePaymentType
 }

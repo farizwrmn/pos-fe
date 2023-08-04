@@ -17,7 +17,11 @@ import { arrayToTree, lstorage } from 'utils'
 import moment from 'moment'
 import List from './List'
 
-const { setQrisImage, removeQrisImage } = lstorage
+const {
+  setQrisImage,
+  removeQrisImage,
+  getAvailablePaymentType
+} = lstorage
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -334,9 +338,10 @@ class FormPayment extends React.Component {
     }
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
-    const currentShownPaymentOption = [
-      'C', 'D', 'K', 'QR'
-    ]
+    const params = getAvailablePaymentType()
+    const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
+    const currentShownPaymentOption = paramsArray
+
     const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
       || currentBundlePayment.paymentOption === filtered.typeCode
       || typeCode === filtered.typeCode))
