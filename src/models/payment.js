@@ -888,7 +888,7 @@ export default {
               const responsInsertPos = response.pos
               const createdPaymentTransaction = responsInsertPos.createdPaymentTransaction
               const createdQrisPaymentResponse = createdPaymentTransaction.onlinePaymentResponse
-              if (createdQrisPaymentResponse && createdQrisPaymentResponse.qrCode) {
+              if (createdQrisPaymentResponse && createdQrisPaymentResponse.qrCode && createdPaymentTransaction.payment) {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
                 const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
                 setDynamicQrisPosTransId(responsInsertPos.id)
