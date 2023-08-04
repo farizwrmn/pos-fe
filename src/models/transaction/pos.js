@@ -3682,11 +3682,6 @@ export default {
               }
             })
           }
-        } else {
-          Modal.error({
-            title: 'Failed to get information',
-            content: `Failed to get information: ${response.message}`
-          })
         }
       }
     }
