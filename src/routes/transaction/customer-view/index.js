@@ -25,6 +25,7 @@ const {
   getServiceTrans,
   getConsignment,
   getDynamicQrisTimeLimit,
+  getDynamicQrisImageTTL,
   getQrisPaymentLastTransaction
 } = lstorage
 const FormItem = Form.Item
@@ -88,8 +89,10 @@ class Pos extends Component {
       this.setState({ qrisMerchantTradeNo })
     }
     if (data && data.key === 'dynamic_qris_time_limit') {
-      const timeLimit = getDynamicQrisTimeLimit()
-      this.setState({ dynamicQrisTimeLimit: Number(timeLimit) })
+      const dynamicQrisTTL = getDynamicQrisImageTTL()
+      const dynamicQrisTimeLimit = getDynamicQrisTimeLimit()
+      const timeLimit = Number(dynamicQrisTTL || dynamicQrisTimeLimit)
+      this.setState({ dynamicQrisTimeLimit: timeLimit })
     }
     if (data && data.key === 'qris_image') {
       const qrisImage = getQrisImage()

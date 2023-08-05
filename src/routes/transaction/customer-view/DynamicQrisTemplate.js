@@ -14,7 +14,7 @@ const DynamicQrisTemplate = ({
     onTimerFinish: () => {
       onTimeout()
     },
-    duration: dynamicQrisTimeLimit * 60
+    duration: parseInt(dynamicQrisTimeLimit * 60, 10)
   }
 
   return (
