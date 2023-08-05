@@ -73,6 +73,7 @@ module.exports = {
     sellprice: '/misc/code/SELLPRICE',
     importstock: '/stocks/import',
     importbcarecon: '/accounting/bca-recon-import',
+    importbcareconlog: '/accounting/bca-recon-import/log',
     brand: '/stocks/brands',
     bookmarkGroup: '/stock/bookmark-group',
     bookmark: '/stock/bookmark',

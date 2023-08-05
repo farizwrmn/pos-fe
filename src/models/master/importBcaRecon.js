@@ -2,8 +2,13 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import {
   query,
+  queryFilename,
   bulkInsert
 } from 'services/master/importBcaRecon'
+import {
+  queryImportLog,
+  insertImportLog
+} from 'services/master/importBcaReconLog'
 import { pageModel } from 'common'
 
 const success = () => {
@@ -34,7 +39,7 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'queryBcaRecon', payload: other })
         }
         if (pathname === '/accounting/bca-recon-import') {
-          dispatch({ type: 'query', payload: other })
+          dispatch({ type: 'queryImportLog', payload: other })
         }
       })
     }
@@ -76,11 +81,64 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * queryFilename ({ payload = {} }, { call, put }) {
+      payload.updated = 0
+      const data = yield call(queryFilename, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listFilename: data.data
+          }
+        })
+      }
+    },
+
     * bulkInsert ({ payload }, { call, put }) {
+      let dataExist = yield call(queryImportLog, { filename: payload.filename })
+      if (dataExist && dataExist.data && dataExist.data.length > 0) {
+        message.error('file already uploaded')
+        return
+      }
       const data = yield call(bulkInsert, payload)
+      console.log('data', data)
+      if (data.success) {
+        yield put({ type: 'queryImportLog' })
+        yield call(insertImportLog, { filename: payload.filename })
+        success()
+        yield put({ type: 'query', payload })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
+        throw data
+      }
+    },
+    * queryImportLog ({ payload = {} }, { call, put }) {
+      payload.updated = 0
+      const data = yield call(queryImportLog, { order: '-id' })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listFilename: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * insertImportLog ({ payload }, { call, put }) {
+      const data = yield call(insertImportLog, payload)
       if (data.success) {
         success()
-        yield put({ type: 'query' })
+        yield put({ type: 'queryImportLog' })
       } else {
         yield put({
           type: 'updateState',

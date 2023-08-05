@@ -3,37 +3,18 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, message } from 'antd'
+import { message } from 'antd'
 import moment from 'moment'
-import ListImportCSV from './ListImportCSV'
+import ListFilenameImportCSV from './ListFilenameImportCSV'
 
 const ImportBcaRecon = ({
   loading,
   dispatch,
-  // accountRule,
   importBcaRecon
 }) => {
-  const { list, pagination } = importBcaRecon
-  // const { listAccountCode } = accountRule
-  // const listProps = {
-  //   dataSource: list,
-  //   pagination,
-  //   loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
-  //   onChange (page) {
-  //     const { query, pathname } = location
-  //     dispatch(routerRedux.push({
-  //       pathname,
-  //       query: {
-  //         ...query,
-  //         page: page.current,
-  //         pageSize: page.pageSize
-  //       }
-  //     }))
-  //   }
-  // }
-
-  const listImportCSV = {
-    dataSource: list,
+  const { listFilename, pagination } = importBcaRecon
+  const listFilenameImportCSV = {
+    dataSource: listFilename,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
     onChange (page) {
@@ -114,34 +95,31 @@ const ImportBcaRecon = ({
           dbCrIndicator: item.dbCrIndicator,
           merchantId: Number(item.merchantId) || 0,
           merchantName: String(item.merchantName).trim(),
-          // merchantPaymentDate: item.merchantPaymentDate,
-          merchantPaymentDate: String(item.merchantPaymentDate).trim() ? moment(item.merchantPaymentDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
+          merchantPaymentDate: String(item.merchantPaymentDate).trim() && moment(item.merchantPaymentDate, 'YYYYMMDD').isValid() ? moment(item.merchantPaymentDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
           merchantPaymentStatus: item.merchantPaymentStatus,
-          // merchantSettleDate: item.merchantSettleDate,
-          merchantSettleDate: String(item.merchantSettleDate).trim() ? moment(item.merchantSettleDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
+          merchantSettleDate: String(item.merchantSettleDate).trim() && moment(item.merchantSettleDate, 'YYYYMMDD').isValid() ? moment(item.merchantSettleDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
           merchantSettleTime: item.merchantSettleTime,
           nettAmount: Number(item.nettAmount) || 0,
           originalAmount: Number(item.originalAmount) || 0,
-          // processEffectiveDate: item.processEffectiveDate,
-          processEffectiveDate: String(item.processEffectiveDate).trim() ? moment(item.processEffectiveDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
+          processEffectiveDate: String(item.processEffectiveDate).trim() && moment(item.processEffectiveDate, 'YYYYMMDD').isValid() ? moment(item.processEffectiveDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
           recordSource: item.recordSource,
           redeemAmount: Number(item.redeemAmount) || 0,
           rewardAmount: Number(item.rewardAmount) || 0,
-          // reportDate: item.reportDate,
-          reportDate: String(item.reportDate).trim() ? moment(item.reportDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
+          reportDate: String(item.reportDate).trim() && moment(item.reportDate, 'YYYYMMDD').isValid() ? moment(item.reportDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
           terminalId: Number(item.terminalId) || 0,
           sequenceNumber: Number(item.sequenceNumber) || 0,
           traceNumber: Number(item.traceNumber),
-          transactionDate: String(item.transactionDate).trim() ? moment(item.transactionDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
+          transactionDate: String(item.transactionDate).trim() && moment(item.transactionDate, 'YYYYMMDD').isValid() ? moment(item.transactionDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
           transactionTime: item.transactionTime,
           transactionCode: item.transactionCode
         })
       })
-      // console.log('newDataObjects', reformatArray)
+      console.log('newDataObjects', reformatArray)
       if (reformatArray && reformatArray.length > 0) {
         dispatch({
           type: 'importBcaRecon/bulkInsert',
           payload: {
+            filename: file.name,
             data: reformatArray
           }
         })
@@ -151,36 +129,6 @@ const ImportBcaRecon = ({
     }
     reader.readAsText(file, { header: false })
   }
-
-  // const formProps = {
-  //   listAccountCode,
-  //   loading,
-  //   query: location.query,
-  //   showImportModal () {
-  //     dispatch({
-  //       type: 'autorecon/updateState',
-  //       payload: {
-  //         modalVisible: true
-  //       }
-  //     })
-  //   },
-  //   onSubmit (params) {
-  //     dispatch({
-  //       type: 'autorecon/autoRecon',
-  //       payload: {
-  //         ...params,
-  //         location
-  //       }
-  //     })
-  //   }
-  // }
-
-  // const handleEqualButton = () => {
-  //   return 0
-  // }
-
-  // const handleAutoRecon = () => {
-  // }
 
   return (
     <div className="content-inner">
@@ -204,12 +152,7 @@ const ImportBcaRecon = ({
           />
         </span>
       </div>
-      <Row type="flex" justify="space-between">
-        <Col span={4}><h3>Transaksi POS K3MART</h3></Col>
-        <Col span={4} />
-        <Col span={4}><h3>Rekening Koran Bank</h3></Col>
-      </Row>
-      <ListImportCSV {...listImportCSV} />
+      <ListFilenameImportCSV {...listFilenameImportCSV} />
     </div>
   )
 }
@@ -218,10 +161,8 @@ export default connect(
   ({
     loading,
     importBcaRecon
-    // accountRule
   }) => ({
     loading,
     importBcaRecon
-    // accountRule
   })
 )(ImportBcaRecon)
