@@ -173,6 +173,24 @@ const getDynamicQrisImage = () => {
   return null
 }
 
+const getDynamicQrisImageTTL = () => {
+  const stringJson = localStorage.getItem('paylabs_dynamic_qris_image')
+  if (stringJson) {
+    try {
+      const json = JSON.parse(stringJson)
+      const ttl = json.ttl
+      const currentTime = moment().valueOf()
+      const resultMiliseconds = ttl - currentTime
+      const resultSeconds = resultMiliseconds / 1000
+      const resultMinutes = resultSeconds / 60
+      return resultMinutes
+    } catch (error) {
+      console.log(`error getDynamicQrisImageTTL: ${error || 'Something went wrong'}`)
+    }
+  }
+  return null
+}
+
 const setDynamicQrisImage = (data) => {
   const dynamicQrisImageTimeLimit = getDynamicQrisTimeLimit()
   const json = {
@@ -515,5 +533,6 @@ module.exports = {
   removeDynamicQrisPosTransId,
   getCurrentPaymentTransactionId,
   setCurrentPaymentTransactionId,
-  removeCurrentPaymentTransactionId
+  removeCurrentPaymentTransactionId,
+  getDynamicQrisImageTTL
 }
