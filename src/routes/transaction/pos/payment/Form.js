@@ -341,7 +341,7 @@ class FormPayment extends React.Component {
 
     const params = getAvailablePaymentType()
     const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
-    const currentShownPaymentOption = paramsArray
+    const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray : ['C', 'D', 'K', 'QR']
 
     const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
       || currentBundlePayment.paymentOption === filtered.typeCode
