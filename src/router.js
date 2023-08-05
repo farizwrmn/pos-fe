@@ -508,14 +508,6 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/balance/invoice'))
             }, 'balance-invoice-detail')
           }
-        },
-        {
-          path: 'balance/v2/current',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              cb(null, require('./routes/balanceNew/current/index'))
-            }, 'balance-new-current')
-          }
         }, {
           path: 'sales-discount',
           getComponent (nextState, cb) {
