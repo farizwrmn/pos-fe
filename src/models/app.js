@@ -165,7 +165,6 @@ export default {
         }
         storeInfo.stackHeader02 = storeInfo.stackHeader03
 
-        console.log('storeInfo.stackHeader02', storeInfo.stackHeader02)
         if (storeInfo !== []) {
           localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
         } else {

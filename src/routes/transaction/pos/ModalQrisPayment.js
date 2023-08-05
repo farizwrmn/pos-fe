@@ -95,7 +95,6 @@ class ModalQrisPayment extends React.Component {
   }
 
   keydown (event, ctrlKeyDown) {
-    console.log('event.keyCode', event.keyCode, ctrlKeyDown)
     if ((event.which || event.keyCode) === 116 || ((event.which || event.keyCode) === 82 && ctrlKeyDown)) {
       // Pressing F5 or Ctrl+R
       event.preventDefault()
