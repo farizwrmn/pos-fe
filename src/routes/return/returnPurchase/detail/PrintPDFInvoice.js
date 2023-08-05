@@ -101,6 +101,7 @@ const PrintPDFInvoice = ({ user, listItem, itemHeader, storeInfo, printNo, itemP
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemPrint.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'DATE', fontSize: 11 }, ':', { text: moment(itemPrint.createdAt).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
+            [{ text: 'SUPPLIER', fontSize: 11 }, ':', { text: itemHeader.supplierName, fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'MEMO', fontSize: 11 }, ':', { text: itemHeader.memo, fontSize: 11 }, {}, {}, {}, {}]
           ]
         },

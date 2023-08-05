@@ -1,4 +1,4 @@
-import { Button, Col, Icon, Modal, Row, Spin } from 'antd'
+import { Button, Col, Icon, Row, Spin } from 'antd'
 import { Component } from 'react'
 import CountdownTimer from './CountDownTimer'
 
@@ -15,10 +15,6 @@ class QrisPayment extends Component {
 
     const countDownProps = {
       onTimerFinish: () => {
-        Modal.error({
-          title: 'Timeout',
-          content: 'Waktu pembayaran telah berakhir'
-        })
         paymentFailed()
         this.setState({ timeout: true })
       },
@@ -26,10 +22,15 @@ class QrisPayment extends Component {
     }
 
     const timeoutComponent = (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Spin />
-        <div style={{ fontSize: '15px', color: '#808080' }}>
-          Waiting Response From Server
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Spin />
+          <div style={{ fontSize: '15px', color: '#808080' }}>
+            Waiting Response From Server, status: timeout but waiting payment from server.
+          </div>
+        </div>
+        <div style={{ fontSize: '11', color: 'initial' }}>
+          Note: Jangan refresh browser jika customer telah membayar
         </div>
       </div>
     )

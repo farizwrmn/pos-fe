@@ -3,12 +3,18 @@ import { color } from 'utils/theme'
 import CountdownTimer from './CountDownTimer'
 import QRCodeGenerator from './QRCodeGenerator'
 
-const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit, qrisMerchantTradeNo }) => {
+const DynamicQrisTemplate = ({
+  qrisImage,
+  total,
+  dynamicQrisTimeLimit,
+  qrisMerchantTradeNo,
+  onTimeout
+}) => {
   const countDownTimerProps = {
     onTimerFinish: () => {
-      console.log('Payment Timeout!')
+      onTimeout()
     },
-    duration: dynamicQrisTimeLimit * 60
+    duration: parseInt(dynamicQrisTimeLimit * 60, 10)
   }
 
   return (

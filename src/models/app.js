@@ -155,9 +155,9 @@ export default {
           index.alignment = 'left'
         }
         storeInfo.stackHeader03 = [
-          { text: (name || '') },
-          { text: (storeInfoData.address01 || '') },
-          { text: `${storeInfoData.mobileNumber || ''}/${storeInfoData.address02 || ''}` }
+          { text: (storeInfoData && storeInfoData.storeName ? storeInfoData.storeName : '') },
+          { text: (storeInfoData.address01 || '').substring(0, 40) },
+          { text: (`${storeInfoData.mobileNumber || ''}`).substring(0, 40) }
         ]
         for (let index of storeInfo.stackHeader03) {
           index.fontSize = 11
