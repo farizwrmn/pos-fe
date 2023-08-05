@@ -150,7 +150,12 @@ class Pos extends Component {
       total: totalPayment,
       qrisImage: dynamicQrisImage,
       dynamicQrisTimeLimit,
-      qrisMerchantTradeNo
+      qrisMerchantTradeNo,
+      onTimeout: () => {
+        this.setState({
+          dynamicQrisImage: null
+        })
+      }
     }
 
     const latestTransactionProps = {

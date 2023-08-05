@@ -73,7 +73,8 @@ const {
   removeDynamicQrisImage,
   removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
   getDynamicQrisImage,
-  removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId
+  removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
+  getQrisPaymentTimeLimit
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -3664,13 +3665,18 @@ export default {
         const response = yield call(queryCheckPaymentTransactionInvoice, { paymentTransactionId })
         if (response && response.success && response.data) {
           const { removeStorage, paymentTransaction } = response.data
+          const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
+          const secondDiff = moment().diff(moment(paymentTransaction.createdAt), 'seconds')
+          const currentPaymentTransactionLimitTimeInSecond = (Number(paymentTransactionLimitTime || 15) * 60) - secondDiff
+          const currentPaymentTransactionLimitTimeInMinute = currentPaymentTransactionLimitTimeInSecond / 60
           if (removeStorage) {
             removeCurrentPaymentTransactionId()
           } else {
             yield put({
               type: 'payment/updateState',
               payload: {
-                paymentTransactionId: paymentTransaction.id
+                paymentTransactionId: paymentTransaction.id,
+                paymentTransactionLimitTime: currentPaymentTransactionLimitTimeInMinute > 0 ? currentPaymentTransactionLimitTimeInMinute : null
               }
             })
             yield put({
