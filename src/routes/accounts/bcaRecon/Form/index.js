@@ -1,10 +1,8 @@
 import React from 'react'
-import { Form, Button, Select, DatePicker, Col, Row } from 'antd'
+import { Form, Button, DatePicker, Col, Row } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
-const { RangePicker } = DatePicker
-const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -40,9 +38,9 @@ const buttonColumnProps = {
 }
 
 const FormAutoCounter = ({
-  listAccountCode,
-  showImportModal,
+  // showImportModal,
   onSubmit,
+  currentMerchant,
   loading,
   query,
   form: {
@@ -51,9 +49,6 @@ const FormAutoCounter = ({
     getFieldsValue
   }
 }) => {
-  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
-  const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -63,9 +58,9 @@ const FormAutoCounter = ({
         ...getFieldsValue()
       }
       onSubmit({
-        accountId: data.accountId,
-        from: moment(data.rangePicker[0]).format('YYYY-MM-DD'),
-        to: moment(data.rangePicker[1]).format('YYYY-MM-DD')
+        transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
+        recordSource: ['TC', 'TD'],
+        merchantId: currentMerchant.id
       })
     })
   }
@@ -75,23 +70,6 @@ const FormAutoCounter = ({
       <Form layout="horizontal">
         <Row>
           <Col {...column}>
-            <FormItem {...formItemLayout} label="Account">
-              {getFieldDecorator('accountId', {
-                initialValue: query && query.accountId ? Number(query.accountId) : (listAccountCode && listAccountCode.length > 0 ? listAccountCode[0].id : undefined),
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
-              })(<Select
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                filterOption={filterOption}
-              >{listAccountOpt}
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col {...column}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('rangePicker', {
                 initialValue: query && query.from && query.to ? [moment.utc(query.from, 'YYYY-MM-DD'), moment.utc(query.to, 'YYYY-MM-DD')] : null,
@@ -100,14 +78,13 @@ const FormAutoCounter = ({
                   message: 'Required'
                 }]
               })(
-                <RangePicker size="large" format="DD-MMM-YYYY" ranges={{}} />
+                <DatePicker defaultValue={moment()} size="large" format="DD-MMM-YYYY" />
               )}
             </FormItem>
           </Col>
           <Col {...buttonColumnProps}>
             <FormItem>
-              <Button style={{ marginRight: '10px' }} type="secondary" icon="download" onClick={() => showImportModal()} loading={loading.effects['autorecon/autoRecon'] || loading.effects['autorecon/add']} >Import</Button>
-              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon'] || loading.effects['autorecon/add']} > Start Reconciliation</Button>
+              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon'] || loading.effects['autorecon/add']}>Query</Button>
             </FormItem>
           </Col>
         </Row>

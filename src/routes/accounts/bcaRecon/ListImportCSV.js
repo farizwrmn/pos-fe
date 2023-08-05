@@ -6,89 +6,28 @@ import styles from '../../../themes/index.less'
 const ListImportCSV = ({ ...tableProps }) => {
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'merchantId',
-      key: 'merchantId'
+      title: 'Edc Batch Number',
+      dataIndex: 'edcBatchNumber',
+      key: 'edcBatchNumber',
+      className: styles.alignRight
+    },
+    {
+      title: 'grossAmount',
+      dataIndex: 'grossAmount',
+      key: 'grossAmount',
+      className: styles.alignLeft
     },
     {
       title: 'mdr',
       dataIndex: 'mdr',
-      key: 'mdr'
-    },
-    {
-      title: 'Edc Batch Number',
-      dataIndex: 'edcBatchNumber',
-      key: 'edcBatchNumber'
-    },
-    {
-      title: 'merchantName',
-      dataIndex: 'merchantName',
-      key: 'merchantName'
-    },
-    {
-      title: 'processEffectiveDate',
-      dataIndex: 'processEffectiveDate',
-      key: 'processEffectiveDate'
-    },
-    {
-      title: 'merchantPaymentDate',
-      dataIndex: 'merchantPaymentDate',
-      key: 'merchantPaymentDate'
-    },
-    {
-      title: 'recordSource',
-      dataIndex: 'recordSource',
-      key: 'recordSource'
-    },
-    {
-      title: 'nettAmount',
-      dataIndex: 'nettAmount',
-      key: 'nettAmount',
-      className: styles.alignRight
-    },
-    {
-      title: 'originalAmount',
-      dataIndex: 'originalAmount',
-      key: 'originalAmount',
-      className: styles.alignRight
-    },
-    {
-      title: 'redeemAmount',
-      dataIndex: 'redeemAmount',
-      key: 'redeemAmount',
-      className: styles.alignRight
-    },
-    {
-      title: 'rewardAmount',
-      dataIndex: 'rewardAmount',
-      key: 'rewardAmount',
-      className: styles.alignRight
-    },
-    {
-      title: 'mdrAmount',
-      dataIndex: 'mdrAmount',
-      key: 'mdrAmount',
-      className: styles.alignRight
-    },
-    {
-      title: 'merchantPaymentStatus',
-      dataIndex: 'merchantPaymentStatus',
-      key: 'merchantPaymentStatus'
+      key: 'mdr',
+      className: styles.alignLeft
     },
     {
       title: 'transactionDate',
       dataIndex: 'transactionDate',
-      key: 'transactionDate'
-    },
-    {
-      title: 'transactionTime',
-      dataIndex: 'transactionTime',
-      key: 'transactionTime'
-    },
-    {
-      title: 'Created',
-      dataIndex: 'createdBy',
-      key: 'createdBy'
+      key: 'transactionDate',
+      className: styles.alignLeft
     }
   ]
 
@@ -98,8 +37,8 @@ const ListImportCSV = ({ ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1200 }}
         rowKey={record => record.id}
+        pagination={false}
       />
     </div>
   )

@@ -72,7 +72,6 @@ const ImportBcaRecon = ({
 
     reader.onload = (event) => {
       const data = event.target.result
-      // console.log('data', data)
       const csvRows = String(data).trim().split('\n')
       const array = csvRows.map((record) => {
         const values = record.split(';')
@@ -114,7 +113,6 @@ const ImportBcaRecon = ({
           transactionCode: item.transactionCode
         })
       })
-      console.log('newDataObjects', reformatArray)
       if (reformatArray && reformatArray.length > 0) {
         dispatch({
           type: 'importBcaRecon/bulkInsert',

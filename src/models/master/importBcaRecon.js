@@ -3,13 +3,15 @@ import { message } from 'antd'
 import {
   query,
   queryFilename,
-  bulkInsert
+  bulkInsert,
+  queryMerchantByStoreId
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog,
   insertImportLog
 } from 'services/master/importBcaReconLog'
 import { pageModel } from 'common'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('File has been saved')
@@ -20,7 +22,9 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    currentMerchant: {},
     modalType: 'add',
+    modalVisible: true,
     list: [],
     listRecon: [],
     pagination: {
@@ -47,7 +51,6 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      payload.updated = 0
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -61,6 +64,21 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+    * queryMerchantByStoreId ({ payload = {} }, { call, put }) {
+      payload.updated = 0
+      let storeId = lstorage.getCurrentUserStore()
+      const data = yield call(queryMerchantByStoreId, storeId)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentMerchant: data.data
+          }
+        })
+      } else {
+        throw data
       }
     },
     * queryBcaRecon ({ payload = {} }, { call, put }) {
@@ -101,7 +119,6 @@ export default modelExtend(pageModel, {
         return
       }
       const data = yield call(bulkInsert, payload)
-      console.log('data', data)
       if (data.success) {
         yield put({ type: 'queryImportLog' })
         yield call(insertImportLog, { filename: payload.filename })

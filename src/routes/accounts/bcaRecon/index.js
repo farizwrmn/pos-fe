@@ -3,36 +3,18 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col, message, Button, Icon } from 'antd'
-import moment from 'moment'
+import { Row, Col } from 'antd'
 import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
+import Form from './Form'
+import styles from '../../../themes/index.less'
 
 const ImportBcaRecon = ({
   loading,
   dispatch,
-  // accountRule,
   importBcaRecon
 }) => {
-  const { list, pagination } = importBcaRecon
-  // const { listAccountCode } = accountRule
-  // const listProps = {
-  //   dataSource: list,
-  //   pagination,
-  //   loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
-  //   onChange (page) {
-  //     const { query, pathname } = location
-  //     dispatch(routerRedux.push({
-  //       pathname,
-  //       query: {
-  //         ...query,
-  //         page: page.current,
-  //         pageSize: page.pageSize
-  //       }
-  //     }))
-  //   }
-  // }
-
+  const { list, listRecon, currentMerchant, pagination } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -51,7 +33,7 @@ const ImportBcaRecon = ({
   }
 
   const listPaymentProps = {
-    dataSource: list,
+    dataSource: listRecon,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
     onChange (page) {
@@ -67,186 +49,46 @@ const ImportBcaRecon = ({
     }
   }
 
-  const uploadProps = {
-    name: 'file',
-    processData: false
-  }
-
-  const csvHeader = [
-    'approvalCode',
-    'cardNumber',
-    'cardType',
-    'dbCrIndicator',
-    'grossAmount',
-    'groupId',
-    'mdr',
-    'merchantId',
-    'edcBatchNumber',
-    'merchantName',
-    'nettAmount',
-    'originalAmount',
-    'processEffectiveDate',
-    'merchantPaymentDate',
-    'recordSource',
-    'redeemAmount',
-    'rewardAmount',
-    'mdrAmount',
-    'merchantPaymentStatus',
-    'reportDate',
-    'merchantSettleDate',
-    'merchantSettleTime',
-    'terminalId',
-    'transactionDate',
-    'transactionTime',
-    'sequenceNumber',
-    'traceNumber',
-    'transactionCode'
-  ]
-
-  const handleChangeFile = (event) => {
-    const file = event.target.files[0]
-    const reader = new FileReader()
-
-    reader.onload = (event) => {
-      const data = event.target.result
-      // console.log('data', data)
-      const csvRows = String(data).trim().split('\n')
-      const array = csvRows.map((record) => {
-        const values = record.split(';')
-        const obj = csvHeader.reduce((object, header, index) => {
-          object[header] = values[index].trim()
-          return object
-        }, {})
-        return obj
+  const formProps = {
+    loading,
+    currentMerchant,
+    query: location.query,
+    showImportModal () {
+      dispatch({
+        type: 'importBcaRecon/updateState',
+        payload: {
+          modalVisible: true
+        }
       })
-      const reformatArray = array.map((item) => {
-        return ({
-          edcBatchNumber: Number(item.edcBatchNumber) || 0,
-          mdr: Number(item.mdr) || 0,
-          mdrAmount: Number(item.mdrAmount) || 0,
-          approvalCode: item.approvalCode,
-          cardNumber: item.cardNumber,
-          cardType: item.cardType,
-          grossAmount: Number(item.grossAmount) || 0,
-          groupId: item.groupId,
-          dbCrIndicator: item.dbCrIndicator,
-          merchantId: Number(item.merchantId) || 0,
-          merchantName: String(item.merchantName).trim(),
-          // merchantPaymentDate: item.merchantPaymentDate,
-          merchantPaymentDate: String(item.merchantPaymentDate).trim() ? moment(item.merchantPaymentDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-          merchantPaymentStatus: item.merchantPaymentStatus,
-          // merchantSettleDate: item.merchantSettleDate,
-          merchantSettleDate: String(item.merchantSettleDate).trim() ? moment(item.merchantSettleDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-          merchantSettleTime: item.merchantSettleTime,
-          nettAmount: Number(item.nettAmount) || 0,
-          originalAmount: Number(item.originalAmount) || 0,
-          // processEffectiveDate: item.processEffectiveDate,
-          processEffectiveDate: String(item.processEffectiveDate).trim() ? moment(item.processEffectiveDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-          recordSource: item.recordSource,
-          redeemAmount: Number(item.redeemAmount) || 0,
-          rewardAmount: Number(item.rewardAmount) || 0,
-          // reportDate: item.reportDate,
-          reportDate: String(item.reportDate).trim() ? moment(item.reportDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-          terminalId: Number(item.terminalId) || 0,
-          sequenceNumber: Number(item.sequenceNumber) || 0,
-          traceNumber: Number(item.traceNumber),
-          transactionDate: String(item.transactionDate).trim() ? moment(item.transactionDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-          transactionTime: item.transactionTime,
-          transactionCode: item.transactionCode
-        })
+    },
+    onSubmit (params) {
+      dispatch({
+        type: 'importBcaRecon/query',
+        payload: {
+          ...params
+        }
       })
-      // console.log('newDataObjects', reformatArray)
-      if (reformatArray && reformatArray.length > 0) {
-        dispatch({
-          type: 'importBcaRecon/bulkInsert',
-          payload: reformatArray
-        })
-      } else {
-        message.error('No Data to Upload')
-      }
     }
-    reader.readAsText(file, { header: false })
   }
 
-  // const formProps = {
-  //   listAccountCode,
-  //   loading,
-  //   query: location.query,
-  //   showImportModal () {
-  //     dispatch({
-  //       type: 'autorecon/updateState',
-  //       payload: {
-  //         modalVisible: true
-  //       }
-  //     })
-  //   },
-  //   onSubmit (params) {
-  //     dispatch({
-  //       type: 'autorecon/autoRecon',
-  //       payload: {
-  //         ...params,
-  //         location
-  //       }
-  //     })
-  //   }
-  // }
-
-  // const handleEqualButton = () => {
-  //   return 0
-  // }
-
-  // const handleAutoRecon = () => {
-  // }
-
-  const ButtonDecision = (item) => {
-    if (item && item.length > 0) {
-      return (
-        <div>
-          <Button type="primary">
-            EQUAL
-            {item.checked ? <Icon type="check" /> : null}
-          </Button>
-        </div>
-      )
-    }
-    return null
-  }
 
   return (
     <div className="content-inner">
       <h1>Bank Recon</h1>
-      <div>
-        <span>
-          <label htmlFor="importCsv" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Import</label>
-          <input
-            id="importCsv"
-            type="file"
-            accept=".csv"
-            className="ant-btn ant-btn-default ant-btn-lg"
-            style={{ visibility: 'hidden' }}
-            {...uploadProps}
-            onClick={(event) => {
-              event.target.value = null
-            }}
-            onInput={(event) => {
-              handleChangeFile(event)
-            }}
-          />
-        </span>
-      </div>
-      <Row type="flex" justify="space-between">
-        <Col span={4}><h3>Transaksi POS K3MART</h3></Col>
-        <Col span={4} />
-        <Col span={4}><h3>Rekening Koran Bank</h3></Col>
+      <Row>
+        <Col>
+          <Form {...formProps} />
+        </Col>
       </Row>
       <Row type="flex" justify="space-between">
-        <Col span={4}>
+        <Col span={12} className={styles.alignCenter}><h3>Transaksi POS K3MART</h3></Col>
+        <Col span={12} className={styles.alignCenter}><h3>Rekening Koran Bank</h3></Col>
+      </Row>
+      <Row>
+        <Col span={12} style={{ padding: '1em' }}>
           <ListPayment {...listPaymentProps} />
         </Col>
-        <Col span={4}>
-          <ButtonDecision />
-        </Col>
-        <Col span={4}>
+        <Col span={12} style={{ padding: '1em' }}>
           <ListImportCSV {...listImportCSV} />
         </Col>
       </Row>
@@ -258,10 +100,8 @@ export default connect(
   ({
     loading,
     importBcaRecon
-    // accountRule
   }) => ({
     loading,
     importBcaRecon
-    // accountRule
   })
 )(ImportBcaRecon)
