@@ -465,6 +465,20 @@ const Routers = function ({ history, app }) {
             }, 'balance-dashboard')
           }
         }, {
+          path: 'balance/v2/current',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/balance-v2/current/'))
+            }, 'balance-dashboard-v2')
+          }
+        }, {
+          path: 'balance/v2/closing',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/balance-v2/closing/'))
+            }, 'balance-dashboard-v2')
+          }
+        }, {
           path: 'balance/current',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
