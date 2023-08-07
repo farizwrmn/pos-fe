@@ -465,18 +465,11 @@ const Routers = function ({ history, app }) {
             }, 'balance-dashboard')
           }
         }, {
-          path: 'balance/v2/current',
+          path: 'setoran/current',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              cb(null, require('./routes/balance-v2/current/'))
-            }, 'balance-dashboard-v2')
-          }
-        }, {
-          path: 'balance/v2/closing',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              cb(null, require('./routes/balance-v2/closing/'))
-            }, 'balance-dashboard-v2')
+              cb(null, require('./routes/setoran/current/'))
+            }, 'setoran-dashboard')
           }
         }, {
           path: 'balance/current',
