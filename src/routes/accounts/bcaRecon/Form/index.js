@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, DatePicker, Col, Row } from 'antd'
+import { Form, Button, DatePicker, Col, Row, message } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
@@ -57,10 +57,15 @@ const FormAutoCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      if (currentMerchant === null) {
+        message.error('merchantId null, please select store has merchantId')
+        return
+      }
+
       onSubmit({
         transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
         recordSource: ['TC', 'TD'],
-        merchantId: currentMerchant.id
+        merchantId: currentMerchant.merchantId
       })
     })
   }

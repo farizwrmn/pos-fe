@@ -32,12 +32,11 @@ export async function queryById (params) {
   })
 }
 
-export async function queryMerchantByStoreId (params) {
+export async function queryMerchantByStoreId (storeId) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `${importbcarecon}/merchant/${params.storeId}`,
+    url: `${importbcarecon}/merchant/${storeId}`,
     method: 'get',
-    data: params,
     headers: apiHeaderToken
   })
 }

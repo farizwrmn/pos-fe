@@ -6,12 +6,12 @@ import {
   bulkInsert,
   queryMerchantByStoreId
 } from 'services/master/importBcaRecon'
+import { lstorage } from 'utils'
 import {
   queryImportLog,
   insertImportLog
 } from 'services/master/importBcaReconLog'
 import { pageModel } from 'common'
-import { lstorage } from 'utils'
 
 const success = () => {
   message.success('File has been saved')
@@ -41,6 +41,13 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
           dispatch({ type: 'queryBcaRecon', payload: other })
+          let storeId = lstorage.getCurrentUserStore()
+          dispatch({
+            type: 'importBcaRecon/queryMerchantByStoreId',
+            payload: {
+              storeId
+            }
+          })
         }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
@@ -68,8 +75,7 @@ export default modelExtend(pageModel, {
     },
     * queryMerchantByStoreId ({ payload = {} }, { call, put }) {
       payload.updated = 0
-      let storeId = lstorage.getCurrentUserStore()
-      const data = yield call(queryMerchantByStoreId, storeId)
+      const data = yield call(queryMerchantByStoreId, payload.storeId)
       if (data.success) {
         yield put({
           type: 'updateState',
