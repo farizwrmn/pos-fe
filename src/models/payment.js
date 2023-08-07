@@ -890,7 +890,7 @@ export default {
               const createdQrisPaymentResponse = createdPaymentTransaction.onlinePaymentResponse
               if (createdQrisPaymentResponse && createdQrisPaymentResponse.qr_string && createdPaymentTransaction.payment) {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
-                const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
+                const merchantTradeNo = createdQrisPaymentResponse.external_id
                 setDynamicQrisPosTransId(responsInsertPos.id)
                 setDynamicQrisImage(createdQrisPaymentResponse.qr_string)
                 setQrisMerchantTradeNo(merchantTradeNo)
