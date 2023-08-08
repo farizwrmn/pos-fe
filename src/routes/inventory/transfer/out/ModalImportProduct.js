@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button } from 'antd'
+import { Table, Modal, Form, InputNumber, Button } from 'antd'
 import moment from 'moment'
 import styles from '../../../../themes/index.less'
+
+const FormItem = Form.Item
 
 class ModalDemand extends Component {
   state = {
@@ -13,10 +15,24 @@ class ModalDemand extends Component {
     const {
       onOk,
       loading,
+      listExcel,
+      form: {
+        getFieldDecorator,
+        getFieldsValue,
+        validateFields
+      },
       ...modalProps
     } = this.props
     const handleOk = () => {
-      onOk()
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const data = {
+          ...getFieldsValue()
+        }
+        onOk(data.from, data.to)
+      })
     }
 
     const columns = [
@@ -76,11 +92,7 @@ class ModalDemand extends Component {
     }
 
     return (
-      <Modal {...modalOpts}
-        footer={[
-          <Button key="submit" onClick={() => handleOk()} type="primary" disabled={loading.effects['importTransferOut/queryTransferOut'] || loading.effects['transferOut/submitImportedProduct']}>Process</Button>
-        ]}
-      >
+      <Modal {...modalOpts} footer={null}>
         <Table
           {...modalProps}
           pagination={{
@@ -102,6 +114,43 @@ class ModalDemand extends Component {
             }
           }
         />
+        <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <FormItem>
+            {getFieldDecorator('from', {
+              initialValue: 1,
+              rules: [
+                {
+                  required: false,
+                  pattern: /^[a-z0-9 -.%#@${}?!/()_]+$/i,
+                  message: 'please insert the value'
+                }
+              ]
+            })(<InputNumber maxLength={3} min={0} style={{ alignItems: 'center', justifyContent: 'center' }} />)}
+          </FormItem>
+          <div style={{ alignItems: 'center', justifyContent: 'center', margin: '0 10px' }}>to</div>
+          <FormItem>
+            {getFieldDecorator('to', {
+              initialValue: modalProps.dataSource.length > 0 ? modalProps.dataSource.length : 1,
+              rules: [
+                {
+                  required: false,
+                  pattern: /^[a-z0-9 -.%#@${}?!/()_]+$/i,
+                  message: 'please insert the value'
+                }
+              ]
+            })(<InputNumber maxLength={3} min={0} style={{ alignItems: 'center', justifyContent: 'center' }} />)}
+          </FormItem>
+          <Button
+            key="submit"
+            onClick={() => handleOk()}
+            type="primary"
+            style={{ alignItems: 'flex-end', justifyContent: 'flex-end', margin: '0 10px' }}
+            disabled={loading.effects['importTransferOut/queryTransferOut']
+              || loading.effects['transferOut/submitImportedProduct']}
+          >
+            Process
+          </Button>
+        </span>
       </Modal>
     )
   }
@@ -114,4 +163,4 @@ ModalDemand.propTypes = {
   invoiceCancel: PropTypes.object
 }
 
-export default ModalDemand
+export default Form.create()(ModalDemand)
