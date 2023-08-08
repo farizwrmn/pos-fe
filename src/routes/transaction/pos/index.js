@@ -2215,7 +2215,7 @@ const Pos = ({
         amount: paymentValue,
         bank: 0,
         machine: 0,
-        typeCode: 'XQ',
+        typeCode: 'PQ',
         chargeNominal: 0,
         chargePercent: 0,
         chargeTotal: 0,
