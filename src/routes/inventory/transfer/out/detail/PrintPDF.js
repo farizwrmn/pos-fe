@@ -79,7 +79,20 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 11 }, {}, { text: 'PIC', fontSize: 11 }, ':', { text: (itemHeader.employeeName ? (itemHeader.employeeName || '') : '').toString(), fontSize: 11 }],
-            [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(itemHeader.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, { text: 'NO POLISI', fontSize: 11 }, ':', { text: (itemHeader.carNumber || '').toString(), fontSize: 11 }],
+            [{
+              text: 'TANGGAL', fontSize: 11
+            }, ':',
+            {
+              text: moment(itemHeader.transDate).format('DD-MM-YYYY'), fontSize: 11
+            }, {}, {
+              text: 'TANGGAL KIRIM', fontSize: 11
+            }, ':',
+            {
+              text: Number(moment(itemHeader.transDate, 'YYYY-MM-DD').add(2, 'days').format('d')) === 0 ?
+                moment(itemHeader.transDate, 'YYYY-MM-DD').add(3, 'days').format('DD-MM-YYYY')
+                : moment(itemHeader.transDate, 'YYYY-MM-DD').add(2, 'days').format('DD-MM-YYYY'),
+              fontSize: 11
+            }],
             [{ text: 'DARI', fontSize: 11 }, ':', { text: (itemHeader.storeName ? (itemHeader.storeName || '') : '').toString(), fontSize: 11 }, {}, { text: 'TOTAL PACK', fontSize: 11 }, ':', { text: (itemHeader.totalColly || ''), fontSize: 11 }],
             [{ text: 'KEPADA', fontSize: 11 }, ':', { text: (itemHeader.storeNameReceiver ? (itemHeader.storeNameReceiver || '') : '').toString(), fontSize: 11 }, {}, { text: 'DESKRIPSI', fontSize: 11 }, ':', { text: `MASUK${itemHeader.description ? `/${itemHeader.description}` : ''}`, fontSize: 11 }]
           ]
