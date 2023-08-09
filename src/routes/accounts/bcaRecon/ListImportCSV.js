@@ -28,6 +28,13 @@ const ListImportCSV = ({ ...tableProps }) => {
       dataIndex: 'transactionDate',
       key: 'transactionDate',
       className: styles.alignLeft
+    },
+    {
+      title: 'match',
+      dataIndex: 'match',
+      key: 'match',
+      className: styles.alignLeft,
+      render: text => (text ? 'match' : '')
     }
   ]
 

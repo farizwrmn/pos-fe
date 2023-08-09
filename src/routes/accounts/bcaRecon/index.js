@@ -7,6 +7,7 @@ import { Row, Col } from 'antd'
 import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import Form from './Form'
+import FormInputMdrAmount from './FormInputMdrAmount'
 import styles from '../../../themes/index.less'
 
 const ImportBcaRecon = ({
@@ -14,7 +15,7 @@ const ImportBcaRecon = ({
   dispatch,
   importBcaRecon
 }) => {
-  const { list, listRecon, currentMerchant, pagination } = importBcaRecon
+  const { list, listSortPayment, listReconNotMatch, modalVisible, currentItem, pagination } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -32,10 +33,32 @@ const ImportBcaRecon = ({
     }
   }
 
+  const formModalInputMdrAmountProps = {
+    loading,
+    modalVisible,
+    currentItem,
+    listReconNotMatch,
+    query: location.query,
+    onCancel () {
+      dispatch({ type: 'importBcaRecon/closeModalInputMdrAmount' })
+    },
+    onSubmit (params) {
+      dispatch({
+        type: 'importBcaRecon/updateList',
+        payload: {
+          ...params
+        }
+      })
+    }
+  }
+
   const listPaymentProps = {
-    dataSource: listRecon,
+    dataSource: listSortPayment,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    openModalInputMdrAmount (params) {
+      dispatch({ type: 'importBcaRecon/openModalInputMdrAmount', payload: { ...params } })
+    },
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -51,13 +74,20 @@ const ImportBcaRecon = ({
 
   const formProps = {
     loading,
-    currentMerchant,
     query: location.query,
-    showImportModal () {
+    onSortNullMdrAmount (params) {
       dispatch({
-        type: 'importBcaRecon/updateState',
+        type: 'importBcaRecon/sortNullMdrAmount',
         payload: {
-          modalVisible: true
+          ...params
+        }
+      })
+    },
+    onQueryPosPayment (params) {
+      dispatch({
+        type: 'importBcaRecon/queryPosPayment',
+        payload: {
+          ...params
         }
       })
     },
@@ -75,6 +105,9 @@ const ImportBcaRecon = ({
   return (
     <div className="content-inner">
       <h1>Bank Recon</h1>
+      <div>
+        <FormInputMdrAmount {...formModalInputMdrAmountProps} />
+      </div>
       <Row>
         <Col>
           <Form {...formProps} />
@@ -99,9 +132,11 @@ const ImportBcaRecon = ({
 export default connect(
   ({
     loading,
+    listSortPayment,
     importBcaRecon
   }) => ({
     loading,
+    listSortPayment,
     importBcaRecon
   })
 )(ImportBcaRecon)

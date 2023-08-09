@@ -1,18 +1,50 @@
 import React from 'react'
 import { Table } from 'antd'
+import moment from 'moment'
 import styles from '../../../themes/index.less'
 
-const ListPayment = ({ ...tableProps }) => {
-  // const handleRowClick = (record) => {
-  //   onShowModalProduct()
-  //   onSelectSticker(record)
-  // }
-
+const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
   const columns = [
-    { title: 'amount', dataIndex: 'amount', key: 'amount', className: styles.alignRight },
-    { title: 'transDate', dataIndex: 'transDate', key: 'transDate', className: styles.alignRight },
-    { title: 'batchNumber', dataIndex: 'batchNumber', key: 'batchNumber', className: styles.alignRight },
-    { title: 'mdrAmount', dataIndex: 'mdrAmount', key: 'mdrAmount', className: styles.alignRight }
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      className: styles.alignRight,
+      render: (text, record) => {
+        if (!record.match) {
+          return (
+            <div style={{ color: '#55a756' }} onClick={() => openModalInputMdrAmount(record)}>{text}</div>
+          )
+        }
+        return text
+      }
+    },
+    {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      className: styles.alignRight,
+      render: text => moment(text).format('YYYY-MM-DD HH:mm:ss')
+    },
+    {
+      title: 'Batch Number',
+      dataIndex: 'batchNumber',
+      key: 'batchNumber',
+      className: styles.alignRight
+    },
+    {
+      title: 'MDR',
+      dataIndex: 'matchMdr',
+      key: 'matchMdr',
+      className: styles.alignRight
+    },
+    {
+      title: 'match',
+      dataIndex: 'match',
+      key: 'match',
+      className: styles.alignLeft,
+      render: text => (text ? 'match' : '')
+    }
   ]
 
   return (
@@ -23,7 +55,6 @@ const ListPayment = ({ ...tableProps }) => {
         simple
         rowKey={record => record.id}
         pagination={false}
-      // onRowClick={record => handleRowClick(record)}
       />
     </div>
   )

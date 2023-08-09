@@ -58,9 +58,9 @@ const ModalFilter = ({
         </FormItem>
         {fields}
         {addOn.map(data =>
-        (<FormItem label={data.label} {...formItemLayout}>
-          {getFieldDecorator(data.decorator)(data.component)}
-        </FormItem>))}
+          (<FormItem label={data.label} {...formItemLayout}>
+            {getFieldDecorator(data.decorator)(data.component)}
+          </FormItem>))}
       </Form>
     </Modal>
   )

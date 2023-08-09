@@ -1,6 +1,13 @@
-import { request, config, crypt, lstorage } from '../../utils'
+import {
+  request,
+  config,
+  crypt,
+  lstorage
+} from '../../utils'
 
-const { importbcarecon } = config.api
+const {
+  importbcarecon
+} = config.api
 
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
@@ -12,10 +19,30 @@ export async function query (params) {
   })
 }
 
+export async function updatePayment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/payment`,
+    method: 'put',
+    data: params.data,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryFilename (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${importbcarecon}/filename`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryPosPayment (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/payment`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

@@ -1,6 +1,7 @@
 import React from 'react'
-import { Form, Button, DatePicker, Col, Row, message } from 'antd'
+import { Form, Button, DatePicker, Col, Row } from 'antd'
 import moment from 'moment'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
 
@@ -38,9 +39,7 @@ const buttonColumnProps = {
 }
 
 const FormAutoCounter = ({
-  // showImportModal,
-  onSubmit,
-  currentMerchant,
+  onSortNullMdrAmount,
   loading,
   query,
   form: {
@@ -57,16 +56,23 @@ const FormAutoCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      if (currentMerchant === null) {
-        message.error('merchantId null, please select store has merchantId')
-        return
-      }
-
-      onSubmit({
-        transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
-        recordSource: ['TC', 'TD'],
-        merchantId: currentMerchant.merchantId
+      let storeId = lstorage.getCurrentUserStore()
+      onSortNullMdrAmount({
+        payment: { storeId, transDate: moment(data.rangePicker).format('YYYY-MM-DD') },
+        paymentImportBca: {
+          transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
+          recordSource: ['TC', 'TD'],
+          storeId,
+          type: 'all'
+        }
       })
+      // onQueryPosPayment({ storeId, transDate: moment(data.rangePicker).format('YYYY-MM-DD') })
+      // onSubmit({
+      //   transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
+      //   recordSource: ['TC', 'TD'],
+      //   storeId,
+      //   type: 'all'
+      // })
     })
   }
 
