@@ -81,7 +81,7 @@ class ModalDemand extends Component {
         width: 75
       },
       {
-        title: 'Sort',
+        title: 'Group Index',
         dataIndex: 'sortIndex',
         key: 'sortIndex',
         className: styles.alignRight,

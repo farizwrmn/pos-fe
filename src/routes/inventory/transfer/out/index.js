@@ -177,7 +177,7 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
       let arrayProd = []
       for (let key in listImported) {
         const item = listImported[key]
-        if ((key) >= (from - 1) && (key) <= (to - 1)) {
+        if (Number(item.sortIndex) >= from && Number(item.sortIndex) <= to) {
           const data = {
             no: arrayProd.length + 1,
             brandName: item.brandName,
