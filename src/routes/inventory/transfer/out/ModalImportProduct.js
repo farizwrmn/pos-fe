@@ -39,55 +39,65 @@ class ModalDemand extends Component {
       {
         title: 'ID',
         dataIndex: 'productId',
-        key: 'productId'
+        key: 'productId',
+        width: 80
       },
       {
         title: 'Code',
         dataIndex: 'productCode',
-        key: 'productCode'
+        key: 'productCode',
+        width: 100
       },
       {
         title: 'Name',
         dataIndex: 'productName',
-        key: 'productName'
+        key: 'productName',
+        width: 150
       },
       {
         title: 'Brand',
         dataIndex: 'brandName',
-        key: 'brandName'
+        key: 'brandName',
+        width: 100
       },
       {
         title: 'Category',
         dataIndex: 'categoryName',
-        key: 'categoryName'
+        key: 'categoryName',
+        width: 120
       },
       {
         title: 'Qty',
         dataIndex: 'qty',
         key: 'qty',
-        className: styles.alignRight
+        className: styles.alignRight,
+        width: 75
       },
       {
         title: 'Stock',
         dataIndex: 'stock',
         key: 'stock',
-        className: styles.alignRight
+        className: styles.alignRight,
+        width: 75
       },
       {
-        title: 'Stock',
+        title: 'Sort',
         dataIndex: 'sortIndex',
         key: 'sortIndex',
-        className: styles.alignRight
+        className: styles.alignRight,
+        width: 75
       },
       {
         title: 'Created',
         dataIndex: 'createdBy',
-        key: 'createdBy'
+        key: 'createdBy',
+        width: 100
       },
       {
         title: 'Created At',
         dataIndex: 'createdAt',
         key: 'createdAt',
+        width: 150,
         render: text => moment(text).format('lll')
       }
     ]
@@ -109,7 +119,7 @@ class ModalDemand extends Component {
           bordered
           columns={columns}
           simple
-          scroll={{ x: 400 }}
+          scroll={{ x: 1000 }}
           rowKey={record => record.id}
           onChange={
             (pagination, filters, sorter) => {
