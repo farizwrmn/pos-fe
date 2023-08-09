@@ -19,6 +19,7 @@ import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
+import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -74,7 +75,8 @@ const {
   removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
   getDynamicQrisImage,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
-  getQrisPaymentTimeLimit
+  getQrisPaymentTimeLimit,
+  setAvailablePaymentType
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -265,6 +267,7 @@ export default {
               storeId: lstorage.getCurrentUserStore()
             }
           })
+          dispatch({ type: 'availablePaymentType' })
           // dispatch({
           //   type: 'queryPaymentTransactionFailed',
           //   payload: {
@@ -3689,6 +3692,15 @@ export default {
             })
           }
         }
+      }
+    },
+    * availablePaymentType (_, { call }) {
+      const response = yield call(queryAvailablePaymentType)
+      if (response && response.success && response.data) {
+        const availablePaymentType = response.data
+        setAvailablePaymentType(availablePaymentType)
+      } else {
+        setAvailablePaymentType('C')
       }
     }
   },
