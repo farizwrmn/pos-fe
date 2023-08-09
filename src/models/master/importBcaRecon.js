@@ -165,9 +165,7 @@ export default modelExtend(pageModel, {
       payload.updated = 1
       // const data = state.list.filter(filtered => filtered.match === false)
       const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
-      console.log('list', list)
       const filterList = list.filter(filtered => !filtered.match)
-      console.log('filterList', filterList)
       yield put({
         type: 'updateState',
         payload: {
