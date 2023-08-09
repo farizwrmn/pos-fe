@@ -74,6 +74,12 @@ class ModalDemand extends Component {
         className: styles.alignRight
       },
       {
+        title: 'Stock',
+        dataIndex: 'sortIndex',
+        key: 'sortIndex',
+        className: styles.alignRight
+      },
+      {
         title: 'Created',
         dataIndex: 'createdBy',
         key: 'createdBy'
