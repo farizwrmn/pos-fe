@@ -1,6 +1,8 @@
-import { Button, Col, Form, Input } from 'antd'
+import { Button, Col, Form, Input, Modal, Select } from 'antd'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -41,10 +43,32 @@ const tailFormItemLayout = {
 }
 
 const BalanceCurrentForm = ({
+  listShift,
+  onSubmit,
   form: {
-    getFieldDecorator
+    getFieldDecorator,
+    validateFields,
+    getFieldsValue
   }
 }) => {
+  const handleSubmit = () => {
+    validateFields((error) => {
+      if (error) return error
+
+      const data = {
+        storeId: lstorage.getCurrentUserStore(),
+        ...getFieldsValue()
+      }
+
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk: () => {
+          onSubmit(data)
+        }
+      })
+    })
+  }
+
   return (
     <Col span={24}>
       <Form layout="horizontal">
@@ -57,16 +81,18 @@ const BalanceCurrentForm = ({
               }
             ]
           })(
-            <Input />
+            <Select placeholder="Choose Shift">
+              {listShift && listShift.map(record => (<Option value={record.id} key={record.id}>{record.shiftName}</Option>))}
+            </Select>
           )}
         </FormItem>
         <FormItem label="Memo" {...formItemLayout} hasFeedback>
           {getFieldDecorator('memo')(
-            <Input />
+            <Input placeholder="Balance Memo (Optional)" />
           )}
         </FormItem>
         <FormItem {...tailFormItemLayout}>
-          <Button type="primary">Open</Button>
+          <Button type="primary" onClick={handleSubmit}>Open</Button>
         </FormItem>
       </Form>
     </Col>

@@ -1,0 +1,81 @@
+import { Col, Form, InputNumber, Table } from 'antd'
+
+const FormItem = Form.Item
+
+const formItemLayout = {
+  labelCol: {
+    xs: 8,
+    sm: 8,
+    md: 4,
+    lg: 4,
+    xl: 2
+  },
+  wrapperCol: {
+    xs: 16,
+    sm: 16,
+    md: 20,
+    lg: 20,
+    xl: 18
+  }
+}
+
+const TableClose = ({
+  getFieldDecorator,
+  listPaymentOption = [
+    {
+      id: 1,
+      name: 'Cash'
+    },
+    {
+      id: 2,
+      name: 'EDC'
+    },
+    {
+      id: 3,
+      name: 'QRIS'
+    }
+  ]
+}) => {
+  const inputColumns = listPaymentOption.map(record => ({
+    title: record.name,
+    render: () => {
+      return getFieldDecorator(`input[${record.name}]`)(
+        <InputNumber
+          formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+          style={{ width: '100%' }}
+        />
+      )
+    }
+  }))
+
+  const columns = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    ...inputColumns
+  ]
+
+  const dataSource = [
+    {
+      description: 'Cashier Input'
+    }
+  ]
+
+  return (
+    <FormItem label="Cashier Input" {...formItemLayout}>
+      <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          bordered
+          pagination={false}
+        />
+      </Col>
+    </FormItem>
+  )
+}
+
+export default TableClose

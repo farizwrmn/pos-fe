@@ -7,7 +7,10 @@ export default modelExtend(pageModel, {
   namespace: 'setoran',
 
   state: {
-    modalType: 'add',
+    formType: 'close',
+
+    currentBalance: {},
+
     activeKey: '0'
   },
 
