@@ -1,5 +1,4 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
 import { getActive } from 'services/balance/balanceProcess'
 import { pageModel } from './../common'
 
@@ -7,7 +6,7 @@ export default modelExtend(pageModel, {
   namespace: 'setoran',
 
   state: {
-    formType: 'close',
+    formType: 'open',
 
     currentBalance: {},
 
@@ -19,7 +18,12 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         if (pathname === '/setoran/current') {
-          dispatch({ type: 'active' })
+          dispatch({
+            type: 'active',
+            payload: {
+              countClosing: 1
+            }
+          })
         }
       })
     }
@@ -27,16 +31,37 @@ export default modelExtend(pageModel, {
 
   effects: {
     * active ({ payload }, { call, put }) {
-      const response = yield call(getActive, payload)
+      const response = yield call(getActive)
       if (response && response.success) {
+        let countClosing = 0
+        if (response.data && response.data.id) {
+          if (payload && payload.countClosing) {
+            countClosing = payload.countClosing
+          }
+        }
+
         yield put({
           type: 'updateState',
           payload: {
-            listPurchaseLatestDetail: response.data
+            currentBalance: {
+              ...response.data
+            } || {}
+          }
+        })
+
+        yield put({
+          type: 'activeDetail',
+          payload: {
+            countClosing
           }
         })
       } else {
-        message.error(response.message)
+        yield put({
+          type: 'updateState',
+          payload: {
+            formType: 'close'
+          }
+        })
       }
     }
   },
