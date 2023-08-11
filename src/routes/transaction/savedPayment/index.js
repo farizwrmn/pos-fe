@@ -206,7 +206,7 @@ const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
     },
     onGetDetail (record) {
       // const { transNo } = e
-      if (record.paymentVia === 'PQ') {
+      if (record.paymentVia === 'PQ' || record.paymentVia === 'XQ') {
         const listUserRole = lstorage.getListUserRoles()
         const checkRole = listUserRole.find(item => item.value === 'OWN')
         if (checkRole) {
