@@ -56,7 +56,7 @@ const BrowseGroup = ({
         return
       }
 
-      if (record && record.paymentVia && record.paymentVia === 'PQ') {
+      if (record && record.paymentVia && (record.paymentVia === 'PQ' || record.paymentVia === 'XQ')) {
         const listUserRole = lstorage.getListUserRoles()
         const checkRole = listUserRole.find(item => item.value === 'OWN' || item.value === 'CAP')
         if (!checkRole) {
