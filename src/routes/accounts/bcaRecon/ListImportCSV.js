@@ -19,8 +19,8 @@ const ListImportCSV = ({ ...tableProps }) => {
     },
     {
       title: 'mdr',
-      dataIndex: 'mdr',
-      key: 'mdr',
+      dataIndex: 'mdrAmount',
+      key: 'mdrAmount',
       className: styles.alignLeft
     },
     {

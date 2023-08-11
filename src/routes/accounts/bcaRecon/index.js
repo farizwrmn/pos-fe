@@ -7,6 +7,8 @@ import { Row, Col } from 'antd'
 import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import Form from './Form'
+import ListSettlementAccumulated from './ListSettlementAccumulated'
+// import FormSettlementAccumulated from './FormSettlementAccumulated'
 import FormInputMdrAmount from './FormInputMdrAmount'
 import styles from '../../../themes/index.less'
 
@@ -15,9 +17,26 @@ const ImportBcaRecon = ({
   dispatch,
   importBcaRecon
 }) => {
-  const { list, listSortPayment, listReconNotMatch, modalVisible, currentItem, pagination } = importBcaRecon
+  const { list, listSortPayment, listReconNotMatch, listSettlementAccumulated, modalVisible, currentItem, pagination } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
+    pagination,
+    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    }
+  }
+
+  const listSettlementAccumulatedProps = {
+    dataSource: listSettlementAccumulated,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
     onChange (page) {
@@ -52,6 +71,25 @@ const ImportBcaRecon = ({
     }
   }
 
+  // const formSettlementAccumulatedProps = {
+  //   loading,
+  //   modalVisible,
+  //   currentItem,
+  //   listSettlementAccumulated,
+  //   query: location.query,
+  //   onCancel () {
+  //     dispatch({ type: 'importBcaRecon/closeModalInputMdrAmount' })
+  //   },
+  //   onSubmit (params) {
+  //     dispatch({
+  //       type: 'importBcaRecon/updateList',
+  //       payload: {
+  //         ...params
+  //       }
+  //     })
+  //   }
+  // }
+
   const listPaymentProps = {
     dataSource: listSortPayment,
     pagination,
@@ -75,6 +113,9 @@ const ImportBcaRecon = ({
   const formProps = {
     loading,
     query: location.query,
+    onClearListImportCSVAndPayment (params) {
+      dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params } })
+    },
     onSortNullMdrAmount (params) {
       dispatch({
         type: 'importBcaRecon/sortNullMdrAmount',
@@ -108,13 +149,21 @@ const ImportBcaRecon = ({
       <div>
         <FormInputMdrAmount {...formModalInputMdrAmountProps} />
       </div>
+      {/* <div>
+        <FormSettlementAccumulated {...formSettlementAccumulatedProps} />
+      </div> */}
       <Row>
         <Col>
           <Form {...formProps} />
         </Col>
       </Row>
+      <Row>
+        <Col style={{ padding: '1em' }}>
+          <ListSettlementAccumulated {...listSettlementAccumulatedProps} />
+        </Col>
+      </Row>
       <Row type="flex" justify="space-between">
-        <Col span={12} className={styles.alignCenter}><h3>Transaksi POS K3MART</h3></Col>
+        <Col span={12} className={styles.alignCenter}><h3>Transaksi POS</h3></Col>
         <Col span={12} className={styles.alignCenter}><h3>Rekening Koran Bank</h3></Col>
       </Row>
       <Row>

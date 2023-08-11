@@ -20,48 +20,40 @@ const formMandatoryField = {
   }
 }
 
-const FormInputMdrAmount = ({
+const FormSettlementAccumulated = ({
   loading,
-  onCancel,
   dispatch,
   className,
   modalVisible,
   currentItem,
   supplierBank,
-  listBank,
+  listSettlementAccumulated,
   listReconNotMatch,
   form: {
     getFieldDecorator,
     getFieldsValue,
     resetFields,
-    validateFields,
-    setFieldsValue
+    validateFields
   },
   onSubmit,
   ...tableProps
 }) => {
-  const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ?
-    listReconNotMatch.map(recon => <Option value={recon.id} key={recon.id}>{`id:${recon.id} batchNumber:${recon.edcBatchNumber} amount:${recon.grossAmount} MDR:${recon.mdrAmount}`}</Option>) : []
-
-  const onFilterListReconNotMatchById = (id) => {
-    const data = listReconNotMatch.filter(filtered => filtered.id === id)
-    setFieldsValue({
-      mdrAmount: data[0].mdrAmount
-    })
-  }
-
+  console.log('listReconNotMatch', listReconNotMatch)
+  const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ? listReconNotMatch.map(recon => <Option value={recon.id} key={recon.id}>{`id:${recon.id} batchNumber:${recon.edcBatchNumber} amount:${recon.grossAmount} MDR:${recon.mdr}`}</Option>) : []
   const reset = () => {
     resetFields(['mdrAmount', 'id', 'csvId'])
   }
 
   const handleOk = () => {
+    const data = {
+      ...getFieldsValue()
+    }
+
     validateFields((errors) => {
       if (errors) {
         return
       }
-      let data = {
-        ...getFieldsValue()
-      }
+
       onSubmit(data)
       reset()
     })
@@ -73,9 +65,10 @@ const FormInputMdrAmount = ({
       visible={modalVisible}
       width="800px"
       height="50%"
-      title="Matching MDR Amount"
+      title="Form Settlement Accumulated"
       footer={[]}
-      onCancel={onCancel}
+      //   <Button key="submit" onClick={() => handleOk()} type="primary" >Ok</Button>
+      // ]}
       {...tableProps}
     >
       <Form>
@@ -104,16 +97,14 @@ const FormInputMdrAmount = ({
                 message: 'The value must be a number with a maximum of 7 decimal places'
               }
             ]
-          })(<InputNumber disabled min={0} style={{ width: '100%' }} />)}
+          })(<InputNumber min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="Rekening Koran NOT MATCH" hasFeedback {...formMandatoryField}>
+        <FormItem label="Rekening" hasFeedback {...formMandatoryField}>
           {getFieldDecorator('csvId', {
             rules: [{ required: true }]
           })(<Select
-            showSearch
             optionFilterProp="children"
             mode="default"
-            onSelect={value => onFilterListReconNotMatchById(value)}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >{childrenLov}
           </Select>)}
@@ -135,9 +126,9 @@ const FormInputMdrAmount = ({
   )
 }
 
-FormInputMdrAmount.propTypes = {
+FormSettlementAccumulated.propTypes = {
   form: PropTypes.object.isRequired,
   supplierBank: PropTypes.object.isRequired
 }
 
-export default Form.create()(FormInputMdrAmount)
+export default Form.create()(FormSettlementAccumulated)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, DatePicker, Col, Row } from 'antd'
+import { Form, Button, DatePicker, Row, Col } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
 
@@ -22,28 +22,15 @@ const formItemLayout = {
   }
 }
 
-const column = {
-  xs: { span: 24 },
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 8 },
-  xl: { span: 8 }
-}
-
-const buttonColumnProps = {
-  xs: 24,
-  sm: 24,
-  md: 10,
-  lg: 8,
-  xl: 8
-}
-
 const FormAutoCounter = ({
   onSortNullMdrAmount,
+  onClearListImportCSVAndPayment,
+  dispatch,
   loading,
   query,
   form: {
     getFieldDecorator,
+    resetFields,
     validateFields,
     getFieldsValue
   }
@@ -76,11 +63,25 @@ const FormAutoCounter = ({
     })
   }
 
+  const handleReset = () => {
+    onClearListImportCSVAndPayment()
+    resetFields()
+  }
+
+  const handleSubmitBcaRecon = (params) => {
+    dispatch({
+      type: 'importBcaRecon/submitBcaRecon',
+      payload: {
+        ...params
+      }
+    })
+  }
+
   return (
     <div>
       <Form layout="horizontal">
         <Row>
-          <Col {...column}>
+          <Col span={8}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('rangePicker', {
                 initialValue: query && query.from && query.to ? [moment.utc(query.from, 'YYYY-MM-DD'), moment.utc(query.to, 'YYYY-MM-DD')] : null,
@@ -93,14 +94,24 @@ const FormAutoCounter = ({
               )}
             </FormItem>
           </Col>
-          <Col {...buttonColumnProps}>
+          <Col span={3}>
             <FormItem>
-              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['autorecon/autoRecon'] || loading.effects['autorecon/add']}>Query</Button>
+              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['importBcaRecon/sortNullMdrAmount']}>Query</Button>
+            </FormItem>
+          </Col>
+          <Col span={3}>
+            <FormItem>
+              <Button type="secondary" onClick={() => handleReset()} loading={loading.effects['importBcaRecon/reset']}>Reset</Button>
+            </FormItem>
+          </Col>
+          <Col span={3}>
+            <FormItem>
+              <Button type="secondary" onClick={() => handleSubmitBcaRecon()} loading={loading.effects['importBcaRecon/submitBcaRecon']}>SUBMIT</Button>
             </FormItem>
           </Col>
         </Row>
       </Form>
-    </div >
+    </div>
   )
 }
 

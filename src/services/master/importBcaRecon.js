@@ -89,6 +89,17 @@ export async function queryProductsBelowMinimum (params) {
   })
 }
 
+export async function submitBcaRecon (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${importbcarecon}/submit-recon`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 
 export async function queryProductByCode (params) {
   let url = `${importbcarecon}/${encodeURIComponent(params)}`

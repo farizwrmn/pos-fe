@@ -8,7 +8,7 @@ import {
   bulkInsert,
   queryPosPayment,
   updatePayment,
-  queryMerchantByStoreId
+  submitBcaRecon
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog,
@@ -35,6 +35,7 @@ export default modelExtend(pageModel, {
     listPosPayment: [],
     listSortPayment: [],
     listReconNotMatch: [],
+    listSettlementAccumulated: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -242,20 +243,6 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * queryMerchantByStoreId ({ payload = {} }, { call, put }) {
-      payload.updated = 0
-      const data = yield call(queryMerchantByStoreId, payload.storeId)
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentMerchant: data.data
-          }
-        })
-      } else {
-        throw data
-      }
-    },
     * queryFilename ({ payload = {} }, { call, put }) {
       payload.updated = 0
       const data = yield call(queryFilename, payload)
@@ -264,6 +251,18 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             listFilename: data.data
+          }
+        })
+      }
+    },
+    * submitBcaRecon ({ payload = {} }, { call, put }) {
+      payload.updated = 0
+      const data = yield call(submitBcaRecon, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listSettlementAccumulated: data.data
           }
         })
       }
@@ -335,6 +334,35 @@ export default modelExtend(pageModel, {
         })
         throw data
       }
+    },
+    * getListAccumulatedAmount ({ payload }, { call, put }) {
+      const data = yield call(insertImportLog, payload)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'queryImportLog'
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
+        })
+        throw data
+      }
+    },
+    * resetListImportCSVAndPayment ({ payload }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          list: [],
+          listSortPayment: [],
+          listReconNotMatch: [],
+          listSettlementAccumulated: []
+        }
+      })
     }
   },
 
