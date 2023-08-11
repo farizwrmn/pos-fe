@@ -184,7 +184,19 @@ export default modelExtend(pageModel, {
           if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
             Modal.error({
               title: 'Failed to add bundle item',
-              content: 'Bundle item out of stock!'
+              content: (
+                <div>
+                  <div>
+                    Bundle item out of stock!
+                  </div>
+                  <div>
+                    Product: {currentDataReward.productCode} - {currentDataReward.productName}
+                  </div>
+                  <div>
+                    Stock: {currentDataReward.stock}
+                  </div>
+                </div>
+              )
             })
             return
           }
