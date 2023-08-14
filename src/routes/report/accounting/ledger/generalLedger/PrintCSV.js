@@ -57,12 +57,14 @@ class PrintCSV extends Component {
     return (
       <Button
         disabled={disabled}
-        type="dashed"
+        type="primary"
         size="large"
-        className="button-width02 button-extra-large bgcolor-green"
+        className="ant-btn ant-btn-primary ant-btn-lg"
+        style={{ marginLeft: '5px' }}
         onClick={() => printXLS()}
       >
         <Icon type="file-excel" className="icon-large" />
+        Print CSV
       </Button>
     )
   }
