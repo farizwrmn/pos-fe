@@ -100,6 +100,17 @@ export async function submitBcaRecon (params) {
   })
 }
 
+export async function getDataPaymentMachine (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
+  return request({
+    url: `${importbcarecon}/payment-machine`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 
 export async function queryProductByCode (params) {
   let url = `${importbcarecon}/${encodeURIComponent(params)}`

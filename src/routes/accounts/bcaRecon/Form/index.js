@@ -25,41 +25,30 @@ const formItemLayout = {
 const FormAutoCounter = ({
   onSortNullMdrAmount,
   onClearListImportCSVAndPayment,
+  disabled,
   dispatch,
   loading,
-  query,
   form: {
     getFieldDecorator,
     resetFields,
-    validateFields,
-    getFieldsValue
+    validateFields
   }
 }) => {
-  const handleSubmit = () => {
+  const handleSubmit = (value) => {
     validateFields((errors) => {
       if (errors) {
         return
       }
-      const data = {
-        ...getFieldsValue()
-      }
       let storeId = lstorage.getCurrentUserStore()
       onSortNullMdrAmount({
-        payment: { storeId, transDate: moment(data.rangePicker).format('YYYY-MM-DD') },
+        payment: { storeId, transDate: moment(value).format('YYYY-MM-DD') },
         paymentImportBca: {
-          transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
+          transactionDate: moment(value).format('YYYY-MM-DD'),
           recordSource: ['TC', 'TD'],
           storeId,
           type: 'all'
         }
       })
-      // onQueryPosPayment({ storeId, transDate: moment(data.rangePicker).format('YYYY-MM-DD') })
-      // onSubmit({
-      //   transactionDate: moment(data.rangePicker).format('YYYY-MM-DD'),
-      //   recordSource: ['TC', 'TD'],
-      //   storeId,
-      //   type: 'all'
-      // })
     })
   }
 
@@ -81,32 +70,21 @@ const FormAutoCounter = ({
     <div>
       <Form layout="horizontal">
         <Row>
-          <Col span={8}>
+          <Col span={4}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('rangePicker', {
-                initialValue: query && query.from && query.to ? [moment.utc(query.from, 'YYYY-MM-DD'), moment.utc(query.to, 'YYYY-MM-DD')] : null,
-                rules: [{
-                  required: true,
-                  message: 'Required'
-                }]
-              })(
-                <DatePicker defaultValue={moment()} size="large" format="DD-MMM-YYYY" />
+              {getFieldDecorator('rangePicker')(
+                <DatePicker onChange={(value, dateString) => handleSubmit(dateString)} defaultValue={moment()} size="large" format="DD-MMM-YYYY" />
               )}
             </FormItem>
           </Col>
-          <Col span={3}>
-            <FormItem>
-              <Button type="primary" icon="check" onClick={() => handleSubmit()} loading={loading.effects['importBcaRecon/sortNullMdrAmount']}>Query</Button>
-            </FormItem>
-          </Col>
-          <Col span={3}>
+          <Col span={18}>
             <FormItem>
               <Button type="secondary" onClick={() => handleReset()} loading={loading.effects['importBcaRecon/reset']}>Reset</Button>
             </FormItem>
           </Col>
-          <Col span={3}>
+          <Col span={2}>
             <FormItem>
-              <Button type="secondary" onClick={() => handleSubmitBcaRecon()} loading={loading.effects['importBcaRecon/submitBcaRecon']}>SUBMIT</Button>
+              <Button type="primary" disabled={disabled} onClick={() => handleSubmitBcaRecon()} loading={loading.effects['importBcaRecon/submitBcaRecon']}>SUBMIT</Button>
             </FormItem>
           </Col>
         </Row>

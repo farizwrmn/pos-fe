@@ -34,7 +34,15 @@ const ListImportCSV = ({ ...tableProps }) => {
       dataIndex: 'match',
       key: 'match',
       className: styles.alignLeft,
-      render: text => (text ? 'match' : '')
+      // render: text => (text ? 'match' : '')
+      render: (text, record) => {
+        if (!record.match) {
+          return ''
+        }
+        return (
+          <div>match</div>
+        )
+      }
     }
   ]
 

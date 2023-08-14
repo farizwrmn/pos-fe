@@ -8,6 +8,7 @@ import {
   bulkInsert,
   queryPosPayment,
   updatePayment,
+  getDataPaymentMachine,
   submitBcaRecon
 } from 'services/master/importBcaRecon'
 import {
@@ -28,13 +29,16 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     currentMerchant: {},
+    currentItemSettlement: {},
     modalType: 'add',
     modalVisible: false,
+    modalSettlementVisible: false,
     list: [],
     listRecon: [],
     listPosPayment: [],
     listSortPayment: [],
     listReconNotMatch: [],
+    listPaymentMachine: [],
     listSettlementAccumulated: [],
     pagination: {
       showSizeChanger: true,
@@ -49,7 +53,7 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'queryBcaRecon', payload: other })
+          dispatch({ type: 'getDataPaymentMachine', payload: other })
         }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
@@ -86,7 +90,8 @@ export default modelExtend(pageModel, {
               matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
-              match: true
+              match: true,
+              editState: true
             })
           } else {
             sortDataPayment.push({
@@ -95,7 +100,8 @@ export default modelExtend(pageModel, {
               matchMdr: null,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
-              match: false
+              match: false,
+              editState: false
             })
           }
         }
@@ -123,11 +129,13 @@ export default modelExtend(pageModel, {
             if (item.id === payload.csvId) {
               return {
                 ...item,
-                match: true
+                match: true,
+                editState: true
               }
             }
             return {
-              ...item
+              ...item,
+              editState: false
             }
           }),
           listSortPayment: listSortPayment.map((item) => {
@@ -174,23 +182,49 @@ export default modelExtend(pageModel, {
         }
       })
     },
-    * openModalInputMdrAmount ({ payload = {} }, { put }) {
+    * openModalInputMdrAmount ({ payload = {} }, { select, put }) {
       payload.updated = 0
-      yield put({ type: 'getListReconNotMatch' })
+      const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
+      const listSortPayment = yield select(({ importBcaRecon }) => importBcaRecon.listSortPayment)
+      const updateList = list.map((item) => {
+        if (item.id === payload.csvId) {
+          return {
+            ...item,
+            match: false
+          }
+        }
+        return { ...item }
+      })
+
+      const updateListSortPayment = listSortPayment.map((item) => {
+        if (item.id === payload.id) {
+          return {
+            ...item,
+            matchMdr: null,
+            match: false
+          }
+        }
+        return { ...item }
+      })
+      const filterList = updateList.filter(filtered => !filtered.match)
       yield put({
         type: 'updateState',
         payload: {
+          list: updateList,
+          listSortPayment: updateListSortPayment,
+          listReconNotMatch: filterList,
           modalVisible: true,
           currentItem: payload
         }
       })
     },
-    * closeModalInputMdrAmount ({ payload = {} }, { put }) {
+    * closeModal ({ payload = {} }, { put }) {
       payload.updated = 0
       yield put({
         type: 'updateState',
         payload: {
-          modalVisible: false
+          modalVisible: false,
+          modalSettlementVisible: false
         }
       })
     },
@@ -361,6 +395,30 @@ export default modelExtend(pageModel, {
           listSortPayment: [],
           listReconNotMatch: [],
           listSettlementAccumulated: []
+        }
+      })
+    },
+    * getDataPaymentMachine ({ payload }, { call, put }) {
+      payload.updated = 0
+      const data = yield call(getDataPaymentMachine, payload)
+      if (data.success) {
+        let isDataNull = data.data.some(item => (item.createdAt === null || item.accountIdReal === null || item.accountIdUnreal === null))
+        if (isDataNull) {
+          message.error('is not settled yet')
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPaymentMachine: data.data
+          }
+        })
+      }
+    },
+    * updateCurrentItemPaymentMachine ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItemSettlement: payload.data
         }
       })
     }

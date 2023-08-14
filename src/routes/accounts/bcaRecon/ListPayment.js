@@ -11,12 +11,12 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       key: 'amount',
       className: styles.alignRight,
       render: (text, record) => {
-        if (!record.match) {
-          return (
-            <div style={{ color: '#55a756' }} onClick={() => openModalInputMdrAmount(record)}>{text}</div>
-          )
+        if (record.match && !!record.editState) {
+          return text
         }
-        return text
+        return (
+          <div style={{ color: '#55a756' }} onClick={() => openModalInputMdrAmount(record)}>{text}</div>
+        )
       }
     },
     {
@@ -43,7 +43,14 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       dataIndex: 'match',
       key: 'match',
       className: styles.alignLeft,
-      render: text => (text ? 'match' : '')
+      render: (text, record) => {
+        if (!record.match) {
+          return ''
+        }
+        return (
+          <div>match</div>
+        )
+      }
     }
   ]
 

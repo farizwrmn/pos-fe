@@ -125,7 +125,7 @@ const FormInputMdrAmount = ({
             style={{ marginLeft: '5px' }}
             onClick={() => handleOk()}
             loading={loading.effects['importBcaRecon/updateList']}
-            disabled={loading.effects['importBcaRecon/updateList'] || loading.effects['importBcaRecon/closeModalInputMdrAmount']}
+            disabled={loading.effects['importBcaRecon/updateList'] || loading.effects['importBcaRecon/closeModal']}
           >
             Submit
           </Button>

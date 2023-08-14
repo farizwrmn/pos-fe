@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Button, InputNumber, Input, Select } from 'antd'
+import { Modal, Form, Button, InputNumber, Input } from 'antd'
 
 const FormItem = Form.Item
-const Option = Select.Option
 
 const formMandatoryField = {
   labelCol: {
@@ -24,11 +23,8 @@ const FormSettlementAccumulated = ({
   loading,
   dispatch,
   className,
-  modalVisible,
-  currentItem,
-  supplierBank,
-  listSettlementAccumulated,
-  listReconNotMatch,
+  modalSettlementVisible,
+  currentItemSettlement,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -38,8 +34,6 @@ const FormSettlementAccumulated = ({
   onSubmit,
   ...tableProps
 }) => {
-  console.log('listReconNotMatch', listReconNotMatch)
-  const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ? listReconNotMatch.map(recon => <Option value={recon.id} key={recon.id}>{`id:${recon.id} batchNumber:${recon.edcBatchNumber} amount:${recon.grossAmount} MDR:${recon.mdr}`}</Option>) : []
   const reset = () => {
     resetFields(['mdrAmount', 'id', 'csvId'])
   }
@@ -62,23 +56,21 @@ const FormSettlementAccumulated = ({
   return (
     <Modal
       className={className}
-      visible={modalVisible}
+      visible={modalSettlementVisible}
       width="800px"
       height="50%"
       title="Form Settlement Accumulated"
       footer={[]}
-      //   <Button key="submit" onClick={() => handleOk()} type="primary" >Ok</Button>
-      // ]}
       {...tableProps}
     >
       <Form>
         <FormItem label="id" hasFeedback {...formMandatoryField}>
           {getFieldDecorator('id', {
-            initialValue: currentItem.id
-          })(<Input disabled value={currentItem.id} />)}
+            initialValue: currentItemSettlement.id
+          })(<Input disabled value={currentItemSettlement.id} />)}
         </FormItem>
-        <FormItem label="Mdr Amount" hasFeedback {...formMandatoryField}>
-          {getFieldDecorator('mdrAmount', {
+        <FormItem label="Amount" hasFeedback {...formMandatoryField}>
+          {getFieldDecorator('amount', {
             normalize: (value) => {
               if (value || value === 0) {
                 if (value.toString().match(/\d+,($|\d+)/)) {
@@ -99,16 +91,6 @@ const FormSettlementAccumulated = ({
             ]
           })(<InputNumber min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="Rekening" hasFeedback {...formMandatoryField}>
-          {getFieldDecorator('csvId', {
-            rules: [{ required: true }]
-          })(<Select
-            optionFilterProp="children"
-            mode="default"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >{childrenLov}
-          </Select>)}
-        </FormItem>
         <FormItem wrapperCol={{ offset: 8, span: 16 }}>
           <Button
             type="primary"
@@ -116,7 +98,7 @@ const FormSettlementAccumulated = ({
             style={{ marginLeft: '5px' }}
             onClick={() => handleOk()}
             loading={loading.effects['importBcaRecon/updateList']}
-            disabled={loading.effects['importBcaRecon/updateList'] || loading.effects['importBcaRecon/closeModalInputMdrAmount']}
+            disabled={loading.effects['importBcaRecon/updateList'] || loading.effects['importBcaRecon/closeModal']}
           >
             Submit
           </Button>
