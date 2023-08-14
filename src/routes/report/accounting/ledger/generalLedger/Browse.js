@@ -3,10 +3,8 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
-import { getLinkName } from 'utils/string'
 
 const { formatNumberIndonesia } = numberFormat
 
@@ -21,21 +19,6 @@ const Browse = ({ dataSource, activeKey, ...browseProps }) => {
       title: 'Account Name',
       dataIndex: 'accountName',
       key: 'accountName'
-    },
-    {
-      title: 'Transaction No',
-      dataIndex: 'transNo',
-      key: 'transNo',
-      render: (text, record) => {
-        const link = getLinkName(record.transactionId, record.transNo, record.transactionType)
-        return <a target="_blank" href={link}>{text}</a>
-      }
-    },
-    {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
-      render: text => moment(text).format('LL')
     },
     {
       title: 'Debit',
