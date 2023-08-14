@@ -524,7 +524,7 @@ export default modelExtend(pageModel, {
             let data = {
               no: selectedProduct.no,
               code: reward.productCode,
-              productId: reward.productId,
+              productId: reward.serviceId,
               name: reward.productName,
               categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
