@@ -19,10 +19,11 @@ export async function query (params) {
   })
 }
 
-export async function updatePayment (params) {
+export async function updateMatchPaymentAndRecon (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
-    url: `${importbcarecon}/payment`,
+    url: `${importbcarecon}/match`,
     method: 'put',
     data: params.data,
     headers: apiHeaderToken
@@ -83,17 +84,6 @@ export async function queryProductsBelowMinimum (params) {
   params.store = lstorage.getCurrentUserStore()
   return request({
     url: `${importbcarecon}/alert`,
-    method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
-
-export async function submitBcaRecon (params) {
-  const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
-  return request({
-    url: `${importbcarecon}/submit-recon`,
     method: 'post',
     data: params,
     headers: apiHeaderToken

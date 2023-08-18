@@ -7,9 +7,8 @@ import {
   queryFilename,
   bulkInsert,
   queryPosPayment,
-  updatePayment,
-  getDataPaymentMachine,
-  submitBcaRecon
+  updateMatchPaymentAndRecon,
+  getDataPaymentMachine
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog,
@@ -53,7 +52,7 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'getDataPaymentMachine', payload: other })
+          // dispatch({ type: 'getDataPaymentMachine', payload: other })
         }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
@@ -129,6 +128,7 @@ export default modelExtend(pageModel, {
             if (item.id === payload.csvId) {
               return {
                 ...item,
+                paymentId: payload.id,
                 match: true,
                 editState: true
               }
@@ -157,8 +157,33 @@ export default modelExtend(pageModel, {
         }
       })
     },
-    * updatePayment ({ payload = {} }, { call, put }) {
-      const data = yield call(updatePayment, { payload })
+    * submitRecon ({ payload = {} }, { call, put, select }) {
+      payload.update = 1
+      const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
+      const listSortPayment = yield select(({ importBcaRecon }) => importBcaRecon.listSortPayment)
+      let filterListLength = list && list.length > 0 && list.filter(filtered => !!filtered.match).length === list.length
+      let filterListSortPaymentLength = listSortPayment && listSortPayment.length > 0 && listSortPayment.filter(filtered => !!filtered.match).length === listSortPayment.length
+      if (!filterListLength && !filterListSortPaymentLength) {
+        message.error('some data not match')
+        return
+      }
+
+      const mappingListWithPaymentId = list.reduce((acc, item, index) => {
+        const payment = listSortPayment.find(({ csvId }) => csvId === item.id)
+        if (payment) {
+          acc[index] = { ...item, paymentId: payment.id }
+        } else {
+          acc[index] = item
+        }
+        return acc
+      }, [])
+
+      const data = yield call(updateMatchPaymentAndRecon, {
+        payload: {
+          csvData: mappingListWithPaymentId,
+          paymentData: listSortPayment
+        }
+      })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -206,6 +231,7 @@ export default modelExtend(pageModel, {
         }
         return { ...item }
       })
+
       const filterList = updateList.filter(filtered => !filtered.match)
       yield put({
         type: 'updateState',
@@ -289,19 +315,6 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * submitBcaRecon ({ payload = {} }, { call, put }) {
-      payload.updated = 0
-      const data = yield call(submitBcaRecon, payload)
-      if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            listSettlementAccumulated: data.data
-          }
-        })
-      }
-    },
-
     * bulkInsert ({ payload }, { call, put }) {
       let dataExist = yield call(queryImportLog, {
         filename: payload.filename

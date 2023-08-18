@@ -8,7 +8,6 @@ import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import ListSettlementAccumulated from './ListSettlementAccumulated'
 import Form from './Form'
-// import FormSettlementAccumulated from './FormSettlementAccumulated'
 import FormInputMdrAmount from './FormInputMdrAmount'
 import styles from '../../../themes/index.less'
 
@@ -60,7 +59,6 @@ const ImportBcaRecon = ({
 
   const formModalInputMdrAmountProps = {
     loading,
-    // disabled: isMatch,
     modalVisible,
     currentItem,
     listReconNotMatch,
@@ -77,26 +75,6 @@ const ImportBcaRecon = ({
       })
     }
   }
-
-  // const formSettlementAccumulatedProps = {
-  //   loading,
-  //   // modalSettlementVisible,
-  //   currentItem,
-  //   // listSettlementAccumulated,
-  //   // listPaymentMachine,
-  //   query: location.query,
-  //   onCancel () {
-  //     dispatch({ type: 'importBcaRecon/closeModal' })
-  //   },
-  //   onSubmit (params) {
-  //     dispatch({
-  //       type: 'importBcaRecon/updateList',
-  //       payload: {
-  //         ...params
-  //       }
-  //     })
-  //   }
-  // }
 
   const listPaymentProps = {
     dataSource: listSortPayment,
@@ -121,6 +99,7 @@ const ImportBcaRecon = ({
   const formProps = {
     loading,
     dispatch,
+    // disabled: isMatch,
     onClearListImportCSVAndPayment (params) {
       dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params } })
     },
@@ -156,9 +135,6 @@ const ImportBcaRecon = ({
       <h1>Bank Recon</h1>
       <div>
         <FormInputMdrAmount {...formModalInputMdrAmountProps} />
-      </div>
-      <div>
-        {/* <FormSettlementAccumulated {...formSettlementAccumulatedProps} /> */}
       </div>
       <Row>
         <Col>

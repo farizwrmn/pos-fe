@@ -59,7 +59,7 @@ const FormAutoCounter = ({
 
   const handleSubmitBcaRecon = (params) => {
     dispatch({
-      type: 'importBcaRecon/submitBcaRecon',
+      type: 'importBcaRecon/submitRecon',
       payload: {
         ...params
       }
