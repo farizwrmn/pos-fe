@@ -34,10 +34,6 @@ export default {
           dispatch({
             type: 'setListNull'
           })
-          dispatch({
-            type: 'queryReturn',
-            payload: location.query
-          })
         } else if (location.pathname === '/report/purchase/return') {
           dispatch({
             type: 'setListNull'
@@ -64,19 +60,18 @@ export default {
       })
     },
     * queryReturn ({ payload }, { call, put }) {
-      let data = []
-      if (payload) {
-        data = yield call(queryReturn, payload)
+      let response = yield call(queryReturn, payload)
+      if (response.success) {
         yield put({
           type: 'querySuccessTrans',
           payload: {
-            listTrans: data.data,
+            listTrans: response.data,
             fromDate: payload.from,
             toDate: payload.to
           }
         })
       } else {
-        data = yield call(queryReturn)
+        throw response
       }
     },
     * queryDaily ({ payload }, { call, put }) {

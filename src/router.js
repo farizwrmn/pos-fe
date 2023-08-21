@@ -907,6 +907,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/purchase'))
               registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/purchase/summary'))
             }, 'report-purchase-summary')
           }
