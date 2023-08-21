@@ -64,7 +64,7 @@ const FormComponent = ({
         <Col span={8}>
           <div>
             {getFieldDecorator(`detail[${name}][balanceIn]`, {
-              initialValue: name === 'C' ? 0 : sales,
+              initialValue: sales,
               rules: [
                 {
                   required: true
@@ -73,7 +73,7 @@ const FormComponent = ({
             })(
               <InputNumber
                 min={0}
-                disabled={name !== 'C'}
+                disabled
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')}

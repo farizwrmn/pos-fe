@@ -72,7 +72,7 @@ const FormComponent = ({
               <Input disabled />
             )}
           </FormItem>
-          <FormItem label="Shift Selanjutnya" hasFeedback {...formItemLayout}>
+          <FormItem label="Assign To" hasFeedback {...formItemLayout}>
             {getFieldDecorator('approveUserId', {
               initialValue: item && item.approveUser ? item.approveUser.userName : undefined,
               rules: [
