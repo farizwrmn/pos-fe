@@ -67,6 +67,24 @@ export default modelExtend(pageModel, {
               })
             }
             break
+          case '/report/hris/employee-checkin':
+            dispatch({ type: 'querySequenceEmployee' })
+            dispatch({
+              type: 'updateState',
+              payload: {
+                activeKey: activeKey || '0'
+              }
+            })
+            if (activeKey === '0') {
+              dispatch({
+                type: 'getCheckinReport',
+                payload: {
+                  from,
+                  to
+                }
+              })
+            }
+            break
           case '/report/service/history':
             dispatch({
               type: 'query'
@@ -188,7 +206,8 @@ export default modelExtend(pageModel, {
       if (response.success) {
         if (modalLoginType === 'editPayment'
           || modalLoginType === 'cancelHistory'
-          || modalLoginType === 'resetAllPosInput') {
+          || modalLoginType === 'resetAllPosInput'
+          || modalLoginType === 'resetPaymentPaylabsQRIS') {
           yield put({
             type: 'salesDiscount/add',
             payload: {

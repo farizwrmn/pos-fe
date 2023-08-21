@@ -1,5 +1,8 @@
 module.exports = {
   color: {
+    white: '#FFFFFF',
+    primary: '#5AC3BE',
+
     lightgrey: '#D3D3D3',
     charcoal: '#494949',
     orange: '#FFA500',

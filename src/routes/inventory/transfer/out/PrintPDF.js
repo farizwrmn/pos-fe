@@ -90,11 +90,16 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
             [
               { text: 'TANGGAL', fontSize: 9 },
               ':',
-              { text: moment().format('DD-MM-YYYY'), fontSize: 9 },
+              { text: moment(itemPrint.transDate, 'YYYY-MM-DD').format('DD-MM-YYYY'), fontSize: 9 },
               {},
-              { text: 'NO POLISI', fontSize: 9 },
+              { text: 'TANGGAL KIRIM', fontSize: 9 },
               ':',
-              { text: (itemPrint.carNumber || '').toString(), fontSize: 9 }
+              {
+                text: Number(moment(itemPrint.transDate, 'YYYY-MM-DD').add(2, 'days').format('d')) === 0 ?
+                  moment(itemPrint.transDate, 'YYYY-MM-DD').add(3, 'days').format('DD-MM-YYYY')
+                  : moment(itemPrint.transDate, 'YYYY-MM-DD').add(2, 'days').format('DD-MM-YYYY'),
+                fontSize: 9
+              }
             ],
             [
               { text: 'DARI', fontSize: 9 },

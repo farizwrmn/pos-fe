@@ -173,6 +173,35 @@ export default modelExtend(pageModel, {
           return
         }
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
+        for (let index in itemRewardProduct) {
+          const currentDataReward = itemRewardProduct[index]
+          const currentDataRewardQty = (itemRewardProduct || [])
+            .filter(filtered => filtered.productCode === currentDataReward.productCode)
+            .reduce((prev, curr) => { return prev + curr.qty }, 0)
+          const currentProduct = (product || []).filter(filtered => filtered.code === currentDataReward.productCode)
+          const currentProductQty = (currentProduct || []).reduce((prev, curr) => { return prev + curr.qty }, 0)
+          const checkQty = currentDataRewardQty + currentProductQty
+          if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
+            Modal.error({
+              title: 'Failed to add bundle item',
+              content: (
+                <div>
+                  <div>
+                    Bundle item out of stock!
+                  </div>
+                  <div>
+                    Product: {currentDataReward.productCode} - {currentDataReward.productName}
+                  </div>
+                  <div>
+                    Stock: {currentDataReward.stock}
+                  </div>
+                </div>
+              )
+            })
+            return
+          }
+        }
+
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
         const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
         const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
@@ -184,7 +213,6 @@ export default modelExtend(pageModel, {
           })
           return
         }
-
         const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
@@ -496,7 +524,7 @@ export default modelExtend(pageModel, {
             let data = {
               no: selectedProduct.no,
               code: reward.productCode,
-              productId: reward.productId,
+              productId: reward.serviceId,
               name: reward.productName,
               categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
@@ -526,7 +554,7 @@ export default modelExtend(pageModel, {
             let data = {
               no: arrayProd.length + 1,
               code: reward.productCode,
-              productId: reward.productId,
+              productId: reward.serviceId,
               name: reward.productName,
               categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,

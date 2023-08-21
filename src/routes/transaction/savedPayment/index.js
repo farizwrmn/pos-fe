@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { posTotal } from 'utils'
+import { posTotal, lstorage } from 'utils'
 import moment from 'moment'
 import Browse from './Browse'
 import Modal from './Modal'
@@ -204,10 +204,26 @@ const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
         payload: e
       })
     },
-    onGetDetail (e) {
+    onGetDetail (record) {
       // const { transNo } = e
-      const invoiceWindow = window.open(`/transaction/pos/invoice/${e.id}`)
-      invoiceWindow.focus()
+      if (record.paymentVia === 'PQ' || record.paymentVia === 'XQ') {
+        const listUserRole = lstorage.getListUserRoles()
+        const checkRole = listUserRole.find(item => item.value === 'OWN')
+        if (checkRole) {
+          const invoiceWindow = window.open(`/transaction/pos/invoice/${record.id}`)
+          invoiceWindow.focus()
+        } else {
+          dispatch({
+            type: 'pos/checkPaymentTransactionValidPaymentByPaymentReference',
+            payload: {
+              reference: record.id
+            }
+          })
+        }
+      } else {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${record.id}`)
+        invoiceWindow.focus()
+      }
       // dispatch({
       //   type: 'pos/queryPosDetail',
       //   payload: {

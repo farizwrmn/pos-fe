@@ -37,6 +37,7 @@ import ModalBundleCategory from './components/ModalBundleCategory'
 import TransactionDetail from './TransactionDetail'
 import Bookmark from './Bookmark'
 import ModalPayment from './ModalPayment'
+import ModalQrisPayment from './ModalQrisPayment'
 import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
@@ -45,15 +46,23 @@ import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
+import DynamicQrisButton from './components/BottomDynamicQrisButton'
+import LatestQrisTransaction from './latestQrisTransaction'
+import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
+import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
 const {
   getCashierTrans, getBundleTrans, getConsignment, getServiceTrans,
+  getCurrentUserStoreName,
   // setCashierTrans, setBundleTrans,
   setServiceTrans,
-  getVoucherList, setVoucherList,
-  removeQrisImage
+  getVoucherList,
+  setVoucherList,
+  removeQrisImage,
+  removeDynamicQrisImage,
+  removeQrisMerchantTradeNo
 } = lstorage
 // const FormItem = Form.Item
 
@@ -99,6 +108,45 @@ function requestFullScreen (element) {
   }
 }
 
+const getDate = (mode) => {
+  let today = new Date()
+  let dd = today.getDate()
+  let mm = today.getMonth() + 1 // January is 0!
+  let yyyy = today.getFullYear()
+  if (dd < 10) {
+    dd = `0${dd}`
+  }
+  if (mm < 10) {
+    mm = `0${mm}`
+  }
+  if (mode === 1) {
+    today = dd + mm + yyyy
+  } else if (mode === 2) {
+    today = mm + yyyy
+  } else if (mode === 3) {
+    today = `${yyyy}-${mm}-${dd}`
+  }
+
+  return today
+}
+
+const checkTime = (i) => {
+  if (i < 10) { i = `0${i}` } // add zero in front of numbers < 10
+  return i
+}
+
+const setTime = () => {
+  let today = new Date()
+  let h = today.getHours()
+  let m = today.getMinutes()
+  let s = today.getSeconds()
+  m = checkTime(m)
+  s = checkTime(s)
+
+  return `${h}:${m}:${s}`
+}
+
+
 const Pos = ({
   pospromo,
   paymentEdc,
@@ -132,6 +180,8 @@ const Pos = ({
     modalProductVisible,
     modalConsignmentVisible,
     modalPaymentVisible,
+    modalQrisPaymentVisible,
+    modalQrisPaymentType,
     listAdvertising,
     curQty,
     totalItem,
@@ -180,7 +230,18 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
-    currentGrabOrder
+    currentGrabOrder,
+    dynamicQrisPaymentAvailability,
+    qrisLatestTransaction,
+    listQrisLatestTransaction,
+    modalQrisLatestTransactionVisible,
+    listQrisTransactionFailed,
+    modalQrisTransactionFailedVisible,
+    modalConfirmQrisPaymentVisible,
+    curTotalDiscount,
+    curRounding,
+    curShift,
+    curCashierNo
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -190,15 +251,21 @@ const Pos = ({
   const {
     // usingWo,
     paymentModalVisible,
-    woNumber
+    woNumber,
+    totalChange,
+    lastTransNo,
+    taxInfo,
+    companyInfo
   } = payment
 
   const {
-    paymentLov: listAllEdc
+    paymentLov: listAllEdc,
+    paymentLovFiltered: listEdc
   } = paymentEdc
   const { listOpts } = paymentOpts
   const {
-    paymentLov: listAllCost
+    paymentLov: listAllCost,
+    paymentLovFiltered: listCost
   } = paymentCost
 
   let currentCashier = {
@@ -935,6 +1002,51 @@ const Pos = ({
       }
     }
   }
+
+  const modalQrisPaymentProps = {
+    dispatch,
+    modalType: modalQrisPaymentType,
+    footer: null,
+    visible: modalQrisPaymentVisible,
+    item: itemPayment,
+    loading,
+    location,
+    payment,
+    pos,
+    app,
+    maskClosable: false,
+    wrapClassName: 'vertical-center-modal',
+    onCancel: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalCancelQrisPaymentVisible: true
+        }
+      })
+    },
+    createPayment: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentVisible: !modalQrisPaymentVisible,
+          modalQrisPaymentType: 'waiting'
+        }
+      })
+    },
+    acceptPayment: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisPaymentType: 'success'
+        }
+      })
+    },
+    paymentFailed: () => {
+      removeDynamicQrisImage()
+      removeQrisMerchantTradeNo()
+    }
+  }
+
   const ModalServiceListProps = {
     location,
     loading,
@@ -1056,12 +1168,13 @@ const Pos = ({
     }
   }
 
-  const chooseProduct = (item) => {
+  const chooseProduct = (item, type = 'choose') => {
     console.log('chooseProduct', item)
     dispatch({
       type: 'pos/chooseProduct',
       payload: {
-        item
+        item,
+        type
       }
     })
   }
@@ -2000,6 +2113,212 @@ const Pos = ({
     }
   }
 
+  const onPaymentDynamicQris = () => {
+    let defaultRole = ''
+    const localId = localStorage.getItem(`${prefix}udi`)
+    if (localId && localId.indexOf('#') > -1) {
+      defaultRole = localId.split(/[# ]+/).pop()
+    }
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+    const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'Member Unit is not Defined '
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are inserting Member Unit without Work Order'
+      })
+    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are Work Order without Member Unit'
+      })
+      if (defaultRole !== 'OWN') {
+        return
+      }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
+    }
+
+    if (bundleItem && bundleItem.length > 0) {
+      const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
+      if (filteredBundlePayment && filteredBundlePayment[0]) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            currentBundlePayment: {
+              paymentOption: filteredBundlePayment[0].paymentOption,
+              paymentBankId: filteredBundlePayment[0].paymentBankId
+            }
+          }
+        })
+      }
+    }
+
+    let listAmount = []
+    if (listVoucher && listVoucher.length > 0) {
+      const voucherMachine = listAllEdc.filter(filtered => filtered.paymentOption === 'V')
+      if (voucherMachine && voucherMachine[0]) {
+        const voucherCost = listAllCost.filter(filtered => filtered.machineId === voucherMachine[0].id)
+        if (voucherCost && voucherCost[0]) {
+          listAmount = (listVoucher || []).map((record, index) => ({
+            id: index + 1,
+            amount: record.voucherValue,
+            bank: voucherCost[0].id,
+            chargeNominal: 0,
+            chargePercent: 0,
+            chargeTotal: 0,
+            description: record.voucherName,
+            voucherCode: record.generatedCode,
+            voucherId: record.voucherId,
+            machine: voucherMachine[0].id,
+            printDate: null,
+            typeCode: 'V'
+          }))
+        } else {
+          Modal.error({
+            title: 'Failed to create QRIS Payment',
+            content: 'Payment Cost is unavailable'
+          })
+        }
+      } else {
+        Modal.error({
+          title: 'Failed to create QRIS Payment',
+          content: 'Payment Machine is unavailable'
+        })
+      }
+    }
+    let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+    if (grandTotal > 0) {
+      const storeId = lstorage.getCurrentUserStore()
+      const curCharge = 0
+      const usageLoyalty = memberInformation.useLoyalty || 0
+      const totalDiscount = usageLoyalty
+      const curNetto = ((parseFloat(grandTotal) - parseFloat(totalDiscount)) + parseFloat(curCharge)) || 0
+      const dineIn = curNetto * (dineInTax / 100)
+      const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+      const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(dineIn)
+      const data = {
+        amount: paymentValue,
+        bank: 0,
+        machine: 0,
+        typeCode: 'PQ',
+        chargeNominal: 0,
+        chargePercent: 0,
+        chargeTotal: 0,
+        description: undefined,
+        id: listAmount.length + 1
+      }
+
+      const filteredEdc = listEdc.find(item => item.id === data.machine && item.paymentOption === data.typeCode)
+      if (!filteredEdc) {
+        const filteredAllEdc = listAllEdc.filter(filtered => filtered.paymentOption === data.typeCode)
+        if (filteredAllEdc && filteredAllEdc[0]) {
+          const filteredCost = listAllCost.filter(filtered => filtered.machineId === filteredAllEdc[0].id)
+          if (filteredCost && filteredCost[0]) {
+            data.machine = filteredAllEdc[0].id
+            data.bank = filteredCost[0].id
+          }
+        }
+      }
+      const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
+
+      if (selectedBank && selectedBank[0]) {
+        data.chargeNominal = selectedBank[0].chargeNominal
+        data.chargePercent = selectedBank[0].chargePercent
+        data.chargeTotal = (data.amount * (data.chargePercent / 100)) + data.chargeNominal
+        if (data.chargeTotal > 0) {
+          Modal.error({
+            title: 'There are credit charge for this payment'
+          })
+        }
+      }
+
+      listAmount.push(data)
+
+      const curTotalPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+      if (loading.effects['payment/createDynamicQrisPayment']) {
+        return
+      }
+
+      const paymentFiltered = listAmount ? listAmount.filter(filtered => filtered.typeCode !== 'C' && filtered.typeCode !== 'V') : []
+      const createDynamicQrisPaymendPayload = {
+        params: {
+          paymentType: 'qris',
+          amount: paymentValue,
+          storeId
+        },
+        periode: moment().format('MMYY'),
+        transDate: getDate(1),
+        transDate2: getDate(3),
+        transTime: setTime(),
+        grandTotal: parseFloat(curTotal) + parseFloat(curTotalDiscount),
+        totalPayment,
+        creditCardNo: '',
+        creditCardType: '',
+        creditCardCharge: 0,
+        curNetto,
+        totalCreditCard: 0,
+        transDatePrint: moment().format('DD MMM YYYY HH:mm'),
+        company: localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : [],
+        gender: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].gender : 'No Member',
+        phone: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].phone : 'No Member',
+        address: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].address01 : 'No Member',
+        lastTransNo,
+        lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) : 0,
+        // paymentVia: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) - (parseFloat(curTotal) + parseFloat(curRounding)) >= 0 ? 'C' : 'P',
+        paymentVia: paymentFiltered && paymentFiltered[0] ? paymentFiltered[0].typeCode : 'C',
+        totalChange,
+        unitInfo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {},
+        totalDiscount: curTotalDiscount,
+        policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+        rounding: curRounding,
+        memberCode: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].id : null,
+        memberId: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberCode : 'No member',
+        employeeName: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0].employeeName : 'No employee',
+        memberName: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].memberName : 'No member',
+        useLoyalty: localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member'))[0].useLoyalty : 0,
+        technicianId: mechanicInformation.employeeCode,
+        curShift,
+        printNo: 1,
+        curCashierNo,
+        cashierId: user.userid,
+        userName: user.username,
+        taxInfo,
+        setting,
+        listAmount,
+        companyInfo,
+        curTotalPayment,
+        curPayment: listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0),
+        usingWo: !((woNumber === '' || woNumber === null)),
+        woNumber: woNumber === '' ? null : woNumber
+      }
+      dispatch({
+        type: 'payment/createDynamicQrisPayment',
+        payload: createDynamicQrisPaymendPayload
+      })
+    } else {
+      Modal.error({
+        title: 'Failed Create QRIS Payment',
+        content: 'Tidak bisa membuat payment qris dengan total 0'
+      })
+    }
+  }
+
   const buttomButtonProps = {
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
@@ -2072,10 +2391,101 @@ const Pos = ({
             payload: {
               modalLoginData: {
                 transNo: user.username,
-                memo: 'Cancel Input POS'
+                memo: `Cancel Input POS ${getCurrentUserStoreName()}`
               }
             }
           })
+        }
+      })
+    }
+  }
+
+  const dynamicQrisButtonProps = {
+    loading,
+    handleDynamicQrisButton: () => {
+      // onPaymentDynamicQris()
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmQrisPaymentVisible: true
+        }
+      })
+    }
+  }
+
+  const getCurrentpaymentValue = () => {
+    let listAmount = []
+    if (listVoucher && listVoucher.length > 0) {
+      const voucherMachine = listAllEdc.filter(filtered => filtered.paymentOption === 'V')
+      if (voucherMachine && voucherMachine[0]) {
+        const voucherCost = listAllCost.filter(filtered => filtered.machineId === voucherMachine[0].id)
+        if (voucherCost && voucherCost[0]) {
+          listAmount = (listVoucher || []).map((record, index) => ({
+            id: index + 1,
+            amount: record.voucherValue,
+            bank: voucherCost[0].id,
+            chargeNominal: 0,
+            chargePercent: 0,
+            chargeTotal: 0,
+            description: record.voucherName,
+            voucherCode: record.generatedCode,
+            voucherId: record.voucherId,
+            machine: voucherMachine[0].id,
+            printDate: null,
+            typeCode: 'V'
+          }))
+        } else {
+          Modal.error({
+            title: 'Failed to create QRIS Payment',
+            content: 'Payment Cost is unavailable'
+          })
+        }
+      } else {
+        Modal.error({
+          title: 'Failed to create QRIS Payment',
+          content: 'Payment Machine is unavailable'
+        })
+      }
+    }
+    let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
+    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+    const paymentValue = (parseFloat(grandTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(dineIn)
+    return paymentValue
+  }
+
+  const modalConfirmDynamicQrisPaymentProps = {
+    paymentValue: getCurrentpaymentValue(),
+    loading,
+    title: 'Confirm Payment',
+    visible: modalConfirmQrisPaymentVisible,
+    maskClosable: false,
+    closable: false,
+    onOk: () => {
+      onPaymentDynamicQris()
+    },
+    onCancel: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmQrisPaymentVisible: false
+        }
+      })
+    }
+  }
+
+  const modalQrisTransactionFailedProps = {
+    list: listQrisTransactionFailed,
+    loading,
+    dispatch,
+    title: 'Invoice Gantung',
+    visible: modalQrisTransactionFailedVisible,
+    maskClosable: false,
+    closable: false,
+    onClose: () => {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisTransactionFailedVisible: false
         }
       })
     }
@@ -2154,7 +2564,7 @@ const Pos = ({
     productBookmark,
     onChange: handleChangeBookmark,
     onChoose (item) {
-      chooseProduct(item)
+      chooseProduct(item, 'barcode')
     },
     onChooseBundle (item) {
       chooseBundle(item)
@@ -2178,6 +2588,29 @@ const Pos = ({
     }
   }
 
+  const latestQrisTransactionProps = {
+    loading,
+    latestTransaction: qrisLatestTransaction,
+    list: listQrisLatestTransaction,
+    modalVisible: modalQrisLatestTransactionVisible,
+    handleClickLatestTransaction: () => {
+      if (!modalQrisLatestTransactionVisible) {
+        dispatch({
+          type: 'pos/getDynamicQrisLatestTransaction',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+      }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisLatestTransactionVisible: !modalQrisLatestTransactionVisible
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -2196,6 +2629,9 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
+          {qrisLatestTransaction && (
+            <LatestQrisTransaction {...latestQrisTransactionProps} />
+          )}
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
@@ -2273,6 +2709,9 @@ const Pos = ({
             </Form>
 
             {paymentModalVisible && <ModalPayment {...modalPaymentTypeProps} />}
+            {modalQrisPaymentVisible && <ModalQrisPayment {...modalQrisPaymentProps} />}
+            {modalConfirmQrisPaymentVisible && <ModalConfirmQrisPayment {...modalConfirmDynamicQrisPaymentProps} />}
+            {modalQrisTransactionFailedVisible && <ModalQrisTransactionFailed {...modalQrisTransactionFailedProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
@@ -2381,6 +2820,7 @@ const Pos = ({
             </Row>
           </Card>
           <BottomButton {...buttomButtonProps} />
+          {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}

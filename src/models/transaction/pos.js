@@ -18,6 +18,8 @@ import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
+import { currencyFormatter } from 'utils/string'
+import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -57,6 +59,8 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
+import moneyRegistered from '../../../public/mp3/moneyRegistered.mp3'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -64,7 +68,15 @@ const {
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
-  getGrabmartOrder, setGrabmartOrder
+  getGrabmartOrder, setGrabmartOrder,
+  setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
+  getDynamicQrisPosTransId, removeQrisImage,
+  removeDynamicQrisImage,
+  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
+  getDynamicQrisImage,
+  removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
+  getQrisPaymentTimeLimit,
+  setAvailablePaymentType
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -116,6 +128,17 @@ export default {
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
+    modalConfirmQrisPaymentVisible: false,
+    modalCancelQrisPaymentVisible: false,
+    modalQrisPaymentVisible: false,
+    modalQrisPaymentType: 'waiting',
+    qrisLatestTransaction: {},
+    listQrisLatestTransaction: [],
+    modalQrisLatestTransactionVisible: false,
+    listQrisTransactionFailed: [],
+    modalQrisTransactionFailedVisible: false,
+    dynamicQrisPaymentAvailability: true,
+    qrisPaymentCurrentTransNo: null,
     modalServiceListVisible: false,
     modalConsignmentListVisible: false,
     modalConfirmVisible: false,
@@ -219,6 +242,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          getDynamicQrisImage()
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
@@ -233,6 +257,25 @@ export default {
           })
           dispatch({
             type: 'getGrabmartOrder'
+          })
+          dispatch({
+            type: 'checkStoreDynamicQrisAvaibility'
+          })
+          dispatch({
+            type: 'getDynamicQrisLatestTransaction',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({ type: 'availablePaymentType' })
+          // dispatch({
+          //   type: 'queryPaymentTransactionFailed',
+          //   payload: {
+          //     storeId: lstorage.getCurrentUserStore()
+          //   }
+          // })
+          dispatch({
+            type: 'checkPaymentTransactionInvoice'
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
@@ -733,11 +776,12 @@ export default {
         })
       }
     },
+
     * cancelInvoice ({ payload }, { call, put }) {
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
       const cancel = yield call(updatePos, payload)
-      if (cancel.success) {
+      if (cancel && cancel.success) {
         const infoStore = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : null
         yield put({
           type: 'queryHistory',
@@ -754,8 +798,80 @@ export default {
           type: 'hidePrintModal'
         })
       } else {
+        if (cancel && cancel.detail) {
+          Modal.error({
+            title: 'Cancel Invoice Error',
+            content: cancel.detail
+          })
+        }
         throw cancel
       }
+    },
+
+    * resetPosLocalStorage (_, { put }) {
+      try {
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('payShortcutSelected')
+        localStorage.removeItem('grabmartOrder')
+        localStorage.removeItem('member')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('lastMeter')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('woNumber')
+        localStorage.removeItem('voucher_list')
+        removeQrisImage()
+        removeDynamicQrisImage()
+        removeQrisMerchantTradeNo()
+        removeDynamicQrisPosTransId()
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('payShortcutSelected')
+        yield put({
+          type: 'pos/setAllNull'
+        })
+        yield put({
+          type: 'pospromo/setAllNull'
+        })
+        yield put({
+          type: 'pos/setPaymentShortcut'
+        })
+        yield put({
+          type: 'pos/getGrabmartOrder'
+        })
+        yield put({
+          type: 'pos/setDefaultMember'
+        })
+        yield put({
+          type: 'pos/setDefaultEmployee'
+        })
+        yield put({
+          type: 'hidePaymentModal'
+        })
+        yield put({
+          type: 'pos/getDynamicQrisLatestTransaction',
+          payload: {
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+      } catch (e) {
+        Modal.error({
+          title: 'Error, Something Went Wrong!',
+          content: `Cache is not cleared correctly :${e}`
+        })
+      }
+
+      localStorage.setItem('typePembelian', TYPE_PEMBELIAN_UMUM)
+      localStorage.setItem('dineInTax', 0)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          modalConfirmVisible: true,
+          typePembelian: TYPE_PEMBELIAN_UMUM,
+          dineInTax: 0
+        }
+      })
     },
 
     * queryPosDetail ({ payload }, { call, put }) {
@@ -3431,6 +3547,160 @@ export default {
         })
       } else {
         throw data
+      }
+    },
+
+    * checkStoreDynamicQrisAvaibility ({ payload = {} }, { call, put }) {
+      const response = yield call(queryCheckStoreAvailability, payload)
+      if (response && response.success && response.data && response.data.paramValue) {
+        const storeStringArray = response.data.paramValue
+        const storeArray = String(storeStringArray).split(',')
+        if (storeArray.length > 0) {
+          const currentStore = lstorage.getCurrentUserStore()
+          const checkStore = storeArray.find(item => Number(item) === Number(currentStore))
+          if (!checkStore) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                dynamicQrisPaymentAvailability: false
+              }
+            })
+          }
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              dynamicQrisPaymentAvailability: true
+            }
+          })
+        }
+      }
+    },
+
+    * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
+      const response = yield call(queryCheckValidByPaymentReference, payload)
+      if (response && response.success) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        invoiceWindow.focus()
+      } else {
+        Modal.error({
+          title: 'Error Message',
+          content: response.message
+        })
+      }
+    },
+
+    * refreshDynamicQrisPayment ({ payload = {} }, { call, put }) {
+      const response = yield call(queryCheckPaymentTransactionStatus, payload)
+      if (response && response.success) {
+        const posId = getDynamicQrisPosTransId()
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        try {
+          // eslint-disable-next-line no-undef
+          new Audio(moneyRegistered).play()
+        } catch (error) {
+          console.log('Audio error:', error)
+        }
+        yield put({
+          type: 'payment/updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalQrisPaymentType: 'success'
+          }
+        })
+        yield put({
+          type: 'resetPosLocalStorage'
+        })
+        removeCurrentPaymentTransactionId()
+        invoiceWindow.focus()
+      } else {
+        Modal.error({
+          title: 'Check Status',
+          content: response.message
+        })
+      }
+    },
+
+    * getDynamicQrisLatestTransaction ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionLatest, payload)
+      if (response && response.success && response.data && response.data.length > 0) {
+        const qrisLatestTransaction = response.data[0]
+        yield put({
+          type: 'updateState',
+          payload: {
+            qrisLatestTransaction,
+            listQrisLatestTransaction: response.data
+          }
+        })
+        setQrisPaymentLastTransaction(`Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
+      } else {
+        removeQrisPaymentLastTransaction()
+      }
+    },
+    * queryPaymentTransactionFailed ({ payload = {} }, { call, put }) {
+      const response = yield call(queryPaymentTransactionFailed, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: response.data,
+            modalQrisTransactionFailedVisible: response.data.length > 0
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisTransactionFailed: [],
+            modalQrisTransactionFailedVisible: false
+          }
+        })
+      }
+    },
+    * checkPaymentTransactionInvoice (_, { call, put }) {
+      const paymentTransactionId = getCurrentPaymentTransactionId()
+      if (paymentTransactionId) {
+        const response = yield call(queryCheckPaymentTransactionInvoice, { paymentTransactionId })
+        if (response && response.success && response.data) {
+          const { removeStorage, paymentTransaction } = response.data
+          const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
+          const secondDiff = moment().diff(moment(paymentTransaction.createdAt), 'seconds')
+          const currentPaymentTransactionLimitTimeInSecond = (Number(paymentTransactionLimitTime || 15) * 60) - secondDiff
+          const currentPaymentTransactionLimitTimeInMinute = currentPaymentTransactionLimitTimeInSecond / 60
+          if (removeStorage) {
+            removeCurrentPaymentTransactionId()
+          } else {
+            yield put({
+              type: 'payment/updateState',
+              payload: {
+                paymentTransactionId: paymentTransaction.id,
+                paymentTransactionLimitTime: currentPaymentTransactionLimitTimeInMinute > 0 ? currentPaymentTransactionLimitTimeInMinute : null
+              }
+            })
+            yield put({
+              type: 'updateState',
+              payload: {
+                modalQrisPaymentVisible: true,
+                modalQrisPaymentType: 'waiting',
+                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo
+              }
+            })
+          }
+        }
+      }
+    },
+    * availablePaymentType (_, { call }) {
+      const response = yield call(queryAvailablePaymentType)
+      if (response && response.success && response.data) {
+        const availablePaymentType = response.data
+        setAvailablePaymentType(availablePaymentType)
+      } else {
+        setAvailablePaymentType('C')
       }
     }
   },

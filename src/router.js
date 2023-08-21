@@ -219,7 +219,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/store'))
-              registerModel(app, require('./models/shopee/shopeeCategory'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
           }
@@ -585,6 +584,19 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-payment')
           }
         }, {
+          path: 'transaction/pos/ModalQrispayment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/paymentOption/cost'))
+              registerModel(app, require('./models/master/paymentOption/edc'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/transaction/pos/payment/'))
+            }, 'transaction-pos-payment')
+          }
+        }, {
           path: 'transaction/procurement/order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -832,6 +844,15 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/report/pos/summary/'))
             }, 'report-pos-summary')
           }
+        },
+        {
+          path: 'report/pos/daily',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/pos'))
+              cb(null, require('./routes/report/pos/daily/'))
+            }, 'report-pos-daily')
+          }
         }, {
           path: 'chart/pos',
           getComponent (nextState, cb) {
@@ -886,6 +907,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/purchase'))
               registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/purchase/summary'))
             }, 'report-purchase-summary')
           }
@@ -1189,6 +1211,18 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/marketing/promo'))
               cb(null, require('./routes/report/marketing/promo'))
             }, 'report-marketing-promo')
+          }
+        }, {
+          path: 'report/hris/employee-checkin',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/employee'))
+              registerModel(app, require('./models/master/jobposition'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/report/hris'))
+            }, 'report-employee-checkin')
           }
         }, {
           path: 'accounts/payment',
@@ -1522,6 +1556,30 @@ const Routers = function ({ history, app }) {
             }, 'k3express/product/k3expressconsignment')
           }
         }, {
+          path: 'k3express/kiosk-category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/kiosk/kioskCategory'))
+              cb(null, require('./routes/k3express/kiosk/kioskCategory'))
+            }, 'k3express/kiosk/kioskCategory')
+          }
+        }, {
+          path: 'k3express/kiosk-product',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/kiosk/kioskProduct'))
+              cb(null, require('./routes/k3express/kiosk/kioskProduct'))
+            }, 'k3express/kiosk/kioskProduct')
+          }
+        }, {
+          path: 'k3express/kiosk-product-properties',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/k3express/kiosk/kioskProductProperties'))
+              cb(null, require('./routes/k3express/kiosk/kioskProductProperties'))
+            }, 'k3express/kiosk/kioskProductProperties')
+          }
+        }, {
           path: 'cash-entry/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1810,6 +1868,7 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/out',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importTransferOut'))
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/product/stockLocation'))
@@ -1827,6 +1886,17 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
             }, 'inventory-transfer-out-detail')
+          }
+        }, {
+          path: 'inventory/transfer/out-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importTransferOut'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/inventory/transfer/importTransferOut'))
+            }, 'inventory-transfer-out-import')
           }
         }, {
           path: 'integration/grabmart-compliance',
@@ -1870,62 +1940,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customertype'))
               cb(null, require('./routes/setting/configure/'))
             }, 'setting-misc')
-          }
-        }, {
-          path: 'integration/shopee/set-code',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/shopee/shopeeIntegration'))
-              cb(null, require('./routes/integration/setCode'))
-            }, 'integration-shopee-setCode')
-          }
-        }, {
-          path: 'integration/shopee/product',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeProduct'))
-              cb(null, require('./routes/integration/shopee/shopeeProduct'))
-            }, 'integration-shopee-product')
-          }
-        }, {
-          path: 'integration/shopee/image-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeImage'))
-              cb(null, require('./routes/integration/shopee/shopeeImage'))
-            }, 'integration-shopee-image')
-          }
-        }, {
-          path: 'integration/shopee/logistic-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeLogistic'))
-              cb(null, require('./routes/integration/shopee/shopeeLogistic'))
-            }, 'integration-shopee-logistic')
-          }
-        }, {
-          path: 'integration/shopee/category-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeCategory'))
-              cb(null, require('./routes/integration/shopee/shopeeCategory'))
-            }, 'integration-shopee-category')
-          }
-        }, {
-          path: 'integration/shopee/brand-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeBrand'))
-              cb(null, require('./routes/integration/shopee/shopeeBrand'))
-            }, 'integration-shopee-brand')
-          }
-        }, {
-          path: 'integration/shopee/queue-lookup',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/integration/shopeeQueue'))
-              cb(null, require('./routes/integration/shopee/shopeeQueue'))
-            }, 'integration-shopee-queue')
           }
         }, {
           path: 'integration/grabmart-campaign',
@@ -2026,7 +2040,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/marketing/bundlingCategory'))
-              registerModel(app, require('./models/shopee/shopeeCategory'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))

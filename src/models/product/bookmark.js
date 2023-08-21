@@ -59,7 +59,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null)
+            list: Array.isArray(data.data) && data.data.filter(filtered => filtered.product !== null || filtered.bundle !== null)
               .map((item) => {
                 if (item.product != null) {
                   if (data && data.storePrice && data.storePrice.length > 0) {

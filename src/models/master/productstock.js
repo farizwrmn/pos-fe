@@ -3,12 +3,10 @@ import { message, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import { query as querySequence } from 'services/sequence'
-import { queryInventoryType } from 'services/transType'
 import moment from 'moment'
 import FormData from 'form-data'
 import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
-import { queryLogisticProduct } from 'services/shopee/shopeeCategory'
 import { queryProductByCode } from 'services/consignment/products'
 import { query as queryProductCost } from 'services/product/productCost'
 import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
@@ -42,7 +40,6 @@ export default modelExtend(pageModel, {
     modalGrabmartCampaignVisible: false,
     modalProductType: '',
     listPrintAllStock: [],
-    listInventory: [],
     tmpProductData: [],
     productInformation: {},
     filteredInfo: {},
@@ -132,16 +129,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * loadDataValue ({ payload = {} }, { call, put }) {
-      const dataType = yield call(queryInventoryType, payload)
-      if (dataType.success && dataType.data && dataType.data.length > 0) {
-        yield put({
-          type: 'updateState',
-          payload: { listInventory: dataType.data }
-        })
-      }
-    },
-
     * hideModalStorePrice (payload, { put }) {
       yield put({
         type: 'updateState',
@@ -491,10 +478,6 @@ export default modelExtend(pageModel, {
       } else {
         payload.data.productImage = '["no_image.png"]'
       }
-      if (payload.data.productImage.enableShopee && payload.data.productImage === '["no_image.png"]') {
-        message.error('Shopee: Image is Required')
-        return
-      }
       // End - Upload Image
       const data = yield call(add, { id: payload.id, data: payload.data })
       if (data.success) {
@@ -503,9 +486,6 @@ export default modelExtend(pageModel, {
         }
         // yield put({ type: 'query' })
         success('Stock Product has been saved')
-        if (payload.data.enableShopee) {
-          success('Shopee Price and Data will be update on every 1 minute')
-        }
         yield put({
           type: 'updateState',
           payload: {
@@ -523,16 +503,6 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({
-          type: 'shopeeCategory/updateState',
-          payload: {
-            lastProductName: undefined,
-            listRecommend: [],
-            listAttribute: [],
-            listLogistic: [],
-            listBrand: []
-          }
-        })
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -545,22 +515,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * editItem ({ payload }, { call, put }) {
-      const logisticList = yield call(queryLogisticProduct, { productId: payload.item.id, productType: 'PRODUCT', type: 'all' })
-      if (payload && payload.item && payload.item.enableShopee && payload.item.shopeeCategoryId) {
-        yield put({
-          type: 'shopeeCategory/queryAttribute',
-          payload: {
-            shopeeAttribute: payload.item.shopeeAttribute,
-            category_id: payload.item.shopeeCategoryId
-          }
-        })
-      }
-      if (payload && payload.item) {
-        if (logisticList.success && logisticList.data && logisticList.data.length > 0) {
-          payload.item.shopeeLogistic = logisticList.data.map(item => item.logistic_id)
-        }
-      }
+    * editItem ({ payload }, { put }) {
       yield put({
         type: 'updateState',
         payload: {
@@ -628,9 +583,6 @@ export default modelExtend(pageModel, {
           payload.reset()
         }
         success('Stock Product has been saved')
-        if (newProductStock.data.enableShopee) {
-          success('Shopee Price and Data will be update on every 1 minute')
-        }
         yield put({
           type: 'updateState',
           payload: {
@@ -648,16 +600,6 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({
-          type: 'shopeeCategory/updateState',
-          payload: {
-            lastProductName: undefined,
-            listRecommend: [],
-            listAttribute: [],
-            listLogistic: [],
-            listBrand: []
-          }
-        })
         yield put({ type: 'query', payload: { stockQuery: true } })
       } else {
         throw data

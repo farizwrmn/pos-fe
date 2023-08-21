@@ -1,14 +1,11 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import moment from 'moment'
-import { message, Modal } from 'antd'
+import { Modal } from 'antd'
 import { lstorage, messageInfo } from 'utils'
 import { EnumRoleType } from 'enums'
-// import { APPNAME, couchdb } from 'utils/config.company'
 import { VERSION, getVersionInfo, prefix, openPages } from 'utils/config.main'
 import { APPNAME } from 'utils/config.company'
-import { query as queryParameter } from 'services/utils/parameter'
-import { login as loginShopee } from 'services/shopee/shopeeApi'
 import { query as queryCustomerType } from '../services/master/customertype'
 import { query as queryPaymentShortcut } from '../services/payment/paymentShortcut'
 import { query, logout, changePw } from '../services/app'
@@ -94,16 +91,7 @@ export default {
       if (success && user) {
         yield put({ type: 'app/queryRefreshNotifications' })
         const notifications = yield call(getNotifications, payload)
-        const parameter = yield call(queryParameter, {
-          type: 'all',
-          paramCode: 'shopeeRequireLogin'
-        })
         getVersionInfo(VERSION)
-        if (parameter.success && parameter.data.length > 0) {
-          lstorage.setShopeeRequireLogin(parseFloat(parameter.data[0].paramValue))
-        } else {
-          lstorage.setShopeeRequireLogin(1)
-        }
         const { permissions } = user
 
         let menu
@@ -166,9 +154,9 @@ export default {
           index.alignment = 'left'
         }
         storeInfo.stackHeader03 = [
-          { text: (name || '') },
-          { text: (storeInfoData.address01 || '') },
-          { text: `${storeInfoData.mobileNumber || ''}/${storeInfoData.address02 || ''}` }
+          { text: (storeInfoData && storeInfoData.storeName ? storeInfoData.storeName : '') },
+          { text: (storeInfoData.address01 || '').substring(0, 40) },
+          { text: (`${storeInfoData.mobileNumber || ''}`).substring(0, 40) }
         ]
         for (let index of storeInfo.stackHeader03) {
           index.fontSize = 11
@@ -211,15 +199,6 @@ export default {
       } else if (openPages && openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname
         window.location = `${location.origin}/login?from=${from}`
-      }
-    },
-
-    * loginShopee ({ payload = {} }, { call }) {
-      const loginUrl = yield call(loginShopee, payload)
-      if (loginUrl.success) {
-        window.open(loginUrl.url, '_self')
-      } else {
-        message.error(loginUrl.message ? `Login shopee failed, message: ${loginUrl.message}` : 'Login shopee failed')
       }
     },
 

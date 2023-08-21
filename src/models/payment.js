@@ -4,6 +4,7 @@ import { query as queryEdc } from 'services/master/paymentOption/paymentMachineS
 import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
+import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -13,7 +14,21 @@ import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
-const { getCashierTrans, getConsignment, removeQrisImage } = lstorage
+const {
+  getCashierTrans,
+  getConsignment,
+  removeQrisImage,
+  setDynamicQrisImage,
+  setQrisMerchantTradeNo,
+  setDynamicQrisPosTransId,
+  removeDynamicQrisImage,
+  removeQrisMerchantTradeNo,
+  removeDynamicQrisPosTransId,
+  setDynamicQrisTimeLimit,
+  getQrisPaymentTimeLimit,
+  setCurrentPaymentTransactionId,
+  removeCurrentPaymentTransactionId
+} = lstorage
 const { getSetting } = variables
 
 const { create } = cashierService
@@ -55,6 +70,9 @@ export default {
     lastMeter: 0,
     modalCreditVisible: false,
     paymentModalVisible: false,
+    paymentTransactionId: null,
+    paymentTransactionInvoiceWindow: null,
+    paymentTransactionLimitTime: null,
     listCreditCharge: [],
     listAmount: [],
     creditCardType: '',
@@ -333,6 +351,9 @@ export default {
                 localStorage.removeItem('woNumber')
                 localStorage.removeItem('voucher_list')
                 removeQrisImage()
+                removeDynamicQrisImage()
+                removeQrisMerchantTradeNo()
+                removeDynamicQrisPosTransId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -355,6 +376,12 @@ export default {
                 })
                 yield put({
                   type: 'hidePaymentModal'
+                })
+                yield put({
+                  type: 'pos/getDynamicQrisLatestTransaction',
+                  payload: {
+                    storeId: lstorage.getCurrentUserStore()
+                  }
                 })
               } catch (e) {
                 Modal.error({
@@ -422,6 +449,12 @@ export default {
                 }
               })
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              yield put({
+                type: 'updateState',
+                payload: {
+                  paymentTransactionInvoiceWindow: invoiceWindow
+                }
+              })
               invoiceWindow.focus()
               // }
             } else {
@@ -621,6 +654,360 @@ export default {
             listSequence: data.data,
             ...sequenceData
           }
+        })
+      }
+    },
+    * createDynamicQrisPayment ({ payload }, { call, select, put }) {
+      removeDynamicQrisImage()
+      const { curTotalPayment, curNetto } = payload
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const typeTrans = yield select(({ payment }) => payment.typeTrans)
+      if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
+        const modal = Modal.warning({
+          title: 'Warning',
+          content: 'Member Not Found...!'
+        })
+        setTimeout(() => modal.destroy(), 1000)
+        return
+      }
+      if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
+        Modal.error({
+          title: 'Payment pending restricted',
+          content: 'This member type cannot allow to pending'
+        })
+        return
+      }
+      if (typeTrans.toString().length === 0) {
+        Modal.warning({
+          title: 'Payment method',
+          content: 'Your Payment method is empty'
+        })
+        return
+      }
+
+      const product = getCashierTrans()
+      const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+      // const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+      const dataPos = product.concat(service)
+      let checkProductId = false
+      for (let n = 0; n < dataPos.length; n += 1) {
+        if (dataPos[n].productId === 0) {
+          checkProductId = true
+          break
+        }
+      }
+      if (checkProductId) {
+        console.log(checkProductId)
+        Modal.error({
+          title: 'Payment',
+          content: 'Something Wrong with Product'
+        })
+        return
+      }
+
+      const invoice = {
+        seqCode: 'INV',
+        type: lstorage.getCurrentUserStore()
+      }
+      const transNo = yield call(querySequence, invoice)
+      const date = yield call(getDateTime, {
+        id: 'timestamp'
+      })
+      if (date.success) {
+        if ((transNo.data === null)) {
+          Modal.error({
+            title: 'Something went wrong',
+            content: `Cannot read transaction number, message: ${transNo.data}`
+          })
+        } else if (payload.address === undefined) {
+          Modal.error({
+            title: 'Payment Fail',
+            content: 'Address is Undefined'
+          })
+        } else if (payload.memberId === undefined) {
+          Modal.error({
+            title: 'Payment Fail',
+            content: 'Member Id is Undefined'
+          })
+        } else if (payload.policeNo === undefined) {
+          Modal.error({
+            title: 'Payment Fail',
+            content: 'Unit is Undefined'
+          })
+        } else {
+          let arrayProd = []
+          const consignment = getConsignment()
+          const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
+          const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
+          const typePembelian = localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 0
+          const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+          const dataPos = product.concat(service)
+          const dataBundle = localStorage.getItem('bundle_promo') ? JSON.parse(localStorage.getItem('bundle_promo')) : []
+          const trans = transNo.data
+          const storeId = lstorage.getCurrentUserStore()
+          const companySetting = JSON.parse((payload.setting.Company || '{}')).taxType
+
+          // Akan di ganti variables
+          for (let key = 0; key < dataPos.length; key += 1) {
+            const totalPrice = ((
+              (dataPos[key].price * dataPos[key].qty) * // price * qty
+              (1 - (dataPos[key].disc1 / 100)) * // -disc1
+              (1 - (dataPos[key].disc2 / 100)) * // -disc2
+              (1 - (dataPos[key].disc3 / 100))) - // -disc3
+              dataPos[key].discount) // -discount
+            const dpp = totalPrice / (companySetting === 'I' ? getDenominatorDppInclude() : 1)
+            const ppn = (companySetting === 'I' ? totalPrice / getDenominatorPPNInclude() : companySetting === 'S' ? totalPrice * getDenominatorPPNExclude() : 0)
+            arrayProd.push({
+              storeId,
+              transNo: trans,
+              categoryCode: dataPos[key].categoryCode,
+              bundleId: dataPos[key].bundleId,
+              bundleName: dataPos[key].bundleName,
+              bundleCode: dataPos[key].bundleCode,
+              hide: dataPos[key].hide,
+              replaceable: dataPos[key].replaceable,
+              employeeId: dataPos[key].employeeId,
+              employeeName: dataPos[key].employeeName,
+              productId: dataPos[key].productId,
+              productCode: dataPos[key].code,
+              productName: dataPos[key].name,
+              qty: dataPos[key].qty,
+              typeCode: dataPos[key].typeCode,
+              oldValue: dataPos[key].oldValue,
+              newValue: dataPos[key].newValue,
+              retailPrice: dataPos[key].retailPrice,
+              distPrice01: dataPos[key].distPrice01,
+              distPrice02: dataPos[key].distPrice02,
+              distPrice03: dataPos[key].distPrice03,
+              distPrice04: dataPos[key].distPrice04,
+              distPrice05: dataPos[key].distPrice05,
+              distPrice06: dataPos[key].distPrice06,
+              distPrice07: dataPos[key].distPrice07,
+              distPrice08: dataPos[key].distPrice08,
+              distPrice09: dataPos[key].distPrice09,
+              sellingPrice: dataPos[key].price,
+              DPP: dpp,
+              PPN: ppn,
+              discount: dataPos[key].discount,
+              disc1: dataPos[key].disc1,
+              disc2: dataPos[key].disc2,
+              disc3: dataPos[key].disc3,
+              totalPrice
+            })
+          }
+          const grandTotal = arrayProd.reduce((cnt, o) => cnt + o.totalPrice, 0)
+          const newArrayProd = arrayProd.map((x) => {
+            const portion = (x.totalPrice / grandTotal)
+            const discountLoyalty = (portion * (payload.useLoyalty || 0))
+            const totalPrice = x.totalPrice - discountLoyalty
+            const dpp = totalPrice / (companySetting === 'I' ? getDenominatorDppInclude() : 1)
+            const ppn = (companySetting === 'I' ? totalPrice / getDenominatorPPNInclude() : companySetting === 'S' ? totalPrice * getDenominatorPPNExclude() : 0)
+            return {
+              storeId: x.storeId,
+              transNo: x.transNo,
+              categoryCode: x.categoryCode,
+              bundleId: x.bundleId,
+              bundleCode: x.bundleCode,
+              bundleName: x.bundleName,
+              hide: x.hide,
+              replaceable: x.replaceable,
+              employeeId: x.employeeId,
+              employeeName: x.employeeName,
+              productId: x.productId,
+              productCode: x.productCode,
+              productName: x.productName,
+              oldValue: x.oldValue,
+              newValue: x.newValue,
+              retailPrice: x.retailPrice,
+              distPrice01: x.distPrice01,
+              distPrice02: x.distPrice02,
+              distPrice03: x.distPrice03,
+              distPrice04: x.distPrice04,
+              distPrice05: x.distPrice05,
+              distPrice06: x.distPrice06,
+              distPrice07: x.distPrice07,
+              distPrice08: x.distPrice08,
+              distPrice09: x.distPrice09,
+              qty: x.qty,
+              typeCode: x.typeCode,
+              sellPrice: x.sellPrice,
+              sellingPrice: x.sellingPrice,
+              DPP: dpp,
+              PPN: ppn,
+              discountLoyalty: discountLoyalty || 0,
+              discount: x.discount,
+              disc1: x.disc1,
+              disc2: x.disc2,
+              disc3: x.disc3,
+              totalPrice
+            }
+          })
+          const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
+          const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
+          if (currentRegister.success || payload.memberCode !== null) {
+            const paymentTransactionParams = payload.params
+            const goodsInfo = product.map(item => `${item.productId}:${item.qty}:${item.total}`).join(';')
+            paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
+            const detailPOS = {
+              dataPos: newArrayProd,
+              dataConsignment: consignment,
+              dataBundle,
+              grabOrder: lstorage.getGrabmartOrder(),
+              transNo: trans,
+              taxType: companySetting,
+              taxInvoiceNo: payload.taxInfo.taxInvoiceNo,
+              taxDate: payload.taxInfo.taxDate,
+              storeId: lstorage.getCurrentUserStore(),
+              memberCode: payload.memberCode,
+              discountLoyalty: payload.useLoyalty || 0,
+              useLoyalty: payload.useLoyalty || 0,
+              technicianId: payload.technicianId,
+              transTime: payload.transTime,
+              total: payload.grandTotal,
+              dineInTax: dineIn,
+              typePembelian: dineInTax === 10 ? TYPE_PEMBELIAN_DINEIN : (dineInTax === 0 ? typePembelian : TYPE_PEMBELIAN_UMUM),
+              lastMeter: localStorage.getItem('lastMeter') ? JSON.parse(localStorage.getItem('lastMeter')) || 0 : 0,
+              creditCardNo: payload.creditCardNo,
+              creditCardType: payload.creditCardType,
+              creditCardCharge: payload.creditCardCharge,
+              totalCreditCard: payload.totalCreditCard,
+              discount: payload.totalDiscount,
+              rounding: payload.rounding,
+              paid: payload.totalPayment,
+              woId: localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')).id : null,
+              paymentVia: payload.paymentVia,
+              policeNo: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).policeNo : null,
+              policeNoId: localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')).id : null,
+              change: payload.totalChange,
+              woReference: payload.woNumber,
+              listAmount: payload.listAmount,
+              paymentTransactionParams
+            }
+            const response = yield call(create, detailPOS)
+            if (response.success) {
+              const responsInsertPos = response.pos
+              const createdPaymentTransaction = responsInsertPos.createdPaymentTransaction
+              const createdQrisPaymentResponse = createdPaymentTransaction.onlinePaymentResponse
+              if (createdQrisPaymentResponse && createdQrisPaymentResponse.qrCode && createdPaymentTransaction.payment) {
+                const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
+                const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
+                setDynamicQrisPosTransId(responsInsertPos.id)
+                setDynamicQrisImage(createdQrisPaymentResponse.qrCode)
+                setQrisMerchantTradeNo(merchantTradeNo)
+                setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
+                setCurrentPaymentTransactionId(createdPaymentTransaction.payment.id)
+                yield put({
+                  type: 'updateState',
+                  payload: {
+                    paymentTransactionId: createdPaymentTransaction.payment.id,
+                    paymentTransactionLimitTime: Number(paymentTransactionLimitTime || 15)
+                  }
+                })
+                yield put({
+                  type: 'pos/updateState',
+                  payload: {
+                    modalQrisPaymentVisible: true,
+                    modalQrisPaymentType: 'waiting',
+                    qrisPaymentCurrentTransNo: responsInsertPos.transNo,
+                    modalConfirmQrisPaymentVisible: false
+                  }
+                })
+                yield put({
+                  type: 'pos/getDynamicQrisLatestTransaction',
+                  payload: {
+                    storeId: lstorage.getCurrentUserStore()
+                  }
+                })
+              } else {
+                yield put({
+                  type: 'pos/updateState',
+                  payload: {
+                    modalQrisPaymentVisible: false,
+                    modalQrisPaymentType: 'waiting'
+                  }
+                })
+                yield put({
+                  type: 'payment/cancelDynamicQrisPayment',
+                  payload: {
+                    paymentTransactionId: createdPaymentTransaction.payment.id,
+                    pos: {
+                      transNo: responsInsertPos.transNo,
+                      memo: 'Canceled Dynamic Qris Payment - Qr Code is not provided'
+                    }
+                  }
+                })
+                Modal.error({
+                  title: 'Dynamic QRIS Failed',
+                  content: 'Failed to create Dynamic Qris Payment'
+                })
+              }
+            } else {
+              if (response && response.message && typeof response.message === 'string') {
+                if (response.message === 'Please set your balance') {
+                  yield put(routerRedux.push('/balance/current'))
+                }
+              }
+              Modal.error({
+                title: 'Error Saving Payment',
+                content: `${JSON.stringify(response.message)}`
+              })
+              if (response.data) {
+                stockMinusAlert(response)
+              }
+              throw response
+            }
+          } else {
+            Modal.error({
+              title: 'Member is required',
+              content: 'Member and cashier information is required'
+            })
+          }
+        }
+      } else {
+        Modal.error({
+          title: 'Cannot get current time'
+        })
+      }
+    },
+    * cancelDynamicQrisPayment ({ payload }, { call, select, put }) {
+      const modalQrisTransactionFailedVisible = yield select(({ pos }) => (pos ? pos.modalQrisTransactionFailedVisible : false))
+      payload.pos.storeId = lstorage.getCurrentUserStore()
+      payload.pos.status = 'C'
+      const response = yield call(cancelDynamicQrisPayment, payload)
+      if (response && response.success) {
+        removeDynamicQrisImage()
+        removeQrisMerchantTradeNo()
+        removeDynamicQrisPosTransId()
+        removeCurrentPaymentTransactionId()
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionId: null
+          }
+        })
+        yield put({
+          type: 'payment/hidePaymentModal'
+        })
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalQrisPaymentVisible: false,
+            modalQrisPaymentType: 'waiting',
+            modalCancelQrisPaymentVisible: false
+          }
+        })
+        if (modalQrisTransactionFailedVisible) {
+          yield put({
+            type: 'pos/queryPaymentTransactionFailed',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+        }
+      } else {
+        Modal.error({
+          title: 'Cancel Payment Error',
+          content: 'Failed to cancel this payment, because its already paid, try to [ Refresh ] this payment'
         })
       }
     }
