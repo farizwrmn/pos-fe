@@ -19,7 +19,6 @@ export async function queryTrans (params) {
 
 export async function queryReturn (params) {
   const apiHeaderToken = crypt.apiheader()
-  params.storeId = lstorage.getCurrentUserStore()
   const url = `${adjustreport}/out/return`
   return request({
     url,

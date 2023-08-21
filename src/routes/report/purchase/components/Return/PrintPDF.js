@@ -5,9 +5,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicReport } from 'components'
-import { numberFormat } from 'utils'
-
-const { formatNumberIndonesia } = numberFormat
 
 const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   // Declare Function
@@ -22,10 +19,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: moment(data.transDate).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 })
-        row.push({ text: data.productCode, alignment: 'right', fontSize: 11 })
-        row.push({ text: data.productName, alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.qty), alignment: 'right', fontSize: 11 })
-        row.push({ text: formatNumberIndonesia(data.amount), alignment: 'right', fontSize: 11 })
+        row.push({ text: data.storeName, alignment: 'right', fontSize: 11 })
+        row.push({ text: data.supplierName, alignment: 'right', fontSize: 11 })
+        row.push({ text: data.memo, alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -33,9 +29,6 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
     return body
   }
 
-  // Declare Variable
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -133,10 +126,9 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TANGGAL', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'STORE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'SUPPLIER', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'MEMO', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
@@ -145,22 +137,12 @@ const PrintPDF = ({ user, listTrans, storeInfo, fromDate, toDate }) => {
   } catch (e) {
     console.log(e)
   }
-  const tableFooter = [
-    [
-      { text: 'Grand Total', colSpan: 5, alignment: 'center', fontSize: 12 },
-      {},
-      {},
-      {},
-      {},
-      { text: formatNumberIndonesia(qtyTotal), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(amountTotal), alignment: 'right', fontSize: 12 }
-    ]
-  ]
+  const tableFooter = []
 
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['4%', '18%', '13%', '18%', '18%', '13%', '16%'],
+    width: ['4%', '18%', '13%', '18%', '18%', '29%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'landscape',
