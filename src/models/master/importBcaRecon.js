@@ -51,9 +51,9 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { ...other } = location.query
         const { pathname } = location
-        if (pathname === '/accounting/bca-recon') {
-          // dispatch({ type: 'getDataPaymentMachine', payload: other })
-        }
+        // if (pathname === '/accounting/bca-recon') {
+        // dispatch({ type: 'getDataPaymentMachine', payload: other })
+        // }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
         }
@@ -197,7 +197,6 @@ export default modelExtend(pageModel, {
     },
     * getListReconNotMatch ({ payload = {} }, { put, select }) {
       payload.updated = 1
-      // const data = state.list.filter(filtered => filtered.match === false)
       const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
       const filterList = list.filter(filtered => !filtered.match)
       yield put({

@@ -109,7 +109,7 @@ const ImportBcaRecon = ({
           sequenceNumber: Number(item.sequenceNumber) || 0,
           traceNumber: Number(item.traceNumber),
           transactionDate: String(item.transactionDate).trim() && moment(item.transactionDate, 'YYYYMMDD').isValid() ? moment(item.transactionDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-          transactionTime: item.transactionTime,
+          transactionTime: String(item.transactionTime),
           transactionCode: item.transactionCode
         })
       })
