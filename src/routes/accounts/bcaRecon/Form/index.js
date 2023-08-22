@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, DatePicker, Row, Col } from 'antd'
+import { Form, Button, DatePicker, Row, Col, Modal } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
 
@@ -25,13 +25,13 @@ const formItemLayout = {
 const FormAutoCounter = ({
   onSortNullMdrAmount,
   onClearListImportCSVAndPayment,
-  disabled,
   dispatch,
   loading,
   form: {
     getFieldDecorator,
     resetFields,
-    validateFields
+    validateFields,
+    getFieldsValue
   }
 }) => {
   const handleSubmit = (value) => {
@@ -57,11 +57,24 @@ const FormAutoCounter = ({
     resetFields()
   }
 
+
   const handleSubmitBcaRecon = (params) => {
+    let data = getFieldsValue()
     dispatch({
       type: 'importBcaRecon/submitRecon',
       payload: {
+        transDate: data.rangePicker,
         ...params
+      }
+    })
+  }
+
+  const handleModal = () => {
+    Modal.confirm({
+      title: 'Submit',
+      content: 'Are you sure to submit the recon ?',
+      onOk () {
+        handleSubmitBcaRecon()
       }
     })
   }
@@ -84,7 +97,14 @@ const FormAutoCounter = ({
           </Col>
           <Col span={2}>
             <FormItem>
-              <Button type="primary" disabled={disabled} onClick={() => handleSubmitBcaRecon()} loading={loading.effects['importBcaRecon/submitBcaRecon']}>SUBMIT</Button>
+              <Button
+                type="primary"
+                disabled={loading.effects['importBcaRecon/submitRecon']}
+                onClick={() => handleModal()}
+                loading={loading.effects['importBcaRecon/submitRecon']}
+              >
+                Submit
+              </Button>
             </FormItem>
           </Col>
         </Row>

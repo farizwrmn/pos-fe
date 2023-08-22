@@ -99,7 +99,6 @@ const ImportBcaRecon = ({
   const formProps = {
     loading,
     dispatch,
-    // disabled: isMatch,
     onClearListImportCSVAndPayment (params) {
       dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params } })
     },

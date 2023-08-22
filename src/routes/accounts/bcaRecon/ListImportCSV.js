@@ -52,7 +52,6 @@ const ListImportCSV = ({ ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        rowKey={record => record.id}
         pagination={false}
       />
     </div>

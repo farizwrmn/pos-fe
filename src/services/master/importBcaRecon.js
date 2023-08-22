@@ -25,7 +25,12 @@ export async function updateMatchPaymentAndRecon (params) {
   return request({
     url: `${importbcarecon}/match`,
     method: 'put',
-    data: params.data,
+    data: {
+      transDate: params.transDate,
+      storeId: params.storeId,
+      csvData: params.csvData,
+      paymentData: params.paymentData
+    },
     headers: apiHeaderToken
   })
 }

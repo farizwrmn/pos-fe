@@ -7,15 +7,15 @@ const ListAccumulatedAmount = ({ openModalInputMdrAmount, ...tableProps }) => {
   const columns = [
     {
       title: 'Date',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'merchantPaymentDate',
+      key: 'merchantPaymentDate',
       className: styles.alignRight,
       render: text => moment(text).format('YYYY-MM-DD HH:mm:ss')
     },
     {
       title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+      dataIndex: 'grossAmount',
+      key: 'grossAmount',
       className: styles.alignRight
     },
     {
@@ -38,7 +38,6 @@ const ListAccumulatedAmount = ({ openModalInputMdrAmount, ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        rowKey={record => record.machineId}
         pagination={false}
       />
     </div>

@@ -43,7 +43,8 @@ export default modelExtend(pageModel, {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
-    }
+    },
+    submitLoading: false
   },
 
   subscriptions: {
@@ -52,7 +53,7 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         // if (pathname === '/accounting/bca-recon') {
-        // dispatch({ type: 'getDataPaymentMachine', payload: other })
+        //   dispatch({ type: 'getDataPaymentMachine', payload: other })
         // }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
@@ -63,6 +64,16 @@ export default modelExtend(pageModel, {
 
   effects: {
     * sortNullMdrAmount ({ payload }, { call, put }) {
+      const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPaymentMachine: data.data
+          }
+        })
+      }
+
       const posPaymentData = yield call(queryPosPayment, payload.payment)
       const paymentImportBcaData = yield call(query, payload.paymentImportBca)
       if (posPaymentData.success && paymentImportBcaData.success
@@ -171,27 +182,30 @@ export default modelExtend(pageModel, {
       const mappingListWithPaymentId = list.reduce((acc, item, index) => {
         const payment = listSortPayment.find(({ csvId }) => csvId === item.id)
         if (payment) {
-          acc[index] = { ...item, paymentId: payment.id }
+          acc[index] = { ...item, merchantId: Number(item.merchantId), paymentId: payment.id }
         } else {
           acc[index] = item
         }
         return acc
       }, [])
-
       const data = yield call(updateMatchPaymentAndRecon, {
-        payload: {
-          csvData: mappingListWithPaymentId,
-          paymentData: listSortPayment
-        }
+        transDate: payload.transDate,
+        csvData: mappingListWithPaymentId,
+        paymentData: listSortPayment
       })
       if (data.success) {
+        message.success('success to submit recon')
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: data.data
+            currentItem: data.data,
+            list: [],
+            listReconNotMatch: [],
+            listSortPayment: []
           }
         })
       } else {
+        message.error(data)
         throw data
       }
     },
