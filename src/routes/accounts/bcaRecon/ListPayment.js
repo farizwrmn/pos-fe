@@ -66,9 +66,4 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
   )
 }
 
-// ListPayment.propTypes = {
-//   editItem: PropTypes.func,
-//   deleteItem: PropTypes.func
-// }
-
 export default ListPayment

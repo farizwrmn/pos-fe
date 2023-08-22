@@ -17,7 +17,6 @@ const ImportBcaRecon = ({
   importBcaRecon
 }) => {
   const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination } = importBcaRecon
-  // listSettlementAccumulated, modalSettlementVisible
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -51,11 +50,6 @@ const ImportBcaRecon = ({
       }))
     }
   }
-
-  // const isMatch = list && list.length > 0 ? list.filtered(filtered => filtered.match === true).length === list.length &&
-  //   listImportCSV && listImportCSV.filtered(filtered => filtered.match === true).length === listImportCSV.length : []
-
-  // console.log('isMatch:', isMatch)
 
   const formModalInputMdrAmountProps = {
     loading,

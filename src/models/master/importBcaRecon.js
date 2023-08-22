@@ -52,9 +52,6 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { ...other } = location.query
         const { pathname } = location
-        // if (pathname === '/accounting/bca-recon') {
-        //   dispatch({ type: 'getDataPaymentMachine', payload: other })
-        // }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
         }
