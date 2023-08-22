@@ -7,9 +7,11 @@ import { connect } from 'dva'
 import Browse from './Browse'
 import Filter from './Filter'
 
-const Report = ({ dispatch, purchaseReport, app }) => {
+const Report = ({ dispatch, loading, userStore, supplier, purchaseReport, app }) => {
   const { listTrans, fromDate, toDate, productCode } = purchaseReport
+  const { listAllStores } = userStore
   const { user, storeInfo } = app
+  const { list } = supplier
   const browseProps = {
     dataSource: listTrans,
     listTrans,
@@ -22,22 +24,40 @@ const Report = ({ dispatch, purchaseReport, app }) => {
 
   const filterProps = {
     listTrans,
+    listSupplier: list,
+    listAllStores,
     user,
     storeInfo,
     fromDate,
     toDate,
+    loading,
     productCode,
+    onSearchSupplier (value) {
+      dispatch({
+        type: 'supplier/query',
+        payload: {
+          q: value
+        }
+      })
+    },
     onListReset () {
       dispatch({
         type: 'purchaseReport/setListNull'
       })
     },
-    onDateChange (from, to) {
+    onDateChange ({
+      from,
+      to,
+      supplierId,
+      storeId
+    }) {
       dispatch({
         type: 'purchaseReport/queryReturn',
         payload: {
           from,
-          to
+          to,
+          supplierId,
+          storeId
         }
       })
     }
@@ -54,7 +74,10 @@ const Report = ({ dispatch, purchaseReport, app }) => {
 Report.propTyps = {
   dispatch: PropTypes.func,
   app: PropTypes.object,
+  loading: PropTypes.object,
+  userStore: PropTypes.object,
+  supplier: PropTypes.object,
   purchaseReport: PropTypes.object
 }
 
-export default connect(({ purchaseReport, app }) => ({ purchaseReport, app }))(Report)
+export default connect(({ loading, userStore, purchaseReport, supplier, app }) => ({ loading, userStore, purchaseReport, supplier, app }))(Report)

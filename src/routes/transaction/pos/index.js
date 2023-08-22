@@ -1168,12 +1168,13 @@ const Pos = ({
     }
   }
 
-  const chooseProduct = (item) => {
+  const chooseProduct = (item, type = 'choose') => {
     console.log('chooseProduct', item)
     dispatch({
       type: 'pos/chooseProduct',
       payload: {
-        item
+        item,
+        type
       }
     })
   }
@@ -2563,7 +2564,7 @@ const Pos = ({
     productBookmark,
     onChange: handleChangeBookmark,
     onChoose (item) {
-      chooseProduct(item)
+      chooseProduct(item, 'barcode')
     },
     onChooseBundle (item) {
       chooseBundle(item)

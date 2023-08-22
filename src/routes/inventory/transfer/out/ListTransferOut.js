@@ -21,6 +21,7 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
       employeeName: listTransOut.employeeName,
       carNumber: listTransOut.carNumber,
       storeName: listTransOut.storeName,
+      transDate: listTransOut.transDate,
       totalColly: listTransOut.totalColly,
       storeNameReceiver: listTransOut.storeNameReceiver,
       description: listTransOut.description

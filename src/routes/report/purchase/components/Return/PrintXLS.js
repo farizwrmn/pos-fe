@@ -13,9 +13,6 @@ const warning = Modal.warning
 const { formatNumberInExcel } = numberFormat
 
 const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
-  let qtyTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let amountTotal = listTrans.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-
   const workbook = new Excel.Workbook()
   workbook.creator = 'smartPOS'
   workbook.created = new Date()
@@ -76,16 +73,8 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
           }
         }
       }
-      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'CODE', 'PRODUCT', 'QTY', 'AMOUNT']
-      const footer = [
-        '',
-        '',
-        '',
-        'GRAND TOTAL',
-        '',
-        '',
-        qtyTotal,
-        amountTotal]
+      const header = ['NO.', '', 'NO_FAKTUR', 'TANGGAL', 'STORE', 'SUPPLIER', 'MEMO']
+      const footer = []
       for (let m = 65; m < (header.length + 65); m += 1) {
         let o = 7
         let count = m - 65
@@ -108,16 +97,12 @@ const PrintXLS = ({ listTrans, dataSource, fromDate, toDate, storeInfo }) => {
         sheet.getCell(`C${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
         sheet.getCell(`D${m}`).value = `${moment(listTrans[n].transDate).format('DD-MMM-YYYY')}`
         sheet.getCell(`D${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`E${m}`).value = listTrans[n].productCode
-        sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`F${m}`).value = listTrans[n].productName
-        sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).value = parseFloat(listTrans[n].qty)
-        sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`G${m}`).numFmt = formatNumberInExcel(listTrans[n].qty, 2)
-        sheet.getCell(`H${m}`).value = parseFloat(listTrans[n].amount)
-        sheet.getCell(`H${m}`).alignment = { vertical: 'middle', horizontal: 'right' }
-        sheet.getCell(`H${m}`).numFmt = formatNumberInExcel(listTrans[n].amount, 2)
+        sheet.getCell(`E${m}`).value = listTrans[n].storeName
+        sheet.getCell(`E${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
+        sheet.getCell(`F${m}`).value = listTrans[n].supplierName
+        sheet.getCell(`F${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
+        sheet.getCell(`G${m}`).value = listTrans[n].memo
+        sheet.getCell(`G${m}`).alignment = { vertical: 'middle', horizontal: 'left' }
       }
 
       for (let m = 65; m < (header.length + 65); m += 1) {

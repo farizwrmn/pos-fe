@@ -117,7 +117,7 @@ const formSupplier = ({
               rules: [
                 {
                   required: true,
-                  pattern: /^([a-zA-Z]{2})+(([a-zA-Z ])?[a-zA-Z]*)*$/,
+                  pattern: /^[a-z0-9-/.,()_ ]+$/i,
                   message: 'a-Z min: 3 characters'
                 }
               ]

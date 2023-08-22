@@ -199,7 +199,7 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
 
   // Declare additional Props
   const XLSProps = {
-    className: 'button-width02 button-extra-large bgcolor-green',
+    className: 'ant-btn ant-btn-primary ant-btn-lg',
     paperSize: 9,
     orientation: 'portrait',
     title,
@@ -212,7 +212,7 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
   }
 
   return (
-    <RepeatExcelReport {...XLSProps} />
+    <RepeatExcelReport buttonType="primary" name="Print XLSX" {...XLSProps} />
   )
 }
 

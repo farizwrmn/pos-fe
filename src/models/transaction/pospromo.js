@@ -184,7 +184,19 @@ export default modelExtend(pageModel, {
           if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
             Modal.error({
               title: 'Failed to add bundle item',
-              content: 'Bundle item out of stock!'
+              content: (
+                <div>
+                  <div>
+                    Bundle item out of stock!
+                  </div>
+                  <div>
+                    Product: {currentDataReward.productCode} - {currentDataReward.productName}
+                  </div>
+                  <div>
+                    Stock: {currentDataReward.stock}
+                  </div>
+                </div>
+              )
             })
             return
           }
@@ -512,7 +524,7 @@ export default modelExtend(pageModel, {
             let data = {
               no: selectedProduct.no,
               code: reward.productCode,
-              productId: reward.productId,
+              productId: reward.serviceId,
               name: reward.productName,
               categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
@@ -542,7 +554,7 @@ export default modelExtend(pageModel, {
             let data = {
               no: arrayProd.length + 1,
               code: reward.productCode,
-              productId: reward.productId,
+              productId: reward.serviceId,
               name: reward.productName,
               categoryCode: reward.categoryCode,
               bundleId: reward.bundleId,
