@@ -1,6 +1,14 @@
 import modelExtend from 'dva-model-extend'
 import { lstorage } from 'utils'
-import moment from 'moment'
+import { query as queryBalance } from 'services/paymentXendit/paymentXenditBalance'
+import { query as queryTransaction } from 'services/paymentXendit/paymentXenditTransaction'
+import { queryKey as queryErrorLog } from 'services/errorLog'
+import {
+  XENDIT_AUTO_GENERATE_BALANCE_HISTORY_REPORT,
+  XENDIT_AUTO_GENERATE_REPORT,
+  XENDIT_AUTO_RECON,
+  XENDIT_AUTO_RECON_BALANCE_HISTORY
+} from 'utils/variable'
 import { pageModel } from './../common'
 
 const {
@@ -12,20 +20,43 @@ export default modelExtend(pageModel, {
   namespace: 'xenditRecon',
 
   state: {
-    activeKey: '0'
+    activeKey: '0',
+
+    listBalance: [],
+    paginationBalance: {
+      current: 1
+    },
+
+    listTransaction: [],
+    paginationTransaction: {
+      current: 1
+    },
+
+    listErrorLog: [],
+    paginationErrorLog: {
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { query } = location
-        const { activeKey, from, to } = query
+        const { activeKey, transDate } = query
         dispatch({
-          type: 'query',
+          type: 'queryBalance',
           payload: {
-            from,
-            to
+            transDate
           }
+        })
+        dispatch({
+          type: 'queryTransaction',
+          payload: {
+            transDate
+          }
+        })
+        dispatch({
+          type: 'queryErrorLog'
         })
         if (activeKey) {
           dispatch({
@@ -40,20 +71,72 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query ({ payload = {} }, { put }) {
+    * queryBalance ({ payload = {} }, { call, put }) {
+      payload.order = '-transDate'
       const userRole = getCurrentUserRole()
-      const currentStore = getCurrentUserStore
-      const { from = moment().format('YYYY-MM-DD'), to = moment().format('YYYY-MM-DD') } = payload
-      console.log('userRole', userRole)
-      console.log('from', from)
-      console.log('to', to)
-      console.log('currentStore', currentStore)
-      yield put({
-        type: 'updateState',
-        payload: {
-          test: 'test'
-        }
-      })
+      const currentStore = getCurrentUserStore()
+      if (userRole !== 'OWN') {
+        payload.storeId = currentStore
+      }
+      const response = yield call(queryBalance, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBalance: response.data,
+            paginationBalance: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      }
+    },
+    * queryTransaction ({ payload = {} }, { call, put }) {
+      payload.order = '-transDate'
+      const userRole = getCurrentUserRole()
+      const currentStore = getCurrentUserStore()
+      if (userRole !== 'OWN') {
+        payload.storeId = currentStore
+      }
+      const response = yield call(queryTransaction, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransaction: response.data,
+            paginationTransaction: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      }
+    },
+    * queryErrorLog ({ payload = {} }, { call, put }) {
+      payload.logKey = [
+        XENDIT_AUTO_RECON,
+        XENDIT_AUTO_RECON_BALANCE_HISTORY,
+        XENDIT_AUTO_GENERATE_BALANCE_HISTORY_REPORT,
+        XENDIT_AUTO_GENERATE_REPORT
+      ]
+      payload.order = '-createdAt'
+      const response = yield call(queryErrorLog, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listErrorLog: response.data,
+            paginationErrorLog: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      }
     }
   },
 
