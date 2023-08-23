@@ -1,6 +1,8 @@
 import { DatePicker } from 'antd'
+import moment from 'moment'
 
 const Filter = ({
+  location,
   removeTransDate,
   onDateChange
 }) => {
@@ -13,8 +15,17 @@ const Filter = ({
     onDateChange(value)
   }
 
+  const { query } = location
+  const { transDate = null } = query
+
+  const defaultDate = transDate ? moment(transDate, 'YYYY-MM-DD') : null
+
   return (
-    <DatePicker allowClear onChange={handleChange} />
+    <DatePicker
+      value={defaultDate}
+      allowClear
+      onChange={handleChange}
+    />
   )
 }
 

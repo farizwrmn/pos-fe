@@ -98,6 +98,7 @@ class XenditRecon extends React.Component {
     }
 
     const filterProps = {
+      location,
       removeTransDate: () => {
         const { pathname, query } = location
         const { transDate, ...other } = query
