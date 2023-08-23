@@ -1701,6 +1701,14 @@ const Routers = function ({ history, app }) {
             }, 'xendit-recon')
           }
         }, {
+          path: 'accounting/xendit-recon/detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon/detail'))
+            }, 'xendit-recon-detail')
+          }
+        }, {
           path: 'bank-history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

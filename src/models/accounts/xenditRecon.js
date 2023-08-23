@@ -41,23 +41,25 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { query } = location
+        const { pathname, query } = location
         const { activeKey, transDate } = query
-        dispatch({
-          type: 'queryBalance',
-          payload: {
-            transDate
-          }
-        })
-        dispatch({
-          type: 'queryTransaction',
-          payload: {
-            transDate
-          }
-        })
-        dispatch({
-          type: 'queryErrorLog'
-        })
+        if (pathname === '/accounting/xendit-recon') {
+          dispatch({
+            type: 'queryBalance',
+            payload: {
+              transDate
+            }
+          })
+          dispatch({
+            type: 'queryTransaction',
+            payload: {
+              transDate
+            }
+          })
+          dispatch({
+            type: 'queryErrorLog'
+          })
+        }
         if (activeKey) {
           dispatch({
             type: 'updateState',
