@@ -30,32 +30,9 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * active ({ payload }, { call, put }) {
+    * active (_, { call, put }) {
       const response = yield call(getActive)
       if (response && response.success) {
-        let countClosing = 0
-        if (response.data && response.data.id) {
-          if (payload && payload.countClosing) {
-            countClosing = payload.countClosing
-          }
-        }
-
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentBalance: {
-              ...response.data
-            } || {}
-          }
-        })
-
-        yield put({
-          type: 'activeDetail',
-          payload: {
-            countClosing
-          }
-        })
-      } else {
         yield put({
           type: 'updateState',
           payload: {
