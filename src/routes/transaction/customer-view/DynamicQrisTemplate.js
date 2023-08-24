@@ -1,15 +1,20 @@
 import { currencyFormatter } from 'utils/string'
 import { color } from 'utils/theme'
-import { lstorage } from 'utils'
 import CountdownTimer from './CountDownTimer'
 import QRCodeGenerator from './QRCodeGenerator'
 
-const DynamicQrisTemplate = ({ qrisImage, total, dynamicQrisTimeLimit, qrisMerchantTradeNo }) => {
+const DynamicQrisTemplate = ({
+  qrisImage,
+  total,
+  dynamicQrisTimeLimit,
+  qrisMerchantTradeNo,
+  onTimeout
+}) => {
   const countDownTimerProps = {
     onTimerFinish: () => {
-      lstorage.removeDynamicQrisImage()
+      onTimeout()
     },
-    duration: dynamicQrisTimeLimit * 60
+    duration: parseInt(dynamicQrisTimeLimit * 60, 10)
   }
 
   return (

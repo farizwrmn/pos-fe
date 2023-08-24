@@ -135,18 +135,6 @@ const setQrisImage = (data) => {
   return localStorage.setItem('qris_image', data)
 }
 
-const getDynamicQrisImage = () => {
-  return localStorage.getItem('dynamic_qris_image') ? localStorage.getItem('dynamic_qris_image') : null
-}
-
-const setDynamicQrisImage = (data) => {
-  return localStorage.setItem('dynamic_qris_image', data)
-}
-
-const removeDynamicQrisImage = () => {
-  return localStorage.removeItem('dynamic_qris_image')
-}
-
 const getDynamicQrisPosTransId = () => {
   return localStorage.getItem('dynamic_qris_pos_trans_id') ? localStorage.getItem('dynamic_qris_pos_trans_id') : null
 }
@@ -169,6 +157,51 @@ const setDynamicQrisTimeLimit = (data) => {
 
 const removeDynamicQrisTimeLimit = () => {
   return localStorage.removeItem('dynamic_qris_time_limit')
+}
+
+const getDynamicQrisImage = () => {
+  const stringJson = localStorage.getItem('paylabs_dynamic_qris_image')
+  if (stringJson) {
+    const json = JSON.parse(stringJson)
+    const ttl = json.ttl
+    const currentUnix = moment().valueOf()
+    if (Number(ttl) > Number(currentUnix)) {
+      return json.qrisImage || null
+    }
+  }
+  localStorage.removeItem('paylabs_dynamic_qris_image')
+  return null
+}
+
+const getDynamicQrisImageTTL = () => {
+  const stringJson = localStorage.getItem('paylabs_dynamic_qris_image')
+  if (stringJson) {
+    try {
+      const json = JSON.parse(stringJson)
+      const ttl = json.ttl
+      const currentTime = moment().valueOf()
+      const resultMiliseconds = ttl - currentTime
+      const resultSeconds = resultMiliseconds / 1000
+      const resultMinutes = resultSeconds / 60
+      return resultMinutes
+    } catch (error) {
+      console.log(`error getDynamicQrisImageTTL: ${error || 'Something went wrong'}`)
+    }
+  }
+  return null
+}
+
+const setDynamicQrisImage = (data) => {
+  const dynamicQrisImageTimeLimit = getDynamicQrisTimeLimit()
+  const json = {
+    qrisImage: data,
+    ttl: moment().add(Number(dynamicQrisImageTimeLimit || 10), 'minutes').valueOf()
+  }
+  return localStorage.setItem('paylabs_dynamic_qris_image', JSON.stringify(json))
+}
+
+const removeDynamicQrisImage = () => {
+  return localStorage.removeItem('paylabs_dynamic_qris_image')
 }
 
 const getQrisPaymentLastTransaction = () => {
@@ -217,6 +250,18 @@ const setQrisPaymentTimeLimit = (data) => {
 
 const removeQrisPaymentTimeLimit = () => {
   return localStorage.removeItem('qris_payment_time_limit')
+}
+
+const getCurrentPaymentTransactionId = () => {
+  return localStorage.getItem('current_payment_transaction_id') ? localStorage.getItem('current_payment_transaction_id') : null
+}
+
+const setCurrentPaymentTransactionId = (data) => {
+  return localStorage.setItem('current_payment_transaction_id', data)
+}
+
+const removeCurrentPaymentTransactionId = () => {
+  return localStorage.removeItem('current_payment_transaction_id')
 }
 
 const getCustomerViewLastTransactionTimeLimit = () => {
@@ -289,6 +334,18 @@ const getCost = () => {
   return null
 }
 
+const getAvailablePaymentType = () => {
+  return localStorage.getItem('pos_available_payment_type') ? localStorage.getItem('pos_available_payment_type') : null
+}
+
+const setAvailablePaymentType = (data) => {
+  return localStorage.setItem('pos_available_payment_type', data)
+}
+
+const removeAvailablePaymentType = () => {
+  return localStorage.removeItem('pos_available_payment_type')
+}
+
 // remove item
 const removeItemKey = (key) => {
   localStorage.removeItem(`${prefix}${key}`)
@@ -319,7 +376,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('workorder')
   localStorage.removeItem('payment_cost')
   localStorage.removeItem('payment_edc')
-  localStorage.removeItem('dynamic_qris_image')
+  localStorage.removeItem('paylabs_dynamic_qris_image')
   localStorage.removeItem('dynamic_qris_time_limit')
   localStorage.removeItem('qris_latest_transaction')
   localStorage.removeItem('qris_merchant_trade_number')
@@ -327,6 +384,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('qris_payment_time_limit')
   localStorage.removeItem('customer_view_transaction_time_limit')
   localStorage.removeItem('dynamic_qris_pos_trans_id')
+  localStorage.removeItem('pos_available_payment_type')
 }
 
 const removeAllKey = () => {
@@ -485,5 +543,12 @@ module.exports = {
   removeQrisPaymentTimeLimit,
   getDynamicQrisPosTransId,
   setDynamicQrisPosTransId,
-  removeDynamicQrisPosTransId
+  removeDynamicQrisPosTransId,
+  getCurrentPaymentTransactionId,
+  setCurrentPaymentTransactionId,
+  removeCurrentPaymentTransactionId,
+  getDynamicQrisImageTTL,
+  getAvailablePaymentType,
+  setAvailablePaymentType,
+  removeAvailablePaymentType
 }

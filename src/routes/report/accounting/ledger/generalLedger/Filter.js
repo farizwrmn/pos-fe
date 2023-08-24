@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Button, DatePicker, Row, Select, Col, Icon, Form } from 'antd'
 import PrintCSV from './PrintCSV'
+import PrintXLS from './PrintXLS'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
@@ -171,13 +172,14 @@ const Filter = ({
         <Button
           type="dashed"
           size="large"
-          style={{ marginLeft: '5px' }}
+          style={{ marginLeft: '5px', marginRight: '5px' }}
           disabled={loading.effects['generalLedger/queryGeneralLedger']}
           className="button-width02 button-extra-large"
           onClick={() => handleSearch()}
         >
           <Icon type="search" className="icon-large" />
         </Button>
+        {printProps.listRekap && printProps.listRekap.length > 0 && <PrintXLS {...printProps} />}
         {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintCSV {...printProps} />)}
       </Col>
     </Row>

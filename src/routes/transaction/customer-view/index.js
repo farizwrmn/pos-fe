@@ -25,6 +25,7 @@ const {
   getServiceTrans,
   getConsignment,
   getDynamicQrisTimeLimit,
+  getDynamicQrisImageTTL,
   getQrisPaymentLastTransaction
 } = lstorage
 const FormItem = Form.Item
@@ -69,7 +70,7 @@ class Pos extends Component {
     addHandler(window, 'storage', data => this.setListData(data))
     this.setListData({ key: 'cashier_trans' })
     this.setListData({ key: 'qris_image' })
-    this.setListData({ key: 'dynamic_qris_image' })
+    this.setListData({ key: 'paylabs_dynamic_qris_image' })
     this.setListData({ key: 'dynamic_qris_time_limit' })
     this.setListData({ key: 'qris_latest_transaction' })
   }
@@ -88,14 +89,16 @@ class Pos extends Component {
       this.setState({ qrisMerchantTradeNo })
     }
     if (data && data.key === 'dynamic_qris_time_limit') {
-      const timeLimit = getDynamicQrisTimeLimit()
-      this.setState({ dynamicQrisTimeLimit: Number(timeLimit) })
+      const dynamicQrisTTL = getDynamicQrisImageTTL()
+      const dynamicQrisTimeLimit = getDynamicQrisTimeLimit()
+      const timeLimit = Number(dynamicQrisTTL || dynamicQrisTimeLimit)
+      this.setState({ dynamicQrisTimeLimit: timeLimit })
     }
     if (data && data.key === 'qris_image') {
       const qrisImage = getQrisImage()
       this.setState({ qrisImage })
     }
-    if (data && data.key === 'dynamic_qris_image') {
+    if (data && data.key === 'paylabs_dynamic_qris_image') {
       const dynamicQrisImage = getDynamicQrisImage()
       this.setState({ dynamicQrisImage })
     }
@@ -150,7 +153,12 @@ class Pos extends Component {
       total: totalPayment,
       qrisImage: dynamicQrisImage,
       dynamicQrisTimeLimit,
-      qrisMerchantTradeNo
+      qrisMerchantTradeNo,
+      onTimeout: () => {
+        this.setState({
+          dynamicQrisImage: null
+        })
+      }
     }
 
     const latestTransactionProps = {

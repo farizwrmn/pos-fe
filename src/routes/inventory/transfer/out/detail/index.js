@@ -10,6 +10,7 @@ import { prefix } from 'utils/config.main'
 import ModalCancel from './ModalCancel'
 import ModalEdit from './ModalEdit'
 import PrintPDF from './PrintPDF'
+import PrintPDFv2 from './PrintPDFv2'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
@@ -238,7 +239,7 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
             <Col lg={10} md={10} offset={2}>
               {!showPrint && <Button onClick={() => clickPrint()}>Print</Button>}
               {showPrint && <PrintPDF {...printProps} />}
-              {showPrint && <PrintPDF {...printProps} />}
+              {showPrint && <PrintPDFv2 {...printProps} />}
             </Col>
           </Row>
           <h1>Invoice Info</h1>

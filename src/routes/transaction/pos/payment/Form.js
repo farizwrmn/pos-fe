@@ -11,13 +11,18 @@ import {
   // Select,
   TreeSelect,
   Select,
-  message
+  message,
+  InputNumber
 } from 'antd'
 import { arrayToTree, lstorage } from 'utils'
 import moment from 'moment'
 import List from './List'
 
-const { setQrisImage, removeQrisImage } = lstorage
+const {
+  setQrisImage,
+  removeQrisImage,
+  getAvailablePaymentType
+} = lstorage
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -277,15 +282,15 @@ class FormPayment extends React.Component {
       }
     }
 
-    const changeToNumber = (e) => {
-      const { value } = e.target
-      const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-      if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-        setFieldsValue({
-          amount: value
-        })
-      }
-    }
+    // const changeToNumber = (e) => {
+    //   const { value } = e.target
+    //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+    //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+    //     setFieldsValue({
+    //       amount: value
+    //     })
+    //   }
+    // }
 
     let isCtrl = false
     const perfect = () => {
@@ -334,7 +339,14 @@ class FormPayment extends React.Component {
     }
     const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
 
-    const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
+    const params = getAvailablePaymentType()
+    const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
+    const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray : ['C', 'D', 'K', 'QR']
+
+    const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
+      || currentBundlePayment.paymentOption === filtered.typeCode
+      || typeCode === filtered.typeCode))
+    const menuTree = arrayToTree(filteredOptions.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
     const getMenus = (menuTreeN) => {
       return menuTreeN.map((item) => {
@@ -397,9 +409,10 @@ class FormPayment extends React.Component {
               }
             ]
           })(
-            <Input
-              style={{ width: '100%', fontSize: '30px', height: '60px' }}
-              onChange={value => changeToNumber(value)}
+            <InputNumber
+              style={{ width: '100%', fontSize: '30px', height: 'auto', textAlign: 'center', padding: '10px 0 10px 0' }}
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
               onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   handleSubmit()
@@ -412,9 +425,8 @@ class FormPayment extends React.Component {
               //     Netto
               //   </Button>
               // )}
-              autoFocus
-              maxLength={10}
               size="large"
+              min={0}
             />
           )}
         </FormItem>

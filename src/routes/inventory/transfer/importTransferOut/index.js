@@ -86,10 +86,12 @@ const ImportTransferOut = ({
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
               const qty = row.values[5]
+              const sortIndex = row.values[6]
               if (rowIndex >= 6 && typeof productId !== 'undefined' && typeof qty !== 'undefined') {
                 const data = {
                   productId: Number(productId),
-                  qty: Number(qty)
+                  qty: Number(qty),
+                  sortIndex: Number(sortIndex || 1)
                 }
                 uploadData.push(data)
               }

@@ -20,6 +20,12 @@ const List = ({ ...tableProps, editList }) => {
       width: 60
     },
     {
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
+      width: 200
+    },
+    {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',

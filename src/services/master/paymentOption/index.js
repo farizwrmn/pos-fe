@@ -40,3 +40,12 @@ export async function edit (params) {
     headers: apiHeaderToken
   })
 }
+
+export const queryAvailablePaymentType = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentOpts}-option/available-params`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}

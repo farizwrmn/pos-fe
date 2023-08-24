@@ -173,30 +173,32 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
     dataSource: listImported,
     loading,
     width: 1000,
-    onOk () {
+    onOk (from, to) {
       let arrayProd = []
       for (let key in listImported) {
         const item = listImported[key]
-        const data = {
-          no: arrayProd.length + 1,
-          brandName: item.brandName,
-          categoryName: item.categoryName,
-          productImage: item.productImage,
-          productCode: item.productCode,
-          dimension: item.dimension,
-          dimensionBox: item.dimensionBox,
-          dimensionPack: item.dimensionPack,
-          productId: item.productId,
-          transType: 'MUOUT',
-          productName: item.productName,
-          qty: item.qty,
-          qtyDemand: undefined,
-          qtyStore: undefined,
-          stock: item.stock || 0,
-          description: null
-        }
-        if (item.qty > 0) {
-          arrayProd.push(data)
+        if (Number(item.sortIndex) >= from && Number(item.sortIndex) <= to) {
+          const data = {
+            no: arrayProd.length + 1,
+            brandName: item.brandName,
+            categoryName: item.categoryName,
+            productImage: item.productImage,
+            productCode: item.productCode,
+            dimension: item.dimension,
+            dimensionBox: item.dimensionBox,
+            dimensionPack: item.dimensionPack,
+            productId: item.productId,
+            transType: 'MUOUT',
+            productName: item.productName,
+            qty: item.qty,
+            qtyDemand: undefined,
+            qtyStore: undefined,
+            stock: item.stock || 0,
+            description: null
+          }
+          if (item.qty > 0) {
+            arrayProd.push(data)
+          }
         }
       }
 

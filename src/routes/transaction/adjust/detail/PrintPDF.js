@@ -22,6 +22,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         let data = rows[key]
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
+        row.push({ text: (data.productCode).toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.productName).toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: numberFormatter(data.adjInQty > 0 ? data.adjInQty : data.adjOutQty || 0), alignment: 'center', fontSize: 11 })
         row.push({ text: formatNumberIndonesia(data.sellingPrice || 0), alignment: 'center', fontSize: 11 })
@@ -189,6 +190,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'KODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'PRICE', style: 'tableHeader', alignment: 'center' },
@@ -203,7 +205,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   }
   const tableFooter = [
     [
-      { text: 'Grand Total', colSpan: 4, alignment: 'center', fontSize: 12 },
+      { text: 'Grand Total', colSpan: 5, alignment: 'center', fontSize: 12 },
+      {},
       {},
       {},
       {},
@@ -227,7 +230,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['12%', '38%', '10%', '20%', '20%'],
+    width: ['7%', '18%', '35%', '10%', '10%', '20%'],
     pageMargins: [40, 180, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',

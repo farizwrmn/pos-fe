@@ -19,6 +19,7 @@ import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
+import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -59,7 +60,7 @@ import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from 
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
 import moneyRegistered from '../../../public/mp3/moneyRegistered.mp3'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus } from '../../services/payment/paymentTransactionService'
+import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -71,7 +72,11 @@ const {
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
-  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo
+  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
+  getDynamicQrisImage,
+  removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
+  getQrisPaymentTimeLimit,
+  setAvailablePaymentType
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -237,6 +242,7 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          getDynamicQrisImage()
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
@@ -261,11 +267,15 @@ export default {
               storeId: lstorage.getCurrentUserStore()
             }
           })
+          dispatch({ type: 'availablePaymentType' })
+          // dispatch({
+          //   type: 'queryPaymentTransactionFailed',
+          //   payload: {
+          //     storeId: lstorage.getCurrentUserStore()
+          //   }
+          // })
           dispatch({
-            type: 'queryPaymentTransactionFailed',
-            payload: {
-              storeId: lstorage.getCurrentUserStore()
-            }
+            type: 'checkPaymentTransactionInvoice'
           })
         }
         if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
@@ -3606,6 +3616,7 @@ export default {
         yield put({
           type: 'resetPosLocalStorage'
         })
+        removeCurrentPaymentTransactionId()
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -3649,6 +3660,47 @@ export default {
             modalQrisTransactionFailedVisible: false
           }
         })
+      }
+    },
+    * checkPaymentTransactionInvoice (_, { call, put }) {
+      const paymentTransactionId = getCurrentPaymentTransactionId()
+      if (paymentTransactionId) {
+        const response = yield call(queryCheckPaymentTransactionInvoice, { paymentTransactionId })
+        if (response && response.success && response.data) {
+          const { removeStorage, paymentTransaction } = response.data
+          const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
+          const secondDiff = moment().diff(moment(paymentTransaction.createdAt), 'seconds')
+          const currentPaymentTransactionLimitTimeInSecond = (Number(paymentTransactionLimitTime || 15) * 60) - secondDiff
+          const currentPaymentTransactionLimitTimeInMinute = currentPaymentTransactionLimitTimeInSecond / 60
+          if (removeStorage) {
+            removeCurrentPaymentTransactionId()
+          } else {
+            yield put({
+              type: 'payment/updateState',
+              payload: {
+                paymentTransactionId: paymentTransaction.id,
+                paymentTransactionLimitTime: currentPaymentTransactionLimitTimeInMinute > 0 ? currentPaymentTransactionLimitTimeInMinute : null
+              }
+            })
+            yield put({
+              type: 'updateState',
+              payload: {
+                modalQrisPaymentVisible: true,
+                modalQrisPaymentType: 'waiting',
+                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo
+              }
+            })
+          }
+        }
+      }
+    },
+    * availablePaymentType (_, { call }) {
+      const response = yield call(queryAvailablePaymentType)
+      if (response && response.success && response.data) {
+        const availablePaymentType = response.data
+        setAvailablePaymentType(availablePaymentType)
+      } else {
+        setAvailablePaymentType('C')
       }
     }
   },
