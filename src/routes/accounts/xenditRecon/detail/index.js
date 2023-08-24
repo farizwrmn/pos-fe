@@ -1,14 +1,89 @@
-import { Row } from 'antd'
-import { connect } from 'dva'
 import React from 'react'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
+import { Button, Col, Row, message } from 'antd'
 import ListBalance from './ListBalance'
+import ListTransaction from './ListTransaction'
 
 class Detail extends React.Component {
   render () {
+    const {
+      dispatch,
+      location,
+      loading,
+      xenditRecon
+    } = this.props
+    const {
+      listTransactionDetail,
+      paginationTransactionDetail,
+      listBalanceDetail,
+      paginationBalanceDetail
+    } = xenditRecon
+
+    const handleBackButton = () => {
+      const query = {}
+      if (location.query.transDate) query.transDate = location.query.transDate
+      dispatch(routerRedux.push({
+        pathname: '/accounting/xendit-recon',
+        query
+      }))
+    }
+
+    const { type } = location.query
+    if (!type || (type !== 'transaction' && type !== 'balance')) {
+      message.error('Invalid Type')
+      handleBackButton()
+      return
+    }
+
+    const listBalanceProps = {
+      loading: loading.effects['xenditRecon/queryBalanceDetail'],
+      dataSource: listBalanceDetail,
+      pagination: paginationBalanceDetail,
+      onChangePagination: (pagination) => {
+        const { current: page, pageSize } = pagination
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
+      }
+    }
+
+    const listTransactionProps = {
+      loading: loading.effects['xenditRecon/queryTransactionDetail'],
+      dataSource: listTransactionDetail,
+      pagination: paginationTransactionDetail,
+      onChangePagination: (pagination) => {
+        const { current: page, pageSize } = pagination
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
+      }
+    }
+
     return (
       <div className="content-inner">
         <Row>
-          <ListBalance />
+          <Col span={24}>
+            <Row style={{ marginBottom: '10px' }}>
+              <Button icon="rollback" type="primary" onClick={handleBackButton}>Back</Button>
+            </Row>
+            <Row>
+              {type === 'balance' && <ListBalance {...listBalanceProps} />}
+              {type === 'transaction' && <ListTransaction {...listTransactionProps} />}
+            </Row>
+          </Col>
         </Row>
       </div>
     )
@@ -16,5 +91,6 @@ class Detail extends React.Component {
 }
 
 export default connect(({
-  xenditRecon
-}) => ({ xenditRecon }))(Detail)
+  xenditRecon,
+  loading
+}) => ({ xenditRecon, loading }))(Detail)

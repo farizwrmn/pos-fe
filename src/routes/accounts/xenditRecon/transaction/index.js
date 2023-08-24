@@ -1,6 +1,6 @@
 import { Row, Table } from 'antd'
 
-const Transaction = ({ onChangePagination, ...tableProps }) => {
+const Transaction = ({ onChangePagination, onClickTransaction, ...tableProps }) => {
   const columns = [
     {
       title: 'Date',
@@ -16,6 +16,11 @@ const Transaction = ({ onChangePagination, ...tableProps }) => {
       render: value => value.storeName
     }
   ]
+
+  const handleOnRowClick = (item) => {
+    onClickTransaction(item.id)
+  }
+
   return (
     <Row style={{ padding: '10px' }}>
       <h3 style={{ fontWeight: 'bolder' }}>
@@ -26,6 +31,7 @@ const Transaction = ({ onChangePagination, ...tableProps }) => {
         columns={columns}
         bordered
         onChange={onChangePagination}
+        onRowClick={handleOnRowClick}
       />
     </Row>
   )

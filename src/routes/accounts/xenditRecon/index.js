@@ -60,6 +60,16 @@ class XenditRecon extends React.Component {
             transDate
           }
         })
+      },
+      onClickTransaction: (id) => {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname: `${pathname}/detail/${id}`,
+          query: {
+            ...query,
+            type: 'transaction'
+          }
+        }))
       }
     }
 
@@ -78,6 +88,16 @@ class XenditRecon extends React.Component {
             transDate
           }
         })
+      },
+      onClickBalance: (id) => {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname: `${pathname}/detail/${id}`,
+          query: {
+            ...query,
+            type: 'balance'
+          }
+        }))
       }
     }
 

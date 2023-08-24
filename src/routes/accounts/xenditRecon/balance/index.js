@@ -1,6 +1,6 @@
 import { Row, Table } from 'antd'
 
-const Balance = ({ onChangePagination, ...tableProps }) => {
+const Balance = ({ onChangePagination, onClickBalance, ...tableProps }) => {
   const columns = [
     {
       title: 'Date',
@@ -16,6 +16,11 @@ const Balance = ({ onChangePagination, ...tableProps }) => {
       render: value => value.storeName
     }
   ]
+
+  const handleOnRowClick = (item) => {
+    onClickBalance(item.id)
+  }
+
   return (
     <Row style={{ padding: '10px' }}>
       <h3 style={{ fontWeight: 'bolder' }}>
@@ -26,6 +31,7 @@ const Balance = ({ onChangePagination, ...tableProps }) => {
         bordered
         columns={columns}
         onChange={onChangePagination}
+        onRowClick={handleOnRowClick}
       />
     </Row>
   )

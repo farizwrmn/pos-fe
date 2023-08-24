@@ -1,7 +1,10 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { lstorage } from 'utils'
-import { query as queryBalance } from 'services/paymentXendit/paymentXenditBalance'
-import { query as queryTransaction } from 'services/paymentXendit/paymentXenditTransaction'
+import { query as queryBalance } from 'services/paymentXendit/paymentXenditBalanceImport'
+import { query as queryBalanceDetail } from 'services/paymentXendit/paymentXenditBalanceImportDetailService'
+import { query as queryTransaction } from 'services/paymentXendit/paymentXenditTransactionImport'
+import { query as queryTransactionDetail } from 'services/paymentXendit/paymentXenditTransactionImportDetail'
 import { queryKey as queryErrorLog } from 'services/errorLog'
 import {
   XENDIT_AUTO_GENERATE_BALANCE_HISTORY_REPORT,
@@ -35,6 +38,16 @@ export default modelExtend(pageModel, {
     listErrorLog: [],
     paginationErrorLog: {
       current: 1
+    },
+
+    listTransactionDetail: [],
+    paginationTransactionDetail: {
+      current: 1
+    },
+
+    listBalanceDetail: [],
+    paginationBalanceDetail: {
+      current: 1
     }
   },
 
@@ -42,7 +55,30 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { activeKey, transDate } = query
+        const { activeKey, transDate, type, page, pageSize } = query
+        const match = pathToRegexp('/accounting/xendit-recon/detail/:id').exec(location.pathname)
+        if (match) {
+          if (type === 'transaction') {
+            dispatch({
+              type: 'queryTransactionDetail',
+              payload: {
+                transId: decodeURIComponent(match[1]),
+                page: page || 1,
+                pageSize: pageSize || 10
+              }
+            })
+          }
+          if (type === 'balance') {
+            dispatch({
+              type: 'queryBalanceDetail',
+              payload: {
+                transId: decodeURIComponent(match[1]),
+                page: page || 1,
+                pageSize: pageSize || 10
+              }
+            })
+          }
+        }
         if (pathname === '/accounting/xendit-recon') {
           dispatch({
             type: 'queryBalance',
@@ -132,6 +168,40 @@ export default modelExtend(pageModel, {
           payload: {
             listErrorLog: response.data,
             paginationErrorLog: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      }
+    },
+    * queryTransactionDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryTransactionDetail, payload)
+      console.log('response', response)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransactionDetail: response.data,
+            paginationTransactionDetail: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      }
+    },
+    * queryBalanceDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryBalanceDetail, payload)
+      console.log('response', response)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBalanceDetail: response.data,
+            paginationBalanceDetail: {
               current: Number(response.page || 1),
               pageSize: Number(response.pageSize || 10),
               total: Number(response.total || 0)
