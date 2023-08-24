@@ -13,7 +13,8 @@ const ListTransaction = ({ onChangePagination, ...tableProps }) => {
     {
       title: 'Invoice',
       dataIndex: 'invoiceNo',
-      key: 'invoiceNo'
+      key: 'invoiceNo',
+      render: value => <a href={`/accounts/payment/${encodeURIComponent(value)}`} target="_blank">{value}</a>
     },
     {
       title: 'Reference',

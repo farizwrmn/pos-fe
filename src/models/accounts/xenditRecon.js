@@ -5,13 +5,7 @@ import { query as queryBalance } from 'services/paymentXendit/paymentXenditBalan
 import { query as queryBalanceDetail } from 'services/paymentXendit/paymentXenditBalanceImportDetailService'
 import { query as queryTransaction } from 'services/paymentXendit/paymentXenditTransactionImport'
 import { query as queryTransactionDetail } from 'services/paymentXendit/paymentXenditTransactionImportDetail'
-import { queryKey as queryErrorLog } from 'services/errorLog'
-import {
-  XENDIT_AUTO_GENERATE_BALANCE_HISTORY_REPORT,
-  XENDIT_AUTO_GENERATE_REPORT,
-  XENDIT_AUTO_RECON,
-  XENDIT_AUTO_RECON_BALANCE_HISTORY
-} from 'utils/variable'
+import { queryXenditRecon as queryErrorLog } from 'services/errorLog'
 import { pageModel } from './../common'
 
 const {
@@ -162,12 +156,6 @@ export default modelExtend(pageModel, {
       }
     },
     * queryErrorLog ({ payload = {} }, { call, put }) {
-      payload.logKey = [
-        XENDIT_AUTO_RECON,
-        XENDIT_AUTO_RECON_BALANCE_HISTORY,
-        XENDIT_AUTO_GENERATE_BALANCE_HISTORY_REPORT,
-        XENDIT_AUTO_GENERATE_REPORT
-      ]
       payload.order = '-createdAt'
       const response = yield call(queryErrorLog, payload)
       if (response && response.success && response.data) {

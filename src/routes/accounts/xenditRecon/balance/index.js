@@ -1,6 +1,11 @@
 import { Row, Table } from 'antd'
+import moment from 'moment'
 
-const Balance = ({ onChangePagination, onClickBalance, ...tableProps }) => {
+const Balance = ({
+  onChangePagination,
+  onClickBalance,
+  ...tableProps
+}) => {
   const columns = [
     {
       title: 'Date',
@@ -9,7 +14,7 @@ const Balance = ({ onChangePagination, onClickBalance, ...tableProps }) => {
       width: 100,
       render: (value, record) => {
         return (
-          <a onClick={() => onClickBalance(record.id)}>{value}</a>
+          <a onClick={() => onClickBalance(record.id)}>{moment(value, 'YYYY-MM-DD').format('DD MMM YYYY')}</a>
         )
       }
     },
