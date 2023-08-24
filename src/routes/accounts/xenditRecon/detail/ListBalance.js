@@ -16,7 +16,7 @@ const ListBalance = ({ onClickJournal, onChangePagination, ...tableProps }) => {
       key: 'transNo',
       render: (value, record) => {
         return (
-          <a href={`/journal-entry/${record.journalId}`}>{value}</a>
+          <a href={`/journal-entry/${record.journalId}`} target="_blank">{value}</a>
         )
       }
     },
