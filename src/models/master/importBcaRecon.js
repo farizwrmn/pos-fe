@@ -195,10 +195,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: data.data,
             list: [],
+            listSortPayment: [],
             listReconNotMatch: [],
-            listSortPayment: []
+            listPaymentMachine: [],
+            listSettlementAccumulated: []
           }
         })
       } else {
@@ -417,6 +418,7 @@ export default modelExtend(pageModel, {
           list: [],
           listSortPayment: [],
           listReconNotMatch: [],
+          listPaymentMachine: [],
           listSettlementAccumulated: []
         }
       })
