@@ -2,7 +2,7 @@ import moment from 'moment'
 import { Row, Table } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
-const ListBalance = ({ onChangePagination, ...tableProps }) => {
+const ListBalance = ({ onClickJournal, onChangePagination, ...tableProps }) => {
   const columns = [
     {
       title: 'Tanggal',
@@ -13,7 +13,12 @@ const ListBalance = ({ onChangePagination, ...tableProps }) => {
     {
       title: 'Invoice No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      render: (value, record) => {
+        return (
+          <a href={`/journal-entry/${record.journalId}`}>{value}</a>
+        )
+      }
     },
     {
       title: 'Amount',

@@ -55,7 +55,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { q, activeKey, transDate, type, page, pageSize } = query
+        const { q, activeKey, transDate, type, page, pageSize, all } = query
         const match = pathToRegexp('/accounting/xendit-recon/detail/:id').exec(location.pathname)
         if (match) {
           if (type === 'transaction') {
@@ -85,13 +85,15 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'queryBalance',
             payload: {
-              transDate
+              transDate,
+              all
             }
           })
           dispatch({
             type: 'queryTransaction',
             payload: {
-              transDate
+              transDate,
+              all
             }
           })
           dispatch({
@@ -113,12 +115,14 @@ export default modelExtend(pageModel, {
   effects: {
     * queryBalance ({ payload = {} }, { call, put }) {
       payload.order = '-transDate'
+      const { all = false, ...other } = payload
+      const allStore = JSON.parse(all)
       const userRole = getCurrentUserRole()
       const currentStore = getCurrentUserStore()
-      if (userRole !== 'OWN') {
-        payload.storeId = currentStore
+      if (userRole !== 'OWN' || !allStore) {
+        other.storeId = currentStore
       }
-      const response = yield call(queryBalance, payload)
+      const response = yield call(queryBalance, other)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',
@@ -135,12 +139,14 @@ export default modelExtend(pageModel, {
     },
     * queryTransaction ({ payload = {} }, { call, put }) {
       payload.order = '-transDate'
+      const { all = false, ...other } = payload
+      const allStore = JSON.parse(all)
       const userRole = getCurrentUserRole()
       const currentStore = getCurrentUserStore()
-      if (userRole !== 'OWN') {
-        payload.storeId = currentStore
+      if (userRole !== 'OWN' || !allStore) {
+        other.storeId = currentStore
       }
-      const response = yield call(queryTransaction, payload)
+      const response = yield call(queryTransaction, other)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',

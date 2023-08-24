@@ -1,4 +1,4 @@
-import { Col, Row, Tabs } from 'antd'
+import { Checkbox, Col, Row, Tabs } from 'antd'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
@@ -24,6 +24,19 @@ const transactionColumnProps = {
 }
 
 class XenditRecon extends React.Component {
+  componentDidMount () {
+    const { dispatch, location } = this.props
+    const { pathname, query } = location
+    const { all, ...other } = query
+    const userRole = getCurrentUserRole()
+    if (userRole !== 'OWN') {
+      dispatch(routerRedux.push({
+        pathname,
+        query: other
+      }))
+    }
+  }
+
   render () {
     const {
       dispatch,
@@ -44,6 +57,20 @@ class XenditRecon extends React.Component {
       paginationErrorLog
     } = xenditRecon
     const userRole = getCurrentUserRole()
+
+    const { all = false } = location.query
+
+    const onChangeAllStore = (event) => {
+      const { checked } = event.target
+      const { pathname, query } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          all: checked
+        }
+      }))
+    }
 
     const transactionProps = {
       dataSource: listTransaction,
@@ -143,7 +170,12 @@ class XenditRecon extends React.Component {
       <div className="content-inner">
         <Tabs activeKey={activeKey} type="card" tabBarExtraContent>
           <TabPane key="0" tab="Reconciliation History">
-            <Row>
+            {userRole === 'OWN' && (
+              <Row>
+                <Checkbox onChange={onChangeAllStore} checked={JSON.parse(all)}>All Store</Checkbox>
+              </Row>
+            )}
+            <Row justify="end" type="flex">
               <Filter {...filterProps} />
             </Row>
             <Row>
