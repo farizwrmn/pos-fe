@@ -55,13 +55,14 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { activeKey, transDate, type, page, pageSize } = query
+        const { q, activeKey, transDate, type, page, pageSize } = query
         const match = pathToRegexp('/accounting/xendit-recon/detail/:id').exec(location.pathname)
         if (match) {
           if (type === 'transaction') {
             dispatch({
               type: 'queryTransactionDetail',
               payload: {
+                q,
                 transId: decodeURIComponent(match[1]),
                 page: page || 1,
                 pageSize: pageSize || 10
@@ -72,6 +73,7 @@ export default modelExtend(pageModel, {
             dispatch({
               type: 'queryBalanceDetail',
               payload: {
+                q,
                 transId: decodeURIComponent(match[1]),
                 page: page || 1,
                 pageSize: pageSize || 10
@@ -178,7 +180,6 @@ export default modelExtend(pageModel, {
     },
     * queryTransactionDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryTransactionDetail, payload)
-      console.log('response', response)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',
@@ -195,7 +196,6 @@ export default modelExtend(pageModel, {
     },
     * queryBalanceDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryBalanceDetail, payload)
-      console.log('response', response)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',

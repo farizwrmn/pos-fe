@@ -6,7 +6,12 @@ const Transaction = ({ onChangePagination, onClickTransaction, ...tableProps }) 
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: 100
+      width: 100,
+      render: (value, record) => {
+        return (
+          <a onClick={() => onClickTransaction(record.id)}>{value}</a>
+        )
+      }
     },
     {
       title: 'Store Name (Click to see detail)',
@@ -16,10 +21,6 @@ const Transaction = ({ onChangePagination, onClickTransaction, ...tableProps }) 
       render: value => value.storeName
     }
   ]
-
-  const handleOnRowClick = (item) => {
-    onClickTransaction(item.id)
-  }
 
   return (
     <Row style={{ padding: '10px' }}>
@@ -31,7 +32,6 @@ const Transaction = ({ onChangePagination, onClickTransaction, ...tableProps }) 
         columns={columns}
         bordered
         onChange={onChangePagination}
-        onRowClick={handleOnRowClick}
       />
     </Row>
   )

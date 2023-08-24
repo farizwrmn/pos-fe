@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import { Button, Col, Row, message } from 'antd'
 import ListBalance from './ListBalance'
 import ListTransaction from './ListTransaction'
+import Filter from './Filter'
 
 class Detail extends React.Component {
   render () {
@@ -72,12 +73,30 @@ class Detail extends React.Component {
       }
     }
 
+    const filterProps = {
+      location,
+      onSearch: (value) => {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            q: value,
+            page: 1
+          }
+        }))
+      }
+    }
+
     return (
       <div className="content-inner">
         <Row>
           <Col span={24}>
             <Row style={{ marginBottom: '10px' }}>
               <Button icon="rollback" type="primary" onClick={handleBackButton}>Back</Button>
+            </Row>
+            <Row justify="end" type="flex">
+              <Filter {...filterProps} />
             </Row>
             <Row>
               {type === 'balance' && <ListBalance {...listBalanceProps} />}

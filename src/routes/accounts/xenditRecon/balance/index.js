@@ -6,7 +6,12 @@ const Balance = ({ onChangePagination, onClickBalance, ...tableProps }) => {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: 100
+      width: 100,
+      render: (value, record) => {
+        return (
+          <a onClick={() => onClickBalance(record.id)}>{value}</a>
+        )
+      }
     },
     {
       title: 'Store Name (Click to see detail)',
@@ -16,10 +21,6 @@ const Balance = ({ onChangePagination, onClickBalance, ...tableProps }) => {
       render: value => value.storeName
     }
   ]
-
-  const handleOnRowClick = (item) => {
-    onClickBalance(item.id)
-  }
 
   return (
     <Row style={{ padding: '10px' }}>
@@ -31,7 +32,6 @@ const Balance = ({ onChangePagination, onClickBalance, ...tableProps }) => {
         bordered
         columns={columns}
         onChange={onChangePagination}
-        onRowClick={handleOnRowClick}
       />
     </Row>
   )
