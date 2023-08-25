@@ -148,7 +148,7 @@ class XenditRecon extends React.Component {
       location,
       removeTransDate: () => {
         const { pathname, query } = location
-        const { transDate, ...other } = query
+        const { from, to, ...other } = query
         dispatch(routerRedux.push({
           pathname,
           query: other
@@ -160,7 +160,8 @@ class XenditRecon extends React.Component {
           pathname,
           query: {
             ...query,
-            transDate: moment(value).format('YYYY-MM-DD')
+            from: moment(value[0]).format('YYYY-MM-DD'),
+            to: moment(value[1]).format('YYYY-MM-DD')
           }
         }))
       }

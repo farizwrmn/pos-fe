@@ -23,7 +23,10 @@ class Detail extends React.Component {
 
     const handleBackButton = () => {
       const query = {}
-      if (location.query.transDate) query.transDate = location.query.transDate
+      if (location.query.from && location.query.to) {
+        query.from = location.query.from
+        query.to = location.query.to
+      }
       if (location.query.all) query.all = location.query.all
       dispatch(routerRedux.push({
         pathname: '/accounting/xendit-recon',

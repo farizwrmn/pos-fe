@@ -49,7 +49,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { q, activeKey, transDate, type, page, pageSize, all } = query
+        const { q, activeKey, from, to, type, page, pageSize, all } = query
         const match = pathToRegexp('/accounting/xendit-recon/detail/:id').exec(location.pathname)
         if (match) {
           if (type === 'transaction') {
@@ -79,14 +79,16 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'queryBalance',
             payload: {
-              transDate,
+              from,
+              to,
               all
             }
           })
           dispatch({
             type: 'queryTransaction',
             payload: {
-              transDate,
+              from,
+              to,
               all
             }
           })
