@@ -5,6 +5,7 @@ import { Button, Col, Row, message } from 'antd'
 import ListBalance from './ListBalance'
 import ListTransaction from './ListTransaction'
 import Filter from './Filter'
+import ListTransactionNotReconciled from './ListTransactionNotReconciled'
 
 class Detail extends React.Component {
   render () {
@@ -15,6 +16,7 @@ class Detail extends React.Component {
       xenditRecon
     } = this.props
     const {
+      listTransactionNotRecon,
       listTransactionDetail,
       paginationTransactionDetail,
       listBalanceDetail,
@@ -92,6 +94,12 @@ class Detail extends React.Component {
       }
     }
 
+    const listTransactionNotReconProps = {
+      loading,
+      dispatch,
+      listTransactionNotRecon
+    }
+
     return (
       <div className="content-inner">
         <Row>
@@ -105,6 +113,9 @@ class Detail extends React.Component {
             <Row>
               {type === 'balance' && <ListBalance {...listBalanceProps} />}
               {type === 'transaction' && <ListTransaction {...listTransactionProps} />}
+              {type === 'transaction' && listTransactionNotRecon && listTransactionNotRecon.length > 0 && (
+                <ListTransactionNotReconciled {...listTransactionNotReconProps} />
+              )}
             </Row>
           </Col>
         </Row>

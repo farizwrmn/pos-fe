@@ -37,6 +37,7 @@ const Balance = ({
         bordered
         columns={columns}
         onChange={onChangePagination}
+        scroll={{ x: 700 }}
       />
     </Row>
   )

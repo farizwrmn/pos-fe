@@ -11,3 +11,16 @@ export async function query (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryNotReconciled (params) {
+  const apiHeaderToken = crypt.apiheader()
+  if (!params.transId) {
+    return
+  }
+  return request({
+    url: `${paymentXenditTransactionImportDetail}/not-reconciled/${params.transId}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

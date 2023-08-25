@@ -37,6 +37,7 @@ const Transaction = ({
         columns={columns}
         bordered
         onChange={onChangePagination}
+        scroll={{ x: 700 }}
       />
     </Row>
   )

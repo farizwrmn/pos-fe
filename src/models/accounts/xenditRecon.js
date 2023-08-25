@@ -4,7 +4,7 @@ import { lstorage } from 'utils'
 import { query as queryBalance } from 'services/paymentXendit/paymentXenditBalanceImport'
 import { query as queryBalanceDetail } from 'services/paymentXendit/paymentXenditBalanceImportDetailService'
 import { query as queryTransaction } from 'services/paymentXendit/paymentXenditTransactionImport'
-import { query as queryTransactionDetail } from 'services/paymentXendit/paymentXenditTransactionImportDetail'
+import { query as queryTransactionDetail, queryNotReconciled } from 'services/paymentXendit/paymentXenditTransactionImportDetail'
 import { queryXenditRecon as queryErrorLog } from 'services/errorLog'
 import { pageModel } from './../common'
 
@@ -19,30 +19,38 @@ export default modelExtend(pageModel, {
   state: {
     activeKey: '0',
 
+    // list balance
     listBalance: [],
     paginationBalance: {
       current: 1
     },
 
+    // list transaction
     listTransaction: [],
     paginationTransaction: {
       current: 1
     },
 
+    // list error log
     listErrorLog: [],
     paginationErrorLog: {
       current: 1
     },
 
+    // list transaction detail
     listTransactionDetail: [],
     paginationTransactionDetail: {
       current: 1
     },
 
+    // list balance detail
     listBalanceDetail: [],
     paginationBalanceDetail: {
       current: 1
-    }
+    },
+
+    // List transaction detail not reconciled
+    listTransactionNotRecon: []
   },
 
   subscriptions: {
@@ -176,6 +184,7 @@ export default modelExtend(pageModel, {
     },
     * queryTransactionDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryTransactionDetail, payload)
+      const responseNotReconciled = yield call(queryNotReconciled, payload)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',
@@ -185,7 +194,8 @@ export default modelExtend(pageModel, {
               current: Number(response.page || 1),
               pageSize: Number(response.pageSize || 10),
               total: Number(response.total || 0)
-            }
+            },
+            listTransactionNotRecon: responseNotReconciled.data
           }
         })
       }

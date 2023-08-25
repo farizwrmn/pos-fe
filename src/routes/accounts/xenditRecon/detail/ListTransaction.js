@@ -2,7 +2,7 @@ import moment from 'moment'
 import { Row, Table } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
-const ListTransaction = ({ onChangePagination, ...tableProps }) => {
+const ListTransaction = ({ listTransactionNotRecon, onChangePagination, ...tableProps }) => {
   const columns = [
     {
       title: 'Tanggal',
@@ -36,14 +36,20 @@ const ListTransaction = ({ onChangePagination, ...tableProps }) => {
   ]
 
   return (
-    <Row>
-      <Table
-        {...tableProps}
-        bordered
-        columns={columns}
-        onChange={onChangePagination}
-      />
-    </Row>
+    <div>
+      <Row>
+        <h3 style={{ fontWeight: 'bolder' }}>List Transaction Detail</h3>
+      </Row>
+      <Row>
+        <Table
+          {...tableProps}
+          bordered
+          columns={columns}
+          onChange={onChangePagination}
+          scroll={{ x: 700 }}
+        />
+      </Row>
+    </div>
   )
 }
 
