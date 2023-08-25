@@ -1,4 +1,4 @@
-import { Row, Table, Tag } from 'antd'
+import { Button, Row, Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListTransactionNotReconciled = ({
@@ -49,8 +49,11 @@ const ListTransactionNotReconciled = ({
 
   return (
     <div>
-      <Row>
-        <h3 style={{ fontWeight: 'bolder' }}>Not Reconciled</h3>
+      <Row type="flex" align="middle" style={{ marginBottom: '5px' }}>
+        <h3 style={{ fontWeight: 'bolder', flex: 1 }}>Not Reconciled</h3>
+        <Button icon="download">
+          Download List Transaction Detail
+        </Button>
       </Row>
       <Row>
         <Table

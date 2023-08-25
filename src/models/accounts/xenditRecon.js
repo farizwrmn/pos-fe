@@ -4,7 +4,7 @@ import { lstorage } from 'utils'
 import { query as queryBalance } from 'services/paymentXendit/paymentXenditBalanceImport'
 import { query as queryBalanceDetail } from 'services/paymentXendit/paymentXenditBalanceImportDetailService'
 import { query as queryTransaction } from 'services/paymentXendit/paymentXenditTransactionImport'
-import { query as queryTransactionDetail, queryNotReconciled } from 'services/paymentXendit/paymentXenditTransactionImportDetail'
+import { query as queryTransactionDetail, queryNotReconciled as queryTransactionDetailNotReconciled, queryAll as queryAllTransactionDetail } from 'services/paymentXendit/paymentXenditTransactionImportDetail'
 import { queryXenditRecon as queryErrorLog } from 'services/errorLog'
 import { pageModel } from './../common'
 
@@ -18,6 +18,9 @@ export default modelExtend(pageModel, {
 
   state: {
     activeKey: '0',
+    showPDFModal: false,
+    mode: '',
+    changed: false,
 
     // list balance
     listBalance: [],
@@ -39,6 +42,7 @@ export default modelExtend(pageModel, {
 
     // list transaction detail
     listTransactionDetail: [],
+    listTransactionDetailAll: [],
     paginationTransactionDetail: {
       current: 1
     },
@@ -184,7 +188,7 @@ export default modelExtend(pageModel, {
     },
     * queryTransactionDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryTransactionDetail, payload)
-      const responseNotReconciled = yield call(queryNotReconciled, payload)
+      const responseNotReconciled = yield call(queryTransactionDetailNotReconciled, payload)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',
@@ -196,6 +200,18 @@ export default modelExtend(pageModel, {
               total: Number(response.total || 0)
             },
             listTransactionNotRecon: responseNotReconciled.data
+          }
+        })
+      }
+    },
+    * queryAllTransactionDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryAllTransactionDetail, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransactionDetailAll: response.data,
+            changed: payload.changed
           }
         })
       }

@@ -1,4 +1,5 @@
 import React from 'react'
+import pathToRegexp from 'path-to-regexp'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Col, Row, message } from 'antd'
@@ -13,15 +14,21 @@ class Detail extends React.Component {
       dispatch,
       location,
       loading,
-      xenditRecon
+      xenditRecon,
+      app
     } = this.props
     const {
       listTransactionNotRecon,
       listTransactionDetail,
+      listTransactionDetailAll,
       paginationTransactionDetail,
       listBalanceDetail,
-      paginationBalanceDetail
+      paginationBalanceDetail,
+      showPDFModal,
+      mode,
+      changed
     } = xenditRecon
+    const { user } = app
 
     const handleBackButton = () => {
       const query = {}
@@ -62,9 +69,52 @@ class Detail extends React.Component {
     }
 
     const listTransactionProps = {
-      loading: loading.effects['xenditRecon/queryTransactionDetail'],
+      dispatch,
+      loading,
       dataSource: listTransactionDetail,
       pagination: paginationTransactionDetail,
+      showPDFModal,
+      modalPrintProps: {
+        loading,
+        location,
+        mode,
+        list: listTransactionDetail,
+        listPrintAll: listTransactionDetailAll,
+        changed,
+        PDFModalProps: {
+          closeable: false,
+          maskCloseable: false,
+          visible: showPDFModal,
+          footer: null,
+          width: '600px',
+          title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+          onCancel () {
+            dispatch({
+              type: 'xenditRecon/updateState',
+              payload: {
+                showPDFModal: false,
+                changed: false,
+                listTransactionDetailAll: []
+              }
+            })
+          }
+        },
+        printProps: {
+          user
+        },
+        getAllData: () => {
+          const match = pathToRegexp('/accounting/xendit-recon/detail/:id').exec(location.pathname)
+          if (match) {
+            dispatch({
+              type: 'xenditRecon/queryAllTransactionDetail',
+              payload: {
+                changed: true,
+                transId: match[1]
+              }
+            })
+          }
+        }
+      },
       onChangePagination: (pagination) => {
         const { current: page, pageSize } = pagination
         const { pathname, query } = location
@@ -126,5 +176,6 @@ class Detail extends React.Component {
 
 export default connect(({
   xenditRecon,
+  app,
   loading
-}) => ({ xenditRecon, loading }))(Detail)
+}) => ({ xenditRecon, app, loading }))(Detail)
