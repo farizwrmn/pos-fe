@@ -24,7 +24,8 @@ class Detail extends React.Component {
       paginationTransactionDetail,
       listBalanceDetail,
       paginationBalanceDetail,
-      showPDFModal,
+      showPDFModalTransactionDetail,
+      showPDFModalTransactionNotRecon,
       mode,
       changed
     } = xenditRecon
@@ -73,7 +74,7 @@ class Detail extends React.Component {
       loading,
       dataSource: listTransactionDetail,
       pagination: paginationTransactionDetail,
-      showPDFModal,
+      showPDFModal: showPDFModalTransactionDetail,
       modalPrintProps: {
         loading,
         location,
@@ -84,7 +85,7 @@ class Detail extends React.Component {
         PDFModalProps: {
           closeable: false,
           maskCloseable: false,
-          visible: showPDFModal,
+          visible: showPDFModalTransactionDetail,
           footer: null,
           width: '600px',
           title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
@@ -92,7 +93,7 @@ class Detail extends React.Component {
             dispatch({
               type: 'xenditRecon/updateState',
               payload: {
-                showPDFModal: false,
+                showPDFModalTransactionDetail: false,
                 changed: false,
                 listTransactionDetailAll: []
               }
@@ -147,7 +148,34 @@ class Detail extends React.Component {
     const listTransactionNotReconProps = {
       loading,
       dispatch,
-      listTransactionNotRecon
+      listTransactionNotRecon,
+      showPDFModal: showPDFModalTransactionNotRecon,
+      modalPrintProps: {
+        dispatch,
+        listPrintAll: listTransactionNotRecon,
+        showPDFModal: showPDFModalTransactionNotRecon,
+        PDFModalProps: {
+          closeable: false,
+          maskCloseable: false,
+          visible: showPDFModalTransactionNotRecon,
+          footer: null,
+          width: '600px',
+          title: mode === 'pdf' ? 'Choose PDF' : 'Choose Excel',
+          onCancel () {
+            dispatch({
+              type: 'xenditRecon/updateState',
+              payload: {
+                showPDFModalTransactionNotRecon: false
+              }
+            })
+          }
+        },
+        printProps: {
+          user
+        },
+        mode,
+        changed
+      }
     }
 
     return (

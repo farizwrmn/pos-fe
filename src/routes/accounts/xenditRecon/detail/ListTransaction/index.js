@@ -49,7 +49,7 @@ const ListTransaction = ({
     dispatch({
       type: 'xenditRecon/updateState',
       payload: {
-        showPDFModal: true,
+        showPDFModalTransactionDetail: true,
         mode
       }
     })

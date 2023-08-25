@@ -18,7 +18,8 @@ export default modelExtend(pageModel, {
 
   state: {
     activeKey: '0',
-    showPDFModal: false,
+    showPDFModalTransactionDetail: false,
+    showPDFModalTransactionNotRecon: false,
     mode: '',
     changed: false,
 

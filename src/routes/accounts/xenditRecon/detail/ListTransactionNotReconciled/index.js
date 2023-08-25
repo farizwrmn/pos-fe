@@ -1,8 +1,12 @@
-import { Button, Row, Table, Tag } from 'antd'
+import { Button, Dropdown, Menu, Row, Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
+import ModalPrint from './ModalPrint'
 
 const ListTransactionNotReconciled = ({
-  listTransactionNotRecon
+  dispatch,
+  listTransactionNotRecon,
+  showPDFModal,
+  modalPrintProps
 }) => {
   const columns = [
     {
@@ -47,13 +51,35 @@ const ListTransactionNotReconciled = ({
     }
   ]
 
+  const onShowPDFModal = (mode) => {
+    dispatch({
+      type: 'xenditRecon/updateState',
+      payload: {
+        showPDFModalTransactionNotRecon: true,
+        mode
+      }
+    })
+  }
+
+  const menu = (
+    <Menu >
+      <Menu.Item key="1"><Button onClick={() => onShowPDFModal('pdf')} style={{ background: 'transparent', border: 'none', padding: 0, width: '100%' }} icon="file-pdf">PDF</Button></Menu.Item>
+      <Menu.Item key="2"><Button onClick={() => onShowPDFModal('xls')} style={{ background: 'transparent', border: 'none', padding: 0, width: '100%' }} icon="file-excel">Excel</Button></Menu.Item>
+    </Menu>
+  )
+
+  console.log('showPDFModal', showPDFModal)
+
   return (
     <div>
+      {showPDFModal && (
+        <ModalPrint {...modalPrintProps} />
+      )}
       <Row type="flex" align="middle" style={{ marginBottom: '5px' }}>
         <h3 style={{ fontWeight: 'bolder', flex: 1 }}>Not Reconciled</h3>
-        <Button icon="download">
-          Download List Transaction Detail
-        </Button>
+        <Dropdown overlay={menu}>
+          <Button icon="download">Print</Button>
+        </Dropdown>
       </Row>
       <Row>
         <Table
