@@ -31,6 +31,7 @@ const List = ({
       title: 'Transaction No',
       dataIndex: 'transNo',
       key: 'transNo',
+      width: '150px',
       render: (text, record) => {
         return (
           <Link to={`/journal-entry/${record.id}`}>
@@ -42,24 +43,28 @@ const List = ({
     {
       title: 'Reference',
       dataIndex: 'reference',
-      key: 'reference'
+      key: 'reference',
+      width: '150px'
     },
     {
       title: 'Total',
       dataIndex: 'amountOut',
       key: 'amountOut',
+      width: '150px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
     {
       title: 'Desc',
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      width: '250px'
     },
     {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
+      width: '150px',
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
       render: _text => `${_text ? moment(_text).format('DD-MMM-YYYY') : '-'}`
     },
