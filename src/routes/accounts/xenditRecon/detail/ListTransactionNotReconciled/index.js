@@ -68,8 +68,6 @@ const ListTransactionNotReconciled = ({
     </Menu>
   )
 
-  console.log('showPDFModal', showPDFModal)
-
   return (
     <div>
       {showPDFModal && (
