@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Button, InputNumber, Input, Select } from 'antd'
+import { Modal, Form, Button, Select, Input, message } from 'antd'
+import moment from 'moment'
+import { formatTimeBCA } from '../utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -34,36 +36,37 @@ const FormInputMdrAmount = ({
     getFieldDecorator,
     getFieldsValue,
     resetFields,
-    validateFields,
-    setFieldsValue
+    validateFields
   },
   onSubmit,
   ...tableProps
 }) => {
   const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ?
-    listReconNotMatch.map(recon => <Option value={recon.id} key={recon.id}>{`id:${recon.id} batchNumber:${recon.edcBatchNumber} amount:${recon.grossAmount} MDR:${recon.mdrAmount}`}</Option>) : []
-
-  const onFilterListReconNotMatchById = (id) => {
-    const data = listReconNotMatch.filter(filtered => filtered.id === id)
-    setFieldsValue({
-      mdrAmount: data[0].mdrAmount
-    })
-  }
-
-  const reset = () => {
-    resetFields(['mdrAmount', 'id', 'csvId'])
-  }
+    listReconNotMatch.map(recon => <Option value={recon.id} key={recon.id}>{`${recon.grossAmount ? recon.grossAmount.toLocaleString() : 'Undefined Amount'} (Date: ${recon.transactionDate} ${formatTimeBCA(recon.transactionTime)})`}</Option>) : []
 
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
+
       let data = {
-        ...getFieldsValue()
+        ...getFieldsValue(),
+        id: currentItem.id
       }
-      onSubmit(data)
-      reset()
+      const filteredMdrAmount = listReconNotMatch.filter(filtered => Number(filtered.id) === Number(data.csvId))
+      let grossAmount = 0
+      if (filteredMdrAmount && filteredMdrAmount[0]) {
+        data.mdrAmount = filteredMdrAmount[0].mdrAmount
+        grossAmount = filteredMdrAmount[0].grossAmount
+      }
+      console.log('currentItem', currentItem, listReconNotMatch)
+      const amountDiff = currentItem.amount - grossAmount
+      if (amountDiff > 2000 || amountDiff < -2000) {
+        message.error('Different between amount more than 2000')
+        return
+      }
+      onSubmit(data, resetFields)
     })
   }
 
@@ -74,46 +77,23 @@ const FormInputMdrAmount = ({
       width="800px"
       height="50%"
       title="Matching MDR Amount"
-      footer={[]}
+      footer={null}
       onCancel={onCancel}
       {...tableProps}
     >
       <Form>
-        <FormItem label="id" hasFeedback {...formMandatoryField}>
-          {getFieldDecorator('id', {
-            initialValue: currentItem.id
-          })(<Input disabled value={currentItem.id} />)}
+        <FormItem label="Trans Date" hasFeedback {...formMandatoryField}>
+          {getFieldDecorator('transDates', {
+            initialValue: `${moment(currentItem.transDate).format('YYYY-MM-DD HH:mm')}`
+          })(<Input disabled min={0} style={{ width: '100%' }} />)}
         </FormItem>
-        <FormItem label="Mdr Amount" hasFeedback {...formMandatoryField}>
-          {getFieldDecorator('mdrAmount', {
-            normalize: (value) => {
-              if (value || value === 0) {
-                if (value.toString().match(/\d+,($|\d+)/)) {
-                  return value.toString().replace(',', '.')
-                }
-                return value
-              }
-            },
-            rules: [
-              {
-                required: true,
-                message: 'The value must not be empty'
-              },
-              {
-                pattern: /^[0-9]+(\.[0-9]{0,7})?$/,
-                message: 'The value must be a number with a maximum of 7 decimal places'
-              }
-            ]
-          })(<InputNumber disabled min={0} style={{ width: '100%' }} />)}
-        </FormItem>
-        <FormItem label="Rekening Koran NOT MATCH" hasFeedback {...formMandatoryField}>
+        <FormItem label="Data dari Bank" hasFeedback {...formMandatoryField}>
           {getFieldDecorator('csvId', {
             rules: [{ required: true }]
           })(<Select
             showSearch
             optionFilterProp="children"
             mode="default"
-            onSelect={value => onFilterListReconNotMatchById(value)}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >{childrenLov}
           </Select>)}

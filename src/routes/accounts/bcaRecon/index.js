@@ -127,7 +127,7 @@ const ImportBcaRecon = ({
     <div className="content-inner">
       <h1>Bank Recon</h1>
       <div>
-        <FormInputMdrAmount {...formModalInputMdrAmountProps} />
+        {modalVisible && <FormInputMdrAmount {...formModalInputMdrAmountProps} />}
       </div>
       <Row>
         <Col>
@@ -136,12 +136,13 @@ const ImportBcaRecon = ({
       </Row>
       <Row>
         <Col style={{ padding: '1em' }}>
+          <h3>Total Transfer</h3>
           <ListSettlementAccumulated {...listSettlementAccumulatedProps} />
         </Col>
       </Row>
       <Row type="flex" justify="space-between">
         <Col span={12} className={styles.alignCenter}><h3>Transaksi POS</h3></Col>
-        <Col span={12} className={styles.alignCenter}><h3>Rekening Koran Bank</h3></Col>
+        <Col span={12} className={styles.alignCenter}><h3>Data Dari Bank</h3></Col>
       </Row>
       <Row>
         <Col span={12} style={{ padding: '1em' }}>
