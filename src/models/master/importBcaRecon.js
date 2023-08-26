@@ -356,6 +356,7 @@ export default modelExtend(pageModel, {
     * queryImportLog ({ payload = {} }, { call, put }) {
       payload.updated = 0
       const data = yield call(queryImportLog, {
+        ...payload,
         order: '-id'
       })
       if (data.success) {
