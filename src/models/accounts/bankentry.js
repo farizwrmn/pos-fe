@@ -58,11 +58,17 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/bank-history'
-          || pathname === '/bank-recon') {
+        if (pathname === '/bank-recon') {
           dispatch({
             type: 'bankentry/queryBankRecon',
             payload: other
+          })
+        }
+        if (pathname === '/bank-history') {
+          const { recon, ...otherBankRecon } = other
+          dispatch({
+            type: 'bankentry/queryBankRecon',
+            payload: otherBankRecon
           })
         }
         if (pathname === '/bank-entry') {
