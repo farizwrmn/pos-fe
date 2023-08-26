@@ -184,11 +184,12 @@ export default modelExtend(pageModel, {
         }
         return acc
       }, [])
-      const data = yield call(updateMatchPaymentAndRecon, {
-        transDate: payload.transDate,
-        csvData: mappingListWithPaymentId,
-        paymentData: listSortPayment
-      })
+      const requestData = {
+        transDate: payload.transDate ? payload.transDate.format('YYYY-MM-DD') : null,
+        csvData: mappingListWithPaymentId.map(item => ({ id: item.id, paymentId: item.paymentId })),
+        paymentData: listSortPayment.map(item => ({ id: item.id, matchMdr: item.matchMdr, csvId: item.csvId }))
+      }
+      const data = yield call(updateMatchPaymentAndRecon, requestData)
       if (data.success) {
         message.success('success to submit recon')
         yield put({
