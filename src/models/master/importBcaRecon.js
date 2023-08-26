@@ -11,8 +11,7 @@ import {
   getDataPaymentMachine
 } from 'services/master/importBcaRecon'
 import {
-  queryImportLog,
-  insertImportLog
+  queryImportLog
 } from 'services/master/importBcaReconLog'
 import {
   pageModel
@@ -339,9 +338,6 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'queryImportLog'
         })
-        yield call(insertImportLog, {
-          filename: payload.filename
-        })
         success()
         yield put({
           type: 'query',
@@ -374,40 +370,6 @@ export default modelExtend(pageModel, {
             }
           }
         })
-      }
-    },
-    * insertImportLog ({ payload }, { call, put }) {
-      const data = yield call(insertImportLog, payload)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'queryImportLog'
-        })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-    * getListAccumulatedAmount ({ payload }, { call, put }) {
-      const data = yield call(insertImportLog, payload)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'queryImportLog'
-        })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
       }
     },
     * resetListImportCSVAndPayment ({ payload }, { put }) {

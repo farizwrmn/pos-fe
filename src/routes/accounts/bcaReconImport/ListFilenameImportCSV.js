@@ -12,14 +12,14 @@ const ListFilenameImportCSV = ({ ...tableProps }) => {
       className: styles.alignRight
     },
     {
-      title: 'createdAt',
-      dataIndex: 'createdAt',
-      key: 'createdAt'
-    },
-    {
       title: 'createdBy',
       dataIndex: 'createdBy',
       key: 'createdBy'
+    },
+    {
+      title: 'createdAt',
+      dataIndex: 'createdAt',
+      key: 'createdAt'
     }
   ]
 
@@ -29,7 +29,6 @@ const ListFilenameImportCSV = ({ ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1200 }}
         rowKey={record => record.id}
       />
     </div>
