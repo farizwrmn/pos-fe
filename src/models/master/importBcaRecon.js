@@ -187,13 +187,18 @@ export default modelExtend(pageModel, {
       }, [])
       const requestData = {
         transDate: payload.transDate ? payload.transDate.format('YYYY-MM-DD') : null,
-        accumulateTransfer: listPaymentMachine.map(({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal }) => ({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal })),
+        accumulatedTransfer: listPaymentMachine.map(({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal }) => ({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal })),
         csvData: mappingListWithPaymentId.map(item => ({ id: item.id, paymentId: item.paymentId })),
         paymentData: listSortPayment.map(item => ({ id: item.id, matchMdr: item.matchMdr, csvId: item.csvId }))
       }
+      if (requestData.accumulatedTransfer.length === 0
+        && requestData.csvData.length === 0) {
+        message.error('Data From Bank Not Found')
+        return
+      }
       const data = yield call(updateMatchPaymentAndRecon, requestData)
       if (data.success) {
-        message.success('success to submit recon')
+        message.success('Success reconcile this account')
         yield put({
           type: 'updateState',
           payload: {
@@ -205,7 +210,6 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        message.error(data)
         throw data
       }
     },

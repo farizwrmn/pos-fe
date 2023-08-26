@@ -87,6 +87,11 @@ const FormInputMdrAmount = ({
             initialValue: `${moment(currentItem.transDate).format('YYYY-MM-DD HH:mm')}`
           })(<Input disabled min={0} style={{ width: '100%' }} />)}
         </FormItem>
+        <FormItem label="Amount" hasFeedback {...formMandatoryField}>
+          {getFieldDecorator('amountValue', {
+            initialValue: `${currentItem && currentItem.amount ? currentItem.amount.toLocaleString() : ''}`
+          })(<Input disabled min={0} style={{ width: '100%' }} />)}
+        </FormItem>
         <FormItem label="Data dari Bank" hasFeedback {...formMandatoryField}>
           {getFieldDecorator('csvId', {
             rules: [{ required: true }]
