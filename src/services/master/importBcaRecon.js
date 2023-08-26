@@ -29,6 +29,7 @@ export async function updateMatchPaymentAndRecon (params) {
       transDate: params.transDate,
       storeId: params.storeId,
       csvData: params.csvData,
+      accumulatedTransfer: params.accumulatedTransfer,
       paymentData: params.paymentData
     },
     headers: apiHeaderToken

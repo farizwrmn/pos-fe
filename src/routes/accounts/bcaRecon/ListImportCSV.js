@@ -1,32 +1,43 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { formatTimeBCA } from './utils'
 import styles from '../../../themes/index.less'
 
 const ListImportCSV = ({ ...tableProps }) => {
   const columns = [
     {
-      title: 'Edc Batch Number',
+      title: 'Amount',
+      dataIndex: 'grossAmount',
+      key: 'grossAmount',
+      className: styles.alignRight,
+      render: (text) => {
+        return text ? text.toLocaleString() : ''
+      }
+    },
+    {
+      title: 'Time',
+      dataIndex: 'transactionTime',
+      key: 'transactionTime',
+      className: styles.alignRight,
+      render: (text) => {
+        return (
+          <div>
+            {formatTimeBCA(text)}
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Batch No',
       dataIndex: 'edcBatchNumber',
       key: 'edcBatchNumber',
       className: styles.alignRight
     },
     {
-      title: 'grossAmount',
-      dataIndex: 'grossAmount',
-      key: 'grossAmount',
-      className: styles.alignLeft
-    },
-    {
-      title: 'mdr',
+      title: 'MDR',
       dataIndex: 'mdrAmount',
       key: 'mdrAmount',
-      className: styles.alignLeft
-    },
-    {
-      title: 'transactionDate',
-      dataIndex: 'transactionDate',
-      key: 'transactionDate',
       className: styles.alignLeft
     },
     {
