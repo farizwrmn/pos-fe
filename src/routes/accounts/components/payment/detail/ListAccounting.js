@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 // import { DropOption } from 'components'
 import {
-  Table
+  Table, Tag
   // Icon,
   // Tag
 } from 'antd'
@@ -62,6 +62,13 @@ const List = ({ cancelPayment, ...tableProps }) => {
       key: 'description',
       width: 100,
       render: text => <p style={{ textAlign: 'left' }}>{text}</p>
+    },
+    {
+      title: 'Status',
+      dataIndex: 'recon',
+      key: 'recon',
+      width: 60,
+      render: value => <div style={{ textAlign: 'center' }}><Tag color={value === 1 ? 'green' : 'yellow'}>{value === 1 ? 'Recon' : 'Not Recon'}</Tag></div>
     }
   ]
 
