@@ -8,7 +8,10 @@ import {
   bulkInsert,
   queryPosPayment,
   updateMatchPaymentAndRecon,
-  getDataPaymentMachine
+  getDataPaymentMachine,
+  queryTransaction,
+  queryMappingStore,
+  queryBalance
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog
@@ -61,6 +64,9 @@ export default modelExtend(pageModel, {
   effects: {
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
+      const dataTransaction = yield call(queryTransaction)
+      const dataBalance = yield call(queryBalance)
+      const dataMappingStore = yield call(queryMappingStore)
       // update list Total Transfer
       if (data.success) {
         yield put({
@@ -112,11 +118,14 @@ export default modelExtend(pageModel, {
             })
           }
         }
-
-        // do not show match data again
-        const isSomeDataMatch = sortDataPayment.some(item => item.matchMdr === null)
-        if (!isSomeDataMatch) {
-          message.error('already recon')
+        // validation import bank ?
+        // mengecek data di tbl balance dan transaction ada storeId dan transDate
+        const Transaction = dataTransaction.length > 0
+        const Balance = dataBalance.data.length > 0
+        const MappingStore = dataMappingStore.data.length > 0
+        const isDataValid = Balance || Transaction || MappingStore
+        if (isDataValid) {
+          message.error('Already Recon')
           return
         }
 
