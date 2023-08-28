@@ -28,6 +28,7 @@ const FormAutoCounter = ({
   dispatch,
   loading,
   form: {
+    getFieldValue,
     getFieldDecorator,
     resetFields,
     validateFields,
@@ -60,12 +61,13 @@ const FormAutoCounter = ({
 
   const handleSubmitBcaRecon = (params) => {
     let data = getFieldsValue()
+    const requestData = {
+      transDate: data.rangePicker,
+      ...params
+    }
     dispatch({
       type: 'importBcaRecon/submitRecon',
-      payload: {
-        transDate: data.rangePicker,
-        ...params
-      }
+      payload: requestData
     })
   }
 
@@ -86,7 +88,7 @@ const FormAutoCounter = ({
           <Col span={4}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('rangePicker')(
-                <DatePicker onChange={(value, dateString) => handleSubmit(dateString)} defaultValue={moment()} size="large" format="DD-MMM-YYYY" />
+                <DatePicker disabled={getFieldValue('rangePicker')} onChange={(value, dateString) => handleSubmit(dateString)} size="large" format="DD-MMM-YYYY" />
               )}
             </FormItem>
           </Col>

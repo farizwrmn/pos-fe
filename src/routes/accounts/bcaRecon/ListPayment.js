@@ -12,22 +12,22 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       className: styles.alignRight,
       render: (text, record) => {
         if (record.match && !!record.editState) {
-          return text
+          return text ? text.toLocaleString() : ''
         }
         return (
-          <div style={{ color: '#55a756' }} onClick={() => openModalInputMdrAmount(record)}>{text}</div>
+          <div style={{ color: '#55a756' }} onClick={() => openModalInputMdrAmount(record)}>{text ? text.toLocaleString() : ''}</div>
         )
       }
     },
     {
-      title: 'Date',
-      dataIndex: 'transDate',
-      key: 'transDate',
+      title: 'Time',
+      dataIndex: 'transTime',
+      key: 'transTime',
       className: styles.alignRight,
-      render: text => moment(text).format('YYYY-MM-DD HH:mm:ss')
+      render: (text, record) => moment(record.transDate).format('HH:mm')
     },
     {
-      title: 'Batch Number',
+      title: 'Batch No',
       dataIndex: 'batchNumber',
       key: 'batchNumber',
       className: styles.alignRight

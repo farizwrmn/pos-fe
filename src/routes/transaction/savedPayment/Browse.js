@@ -170,6 +170,13 @@ const BrowseGroup = ({
       onFilter: (value, record) => record.status.indexOf(value) === 0
     },
     {
+      title: 'Payment Status',
+      dataIndex: 'validPayment',
+      key: 'validPayment',
+      width: 100,
+      render: value => <div style={{ textAlign: 'center' }}><Tag color={value === 1 ? 'green' : 'red'}>{value === 1 ? 'Valid' : 'Not Valid'}</Tag></div>
+    },
+    {
       title: <Icon type="setting" />,
       key: 'operation',
       fixed: 'right',

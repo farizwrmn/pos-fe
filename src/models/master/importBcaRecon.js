@@ -8,11 +8,13 @@ import {
   bulkInsert,
   queryPosPayment,
   updateMatchPaymentAndRecon,
-  getDataPaymentMachine
+  getDataPaymentMachine,
+  queryTransaction,
+  queryMappingStore,
+  queryBalance
 } from 'services/master/importBcaRecon'
 import {
-  queryImportLog,
-  insertImportLog
+  queryImportLog
 } from 'services/master/importBcaReconLog'
 import {
   pageModel
@@ -62,6 +64,10 @@ export default modelExtend(pageModel, {
   effects: {
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
+      const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
+      const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
+      const dataMappingStore = yield call(queryMappingStore)
+      // update list Total Transfer
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -112,6 +118,21 @@ export default modelExtend(pageModel, {
             })
           }
         }
+        // validation import bank ?
+        // mengecek data di tbl balance dan transaction ada storeId dan transDate
+        const Transaction = dataTransaction.length > 0
+        const Balance = dataBalance.data.length > 0
+        const MappingStore = dataMappingStore.data.length > 0
+        const isDataValid = Balance || Transaction
+        if (isDataValid) {
+          message.error('Already Recon')
+        }
+
+        if (MappingStore) {
+          message.error('Mapping store not setup yet')
+          return
+        }
+
         yield put({
           type: 'updateState',
           payload: {
@@ -168,6 +189,7 @@ export default modelExtend(pageModel, {
     * submitRecon ({ payload = {} }, { call, put, select }) {
       payload.update = 1
       const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
+      const listPaymentMachine = yield select(({ importBcaRecon }) => importBcaRecon.listPaymentMachine)
       const listSortPayment = yield select(({ importBcaRecon }) => importBcaRecon.listSortPayment)
       let filterListLength = list && list.length > 0 && list.filter(filtered => !!filtered.match).length === list.length
       let filterListSortPaymentLength = listSortPayment && listSortPayment.length > 0 && listSortPayment.filter(filtered => !!filtered.match).length === listSortPayment.length
@@ -185,13 +207,20 @@ export default modelExtend(pageModel, {
         }
         return acc
       }, [])
-      const data = yield call(updateMatchPaymentAndRecon, {
-        transDate: payload.transDate,
-        csvData: mappingListWithPaymentId,
-        paymentData: listSortPayment
-      })
+      const requestData = {
+        transDate: payload.transDate ? payload.transDate.format('YYYY-MM-DD') : null,
+        accumulatedTransfer: listPaymentMachine.map(({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal }) => ({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal })),
+        csvData: mappingListWithPaymentId.map(item => ({ id: item.id, paymentId: item.paymentId })),
+        paymentData: listSortPayment.map(item => ({ id: item.id, matchMdr: item.matchMdr, csvId: item.csvId }))
+      }
+      if (requestData.accumulatedTransfer.length === 0
+        && requestData.csvData.length === 0) {
+        message.error('Data From Bank Not Found')
+        return
+      }
+      const data = yield call(updateMatchPaymentAndRecon, requestData)
       if (data.success) {
-        message.success('success to submit recon')
+        message.success('Success reconcile this account')
         yield put({
           type: 'updateState',
           payload: {
@@ -203,7 +232,6 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        message.error(data)
         throw data
       }
     },
@@ -339,9 +367,6 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'queryImportLog'
         })
-        yield call(insertImportLog, {
-          filename: payload.filename
-        })
         success()
         yield put({
           type: 'query',
@@ -360,6 +385,7 @@ export default modelExtend(pageModel, {
     * queryImportLog ({ payload = {} }, { call, put }) {
       payload.updated = 0
       const data = yield call(queryImportLog, {
+        ...payload,
         order: '-id'
       })
       if (data.success) {
@@ -374,40 +400,6 @@ export default modelExtend(pageModel, {
             }
           }
         })
-      }
-    },
-    * insertImportLog ({ payload }, { call, put }) {
-      const data = yield call(insertImportLog, payload)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'queryImportLog'
-        })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
-      }
-    },
-    * getListAccumulatedAmount ({ payload }, { call, put }) {
-      const data = yield call(insertImportLog, payload)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'queryImportLog'
-        })
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw data
       }
     },
     * resetListImportCSVAndPayment ({ payload }, { put }) {

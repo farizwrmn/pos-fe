@@ -19,6 +19,39 @@ export async function query (params) {
   })
 }
 
+export async function queryTransaction (params = {}) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/transaction`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryBalance (params = {}) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/balance`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryMappingStore (params = {}) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/mapping-store`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function updateMatchPaymentAndRecon (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()
@@ -29,6 +62,7 @@ export async function updateMatchPaymentAndRecon (params) {
       transDate: params.transDate,
       storeId: params.storeId,
       csvData: params.csvData,
+      accumulatedTransfer: params.accumulatedTransfer,
       paymentData: params.paymentData
     },
     headers: apiHeaderToken

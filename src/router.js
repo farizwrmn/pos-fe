@@ -1709,6 +1709,22 @@ const Routers = function ({ history, app }) {
             }, 'bca-recon-import')
           }
         }, {
+          path: 'accounting/xendit-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon'))
+            }, 'xendit-recon')
+          }
+        }, {
+          path: 'accounting/xendit-recon/detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon/detail'))
+            }, 'xendit-recon-detail')
+          }
+        }, {
           path: 'bank-history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
