@@ -8,7 +8,10 @@ import {
   bulkInsert,
   queryPosPayment,
   updateMatchPaymentAndRecon,
-  getDataPaymentMachine
+  getDataPaymentMachine,
+  queryTransaction,
+  queryMappingStore,
+  queryBalance
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog
@@ -61,6 +64,10 @@ export default modelExtend(pageModel, {
   effects: {
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
+      const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
+      const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
+      const dataMappingStore = yield call(queryMappingStore)
+      // update list Total Transfer
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -111,6 +118,21 @@ export default modelExtend(pageModel, {
             })
           }
         }
+        // validation import bank ?
+        // mengecek data di tbl balance dan transaction ada storeId dan transDate
+        const Transaction = dataTransaction.length > 0
+        const Balance = dataBalance.data.length > 0
+        const MappingStore = dataMappingStore.data.length > 0
+        const isDataValid = Balance || Transaction
+        if (isDataValid) {
+          message.error('Already Recon')
+        }
+
+        if (MappingStore) {
+          message.error('Mapping store not setup yet')
+          return
+        }
+
         yield put({
           type: 'updateState',
           payload: {
@@ -363,6 +385,7 @@ export default modelExtend(pageModel, {
     * queryImportLog ({ payload = {} }, { call, put }) {
       payload.updated = 0
       const data = yield call(queryImportLog, {
+        ...payload,
         order: '-id'
       })
       if (data.success) {
