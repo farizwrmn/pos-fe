@@ -61,6 +61,7 @@ export default modelExtend(pageModel, {
   effects: {
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
+      // update list Total Transfer
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -111,6 +112,14 @@ export default modelExtend(pageModel, {
             })
           }
         }
+
+        // do not show match data again
+        const isSomeDataMatch = sortDataPayment.some(item => item.matchMdr === null)
+        if (!isSomeDataMatch) {
+          message.error('already recon')
+          return
+        }
+
         yield put({
           type: 'updateState',
           payload: {
