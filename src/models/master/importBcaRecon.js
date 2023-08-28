@@ -123,9 +123,12 @@ export default modelExtend(pageModel, {
         const Transaction = dataTransaction.length > 0
         const Balance = dataBalance.data.length > 0
         const MappingStore = dataMappingStore.data.length > 0
-        const isDataValid = Balance || Transaction || MappingStore
+        const isDataValid = Balance || Transaction
         if (isDataValid) {
           message.error('Already Recon')
+        }
+
+        if (MappingStore) {
           return
         }
 
