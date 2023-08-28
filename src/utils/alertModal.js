@@ -44,6 +44,7 @@ const checkPermissionDayBeforeTransaction = (transDate) => {
     })
     return true
   }
+  return false
 }
 
 const checkPermissionMonthTransaction = (transDate) => {
