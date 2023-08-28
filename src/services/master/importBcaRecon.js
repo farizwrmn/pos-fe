@@ -19,7 +19,7 @@ export async function query (params) {
   })
 }
 
-export async function queryTransaction (params) {
+export async function queryTransaction (params = {}) {
   params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -30,7 +30,7 @@ export async function queryTransaction (params) {
   })
 }
 
-export async function queryBalance (params) {
+export async function queryBalance (params = {}) {
   params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -41,7 +41,7 @@ export async function queryBalance (params) {
   })
 }
 
-export async function queryMappingStore (params) {
+export async function queryMappingStore (params = {}) {
   params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
