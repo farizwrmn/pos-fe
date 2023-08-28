@@ -2,13 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
 import { Table, Icon, Tag } from 'antd'
-import { numberFormat } from 'utils'
+import { numberFormat, alertModal, lstorage } from 'utils'
+import moment from 'moment'
 
 const numberFormatter = numberFormat.numberFormatter
+const { checkPermissionDayBeforeTransaction } = alertModal
 
 const List = ({ cancelPayment, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
+      const currentRole = lstorage.getCurrentUserRole()
+      if (currentRole !== 'OWN') {
+        const transDate = moment(record.transDate).format('YYYY-MM-DD')
+        const checkDayBefore = checkPermissionDayBeforeTransaction(transDate)
+        if (checkDayBefore) {
+          return
+        }
+      }
+
       cancelPayment(record)
     }
   }
@@ -26,11 +37,11 @@ const List = ({ cancelPayment, ...tableProps }) => {
       key: 'active',
       width: 120,
       render: text =>
-        (<span>
-          <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
-            {parseInt(text, 10) ? 'Active' : 'Canceled'}
-          </Tag>
-        </span>)
+      (<span>
+        <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
+          {parseInt(text, 10) ? 'Active' : 'Canceled'}
+        </Tag>
+      </span>)
     },
     {
       title: 'Date',
