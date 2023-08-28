@@ -35,6 +35,17 @@ const stockMinusAlert = (message) => {
   )
 }
 
+const checkPermissionDayBeforeTransaction = (transDate) => {
+  const restrictDate = moment.utc().subtract(1, 'days')
+  if (moment(transDate, 'YYYY-MM-DD').isBefore(restrictDate)) {
+    Modal.warning({
+      title: 'This transaction is restricted to add or edit',
+      content: 'Use adjustment instead'
+    })
+    return true
+  }
+}
+
 const checkPermissionMonthTransaction = (transDate) => {
   const Inventory = getSetting('Inventory')
   let permissionValue = true
@@ -80,5 +91,6 @@ module.exports = {
   stockMinusAlert,
   checkPermissionMonthTransaction,
   checkPermissionEditQtyPos,
-  checkPermissionEditPricePos
+  checkPermissionEditPricePos,
+  checkPermissionDayBeforeTransaction
 }
