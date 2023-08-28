@@ -64,9 +64,9 @@ export default modelExtend(pageModel, {
   effects: {
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
-      const dataTransaction = yield call(queryTransaction)
-      const dataBalance = yield call(queryBalance)
-      const dataMappingStore = yield call(queryMappingStore)
+      const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
+      const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
+      const dataMappingStore = yield call(queryMappingStore, { transDate: payload.payment.transDate })
       // update list Total Transfer
       if (data.success) {
         yield put({
