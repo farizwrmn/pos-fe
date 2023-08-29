@@ -1703,6 +1703,38 @@ const Routers = function ({ history, app }) {
             }, 'accounting-overview-report')
           }
         }, {
+          path: 'accounting/bca-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bcaRecon'))
+            }, 'bca-recon')
+          }
+        }, {
+          path: 'accounting/bca-recon-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bcaReconImport'))
+            }, 'bca-recon-import')
+          }
+        }, {
+          path: 'accounting/xendit-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon'))
+            }, 'xendit-recon')
+          }
+        }, {
+          path: 'accounting/xendit-recon/detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon/detail'))
+            }, 'xendit-recon-detail')
+          }
+        }, {
           path: 'bank-history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

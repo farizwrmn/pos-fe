@@ -72,6 +72,8 @@ module.exports = {
     userrole: '/misc/code/USERROLE',
     sellprice: '/misc/code/SELLPRICE',
     importstock: '/stocks/import',
+    importbcarecon: '/accounting/bca-recon-import',
+    importbcareconlog: '/accounting/bca-recon-import/log',
     brand: '/stocks/brands',
     bookmarkGroup: '/stock/bookmark-group',
     bookmark: '/stock/bookmark',
@@ -118,6 +120,11 @@ module.exports = {
     maintenance: '/maintenance',
     marketing: '/marketing',
     paymentTransaction: '/payment-transaction',
-    paylabs: '/paylabs'
+    paylabs: '/paylabs',
+    paymentXenditBalanceImport: '/payment-xendit-balance-import',
+    paymentXenditBalanceImportDetail: '/payment-xendit-balance-import-detail',
+    paymentXenditTransactionImport: '/payment-xendit-transaction-import',
+    paymentXenditTransactionImportDetail: '/payment-xendit-transaction-import-detail',
+    errorLog: '/error-log'
   }
 }
