@@ -385,6 +385,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('customer_view_transaction_time_limit')
   localStorage.removeItem('dynamic_qris_pos_trans_id')
   localStorage.removeItem('pos_available_payment_type')
+  localStorage.removeItem('current_payment_transaction_id')
 }
 
 const removeAllKey = () => {
