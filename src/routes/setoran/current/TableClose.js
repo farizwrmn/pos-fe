@@ -39,12 +39,23 @@ const TableClose = ({
   const inputColumns = listPaymentOption.map(record => ({
     title: record.name,
     render: () => {
-      return getFieldDecorator(`input[${record.name}]`)(
-        <InputNumber
-          formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={value => value.replace(/\$\s?|(,*)/g, '')}
-          style={{ width: '100%' }}
-        />
+      return (
+        <FormItem>
+          {getFieldDecorator(`input#${record.id}`, {
+            rules: [
+              {
+                required: true,
+                message: `${record.name} input required!`
+              }
+            ]
+          })(
+            <InputNumber
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              style={{ width: '100%' }}
+            />
+          )}
+        </FormItem>
       )
     }
   }))

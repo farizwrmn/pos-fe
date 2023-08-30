@@ -43,6 +43,7 @@ const tailFormItemLayout = {
 }
 
 const BalanceCurrentForm = ({
+  loading,
   listShift,
   onSubmit,
   form: {
@@ -73,7 +74,7 @@ const BalanceCurrentForm = ({
     <Col span={24}>
       <Form layout="horizontal">
         <FormItem label="Shift" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('Shift', {
+          {getFieldDecorator('shiftId', {
             rules: [
               {
                 required: true,
@@ -87,12 +88,19 @@ const BalanceCurrentForm = ({
           )}
         </FormItem>
         <FormItem label="Memo" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('memo')(
+          {getFieldDecorator('description')(
             <Input placeholder="Balance Memo (Optional)" />
           )}
         </FormItem>
         <FormItem {...tailFormItemLayout}>
-          <Button type="primary" onClick={handleSubmit}>Open</Button>
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+            loading={loading.effects['setoran/openBalance']}
+            disabled={loading.effects['setoran/openBalance']}
+          >
+            Open
+          </Button>
         </FormItem>
       </Form>
     </Col>

@@ -1,5 +1,8 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 import { getActive } from 'services/balance/balanceProcess'
+import { queryClose, queryOpen } from 'services/setoran/balancePaymentService'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -32,13 +35,30 @@ export default modelExtend(pageModel, {
   effects: {
     * active (_, { call, put }) {
       const response = yield call(getActive)
-      if (response && response.success) {
+      if (response && response.success && response.data) {
         yield put({
           type: 'updateState',
           payload: {
-            formType: 'close'
+            formType: 'close',
+            currentBalance: response.data
           }
         })
+      }
+    },
+    * openBalance ({ payload = {} }, { call, put }) {
+      const response = yield call(queryOpen, payload)
+      if (response && response.success && response.data) {
+        yield put(routerRedux.push('/transaction/pos'))
+      } else {
+        message.error(response.message)
+      }
+    },
+    * closeBalance ({ payload = {} }, { call }) {
+      const response = yield call(queryClose, payload)
+      if (response && response.success && response.data) {
+        console.log('response', response)
+      } else {
+        message.error(response.message)
       }
     }
   },

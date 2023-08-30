@@ -64,8 +64,23 @@ const FormClose = ({
       if (error) return error
 
       const data = {
-        ...getFieldsValue()
+        ...getFieldsValue(),
+        shiftId: currentShift.id
       }
+
+      const input = []
+      const headerArray = Object.keys(data)
+      const detailArray = Object.values(data)
+      for (let index in headerArray) {
+        const header = headerArray[index]
+        const detail = detailArray[index]
+        const splittedHeader = header.split('#')
+        if (splittedHeader.length > 1) {
+          input.push({ paymentOption: Number(splittedHeader[1]), totalBalanceInput: parseFloat(detail) })
+        }
+      }
+
+      console.log('input', input)
 
       onSubmit(data)
     })
@@ -76,20 +91,39 @@ const FormClose = ({
       <Form>
         <FormItem label="Shift" {...formItemLayout} hasFeedback>
           {getFieldDecorator('shift', {
-            initialValue: currentShift ? currentShift.id : undefined
+            initialValue: currentShift ? currentShift.shiftName : undefined,
+            rules: [
+              {
+                required: true,
+                message: 'Required!'
+              }
+            ]
           })(
             <Input placeholder="No Shift Detected" disabled />
           )}
         </FormItem>
         <FormItem label="Memo" {...formItemLayout} hasFeedback>
           {getFieldDecorator('memo', {
-            initialValue: currentBalance ? currentBalance.memo : undefined
+            initialValue: currentBalance ? currentBalance.description : undefined,
+            rules: [
+              {
+                required: true,
+                message: 'Required!'
+              }
+            ]
           })(
             <Input placeholder="No Memo Detected" disabled />
           )}
         </FormItem>
         <FormItem label="PIC" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('pic')(
+          {getFieldDecorator('approveUserId', {
+            rules: [
+              {
+                required: true,
+                message: 'Required!'
+              }
+            ]
+          })(
             <Select
               placeholder="Select PIC for this shift"
               showSearch

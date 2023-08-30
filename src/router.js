@@ -468,7 +468,7 @@ const Routers = function ({ history, app }) {
           path: 'setoran/current',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/balance/balanceShift'))
               registerModel(app, require('./models/setoran/setoran'))
               registerModel(app, require('./models/detail/user'))
               cb(null, require('./routes/setoran/current/'))

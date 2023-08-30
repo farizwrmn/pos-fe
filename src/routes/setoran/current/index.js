@@ -4,8 +4,10 @@ import FormCurrent from './Form'
 import FormClose from './FormClose'
 
 const BalanceCurrent = ({
+  dispatch,
+  loading,
   setoran,
-  shift,
+  balanceShift,
   userDetail
 }) => {
   const {
@@ -14,17 +16,19 @@ const BalanceCurrent = ({
   } = setoran
   const {
     listShift
-  } = shift
+  } = balanceShift
   const {
     data
   } = userDetail
 
-  console.log('userDetail', userDetail)
-
   const formCurrentProps = {
+    loading,
     listShift,
     onSubmit: (data) => {
-      console.log('data', data)
+      dispatch({
+        type: 'setoran/openBalance',
+        payload: data
+      })
     }
   }
 
@@ -51,11 +55,13 @@ const BalanceCurrent = ({
 }
 
 export default connect(({
+  loading,
   setoran,
-  shift,
+  balanceShift,
   userDetail
 }) => ({
+  loading,
   setoran,
-  shift,
+  balanceShift,
   userDetail
 }))(BalanceCurrent)
