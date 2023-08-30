@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Select, Row, Col, Modal, DatePicker } from 'antd'
+import { Form, Button, Select, Row, Col, Input, Modal, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
 import moment from 'moment'
@@ -107,6 +107,16 @@ const FormCounter = ({
       <Form layout="horizontal">
         <Row>
           <Col {...column}>
+            <FormItem label="From Store" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('storeName', {
+                initialValue: lstorage.getCurrentUserStoreName(),
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input disabled />)}
+            </FormItem>
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
                 initialValue: item.storeIdReceiver,
