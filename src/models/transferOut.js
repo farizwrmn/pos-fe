@@ -69,6 +69,15 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        if (location.pathname === '/inventory/transfer/auto-replenish') {
+          dispatch({
+            type: 'querySequence',
+            payload: {
+              seqCode: 'MUOUT',
+              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+            }
+          })
+        }
         if (location.pathname === '/inventory/transfer/out') {
           const { activeKey, start, end, page, pageSize } = location.query
           if (activeKey === '1') {
