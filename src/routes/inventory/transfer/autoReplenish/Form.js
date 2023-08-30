@@ -32,10 +32,9 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
-  onCancel,
   modalType,
   listStore,
-  button,
+  loading,
   form: {
     getFieldDecorator,
     getFieldValue,
@@ -62,11 +61,6 @@ const FormCounter = ({
     }
   }
 
-  const handleCancel = () => {
-    onCancel()
-    resetFields()
-  }
-
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -79,10 +73,12 @@ const FormCounter = ({
         title: 'Do you want to save this item?',
         onOk () {
           onSubmit({
-            storeIdReceiver: data.storeIdReceiver,
-            storeId: lstorage.getCurrentUserStore,
-            salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
-            salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
+            header: {
+              storeIdReceiver: data.storeIdReceiver,
+              storeId: lstorage.getCurrentUserStore(),
+              salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
+              salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
+            }
           }, resetFields)
         },
         onCancel () { }
@@ -103,6 +99,8 @@ const FormCounter = ({
     childrenStoreReceived.push(groupStore)
   }
 
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+
   return (
     <div>
       <Row><Link target="_blank" to={'/inventory/transfer/auto-replenish-import'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="default" size="large">Import Buffer</Button></Link></Row>
@@ -117,7 +115,10 @@ const FormCounter = ({
                     required: true
                   }
                 ]
-              })(<Select>
+              })(<Select
+                showSearch
+                filterOption={filterOption}
+              >
                 {childrenStoreReceived}
               </Select>)}
             </FormItem>
@@ -126,15 +127,13 @@ const FormCounter = ({
                 initialValue: [moment().subtract(30, 'days'), moment()],
                 rules: [
                   {
-                    required: true,
-                    pattern: /^[a-z0-9-/]{3,9}$/i
+                    required: true
                   }
                 ]
               })(<RangePicker />)}
             </FormItem>
             <FormItem {...tailFormItemLayout}>
-              {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-              <Button type="primary" onClick={handleSubmit}>{button}</Button>
+              <Button type="primary" onClick={handleSubmit} disabled={loading.effects['autoReplenish/add']}>Add</Button>
             </FormItem>
           </Col>
         </Row>
