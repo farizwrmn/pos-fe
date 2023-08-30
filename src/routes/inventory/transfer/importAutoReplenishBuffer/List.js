@@ -31,9 +31,15 @@ const List = ({ ...tableProps }) => {
       key: 'product.categoryName'
     },
     {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
+      title: 'Buffer (Day)',
+      dataIndex: 'bufferQty',
+      key: 'bufferQty',
+      className: styles.alignRight
+    },
+    {
+      title: 'Min Display',
+      dataIndex: 'minDisplay',
+      key: 'minDisplay',
       className: styles.alignRight
     },
     {

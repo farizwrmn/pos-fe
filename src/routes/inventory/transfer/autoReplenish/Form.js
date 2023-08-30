@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Select, Row, Col, Modal, DatePicker } from 'antd'
+import { Link } from 'dva/router'
+import { lstorage } from 'utils'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -75,7 +78,12 @@ const FormCounter = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data, resetFields)
+          onSubmit({
+            storeIdReceiver: data.storeIdReceiver,
+            storeId: lstorage.getCurrentUserStore,
+            salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
+            salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
+          }, resetFields)
         },
         onCancel () { }
       })
@@ -84,52 +92,54 @@ const FormCounter = ({
 
   let childrenStoreReceived = []
   if (listStore.length > 0) {
-    if (item.storeId) {
-      let groupStore = []
-      for (let id = 0; id < listStore.length; id += 1) {
-        groupStore.push(
-          <Option disabled={item.storeId === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
-            {listStore[id].label}
-          </Option>
-        )
-      }
-      childrenStoreReceived.push(groupStore)
+    let groupStore = []
+    for (let id = 0; id < listStore.length; id += 1) {
+      groupStore.push(
+        <Option disabled={Number(lstorage.getCurrentUserStore()) === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
+          {listStore[id].label}
+        </Option>
+      )
     }
+    childrenStoreReceived.push(groupStore)
   }
 
   return (
-    <Form layout="horizontal">
-      <Row>
-        <Col {...column}>
-          <FormItem label="To Store" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('storeIdReceiver', {
-              initialValue: item.storeIdReceiver,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Select>
-              {childrenStoreReceived}
-            </Select>)}
-          </FormItem>
-          <FormItem label="Sales Date" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('salesDate', {
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<RangePicker />)}
-          </FormItem>
-          <FormItem {...tailFormItemLayout}>
-            {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
-          </FormItem>
-        </Col>
-      </Row>
-    </Form>
+    <div>
+      <Row><Link target="_blank" to={'/inventory/transfer/auto-replenish-import'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="default" size="large">Import Buffer</Button></Link></Row>
+      <Form layout="horizontal">
+        <Row>
+          <Col {...column}>
+            <FormItem label="To Store" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('storeIdReceiver', {
+                initialValue: item.storeIdReceiver,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select>
+                {childrenStoreReceived}
+              </Select>)}
+            </FormItem>
+            <FormItem label="Sales Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('salesDate', {
+                initialValue: [moment().subtract(30, 'days'), moment()],
+                rules: [
+                  {
+                    required: true,
+                    pattern: /^[a-z0-9-/]{3,9}$/i
+                  }
+                ]
+              })(<RangePicker />)}
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
+              <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+    </div>
   )
 }
 

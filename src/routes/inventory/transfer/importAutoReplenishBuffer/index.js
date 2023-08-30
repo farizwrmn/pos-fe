@@ -7,6 +7,7 @@ import {
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
+import { lstorage } from 'utils'
 import List from './List'
 import PrintXLS from './PrintXLS'
 
@@ -85,13 +86,14 @@ const ImportAutoReplenishBuffer = ({
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
-              const qty = row.values[5]
-              const sortIndex = row.values[6]
-              if (rowIndex >= 6 && typeof productId !== 'undefined' && typeof qty !== 'undefined') {
+              const bufferQty = row.values[5]
+              const minDisplay = row.values[6]
+              if (rowIndex >= 6 && typeof productId !== 'undefined' && typeof bufferQty !== 'undefined' && typeof minDisplay !== 'undefined') {
                 const data = {
+                  storeId: lstorage.getCurrentUserStore(),
                   productId: Number(productId),
-                  qty: Number(qty),
-                  sortIndex: Number(sortIndex || 1)
+                  bufferQty: Number(bufferQty),
+                  minDisplay: Number(minDisplay)
                 }
                 uploadData.push(data)
               }
@@ -112,8 +114,13 @@ const ImportAutoReplenishBuffer = ({
     }
   }
 
+  const BackToList = () => {
+    dispatch(routerRedux.push('/inventory/transfer/auto-replenish'))
+  }
+
   return (
     <div className="content-inner">
+      <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
       <div>
         {'Stock: '}
         {buttonClickXLS}

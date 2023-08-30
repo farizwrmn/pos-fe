@@ -32,7 +32,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { ...other } = location.query
         const { pathname } = location
-        if (pathname === '/inventory/transfer/out-import') {
+        if (pathname === '/inventory/transfer/auto-replenish-import') {
           dispatch({ type: 'query', payload: other })
         }
       })
@@ -56,7 +56,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
-      payload.updated = 0
+      payload.storeId = lstorage.getCurrentUserStore()
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
