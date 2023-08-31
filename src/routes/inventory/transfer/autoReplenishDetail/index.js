@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { lstorage } from 'utils'
 import ListTransfer from './ListTransferOut'
 
 
@@ -52,16 +51,18 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
         }
       })
     },
-    getProducts (transNo) {
+    getProducts (transNo, storeId) {
+      console.log('getProducts', transNo)
       dispatch({
         type: 'transferOut/queryProducts',
         payload: {
           transNo,
-          storeId: lstorage.getCurrentUserStore()
+          storeId
         }
       })
     },
     getTrans (transNo, storeId) {
+      console.log('getTrans', transNo, storeId)
       dispatch({
         type: 'transferOut/queryByTrans',
         payload: {

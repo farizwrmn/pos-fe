@@ -567,6 +567,7 @@ export default modelExtend(pageModel, {
 
     * queryProducts ({ payload = {} }, { call, put }) {
       const data = yield call(queryDetail, payload)
+      console.log('queryProducts', data)
       if (data) {
         yield put({
           type: 'querySuccessProducts',
@@ -577,6 +578,7 @@ export default modelExtend(pageModel, {
 
     * queryByTrans ({ payload = {} }, { call, put }) {
       const data = yield call(queryByTrans, payload)
+      console.log('queryByTrans', data)
       if (data.mutasi) {
         yield put({
           type: 'querySuccessTrans',

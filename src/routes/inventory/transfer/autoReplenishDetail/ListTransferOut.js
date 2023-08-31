@@ -9,9 +9,9 @@ import PrintPDFv2 from './PrintPDFv2'
 const ListTransfer = (tableProps) => {
   const { deliveryOrderNo, listTransOut, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint } = tableProps
   const clickPrint = (record) => {
-    const { transNo, storeIdReceiver } = record
-    getProducts(transNo)
-    getTrans(transNo, storeIdReceiver)
+    const { transNo, storeId } = record
+    getProducts(transNo, storeId)
+    getTrans(transNo, storeId)
     onShowPrint()
   }
 
@@ -39,6 +39,8 @@ const ListTransfer = (tableProps) => {
     user,
     printNo: 1
   }
+
+  console.log('printProps', printProps)
 
   const modalProps = {
     maskClosable: false,
