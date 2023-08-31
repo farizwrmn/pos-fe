@@ -7,6 +7,7 @@ import {
 } from 'services/master/importAutoReplenishBuffer'
 import { pageModel } from 'common'
 import { lstorage } from 'utils'
+import { routerRedux } from 'dva/router'
 
 const success = () => {
   message.success('Product Buffer has been saved')
@@ -33,6 +34,9 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/inventory/transfer/auto-replenish-import') {
+          if (!other.storeId) {
+            other.storeId = lstorage.getCurrentUserStore()
+          }
           dispatch({ type: 'query', payload: other })
         }
       })
@@ -56,7 +60,6 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
-      payload.storeId = lstorage.getCurrentUserStore()
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -74,9 +77,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      payload.header = {
-        storeId: lstorage.getCurrentUserStore()
-      }
+      payload.header = { storeId: payload.storeId }
       const data = yield call(add, payload)
       if (data.success) {
         success()
@@ -87,8 +88,12 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        yield put(routerRedux.push(`/inventory/transfer/auto-replenish-import?storeId=${payload.storeId}`))
         yield put({
-          type: 'query'
+          type: 'query',
+          payload: {
+            storeId: payload.storeId
+          }
         })
       } else {
         yield put({

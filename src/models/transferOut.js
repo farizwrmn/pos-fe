@@ -69,7 +69,8 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/inventory/transfer/auto-replenish') {
+        if (location.pathname === '/inventory/transfer/auto-replenish'
+          || location.pathname === '/inventory/transfer/auto-replenish-import') {
           dispatch({
             type: 'querySequence',
             payload: {

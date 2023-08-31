@@ -1,5 +1,4 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
 import { query, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
@@ -32,13 +31,12 @@ export default modelExtend(pageModel, {
         const { pathname } = location
 
         const match = pathToRegexp('/inventory/transfer/auto-replenish-submission/:id').exec(location.pathname)
-        console.log('pathname', pathname)
         if (match) {
           dispatch({
             type: 'query',
             payload: {
               transId: decodeURIComponent(match[1]),
-              storeId: lstorage.getCurrentUserStore()
+              storeId: location.query.storeId
             }
           })
         } else if (pathname === '/inventory/transfer/auto-replenish-submission') {
@@ -51,7 +49,6 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      console.log('query', payload)
       const response = yield call(query, payload)
       if (response.success) {
         yield put({
@@ -66,8 +63,8 @@ export default modelExtend(pageModel, {
     },
 
     * queryHeader ({ payload = {} }, { call, put }) {
-      payload.storeIdReceiver = lstorage.getCurrentUserStore()
-      payload.type = 'all'
+      payload.storeIdReceiver = lstorage.getListUserStores().map(item => item.value)
+      payload.storeId = lstorage.getCurrentUserStore()
       const response = yield call(queryHeader, payload)
       if (response.success) {
         yield put({
@@ -118,38 +115,28 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ autoReplenish }) => autoReplenish.currentItem.id)
-      const newCounter = { ...payload.data, id }
+    * edit ({ payload }, { call, put }) {
+      const newCounter = { id: payload.id }
       const response = yield call(edit, newCounter)
       if (response.success) {
         success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
+        const match = pathToRegexp('/inventory/transfer/auto-replenish-submission/:id').exec(payload.pathname)
+        if (match) {
+          yield put({
+            type: 'query',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: payload.query.storeId
+            }
+          })
+          yield put({
+            type: 'transferOut/updateState',
+            payload: {
+              showPrintModal: false
+            }
+          })
         }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw response
       }
     }
