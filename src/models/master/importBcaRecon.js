@@ -118,6 +118,8 @@ export default modelExtend(pageModel, {
             })
           }
         }
+        console.log('dataBalance', dataBalance)
+
         // validation import bank ?
         // mengecek data di tbl balance dan transaction ada storeId dan transDate
         const Transaction = dataTransaction.length > 0
@@ -126,9 +128,10 @@ export default modelExtend(pageModel, {
         const isDataValid = Balance || Transaction
         if (isDataValid) {
           message.error('Already Recon')
+          return
         }
 
-        if (MappingStore) {
+        if (!MappingStore) {
           message.error('Mapping store not setup yet')
           return
         }
