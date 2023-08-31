@@ -613,7 +613,6 @@ export default modelExtend(pageModel, {
     * getInvoiceDetailPurchase ({ payload }, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       let product = []
-      console.log('getInvoiceDetailPurchase')
       yield put({
         type: 'showProductModal',
         payload: {

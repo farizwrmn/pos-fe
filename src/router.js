@@ -1920,6 +1920,23 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-out-detail')
           }
         }, {
+          path: 'inventory/transfer/auto-replenish-submission',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/autoReplenishSubmission'))
+              cb(null, require('./routes/inventory/transfer/autoReplenishSubmission'))
+            }, 'inventory-transfer-out-submission')
+          }
+        }, {
+          path: 'inventory/transfer/auto-replenish-submission/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/transfer/autoReplenishSubmission'))
+              cb(null, require('./routes/inventory/transfer/autoReplenishDetail'))
+            }, 'inventory-transfer-out-transfer')
+          }
+        }, {
           path: 'inventory/transfer/out-import',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
