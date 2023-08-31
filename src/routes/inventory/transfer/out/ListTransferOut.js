@@ -8,9 +8,9 @@ import PrintPDFv2 from './PrintPDFv2'
 
 const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
   const clickPrint = (record) => {
-    const { transNo, storeIdReceiver } = record
+    const { transNo, storeId } = record
     getProducts(transNo)
-    getTrans(transNo, storeIdReceiver)
+    getTrans(transNo, storeId)
     onShowPrint()
   }
 
