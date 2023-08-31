@@ -471,8 +471,20 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/balance/balanceShift'))
               registerModel(app, require('./models/setoran/setoran'))
               registerModel(app, require('./models/detail/user'))
+              registerModel(app, require('./models/payment/paymentOpts'))
               cb(null, require('./routes/setoran/current/'))
             }, 'setoran-dashboard')
+          }
+        }, {
+          path: 'setoran/closed/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balanceShift'))
+              registerModel(app, require('./models/setoran/setoran'))
+              registerModel(app, require('./models/detail/user'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/setoran/closed/'))
+            }, 'setoran-closed')
           }
         }, {
           path: 'balance/current',

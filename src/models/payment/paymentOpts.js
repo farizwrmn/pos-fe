@@ -33,6 +33,7 @@ export default {
           || location.pathname === '/balance/closing'
           || location.pathname === '/balance/history'
           || location.pathname === '/balance/approvement'
+          || location.pathname === '/setoran/current'
           || matchEdc
         ) {
           dispatch({

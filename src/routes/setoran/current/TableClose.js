@@ -21,44 +21,36 @@ const formItemLayout = {
 
 const TableClose = ({
   getFieldDecorator,
-  listPaymentOption = [
-    {
-      id: 1,
-      name: 'Cash'
-    },
-    {
-      id: 2,
-      name: 'EDC'
-    },
-    {
-      id: 3,
-      name: 'QRIS'
-    }
-  ]
+  listOpts
 }) => {
-  const inputColumns = listPaymentOption.map(record => ({
-    title: record.name,
-    render: () => {
-      return (
-        <FormItem>
-          {getFieldDecorator(`input#${record.id}`, {
-            rules: [
-              {
-                required: true,
-                message: `${record.name} input required!`
-              }
-            ]
-          })(
-            <InputNumber
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              style={{ width: '100%' }}
-            />
-          )}
-        </FormItem>
-      )
-    }
-  }))
+  const availableListOpts = listOpts.filter(filtered => filtered.typeCode === 'C' || filtered.typeCode === 'V')
+  const inputColumns = availableListOpts.map((record) => {
+    return ({
+      title: record.typeName,
+      dataIndex: 'type',
+      key: `type#${record.typeCode}`,
+      render: () => {
+        return (
+          <FormItem>
+            {getFieldDecorator(`input#${record.typeCode}`, {
+              rules: [
+                {
+                  required: true,
+                  message: `${record.typeName} input required!`
+                }
+              ]
+            })(
+              <InputNumber
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                style={{ width: '100%' }}
+              />
+            )}
+          </FormItem>
+        )
+      }
+    })
+  })
 
   const columns = [
     {

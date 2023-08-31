@@ -8,7 +8,8 @@ const BalanceCurrent = ({
   loading,
   setoran,
   balanceShift,
-  userDetail
+  userDetail,
+  paymentOpts
 }) => {
   const {
     formType,
@@ -20,6 +21,9 @@ const BalanceCurrent = ({
   const {
     data
   } = userDetail
+  const {
+    listOpts
+  } = paymentOpts
 
   const formCurrentProps = {
     loading,
@@ -33,11 +37,19 @@ const BalanceCurrent = ({
   }
 
   const formCloseProps = {
+    loading,
     currentBalance,
     listShift,
     listUser: data.data,
-    onSubmit: (data) => {
-      console.log('data', data)
+    listOpts,
+    onSubmit: (data, approveUserId) => {
+      dispatch({
+        type: 'setoran/closeBalance',
+        payload: {
+          data,
+          approveUserId
+        }
+      })
     }
   }
 
@@ -58,10 +70,12 @@ export default connect(({
   loading,
   setoran,
   balanceShift,
-  userDetail
+  userDetail,
+  paymentOpts
 }) => ({
   loading,
   setoran,
   balanceShift,
-  userDetail
+  userDetail,
+  paymentOpts
 }))(BalanceCurrent)

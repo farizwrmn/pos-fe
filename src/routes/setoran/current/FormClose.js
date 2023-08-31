@@ -43,9 +43,11 @@ const tailFormItemLayout = {
 }
 
 const FormClose = ({
+  loading,
   currentBalance,
   listShift,
   listUser,
+  listOpts,
   onSubmit,
   form: {
     getFieldDecorator,
@@ -56,6 +58,7 @@ const FormClose = ({
   const currentShift = listShift.find(item => item.id === currentBalance.shiftId)
 
   const tableCloseProps = {
+    listOpts,
     getFieldDecorator
   }
 
@@ -64,8 +67,7 @@ const FormClose = ({
       if (error) return error
 
       const data = {
-        ...getFieldsValue(),
-        shiftId: currentShift.id
+        ...getFieldsValue()
       }
 
       const input = []
@@ -76,13 +78,11 @@ const FormClose = ({
         const detail = detailArray[index]
         const splittedHeader = header.split('#')
         if (splittedHeader.length > 1) {
-          input.push({ paymentOption: Number(splittedHeader[1]), totalBalanceInput: parseFloat(detail) })
+          input.push({ paymentOption: splittedHeader[1], totalBalanceInput: parseFloat(detail) })
         }
       }
 
-      console.log('input', input)
-
-      onSubmit(data)
+      onSubmit(input, data.approveUserId)
     })
   }
 
@@ -137,7 +137,14 @@ const FormClose = ({
         </FormItem>
         <TableClose {...tableCloseProps} />
         <FormItem {...tailFormItemLayout}>
-          <Button type="primary" onClick={handleSubmit}>Close</Button>
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+            loading={loading.effects['setoran/closeBalance']}
+            disabled={loading.effects['setoran/closeBalance']}
+          >
+            Close
+          </Button>
         </FormItem>
       </Form>
     </Col>
