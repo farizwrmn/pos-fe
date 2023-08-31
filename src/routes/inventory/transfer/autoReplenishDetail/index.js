@@ -52,7 +52,6 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
       })
     },
     getProducts (transNo, storeId) {
-      console.log('getProducts', transNo)
       dispatch({
         type: 'transferOut/queryProducts',
         payload: {
@@ -62,7 +61,6 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
       })
     },
     getTrans (transNo, storeId) {
-      console.log('getTrans', transNo, storeId)
       dispatch({
         type: 'transferOut/queryByTrans',
         payload: {

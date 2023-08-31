@@ -567,7 +567,6 @@ export default modelExtend(pageModel, {
 
     * queryProducts ({ payload = {} }, { call, put }) {
       const data = yield call(queryDetail, payload)
-      console.log('queryProducts', data)
       if (data) {
         yield put({
           type: 'querySuccessProducts',
@@ -578,7 +577,6 @@ export default modelExtend(pageModel, {
 
     * queryByTrans ({ payload = {} }, { call, put }) {
       const data = yield call(queryByTrans, payload)
-      console.log('queryByTrans', data)
       if (data.mutasi) {
         yield put({
           type: 'querySuccessTrans',
@@ -615,7 +613,6 @@ export default modelExtend(pageModel, {
     * getInvoiceDetailPurchase ({ payload }, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       let product = []
-      console.log('getInvoiceDetailPurchase')
       yield put({
         type: 'showProductModal',
         payload: {
