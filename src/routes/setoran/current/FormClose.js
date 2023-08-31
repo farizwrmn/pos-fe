@@ -104,13 +104,7 @@ const FormClose = ({
         </FormItem>
         <FormItem label="Memo" {...formItemLayout} hasFeedback>
           {getFieldDecorator('memo', {
-            initialValue: currentBalance ? currentBalance.description : undefined,
-            rules: [
-              {
-                required: true,
-                message: 'Required!'
-              }
-            ]
+            initialValue: currentBalance ? currentBalance.description : undefined
           })(
             <Input placeholder="No Memo Detected" disabled />
           )}

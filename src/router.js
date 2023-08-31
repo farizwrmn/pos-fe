@@ -487,6 +487,14 @@ const Routers = function ({ history, app }) {
             }, 'setoran-closed')
           }
         }, {
+          path: 'setoran/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/setoran'))
+              cb(null, require('./routes/setoran/invoice/'))
+            }, 'setoran-closed')
+          }
+        }, {
           path: 'balance/current',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

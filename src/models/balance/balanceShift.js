@@ -1,7 +1,8 @@
+import pathToRegexp from 'path-to-regexp'
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { queryByStoreId } from 'services/balancePayment/balanceShiftService'
 import { lstorage } from 'utils'
+import { queryByStoreId } from 'services/balancePayment/balanceShiftService'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -15,6 +16,10 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        const match = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
+        if (match) {
+          dispatch({ type: 'queryByStoreId' })
+        }
         if (pathname === '/setoran/current') {
           dispatch({ type: 'queryByStoreId' })
         }

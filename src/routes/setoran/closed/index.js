@@ -1,24 +1,57 @@
 import React from 'react'
+import pathToRegexp from 'path-to-regexp'
+import { Row } from 'antd'
+import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import List from './List'
+import Form from './Form'
 
 class SetoranClosed extends React.Component {
   render () {
     const {
-      setoran
+      dispatch,
+      location,
+      setoran,
+      balanceShift,
+      userDetail,
+      paymentOpts
     } = this.props
     const {
-      closedBalance
+      closedBalance,
+      currentBalance
     } = setoran
+    const {
+      listOpts
+    } = paymentOpts
+    const {
+      listShift
+    } = balanceShift
+    const {
+      data
+    } = userDetail
 
-    const listProps = {
-      list: closedBalance
+    const formProps = {
+      listOpts,
+      closedBalance,
+      currentBalance,
+      listShift,
+      listUser: data.data,
+      onClose: () => {
+        dispatch(routerRedux.push('/setoran/current'))
+      },
+      onPrint: () => {
+        const match = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
+        if (match) {
+          const balanceId = decodeURIComponent(match[1])
+          dispatch(routerRedux.push(`/setoran/invoice/${balanceId}`))
+        }
+      }
     }
 
     return (
       <div className="content-inner">
-        Testing
-        <List {...listProps} />
+        <Row>
+          <Form {...formProps} />
+        </Row>
       </div>
     )
   }
@@ -26,8 +59,14 @@ class SetoranClosed extends React.Component {
 
 export default connect(({
   loading,
-  setoran
+  setoran,
+  balanceShift,
+  userDetail,
+  paymentOpts
 }) => ({
   loading,
-  setoran
+  setoran,
+  balanceShift,
+  userDetail,
+  paymentOpts
 }))(SetoranClosed)

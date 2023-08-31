@@ -16,8 +16,10 @@ export default {
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
+        const matchSetoranClosed = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
         if (location.pathname === '/balance/closing'
-          || location.pathname === '/setoran/current') {
+          || location.pathname === '/setoran/current'
+          || matchSetoranClosed) {
           dispatch({ type: 'query' })
         }
       })
