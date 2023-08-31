@@ -134,9 +134,9 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
   }
 
   const clickPrint = () => {
-    const { transNo, storeIdReceiver } = data[0]
+    const { transNo, storeId } = data[0]
     getProducts(transNo)
-    getTrans(transNo, storeIdReceiver)
+    getTrans(transNo, storeId)
     dispatch({
       type: 'transferOutDetail/updateState',
       payload: {
