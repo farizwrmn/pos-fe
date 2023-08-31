@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { getActive } from 'services/balance/balanceProcess'
 import { queryClose, queryOpen } from 'services/setoran/balancePaymentService'
-import { queryClosedDetail } from 'services/setoran/balanceSummaryService'
+import { queryClosedDetail, queryInvoice } from 'services/setoran/balanceSummaryService'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -17,6 +17,8 @@ export default modelExtend(pageModel, {
 
     closedBalance: [],
 
+    setoranInvoice: {},
+
     activeKey: '0'
   },
 
@@ -25,11 +27,20 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         const match = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
+        const matchInvoice = pathToRegexp('/setoran/invoice/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'closedBalanceDetail',
             payload: {
               balanceId: decodeURIComponent(match[1])
+            }
+          })
+        }
+        if (matchInvoice) {
+          dispatch({
+            type: 'queryInvoice',
+            payload: {
+              balanceId: decodeURIComponent(matchInvoice[1])
             }
           })
         }
@@ -79,6 +90,19 @@ export default modelExtend(pageModel, {
           payload: {
             closedBalance: response.data.balanceSummary,
             currentBalance: response.data.balance
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryInvoice ({ payload = {} }, { call, put }) {
+      const response = yield call(queryInvoice, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            setoranInvoice: response.data
           }
         })
       } else {

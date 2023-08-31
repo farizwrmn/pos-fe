@@ -11,3 +11,13 @@ export const queryClosedDetail = (params) => {
     headers: apiHeaderToken
   })
 }
+
+export const queryInvoice = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${balanceSummary}/invoice`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

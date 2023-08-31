@@ -42,7 +42,7 @@ class SetoranClosed extends React.Component {
         const match = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
         if (match) {
           const balanceId = decodeURIComponent(match[1])
-          dispatch(routerRedux.push(`/setoran/invoice/${balanceId}`))
+          window.open(`/setoran/invoice/${balanceId}`, '_blank')
         }
       }
     }

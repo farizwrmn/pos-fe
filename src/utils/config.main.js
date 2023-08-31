@@ -35,5 +35,6 @@ export const openPages = [
   '/transaction/pos/customer-view',
   '/transaction/pos/admin-invoice/:id',
   '/transaction/pos/invoice/:id',
-  '/balance/invoice/:id'
+  '/balance/invoice/:id',
+  '/setoran/invoice/:id'
 ]
