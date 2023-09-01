@@ -73,6 +73,7 @@ class XenditRecon extends React.Component {
     }
 
     const transactionProps = {
+      location,
       dataSource: listTransaction,
       pagination: paginationTransaction,
       loading: loading.effects['xenditRecon/queryTransaction'],
@@ -89,20 +90,11 @@ class XenditRecon extends React.Component {
             to
           }
         })
-      },
-      onClickTransaction: (id) => {
-        const { pathname, query } = location
-        dispatch(routerRedux.push({
-          pathname: `${pathname}/detail/${id}`,
-          query: {
-            ...query,
-            type: 'transaction'
-          }
-        }))
       }
     }
 
     const balanceProps = {
+      location,
       dataSource: listBalance,
       pagination: paginationBalance,
       loading: loading.effects['xenditRecon/queryBalance'],
@@ -119,16 +111,6 @@ class XenditRecon extends React.Component {
             to
           }
         })
-      },
-      onClickBalance: (id) => {
-        const { pathname, query } = location
-        dispatch(routerRedux.push({
-          pathname: `${pathname}/detail/${id}`,
-          query: {
-            ...query,
-            type: 'balance'
-          }
-        }))
       }
     }
 

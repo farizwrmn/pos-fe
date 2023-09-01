@@ -1,9 +1,10 @@
+import { Link } from 'dva/router'
 import { Row, Table } from 'antd'
 import moment from 'moment'
 
 const Balance = ({
+  location,
   onChangePagination,
-  onClickBalance,
   ...tableProps
 }) => {
   const columns = [
@@ -13,8 +14,9 @@ const Balance = ({
       key: 'transDate',
       width: 100,
       render: (value, record) => {
+        const { query } = location
         return (
-          <a onClick={() => onClickBalance(record.id)}>{moment(value, 'YYYY-MM-DD').format('DD MMM YYYY')}</a>
+          <Link to={`/accounting/xendit-recon/detail/${record.id}`} query={{ ...query, type: 'balance' }}>{moment(value, 'YYYY-MM-DD').format('DD MMM YYYY')}</Link>
         )
       }
     },
