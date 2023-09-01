@@ -23,7 +23,9 @@ const TableClose = ({
   getFieldDecorator,
   listOpts
 }) => {
-  const availableListOpts = listOpts.filter(filtered => filtered.typeCode === 'C' || filtered.typeCode === 'V')
+  const availableOpts = ['C', 'GM']
+
+  const availableListOpts = listOpts.filter(filtered => availableOpts.find(item => item === filtered.typeCode))
   const inputColumns = availableListOpts.map((record) => {
     return ({
       title: record.typeName,

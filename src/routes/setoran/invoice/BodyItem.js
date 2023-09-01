@@ -12,34 +12,30 @@ const BodyItem = ({ item }) => {
           {item.paymentOptionName}
         </Col>
       </Row>
-      {item.totalBalanceInput > 0 && (
-        <Row type="flex">
-          <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
-          Cashier Input
-          </Col>
-          <Col>
-            {currencyFormatter(item.totalBalanceInput)}
-          </Col>
-        </Row>
-      )}
       <Row type="flex">
-        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
+        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '20px' }}>
+          Cashier Input
+        </Col>
+        <Col>
+          {currencyFormatter(item.totalBalanceInput)}
+        </Col>
+      </Row>
+      <Row type="flex">
+        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '20px' }}>
           Penjualan
         </Col>
         <Col>
           {currencyFormatter(item.totalBalancePayment)}
         </Col>
       </Row>
-      {item.diffBalance > 0 && (
-        <Row type="flex">
-          <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
+      <Row type="flex">
+        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '20px' }}>
           Selisih
-          </Col>
-          <Col>
-            {currencyFormatter(item.diffBalance)}
-          </Col>
-        </Row>
-      )}
+        </Col>
+        <Col>
+          {currencyFormatter(item.diffBalance)}
+        </Col>
+      </Row>
     </div>
   )
 }

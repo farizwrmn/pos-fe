@@ -95,7 +95,7 @@ const FormClosed = ({
           style={{ marginRight: '10px' }}
           onClick={onClose}
         >
-          Close
+          Return
         </Button>
         <Button
           type="primary"
