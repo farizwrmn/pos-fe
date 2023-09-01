@@ -3,13 +3,29 @@
 import React from 'react'
 import { connect } from 'dva'
 import {
-  Button, Icon, message
+  Button, Icon, message, Form, Select, Row, Col
 } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { lstorage } from 'utils'
 import List from './List'
 import PrintXLS from './PrintXLS'
+
+const FormItem = Form.Item
+const { Option } = Select
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
+  },
+  wrapperCol: {
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
+}
 
 const ImportAutoReplenishBuffer = ({
   loading,
@@ -18,8 +34,16 @@ const ImportAutoReplenishBuffer = ({
   productbrand,
   productcategory,
   productstock,
+  transferOut,
+  form: {
+    getFieldDecorator,
+    getFieldValue,
+    getFieldsValue,
+    validateFields
+  },
   app
 }) => {
+  const { listStore } = transferOut
   const { listBrand } = productbrand
   const { listCategory } = productcategory
   const { list, pagination } = importAutoReplenishBuffer
@@ -73,54 +97,108 @@ const ImportAutoReplenishBuffer = ({
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   const handleChangeFile = (event) => {
-    let uploadData = []
-    const fileName = event.target.files[0]
-    const workbook = new Excel.Workbook()
-    const reader = new FileReader()
-    reader.readAsArrayBuffer(fileName)
-    reader.onload = () => {
-      const buffer = reader.result
-      workbook.xlsx.load(buffer)
-        .then(async (workbook) => {
-          const sheet = workbook.getWorksheet('POS 1')
-          await sheet
-            .eachRow({ includeEmpty: false }, (row, rowIndex) => {
-              const productId = row.values[2]
-              const bufferQty = row.values[5]
-              const minDisplay = row.values[6]
-              if (rowIndex >= 6 && typeof productId !== 'undefined' && typeof bufferQty !== 'undefined' && typeof minDisplay !== 'undefined') {
-                const data = {
-                  storeId: lstorage.getCurrentUserStore(),
-                  productId: Number(productId),
-                  bufferQty: Number(bufferQty),
-                  minDisplay: Number(minDisplay)
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const getData = {
+        ...getFieldsValue()
+      }
+
+      let uploadData = []
+      const fileName = event.target.files[0]
+      const workbook = new Excel.Workbook()
+      const reader = new FileReader()
+      reader.readAsArrayBuffer(fileName)
+      reader.onload = () => {
+        const buffer = reader.result
+        workbook.xlsx.load(buffer)
+          .then(async (workbook) => {
+            const sheet = workbook.getWorksheet('POS 1')
+            await sheet
+              .eachRow({ includeEmpty: false }, (row, rowIndex) => {
+                const productId = row.values[2]
+                const dimensionBox = row.values[5]
+                const bufferQty = row.values[6]
+                const minDisplay = row.values[7]
+                if (rowIndex >= 6
+                  && typeof productId !== 'undefined'
+                  && typeof bufferQty !== 'undefined'
+                  && typeof minDisplay !== 'undefined'
+                  && typeof dimensionBox !== 'undefined'
+                ) {
+                  const data = {
+                    storeId: getData.storeIdReceiver,
+                    productId: Number(productId),
+                    dimensionBox: Number(dimensionBox),
+                    bufferQty: Number(bufferQty),
+                    minDisplay: Number(minDisplay)
+                  }
+                  uploadData.push(data)
                 }
-                uploadData.push(data)
-              }
-            })
-        })
-        .then(() => {
-          if (uploadData && uploadData.length > 0) {
-            dispatch({
-              type: 'importAutoReplenishBuffer/add',
-              payload: {
-                detail: uploadData
-              }
-            })
-          } else {
-            message.error('No Data to Upload')
-          }
-        })
-    }
+              })
+          })
+          .then(() => {
+            if (uploadData && uploadData.length > 0) {
+              dispatch({
+                type: 'importAutoReplenishBuffer/add',
+                payload: {
+                  storeId: getData.storeIdReceiver,
+                  detail: uploadData
+                }
+              })
+            } else {
+              message.error('No Data to Upload')
+            }
+          })
+      }
+    })
   }
 
   const BackToList = () => {
     dispatch(routerRedux.push('/inventory/transfer/auto-replenish'))
   }
 
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+
+  let childrenStoreReceived = []
+  if (listStore.length > 0) {
+    let groupStore = []
+    for (let id = 0; id < listStore.length; id += 1) {
+      groupStore.push(
+        <Option disabled={Number(lstorage.getCurrentUserStore()) === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
+          {listStore[id].label}
+        </Option>
+      )
+    }
+    childrenStoreReceived.push(groupStore)
+  }
+
   return (
     <div className="content-inner">
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
+
+      <Row>
+        <Col sm={24} md={12} lg={8}>
+          <Form layout="horizontal">
+            <FormItem label="To Store" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('storeIdReceiver', {
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Select
+                showSearch
+                filterOption={filterOption}
+              >
+                {childrenStoreReceived}
+              </Select>)}
+            </FormItem>
+          </Form>
+        </Col>
+      </Row>
+
       <div>
         {'Stock: '}
         {buttonClickXLS}
@@ -150,6 +228,7 @@ const ImportAutoReplenishBuffer = ({
 export default connect(
   ({
     loading,
+    transferOut,
     importAutoReplenishBuffer,
     productstock,
     productbrand,
@@ -157,10 +236,11 @@ export default connect(
     app
   }) => ({
     loading,
+    transferOut,
     importAutoReplenishBuffer,
     productstock,
     productbrand,
     productcategory,
     app
   })
-)(ImportAutoReplenishBuffer)
+)(Form.create()(ImportAutoReplenishBuffer))

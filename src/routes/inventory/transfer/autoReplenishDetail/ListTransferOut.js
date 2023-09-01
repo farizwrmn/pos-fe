@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'dva/router'
 import moment from 'moment'
-import { Table, Button, Modal, Tag } from 'antd'
+import { Table, Button, Modal, Tag, Icon } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
 const ListTransfer = (tableProps) => {
-  const { deliveryOrderNo, listTransOut, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint } = tableProps
+  const { listTransOut, onClickPrinted, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint } = tableProps
   const clickPrint = (record) => {
     const { transNo, storeId } = record
     getProducts(transNo, storeId)
@@ -40,8 +39,6 @@ const ListTransfer = (tableProps) => {
     printNo: 1
   }
 
-  console.log('printProps', printProps)
-
   const modalProps = {
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -61,19 +58,12 @@ const ListTransfer = (tableProps) => {
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo',
-      render: text => <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}`}>{text}</Link>
+      key: 'transNo'
     },
     {
       title: 'Delivery Order',
       dataIndex: 'deliveryOrderNo',
-      key: 'deliveryOrderNo',
-      render: (text) => {
-        if (deliveryOrderNo === text) {
-          return <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
-        }
-        return <Link to={`/inventory/transfer/out?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
-      }
+      key: 'deliveryOrderNo'
     },
     {
       title: 'Sender',
@@ -91,6 +81,25 @@ const ListTransfer = (tableProps) => {
       key: 'transDate',
       render: (text) => {
         return moment(text).format('DD MMM YYYY')
+      }
+    },
+    {
+      title: 'Print',
+      dataIndex: 'isPrinted',
+      key: 'isPrinted',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="red">
+              Printed
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="green">
+            Not Printed
+          </Tag>
+        )
       }
     },
     {
@@ -125,85 +134,6 @@ const ListTransfer = (tableProps) => {
       }
     },
     {
-      title: 'Posting',
-      dataIndex: 'posting',
-      key: 'posting',
-      render: (text, record) => {
-        if (text || record.invoicing || record.paid) {
-          return (
-            <Tag color="green">
-              Posted
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="red">
-            Not Posted
-          </Tag>
-        )
-      }
-    },
-    {
-      title: 'Invoiced',
-      dataIndex: 'invoicing',
-      key: 'invoicing',
-      render: (text, record) => {
-        if (text || record.paid) {
-          return (
-            <Tag color="green">
-              Invoiced
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="red">
-            Not Invoiced
-          </Tag>
-        )
-      }
-    },
-    {
-      title: 'Paid',
-      dataIndex: 'paid',
-      key: 'paid',
-      render: (text) => {
-        if (text) {
-          return (
-            <Tag color="green">
-              Paid
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="red">
-            Not Paid
-          </Tag>
-        )
-      }
-    },
-    {
-      title: 'Paid Date',
-      dataIndex: 'paidDate',
-      key: 'paidDate',
-      render: (text) => {
-        if (text) {
-          return moment(text).format('DD MMM YYYY HH:mm:ss')
-        }
-        return null
-      }
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (text) => {
-        if (text) {
-          return moment(text).format('DD MMM YYYY HH:mm:ss')
-        }
-        return null
-      }
-    },
-    {
       title: 'Operation',
       key: 'operation',
       width: 100,
@@ -220,6 +150,17 @@ const ListTransfer = (tableProps) => {
       <Modal {...modalProps} >
         <PrintPDF {...printProps} />
         <PrintPDFv2 {...printProps} />
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-green"
+          onClick={() => {
+            if (listTransOut && listTransOut.id) {
+              onClickPrinted(listTransOut.id)
+            }
+          }}
+        >
+          <Icon type="check" className="icon-large" />
+        </Button>
       </Modal>
       <Table {...tableProps}
         bordered

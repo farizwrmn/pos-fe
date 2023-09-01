@@ -1962,6 +1962,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/importAutoReplenishBuffer'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/master/productcategory'))
               cb(null, require('./routes/inventory/transfer/importAutoReplenishBuffer'))

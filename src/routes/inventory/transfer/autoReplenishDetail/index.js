@@ -26,6 +26,17 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
     storeInfo,
     showPrintModal,
     user,
+    onClickPrinted (transferOutId) {
+      const { pathname } = location
+      dispatch({
+        type: 'autoReplenishSubmission/edit',
+        payload: {
+          id: transferOutId,
+          pathname,
+          query: location.query
+        }
+      })
+    },
     updateFilter (page, filters, sorts) {
       const { query, pathname } = location
       dispatch(routerRedux.push({

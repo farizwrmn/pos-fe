@@ -8,17 +8,22 @@ import { Link } from 'dva/router'
 const List = (tableProps) => {
   const columns = [
     {
+      title: 'Store Name',
+      dataIndex: 'storeNameReceiver',
+      key: 'storeNameReceiver'
+    },
+    {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (text, record) => {
-        return (<Link target="_blank" to={`/inventory/transfer/auto-replenish-submission/${record.id}`}>{moment(text).format('lll')}</Link>)
+        return (<Link target="_blank" to={`/inventory/transfer/auto-replenish-submission/${record.id}?storeId=${record.storeIdReceiver}`}>{moment(text).format('lll')}</Link>)
       }
     },
     {
       title: 'Sales From',
       dataIndex: 'salesDateFrom',
-      key: 'accountName'
+      key: 'salesDateFrom'
     },
     {
       title: 'Sales To',
