@@ -73,6 +73,12 @@ export default modelExtend(pageModel, {
       const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
       const dataMappingStore = yield call(queryMappingStore)
       // update list Total Transfer
+
+      yield put({
+        type: 'queryErrorLog',
+        payload: { transDate: payload.payment.transDate }
+      })
+
       if (data.success) {
         yield put({
           type: 'updateState',
