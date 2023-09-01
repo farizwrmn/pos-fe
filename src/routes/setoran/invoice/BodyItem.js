@@ -12,14 +12,16 @@ const BodyItem = ({ item }) => {
           {item.paymentOptionName}
         </Col>
       </Row>
-      <Row type="flex">
-        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
+      {item.totalBalanceInput > 0 && (
+        <Row type="flex">
+          <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
           Cashier Input
-        </Col>
-        <Col>
-          {currencyFormatter(item.totalBalanceInput)}
-        </Col>
-      </Row>
+          </Col>
+          <Col>
+            {currencyFormatter(item.totalBalanceInput)}
+          </Col>
+        </Row>
+      )}
       <Row type="flex">
         <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
           Penjualan
@@ -28,14 +30,16 @@ const BodyItem = ({ item }) => {
           {currencyFormatter(item.totalBalancePayment)}
         </Col>
       </Row>
-      <Row type="flex">
-        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
+      {item.diffBalance > 0 && (
+        <Row type="flex">
+          <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
           Selisih
-        </Col>
-        <Col>
-          {currencyFormatter(item.diffBalance)}
-        </Col>
-      </Row>
+          </Col>
+          <Col>
+            {currencyFormatter(item.diffBalance)}
+          </Col>
+        </Row>
+      )}
     </div>
   )
 }
