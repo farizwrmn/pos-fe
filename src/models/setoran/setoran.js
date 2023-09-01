@@ -109,7 +109,11 @@ export default modelExtend(pageModel, {
             const record = detail[index]
             totalBalanceInput += record.totalBalanceInput
             totalBalancePayment += record.totalBalancePayment
-            totalDiffBalance += record.diffBalance
+            totalDiffBalance += (record.diffBalance || 0)
+              ? record.diffBalance < 0
+                ? record.diffBalance * -1
+                : record.diffBalance
+              : 0
           }
         }
         yield put({
