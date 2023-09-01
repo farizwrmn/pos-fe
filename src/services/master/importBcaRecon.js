@@ -41,6 +41,17 @@ export async function queryBalance (params = {}) {
   })
 }
 
+export async function queryErrorLog (params = {}) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/error-log`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryMappingStore (params = {}) {
   params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()

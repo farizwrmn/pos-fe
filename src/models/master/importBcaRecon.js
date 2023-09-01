@@ -11,7 +11,8 @@ import {
   getDataPaymentMachine,
   queryTransaction,
   queryMappingStore,
-  queryBalance
+  queryBalance,
+  queryErrorLog
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog
@@ -36,6 +37,7 @@ export default modelExtend(pageModel, {
     modalSettlementVisible: false,
     list: [],
     listRecon: [],
+    listErrorLog: [],
     listPosPayment: [],
     listSortPayment: [],
     listReconNotMatch: [],
@@ -301,6 +303,22 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list: mapData,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryErrorLog ({ payload = {} }, { call, put }) {
+      const data = yield call(queryErrorLog, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listErrorLog: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
