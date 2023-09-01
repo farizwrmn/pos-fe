@@ -77,14 +77,16 @@ class XenditRecon extends React.Component {
       pagination: paginationTransaction,
       loading: loading.effects['xenditRecon/queryTransaction'],
       onChangePagination: (pagination) => {
-        const { transDate } = location
+        const { all, from, to } = location.query
         const { current: page, pageSize } = pagination
         dispatch({
           type: 'xenditRecon/queryTransaction',
           payload: {
             page,
             pageSize,
-            transDate
+            all,
+            from,
+            to
           }
         })
       },
@@ -105,14 +107,16 @@ class XenditRecon extends React.Component {
       pagination: paginationBalance,
       loading: loading.effects['xenditRecon/queryBalance'],
       onChangePagination: (pagination) => {
-        const { transDate } = location
+        const { all, from, to } = location.query
         const { current: page, pageSize } = pagination
         dispatch({
           type: 'xenditRecon/queryBalance',
           payload: {
             page,
             pageSize,
-            transDate
+            all,
+            from,
+            to
           }
         })
       },
@@ -133,12 +137,15 @@ class XenditRecon extends React.Component {
       pagination: paginationErrorLog,
       loading: loading.effects['xenditRecon/queryErrorLog'],
       onChangePagination: (pagination) => {
+        const { from, to } = location.query
         const { current: page, pageSize } = pagination
         dispatch({
           type: 'xenditRecon/queryErrorLog',
           payload: {
             page,
-            pageSize
+            pageSize,
+            from,
+            to
           }
         })
       }

@@ -106,7 +106,11 @@ export default modelExtend(pageModel, {
             }
           })
           dispatch({
-            type: 'queryErrorLog'
+            type: 'queryErrorLog',
+            payload: {
+              from,
+              to
+            }
           })
         }
         if (activeKey) {
