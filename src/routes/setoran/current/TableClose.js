@@ -21,9 +21,10 @@ const formItemLayout = {
 
 const TableClose = ({
   getFieldDecorator,
+  balanceInputPaymentOption,
   listOpts
 }) => {
-  const availableOpts = ['C', 'GM']
+  const availableOpts = balanceInputPaymentOption && Array.isArray(balanceInputPaymentOption) ? balanceInputPaymentOption : ['C', 'GM']
 
   const availableListOpts = listOpts.filter(filtered => availableOpts.find(item => item === filtered.typeCode))
   const inputColumns = availableListOpts.map((record) => {

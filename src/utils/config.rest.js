@@ -128,6 +128,7 @@ module.exports = {
     errorLog: '/error-log',
     balanceShift: '/balance-shift',
     balancePayment: '/balance-payment',
-    balanceSummary: '/balance-summary'
+    balanceSummary: '/balance-summary',
+    balanceInput: '/balance-input'
   }
 }

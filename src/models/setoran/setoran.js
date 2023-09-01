@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router'
 import { getActive } from 'services/balance/balanceProcess'
 import { queryClose, queryOpen } from 'services/setoran/balancePaymentService'
 import { queryClosedDetail, queryInvoice } from 'services/setoran/balanceSummaryService'
+import { queryAvailablePaymentOption } from 'services/setoran/balanceInputService'
 import { pageModel } from './../common'
 
 export default modelExtend(pageModel, {
@@ -19,6 +20,8 @@ export default modelExtend(pageModel, {
 
     setoranInvoice: {},
     setoranInvoiceSummary: {},
+
+    balanceInputPaymentOption: [],
 
     activeKey: '0'
   },
@@ -48,6 +51,9 @@ export default modelExtend(pageModel, {
         if (pathname === '/setoran/current') {
           dispatch({
             type: 'active'
+          })
+          dispatch({
+            type: 'queryInputPaymentOption'
           })
         }
       })
@@ -125,6 +131,19 @@ export default modelExtend(pageModel, {
               totalBalancePayment,
               totalDiffBalance
             }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryInputPaymentOption (_, { call, put }) {
+      const response = yield call(queryAvailablePaymentOption)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            balanceInputPaymentOption: response.data
           }
         })
       } else {

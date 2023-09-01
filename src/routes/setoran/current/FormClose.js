@@ -45,6 +45,7 @@ const tailFormItemLayout = {
 const FormClose = ({
   loading,
   currentBalance,
+  balanceInputPaymentOption,
   listShift,
   listUser,
   listOpts,
@@ -59,7 +60,8 @@ const FormClose = ({
 
   const tableCloseProps = {
     listOpts,
-    getFieldDecorator
+    getFieldDecorator,
+    balanceInputPaymentOption
   }
 
   const handleSubmit = () => {
