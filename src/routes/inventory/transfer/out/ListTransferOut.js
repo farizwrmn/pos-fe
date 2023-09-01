@@ -217,6 +217,12 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
       }
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+      width: 120,
+      key: 'description'
+    },
+    {
       title: 'Updated At',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
