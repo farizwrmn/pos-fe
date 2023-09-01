@@ -12,6 +12,8 @@ class BalanceInvoice extends React.Component {
     const { setoran } = this.props
     const { setoranInvoice, setoranInvoiceSummary } = setoran
 
+    console.log('setoranInvoice', setoranInvoice)
+
     const invoiceInfo = {
       employeeName: setoranInvoice.userName,
       dataPos: setoranInvoice.detail,
@@ -20,7 +22,7 @@ class BalanceInvoice extends React.Component {
       storeName: setoranInvoice.storeName,
       shift: setoranInvoice.shiftName,
       openDate: moment(setoranInvoice.open).format('DD MMM YYYY, HH:mm:ss'),
-      closeDate: moment(setoranInvoice.close).format('DD MMM YYYY, HH:mm:ss')
+      closeDate: moment(setoranInvoice.closed).format('DD MMM YYYY, HH:mm:ss')
     }
 
     const bodyProps = {
