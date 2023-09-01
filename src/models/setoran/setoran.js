@@ -39,6 +39,9 @@ export default modelExtend(pageModel, {
               balanceId: decodeURIComponent(match[1])
             }
           })
+          dispatch({
+            type: 'queryInputPaymentOption'
+          })
         }
         if (matchInvoice) {
           dispatch({
@@ -84,6 +87,12 @@ export default modelExtend(pageModel, {
     * closeBalance ({ payload = {} }, { call, put }) {
       const response = yield call(queryClose, payload)
       if (response && response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            formType: 'open'
+          }
+        })
         yield put(routerRedux.push(`/setoran/closed/${response.data[0].balanceId}`))
       } else {
         message.error(response.message)

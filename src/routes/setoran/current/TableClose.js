@@ -36,6 +36,7 @@ const TableClose = ({
         return (
           <FormItem>
             {getFieldDecorator(`input#${record.typeCode}`, {
+              initialValue: 0,
               rules: [
                 {
                   required: true,

@@ -16,6 +16,16 @@ class SetoranClosed extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    const { dispatch } = this.props
+    dispatch({
+      type: 'setoran/updateState',
+      payload: {
+        currentBalance: {}
+      }
+    })
+  }
+
   render () {
     const {
       dispatch,
@@ -27,7 +37,8 @@ class SetoranClosed extends React.Component {
     } = this.props
     const {
       closedBalance,
-      currentBalance
+      currentBalance,
+      balanceInputPaymentOption
     } = setoran
     const {
       listOpts
@@ -40,6 +51,7 @@ class SetoranClosed extends React.Component {
     } = userDetail
 
     const formProps = {
+      balanceInputPaymentOption,
       listOpts,
       closedBalance,
       currentBalance,

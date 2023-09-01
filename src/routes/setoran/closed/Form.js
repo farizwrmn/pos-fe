@@ -42,6 +42,7 @@ const tailFormItemLayout = {
 }
 
 const FormClosed = ({
+  balanceInputPaymentOption,
   currentBalance,
   listShift,
   listUser,
@@ -57,6 +58,7 @@ const FormClosed = ({
   const currentPIC = listUser.find(item => item.id === currentBalance.approveUserId)
 
   const listProps = {
+    balanceInputPaymentOption,
     closedBalance,
     listOpts
   }
