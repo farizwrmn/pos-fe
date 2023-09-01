@@ -7,9 +7,13 @@ import Form from './Form'
 
 class SetoranClosed extends React.Component {
   componentDidMount () {
-    const { setoran } = this.props
+    const { dispatch, setoran } = this.props
     const { currentBalance } = setoran
-    window.open(`/setoran/invoice/${currentBalance.id}`, '_blank')
+    if (currentBalance && currentBalance.id) {
+      window.open(`/setoran/invoice/${currentBalance.id}`, '_blank')
+    } else {
+      dispatch(routerRedux.push('/setoran/current'))
+    }
   }
 
   render () {
