@@ -12,8 +12,6 @@ class BalanceInvoice extends React.Component {
     const { setoran } = this.props
     const { setoranInvoice, setoranInvoiceSummary } = setoran
 
-    console.log('setoranInvoice', setoranInvoice)
-
     const invoiceInfo = {
       employeeName: setoranInvoice.userName,
       dataPos: setoranInvoice.detail,
