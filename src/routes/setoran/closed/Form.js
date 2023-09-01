@@ -77,8 +77,8 @@ const FormClosed = ({
           <Input placeholder="No Description!" disabled />
         )}
       </FormItem>
-      <FormItem label="PIC" {...formItemLayout}>
-        {getFieldDecorator('pic', {
+      <FormItem label="Cashier" {...formItemLayout}>
+        {getFieldDecorator('approveUserId', {
           initialValue: currentPIC ? currentPIC.userName : undefined
         })(
           <Input placeholder="PIC not found!" disabled />

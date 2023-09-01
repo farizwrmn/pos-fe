@@ -6,6 +6,12 @@ import { connect } from 'dva'
 import Form from './Form'
 
 class SetoranClosed extends React.Component {
+  componentDidMount () {
+    const { setoran } = this.props
+    const { currentBalance } = setoran
+    window.open(`/setoran/invoice/${currentBalance.id}`, '_blank')
+  }
+
   render () {
     const {
       dispatch,

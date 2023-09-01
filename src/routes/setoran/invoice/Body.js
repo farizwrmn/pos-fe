@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './index.less'
 import BodyItem from './BodyItem'
+import BodySummary from './BodySummary'
 
 const Body = ({
   list
@@ -13,6 +14,9 @@ const Body = ({
             <BodyItem item={record} />
           )
         })}
+      </div>
+      <div className={styles.borderedSection}>
+        <BodySummary list={list} />
       </div>
     </div>
   )

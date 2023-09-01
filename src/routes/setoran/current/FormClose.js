@@ -109,7 +109,7 @@ const FormClose = ({
             <Input placeholder="No Memo Detected" disabled />
           )}
         </FormItem>
-        <FormItem label="PIC" {...formItemLayout} hasFeedback>
+        <FormItem label="Cashier" {...formItemLayout} hasFeedback>
           {getFieldDecorator('approveUserId', {
             rules: [
               {

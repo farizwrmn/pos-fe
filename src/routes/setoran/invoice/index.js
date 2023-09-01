@@ -8,6 +8,34 @@ import Header from './Header'
 import Body from './Body'
 
 class BalanceInvoice extends React.Component {
+  state = {
+    totalBalanceInput: 0,
+    totalBalancePayment: 0,
+    totalDiffBalance: 0
+  }
+
+  componentDidMount () {
+    const { setoran } = this.props
+    if (setoran && setoran.setoranInvoice && setoran.setoranInvoice.detail && setoran.setoranInvoice.detail.length > 0) {
+      const listDetail = setoran.setoranInvoice.detail
+      let totalBalanceInput = 0
+      let totalBalancePayment = 0
+      let totalDiffBalance = 0
+      for (let index in listDetail) {
+        const record = listDetail[index]
+        totalBalanceInput += record.totalBalanceInput
+        totalBalancePayment += record.totalBalancePayment
+        totalDiffBalance += record.totalDiffBalance
+      }
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({
+        totalBalanceInput,
+        totalBalancePayment,
+        totalDiffBalance
+      })
+    }
+  }
+
   render () {
     const { setoran } = this.props
     const { setoranInvoice } = setoran
@@ -16,7 +44,7 @@ class BalanceInvoice extends React.Component {
       employeeName: setoranInvoice.userName,
       dataPos: setoranInvoice.detail,
       id: setoranInvoice.balanceId,
-      userName: setoranInvoice.userName,
+      userName: setoranInvoice.cashierName,
       storeName: setoranInvoice.storeName,
       shift: setoranInvoice.shiftName,
       openDate: moment(setoranInvoice.open).format('DD MMM YYYY, HH:mm:ss'),

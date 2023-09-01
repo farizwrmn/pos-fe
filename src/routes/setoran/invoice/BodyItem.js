@@ -8,12 +8,12 @@ const BodyItem = ({ item }) => {
   return (
     <div className={styles.item}>
       <Row>
-        <Col>
+        <Col className={styles.leftItem}>
           {item.paymentOptionName}
         </Col>
       </Row>
       <Row type="flex">
-        <Col style={{ flex: 1 }}>
+        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
           Cashier Input
         </Col>
         <Col>
@@ -21,15 +21,15 @@ const BodyItem = ({ item }) => {
         </Col>
       </Row>
       <Row type="flex">
-        <Col style={{ flex: 1 }}>
-          Total Penjualan
+        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
+          Penjualan
         </Col>
         <Col>
           {currencyFormatter(item.totalBalancePayment)}
         </Col>
       </Row>
       <Row type="flex">
-        <Col style={{ flex: 1 }}>
+        <Col className={styles.leftItem} style={{ color: '#808080', paddingLeft: '10px' }}>
           Selisih
         </Col>
         <Col>
