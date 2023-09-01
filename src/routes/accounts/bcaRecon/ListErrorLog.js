@@ -1,10 +1,10 @@
 import React from 'react'
 import { Table } from 'antd'
 
-const ListErrorLog = ({ openModalInputMdrAmount, ...tableProps }) => {
+const ListErrorLog = ({ ...tableProps }) => {
   const columns = [
     {
-      title: 'logKey',
+      title: 'Log Key',
       dataIndex: 'logKey',
       key: 'logKey',
       width: 120
@@ -13,18 +13,24 @@ const ListErrorLog = ({ openModalInputMdrAmount, ...tableProps }) => {
       title: 'value',
       dataIndex: 'value',
       key: 'value',
-      width: 120
+      width: 200
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 50
     }
   ]
 
   return (
     <div>
+      <h3>Error Log </h3>
       <Table {...tableProps}
-        scroll={{ x: 1000 }}
         bordered
         columns={columns}
         simple
-        pagination={false}
+        rowKey={record => record.id}
       />
     </div>
   )

@@ -57,7 +57,7 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'queryErrorLog', payload: other })
+          dispatch({ type: 'queryErrorLog' })
         }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
@@ -466,11 +466,13 @@ export default modelExtend(pageModel, {
     querySuccess (state, action) {
       const {
         list,
+        listErrorLog,
         pagination
       } = action.payload
       return {
         ...state,
         list,
+        listErrorLog,
         pagination: {
           ...state.pagination,
           ...pagination

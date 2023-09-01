@@ -38,7 +38,7 @@ const ImportBcaRecon = ({
   const listErrorLogProps = {
     dataSource: listErrorLog,
     pagination,
-    loading: loading.effects['importBcaRecon/queryErrorLog'],
+    loading: loading.effects['importBcaRecon/query'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
