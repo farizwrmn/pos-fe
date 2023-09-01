@@ -69,6 +69,16 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        if (location.pathname === '/inventory/transfer/auto-replenish'
+          || location.pathname === '/inventory/transfer/auto-replenish-import') {
+          dispatch({
+            type: 'querySequence',
+            payload: {
+              seqCode: 'MUOUT',
+              type: lstorage.getCurrentUserStore() // diganti dengan StoreId
+            }
+          })
+        }
         if (location.pathname === '/inventory/transfer/out') {
           const { activeKey, start, end, page, pageSize } = location.query
           if (activeKey === '1') {
@@ -604,7 +614,6 @@ export default modelExtend(pageModel, {
     * getInvoiceDetailPurchase ({ payload }, { call, put }) {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       let product = []
-      console.log('getInvoiceDetailPurchase')
       yield put({
         type: 'showProductModal',
         payload: {

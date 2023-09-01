@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'dva/router'
 import moment from 'moment'
-import { Table, Button, Modal, Tag } from 'antd'
+import { Table, Button, Modal, Tag, Icon } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
+const ListTransfer = (tableProps) => {
+  const { listTransOut, onClickPrinted, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint } = tableProps
   const clickPrint = (record) => {
     const { transNo, storeId } = record
-    getProducts(transNo)
+    getProducts(transNo, storeId)
     getTrans(transNo, storeId)
     onShowPrint()
   }
@@ -54,55 +54,21 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
     updateFilter(pagination, filters, sorter)
   }
 
-  const { dataSource } = tableProps
-
-  const unique = (group, code) => {
-    return group.map((key) => {
-      return key[code]
-    }).filter((e, index, array) => {
-      return index === array.indexOf(e)
-    })
-  }
-
-  const storeNames = dataSource !== undefined ? (dataSource.length > 0 ? unique(dataSource, 'storeName') : []) : []
-  let filterStoreName = []
-  for (let i = 0; i < storeNames.length; i += 1) {
-    filterStoreName.push({ text: storeNames[i], value: storeNames[i] })
-  }
-
-  sort = sort || {}
-  filter = filter || {}
   const columns = [
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo',
-      sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
-      sortOrder: sort.columnKey === 'transNo' && sort.order,
-      render: text => <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}`}>{text}</Link>
+      key: 'transNo'
     },
     {
       title: 'Delivery Order',
       dataIndex: 'deliveryOrderNo',
-      key: 'deliveryOrderNo',
-      sorter: (a, b) => (a.transNo.length + 1) - b.transNo.length,
-      sortOrder: sort.columnKey === 'transNo' && sort.order,
-      render: (text) => {
-        if (deliveryOrderNo === text) {
-          return <Link to={`/inventory/transfer/out/${encodeURIComponent(text)}?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
-        }
-        return <Link to={`/inventory/transfer/out?deliveryOrderNo=${encodeURIComponent(text)}`}>{text}</Link>
-      }
+      key: 'deliveryOrderNo'
     },
     {
       title: 'Sender',
       dataIndex: 'storeName',
-      key: 'storeName',
-      filters: filterStoreName,
-      filteredValue: filter.storeName || null,
-      onFilter: (value, record) => record.storeName.includes(value),
-      sorter: (a, b) => (a.storeName.length + 1) - b.storeName.length,
-      sortOrder: sort.columnKey === 'storeName' && sort.order
+      key: 'storeName'
     },
     {
       title: 'Receiver',
@@ -115,6 +81,25 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
       key: 'transDate',
       render: (text) => {
         return moment(text).format('DD MMM YYYY')
+      }
+    },
+    {
+      title: 'Print',
+      dataIndex: 'isPrinted',
+      key: 'isPrinted',
+      render: (text) => {
+        if (text) {
+          return (
+            <Tag color="red">
+              Printed
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="green">
+            Not Printed
+          </Tag>
+        )
       }
     },
     {
@@ -149,85 +134,6 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
       }
     },
     {
-      title: 'Posting',
-      dataIndex: 'posting',
-      key: 'posting',
-      render: (text, record) => {
-        if (text || record.invoicing || record.paid) {
-          return (
-            <Tag color="green">
-              Posted
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="red">
-            Not Posted
-          </Tag>
-        )
-      }
-    },
-    {
-      title: 'Invoiced',
-      dataIndex: 'invoicing',
-      key: 'invoicing',
-      render: (text, record) => {
-        if (text || record.paid) {
-          return (
-            <Tag color="green">
-              Invoiced
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="red">
-            Not Invoiced
-          </Tag>
-        )
-      }
-    },
-    {
-      title: 'Paid',
-      dataIndex: 'paid',
-      key: 'paid',
-      render: (text) => {
-        if (text) {
-          return (
-            <Tag color="green">
-              Paid
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="red">
-            Not Paid
-          </Tag>
-        )
-      }
-    },
-    {
-      title: 'Paid Date',
-      dataIndex: 'paidDate',
-      key: 'paidDate',
-      render: (text) => {
-        if (text) {
-          return moment(text).format('DD MMM YYYY HH:mm:ss')
-        }
-        return null
-      }
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (text) => {
-        if (text) {
-          return moment(text).format('DD MMM YYYY HH:mm:ss')
-        }
-        return null
-      }
-    },
-    {
       title: 'Operation',
       key: 'operation',
       width: 100,
@@ -244,13 +150,24 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
       <Modal {...modalProps} >
         <PrintPDF {...printProps} />
         <PrintPDFv2 {...printProps} />
+        <Button type="dashed"
+          size="large"
+          className="button-width02 button-extra-large bgcolor-green"
+          onClick={() => {
+            if (listTransOut && listTransOut.id) {
+              onClickPrinted(listTransOut.id)
+            }
+          }}
+        >
+          <Icon type="check" className="icon-large" />
+        </Button>
       </Modal>
       <Table {...tableProps}
         bordered
         columns={columns}
         simple
         scroll={{ x: 1200 }}
-        rowKey={record => record.id}
+        pagination={false}
         onChange={handleChange}
       />
     </div>

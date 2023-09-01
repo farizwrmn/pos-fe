@@ -273,6 +273,7 @@ const FormAdd = ({
           {modalProductVisible && <Browse {...modalProductOpts} />}
           {modalInvoiceVisible && <Browse {...modalPurchaseOpts} />}
           <Link target="_blank" to={'/inventory/transfer/out-import'}><Button className="button-add-items-right" style={{ margin: '0px' }} icon="plus" type="default" size="large">Import</Button></Link>
+          <Link target="_blank" to={'/inventory/transfer/auto-replenish'}><Button className="button-add-items-right" style={{ margin: '0px 10px' }} type="default" size="large">Auto Replenish</Button></Link>
         </Row>
 
         <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
