@@ -8,37 +8,9 @@ import Header from './Header'
 import Body from './Body'
 
 class BalanceInvoice extends React.Component {
-  state = {
-    totalBalanceInput: 0,
-    totalBalancePayment: 0,
-    totalDiffBalance: 0
-  }
-
-  componentDidMount () {
-    const { setoran } = this.props
-    if (setoran && setoran.setoranInvoice && setoran.setoranInvoice.detail && setoran.setoranInvoice.detail.length > 0) {
-      const listDetail = setoran.setoranInvoice.detail
-      let totalBalanceInput = 0
-      let totalBalancePayment = 0
-      let totalDiffBalance = 0
-      for (let index in listDetail) {
-        const record = listDetail[index]
-        totalBalanceInput += record.totalBalanceInput
-        totalBalancePayment += record.totalBalancePayment
-        totalDiffBalance += record.totalDiffBalance
-      }
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({
-        totalBalanceInput,
-        totalBalancePayment,
-        totalDiffBalance
-      })
-    }
-  }
-
   render () {
     const { setoran } = this.props
-    const { setoranInvoice } = setoran
+    const { setoranInvoice, setoranInvoiceSummary } = setoran
 
     const invoiceInfo = {
       employeeName: setoranInvoice.userName,
@@ -51,11 +23,16 @@ class BalanceInvoice extends React.Component {
       closeDate: moment(setoranInvoice.close).format('DD MMM YYYY, HH:mm:ss')
     }
 
+    const bodyProps = {
+      list: setoranInvoice.detail,
+      setoranInvoiceSummary
+    }
+
     return (
       <LocaleProvider locale={enUS}>
         <div className={styles.invoiceMini}>
           <Header invoiceInfo={invoiceInfo} />
-          <Body list={setoranInvoice.detail} />
+          <Body {...bodyProps} />
         </div>
       </LocaleProvider>
     )

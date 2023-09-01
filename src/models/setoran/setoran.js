@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     closedBalance: [],
 
     setoranInvoice: {},
+    setoranInvoiceSummary: {},
 
     activeKey: '0'
   },
@@ -99,10 +100,27 @@ export default modelExtend(pageModel, {
     * queryInvoice ({ payload = {} }, { call, put }) {
       const response = yield call(queryInvoice, payload)
       if (response && response.success && response.data) {
+        let totalBalanceInput = 0
+        let totalBalancePayment = 0
+        let totalDiffBalance = 0
+        if (response.data.detail && response.data.detail.length > 0) {
+          const detail = response.data.detail
+          for (let index in detail) {
+            const record = detail[index]
+            totalBalanceInput += record.totalBalanceInput
+            totalBalancePayment += record.totalBalancePayment
+            totalDiffBalance += record.diffBalance
+          }
+        }
         yield put({
           type: 'updateState',
           payload: {
-            setoranInvoice: response.data
+            setoranInvoice: response.data,
+            setoranInvoiceSummary: {
+              totalBalanceInput,
+              totalBalancePayment,
+              totalDiffBalance
+            }
           }
         })
       } else {
