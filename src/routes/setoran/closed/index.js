@@ -1,8 +1,8 @@
 import React from 'react'
 import pathToRegexp from 'path-to-regexp'
-import { Row } from 'antd'
-import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
+import { Row } from 'antd'
 import Form from './Form'
 
 class SetoranClosed extends React.Component {
@@ -35,10 +35,11 @@ class SetoranClosed extends React.Component {
       userDetail,
       paymentOpts
     } = this.props
+
     const {
       closedBalance,
       currentBalance,
-      balanceInputPaymentOption
+      listBalanceInputPaymentOption
     } = setoran
     const {
       listOpts
@@ -51,7 +52,7 @@ class SetoranClosed extends React.Component {
     } = userDetail
 
     const formProps = {
-      balanceInputPaymentOption,
+      listBalanceInputPaymentOption,
       listOpts,
       closedBalance,
       currentBalance,

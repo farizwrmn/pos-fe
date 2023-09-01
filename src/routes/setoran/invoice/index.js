@@ -10,22 +10,22 @@ import Body from './Body'
 class BalanceInvoice extends React.Component {
   render () {
     const { setoran } = this.props
-    const { setoranInvoice, setoranInvoiceSummary } = setoran
+    const { invoice, invoiceSummary } = setoran
 
     const invoiceInfo = {
-      employeeName: setoranInvoice.userName,
-      dataPos: setoranInvoice.detail,
-      id: setoranInvoice.balanceId,
-      userName: setoranInvoice.cashierName,
-      storeName: setoranInvoice.storeName,
-      shift: setoranInvoice.shiftName,
-      openDate: moment(setoranInvoice.open).format('DD MMM YYYY, HH:mm:ss'),
-      closeDate: moment(setoranInvoice.closed).format('DD MMM YYYY, HH:mm:ss')
+      employeeName: invoice.userName,
+      dataPos: invoice.detail,
+      id: invoice.balanceId,
+      userName: invoice.cashierName,
+      storeName: invoice.storeName,
+      shift: invoice.shiftName,
+      openDate: moment(invoice.open).format('DD MMM YYYY, HH:mm:ss'),
+      closeDate: moment(invoice.closed).format('DD MMM YYYY, HH:mm:ss')
     }
 
     const bodyProps = {
-      list: setoranInvoice.detail,
-      setoranInvoiceSummary
+      list: invoice.detail,
+      invoiceSummary
     }
 
     return (

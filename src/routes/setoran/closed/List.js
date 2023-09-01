@@ -10,12 +10,13 @@ const columnProps = {
 }
 
 const List = ({
-  balanceInputPaymentOption,
+  listBalanceInputPaymentOption,
   closedBalance,
   listOpts
 }) => {
-  const availableListPayment = balanceInputPaymentOption && Array.isArray(balanceInputPaymentOption) ? balanceInputPaymentOption : []
+  const availableListPayment = listBalanceInputPaymentOption && Array.isArray(listBalanceInputPaymentOption) ? listBalanceInputPaymentOption : []
   const filteredPaymentOption = listOpts.filter(filtered => availableListPayment.find(item => item === filtered.typeCode))
+
   const columns = [
     {
       title: 'Description',

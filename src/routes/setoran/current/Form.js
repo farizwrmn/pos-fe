@@ -57,8 +57,8 @@ const BalanceCurrentForm = ({
       if (error) return error
 
       const data = {
-        storeId: lstorage.getCurrentUserStore(),
-        ...getFieldsValue()
+        ...getFieldsValue(),
+        storeId: lstorage.getCurrentUserStore()
       }
 
       Modal.confirm({

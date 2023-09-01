@@ -2,8 +2,8 @@ import { Col, Row } from 'antd'
 import { currencyFormatter } from 'utils/string'
 import styles from './index.less'
 
-const BodySummary = ({ setoranInvoiceSummary }) => {
-  const { totalBalanceInput, totalBalancePayment, totalDiffBalance } = setoranInvoiceSummary
+const BodySummary = ({ invoiceSummary }) => {
+  const { totalBalanceInput, totalBalancePayment, totalDiffBalance } = invoiceSummary
 
   return (
     <div className={styles.item}>

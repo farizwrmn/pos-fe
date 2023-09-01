@@ -42,7 +42,7 @@ const tailFormItemLayout = {
 }
 
 const FormClosed = ({
-  balanceInputPaymentOption,
+  listBalanceInputPaymentOption,
   currentBalance,
   listShift,
   listUser,
@@ -55,10 +55,10 @@ const FormClosed = ({
   }
 }) => {
   const currentShift = listShift.find(item => item.id === currentBalance.shiftId)
-  const currentPIC = listUser.find(item => item.id === currentBalance.approveUserId)
+  const currentCashier = listUser.find(item => item.id === currentBalance.approveUserId)
 
   const listProps = {
-    balanceInputPaymentOption,
+    listBalanceInputPaymentOption,
     closedBalance,
     listOpts
   }
@@ -81,9 +81,9 @@ const FormClosed = ({
       </FormItem>
       <FormItem label="Cashier" {...formItemLayout}>
         {getFieldDecorator('approveUserId', {
-          initialValue: currentPIC ? currentPIC.userName : undefined
+          initialValue: currentCashier ? currentCashier.userName : undefined
         })(
-          <Input placeholder="PIC not found!" disabled />
+          <Input placeholder="Cashier not found!" disabled />
         )}
       </FormItem>
       <FormItem>

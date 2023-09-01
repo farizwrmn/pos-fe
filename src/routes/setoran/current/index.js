@@ -14,7 +14,7 @@ const BalanceCurrent = ({
   const {
     formType,
     currentBalance,
-    balanceInputPaymentOption
+    listBalanceInputPaymentOption
   } = setoran
   const {
     listShift
@@ -40,7 +40,7 @@ const BalanceCurrent = ({
   const formCloseProps = {
     loading,
     currentBalance,
-    balanceInputPaymentOption,
+    listBalanceInputPaymentOption,
     listShift,
     listUser: data.data,
     listOpts,

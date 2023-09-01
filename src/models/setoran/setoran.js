@@ -18,12 +18,10 @@ export default modelExtend(pageModel, {
 
     closedBalance: [],
 
-    setoranInvoice: {},
-    setoranInvoiceSummary: {},
+    invoice: {},
+    invoiceSummary: {},
 
-    balanceInputPaymentOption: [],
-
-    activeKey: '0'
+    listBalanceInputPaymentOption: []
   },
 
   subscriptions: {

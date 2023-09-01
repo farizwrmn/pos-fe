@@ -5,7 +5,7 @@ import BodySummary from './BodySummary'
 
 const Body = ({
   list,
-  setoranInvoiceSummary
+  invoiceSummary
 }) => {
   return (
     <div>
@@ -17,7 +17,7 @@ const Body = ({
         })}
       </div>
       <div className={styles.borderedSection}>
-        <BodySummary setoranInvoiceSummary={setoranInvoiceSummary} />
+        <BodySummary invoiceSummary={invoiceSummary} />
       </div>
     </div>
   )
