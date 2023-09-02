@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { lstorage } from 'utils'
 import { message } from 'antd'
-import { query as queryBalanceSummary } from 'services/setoran/balanceSummaryService'
+import { queryBalance } from 'services/setoran/balanceSummaryService'
 import { pageModel } from './../common'
 
 const { getCurrentUserStore } = lstorage
@@ -20,13 +20,16 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { page, pageSize } = query
+        const { page, pageSize, from, to, q } = query
         if (pathname === '/setoran/cashier') {
           dispatch({
-            type: 'queryBalanceSummary',
+            type: 'queryBalance',
             payload: {
               page,
-              pageSize
+              pageSize,
+              from,
+              to,
+              q
             }
           })
         }
@@ -35,9 +38,10 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * queryBalanceSummary ({ payload = {} }, { call, put }) {
+    * queryBalance ({ payload = {} }, { call, put }) {
       payload.storeId = getCurrentUserStore()
-      const response = yield call(queryBalanceSummary, payload)
+      const response = yield call(queryBalance, payload)
+      console.log('response', response)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',

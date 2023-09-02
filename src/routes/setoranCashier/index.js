@@ -1,8 +1,10 @@
+import React from 'react'
+import moment from 'moment'
 import { Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import React from 'react'
-import ListSummary from './ListSummary'
+import List from './List'
+import Filter from './Filter'
 
 class SetoranCashier extends React.Component {
   render () {
@@ -17,7 +19,7 @@ class SetoranCashier extends React.Component {
       pagination
     } = setoranCashier
 
-    const listSummaryProps = {
+    const listBalanceProps = {
       dataSource: list,
       pagination,
       handlePagination: (pagination) => {
@@ -34,10 +36,38 @@ class SetoranCashier extends React.Component {
       }
     }
 
+    const filterProps = {
+      location,
+      onChangeDate: (dateRange) => {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            from: moment(dateRange[0]).format('YYYY-MM-DD'),
+            to: moment(dateRange[1]).format('YYYY-MM-DD')
+          }
+        }))
+      },
+      onSearch: (q) => {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            q
+          }
+        }))
+      }
+    }
+
     return (
       <div className="content-inner">
+        <Row style={{ marginBottom: '10px' }}>
+          <Filter {...filterProps} />
+        </Row>
         <Row>
-          <ListSummary {...listSummaryProps} />
+          <List {...listBalanceProps} />
         </Row>
       </div>
     )

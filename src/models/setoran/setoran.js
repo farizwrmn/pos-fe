@@ -132,8 +132,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            setoranInvoice: response.data,
-            setoranInvoiceSummary: {
+            invoice: response.data,
+            invoiceSummary: {
               totalBalanceInput,
               totalBalancePayment,
               totalDiffBalance
@@ -150,7 +150,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            balanceInputPaymentOption: response.data
+            listBalanceInputPaymentOption: response.data
           }
         })
       } else {

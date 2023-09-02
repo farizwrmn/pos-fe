@@ -2,10 +2,10 @@ import { request, config, crypt } from '../../utils'
 
 const { balanceSummary } = config.api
 
-export const query = (params) => {
+export const queryBalance = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: balanceSummary,
+    url: `${balanceSummary}/balance`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

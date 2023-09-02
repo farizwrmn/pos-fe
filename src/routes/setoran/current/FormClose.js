@@ -21,6 +21,22 @@ const formItemLayout = {
   }
 }
 
+const balanceInputFormatter = (data) => {
+  const result = []
+
+  const headerArray = Object.keys(data)
+  const detailArray = Object.values(data)
+  for (let index in headerArray) {
+    const header = headerArray[index]
+    const detail = detailArray[index]
+    const splittedHeader = header.split('#')
+    if (splittedHeader.length > 1) {
+      result.push({ paymentOption: splittedHeader[1], totalBalanceInput: parseFloat(detail) })
+    }
+  }
+  return result
+}
+
 const tailFormItemLayout = {
   wrapperCol: {
     span: 24,
@@ -72,19 +88,10 @@ const FormClose = ({
         ...getFieldsValue()
       }
 
-      const input = []
-      const headerArray = Object.keys(data)
-      const detailArray = Object.values(data)
-      for (let index in headerArray) {
-        const header = headerArray[index]
-        const detail = detailArray[index]
-        const splittedHeader = header.split('#')
-        if (splittedHeader.length > 1) {
-          input.push({ paymentOption: splittedHeader[1], totalBalanceInput: parseFloat(detail) })
-        }
-      }
+      const inputData = balanceInputFormatter(data)
 
-      onSubmit(input, data.approveUserId)
+
+      onSubmit(inputData, data.approveUserId)
     })
   }
 
