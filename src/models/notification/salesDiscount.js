@@ -1,8 +1,11 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import moment from 'moment'
 import { query, add, approve } from 'services/notification/salesDiscount'
 import { pageModel } from '../common'
+
+const { getCurrentUserRole } = lstorage
 
 const success = () => {
   message.success('Sales discount has been saved')
@@ -73,6 +76,7 @@ export default modelExtend(pageModel, {
     },
 
     * approve ({ payload }, { call, put }) {
+      payload.userRole = getCurrentUserRole()
       const data = yield call(approve, payload)
       if (data.success) {
         success()
