@@ -1,7 +1,9 @@
 import { Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
-const ListResolve = ({
+const ListSummary = ({
+  listSummaryTotal,
+  onChangePagination,
   ...tableProps
 }) => {
   const columns = [
@@ -12,6 +14,20 @@ const ListResolve = ({
       width: 100
     },
     {
+      title: 'Input Cashier',
+      dataIndex: 'totalBalanceInput',
+      key: 'totalBalanceInput',
+      width: 100,
+      render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
+    },
+    {
+      title: 'Total Penjualan',
+      dataIndex: 'totalBalancePayment',
+      key: 'totalBalancePayment',
+      width: 100,
+      render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
+    },
+    {
       title: 'Selisih',
       dataIndex: 'diffBalance',
       key: 'diffBalance',
@@ -20,8 +36,8 @@ const ListResolve = ({
     },
     {
       title: 'Resolve Status',
-      dataIndex: 'statusResolved',
-      key: 'statusResolved',
+      dataIndex: 'statusResolve',
+      key: 'statusResolve',
       width: 100,
       render: value => <div style={{ textAlign: 'center' }}>{value || '-'}</div>
     },
@@ -39,8 +55,17 @@ const ListResolve = ({
       {...tableProps}
       columns={columns}
       bordered
+      onChange={onChangePagination}
+      footer={() => {
+        return (
+          <div>
+            <strong>Total Penjualan: </strong>{currencyFormatter(listSummaryTotal.totalBalancePayment)}<br />
+            <strong>Total Selisih: </strong>{currencyFormatter(listSummaryTotal.totalDiffBalance)}
+          </div>
+        )
+      }}
     />
   )
 }
 
-export default ListResolve
+export default ListSummary

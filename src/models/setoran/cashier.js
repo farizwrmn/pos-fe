@@ -24,7 +24,9 @@ export default modelExtend(pageModel, {
     listSummaryTotal: {},
 
     listResolve: [],
-    paginationResolve: {}
+    paginationResolve: {},
+
+    visibleResolveModal: false
   },
 
   subscriptions: {

@@ -49,17 +49,6 @@ class SetoranCashier extends React.Component {
             to: moment(dateRange[1]).format('YYYY-MM-DD')
           }
         }))
-      },
-      onSearch: (q) => {
-        const { pathname, query } = location
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            q,
-            page: 1
-          }
-        }))
       }
     }
 

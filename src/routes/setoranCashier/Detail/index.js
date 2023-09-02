@@ -3,17 +3,22 @@ import pathToRegexp from 'path-to-regexp'
 import { Button, Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import ListSummary from './ListSummary'
-import BalanceInfo from './BalanceInfo'
-import ListResolve from './ListResolve'
+import ListSummary from './Summary/ListSummary'
+import BalanceInfo from './Summary/BalanceInfo'
+import ListResolve from './Resolve/ListResolve'
 
 class CashierDetail extends React.Component {
   render () {
     const {
       location,
       dispatch,
-      setoranCashier
+      setoranCashier,
+      accountRule
     } = this.props
+
+    const {
+      listAccountCodeLov
+    } = accountRule
 
     const {
       balanceInfo,
@@ -22,7 +27,9 @@ class CashierDetail extends React.Component {
       paginationSummary,
 
       listResolve,
-      paginationResolve
+      paginationResolve,
+
+      visibleResolveModal
     } = setoranCashier
 
     const handleBackButton = () => {
@@ -59,8 +66,11 @@ class CashierDetail extends React.Component {
     }
 
     const listResolveProps = {
+      listAccountCodeLov,
+      dispatch,
       dataSource: listResolve,
       pagination: paginationResolve,
+      visibleResolveModal,
       onChangePagination: (pagination) => {
         const { current: page, pageSize } = pagination
         const { pathname } = location
@@ -75,6 +85,14 @@ class CashierDetail extends React.Component {
             }
           })
         }
+      },
+      handleOpenResolveModal: () => {
+        dispatch({
+          type: 'setoranCashier/updateState',
+          payload: {
+            visibleResolveModal: true
+          }
+        })
       }
     }
 
@@ -98,7 +116,9 @@ class CashierDetail extends React.Component {
 }
 
 export default connect(({
-  setoranCashier
+  setoranCashier,
+  accountRule
 }) => ({
-  setoranCashier
+  setoranCashier,
+  accountRule
 }))(CashierDetail)

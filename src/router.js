@@ -506,6 +506,7 @@ const Routers = function ({ history, app }) {
           path: 'setoran/cashier/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/setoran/cashier'))
               cb(null, require('./routes/setoranCashier/Detail'))
             }, 'setoran-cashier-detail')
