@@ -3,6 +3,7 @@ import pathToRegexp from 'path-to-regexp'
 import { lstorage } from 'utils'
 import { message } from 'antd'
 import { query as querySummary, queryBalance } from 'services/setoran/balanceSummaryService'
+import { query as queryResolve } from 'services/setoran/balanceResolveService'
 import { pageModel } from './../common'
 
 const { getCurrentUserStore } = lstorage
@@ -19,8 +20,11 @@ export default modelExtend(pageModel, {
     },
 
     listSummary: [],
-    paginationSummary: [],
-    listSummaryTotal: {}
+    paginationSummary: {},
+    listSummaryTotal: {},
+
+    listResolve: [],
+    paginationResolve: {}
   },
 
   subscriptions: {
@@ -44,6 +48,12 @@ export default modelExtend(pageModel, {
         if (match) {
           dispatch({
             type: 'querySummary',
+            payload: {
+              balanceId: decodeURIComponent(match[1])
+            }
+          })
+          dispatch({
+            type: 'queryResolve',
             payload: {
               balanceId: decodeURIComponent(match[1])
             }
@@ -84,6 +94,24 @@ export default modelExtend(pageModel, {
             listSummaryTotal: response.dataSummaryTotal,
             listSummary: response.data,
             paginationSummary: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryResolve ({ payload = {} }, { call, put }) {
+      const response = yield call(queryResolve, payload)
+      if (response && response.data && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listResolve: response.data,
+            paginationResolve: {
               current: Number(response.page || 1),
               pageSize: Number(response.pageSize || 10),
               total: Number(response.total || 0)

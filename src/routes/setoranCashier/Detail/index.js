@@ -5,6 +5,7 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import ListSummary from './ListSummary'
 import BalanceInfo from './BalanceInfo'
+import ListResolve from './ListResolve'
 
 class CashierDetail extends React.Component {
   render () {
@@ -18,7 +19,10 @@ class CashierDetail extends React.Component {
       balanceInfo,
       listSummaryTotal,
       listSummary,
-      paginationSummary
+      paginationSummary,
+
+      listResolve,
+      paginationResolve
     } = setoranCashier
 
     const handleBackButton = () => {
@@ -54,6 +58,26 @@ class CashierDetail extends React.Component {
       balanceInfo
     }
 
+    const listResolveProps = {
+      dataSource: listResolve,
+      pagination: paginationResolve,
+      onChangePagination: (pagination) => {
+        const { current: page, pageSize } = pagination
+        const { pathname } = location
+        const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
+        if (match) {
+          dispatch({
+            type: 'setoranCashier/queryResolve',
+            payload: {
+              balanceId: decodeURIComponent(match[1]),
+              page,
+              pageSize
+            }
+          })
+        }
+      }
+    }
+
     return (
       <div className="content-inner">
         <Row style={{ marginBottom: '10px' }}>
@@ -64,6 +88,9 @@ class CashierDetail extends React.Component {
         </Row>
         <Row>
           <ListSummary {...listSummaryProps} />
+        </Row>
+        <Row>
+          <ListResolve {...listResolveProps} />
         </Row>
       </div>
     )
