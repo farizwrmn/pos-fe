@@ -178,8 +178,7 @@ export async function bulkInsert (params) {
   return request({
     url,
     method: 'post',
-    data: params.filename,
-    body: params.data,
+    data: params,
     headers: apiHeaderToken
   })
 }
