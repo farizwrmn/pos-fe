@@ -20,6 +20,7 @@ class SetoranCashier extends React.Component {
     } = setoranCashier
 
     const listBalanceProps = {
+      location,
       dataSource: list,
       pagination,
       handlePagination: (pagination) => {

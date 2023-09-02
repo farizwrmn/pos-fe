@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
+import pathToRegexp from 'path-to-regexp'
 import { lstorage } from 'utils'
 import { message } from 'antd'
-import { queryBalance } from 'services/setoran/balanceSummaryService'
+import { query as querySummary, queryBalance } from 'services/setoran/balanceSummaryService'
 import { pageModel } from './../common'
 
 const { getCurrentUserStore } = lstorage
@@ -10,10 +11,15 @@ export default modelExtend(pageModel, {
   namespace: 'setoranCashier',
 
   state: {
+    balanceInfo: {},
+
     list: [],
     pagination: {
       current: 1
-    }
+    },
+
+    listSummary: [],
+    paginationSummary: []
   },
 
   subscriptions: {
@@ -30,6 +36,15 @@ export default modelExtend(pageModel, {
               from,
               to,
               q
+            }
+          })
+        }
+        const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
+        if (match) {
+          dispatch({
+            type: 'querySummary',
+            payload: {
+              balanceId: decodeURIComponent(match[1])
             }
           })
         }
@@ -50,6 +65,25 @@ export default modelExtend(pageModel, {
             pagination: {
               page: Number(response.page || 1),
               pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * querySummary ({ payload = {} }, { call, put }) {
+      const response = yield call(querySummary, payload)
+      if (response && response.success && response.data && response.balanceInfo) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            balanceInfo: response.balanceInfo,
+            listSummary: response.data,
+            paginationSummary: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pagSize || 10),
               total: Number(response.total || 0)
             }
           }

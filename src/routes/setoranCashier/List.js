@@ -1,7 +1,9 @@
 import { Table, Tag } from 'antd'
+import { Link } from 'dva/router'
 import moment from 'moment'
 
-const ListSummary = ({
+const List = ({
+  location,
   handlePagination,
   ...tableProps
 }) => {
@@ -10,6 +12,16 @@ const ListSummary = ({
       title: 'Username',
       dataIndex: 'userName',
       key: 'userName',
+      width: 100,
+      render: (value, record) => {
+        const { query } = location
+        return <Link to={`/setoran/cashier/${record.balanceId}`} query={query}>{value}</Link>
+      }
+    },
+    {
+      title: 'Cashier Name',
+      dataIndex: 'cashierName',
+      key: 'cashierName',
       width: 100
     },
     {
@@ -51,4 +63,4 @@ const ListSummary = ({
   )
 }
 
-export default ListSummary
+export default List
