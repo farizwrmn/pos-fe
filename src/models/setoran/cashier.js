@@ -19,7 +19,8 @@ export default modelExtend(pageModel, {
     },
 
     listSummary: [],
-    paginationSummary: []
+    paginationSummary: [],
+    listSummaryTotal: {}
   },
 
   subscriptions: {
@@ -80,10 +81,11 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             balanceInfo: response.balanceInfo,
+            listSummaryTotal: response.dataSummaryTotal,
             listSummary: response.data,
             paginationSummary: {
               current: Number(response.page || 1),
-              pageSize: Number(response.pagSize || 10),
+              pageSize: Number(response.pageSize || 10),
               total: Number(response.total || 0)
             }
           }

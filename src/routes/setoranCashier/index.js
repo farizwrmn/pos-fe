@@ -56,7 +56,8 @@ class SetoranCashier extends React.Component {
           pathname,
           query: {
             ...query,
-            q
+            q,
+            page: 1
           }
         }))
       }

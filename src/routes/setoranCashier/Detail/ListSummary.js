@@ -2,6 +2,8 @@ import { Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListSummary = ({
+  listSummaryTotal,
+  onChangePagination,
   ...tableProps
 }) => {
   const columns = [
@@ -53,6 +55,16 @@ const ListSummary = ({
       {...tableProps}
       columns={columns}
       bordered
+      onChange={onChangePagination}
+      footer={() => {
+        return (
+          <div>
+            <strong>Total Input: </strong>{currencyFormatter(listSummaryTotal.totalBalanceInput)}<br />
+            <strong>Total Penjualan: </strong>{currencyFormatter(listSummaryTotal.totalBalancePayment)}<br />
+            <strong>Total Selisih: </strong>{currencyFormatter(listSummaryTotal.totalDiffBalance)}
+          </div>
+        )
+      }}
     />
   )
 }
