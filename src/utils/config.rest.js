@@ -120,6 +120,11 @@ module.exports = {
     maintenance: '/maintenance',
     marketing: '/marketing',
     paymentTransaction: '/payment-transaction',
-    paylabs: '/paylabs'
+    paylabs: '/paylabs',
+    paymentXenditBalanceImport: '/payment-xendit-balance-import',
+    paymentXenditBalanceImportDetail: '/payment-xendit-balance-import-detail',
+    paymentXenditTransactionImport: '/payment-xendit-transaction-import',
+    paymentXenditTransactionImportDetail: '/payment-xendit-transaction-import-detail',
+    errorLog: '/error-log'
   }
 }

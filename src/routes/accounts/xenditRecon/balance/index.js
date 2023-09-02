@@ -1,0 +1,47 @@
+import { Link } from 'dva/router'
+import { Row, Table } from 'antd'
+import moment from 'moment'
+
+const Balance = ({
+  location,
+  onChangePagination,
+  ...tableProps
+}) => {
+  const columns = [
+    {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      width: 100,
+      render: (value, record) => {
+        const { query } = location
+        return (
+          <Link to={`/accounting/xendit-recon/detail/${record.id}`} query={{ ...query, type: 'balance' }}>{moment(value, 'YYYY-MM-DD').format('DD MMM YYYY')}</Link>
+        )
+      }
+    },
+    {
+      title: 'Store Name (Click to see detail)',
+      dataIndex: 'store',
+      key: 'store',
+      width: 300,
+      render: value => value.storeName
+    }
+  ]
+
+  return (
+    <Row style={{ padding: '10px' }}>
+      <h3 style={{ fontWeight: 'bolder' }}>
+        Balance
+      </h3>
+      <Table
+        {...tableProps}
+        bordered
+        columns={columns}
+        onChange={onChangePagination}
+      />
+    </Row>
+  )
+}
+
+export default Balance

@@ -31,7 +31,7 @@ const List = ({
       title: 'Transaction No',
       dataIndex: 'transNo',
       key: 'transNo',
-      width: '150px',
+      width: 150,
       render: (text, record) => {
         return (
           <Link to={`/journal-entry/${record.id}`}>
@@ -44,13 +44,13 @@ const List = ({
       title: 'Reference',
       dataIndex: 'reference',
       key: 'reference',
-      width: '150px'
+      width: 150
     },
     {
       title: 'Total',
       dataIndex: 'amountOut',
       key: 'amountOut',
-      width: '150px',
+      width: 150,
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
     },
@@ -58,13 +58,13 @@ const List = ({
       title: 'Desc',
       dataIndex: 'description',
       key: 'description',
-      width: '250px'
+      width: 300
     },
     {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      width: '150px',
+      width: 150,
       sorter: (a, b) => moment.utc(a.transDate, 'YYYY/MM/DD') - moment.utc(b.transDate, 'YYYY/MM/DD'),
       render: _text => `${_text ? moment(_text).format('DD-MMM-YYYY') : '-'}`
     },
@@ -72,7 +72,6 @@ const List = ({
       title: 'Operation',
       key: 'operation',
       width: 100,
-      fixed: 'right',
       render: (text, record) => {
         return (
           <DropOption
@@ -101,7 +100,6 @@ const List = ({
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1000 }}
         rowKey={record => record.id}
       />
     </div>

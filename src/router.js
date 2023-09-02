@@ -1709,6 +1709,22 @@ const Routers = function ({ history, app }) {
             }, 'bca-recon-import')
           }
         }, {
+          path: 'accounting/xendit-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon'))
+            }, 'xendit-recon')
+          }
+        }, {
+          path: 'accounting/xendit-recon/detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/xenditRecon'))
+              cb(null, require('./routes/accounts/xenditRecon/detail'))
+            }, 'xendit-recon-detail')
+          }
+        }, {
           path: 'bank-history',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1904,6 +1920,23 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-out-detail')
           }
         }, {
+          path: 'inventory/transfer/auto-replenish-submission',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/autoReplenishSubmission'))
+              cb(null, require('./routes/inventory/transfer/autoReplenishSubmission'))
+            }, 'inventory-transfer-out-submission')
+          }
+        }, {
+          path: 'inventory/transfer/auto-replenish-submission/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/transfer/autoReplenishSubmission'))
+              cb(null, require('./routes/inventory/transfer/autoReplenishDetail'))
+            }, 'inventory-transfer-out-transfer')
+          }
+        }, {
           path: 'inventory/transfer/out-import',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1913,6 +1946,27 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productcategory'))
               cb(null, require('./routes/inventory/transfer/importTransferOut'))
             }, 'inventory-transfer-out-import')
+          }
+        }, {
+          path: 'inventory/transfer/auto-replenish',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/autoReplenish'))
+              registerModel(app, require('./models/transferOut'))
+              cb(null, require('./routes/inventory/transfer/autoReplenish'))
+            }, 'inventory-transfer-out-auto-replenish')
+          }
+        }, {
+          path: 'inventory/transfer/auto-replenish-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importAutoReplenishBuffer'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/transferOut'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/inventory/transfer/importAutoReplenishBuffer'))
+            }, 'inventory-transfer-out-auto-replenish-import')
           }
         }, {
           path: 'integration/grabmart-compliance',

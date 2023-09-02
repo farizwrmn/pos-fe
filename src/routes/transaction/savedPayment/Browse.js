@@ -8,7 +8,7 @@ import { alertModal, lstorage } from 'utils'
 import { prefix } from 'utils/config.main'
 import styles from 'themes/index.less'
 
-const { checkPermissionMonthTransaction } = alertModal
+const { checkPermissionMonthTransaction, checkPermissionDayBeforeTransaction } = alertModal
 const { RangePicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
@@ -54,6 +54,14 @@ const BrowseGroup = ({
       const checkPermission = checkPermissionMonthTransaction(transDate)
       if (checkPermission) {
         return
+      }
+
+      const currentRole = lstorage.getCurrentUserRole()
+      if (currentRole !== 'OWN') {
+        const checkPermissionDayBefore = checkPermissionDayBeforeTransaction(transDate)
+        if (checkPermissionDayBefore) {
+          return
+        }
       }
 
       if (record && record.paymentVia && (record.paymentVia === 'PQ' || record.paymentVia === 'XQ')) {
@@ -160,6 +168,13 @@ const BrowseGroup = ({
       }],
       filterMultiple: false,
       onFilter: (value, record) => record.status.indexOf(value) === 0
+    },
+    {
+      title: 'Payment Status',
+      dataIndex: 'validPayment',
+      key: 'validPayment',
+      width: 100,
+      render: value => <div style={{ textAlign: 'center' }}><Tag color={value === 1 ? 'green' : 'red'}>{value === 1 ? 'Valid' : 'Not Valid'}</Tag></div>
     },
     {
       title: <Icon type="setting" />,
