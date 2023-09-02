@@ -1,12 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
-import { lstorage } from 'utils'
 import { message } from 'antd'
-import { query as querySummary, queryBalance } from 'services/setoran/balanceSummaryService'
+import { query as querySummary } from 'services/setoran/balanceSummaryService'
 import { query as queryResolve } from 'services/setoran/balanceResolveService'
 import { pageModel } from './../common'
-
-const { getCurrentUserStore } = lstorage
 
 export default modelExtend(pageModel, {
   namespace: 'setoranCashier',
@@ -32,20 +29,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname, query } = location
-        const { page, pageSize, from, to, q } = query
-        if (pathname === '/setoran/cashier') {
-          dispatch({
-            type: 'queryBalance',
-            payload: {
-              page,
-              pageSize,
-              from,
-              to,
-              q
-            }
-          })
-        }
+        const { pathname } = location
         const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
         if (match) {
           dispatch({
@@ -66,26 +50,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * queryBalance ({ payload = {} }, { call, put }) {
-      payload.storeId = getCurrentUserStore()
-      const response = yield call(queryBalance, payload)
-      console.log('response', response)
-      if (response && response.success && response.data) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            list: response.data,
-            pagination: {
-              page: Number(response.page || 1),
-              pageSize: Number(response.pageSize || 10),
-              total: Number(response.total || 0)
-            }
-          }
-        })
-      } else {
-        message.error(response.message)
-      }
-    },
     * querySummary ({ payload = {} }, { call, put }) {
       const response = yield call(querySummary, payload)
       if (response && response.success && response.data && response.balanceInfo) {
