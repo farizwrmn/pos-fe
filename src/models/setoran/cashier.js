@@ -27,6 +27,14 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/setoran/cashier/new') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              visibleSetoranNewModal: false
+            }
+          })
+        }
       })
     }
   },
