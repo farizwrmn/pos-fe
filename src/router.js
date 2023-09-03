@@ -503,6 +503,14 @@ const Routers = function ({ history, app }) {
             }, 'setoran-cashier')
           }
         }, {
+          path: 'setoran/cashier/new',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/cashier'))
+              cb(null, require('./routes/setoranCashier/Add'))
+            }, 'setoran-cashier')
+          }
+        }, {
           path: 'setoran/cashier/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

@@ -6,14 +6,12 @@ export default modelExtend(pageModel, {
   namespace: 'setoranCashier',
 
   state: {
-    balanceInfo: {},
-
     list: [],
     pagination: {
       current: 1
     },
 
-    visibleResolveModal: false
+    visibleSetoranNewModal: false
   },
 
   subscriptions: {
