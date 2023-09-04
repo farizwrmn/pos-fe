@@ -1,14 +1,39 @@
 import React from 'react'
 import { Row } from 'antd'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import ListBalance from './ListBalance'
 import ListResolve from './ListResolve'
 import ListJournal from './ListJournal'
 
 class DepositCashierDetail extends React.Component {
   render () {
-    const listBalanceProps = {
+    const {
+      location,
+      dispatch,
+      depositCashier
+    } = this.props
 
+    const {
+      listDetail,
+      paginationDetail
+    } = depositCashier
+
+    const listBalanceProps = {
+      dataSource: listDetail,
+      pagination: paginationDetail,
+      handleChangePagination: (pagination) => {
+        const { current: page, pageSize } = pagination
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
+      }
     }
 
     const listResolveProps = {
@@ -35,4 +60,8 @@ class DepositCashierDetail extends React.Component {
   }
 }
 
-export default connect()(DepositCashierDetail)
+export default connect(({
+  depositCashier
+}) => ({
+  depositCashier
+}))(DepositCashierDetail)

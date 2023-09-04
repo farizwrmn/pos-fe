@@ -3,7 +3,8 @@ import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { queryAdd } from 'services/setoran/balanceDepositService'
+import { queryAdd } from 'services/balancePayment/balanceDepositService'
+import { query as queryDepositDetail } from 'services/balancePayment/balanceDepositDetailService'
 import { pageModel } from '../common'
 
 const {
@@ -19,19 +20,27 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
+    listDetail: [],
+    paginationDetail: {
+      current: 1
+    },
+
     visibleAddDepositModal: false
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname } = location
+        const { pathname, query } = location
+        const { page, pageSize } = query
         const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
         if (match) {
           dispatch({
-            type: 'updateState',
+            type: 'queryDepositDetail',
             payload: {
-              id: decodeURIComponent(match[1])
+              transId: decodeURIComponent(match[1]),
+              page,
+              pageSize
             }
           })
         }
@@ -40,6 +49,22 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDepositDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDepositDetail, payload)
+      if (response && response.data && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetail: response.data,
+            paginationDetail: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      }
+    },
     * add ({ payload = {} }, { call, put }) {
       payload.storeId = getCurrentUserStore()
       const response = yield call(queryAdd, payload)

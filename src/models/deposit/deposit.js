@@ -3,9 +3,9 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { getActive } from 'services/balance/balanceProcess'
-import { queryClose, queryOpen } from 'services/setoran/balancePaymentService'
-import { queryClosedDetail, queryInvoice } from 'services/setoran/balanceSummaryService'
-import { queryAvailablePaymentOption } from 'services/setoran/balanceInputService'
+import { queryClose, queryOpen } from 'services/balancePayment/balancePaymentService'
+import { queryClosedDetail, queryInvoice } from 'services/balancePayment/balanceSummaryService'
+import { queryAvailablePaymentOption } from 'services/balancePayment/balanceInputService'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
