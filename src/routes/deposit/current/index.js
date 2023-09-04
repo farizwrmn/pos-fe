@@ -31,7 +31,7 @@ const BalanceCurrent = ({
     listShift,
     onSubmit: (data) => {
       dispatch({
-        type: 'setoran/openBalance',
+        type: 'deposit/openBalance',
         payload: data
       })
     }
@@ -46,7 +46,7 @@ const BalanceCurrent = ({
     listOpts,
     onSubmit: (data, approveUserId) => {
       dispatch({
-        type: 'setoran/closeBalance',
+        type: 'deposit/closeBalance',
         payload: {
           data,
           approveUserId

@@ -4,14 +4,14 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { queryAdd } from 'services/setoran/balanceDepositService'
-import { pageModel } from './../common'
+import { pageModel } from '../common'
 
 const {
   getCurrentUserStore
 } = lstorage
 
 export default modelExtend(pageModel, {
-  namespace: 'setoranCashier',
+  namespace: 'depositCashier',
 
   state: {
     list: [],
@@ -19,7 +19,7 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
-    visibleAddSetoranModal: false
+    visibleAddDepositModal: false
   },
 
   subscriptions: {

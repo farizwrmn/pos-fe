@@ -469,47 +469,47 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/balance/balanceShift'))
-              registerModel(app, require('./models/setoran/setoran'))
+              registerModel(app, require('./models/deposit/deposit'))
               registerModel(app, require('./models/detail/user'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/setoran/current/'))
-            }, 'setoran-dashboard')
+              cb(null, require('./routes/deposit/current'))
+            }, 'deposit-dashboard')
           }
         }, {
           path: 'setoran/closed/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/balance/balanceShift'))
-              registerModel(app, require('./models/setoran/setoran'))
+              registerModel(app, require('./models/deposit/deposit'))
               registerModel(app, require('./models/detail/user'))
               registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/setoran/closed/'))
-            }, 'setoran-closed')
+              cb(null, require('./routes/deposit/closed'))
+            }, 'deposit-closed')
           }
         }, {
           path: 'setoran/invoice/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/setoran/setoran'))
-              cb(null, require('./routes/setoran/invoice/'))
-            }, 'setoran-closed')
+              registerModel(app, require('./models/deposit/deposit'))
+              cb(null, require('./routes/deposit/invoice'))
+            }, 'deposit-closed')
           }
         }, {
           path: 'setoran/cashier',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/setoran/cashier'))
-              cb(null, require('./routes/setoranCashier'))
-            }, 'setoran-cashier')
+              registerModel(app, require('./models/deposit/cashier'))
+              cb(null, require('./routes/depositCashier'))
+            }, 'deposit-cashier')
           }
         }, {
           path: 'setoran/cashier/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/accountRule'))
-              registerModel(app, require('./models/setoran/cashier'))
-              cb(null, require('./routes/setoranCashier/Detail'))
-            }, 'setoran-cashier-detail')
+              registerModel(app, require('./models/deposit/cashier'))
+              cb(null, require('./routes/depositCashier/Detail'))
+            }, 'deposit-cashier-detail')
           }
         }, {
           path: 'balance/current',

@@ -6,7 +6,7 @@ import { Button, Row } from 'antd'
 import List from './List'
 import ModalAdd from './ModalAdd'
 
-class SetoranCashier extends React.Component {
+class DepositCashier extends React.Component {
   render () {
     const {
       dispatch,
@@ -14,7 +14,7 @@ class SetoranCashier extends React.Component {
     } = this.props
 
     const {
-      visibleAddSetoranModal,
+      visibleAddDepositModal,
 
       list
     } = setoranCashier
@@ -25,15 +25,15 @@ class SetoranCashier extends React.Component {
 
     const handleSetoranNewModal = () => {
       dispatch({
-        type: 'setoranCashier/updateState',
+        type: 'depositCashier/updateState',
         payload: {
-          visibleAddSetoranModal: !visibleAddSetoranModal
+          visibleAddDepositModal: !visibleAddDepositModal
         }
       })
     }
 
     const modalAddProps = {
-      visible: visibleAddSetoranModal,
+      visible: visibleAddDepositModal,
       onCancel: handleSetoranNewModal,
       onSubmit: (data) => {
         const { transDate } = data
@@ -51,7 +51,7 @@ class SetoranCashier extends React.Component {
 
     return (
       <div className="content-inner">
-        {visibleAddSetoranModal && <ModalAdd {...modalAddProps} />}
+        {visibleAddDepositModal && <ModalAdd {...modalAddProps} />}
         <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
           <Button type="primary" icon="plus" onClick={handleSetoranNewModal}>Add Deposit</Button>
         </Row>
@@ -67,4 +67,4 @@ export default connect(({
   setoranCashier
 }) => ({
   setoranCashier
-}))(SetoranCashier)
+}))(DepositCashier)

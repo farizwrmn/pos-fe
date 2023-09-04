@@ -6,7 +6,7 @@ import ListBalance from './ListBalance'
 import ListResolve from './ListResolve'
 import ListJournal from './ListJournal'
 
-class SetoranCashierDetail extends React.Component {
+class DepositCashierDetail extends React.Component {
   componentDidMount () {
     const { location, dispatch } = this.props
     const { from, to } = location.query
@@ -44,4 +44,4 @@ class SetoranCashierDetail extends React.Component {
   }
 }
 
-export default connect()(SetoranCashierDetail)
+export default connect()(DepositCashierDetail)

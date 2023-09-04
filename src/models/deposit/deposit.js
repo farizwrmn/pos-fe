@@ -6,10 +6,10 @@ import { getActive } from 'services/balance/balanceProcess'
 import { queryClose, queryOpen } from 'services/setoran/balancePaymentService'
 import { queryClosedDetail, queryInvoice } from 'services/setoran/balanceSummaryService'
 import { queryAvailablePaymentOption } from 'services/setoran/balanceInputService'
-import { pageModel } from './../common'
+import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
-  namespace: 'setoran',
+  namespace: 'deposit',
 
   state: {
     formType: 'open',

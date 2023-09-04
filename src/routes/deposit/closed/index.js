@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import { Row } from 'antd'
 import Form from './Form'
 
-class SetoranClosed extends React.Component {
+class DepositClosed extends React.Component {
   componentDidMount () {
     const { dispatch, setoran } = this.props
     const { currentBalance } = setoran
@@ -19,7 +19,7 @@ class SetoranClosed extends React.Component {
   componentWillUnmount () {
     const { dispatch } = this.props
     dispatch({
-      type: 'setoran/updateState',
+      type: 'deposit/updateState',
       payload: {
         currentBalance: {}
       }
@@ -92,4 +92,4 @@ export default connect(({
   balanceShift,
   userDetail,
   paymentOpts
-}))(SetoranClosed)
+}))(DepositClosed)
