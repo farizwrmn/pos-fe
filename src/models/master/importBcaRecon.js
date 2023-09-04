@@ -12,7 +12,8 @@ import {
   queryTransaction,
   queryMappingStore,
   queryBalance,
-  queryErrorLog
+  queryErrorLog,
+  queryReconLog
 } from 'services/master/importBcaRecon'
 import {
   queryImportLog
@@ -37,6 +38,7 @@ export default modelExtend(pageModel, {
     modalSettlementVisible: false,
     list: [],
     listRecon: [],
+    listReconLog: [],
     listErrorLog: [],
     listPosPayment: [],
     listSortPayment: [],
@@ -57,7 +59,7 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'queryErrorLog', payload: other })
+          dispatch({ type: 'queryReconLog', payload: other })
         }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
@@ -340,6 +342,25 @@ export default modelExtend(pageModel, {
         })
       }
     },
+    * queryReconLog ({ payload = {} }, { call, put }) {
+      const data = yield call(queryReconLog, {
+        ...payload,
+        order: '-transDate'
+      })
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listReconLog: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
     * queryPosPayment ({ payload = {} }, { call, put }) {
       payload.updated = 0
       const data = yield call(queryPosPayment, payload)
@@ -475,12 +496,14 @@ export default modelExtend(pageModel, {
     querySuccess (state, action) {
       const {
         list,
+        listReconLog,
         listErrorLog,
         pagination
       } = action.payload
       return {
         ...state,
         list,
+        listReconLog,
         listErrorLog,
         pagination: {
           ...state.pagination,

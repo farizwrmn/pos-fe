@@ -8,7 +8,8 @@ import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import ListSettlementAccumulated from './ListSettlementAccumulated'
 import Form from './Form'
-import ListErrorLog from './ListErrorLog'
+// import ListErrorLog from './ListErrorLog'
+import ListReconLog from './ListReconLog'
 import FormInputMdrAmount from './FormInputMdrAmount'
 import styles from '../../../themes/index.less'
 
@@ -17,7 +18,7 @@ const ImportBcaRecon = ({
   dispatch,
   importBcaRecon
 }) => {
-  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination, listErrorLog } = importBcaRecon
+  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination, listReconLog } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -35,8 +36,8 @@ const ImportBcaRecon = ({
     }
   }
 
-  const listErrorLogProps = {
-    dataSource: listErrorLog,
+  const listReconLogProps = {
+    dataSource: listReconLog,
     pagination,
     loading: loading.effects['importBcaRecon/query'],
     onChange (page) {
@@ -172,7 +173,7 @@ const ImportBcaRecon = ({
       </Row>
       <Row>
         <Col>
-          <ListErrorLog {...listErrorLogProps} />
+          <ListReconLog {...listReconLogProps} />
         </Col>
       </Row>
 
