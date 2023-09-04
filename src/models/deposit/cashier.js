@@ -3,7 +3,7 @@ import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { queryAdd } from 'services/balancePayment/balanceDepositService'
+import { query, queryAdd } from 'services/balancePayment/balanceDepositService'
 import {
   query as queryDepositDetail,
   queryJournal as queryDepositDetailJournal,
@@ -52,23 +52,26 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'queryDepositDetail',
             payload: {
-              transId: decodeURIComponent(match[1]),
-              page,
-              pageSize
+              transId: decodeURIComponent(match[1])
             }
           })
           dispatch({
             type: 'queryDepositDetailResolve',
             payload: {
-              transId: decodeURIComponent(match[1]),
-              page,
-              pageSize
+              transId: decodeURIComponent(match[1])
             }
           })
           dispatch({
             type: 'queryDepositDetailJournal',
             payload: {
-              transId: decodeURIComponent(match[1]),
+              transId: decodeURIComponent(match[1])
+            }
+          })
+        }
+        if (pathname === '/setoran/cashier') {
+          dispatch({
+            type: 'query',
+            payload: {
               page,
               pageSize
             }
@@ -79,6 +82,25 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * query ({ payload = {} }, { call, put }) {
+      payload.storeId = getCurrentUserStore()
+      const response = yield call(query, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: response.data,
+            pagination: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
     * queryDepositDetailJournal ({ payload = {} }, { call, put }) {
       const response = yield call(queryDepositDetailJournal, payload)
       if (response && response.success && response.data) {
