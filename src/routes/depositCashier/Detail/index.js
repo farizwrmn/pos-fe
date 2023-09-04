@@ -16,7 +16,13 @@ class DepositCashierDetail extends React.Component {
 
     const {
       listDetail,
-      paginationDetail
+      paginationDetail,
+
+      listResolve,
+      paginationResolve,
+
+      listJournal,
+      paginationJournal
     } = depositCashier
 
     const listBalanceProps = {
@@ -37,11 +43,37 @@ class DepositCashierDetail extends React.Component {
     }
 
     const listResolveProps = {
-
+      dataSource: listResolve,
+      pagination: paginationResolve,
+      handleChangePagination: (pagination) => {
+        const { current: page, pageSize } = pagination
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
+      }
     }
 
     const listGeneratedJournal = {
-
+      dataSource: listJournal,
+      pagination: paginationJournal,
+      handleChangePagination: (pagination) => {
+        const { current: page, pageSize } = pagination
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
+      }
     }
 
     return (

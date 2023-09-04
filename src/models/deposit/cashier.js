@@ -4,7 +4,11 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { queryAdd } from 'services/balancePayment/balanceDepositService'
-import { query as queryDepositDetail } from 'services/balancePayment/balanceDepositDetailService'
+import {
+  query as queryDepositDetail,
+  queryJournal as queryDepositDetailJournal,
+  queryResolve as queryDepositDetailResolve
+} from 'services/balancePayment/balanceDepositDetailService'
 import { pageModel } from '../common'
 
 const {
@@ -22,6 +26,16 @@ export default modelExtend(pageModel, {
 
     listDetail: [],
     paginationDetail: {
+      current: 1
+    },
+
+    listResolve: [],
+    paginationResolve: {
+      current: 1
+    },
+
+    listJournal: [],
+    paginationJournal: {
       current: 1
     },
 
@@ -43,12 +57,64 @@ export default modelExtend(pageModel, {
               pageSize
             }
           })
+          dispatch({
+            type: 'queryDepositDetailResolve',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              page,
+              pageSize
+            }
+          })
+          dispatch({
+            type: 'queryDepositDetailJournal',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              page,
+              pageSize
+            }
+          })
         }
       })
     }
   },
 
   effects: {
+    * queryDepositDetailJournal ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDepositDetailJournal, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listJournal: response.data,
+            paginationJournal: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryDepositDetailResolve ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDepositDetailResolve, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listResolve: response.data,
+            paginationResolve: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
     * queryDepositDetail ({ payload = {} }, { call, put }) {
       const response = yield call(queryDepositDetail, payload)
       if (response && response.data && response.success) {
