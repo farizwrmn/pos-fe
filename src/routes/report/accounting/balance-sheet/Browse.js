@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { numberFormat } from 'utils'
 import moment from 'moment'
+import styles from '../../../../themes/index.less'
 
 const { formatNumberIndonesia } = numberFormat
 
@@ -22,6 +23,7 @@ const Browse = ({ to, storeId, onExpandChildAccountType, ...browseProps }) => {
       dataIndex: 'value',
       key: 'value',
       width: '155px',
+      className: styles.alignRight,
       render: text => formatNumberIndonesia(text)
     }
   ]

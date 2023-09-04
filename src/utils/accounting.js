@@ -23,7 +23,7 @@ export const generateListBalanceSheetChildType = (accountType, listBalanceSheet,
           }
         } else if (secondItem.type === accountType) {
           newListBalanceSheet[key].children[second].children = listChild
-          newListBalanceSheet[key].children[second].children = `Jumlah ${newListBalanceSheet[key].children[second].bodyTitle}`
+          newListBalanceSheet[key].children[second].bodyTitle = `Jumlah ${newListBalanceSheet[key].children[second].bodyTitle}`
         }
       }
     } else if (mainItem.type === accountType) {
