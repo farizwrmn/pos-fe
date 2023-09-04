@@ -315,8 +315,6 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
     onGetDetail(record)
   }
 
-  console.log('dataSource', dataSource)
-
   return (
     <Table
       {...browseProps}

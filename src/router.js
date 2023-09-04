@@ -1137,6 +1137,24 @@ const Routers = function ({ history, app }) {
             }, 'report-accounting-balance-sheet')
           }
         }, {
+          path: 'report/accounting/statement/balance-sheet',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatementBalanceSheet'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/report/accounting/balance-sheet'))
+            }, 'report-accounting-statement-balance-sheet')
+          }
+        }, {
+          path: 'report/accounting/statement/profit-loss',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatementProfitLoss'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/report/accounting/profit-loss'))
+            }, 'report-accounting-statement-profit-loss')
+          }
+        }, {
           path: 'report/accounting/tax-report',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
