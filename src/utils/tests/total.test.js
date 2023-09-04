@@ -166,8 +166,8 @@ it('Should return 3500', () => {
   expect(selisihMember(data)).toEqual(3500)
 })
 
-it('Should return 3,000.00', () => {
-  expect(formatNumbering(3000)).toEqual('3,000.00')
+it('Should return 3.000,00', () => {
+  expect(formatNumbering(3000)).toEqual('3.000,00')
 })
 
 it("Should return '-' because null inserted", () => {
