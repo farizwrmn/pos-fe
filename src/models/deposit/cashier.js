@@ -197,6 +197,13 @@ export default modelExtend(pageModel, {
             pageSize: payload.pageSize
           }
         })
+        yield put({
+          type: 'updateState',
+          payload: {
+            visibleResolveModal: false,
+            selectedResolve: {}
+          }
+        })
       } else {
         message.error(response.message)
       }

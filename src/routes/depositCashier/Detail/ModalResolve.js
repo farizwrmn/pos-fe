@@ -49,6 +49,7 @@ const ModalResolve = ({
   return (
     <Modal
       {...modalProps}
+      onCancel={onCancel}
       title="Resolve Conflict"
       footer={[
         <Button type="ghost" onClick={onCancel} loading={loading.effects['depositCashier/queryUpdateStatus']} disabled={loading.effects['depositCashier/queryUpdateStatus']}>Cancel</Button>,

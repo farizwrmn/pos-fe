@@ -110,6 +110,15 @@ class DepositCashierDetail extends React.Component {
             pageSize: paginationResolve.pageSize || 10
           }
         })
+      },
+      onCancel: () => {
+        dispatch({
+          type: 'depositCashier/updateState',
+          payload: {
+            visibleResolveModal: false,
+            selectedResolve: {}
+          }
+        })
       }
     }
 
