@@ -2,6 +2,7 @@ import { Button, Col, Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListResolve = ({
+  handleResolve,
   handleChangePagination,
   ...tableProps
 }) => {
@@ -27,11 +28,11 @@ const ListResolve = ({
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (value) => {
+      render: (value, record) => {
         if (value === 'pending') {
           return (
             <div style={{ textAlign: 'center' }}>
-              <Button type="primary">Resolve</Button>
+              <Button type="primary" onClick={() => handleResolve(record)}>Resolve</Button>
             </div>
           )
         }

@@ -11,3 +11,21 @@ export const query = (params) => {
     headers: apiHeaderToken
   })
 }
+
+export const queryResolveOption = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${balanceResolve}/option`,
+    method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export const queryUpdateStatus = () => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: balanceResolve,
+    method: 'put',
+    headers: apiHeaderToken
+  })
+}

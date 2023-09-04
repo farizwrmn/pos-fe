@@ -1,14 +1,17 @@
 import React from 'react'
+import pathToRegexp from 'path-to-regexp'
 import { Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import ListBalance from './ListBalance'
 import ListResolve from './ListResolve'
 import ListJournal from './ListJournal'
+import ModalResolve from './ModalResolve'
 
 class DepositCashierDetail extends React.Component {
   render () {
     const {
+      loading,
       location,
       dispatch,
       depositCashier
@@ -22,7 +25,12 @@ class DepositCashierDetail extends React.Component {
       paginationResolve,
 
       listJournal,
-      paginationJournal
+      paginationJournal,
+
+      selectedResolve,
+      listResolveOption,
+
+      visibleResolveModal
     } = depositCashier
 
     const listBalanceProps = {
@@ -56,6 +64,15 @@ class DepositCashierDetail extends React.Component {
             pageSize
           }
         }))
+      },
+      handleResolve: (selectedResolve) => {
+        dispatch({
+          type: 'depositCashier/updateState',
+          payload: {
+            selectedResolve,
+            visibleResolveModal: true
+          }
+        })
       }
     }
 
@@ -76,8 +93,29 @@ class DepositCashierDetail extends React.Component {
       }
     }
 
+    const modalResolveProps = {
+      loading,
+      listResolveOption,
+      selectedResolve,
+      visible: visibleResolveModal,
+      onSubmit: (data) => {
+        const { pathname } = location
+        const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
+        dispatch({
+          type: 'depositCashier/queryUpdateStatus',
+          payload: {
+            ...data,
+            transId: decodeURIComponent(match[1]),
+            page: paginationResolve.current || 1,
+            pageSize: paginationResolve.pageSize || 10
+          }
+        })
+      }
+    }
+
     return (
       <div className="content-inner">
+        {visibleResolveModal && <ModalResolve {...modalResolveProps} />}
         <Row>
           <ListBalance {...listBalanceProps} />
         </Row>
@@ -93,7 +131,9 @@ class DepositCashierDetail extends React.Component {
 }
 
 export default connect(({
+  loading,
   depositCashier
 }) => ({
+  loading,
   depositCashier
 }))(DepositCashierDetail)

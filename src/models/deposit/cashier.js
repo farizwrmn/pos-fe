@@ -9,6 +9,10 @@ import {
   queryJournal as queryDepositDetailJournal,
   queryResolve as queryDepositDetailResolve
 } from 'services/balancePayment/balanceDepositDetailService'
+import {
+  queryResolveOption,
+  queryUpdateStatus
+} from 'services/balancePayment/balanceResolveService'
 import { pageModel } from '../common'
 
 const {
@@ -39,7 +43,11 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
-    visibleAddDepositModal: false
+    selectedResolve: {},
+    listResolveOption: [],
+
+    visibleAddDepositModal: false,
+    visibleResolveModal: false
   },
 
   subscriptions: {
@@ -66,6 +74,9 @@ export default modelExtend(pageModel, {
             payload: {
               transId: decodeURIComponent(match[1])
             }
+          })
+          dispatch({
+            type: 'queryResolveOption'
           })
         }
         if (pathname === '/setoran/cashier') {
@@ -158,6 +169,34 @@ export default modelExtend(pageModel, {
       const response = yield call(queryAdd, payload)
       if (response && response.success && response.data) {
         yield put(routerRedux.push(`/setoran/cashier/${response.data.id}`))
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryResolveOption ({ payload = {} }, { call, put }) {
+      const response = yield call(queryResolveOption, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listResolveOption: response.data
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryUpdateStatus ({ payload = {} }, { call, put }) {
+      const response = yield call(queryUpdateStatus, payload)
+      if (response && response.data && response.success) {
+        yield put({
+          type: 'queryDepositDetailResolve',
+          payload: {
+            transId: payload.transId,
+            page: payload.page,
+            pageSize: payload.pageSize
+          }
+        })
       } else {
         message.error(response.message)
       }
