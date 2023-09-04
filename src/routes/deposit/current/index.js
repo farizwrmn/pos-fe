@@ -6,7 +6,7 @@ import FormClose from './FormClose'
 const BalanceCurrent = ({
   dispatch,
   loading,
-  setoran,
+  deposit,
   balanceShift,
   userDetail,
   paymentOpts
@@ -15,7 +15,7 @@ const BalanceCurrent = ({
     formType,
     currentBalance,
     listBalanceInputPaymentOption
-  } = setoran
+  } = deposit
   const {
     listShift
   } = balanceShift
@@ -70,13 +70,13 @@ const BalanceCurrent = ({
 
 export default connect(({
   loading,
-  setoran,
+  deposit,
   balanceShift,
   userDetail,
   paymentOpts
 }) => ({
   loading,
-  setoran,
+  deposit,
   balanceShift,
   userDetail,
   paymentOpts

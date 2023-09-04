@@ -9,8 +9,8 @@ import Body from './Body'
 
 class BalanceInvoice extends React.Component {
   render () {
-    const { setoran } = this.props
-    const { invoice, invoiceSummary } = setoran
+    const { deposit } = this.props
+    const { invoice, invoiceSummary } = deposit
 
     const invoiceInfo = {
       employeeName: invoice.userName,
@@ -40,7 +40,7 @@ class BalanceInvoice extends React.Component {
 }
 
 export default connect(({
-  setoran
+  deposit
 }) => ({
-  setoran
+  deposit
 }))(BalanceInvoice)

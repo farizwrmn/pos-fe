@@ -143,8 +143,8 @@ const FormClose = ({
           <Button
             type="primary"
             onClick={handleSubmit}
-            loading={loading.effects['setoran/closeBalance']}
-            disabled={loading.effects['setoran/closeBalance']}
+            loading={loading.effects['deposit/closeBalance']}
+            disabled={loading.effects['deposit/closeBalance']}
           >
             Close
           </Button>

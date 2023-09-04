@@ -7,8 +7,8 @@ import Form from './Form'
 
 class DepositClosed extends React.Component {
   componentDidMount () {
-    const { dispatch, setoran } = this.props
-    const { currentBalance } = setoran
+    const { dispatch, deposit } = this.props
+    const { currentBalance } = deposit
     if (currentBalance && currentBalance.id) {
       window.open(`/setoran/invoice/${currentBalance.id}`, '_blank')
     } else {
@@ -30,7 +30,7 @@ class DepositClosed extends React.Component {
     const {
       dispatch,
       location,
-      setoran,
+      deposit,
       balanceShift,
       userDetail,
       paymentOpts
@@ -40,7 +40,7 @@ class DepositClosed extends React.Component {
       closedBalance,
       currentBalance,
       listBalanceInputPaymentOption
-    } = setoran
+    } = deposit
     const {
       listOpts
     } = paymentOpts
@@ -59,7 +59,7 @@ class DepositClosed extends React.Component {
       listShift,
       listUser: data.data,
       onClose: () => {
-        dispatch(routerRedux.push('/setoran/current'))
+        dispatch(routerRedux.push('/deposit/current'))
       },
       onPrint: () => {
         const match = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
@@ -82,13 +82,13 @@ class DepositClosed extends React.Component {
 
 export default connect(({
   loading,
-  setoran,
+  deposit,
   balanceShift,
   userDetail,
   paymentOpts
 }) => ({
   loading,
-  setoran,
+  deposit,
   balanceShift,
   userDetail,
   paymentOpts

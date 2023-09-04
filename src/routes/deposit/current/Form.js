@@ -96,8 +96,8 @@ const BalanceCurrentForm = ({
           <Button
             type="primary"
             onClick={handleSubmit}
-            loading={loading.effects['setoran/openBalance']}
-            disabled={loading.effects['setoran/openBalance']}
+            loading={loading.effects['deposit/openBalance']}
+            disabled={loading.effects['deposit/openBalance']}
           >
             Open
           </Button>

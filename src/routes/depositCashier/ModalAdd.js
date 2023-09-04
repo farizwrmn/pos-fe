@@ -45,7 +45,7 @@ const ModalAdd = ({
   return (
     <Modal
       {...modalProps}
-      title="Add new setoran"
+      title="Add new deposit"
       onCancel={onCancel}
       footer={[
         <Button type="ghost" onClick={onCancel}>Cancel</Button>,
