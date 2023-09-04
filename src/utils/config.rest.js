@@ -130,6 +130,7 @@ module.exports = {
     balancePayment: '/balance-payment',
     balanceSummary: '/balance-summary',
     balanceInput: '/balance-input',
-    balanceResolve: '/balance-resolve'
+    balanceResolve: '/balance-resolve',
+    balanceDeposit: '/balance-deposit'
   }
 }

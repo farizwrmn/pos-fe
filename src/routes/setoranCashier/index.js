@@ -14,7 +14,7 @@ class SetoranCashier extends React.Component {
     } = this.props
 
     const {
-      visibleSetoranNewModal,
+      visibleAddSetoranModal,
 
       list
     } = setoranCashier
@@ -27,13 +27,13 @@ class SetoranCashier extends React.Component {
       dispatch({
         type: 'setoranCashier/updateState',
         payload: {
-          visibleSetoranNewModal: !visibleSetoranNewModal
+          visibleAddSetoranModal: !visibleAddSetoranModal
         }
       })
     }
 
     const modalAddProps = {
-      visible: visibleSetoranNewModal,
+      visible: visibleAddSetoranModal,
       onCancel: handleSetoranNewModal,
       onSubmit: (data) => {
         const { transDate } = data
@@ -51,7 +51,7 @@ class SetoranCashier extends React.Component {
 
     return (
       <div className="content-inner">
-        {visibleSetoranNewModal && <ModalAdd {...modalAddProps} />}
+        {visibleAddSetoranModal && <ModalAdd {...modalAddProps} />}
         <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
           <Button type="primary" icon="plus" onClick={handleSetoranNewModal}>Add Deposit</Button>
         </Row>

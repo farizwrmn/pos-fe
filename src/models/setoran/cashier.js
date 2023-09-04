@@ -1,6 +1,14 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
+import { routerRedux } from 'dva/router'
+import { message } from 'antd'
+import { lstorage } from 'utils'
+import { queryAdd } from 'services/setoran/balanceDepositService'
 import { pageModel } from './../common'
+
+const {
+  getCurrentUserStore
+} = lstorage
 
 export default modelExtend(pageModel, {
   namespace: 'setoranCashier',
@@ -11,7 +19,7 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
-    visibleSetoranNewModal: false
+    visibleAddSetoranModal: false
   },
 
   subscriptions: {
@@ -21,17 +29,9 @@ export default modelExtend(pageModel, {
         const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
         if (match) {
           dispatch({
-            type: 'updateStatexs',
-            payload: {
-              balanceId: decodeURIComponent(match[1])
-            }
-          })
-        }
-        if (pathname === '/setoran/cashier/new') {
-          dispatch({
             type: 'updateState',
             payload: {
-              visibleSetoranNewModal: false
+              id: decodeURIComponent(match[1])
             }
           })
         }
@@ -40,6 +40,15 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * add ({ payload = {} }, { call, put }) {
+      payload.storeId = getCurrentUserStore()
+      const response = yield call(queryAdd, payload)
+      if (response && response.success && response.data) {
+        yield put(routerRedux.push(`/setoran/cashier/${response.data.id}`))
+      } else {
+        message.error(response.message)
+      }
+    }
   },
 
   reducers: {
