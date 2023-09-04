@@ -16,6 +16,12 @@ const ListReconLog = ({ ...tableProps }) => {
       width: 200
     },
     {
+      title: 'Detail',
+      dataIndex: 'detail',
+      key: 'detail',
+      width: 200
+    },
+    {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
