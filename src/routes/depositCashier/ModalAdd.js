@@ -21,6 +21,7 @@ const formItemProps = {
 }
 
 const ModalAdd = ({
+  loading,
   onCancel,
   onSubmit,
   form: {
@@ -48,8 +49,8 @@ const ModalAdd = ({
       title="Add new deposit"
       onCancel={onCancel}
       footer={[
-        <Button type="ghost" onClick={onCancel}>Cancel</Button>,
-        <Button type="primary" onClick={handleSubmit}>Create</Button>
+        <Button type="ghost" onClick={onCancel} loading={loading.effects['depositCashier/add']} disabled={loading.effects['depositCashier/add']}>Cancel</Button>,
+        <Button type="primary" onClick={handleSubmit} loading={loading.effects['depositCashier/add']} disabled={loading.effects['depositCashier/add']}>Create</Button>
       ]}
     >
       <Form layout="horizontal">

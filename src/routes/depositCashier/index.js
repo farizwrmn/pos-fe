@@ -8,6 +8,7 @@ import ModalAdd from './ModalAdd'
 class DepositCashier extends React.Component {
   render () {
     const {
+      loading,
       dispatch,
       depositCashier
     } = this.props
@@ -32,6 +33,7 @@ class DepositCashier extends React.Component {
     }
 
     const modalAddProps = {
+      loading,
       visible: visibleAddDepositModal,
       onCancel: handleAddDepositModal,
       onSubmit: (data) => {
@@ -63,7 +65,9 @@ class DepositCashier extends React.Component {
 }
 
 export default connect(({
+  loading,
   depositCashier
 }) => ({
+  loading,
   depositCashier
 }))(DepositCashier)
