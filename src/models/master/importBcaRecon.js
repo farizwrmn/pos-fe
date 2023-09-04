@@ -4,7 +4,6 @@ import {
 } from 'antd'
 import {
   query,
-  queryFilename,
   bulkInsert,
   queryPosPayment,
   updateMatchPaymentAndRecon,
@@ -13,11 +12,9 @@ import {
   queryMappingStore,
   queryBalance,
   queryErrorLog,
-  queryReconLog
-} from 'services/master/importBcaRecon'
-import {
+  queryReconLog,
   queryImportLog
-} from 'services/master/importBcaReconLog'
+} from 'services/master/importBcaRecon'
 import {
   pageModel
 } from 'common'
@@ -393,18 +390,6 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * queryFilename ({ payload = {} }, { call, put }) {
-      payload.updated = 0
-      const data = yield call(queryFilename, payload)
-      if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            listFilename: data.data
-          }
-        })
-      }
-    },
     * bulkInsert ({ payload }, { call, put }) {
       let dataExist = yield call(queryImportLog, {
         filename: payload.filename
@@ -434,7 +419,6 @@ export default modelExtend(pageModel, {
       }
     },
     * queryImportLog ({ payload = {} }, { call, put }) {
-      payload.updated = 0
       const data = yield call(queryImportLog, {
         ...payload,
         order: '-id'
