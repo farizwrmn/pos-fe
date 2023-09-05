@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import { connect } from 'dva'
 import { Button, Row } from 'antd'
 import List from './List'
@@ -38,12 +37,11 @@ class DepositCashier extends React.Component {
       onCancel: handleAddDepositModal,
       onSubmit: (data) => {
         const { transDate } = data
-        if (transDate && transDate.length > 0) {
+        if (transDate) {
           dispatch({
             type: 'depositCashier/add',
             payload: {
-              startDate: moment.utc(transDate[0]).format('YYYY-MM-DD'),
-              endDate: moment.utc(transDate[1]).format('YYYY-MM-DD')
+              transDate
             }
           })
         }

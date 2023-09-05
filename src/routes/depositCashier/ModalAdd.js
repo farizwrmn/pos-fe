@@ -1,7 +1,6 @@
 import { Button, DatePicker, Form, Modal } from 'antd'
 
 const FormItem = Form.Item
-const RangePicker = DatePicker.RangePicker
 
 const formItemProps = {
   labelCol: {
@@ -63,7 +62,7 @@ const ModalAdd = ({
               }
             ]
           })(
-            <RangePicker />
+            <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
           )}
         </FormItem>
       </Form>

@@ -1,24 +1,23 @@
 import { Table } from 'antd'
 import { Link } from 'dva/router'
-import { currencyFormatter } from 'utils/string'
+import moment from 'moment'
 
 const List = ({ ...tableProps }) => {
   const columns = [
     {
       title: 'Tanggal',
-      render: (_, record) => <Link to={`/setoran/cashier/${record.id}`}>{`${record.startDate} - ${record.endDate}`}</Link>
+      dataIndex: 'transDate',
+      key: 'transDate',
+      render: (value, record) => {
+        return (
+          <Link to={`/setoran/cashier/${record.id}`}>{moment(value, 'YYYY-MM-DD').format('DD MMM YYYY')}</Link>
+        )
+      }
     },
     {
-      title: 'Total Penjualan',
-      dataIndex: 'totalBalancePayment',
-      key: 'totalBalancePayment',
-      render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
-    },
-    {
-      title: 'Total Selisih',
-      dataIndex: 'totalDiffBalance',
-      key: 'totalDiffBalance',
-      render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
+      title: 'Store Name',
+      dataIndex: 'store.storeName',
+      key: 'store.storeName'
     }
   ]
 
