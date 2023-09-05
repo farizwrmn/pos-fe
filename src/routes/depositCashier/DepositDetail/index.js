@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import ListBalance from './ListBalance'
 import ListJournal from './ListJournal'
+import Filter from './Filter'
 
 class DepositCashierDetail extends React.Component {
   render () {
@@ -65,12 +66,19 @@ class DepositCashierDetail extends React.Component {
       }
     }
 
+    const filterProps = {
+
+    }
+
     return (
       <div className="content-inner">
-        <Row style={{ marginBottom: '10px' }}>
+        <Row style={{ marginBottom: '30px' }}>
           <Button type="primary" icon="rollback" onClick={handleBackButton}>Back</Button>
         </Row>
         <Row style={{ marginBottom: '10px' }}>
+          <Filter {...filterProps} />
+        </Row>
+        <Row style={{ marginBottom: '30px' }}>
           <ListBalance {...listBalanceProps} />
         </Row>
         <Row style={{ marginBottom: '10px' }}>

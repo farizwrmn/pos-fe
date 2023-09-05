@@ -67,12 +67,6 @@ export default modelExtend(pageModel, {
         }
         if (match) {
           dispatch({
-            type: 'queryDepositDetail',
-            payload: {
-              transId: decodeURIComponent(match[1])
-            }
-          })
-          dispatch({
             type: 'queryDepositDetailJournal',
             payload: {
               transId: decodeURIComponent(match[1])

@@ -1,4 +1,4 @@
-import { Col, Table } from 'antd'
+import { Button, Col, Row, Table } from 'antd'
 
 const ListJournal = ({
   handleChangePagination,
@@ -38,9 +38,14 @@ const ListJournal = ({
 
   return (
     <Col span={24}>
-      <h3 style={{ fontWeight: 'bold' }}>
-        List Journal
-      </h3>
+      <Row type="flex" align="bottom" style={{ marginBottom: '10px' }}>
+        <h3 style={{ fontWeight: 'bold', flex: 1 }}>
+          List Journal
+        </h3>
+        <Button type="primary" icon="plus">
+          Create Journal
+        </Button>
+      </Row>
       <Table
         {...tableProps}
         columns={columns}
