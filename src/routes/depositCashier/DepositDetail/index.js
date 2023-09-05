@@ -1,6 +1,6 @@
 import React from 'react'
 import pathToRegexp from 'path-to-regexp'
-import { Row } from 'antd'
+import { Button, Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import ListBalance from './ListBalance'
@@ -33,6 +33,10 @@ class DepositCashierDetail extends React.Component {
 
       visibleResolveModal
     } = depositCashier
+
+    const handleBackButton = () => {
+      dispatch(routerRedux.push('/setoran/cashier'))
+    }
 
     const listBalanceProps = {
       summaryDetail,
@@ -127,13 +131,16 @@ class DepositCashierDetail extends React.Component {
     return (
       <div className="content-inner">
         {visibleResolveModal && <ModalResolve {...modalResolveProps} />}
-        <Row>
+        <Row style={{ marginBottom: '10px' }}>
+          <Button type="primary" icon="rollback" onClick={handleBackButton}>Back</Button>
+        </Row>
+        <Row style={{ marginBottom: '10px' }}>
           <ListBalance {...listBalanceProps} />
         </Row>
-        <Row>
+        <Row style={{ marginBottom: '10px' }}>
           <ListResolve {...listResolveProps} />
         </Row>
-        <Row>
+        <Row style={{ marginBottom: '10px' }}>
           <ListJournal {...listGeneratedJournal} />
         </Row>
       </div>

@@ -1,11 +1,12 @@
 import { Table } from 'antd'
+import { Link } from 'dva/router'
 import { currencyFormatter } from 'utils/string'
 
 const List = ({ ...tableProps }) => {
   const columns = [
     {
       title: 'Tanggal',
-      render: (_, record) => <a href={`/setoran/cashier/${record.id}`} target="_blank">{`${record.startDate} - ${record.endDate}`}</a>
+      render: (_, record) => <Link to={`/setoran/cashier/${record.id}`}>{`${record.startDate} - ${record.endDate}`}</Link>
     },
     {
       title: 'Total Penjualan',

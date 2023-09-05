@@ -3,6 +3,7 @@ import pathToRegexp from 'path-to-regexp'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
 import { query, queryAdd } from 'services/balancePayment/balanceDepositService'
 import {
   query as queryDepositDetail,
@@ -10,6 +11,7 @@ import {
   queryResolve as queryDepositDetailResolve
 } from 'services/balancePayment/balanceDepositDetailService'
 import {
+  query as queryBalanceResolve,
   queryResolveOption,
   queryUpdateStatus
 } from 'services/balancePayment/balanceResolveService'
@@ -48,7 +50,11 @@ export default modelExtend(pageModel, {
     listResolveOption: [],
 
     visibleAddDepositModal: false,
-    visibleResolveModal: false
+    visibleResolveModal: false,
+
+    depositBalanceDetailInfo: {},
+    listDepositBalanceDetailSummary: [],
+    listDepositBalanceDetailResolve: []
   },
 
   subscriptions: {
@@ -57,6 +63,15 @@ export default modelExtend(pageModel, {
         const { pathname, query } = location
         const { page, pageSize } = query
         const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
+        const matchCashierDetail = pathToRegexp('/setoran/cashier/detail/:id').exec(pathname)
+        if (matchCashierDetail) {
+          dispatch({
+            type: 'queryDepositBalanceDetail',
+            payload: {
+              balanceId: decodeURIComponent(matchCashierDetail[1])
+            }
+          })
+        }
         if (match) {
           dispatch({
             type: 'queryDepositDetail',
@@ -208,6 +223,32 @@ export default modelExtend(pageModel, {
         })
       } else {
         message.error(response.message)
+      }
+    },
+    * queryDepositBalanceDetail ({ payload = {} }, { call, put }) {
+      const responseSummary = yield call(queryBalanceSummary, payload)
+      if (responseSummary && responseSummary.success && responseSummary.data && responseSummary.data.detail) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDepositBalanceDetailSummary: responseSummary.data.detail,
+            depositBalanceDetailInfo: responseSummary.data
+          }
+        })
+      } else {
+        message.error(responseSummary.message)
+      }
+      payload.type = 'all'
+      const responseResolve = yield call(queryBalanceResolve, payload)
+      if (responseResolve && responseResolve.success && responseResolve.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDepositBalanceDetailResolve: responseResolve.data
+          }
+        })
+      } else {
+        message.error(responseResolve.message)
       }
     }
   },
