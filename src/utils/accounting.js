@@ -26,7 +26,8 @@ export const generateListBalanceSheetChildType = (accountType, listBalanceSheet,
           newListBalanceSheet[key].children[second].bodyTitle = `Jumlah ${newListBalanceSheet[key].children[second].bodyTitle}`
         }
       }
-    } else if (mainItem.type === accountType) {
+    }
+    if (mainItem.type === accountType) {
       newListBalanceSheet[key].children = listChild
       newListBalanceSheet[key].bodyTitle = `Jumlah ${newListBalanceSheet[key].bodyTitle}`
     }

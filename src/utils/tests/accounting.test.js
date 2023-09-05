@@ -897,7 +897,7 @@ describe('Test Profit Loss', () => {
     expect(generateListBalanceSheetChildType('REVE', listBalanceSheet, listChild)).toEqual(
       [
         {
-          bodyTitle: 'Pendapatan',
+          bodyTitle: 'Jumlah Pendapatan',
           key: 'Pendapatan',
           type: 'REVE',
           totalTitle: 'Jumlah Pendapatan',
