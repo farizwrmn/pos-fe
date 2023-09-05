@@ -4,18 +4,17 @@ import {
 } from 'antd'
 import {
   query,
-  queryFilename,
   bulkInsert,
   queryPosPayment,
   updateMatchPaymentAndRecon,
   getDataPaymentMachine,
   queryTransaction,
   queryMappingStore,
-  queryBalance
-} from 'services/master/importBcaRecon'
-import {
+  queryBalance,
+  queryErrorLog,
+  queryReconLog,
   queryImportLog
-} from 'services/master/importBcaReconLog'
+} from 'services/master/importBcaRecon'
 import {
   pageModel
 } from 'common'
@@ -36,11 +35,18 @@ export default modelExtend(pageModel, {
     modalSettlementVisible: false,
     list: [],
     listRecon: [],
+    listReconLog: [],
+    listErrorLog: [],
     listPosPayment: [],
     listSortPayment: [],
     listReconNotMatch: [],
     listPaymentMachine: [],
     listSettlementAccumulated: [],
+    paginationListReconLog: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -54,6 +60,9 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { ...other } = location.query
         const { pathname } = location
+        if (pathname === '/accounting/bca-recon') {
+          dispatch({ type: 'queryReconLog', payload: other })
+        }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({ type: 'queryImportLog', payload: other })
         }
@@ -68,6 +77,12 @@ export default modelExtend(pageModel, {
       const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
       const dataMappingStore = yield call(queryMappingStore)
       // update list Total Transfer
+
+      yield put({
+        type: 'queryErrorLog',
+        payload: { transDate: payload.payment.transDate }
+      })
+
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -143,6 +158,7 @@ export default modelExtend(pageModel, {
             list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0))
           }
         })
+        yield put({ type: 'queryReconLog' })
       } else if (!posPaymentData.success) {
         throw posPaymentData
       } else if (!paymentImportBcaData.success) {
@@ -297,6 +313,7 @@ export default modelExtend(pageModel, {
       })
     },
     * query ({ payload = {} }, { call, put }) {
+      // get data bank
       const data = yield call(query, payload)
       if (data.success) {
         let mapData = data.data.map((item) => { return { ...item, match: 1 } })
@@ -305,6 +322,43 @@ export default modelExtend(pageModel, {
           payload: {
             list: mapData,
             pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryErrorLog ({ payload = {} }, { call, put }) {
+      const data = yield call(queryErrorLog, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listErrorLog: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryReconLog ({ payload = {} }, { call, put, select }) {
+      const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
+      const data = yield call(queryReconLog, {
+        ...payload,
+        order: '-transDate'
+      })
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            listReconLog: data.data,
+            list,
+            paginationListReconLog: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
               total: data.total
@@ -345,18 +399,6 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * queryFilename ({ payload = {} }, { call, put }) {
-      payload.updated = 0
-      const data = yield call(queryFilename, payload)
-      if (data.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            listFilename: data.data
-          }
-        })
-      }
-    },
     * bulkInsert ({ payload }, { call, put }) {
       let dataExist = yield call(queryImportLog, {
         filename: payload.filename
@@ -386,7 +428,6 @@ export default modelExtend(pageModel, {
       }
     },
     * queryImportLog ({ payload = {} }, { call, put }) {
-      payload.updated = 0
       const data = yield call(queryImportLog, {
         ...payload,
         order: '-id'
@@ -413,6 +454,12 @@ export default modelExtend(pageModel, {
           list: [],
           listSortPayment: [],
           listReconNotMatch: [],
+          listReconLog: [],
+          paginationListReconLog: {
+            current: 1,
+            pageSize: 10,
+            total: 0
+          },
           listPaymentMachine: [],
           listSettlementAccumulated: []
         }
@@ -448,11 +495,20 @@ export default modelExtend(pageModel, {
     querySuccess (state, action) {
       const {
         list,
+        listReconLog,
+        listErrorLog,
+        paginationListReconLog,
         pagination
       } = action.payload
       return {
         ...state,
         list,
+        listReconLog,
+        listErrorLog,
+        paginationListReconLog: {
+          ...state.paginationListReconLog,
+          ...paginationListReconLog
+        },
         pagination: {
           ...state.pagination,
           ...pagination
