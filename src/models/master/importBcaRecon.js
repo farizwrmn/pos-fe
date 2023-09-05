@@ -158,6 +158,7 @@ export default modelExtend(pageModel, {
             list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0))
           }
         })
+        yield put({ type: 'queryReconLog' })
       } else if (!posPaymentData.success) {
         throw posPaymentData
       } else if (!paymentImportBcaData.success) {
@@ -453,6 +454,12 @@ export default modelExtend(pageModel, {
           list: [],
           listSortPayment: [],
           listReconNotMatch: [],
+          listReconLog: [],
+          paginationListReconLog: {
+            current: 1,
+            pageSize: 10,
+            total: 0
+          },
           listPaymentMachine: [],
           listSettlementAccumulated: []
         }
