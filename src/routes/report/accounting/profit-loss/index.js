@@ -23,12 +23,12 @@ const Report = ({ dispatch, userStore, accountingStatementProfitLoss, loading, a
     storeId,
     from,
     to,
-    onExpandChildAccountType (accountType, storeId, to) {
+    onExpandChildAccountType (accountType, storeId, from, to) {
       if (accountType) {
         dispatch({
           type: 'accountingStatementProfitLoss/queryChildTotalType',
           payload: {
-            accountType, storeId, to
+            accountType, storeId, from, to
           }
         })
       }

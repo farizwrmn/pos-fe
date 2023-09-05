@@ -10,7 +10,7 @@ import styles from '../../../../themes/index.less'
 
 const { formatNumberIndonesia } = numberFormat
 
-const Browse = ({ to, storeId, onExpandChildAccountType, ...browseProps }) => {
+const Browse = ({ from, to, storeId, onExpandChildAccountType, ...browseProps }) => {
   let columns = [
     {
       title: 'Account',
@@ -32,8 +32,8 @@ const Browse = ({ to, storeId, onExpandChildAccountType, ...browseProps }) => {
     // onGetDetail(record)
   }
 
-  const onClickExpand = (expanded, record) => {
-    onExpandChildAccountType(record.type, storeId, to)
+  const onClickExpand = (_, record) => {
+    onExpandChildAccountType(record.type, storeId, from, to)
   }
 
   return (

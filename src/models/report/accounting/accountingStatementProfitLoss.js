@@ -19,7 +19,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/report/accounting/statement/balance-sheet') {
+        if (location.pathname === '/report/accounting/statement/profit-loss') {
           dispatch({
             type: 'setListNull'
           })

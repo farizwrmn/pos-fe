@@ -43,7 +43,8 @@ const Filter = ({ listAllStores, from, to, loading, onDateChange, onListReset, f
       }
       const params = {
         storeId: data.storeId,
-        to: data.to.format('YYYY-MM-DD')
+        from: data.rangePicker ? data.rangePicker[0].format('YYYY-MM-DD') : null,
+        to: data.rangePicker ? data.rangePicker[1].format('YYYY-MM-DD') : null
       }
       onDateChange(params)
     })
