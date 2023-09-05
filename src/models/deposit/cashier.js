@@ -6,9 +6,7 @@ import { lstorage } from 'utils'
 import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
 import { query, queryAdd } from 'services/balancePayment/balanceDepositService'
 import {
-  query as queryDepositDetail,
-  queryJournal as queryDepositDetailJournal,
-  queryResolve as queryDepositDetailResolve
+  queryJournal as queryDepositDetailJournal
 } from 'services/balancePayment/balanceDepositDetailService'
 import {
   query as queryBalanceResolve,
@@ -33,11 +31,6 @@ export default modelExtend(pageModel, {
     summaryDetail: {},
     listDetail: [],
     paginationDetail: {
-      current: 1
-    },
-
-    listResolve: [],
-    paginationResolve: {
       current: 1
     },
 
@@ -75,12 +68,6 @@ export default modelExtend(pageModel, {
         if (match) {
           dispatch({
             type: 'queryDepositDetail',
-            payload: {
-              transId: decodeURIComponent(match[1])
-            }
-          })
-          dispatch({
-            type: 'queryDepositDetailResolve',
             payload: {
               transId: decodeURIComponent(match[1])
             }
@@ -144,41 +131,6 @@ export default modelExtend(pageModel, {
         })
       } else {
         message.error(response.message)
-      }
-    },
-    * queryDepositDetailResolve ({ payload = {} }, { call, put }) {
-      const response = yield call(queryDepositDetailResolve, payload)
-      if (response && response.success && response.data) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            listResolve: response.data,
-            paginationResolve: {
-              current: Number(response.page || 1),
-              pageSize: Number(response.pageSize || 10),
-              total: Number(response.total || 0)
-            }
-          }
-        })
-      } else {
-        message.error(response.message)
-      }
-    },
-    * queryDepositDetail ({ payload = {} }, { call, put }) {
-      const response = yield call(queryDepositDetail, payload)
-      if (response && response.data && response.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            summaryDetail: response.summary,
-            listDetail: response.data,
-            paginationDetail: {
-              current: Number(response.page || 1),
-              pageSize: Number(response.pageSize || 10),
-              total: Number(response.total || 0)
-            }
-          }
-        })
       }
     },
     * add ({ payload = {} }, { call, put }) {

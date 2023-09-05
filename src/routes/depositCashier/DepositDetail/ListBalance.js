@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { Button, Col, Row, Table } from 'antd'
+import { Button, Col, Row, Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListBalance = ({
@@ -38,22 +38,19 @@ const ListBalance = ({
       render: value => <div style={{ textAlign: 'right' }}>{currencyFormatter(value)}</div>
     },
     {
-      title: 'Journal Invoice',
-      dataIndex: 'journalInvoice',
-      key: 'journalInvoice',
-      render: (value) => {
-        if (!value) {
-          return (
-            <div style={{ textAlign: 'center' }}>
-              <Button type="primary">
-                Create Journal
-              </Button>
-            </div>
-          )
+      title: 'Action',
+      render: (_, record) => {
+        if (record.status === 'completed') {
+          <div style={{ textAlign: 'center' }}>
+            <Tag color="green">Completed</Tag>
+          </div>
         }
-
         return (
-          <div style={{ textAlign: 'center' }}>{value}</div>
+          <div style={{ textAlign: 'center' }}>
+            <Button type="primary">
+              Resolve
+            </Button>
+          </div>
         )
       }
     }
