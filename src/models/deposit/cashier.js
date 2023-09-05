@@ -1,10 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
-import { query, queryAdd } from 'services/balancePayment/balanceDepositService'
+import { query } from 'services/balancePayment/balanceDepositService'
 import {
   queryJournal as queryDepositDetailJournal
 } from 'services/balancePayment/balanceDepositDetailService'
@@ -123,15 +122,6 @@ export default modelExtend(pageModel, {
             }
           }
         })
-      } else {
-        message.error(response.message)
-      }
-    },
-    * add ({ payload = {} }, { call, put }) {
-      payload.storeId = getCurrentUserStore()
-      const response = yield call(queryAdd, payload)
-      if (response && response.success && response.data) {
-        yield put(routerRedux.push(`/setoran/cashier/${response.data.id}`))
       } else {
         message.error(response.message)
       }
