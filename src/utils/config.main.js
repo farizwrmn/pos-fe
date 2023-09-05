@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { listVersion } from './version'
 
 export const VERSION = '2022.02.001'
@@ -25,7 +26,7 @@ export const versionInfo = () => {
 }
 export const prefix = 'smiPos'
 export const footerText = 'K3MART'
-export const footerSubText = 'K3MART © 2023'
+export const footerSubText = `K3MART © ${moment().format('YYYY')}`
 export const disableMultiSelect = true
 export const openPages = [
   '/login',

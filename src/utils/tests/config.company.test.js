@@ -1,26 +1,33 @@
 import { idCompany, companyName, rest } from '../config.company'
 
-const APICOMPANYPROTOCOL = 'http' // 'localhost'
-const APICOMPANYHOST = 'localhost' // 'localhost'
+const APICOMPANYPROTOCOL = 'http'
+const APICOMPANYHOST = 'localhost'
 const APICOMPANYPORT = 6402
 const APIVERSION = '/api/v1'
 const APICOMPANYURL = `http://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
+
+const APICONSIGNMENTPROTOCOL = 'http'
+const APICONSIGNMENTHOST = 'localhost'
+const APICONSIGNMENTPORT = 3120
+const APICONSIGNMENTVERSION = ''
+const APICONSIGNMENTURL = `${APICONSIGNMENTPROTOCOL}://${APICONSIGNMENTHOST}:${APICONSIGNMENTPORT}${APICONSIGNMENTVERSION}`
 
 it('Should render API Id Company', () =>
   expect(idCompany).toEqual('SMI')
 )
 
 it('Should render API companyName', () =>
-  expect(companyName).toEqual('Smartech Indo')
+  expect(companyName).toEqual('K3MART')
 )
 
 it('Should render API companyName', () =>
   expect(rest).toEqual({
-    apiCompanyHost: APICOMPANYHOST,
     apiCompanyProtocol: APICOMPANYPROTOCOL,
+    apiCompanyHost: APICOMPANYHOST,
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,
     apiCompanyURI: APICOMPANYURL,
+    apiConsignmentURL: APICONSIGNMENTURL,
     apiUserCompany: `${APICOMPANYURL}/users/company`
   })
 )
