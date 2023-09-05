@@ -36,15 +36,7 @@ class DepositCashier extends React.Component {
       visible: visibleAddDepositModal,
       onCancel: handleAddDepositModal,
       onSubmit: (data) => {
-        const { transDate } = data
-        if (transDate) {
-          dispatch({
-            type: 'depositCashier/add',
-            payload: {
-              transDate
-            }
-          })
-        }
+        console.log('data', data)
       }
     }
 
