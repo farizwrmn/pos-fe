@@ -37,7 +37,9 @@ const Filter = ({ listAllStores, to, loading, onDateChange, onListReset, form: {
       if (errors) {
         return
       }
-      const data = getFieldsValue()
+      const data = {
+        ...getFieldsValue()
+      }
       const params = {
         storeId: data.storeId,
         to: data.to.format('YYYY-MM-DD')

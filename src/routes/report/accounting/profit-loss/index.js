@@ -3,53 +3,45 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
-import { message } from 'antd'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Filter from './Filter'
-import ModalBalanceSheetDetail from './ModalBalanceSheetDetail'
 
 const Report = ({ dispatch, userStore, accountingStatementProfitLoss, loading, app }) => {
-  const { from, to, listProfitLoss, modalBalanceSheetDetailVisible } = accountingStatementProfitLoss
+  const { listProfitLoss, storeId, from, to } = accountingStatementProfitLoss
   const { listAllStores } = userStore
   const { user, storeInfo } = app
+
   const browseProps = {
     loading: loading.effects['accountingStatementProfitLoss/queryMainTotal']
       || loading.effects['accountingStatementProfitLoss/queryChildTotalType']
       || loading.effects['accountingStatementProfitLoss/updateStateChildBalanceSheet'],
-    listTrans: listProfitLoss,
+    dataSource: listProfitLoss,
     storeInfo,
     user,
+    storeId,
     from,
     to,
-    onGetDetail (record) {
-      if (record.id) {
+    onExpandChildAccountType (accountType, storeId, to) {
+      if (accountType) {
         dispatch({
-          type: 'accountingStatementProfitLoss/updateState',
+          type: 'accountingStatementProfitLoss/queryChildTotalType',
           payload: {
-            modalBalanceSheetDetailVisible: true,
-            listDetailStore: []
+            accountType, storeId, to
           }
         })
-        dispatch({
-          type: 'accountingStatementProfitLoss/queryBalanceSheetDetailStore',
-          payload: {
-            accountId: record.id,
-            to
-          }
-        })
-      } else {
-        message.warning('Cannot get detail of this account, please use general ledger')
       }
     }
   }
 
   const filterProps = {
     listAllStores,
-    loading,
     user,
     storeInfo,
+    loading: loading.effects['accountingStatementProfitLoss/queryMainTotal']
+      || loading.effects['accountingStatementProfitLoss/queryChildTotalType']
+      || loading.effects['accountingStatementProfitLoss/updateStateChildBalanceSheet'],
     from,
     to,
     onListReset () {
@@ -72,29 +64,10 @@ const Report = ({ dispatch, userStore, accountingStatementProfitLoss, loading, a
     }
   }
 
-  const modalBalanceSheetDetailProps = {
-    footer: null,
-    visible: modalBalanceSheetDetailVisible,
-    loading: loading.effects['accountingStatementProfitLoss/queryBalanceSheet']
-      || loading.effects['accountingStatementProfitLoss/queryBalanceSheetDetailStore']
-      || loading.effects['accountingStatementProfitLoss/query']
-      || loading.effects['accountingStatementProfitLoss/queryDetailStore'],
-    onCancel () {
-      dispatch({
-        type: 'accountingStatementProfitLoss/updateState',
-        payload: {
-          modalBalanceSheetDetailVisible: false,
-          listDetailStore: []
-        }
-      })
-    }
-  }
-
   return (
     <div className="content-inner">
-      {modalBalanceSheetDetailVisible && <ModalBalanceSheetDetail {...modalBalanceSheetDetailProps} />}
       <Filter {...filterProps} />
-      <Browse {...browseProps} />
+      {listProfitLoss && listProfitLoss.length > 0 && <Browse {...browseProps} />}
     </div>
   )
 }

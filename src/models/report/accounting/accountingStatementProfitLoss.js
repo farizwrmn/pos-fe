@@ -5,13 +5,14 @@ import {
 import { generateListBalanceSheetChildType } from 'utils/accounting'
 
 export default {
-  namespace: 'accountingStatementBalanceSheet',
+  namespace: 'accountingStatementProfitLoss',
 
   state: {
+    listChildAccountType: [],
     listProfitLoss: [],
     from: undefined,
     to: undefined,
-    date: null,
+    storeId: undefined,
     modalBalanceSheetDetailVisible: false,
     activeKey: '1'
   },
@@ -22,18 +23,25 @@ export default {
           dispatch({
             type: 'setListNull'
           })
-          // if (location.query && location.query.compareFrom && location.query.compareTo) {
-          //   dispatch({
-          //     type: 'queryProfitCompare',
-          //     payload: location.query
-          //   })
-          // }
+          if (location.query) {
+            dispatch({
+              type: 'queryMainTotal',
+              payload: location.query
+            })
+          }
         }
       })
     }
   },
   effects: {
     * queryMainTotal ({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          from: payload.from,
+          to: payload.to
+        }
+      })
       const data = yield call(queryMainTotal, {
         storeId: payload.storeId,
         from: payload.from,
@@ -45,7 +53,7 @@ export default {
             type: 'updateState',
             payload: {
               listProfitLoss: data.data,
-              to: payload.to
+              storeId: payload.storeId
             }
           })
         } else {
@@ -56,13 +64,25 @@ export default {
       }
     },
 
-    * queryChildTotalType ({ payload }, { call, put }) {
+    * queryChildTotalType ({ payload }, { select, call, put }) {
+      const listChildAccountType = yield select(({ accountingStatementProfitLoss }) => accountingStatementProfitLoss.listChildAccountType)
+      const selectedAccountType = listChildAccountType.filter(filtered => payload.accountType === filtered)
+      if (selectedAccountType && selectedAccountType.length > 0) {
+        return
+      }
       const data = yield call(queryChildTotal, {
         storeId: payload.storeId,
         accountType: payload.accountType,
+        from: payload.from,
         to: payload.to
       })
       if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listChildAccountType: listChildAccountType.concat([payload.accountType])
+          }
+        })
         if (data.data && data.data.length > 0) {
           yield put({
             type: 'updateStateChildBalanceSheetType',
@@ -80,8 +100,8 @@ export default {
       }
     },
 
-    * updateStateChildBalanceSheet ({ payload }, { select, put }) {
-      const listProfitLoss = yield select(({ accountingStatementBalanceSheet }) => accountingStatementBalanceSheet.listProfitLoss)
+    * updateStateChildBalanceSheetType ({ payload }, { select, put }) {
+      const listProfitLoss = yield select(({ accountingStatementProfitLoss }) => accountingStatementProfitLoss.listProfitLoss)
       const { listChild, accountType } = payload
 
       const newListBalanceSheet = generateListBalanceSheetChildType(accountType, listProfitLoss, listChild)
@@ -101,10 +121,11 @@ export default {
     setListNull (state) {
       return {
         ...state,
+        listChildAccountType: [],
         listProfitLoss: [],
-        from: undefined,
         to: undefined,
         date: null,
+        storeId: undefined,
         compareFrom: undefined,
         compareTo: undefined,
         activeKey: '1'

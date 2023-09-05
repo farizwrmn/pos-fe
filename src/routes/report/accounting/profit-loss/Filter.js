@@ -5,11 +5,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Select, DatePicker, Row, Col, Icon, Form } from 'antd'
 import moment from 'moment'
-import PrintXLS from './PrintXLS'
-import PrintPDF from './PrintPDF'
 
 const FormItem = Form.Item
 const { Option } = Select
+const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: { span: 4, textAlign: 'left' },
@@ -33,17 +32,17 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ listAllStores, compareTo, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator, validateFields }, ...printProps }) => {
-  const { to } = printProps
+const Filter = ({ listAllStores, from, to, loading, onDateChange, onListReset, form: { getFieldsValue, setFieldsValue, resetFields, getFieldDecorator, validateFields } }) => {
   const handleChange = () => {
     validateFields((errors) => {
       if (errors) {
         return
       }
-      const data = getFieldsValue()
+      const data = {
+        ...getFieldsValue()
+      }
       const params = {
         storeId: data.storeId,
-        compareTo: data.compareTo ? data.compareTo.format('YYYY-MM-DD') : undefined,
         to: data.to.format('YYYY-MM-DD')
       }
       onDateChange(params)
@@ -72,27 +71,15 @@ const Filter = ({ listAllStores, compareTo, loading, onDateChange, onListReset, 
     <Row>
       <Col {...leftColumn} >
         <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('to', {
-            initialValue: to ? moment.utc(to, 'YYYY-MM-DD') : null,
+          {getFieldDecorator('rangePicker', {
+            initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : null,
             rules: [
               {
                 required: true
               }
             ]
           })(
-            <DatePicker size="large" format="DD-MMM-YYYY" />
-          )}
-        </FormItem>
-        <FormItem label="Compare To" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('compareTo', {
-            initialValue: compareTo ? moment.utc(compareTo, 'YYYY-MM-DD') : null,
-            rules: [
-              {
-                required: false
-              }
-            ]
-          })(
-            <DatePicker size="large" format="DD-MMM-YYYY" />
+            <RangePicker size="large" format="DD-MMM-YYYY" />
           )}
         </FormItem>
         <FormItem
@@ -121,7 +108,8 @@ const Filter = ({ listAllStores, compareTo, loading, onDateChange, onListReset, 
           size="large"
           style={{ marginLeft: '5px' }}
           className="button-width02 button-extra-large"
-          loading={loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query']}
+          disabled={loading}
+          loading={loading}
           onClick={() => handleChange()}
         >
           <Icon type="search" className="icon-large" />
@@ -129,17 +117,12 @@ const Filter = ({ listAllStores, compareTo, loading, onDateChange, onListReset, 
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-lightgrey"
-          loading={loading.effects['accountingStatementReport/queryBalanceSheet'] || loading.effects['accountingStatementReport/query']}
+          disabled={loading}
+          loading={loading}
           onClick={() => handleReset()}
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        {((printProps.listTrans && printProps.listTrans.length > 0) || (printProps.listProfit && printProps.listProfit.length > 0))
-          && !loading.effects['accountingStatementReport/queryBalanceSheet'] && !loading.effects['accountingStatementReport/query']
-          && <PrintPDF {...printProps} />}
-        {((printProps.listTrans && printProps.listTrans.length > 0) || (printProps.listProfit && printProps.listProfit.length > 0))
-          && !loading.effects['accountingStatementReport/queryBalanceSheet'] && !loading.effects['accountingStatementReport/query']
-          && <PrintXLS {...printProps} />}
       </Col>
     </Row>
   )
