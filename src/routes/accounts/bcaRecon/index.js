@@ -18,7 +18,7 @@ const ImportBcaRecon = ({
   dispatch,
   importBcaRecon
 }) => {
-  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination, listReconLog } = importBcaRecon
+  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination, paginationListReconLog, listReconLog } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -38,7 +38,7 @@ const ImportBcaRecon = ({
 
   const listReconLogProps = {
     dataSource: listReconLog,
-    pagination,
+    pagination: paginationListReconLog,
     loading: loading.effects['importBcaRecon/query'],
     onChange (page) {
       const { query, pathname } = location

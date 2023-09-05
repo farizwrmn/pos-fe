@@ -42,6 +42,11 @@ export default modelExtend(pageModel, {
     listReconNotMatch: [],
     listPaymentMachine: [],
     listSettlementAccumulated: [],
+    paginationListReconLog: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -307,6 +312,7 @@ export default modelExtend(pageModel, {
       })
     },
     * query ({ payload = {} }, { call, put }) {
+      // get data bank
       const data = yield call(query, payload)
       if (data.success) {
         let mapData = data.data.map((item) => { return { ...item, match: 1 } })
@@ -339,7 +345,8 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    * queryReconLog ({ payload = {} }, { call, put }) {
+    * queryReconLog ({ payload = {} }, { call, put, select }) {
+      const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
       const data = yield call(queryReconLog, {
         ...payload,
         order: '-transDate'
@@ -349,7 +356,8 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             listReconLog: data.data,
-            pagination: {
+            list,
+            paginationListReconLog: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
               total: data.total
@@ -482,6 +490,7 @@ export default modelExtend(pageModel, {
         list,
         listReconLog,
         listErrorLog,
+        paginationListReconLog,
         pagination
       } = action.payload
       return {
@@ -489,6 +498,10 @@ export default modelExtend(pageModel, {
         list,
         listReconLog,
         listErrorLog,
+        paginationListReconLog: {
+          ...state.paginationListReconLog,
+          ...paginationListReconLog
+        },
         pagination: {
           ...state.pagination,
           ...pagination
