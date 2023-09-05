@@ -28,6 +28,7 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
+    summaryDetail: {},
     listDetail: [],
     paginationDetail: {
       current: 1
@@ -154,6 +155,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            summaryDetail: response.summary,
             listDetail: response.data,
             paginationDetail: {
               current: Number(response.page || 1),

@@ -1,8 +1,9 @@
-import { Button, Col, Table } from 'antd'
+import { Button, Col, Row, Table } from 'antd'
 import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
 const ListBalance = ({
+  summaryDetail,
   handleChangePagination,
   ...tableProps
 }) => {
@@ -68,6 +69,24 @@ const ListBalance = ({
         columns={columns}
         bordered
         onChange={handleChangePagination}
+        footer={() => {
+          return (
+            <div>
+              <Row type="flex" align="end" style={{ maxWidth: '250px' }}>
+                <Col style={{ fontWeight: 'bold', flex: 1 }}>Total Setoran:</Col>
+                <Col>{summaryDetail.balanceCount}</Col>
+              </Row>
+              <Row type="flex" align="end" style={{ maxWidth: '250px' }}>
+                <Col style={{ fontWeight: 'bold', flex: 1 }}>Total Selisih:</Col>
+                <Col>{currencyFormatter(summaryDetail.totalDiffBalance)}</Col>
+              </Row>
+              <Row type="flex" align="end" style={{ maxWidth: '250px' }}>
+                <Col style={{ fontWeight: 'bold', flex: 1 }}>Total Penjualan:</Col>
+                <Col>{currencyFormatter(summaryDetail.totalBalancePayment)}</Col>
+              </Row>
+            </div>
+          )
+        }}
       />
     </Col>
   )
