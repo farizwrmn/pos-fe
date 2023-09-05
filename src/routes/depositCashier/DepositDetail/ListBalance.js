@@ -10,7 +10,10 @@ const ListBalance = ({
     {
       title: 'Username',
       dataIndex: 'userName',
-      key: 'userName'
+      key: 'userName',
+      render: (value, record) => {
+        return <a href={`/setoran/cashier/detail/${record.balanceId}`} target="_blank">{value}</a>
+      }
     },
     {
       title: 'Cashier Name',

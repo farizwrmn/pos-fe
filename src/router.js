@@ -508,7 +508,15 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/deposit/cashier'))
-              cb(null, require('./routes/depositCashier/Detail'))
+              cb(null, require('./routes/depositCashier/DepositDetail'))
+            }, 'deposit-cashier-detail')
+          }
+        }, {
+          path: 'setoran/cashier/detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deposit/cashier'))
+              cb(null, require('./routes/depositCashier/BalanceDetail'))
             }, 'deposit-cashier-detail')
           }
         }, {
