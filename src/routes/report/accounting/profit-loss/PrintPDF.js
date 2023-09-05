@@ -1,17 +1,120 @@
 /**
- * Created by Veirry on 17/09/2017.
+ * Created by boo on 9/19/17.
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
-import { numberFormat } from 'utils'
 import moment from 'moment'
-import { createTableBodyBrowse, createTableBodyProfit } from './utils'
+import { BasicReport } from 'components'
+import { createTableBody, createTableBodyProfit } from './utils'
 
-const { formatNumberIndonesia } = numberFormat
+const PrintPDF = ({ user, listTrans, listProfitCompare, listProfit, storeInfo, to }) => {
+  // Declare Variable
+  const styles = {
+    header: {
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10]
+    },
+    subheader: {
+      fontSize: 16,
+      bold: true,
+      margin: [0, 10, 0, 5]
+    },
+    tableExample: {
+      margin: [0, 5, 0, 15]
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black'
+    },
+    tableFooter: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+      margin: [0, 0, 0, 15]
+    },
+    tableSeparator: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+      margin: [0, 15, 0, 15]
+    }
+  }
 
-const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, listCompare, listProfit, listProfitCompare, ...browseProps }) => {
-  let dataSource = []
+  const header = {
+    stack: [
+      {
+        stack: [
+          {
+            stack: storeInfo.stackHeader01
+          },
+          {
+            text: 'LAPORAN NERACA',
+            style: 'header',
+            fontSize: 18,
+            alignment: 'center'
+          },
+          {
+            canvas: [{ type: 'line', x1: 0, y1: 5, x2: 740, y2: 5, lineWidth: 0.5 }]
+          },
+          {
+            columns: [
+              {
+                text: `\nPERIODE: ${moment(to).format('DD-MMM-YYYY')}`,
+                fontSize: 12,
+                alignment: 'left'
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'center'
+              },
+              {
+                text: '',
+                fontSize: 12,
+                alignment: 'right'
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    margin: [50, 12, 50, 30]
+  }
+  const footer = (currentPage, pageCount) => {
+    return {
+      margin: [50, 30, 50, 0],
+      stack: [
+        {
+          canvas: [{ type: 'line', x1: 0, y1: -8, x2: 740, y2: -8, lineWidth: 0.5 }]
+        },
+        {
+          columns: [
+            {
+              text: `Tanggal cetak: ${moment().format('DD-MMM-YYYY HH:mm:ss')}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'left'
+            },
+            {
+              text: `Dicetak oleh: ${user.username}`,
+              margin: [0, 0, 0, 0],
+              fontSize: 9,
+              alignment: 'center'
+            },
+            {
+              text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
+              fontSize: 9,
+              margin: [0, 0, 0, 0],
+              alignment: 'right'
+            }
+          ]
+        }
+      ]
+    }
+  }
+  let tableBody = []
   let groupBy = (xs, key) => {
     return xs
       .reduce((prev, next) => {
@@ -20,7 +123,6 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
       }, {})
   }
   const groubedByTeam = groupBy(listTrans, 'accountType')
-  const groubedByTeamCompare = groupBy(listCompare, 'accountType')
   const group = {
     BANK: [],
     AREC: [],
@@ -39,24 +141,6 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
     INTR: [],
     ...groubedByTeam
   }
-  const groupCompare = {
-    BANK: [],
-    AREC: [],
-    OCAS: [],
-
-    FASS: [],
-    DEPR: [],
-    OASS: [],
-
-    APAY: [],
-    OCLY: [],
-    LTLY: [],
-
-    EQTY: [],
-    PRFT: [],
-    INTR: [],
-    ...groubedByTeamCompare
-  }
   const groubedByTeamProfit = groupBy(listProfit, 'accountType')
   const groubedByTeamProfitCompare = groupBy(listProfitCompare, 'accountType')
 
@@ -68,7 +152,6 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
     OEXP: [],
     ...groubedByTeamProfit
   }
-
   const groupProfitCompare = {
     REVE: [],
     COGS: [],
@@ -118,7 +201,7 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
     const fixRevenue = operationalRevenue + nonOperationalRevenue
     const fixRevenueCompare = operationalRevenueCompare + nonOperationalRevenueCompare
 
-    group.PRFT = group.PRFT.concat([
+    group.PRFT = [
       {
         accountCode: 'SYSTEM',
         accountId: 31,
@@ -143,38 +226,26 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
         entryType: 'C',
         transactionType: 'PRFT'
       }
-    ])
+    ]
 
-    groupCompare.PRFT = groupCompare.PRFT.concat([
-      {
-        accountCode: 'SYSTEM',
-        accountId: 31,
-        accountName: 'Laba Belum Dialokasikan Tahun Ini',
-        accountParentId: null,
-        accountType: 'APAY',
-        createdBy: 'SYSTEM',
-        credit: 0,
-        debit: fixRevenueCompare,
-        entryType: 'C',
-        transactionType: 'PRFT'
-      },
-      {
-        accountCode: 'SYSTEM',
-        accountId: 31,
-        accountName: 'Laba Belum Dialokasikan Tahun Lalu',
-        accountParentId: null,
-        accountType: 'APAY',
-        createdBy: 'SYSTEM',
-        credit: 0,
-        debit: 0,
-        entryType: 'C',
-        transactionType: 'PRFT'
-      }
-    ])
+    // const totalPersediaan = listRekap && listRekap.length ? listRekap.reduce((cnt, o) => cnt + parseFloat(o.amount), 0) : 0
+    // group.INTR = [
+    //   {
+    //     accountCode: 'SYSTEM',
+    //     accountId: 31,
+    //     accountName: 'Persediaan Barang Dagang',
+    //     accountParentId: null,
+    //     accountType: 'INTR',
+    //     createdBy: 'SYSTEM',
+    //     credit: 0,
+    //     debit: -1 * totalPersediaan,
+    //     entryType: 'D',
+    //     transactionType: 'INTR'
+    //   }
+    // ]
 
-    const { dataSource: groupBANKBody } = createTableBodyBrowse(
+    const { data: groupBANKBody } = createTableBody(
       group,
-      groupCompare,
       [
         {
           bodyTitle: 'ASET',
@@ -278,62 +349,39 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
           ]
         }
       ])
-    dataSource = groupBANKBody
+    tableBody = tableBody.concat(groupBANKBody)
   } catch (e) {
     console.log(e)
   }
 
-  let columns = [
-    {
-      title: 'Account',
-      dataIndex: 'accountName',
-      key: 'accountName',
-      width: '175px'
-    },
-    {
-      title: moment(to).format('ll'),
-      dataIndex: 'value',
-      key: 'value',
-      width: '155px',
-      render: text => formatNumberIndonesia(text)
-    }
-  ]
-
-  if (compareTo && compareTo !== '') {
-    columns = columns.concat([
-      {
-        title: moment(compareTo).format('ll'),
-        dataIndex: 'compare',
-        key: 'compare',
-        width: '155px',
-        render: text => formatNumberIndonesia(text)
-      }
-    ])
+  // Declare additional Props
+  const pdfProps = {
+    className: 'button-width02 button-extra-large bgcolor-blue',
+    width: ['20%', '30%', '20%', '30%'],
+    pageMargins: [50, 130, 50, 60],
+    pageSize: 'A4',
+    pageOrientation: 'landscape',
+    tableStyle: styles,
+    layout: 'noBorders',
+    tableHeader: [],
+    tableBody,
+    tableFooter: [],
+    data: listTrans,
+    header,
+    footer
   }
-
-  const onClickDetail = (record) => {
-    onGetDetail(record)
-  }
-
-  console.log('dataSource', dataSource)
 
   return (
-    <Table
-      {...browseProps}
-      dataSource={dataSource}
-      bordered
-      pagination={false}
-      columns={columns}
-      simple
-      onRowClick={record => onClickDetail(record)}
-      size="small"
-    />
+    <BasicReport {...pdfProps} />
   )
 }
 
-Browse.propTypes = {
-  location: PropTypes.object,
-  onExportExcel: PropTypes.func
+PrintPDF.propTypes = {
+  listTrans: PropTypes.array,
+  user: PropTypes.object,
+  storeInfo: PropTypes.object.isRequired,
+  from: PropTypes.string.isRequired,
+  to: PropTypes.string
 }
 
-export default Browse
+export default PrintPDF
