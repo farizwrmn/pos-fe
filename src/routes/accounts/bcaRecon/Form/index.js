@@ -25,6 +25,7 @@ const formItemLayout = {
 const FormAutoCounter = ({
   onSortNullMdrAmount,
   onClearListImportCSVAndPayment,
+  query,
   dispatch,
   loading,
   form: {
@@ -87,7 +88,9 @@ const FormAutoCounter = ({
         <Row>
           <Col span={4}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('rangePicker')(
+              {getFieldDecorator('rangePicker', {
+                initialValue: query.transDate
+              })(
                 <DatePicker
                   disabled={getFieldValue('rangePicker')}
                   onChange={(value, dateString) => handleSubmit(dateString)}

@@ -100,7 +100,6 @@ export default modelExtend(pageModel, {
         localId[6],
         listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
       ]
-      console.log('localId[4]', localId[4])
       lstorage.putStorageKey('udi', dataUdi, localId[0])
       localStorage.setItem('newItem', JSON.stringify({ store: false }))
       localStorage.removeItem('cashier_trans')
