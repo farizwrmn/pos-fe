@@ -16,7 +16,17 @@ const Browse = ({ to, storeId, onExpandChildAccountType, ...browseProps }) => {
       title: 'Account',
       dataIndex: 'bodyTitle',
       key: 'bodyTitle',
-      width: '175px'
+      width: '175px',
+      render: (text, record) => {
+        if (record && record.children && record.children.length > 0) {
+          if (record && record.originalValue !== record.value) {
+            if (record.originalValue !== 0 && record.originalValue !== null) {
+              text = `${text} (Header: ${formatNumberIndonesia(record.originalValue)})`
+            }
+          }
+        }
+        return text
+      }
     },
     {
       title: moment(to).format('ll'),

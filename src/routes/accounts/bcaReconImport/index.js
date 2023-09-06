@@ -16,7 +16,7 @@ const ImportBcaRecon = ({
   const listFilenameImportCSV = {
     dataSource: listFilename,
     pagination,
-    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/queryImportLog'] || loading.effects['importBcaRecon/bulkInsert'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({

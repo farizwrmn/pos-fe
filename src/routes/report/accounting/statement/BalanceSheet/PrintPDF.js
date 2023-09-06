@@ -291,8 +291,8 @@ const PrintPDF = ({ user, listTrans, listProfitCompare, listProfit, storeInfo, t
                 {
                   type: 'FASS',
                   level: 2,
-                  bodyTitle: 'Nilai Histori',
-                  totalTitle: 'Jumlah Nilai Histori'
+                  bodyTitle: 'Aset Tetap',
+                  totalTitle: 'Jumlah Aset Tetap'
                 },
                 {
                   type: 'DEPR',
