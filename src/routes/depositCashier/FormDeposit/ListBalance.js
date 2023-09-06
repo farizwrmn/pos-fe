@@ -73,7 +73,7 @@ const ListBalance = ({
             <div>
               <Row type="flex" align="end" style={{ maxWidth: '250px' }}>
                 <Col style={{ fontWeight: 'bold', flex: 1 }}>Total Setoran:</Col>
-                <Col>{summaryDetail.balanceCount}</Col>
+                <Col>{summaryDetail.balanceCount || 0}</Col>
               </Row>
               <Row type="flex" align="end" style={{ maxWidth: '250px' }}>
                 <Col style={{ fontWeight: 'bold', flex: 1 }}>Total Selisih:</Col>

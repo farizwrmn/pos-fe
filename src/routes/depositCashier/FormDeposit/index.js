@@ -69,24 +69,23 @@ class DepositCashierDetail extends React.Component {
     const handleSubmit = () => {
       const { query } = location
       const { startDate, endDate } = query
-      if (startDate && endDate) {
-        Modal.confirm({
-          title: 'Confirmation',
-          content: 'Are you sure for submitting this form?',
-          onOk: () => {
-            dispatch({
-              type: 'depositCashier/queryAdd',
-              payload: {
-                startDate,
-                endDate,
-                detail: listCreateJournal
-              }
-            })
-          }
-        })
-      } else {
-        message.error('Date is not identified!')
+      if (!startDate || !endDate) {
+        message.error('Date is not defined!')
       }
+      Modal.confirm({
+        title: 'Confirmation',
+        content: 'Are you sure for submitting this form?',
+        onOk: () => {
+          dispatch({
+            type: 'depositCashier/queryAdd',
+            payload: {
+              startDate,
+              endDate,
+              detail: listCreateJournal
+            }
+          })
+        }
+      })
     }
 
     const listBalanceProps = {
@@ -209,6 +208,7 @@ class DepositCashierDetail extends React.Component {
             icon="check"
             onClick={handleSubmit}
             loading={loading.effects['depositCashier/queryAdd']}
+            disabled={listCreateJournal.length === 0}
           >
             Submit
           </Button>
