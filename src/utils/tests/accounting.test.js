@@ -156,8 +156,8 @@ describe('Test third level', () => {
                 {
                   type: 'BANK',
                   level: 2,
-                  bodyTitle: 'Kas dan Setara Kas',
-                  totalTitle: 'Kas dan Setara Kas',
+                  bodyTitle: 'Jumlah Kas dan Setara Kas',
+                  totalTitle: 'Jumlah Kas dan Setara Kas',
                   value: 995397119.62,
                   children: listChild
                 },
@@ -271,7 +271,7 @@ describe('Test third level', () => {
   })
 })
 
-describe('Test second level', () => {
+describe('Test second level: EQTY', () => {
   it('Should render EQTY as children of listBalanceSheet', () => {
     const listBalanceSheet = [
       {
@@ -526,10 +526,298 @@ describe('Test second level', () => {
             {
               type: 'EQTY',
               level: 1,
-              bodyTitle: 'Ekuitas',
-              totalTitle: 'Ekuitas',
+              bodyTitle: 'Jumlah Ekuitas',
+              totalTitle: 'Jumlah Ekuitas',
               value: 249232653.36,
               children: listChild
+            },
+            {
+              type: 'PRFT',
+              level: 1,
+              bodyTitle: 'Laba Ditahan',
+              totalTitle: 'Jumlah Laba',
+              value: 1195286835.77
+            }
+          ]
+        }
+      ]
+    )
+  })
+})
+
+describe('Test second level: LTLY', () => {
+  it('Should render LTLY as children of listBalanceSheet', () => {
+    const listBalanceSheet = [
+      {
+        bodyTitle: 'ASET',
+        totalTitle: 'Jumlah Aset',
+        level: 0,
+        value: -44640306117.725,
+        children: [
+          {
+            bodyTitle: 'ASET LANCAR',
+            level: 1,
+            totalTitle: 'Jumlah Aset Lancar',
+            value: -30232183814.055,
+            children: [
+              {
+                type: 'BANK',
+                level: 2,
+                bodyTitle: 'Kas dan Setara Kas',
+                totalTitle: 'Jumlah Kas dan Setara Kas',
+                value: 995397119.62
+              },
+              {
+                type: 'AREC',
+                level: 2,
+                bodyTitle: 'Piutang Usaha',
+                totalTitle: 'Jumlah Piutang Usaha',
+                value: -21875314293.02
+              },
+              {
+                type: 'INTR',
+                level: 2,
+                bodyTitle: 'Persediaan',
+                totalTitle: 'Jumlah Persediaan',
+                value: -6251334252.3377
+              },
+              {
+                type: 'OCAS',
+                level: 2,
+                bodyTitle: 'Aset Lancar Lainnya',
+                totalTitle: 'Jumlah Aset Lancar Lainnya',
+                value: -3100932388.3173
+              }
+            ]
+          },
+          {
+            bodyTitle: 'ASET TIDAK LANCAR',
+            level: 1,
+            totalTitle: 'Jumlah Aset Tidak Lancar',
+            value: -14408122303.67,
+            children: [
+              {
+                type: 'FASS',
+                level: 2,
+                bodyTitle: 'Aset Tetap',
+                totalTitle: 'Jumlah Aset Tetap',
+                value: -14431023194.4
+              },
+              {
+                type: 'DEPR',
+                level: 2,
+                bodyTitle: 'Akumulasi Penyusutan',
+                totalTitle: 'Jumlah Akumulasi Penyusutan',
+                value: 22900890.73
+              },
+              {
+                type: 'OASS',
+                level: 2,
+                bodyTitle: 'Aset Lainnya',
+                totalTitle: 'Jumlah Aset Lainnya',
+                value: 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        bodyTitle: 'KEWAJIBAN DAN EKUITAS',
+        totalTitle: 'Jumlah Kewajiban dan Ekuitas',
+        level: 0,
+        value: 43445019281.774994,
+        children: [
+          {
+            bodyTitle: 'KEWAJIBAN JANGKA PENDEK',
+            level: 1,
+            totalTitle: 'Jumlah Kewajiban Jangka Pendek',
+            value: 43195786628.41499,
+            children: [
+              {
+                type: 'APAY',
+                level: 2,
+                bodyTitle: 'Hutang Usaha',
+                totalTitle: 'Jumlah Hutang Usaha',
+                value: 452267553
+              },
+              {
+                type: 'OCLY',
+                level: 2,
+                bodyTitle: 'Kewajiban Jangka Pendek Lainnya',
+                totalTitle: 'Jumlah Kewajiban Jangka Pendek Lainnya',
+                value: 21860835831.62
+              }
+            ]
+          },
+          {
+            type: 'LTLY',
+            level: 1,
+            bodyTitle: 'Kewajiban Jangka Panjang',
+            totalTitle: 'Jumlah Kewajiban Jangka Panjang',
+            value: 20882683243.795,
+            children: []
+          },
+          {
+            type: 'EQTY',
+            level: 1,
+            bodyTitle: 'Ekuitas',
+            totalTitle: 'Jumlah Ekuitas',
+            value: 249232653.36
+          },
+          {
+            type: 'PRFT',
+            level: 1,
+            bodyTitle: 'Laba Ditahan',
+            totalTitle: 'Jumlah Laba',
+            value: 1195286835.77
+          }
+        ]
+      }
+    ]
+    const listChild = [
+      {
+        id: 31,
+        accountId: 31,
+        key: '01.320.001',
+        accountCode: '01.320.001',
+        accountName: 'HUTANG DAGANG JANGKA PANJANG',
+        bodyTitle: '01.320.001-HUTANG DAGANG JANGKA PANJANG',
+        accountParentId: 352,
+        accountType: 'LTLY',
+        originalValue: -6195090241.555,
+        value: -6195090241.555
+      },
+      {
+        id: 213,
+        accountId: 213,
+        key: '3000.01',
+        accountCode: '3000.01',
+        accountName: 'MODAL PT. KATIGA',
+        bodyTitle: '3000.01-MODAL PT. KATIGA',
+        accountParentId: 35,
+        accountType: 'LTLY',
+        originalValue: -15250000000,
+        value: -15250000000
+      }
+    ]
+    const logEquity = generateListBalanceSheetChildType('LTLY', listBalanceSheet, listChild)
+    expect(logEquity).toEqual(
+      [
+        {
+          bodyTitle: 'ASET',
+          totalTitle: 'Jumlah Aset',
+          level: 0,
+          value: -44640306117.725,
+          children: [
+            {
+              bodyTitle: 'ASET LANCAR',
+              level: 1,
+              totalTitle: 'Jumlah Aset Lancar',
+              value: -30232183814.055,
+              children: [
+                {
+                  type: 'BANK',
+                  level: 2,
+                  bodyTitle: 'Kas dan Setara Kas',
+                  totalTitle: 'Jumlah Kas dan Setara Kas',
+                  value: 995397119.62
+                },
+                {
+                  type: 'AREC',
+                  level: 2,
+                  bodyTitle: 'Piutang Usaha',
+                  totalTitle: 'Jumlah Piutang Usaha',
+                  value: -21875314293.02
+                },
+                {
+                  type: 'INTR',
+                  level: 2,
+                  bodyTitle: 'Persediaan',
+                  totalTitle: 'Jumlah Persediaan',
+                  value: -6251334252.3377
+                },
+                {
+                  type: 'OCAS',
+                  level: 2,
+                  bodyTitle: 'Aset Lancar Lainnya',
+                  totalTitle: 'Jumlah Aset Lancar Lainnya',
+                  value: -3100932388.3173
+                }
+              ]
+            },
+            {
+              bodyTitle: 'ASET TIDAK LANCAR',
+              level: 1,
+              totalTitle: 'Jumlah Aset Tidak Lancar',
+              value: -14408122303.67,
+              children: [
+                {
+                  type: 'FASS',
+                  level: 2,
+                  bodyTitle: 'Aset Tetap',
+                  totalTitle: 'Jumlah Aset Tetap',
+                  value: -14431023194.4
+                },
+                {
+                  type: 'DEPR',
+                  level: 2,
+                  bodyTitle: 'Akumulasi Penyusutan',
+                  totalTitle: 'Jumlah Akumulasi Penyusutan',
+                  value: 22900890.73
+                },
+                {
+                  type: 'OASS',
+                  level: 2,
+                  bodyTitle: 'Aset Lainnya',
+                  totalTitle: 'Jumlah Aset Lainnya',
+                  value: 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          bodyTitle: 'KEWAJIBAN DAN EKUITAS',
+          totalTitle: 'Jumlah Kewajiban dan Ekuitas',
+          level: 0,
+          value: 43445019281.774994,
+          children: [
+            {
+              bodyTitle: 'KEWAJIBAN JANGKA PENDEK',
+              level: 1,
+              totalTitle: 'Jumlah Kewajiban Jangka Pendek',
+              value: 43195786628.41499,
+              children: [
+                {
+                  type: 'APAY',
+                  level: 2,
+                  bodyTitle: 'Hutang Usaha',
+                  totalTitle: 'Jumlah Hutang Usaha',
+                  value: 452267553
+                },
+                {
+                  type: 'OCLY',
+                  level: 2,
+                  bodyTitle: 'Kewajiban Jangka Pendek Lainnya',
+                  totalTitle: 'Jumlah Kewajiban Jangka Pendek Lainnya',
+                  value: 21860835831.62
+                }
+              ]
+            },
+            {
+              type: 'LTLY',
+              level: 1,
+              bodyTitle: 'Jumlah Kewajiban Jangka Panjang',
+              totalTitle: 'Jumlah Kewajiban Jangka Panjang',
+              value: 20882683243.795,
+              children: listChild
+            },
+            {
+              type: 'EQTY',
+              level: 1,
+              bodyTitle: 'Ekuitas',
+              totalTitle: 'Jumlah Ekuitas',
+              value: 249232653.36
             },
             {
               type: 'PRFT',
@@ -897,10 +1185,10 @@ describe('Test Profit Loss', () => {
     expect(generateListBalanceSheetChildType('REVE', listBalanceSheet, listChild)).toEqual(
       [
         {
-          bodyTitle: 'Pendapatan',
+          bodyTitle: 'Jumlah Pendapatan',
           key: 'Pendapatan',
           type: 'REVE',
-          totalTitle: 'Pendapatan',
+          totalTitle: 'Jumlah Pendapatan',
           level: 0,
           value: 1033504035,
           children: listChild
