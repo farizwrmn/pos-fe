@@ -18,7 +18,7 @@ const ListReconLog = ({
       width: 20,
       render: (text, record) => {
         return (
-          <div style={{ color: '#55a756' }} onClick={() => openModalStore({ storeId: record.storeId, transDate: record.transDate })}>{text ? text.toLocaleString() : ''}</div>
+          <div style={{ color: '#55a756' }} onClick={() => openModalStore({ id: record.id, storeId: record.storeId, transDate: record.transDate })}>{text ? text.toLocaleString() : ''}</div>
         )
       }
     },

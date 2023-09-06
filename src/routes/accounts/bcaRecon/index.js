@@ -4,8 +4,6 @@ import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Row, Col } from 'antd'
-import { lstorage } from 'utils'
-import moment from 'moment'
 import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import ListSettlementAccumulated from './ListSettlementAccumulated'
@@ -19,12 +17,10 @@ const ImportBcaRecon = ({
   loading,
   dispatch,
   location,
-  importBcaRecon,
-  app
+  importBcaRecon
 }) => {
-  const { user } = app
   const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, modalStoreVisible,
-    currentItem, pagination, paginationListReconLog, listReconLog, storeName, storeId, transDate } = importBcaRecon
+    currentItem, pagination, paginationListReconLog, listReconLog, storeName } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -52,46 +48,7 @@ const ImportBcaRecon = ({
       dispatch({ type: 'importBcaRecon/openModalStore', payload: { ...params } })
     },
     onOk: () => {
-      const listUserStores = lstorage.getListUserStores()
-      const loginTimeDiff = lstorage.getLoginTimeDiff()
-      const { query, pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          storeId,
-          transDate
-        }
-      }))
-
-      const localId = lstorage.getStorageKey('udi')
-      const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
-      const dataUdi = [
-        localId[1],
-        localId[2],
-        String(storeId),
-        localId[4],
-        moment(new Date(serverTime)),
-        localId[6],
-        listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
-      ]
-      lstorage.putStorageKey('udi', dataUdi, localId[0])
-      localStorage.setItem('newItem', JSON.stringify({ store: false }))
-      // changeRole
-      dispatch({ type: 'app/query', payload: { userid: user.userid, role: String(storeId) } })
-
-      localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('queue')
-      localStorage.removeItem('member')
-      localStorage.removeItem('workorder')
-      localStorage.removeItem('memberUnit')
-      localStorage.removeItem('mechanic')
-      localStorage.removeItem('service_detail')
-      localStorage.removeItem('consignment')
-      localStorage.removeItem('bundle_promo')
-      localStorage.removeItem('cashierNo')
-      dispatch({ type: 'importBcaRecon/closeModalStore' })
-      setTimeout(() => { window.location.reload() }, 1000)
+      dispatch({ type: 'importBcaRecon/processChangeStore' })
     },
     onCancel () {
       dispatch({ type: 'importBcaRecon/closeModalStore' })
@@ -241,13 +198,9 @@ const ImportBcaRecon = ({
 export default connect(
   ({
     loading,
-    app,
-    listSortPayment,
     importBcaRecon
   }) => ({
     loading,
-    app,
-    listSortPayment,
     importBcaRecon
   })
 )(ImportBcaRecon)

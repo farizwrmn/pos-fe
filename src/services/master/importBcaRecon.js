@@ -207,9 +207,9 @@ export async function remove (params) {
 
 export async function deleteReconLog (params) {
   const apiHeaderToken = crypt.apiheader()
-  // params.storeId and params.transDate
+  const url = params.id ? `${importbcarecon}/recon-log/${encodeURIComponent(params.id)}` : `${importbcarecon}/recon-log`
   return request({
-    url: `${importbcarecon}/recon-log`,
+    url,
     method: 'delete',
     data: params,
     headers: apiHeaderToken

@@ -2,6 +2,8 @@ import modelExtend from 'dva-model-extend'
 import {
   message
 } from 'antd'
+import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import {
   query,
@@ -55,6 +57,7 @@ export default modelExtend(pageModel, {
       showQuickJumper: true,
       current: 1
     },
+    reconLogId: 0,
     storeName: '',
     storeId: 0,
     submitLoading: false,
@@ -77,6 +80,63 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    // eslint-disable-next-line no-unused-vars
+    * processChangeStore ({ payload }, { put, select }) {
+      const user = yield select(({ app }) => app.user)
+      let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
+      let transDate = yield select(({ importBcaRecon }) => importBcaRecon.transDate)
+      const { query, pathname } = location
+
+      const loginTimeDiff = lstorage.getLoginTimeDiff()
+      const localId = lstorage.getStorageKey('udi')
+      const listUserStores = lstorage.getListUserStores()
+      const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+      const dataUdi = [
+        localId[1],
+        localId[2],
+        [storeId],
+        localId[4],
+        moment(new Date(serverTime)),
+        localId[6],
+        listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
+      ]
+      console.log('localId[4]', localId[4])
+      lstorage.putStorageKey('udi', dataUdi, localId[0])
+      localStorage.setItem('newItem', JSON.stringify({ store: false }))
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('queue')
+      localStorage.removeItem('member')
+      localStorage.removeItem('workorder')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
+      localStorage.removeItem('bundle_promo')
+      localStorage.removeItem('cashierNo')
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
+
+      yield put({ type: 'importBcaRecon/closeModalStore' })
+
+      yield put({
+        type: 'importBcaRecon/sortNullMdrAmount',
+        payload: {
+          payment: { storeId, transDate: moment(transDate).format('YYYY-MM-DD') },
+          paymentImportBca: {
+            transactionDate: moment(transDate).format('YYYY-MM-DD'),
+            recordSource: ['TC', 'TD'],
+            storeId,
+            type: 'all'
+          }
+        }
+      })
+
+      yield put(routerRedux.push({
+        pathname,
+        query: {
+          ...query
+        }
+      }))
+    },
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
       const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
@@ -257,7 +317,19 @@ export default modelExtend(pageModel, {
           }
         })
         // delete recon targeted recon log
-        yield call(deleteReconLog, { transDate: payload.transDate, storeId: payload.storeId })
+      } else {
+        throw data
+      }
+      yield put({ type: 'deleteReconLog' })
+    },
+    * deleteReconLog ({ payload = {} }, { put, call, select }) {
+      let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
+      let reconLogId = yield select(({ importBcaRecon }) => importBcaRecon.reconLogId)
+      const data = yield call(deleteReconLog, { id: reconLogId, transDate: payload.transDate, storeId })
+      if (data.success) {
+        // message.success('Success delete')
+        yield put({ type: 'queryReconLog' })
+        // delete recon targeted recon log
       } else {
         throw data
       }
@@ -285,7 +357,8 @@ export default modelExtend(pageModel, {
             modalStoreVisible: true,
             storeName: store.label,
             storeId: store.value,
-            transDate: payload.transDate
+            transDate: payload.transDate,
+            reconLogId: payload.id
           }
         })
       }
