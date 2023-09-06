@@ -44,7 +44,11 @@ const ListBalance = ({
       render: (_, record) => {
         return (
           <div style={{ textAlign: 'center' }}>
-            <Button type="primary" onClick={() => handleResolve(record)}>
+            <Button
+              type="primary"
+              onClick={() => handleResolve(record)}
+              loading={loading.effects['depositCashier/queryAdd']}
+            >
               Resolve
             </Button>
           </div>

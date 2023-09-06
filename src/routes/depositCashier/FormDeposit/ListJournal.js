@@ -5,6 +5,7 @@ import { currencyFormatter } from 'utils/string'
 class ListJournal extends React.Component {
   render () {
     const {
+      loading,
       handleAddButton,
       handleChangePagination,
       ...tableProps
@@ -57,7 +58,12 @@ class ListJournal extends React.Component {
           <h3 style={{ fontWeight: 'bold', flex: 1 }}>
             List Journal
           </h3>
-          <Button type="primary" icon="plus" onClick={handleAddButton}>
+          <Button
+            type="primary"
+            icon="plus"
+            onClick={handleAddButton}
+            loading={loading.effects['depositCashier/queryAdd']}
+          >
             Add Journal
           </Button>
         </Row>

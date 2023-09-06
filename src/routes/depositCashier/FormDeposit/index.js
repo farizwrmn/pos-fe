@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { Button, Row } from 'antd'
+import { Button, Col, Modal, Row, message } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
@@ -66,6 +66,29 @@ class DepositCashierDetail extends React.Component {
       })
     }
 
+    const handleSubmit = () => {
+      const { query } = location
+      const { startDate, endDate } = query
+      if (startDate && endDate) {
+        Modal.confirm({
+          title: 'Confirmation',
+          content: 'Are you sure for submitting this form?',
+          onOk: () => {
+            dispatch({
+              type: 'depositCashier/queryAdd',
+              payload: {
+                startDate,
+                endDate,
+                detail: listCreateJournal
+              }
+            })
+          }
+        })
+      } else {
+        message.error('Date is not identified!')
+      }
+    }
+
     const listBalanceProps = {
       loading,
       summaryDetail,
@@ -93,6 +116,7 @@ class DepositCashierDetail extends React.Component {
     }
 
     const listGeneratedJournal = {
+      loading,
       dataSource: listCreateJournal,
       handleChangePagination: (pagination) => {
         const { current: page, pageSize } = pagination
@@ -165,8 +189,29 @@ class DepositCashierDetail extends React.Component {
     return (
       <div className="content-inner">
         {visibleModalJournal && <ModalJournal {...modalJournalProps} />}
-        <Row style={{ marginBottom: '30px' }}>
-          <Button type="primary" icon="rollback" onClick={handleBackButton}>Back</Button>
+        <Row type="flex" style={{ marginBottom: '30px' }}>
+          <Col
+            style={{
+              flex: 1
+            }}
+          >
+            <Button
+              type="danger"
+              icon="rollback"
+              onClick={handleBackButton}
+              loading={loading.effects['depositCashier/queryAdd']}
+            >
+              Back
+            </Button>
+          </Col>
+          <Button
+            type="primary"
+            icon="check"
+            onClick={handleSubmit}
+            loading={loading.effects['depositCashier/queryAdd']}
+          >
+            Submit
+          </Button>
         </Row>
         <Row style={{ marginBottom: '10px' }}>
           <Filter {...filterProps} />

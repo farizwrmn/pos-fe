@@ -2,8 +2,9 @@ import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import { routerRedux } from 'dva/router'
 import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
-import { query, queryBalance as queryBalanceList } from 'services/balancePayment/balanceDepositService'
+import { query, queryBalance as queryBalanceList, queryAdd } from 'services/balancePayment/balanceDepositService'
 import {
   query as queryBalanceResolve,
   queryResolveOption
@@ -12,7 +13,8 @@ import { pageModel } from '../common'
 
 const {
   getCurrentUserStore,
-  getBalanceListCreateJournal
+  getBalanceListCreateJournal,
+  removeBalanceListCreateJournal
 } = lstorage
 
 export default modelExtend(pageModel, {
@@ -72,6 +74,10 @@ export default modelExtend(pageModel, {
             })
             dispatch({
               type: 'loadListCreateJournal'
+            })
+          } else {
+            dispatch({
+              type: 'removeListCreateJournal'
             })
           }
         }
@@ -169,6 +175,16 @@ export default modelExtend(pageModel, {
       } else {
         message.error(response.message)
       }
+    },
+    * queryAdd ({ payload = {} }, { call, put }) {
+      payload.storeId = getCurrentUserStore()
+      const response = yield call(queryAdd, payload)
+      if (response && response.success && response.data) {
+        removeBalanceListCreateJournal()
+        yield put(routerRedux.push(`/setoran/cashier/detail/${response.data.id}`))
+      } else {
+        message.error(response.message)
+      }
     }
   },
 
@@ -185,6 +201,13 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listCreateJournal: listCreateJournal || []
+      }
+    },
+    removeListCreateJournal (state) {
+      removeBalanceListCreateJournal()
+      return {
+        ...state,
+        listCreateJournal: []
       }
     }
   }

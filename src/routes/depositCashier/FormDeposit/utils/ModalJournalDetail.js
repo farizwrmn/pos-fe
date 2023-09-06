@@ -47,8 +47,8 @@ const ModalJournalDetail = ({
       onSubmit({
         accountId: data.accountId,
         accountName: selectedAccount ? `${selectedAccount.accountName} (${selectedAccount.accountCode})` : 'Not Found!',
-        amountIn: data.amountIn === true ? data.amount : 0,
-        amountOut: data.amountIn === false ? data.amount : 0,
+        amountIn: data.amountIn === true ? data.amount : null,
+        amountOut: data.amountIn === false ? data.amount : null,
         description: data.description
       })
     })

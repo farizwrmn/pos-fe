@@ -54,7 +54,8 @@ const Filter = ({
         <Button
           type="primary"
           onClick={handleSubmit}
-          loading={loading.effects['depositCashier/queryBalanceList']}
+          loading={loading.effects['depositCashier/queryBalanceList']
+            || loading.effects['depositCashier/queryAdd']}
           disabled={loading.effects['depositCashier/queryBalanceList']}
         >
           Filter
