@@ -3,7 +3,7 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
-import { query } from 'services/balancePayment/balanceDepositService'
+import { query, queryBalance as queryBalanceList } from 'services/balancePayment/balanceDepositService'
 import {
   query as queryBalanceResolve,
   queryResolveOption
@@ -29,11 +29,6 @@ export default modelExtend(pageModel, {
       current: 1
     },
 
-    listJournal: [],
-    paginationJournal: {
-      current: 1
-    },
-
     selectedResolve: {},
     listResolveOption: [],
 
@@ -48,7 +43,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { page, pageSize } = query
+        const { page, pageSize, startDate, endDate } = query
         const matchCashierDetail = pathToRegexp('/setoran/cashier/detail/:id').exec(pathname)
         if (matchCashierDetail) {
           dispatch({
@@ -58,10 +53,21 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/setoran/cashier/new') {
+        if (pathname === '/setoran/cashier/add') {
           dispatch({
             type: 'queryResolveOption'
           })
+          if (startDate && endDate) {
+            dispatch({
+              type: 'queryBalanceList',
+              payload: {
+                page,
+                pageSize,
+                startDate,
+                endDate
+              }
+            })
+          }
         }
         if (pathname === '/setoran/cashier') {
           dispatch({
@@ -133,6 +139,29 @@ export default modelExtend(pageModel, {
         })
       } else {
         message.error(responseResolve.message)
+      }
+    },
+    * queryBalanceList ({ payload = {} }, { call, put }) {
+      payload.storeId = getCurrentUserStore()
+      const response = yield call(queryBalanceList, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetail: response.data,
+            summaryDetail: {
+              ...response.summary,
+              balanceCount: Number(response.total || 0)
+            },
+            paginationDetail: {
+              current: Number(response.page || 1),
+              pageSize: Number(response.pageSize || 10),
+              total: Number(response.total || 0)
+            }
+          }
+        })
+      } else {
+        message.error(response.message)
       }
     }
   },

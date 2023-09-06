@@ -3,6 +3,7 @@ import { Button, Col, Row, Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListBalance = ({
+  loading,
   summaryDetail,
   handleChangePagination,
   ...tableProps
@@ -66,6 +67,7 @@ const ListBalance = ({
         columns={columns}
         bordered
         onChange={handleChangePagination}
+        loading={loading.effects['depositCashier/queryBalanceList']}
         footer={() => {
           return (
             <div>

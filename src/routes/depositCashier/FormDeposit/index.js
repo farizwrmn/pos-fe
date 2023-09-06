@@ -8,20 +8,25 @@ import ListJournal from './ListJournal'
 import Filter from './Filter'
 
 class DepositCashierDetail extends React.Component {
+  state = {
+    listCreateJournal: []
+  }
+
   render () {
     const {
+      loading,
       location,
       dispatch,
       depositCashier
     } = this.props
+    const {
+      listCreateJournal
+    } = this.state
 
     const {
       summaryDetail,
       listDetail,
       paginationDetail,
-
-      listJournal,
-      paginationJournal,
 
       listResolveOption
     } = depositCashier
@@ -33,6 +38,7 @@ class DepositCashierDetail extends React.Component {
     }
 
     const listBalanceProps = {
+      loading,
       summaryDetail,
       dataSource: listDetail,
       pagination: paginationDetail,
@@ -51,8 +57,7 @@ class DepositCashierDetail extends React.Component {
     }
 
     const listGeneratedJournal = {
-      dataSource: listJournal,
-      pagination: paginationJournal,
+      dataSource: listCreateJournal,
       handleChangePagination: (pagination) => {
         const { current: page, pageSize } = pagination
         const { pathname, query } = location
@@ -68,13 +73,23 @@ class DepositCashierDetail extends React.Component {
     }
 
     const filterProps = {
+      location,
+      loading,
       onSubmit: (data) => {
         const { rangeDate } = data
+        const { pathname, query } = location
         if (rangeDate && rangeDate.length > 0) {
           const startDate = moment(rangeDate[0]).format('YYYY-MM-DD')
           const endDate = moment(rangeDate[1]).format('YYYY-MM-DD')
-          console.log('startDate', startDate)
-          console.log('endDate', endDate)
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              startDate,
+              endDate,
+              page: 1
+            }
+          }))
         }
       }
     }

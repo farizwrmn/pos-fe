@@ -59,7 +59,7 @@ class DepositClosed extends React.Component {
       listShift,
       listUser: data.data,
       onClose: () => {
-        dispatch(routerRedux.push('/deposit/current'))
+        dispatch(routerRedux.push('/setoran/current'))
       },
       onPrint: () => {
         const match = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
