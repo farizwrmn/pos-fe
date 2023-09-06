@@ -156,8 +156,8 @@ describe('Test third level', () => {
                 {
                   type: 'BANK',
                   level: 2,
-                  bodyTitle: 'Jumlah Kas dan Setara Kas',
-                  totalTitle: 'Jumlah Kas dan Setara Kas',
+                  bodyTitle: 'Kas dan Setara Kas',
+                  totalTitle: 'Kas dan Setara Kas',
                   value: 995397119.62,
                   children: listChild
                 },
@@ -526,8 +526,8 @@ describe('Test second level', () => {
             {
               type: 'EQTY',
               level: 1,
-              bodyTitle: 'Jumlah Ekuitas',
-              totalTitle: 'Jumlah Ekuitas',
+              bodyTitle: 'Ekuitas',
+              totalTitle: 'Ekuitas',
               value: 249232653.36,
               children: listChild
             },
@@ -897,10 +897,10 @@ describe('Test Profit Loss', () => {
     expect(generateListBalanceSheetChildType('REVE', listBalanceSheet, listChild)).toEqual(
       [
         {
-          bodyTitle: 'Jumlah Pendapatan',
+          bodyTitle: 'Pendapatan',
           key: 'Pendapatan',
           type: 'REVE',
-          totalTitle: 'Jumlah Pendapatan',
+          totalTitle: 'Pendapatan',
           level: 0,
           value: 1033504035,
           children: listChild
