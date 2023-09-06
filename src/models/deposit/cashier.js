@@ -11,7 +11,8 @@ import {
 import { pageModel } from '../common'
 
 const {
-  getCurrentUserStore
+  getCurrentUserStore,
+  getBalanceListCreateJournal
 } = lstorage
 
 export default modelExtend(pageModel, {
@@ -68,6 +69,9 @@ export default modelExtend(pageModel, {
                 startDate,
                 endDate
               }
+            })
+            dispatch({
+              type: 'loadListCreateJournal'
             })
           }
         }
@@ -171,6 +175,17 @@ export default modelExtend(pageModel, {
   reducers: {
     updateState (state, { payload }) {
       return { ...state, ...payload }
+    },
+    loadListCreateJournal (state) {
+      const list = getBalanceListCreateJournal()
+
+      const listCreateJournal = JSON.parse(list)
+      console.log('listCreateJournal', listCreateJournal)
+
+      return {
+        ...state,
+        listCreateJournal: listCreateJournal || []
+      }
     }
   }
 })

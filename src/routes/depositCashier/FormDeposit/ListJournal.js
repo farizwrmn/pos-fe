@@ -10,8 +10,6 @@ class ListJournal extends React.Component {
       ...tableProps
     } = this.props
 
-    console.log('tableProps', tableProps)
-
     const columns = [
       {
         title: 'No',

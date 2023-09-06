@@ -3,10 +3,15 @@ import moment from 'moment'
 import { Button, Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import ListBalance from './ListBalance'
 import ListJournal from './ListJournal'
 import Filter from './Filter'
 import ModalJournal from './ModalJournal'
+
+const {
+  setBalanceListCreateJournal
+} = lstorage
 
 class DepositCashierDetail extends React.Component {
   state = {
@@ -139,16 +144,18 @@ class DepositCashierDetail extends React.Component {
       listResolveOption,
       onCancel: handleModalJournal,
       onSubmit: (data) => {
+        const result = [
+          ...listCreateJournal,
+          {
+            id: listCreateJournal.length + 1,
+            ...data
+          }
+        ]
+        setBalanceListCreateJournal(JSON.stringify(result))
         dispatch({
           type: 'depositCashier/updateState',
           payload: {
-            listCreateJournal: [
-              ...listCreateJournal,
-              {
-                id: listCreateJournal.length + 1,
-                ...data
-              }
-            ],
+            listCreateJournal: result,
             visibleModalJournal: false
           }
         })
