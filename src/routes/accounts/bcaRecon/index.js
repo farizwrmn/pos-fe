@@ -4,6 +4,8 @@ import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Row, Col } from 'antd'
+import { lstorage } from 'utils'
+import moment from 'moment'
 import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import ListSettlementAccumulated from './ListSettlementAccumulated'
@@ -16,9 +18,13 @@ import styles from '../../../themes/index.less'
 const ImportBcaRecon = ({
   loading,
   dispatch,
-  importBcaRecon
+  location,
+  importBcaRecon,
+  app
 }) => {
-  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination, paginationListReconLog, listReconLog } = importBcaRecon
+  const { user } = app
+  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, modalStoreVisible,
+    currentItem, pagination, paginationListReconLog, listReconLog, storeName, storeId, transDate } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
@@ -39,7 +45,57 @@ const ImportBcaRecon = ({
   const listReconLogProps = {
     dataSource: listReconLog,
     pagination: paginationListReconLog,
+    storeName,
+    modalStoreVisible,
     loading: loading.effects['importBcaRecon/query'],
+    openModalStore (params) {
+      dispatch({ type: 'importBcaRecon/openModalStore', payload: { ...params } })
+    },
+    onOk: () => {
+      const listUserStores = lstorage.getListUserStores()
+      const loginTimeDiff = lstorage.getLoginTimeDiff()
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          storeId,
+          transDate
+        }
+      }))
+
+      const localId = lstorage.getStorageKey('udi')
+      const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+      const dataUdi = [
+        localId[1],
+        localId[2],
+        String(storeId),
+        localId[4],
+        moment(new Date(serverTime)),
+        localId[6],
+        listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
+      ]
+      lstorage.putStorageKey('udi', dataUdi, localId[0])
+      localStorage.setItem('newItem', JSON.stringify({ store: false }))
+      // changeRole
+      dispatch({ type: 'app/query', payload: { userid: user.userid, role: String(storeId) } })
+
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('queue')
+      localStorage.removeItem('member')
+      localStorage.removeItem('workorder')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
+      localStorage.removeItem('bundle_promo')
+      localStorage.removeItem('cashierNo')
+      dispatch({ type: 'importBcaRecon/closeModalStore' })
+      setTimeout(() => { window.location.reload() }, 1000)
+    },
+    onCancel () {
+      dispatch({ type: 'importBcaRecon/closeModalStore' })
+    },
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -112,6 +168,7 @@ const ImportBcaRecon = ({
   const formProps = {
     loading,
     dispatch,
+    query: location.query,
     onClearListImportCSVAndPayment (params) {
       dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params } })
     },
@@ -184,10 +241,12 @@ const ImportBcaRecon = ({
 export default connect(
   ({
     loading,
+    app,
     listSortPayment,
     importBcaRecon
   }) => ({
     loading,
+    app,
     listSortPayment,
     importBcaRecon
   })

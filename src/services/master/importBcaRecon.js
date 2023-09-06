@@ -205,6 +205,17 @@ export async function remove (params) {
   })
 }
 
+export async function deleteReconLog (params) {
+  const apiHeaderToken = crypt.apiheader()
+  // params.storeId and params.transDate
+  return request({
+    url: `${importbcarecon}/recon-log`,
+    method: 'delete',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${importbcarecon}/code`

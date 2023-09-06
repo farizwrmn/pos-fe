@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import {
   message
 } from 'antd'
+import { lstorage } from 'utils'
 import {
   query,
   bulkInsert,
@@ -13,7 +14,8 @@ import {
   queryBalance,
   queryErrorLog,
   queryReconLog,
-  queryImportLog
+  queryImportLog,
+  deleteReconLog
 } from 'services/master/importBcaRecon'
 import {
   pageModel
@@ -32,6 +34,7 @@ export default modelExtend(pageModel, {
     currentItemSettlement: {},
     modalType: 'add',
     modalVisible: false,
+    modalStoreVisible: false,
     modalSettlementVisible: false,
     list: [],
     listRecon: [],
@@ -52,7 +55,10 @@ export default modelExtend(pageModel, {
       showQuickJumper: true,
       current: 1
     },
-    submitLoading: false
+    storeName: '',
+    storeId: 0,
+    submitLoading: false,
+    transDate: ''
   },
 
   subscriptions: {
@@ -250,6 +256,8 @@ export default modelExtend(pageModel, {
             listSettlementAccumulated: []
           }
         })
+        // delete recon targeted recon log
+        yield call(deleteReconLog, { transDate: payload.transDate, storeId: payload.storeId })
       } else {
         throw data
       }
@@ -262,6 +270,32 @@ export default modelExtend(pageModel, {
         type: 'updateState',
         payload: {
           listReconNotMatch: filterList
+        }
+      })
+    },
+    * openModalStore ({ payload = {} }, { put }) {
+      payload.updated = 0
+      const listUserStores = lstorage.getListUserStores()
+      const filterStore = listUserStores.filter(filtered => filtered.value === payload.storeId)
+      if (filterStore && filterStore.length > 0) {
+        const store = filterStore[0]
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalStoreVisible: true,
+            storeName: store.label,
+            storeId: store.value,
+            transDate: payload.transDate
+          }
+        })
+      }
+    },
+    * closeModalStore ({ payload = {} }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStoreVisible: false
         }
       })
     },
