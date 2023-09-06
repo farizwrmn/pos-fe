@@ -32,7 +32,7 @@ export default modelExtend(pageModel, {
     selectedResolve: {},
     listResolveOption: [],
 
-    visibleResolveModal: false,
+    visibleModalJournal: false,
 
     depositBalanceDetailInfo: {},
     listDepositBalanceDetailSummary: [],

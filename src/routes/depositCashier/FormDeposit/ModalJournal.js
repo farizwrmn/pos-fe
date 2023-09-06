@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Select, Form, DatePicker, Input, Row, Button } from 'antd'
-import ModalJournalDetail from '../utils/ModalJournalDetail'
-import ListJournal from './ListJournal'
+import ModalJournalDetail from './utils/ModalJournalDetail'
+import ListJournal from './utils/ListJournal'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -31,6 +31,7 @@ class ModalResolve extends React.Component {
 
   render () {
     const {
+      journalType,
       selectedBalanceResolve,
       listAccountCodeLov,
       listResolveOption,
@@ -60,6 +61,7 @@ class ModalResolve extends React.Component {
 
         onSubmit({
           ...data,
+          journalType,
           balanceId: selectedBalanceResolve.balanceId,
           detail: listDetailJournal
         })
@@ -73,10 +75,11 @@ class ModalResolve extends React.Component {
     ]
 
     const modalJournalDetailProps = {
-      type: 'resolve',
       listAccountCodeLov,
       visible: visibleModalDetail,
-      onCancel: handleAddButton,
+      onCancel: () => {
+        handleAddButton()
+      },
       onSubmit: (data) => {
         this.setState({
           listDetailJournal: [
@@ -132,24 +135,26 @@ class ModalResolve extends React.Component {
               />
             )}
           </FormItem>
-          <FormItem label="Status Resolved" {...formItemProps}>
-            {getFieldDecorator('statusResolved', {
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <Select
-                placeholder="Pilih Penyelesaian"
-                style={{
-                  maxWidth: '250px'
-                }}
-              >
-                {listResolveOpt}
-              </Select>
-            )}
-          </FormItem>
+          {journalType === 'resolve' && (
+            <FormItem label="Status Resolved" {...formItemProps}>
+              {getFieldDecorator('statusResolved', {
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Select
+                  placeholder="Pilih Penyelesaian"
+                  style={{
+                    maxWidth: '250px'
+                  }}
+                >
+                  {listResolveOpt}
+                </Select>
+              )}
+            </FormItem>
+          )}
           <FormItem label="Reference" {...formItemProps}>
             {getFieldDecorator('reference', {
               rules: [

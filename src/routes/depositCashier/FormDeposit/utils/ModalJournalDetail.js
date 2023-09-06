@@ -21,7 +21,6 @@ const formItemProps = {
 }
 
 const ModalJournalDetail = ({
-  type,
   listAccountCodeLov,
   onCancel,
   onSubmit,
@@ -46,7 +45,6 @@ const ModalJournalDetail = ({
       const selectedAccount = listAccountCodeLov.find(item => item.id === data.accountId)
 
       onSubmit({
-        type,
         accountId: data.accountId,
         accountName: selectedAccount ? `${selectedAccount.accountName} (${selectedAccount.accountCode})` : 'Not Found!',
         amountIn: data.amountIn === true ? data.amount : 0,
