@@ -6,10 +6,11 @@ import { routerRedux } from 'dva/router'
 import ListBalance from './ListBalance'
 import ListJournal from './ListJournal'
 import Filter from './Filter'
+import ModalResolve from './ModalResolve/index'
 
 class DepositCashierDetail extends React.Component {
   state = {
-    listCreateJournal: []
+    selectedBalanceResolve: {}
   }
 
   render () {
@@ -17,10 +18,11 @@ class DepositCashierDetail extends React.Component {
       loading,
       location,
       dispatch,
-      depositCashier
+      depositCashier,
+      accountRule
     } = this.props
     const {
-      listCreateJournal
+      selectedBalanceResolve
     } = this.state
 
     const {
@@ -28,13 +30,28 @@ class DepositCashierDetail extends React.Component {
       listDetail,
       paginationDetail,
 
-      listResolveOption
+      listResolveOption,
+
+      visibleResolveModal,
+
+      listCreateJournal
     } = depositCashier
 
-    console.log('listResolveOption', listResolveOption)
+    const {
+      listAccountCodeLov
+    } = accountRule
 
     const handleBackButton = () => {
       dispatch(routerRedux.push('/setoran/cashier'))
+    }
+
+    const handleResolveModal = () => {
+      dispatch({
+        type: 'depositCashier/updateState',
+        payload: {
+          visibleResolveModal: !visibleResolveModal
+        }
+      })
     }
 
     const listBalanceProps = {
@@ -53,6 +70,12 @@ class DepositCashierDetail extends React.Component {
             pageSize
           }
         }))
+      },
+      handleResolve: (data) => {
+        this.setState({
+          selectedBalanceResolve: data
+        })
+        handleResolveModal()
       }
     }
 
@@ -94,8 +117,32 @@ class DepositCashierDetail extends React.Component {
       }
     }
 
+    const modalResolveProps = {
+      selectedBalanceResolve,
+      listAccountCodeLov,
+      visible: visibleResolveModal,
+      listResolveOption,
+      onCancel: handleResolveModal,
+      onSubmit: (data) => {
+        dispatch({
+          type: 'depositCashier/updateState',
+          payload: {
+            listCreateJournal: [
+              ...listCreateJournal,
+              {
+                id: listCreateJournal.length + 1,
+                ...data
+              }
+            ],
+            visibleResolveModal: false
+          }
+        })
+      }
+    }
+
     return (
       <div className="content-inner">
+        {visibleResolveModal && <ModalResolve {...modalResolveProps} />}
         <Row style={{ marginBottom: '30px' }}>
           <Button type="primary" icon="rollback" onClick={handleBackButton}>Back</Button>
         </Row>
@@ -115,8 +162,10 @@ class DepositCashierDetail extends React.Component {
 
 export default connect(({
   loading,
-  depositCashier
+  depositCashier,
+  accountRule
 }) => ({
   loading,
-  depositCashier
+  depositCashier,
+  accountRule
 }))(DepositCashierDetail)

@@ -36,7 +36,9 @@ export default modelExtend(pageModel, {
 
     depositBalanceDetailInfo: {},
     listDepositBalanceDetailSummary: [],
-    listDepositBalanceDetailResolve: []
+    listDepositBalanceDetailResolve: [],
+
+    listCreateJournal: []
   },
 
   subscriptions: {

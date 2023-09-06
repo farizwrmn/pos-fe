@@ -1,11 +1,12 @@
 import moment from 'moment'
-import { Button, Col, Row, Table, Tag } from 'antd'
+import { Button, Col, Row, Table } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListBalance = ({
   loading,
   summaryDetail,
   handleChangePagination,
+  handleResolve,
   ...tableProps
 }) => {
   const columns = [
@@ -41,14 +42,9 @@ const ListBalance = ({
     {
       title: 'Action',
       render: (_, record) => {
-        if (record.status === 'completed') {
-          <div style={{ textAlign: 'center' }}>
-            <Tag color="green">Completed</Tag>
-          </div>
-        }
         return (
           <div style={{ textAlign: 'center' }}>
-            <Button type="primary">
+            <Button type="primary" onClick={() => handleResolve(record)}>
               Resolve
             </Button>
           </div>
