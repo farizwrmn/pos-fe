@@ -5,12 +5,8 @@ import { lstorage } from 'utils'
 import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
 import { query } from 'services/balancePayment/balanceDepositService'
 import {
-  queryJournal as queryDepositDetailJournal
-} from 'services/balancePayment/balanceDepositDetailService'
-import {
   query as queryBalanceResolve,
-  queryResolveOption,
-  queryUpdateStatus
+  queryResolveOption
 } from 'services/balancePayment/balanceResolveService'
 import { pageModel } from '../common'
 
@@ -41,7 +37,6 @@ export default modelExtend(pageModel, {
     selectedResolve: {},
     listResolveOption: [],
 
-    visibleAddDepositModal: false,
     visibleResolveModal: false,
 
     depositBalanceDetailInfo: {},
@@ -54,7 +49,6 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname, query } = location
         const { page, pageSize } = query
-        const match = pathToRegexp('/setoran/cashier/:id').exec(pathname)
         const matchCashierDetail = pathToRegexp('/setoran/cashier/detail/:id').exec(pathname)
         if (matchCashierDetail) {
           dispatch({
@@ -64,13 +58,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (match) {
-          dispatch({
-            type: 'queryDepositDetailJournal',
-            payload: {
-              transId: decodeURIComponent(match[1])
-            }
-          })
+        if (pathname === '/setoran/cashier/new') {
           dispatch({
             type: 'queryResolveOption'
           })
@@ -108,24 +96,6 @@ export default modelExtend(pageModel, {
         message.error(response.message)
       }
     },
-    * queryDepositDetailJournal ({ payload = {} }, { call, put }) {
-      const response = yield call(queryDepositDetailJournal, payload)
-      if (response && response.success && response.data) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            listJournal: response.data,
-            paginationJournal: {
-              current: Number(response.page || 1),
-              pageSize: Number(response.pageSize || 10),
-              total: Number(response.total || 0)
-            }
-          }
-        })
-      } else {
-        message.error(response.message)
-      }
-    },
     * queryResolveOption ({ payload = {} }, { call, put }) {
       const response = yield call(queryResolveOption, payload)
       if (response && response.success && response.data) {
@@ -133,28 +103,6 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listResolveOption: response.data
-          }
-        })
-      } else {
-        message.error(response.message)
-      }
-    },
-    * queryUpdateStatus ({ payload = {} }, { call, put }) {
-      const response = yield call(queryUpdateStatus, payload)
-      if (response && response.data && response.success) {
-        yield put({
-          type: 'queryDepositDetailResolve',
-          payload: {
-            transId: payload.transId,
-            page: payload.page,
-            pageSize: payload.pageSize
-          }
-        })
-        yield put({
-          type: 'updateState',
-          payload: {
-            visibleResolveModal: false,
-            selectedResolve: {}
           }
         })
       } else {

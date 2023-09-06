@@ -11,13 +11,3 @@ export const query = (params) => {
     headers: apiHeaderToken
   })
 }
-
-export const queryAdd = (params) => {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: balanceDeposit,
-    method: 'post',
-    data: params,
-    headers: apiHeaderToken
-  })
-}

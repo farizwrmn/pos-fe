@@ -4,6 +4,7 @@ const FormItem = Form.Item
 const RangePicker = DatePicker.RangePicker
 
 const Filter = ({
+  onSubmit,
   form: {
     getFieldDecorator,
     validateFields,
@@ -18,7 +19,7 @@ const Filter = ({
         ...getFieldsValue()
       }
 
-      console.log('data', data)
+      onSubmit(data)
     })
   }
 

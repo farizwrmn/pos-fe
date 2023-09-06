@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import { Button, Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
@@ -67,7 +68,15 @@ class DepositCashierDetail extends React.Component {
     }
 
     const filterProps = {
-
+      onSubmit: (data) => {
+        const { rangeDate } = data
+        if (rangeDate && rangeDate.length > 0) {
+          const startDate = moment(rangeDate[0]).format('YYYY-MM-DD')
+          const endDate = moment(rangeDate[1]).format('YYYY-MM-DD')
+          console.log('startDate', startDate)
+          console.log('endDate', endDate)
+        }
+      }
     }
 
     return (

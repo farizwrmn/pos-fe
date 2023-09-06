@@ -6,16 +6,6 @@ const ListJournal = ({
 }) => {
   const columns = [
     {
-      title: 'Invoice',
-      dataIndex: 'transNo',
-      key: 'transNo'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description'
-    },
-    {
       title: 'Account',
       render: (_, record) => <div>{record.accountCode} - {record.accountName}</div>
     },
@@ -30,9 +20,9 @@ const ListJournal = ({
       key: 'amountOut'
     },
     {
-      title: 'Status',
-      dataIndex: 'recon',
-      key: 'recon'
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     }
   ]
 
@@ -43,7 +33,7 @@ const ListJournal = ({
           List Journal
         </h3>
         <Button type="primary" icon="plus">
-          Create Journal
+          Add Journal
         </Button>
       </Row>
       <Table

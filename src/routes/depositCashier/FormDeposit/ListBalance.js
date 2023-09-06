@@ -59,7 +59,7 @@ const ListBalance = ({
   return (
     <Col>
       <h3 style={{ fontWeight: 'bold' }}>
-        List Detail
+        List Balance
       </h3>
       <Table
         {...tableProps}

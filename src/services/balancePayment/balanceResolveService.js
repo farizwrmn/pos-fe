@@ -20,13 +20,3 @@ export const queryResolveOption = () => {
     headers: apiHeaderToken
   })
 }
-
-export const queryUpdateStatus = (params) => {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: balanceResolve,
-    method: 'put',
-    data: params,
-    headers: apiHeaderToken
-  })
-}
