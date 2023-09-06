@@ -54,8 +54,8 @@ describe('Test third level', () => {
               {
                 type: 'FASS',
                 level: 2,
-                bodyTitle: 'Nilai Histori',
-                totalTitle: 'Jumlah Nilai Histori',
+                bodyTitle: 'Aset Tetap',
+                totalTitle: 'Jumlah Aset Tetap',
                 value: -14431023194.4
               },
               {
@@ -193,8 +193,8 @@ describe('Test third level', () => {
                 {
                   type: 'FASS',
                   level: 2,
-                  bodyTitle: 'Nilai Histori',
-                  totalTitle: 'Jumlah Nilai Histori',
+                  bodyTitle: 'Aset Tetap',
+                  totalTitle: 'Jumlah Aset Tetap',
                   value: -14431023194.4
                 },
                 {
@@ -325,8 +325,8 @@ describe('Test second level', () => {
               {
                 type: 'FASS',
                 level: 2,
-                bodyTitle: 'Nilai Histori',
-                totalTitle: 'Jumlah Nilai Histori',
+                bodyTitle: 'Aset Tetap',
+                totalTitle: 'Jumlah Aset Tetap',
                 value: -14431023194.4
               },
               {
@@ -466,8 +466,8 @@ describe('Test second level', () => {
                 {
                   type: 'FASS',
                   level: 2,
-                  bodyTitle: 'Nilai Histori',
-                  totalTitle: 'Jumlah Nilai Histori',
+                  bodyTitle: 'Aset Tetap',
+                  totalTitle: 'Jumlah Aset Tetap',
                   value: -14431023194.4
                 },
                 {
