@@ -8,6 +8,8 @@ import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import ListSettlementAccumulated from './ListSettlementAccumulated'
 import Form from './Form'
+// import ListErrorLog from './ListErrorLog'
+import ListReconLog from './ListReconLog'
 import FormInputMdrAmount from './FormInputMdrAmount'
 import styles from '../../../themes/index.less'
 
@@ -16,11 +18,28 @@ const ImportBcaRecon = ({
   dispatch,
   importBcaRecon
 }) => {
-  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination } = importBcaRecon
+  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, currentItem, pagination, paginationListReconLog, listReconLog } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
     pagination,
     loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
+        }
+      }))
+    }
+  }
+
+  const listReconLogProps = {
+    dataSource: listReconLog,
+    pagination: paginationListReconLog,
+    loading: loading.effects['importBcaRecon/query'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -152,6 +171,12 @@ const ImportBcaRecon = ({
           <ListImportCSV {...listImportCSV} />
         </Col>
       </Row>
+      <Row>
+        <Col>
+          <ListReconLog {...listReconLogProps} />
+        </Col>
+      </Row>
+
     </div>
   )
 }

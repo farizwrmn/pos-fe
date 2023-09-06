@@ -30,11 +30,42 @@ export async function queryTransaction (params = {}) {
   })
 }
 
+export async function queryImportLog (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/log`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryBalance (params = {}) {
   params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${importbcarecon}/balance`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryErrorLog (params = {}) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/error-log`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryReconLog (params = {}) {
+  params.storeId = lstorage.getCurrentUserStore()
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${importbcarecon}/recon-log`,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -65,16 +96,6 @@ export async function updateMatchPaymentAndRecon (params) {
       accumulatedTransfer: params.accumulatedTransfer,
       paymentData: params.paymentData
     },
-    headers: apiHeaderToken
-  })
-}
-
-export async function queryFilename (params) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${importbcarecon}/filename`,
-    method: 'get',
-    data: params,
     headers: apiHeaderToken
   })
 }

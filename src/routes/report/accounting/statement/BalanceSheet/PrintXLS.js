@@ -329,8 +329,8 @@ const PrintXLS = ({ listTrans, listProfitCompare, listProfit, storeInfo, to }) =
                 {
                   type: 'FASS',
                   level: 2,
-                  bodyTitle: 'Nilai Histori',
-                  totalTitle: 'Jumlah Nilai Histori'
+                  bodyTitle: 'Aset Tetap',
+                  totalTitle: 'Jumlah Aset Tetap'
                 },
                 {
                   type: 'DEPR',
