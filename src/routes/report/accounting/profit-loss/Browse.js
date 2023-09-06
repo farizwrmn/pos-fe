@@ -34,9 +34,6 @@ const Browse = ({ from, to, storeId, onExpandChildAccountType, ...browseProps })
       dataIndex: 'value',
       key: 'value',
       width: '155px',
-      filters: [
-        { text: 'Include Zero', value: '0' }
-      ],
       render: text => formatNumberIndonesia(text)
     }
   ]
