@@ -86,7 +86,7 @@ export default modelExtend(pageModel, {
       let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
       let transDate = yield select(({ importBcaRecon }) => importBcaRecon.transDate)
       const { query, pathname } = payload.location
-
+      const { ...other } = query
       const loginTimeDiff = lstorage.getLoginTimeDiff()
       const localId = lstorage.getStorageKey('udi')
       const listUserStores = lstorage.getListUserStores()
@@ -114,11 +114,11 @@ export default modelExtend(pageModel, {
       localStorage.removeItem('cashierNo')
       yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
 
-      yield put({ type: 'importBcaRecon/closeModalStore' })
-
+      yield put({ type: 'closeModalStore' })
       yield put({
-        type: 'importBcaRecon/sortNullMdrAmount',
+        type: 'sortNullMdrAmount',
         payload: {
+          other,
           payment: { storeId, transDate: moment(transDate).format('YYYY-MM-DD') },
           paymentImportBca: {
             transactionDate: moment(transDate).format('YYYY-MM-DD'),
@@ -137,26 +137,20 @@ export default modelExtend(pageModel, {
         }
       }))
     },
-    * sortNullMdrAmount ({ payload }, { call, put, select }) {
+    * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
       const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
       const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
       const dataMappingStore = yield call(queryMappingStore)
-      const dataListReconLog = yield select(({ importBcaRecon }) => importBcaRecon.listReconLog)
+      const listReconLog = yield call(queryReconLog, {
+        ...payload.other,
+        order: '-transDate'
+      })
       // update list Total Transfer
       yield put({
         type: 'queryErrorLog',
         payload: { transDate: payload.payment.transDate }
       })
-      yield put({ type: 'queryReconLog', payload: { transDate: payload.payment.transDate } })
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            listPaymentMachine: data.data
-          }
-        })
-      }
 
       const posPaymentData = yield call(queryPosPayment, payload.payment)
       const paymentImportBcaData = yield call(query, payload.paymentImportBca)
@@ -199,8 +193,15 @@ export default modelExtend(pageModel, {
             })
           }
         }
-        console.log('dataBalance', dataBalance)
-
+        // console.log('dataBalance', dataBalance)
+        if (listReconLog.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listReconLog: listReconLog.data
+            }
+          })
+        }
         // validation import bank ?
         // mengecek data di tbl balance dan transaction ada storeId dan transDate
         const Transaction = dataTransaction.length > 0
@@ -217,12 +218,20 @@ export default modelExtend(pageModel, {
           return
         }
 
+        if (data.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listPaymentMachine: data.data
+            }
+          })
+        }
+
         yield put({
           type: 'updateState',
           payload: {
             listSortPayment: sortDataPayment.sort((a, b) => a.matchMdr - b.matchMdr),
-            list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0)),
-            listReconLog: dataListReconLog
+            list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0))
           }
         })
       } else if (!posPaymentData.success) {
