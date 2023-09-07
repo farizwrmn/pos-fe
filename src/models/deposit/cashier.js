@@ -20,6 +20,7 @@ import {
 import { pageModel } from '../common'
 
 const {
+  getCurrentUserRole,
   getCurrentUserStore,
   getBalanceListCreateJournal,
   removeBalanceListCreateJournal
@@ -63,7 +64,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { page, pageSize, startDate, endDate } = query
+        const { page, pageSize, startDate, endDate, all } = query
         const matchCashierDetail = pathToRegexp('/setoran/cashier/detail/:id').exec(pathname)
         const matchCashierBalanceDetail = pathToRegexp('/setoran/cashier/balance/:id').exec(pathname)
         if (matchCashierDetail) {
@@ -110,7 +111,8 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: {
               page,
-              pageSize
+              pageSize,
+              all
             }
           })
         }
@@ -120,8 +122,14 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      payload.storeId = getCurrentUserStore()
-      const response = yield call(query, payload)
+      const { all = false, ...other } = payload
+      const allStore = JSON.parse(all)
+      const userRole = getCurrentUserRole()
+      const currentStore = getCurrentUserStore()
+      if (userRole !== 'OWN' || !allStore) {
+        other.storeId = currentStore
+      }
+      const response = yield call(query, other)
       if (response && response.success && response.data) {
         yield put({
           type: 'updateState',
