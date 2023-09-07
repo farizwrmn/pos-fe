@@ -303,7 +303,7 @@ export default modelExtend(pageModel, {
       }, [])
       const requestData = {
         transDate: payload.transDate ? payload.transDate.format('YYYY-MM-DD') : null,
-        accumulatedTransfer: listPaymentMachine.map(({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal }) => ({ id, merchantPaymentDate, grossAmount, accountId, accountIdReal })),
+        accumulatedTransfer: listPaymentMachine.map(({ id, merchantPaymentDate, nettAmount, accountId, accountIdReal }) => ({ id, merchantPaymentDate, nettAmount, accountId, accountIdReal })),
         csvData: mappingListWithPaymentId.map(item => ({ id: item.id, paymentId: item.paymentId })),
         paymentData: listSortPayment.map(item => ({ id: item.id, matchMdr: item.matchMdr, csvId: item.csvId }))
       }
