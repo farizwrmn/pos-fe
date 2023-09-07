@@ -24,7 +24,7 @@ const ImportBcaRecon = ({
   const listImportCSV = {
     dataSource: list,
     pagination,
-    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    loading: loading.effects['importBcaRecon/sortNullMdrAmount'] || loading.effects['importBcaRecon/bulkInsert'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -43,7 +43,7 @@ const ImportBcaRecon = ({
     pagination: paginationListReconLog,
     storeName,
     modalStoreVisible,
-    loading: loading.effects['importBcaRecon/query'],
+    loading: loading.effects['importBcaRecon/queryReconLog'] || loading.effects['importBcaRecon/sortNullMdrAmount'],
     openModalStore (params) {
       dispatch({ type: 'importBcaRecon/openModalStore', payload: { ...params } })
     },
@@ -69,7 +69,7 @@ const ImportBcaRecon = ({
   const listSettlementAccumulatedProps = {
     dataSource: listPaymentMachine,
     pagination,
-    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/sortNullMdrAmount'] || loading.effects['importBcaRecon/bulkInsert'],
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -105,7 +105,7 @@ const ImportBcaRecon = ({
   const listPaymentProps = {
     dataSource: listSortPayment,
     pagination,
-    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/bulkInsert'],
+    loading: loading.effects['importBcaRecon/query'] || loading.effects['importBcaRecon/sortNullMdrAmount'] || loading.effects['importBcaRecon/bulkInsert'],
     openModalInputMdrAmount (params) {
       dispatch({ type: 'importBcaRecon/openModalInputMdrAmount', payload: { ...params } })
     },
