@@ -5,8 +5,10 @@ import { currencyFormatter } from 'utils/string'
 const ListBalance = ({
   loading,
   summaryDetail,
+  listCreateJournal,
   handleChangePagination,
   handleResolve,
+  handleEdit,
   ...tableProps
 }) => {
   const columns = [
@@ -40,16 +42,19 @@ const ListBalance = ({
       render: value => <div style={{ textAlign: 'right' }}>{currencyFormatter(value)}</div>
     },
     {
-      title: 'Action',
+      title: 'Journal',
       render: (_, record) => {
+        const currentCreateJournal = listCreateJournal.find(item => item.balanceId === record.balanceId)
+        if (currentCreateJournal) return <div style={{ textAlign: 'center' }} onClick={handleEdit}>{currentCreateJournal.reference}</div>
         return (
           <div style={{ textAlign: 'center' }}>
             <Button
               type="primary"
+              icon="plus"
               onClick={() => handleResolve(record)}
               loading={loading.effects['depositCashier/queryAdd']}
             >
-              Resolve
+              Create Journal
             </Button>
           </div>
         )

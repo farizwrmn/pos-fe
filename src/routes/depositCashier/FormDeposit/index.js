@@ -91,6 +91,7 @@ class DepositCashierDetail extends React.Component {
     const listBalanceProps = {
       loading,
       summaryDetail,
+      listCreateJournal,
       dataSource: listDetail,
       pagination: paginationDetail,
       handleChangePagination: (pagination) => {

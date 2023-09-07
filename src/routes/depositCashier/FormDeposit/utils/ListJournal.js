@@ -40,24 +40,24 @@ const ListJournal = ({
         const totalDebit = dataSource.reduce((prev, curr) => { return prev + curr.amountIn }, 0)
         const totalCredit = dataSource.reduce((prev, curr) => { return prev + curr.amountOut }, 0)
         return (
-          <Col>
+          <div style={{ maxWidth: '150px' }}>
             <Row type="flex">
-              <Col>
+              <Col style={{ flex: 1 }}>
                 Debit
               </Col>
               <Col>
                 {currencyFormatter(totalDebit)}
               </Col>
             </Row>
-            <Row>
-              <Col>
+            <Row type="flex">
+              <Col style={{ flex: 1 }}>
                 Credit
               </Col>
               <Col>
                 {currencyFormatter(totalCredit)}
               </Col>
             </Row>
-          </Col>
+          </div>
         )
       }}
     />
