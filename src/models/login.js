@@ -1,6 +1,5 @@
 import moment from 'moment'
 import { routerRedux } from 'dva/router'
-import { Modal } from 'antd'
 import { configCompany, queryURL, lstorage, messageInfo } from 'utils'
 import { APPNAME } from 'utils/config.company'
 import { prefix } from 'utils/config.main'
@@ -97,21 +96,6 @@ export default {
           yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
         }
         if (modalLoginType === 'cancelHistory') {
-          const userRole = lstorage.getCurrentUserRole()
-          if (userRole !== 'OWN') {
-            const listPayment = yield select(({ pos }) => pos.listPayment)
-            const selectedPayment = listPayment.find(item => item.transNo === modalLoginData.transNo)
-            const paymentTransDate = moment(selectedPayment.transDate, 'YYYY-MM-DD')
-            const restrictedDate = moment().subtract(1, 'days')
-            const restrictCancel = restrictedDate.isAfter(paymentTransDate)
-            if (!selectedPayment || restrictCancel) {
-              Modal.error({
-                title: 'Failed to cancel invoice',
-                content: 'Please contact administrator to complete this action!'
-              })
-              return
-            }
-          }
           yield put({ type: 'pos/cancelInvoice', payload: modalLoginData })
         }
         if (modalLoginType === 'resetPaymentPaylabsQRIS') {
