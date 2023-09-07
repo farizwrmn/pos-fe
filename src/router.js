@@ -219,6 +219,10 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/productSource'))
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
           }

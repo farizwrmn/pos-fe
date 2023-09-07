@@ -39,6 +39,7 @@ const FormCounter = ({
     validateFields,
     getFieldsValue,
     getFieldValue,
+    setFieldsValue,
     resetFields
   }
 }) => {
@@ -84,7 +85,7 @@ const FormCounter = ({
   }
 
   const productDivision = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.divisionName}</Option>) : []
-  const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.id === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id}>{c.departmentName}</Option>) : []
+  const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.divisionId === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id}>{c.departmentName}</Option>) : []
 
   return (
     <Form layout="horizontal">
@@ -101,6 +102,7 @@ const FormCounter = ({
             })(<Select
               showSearch
               optionFilterProp="children"
+              onChange={() => setFieldsValue({ departmentId: null })}
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
             >{productDivision}
             </Select>)}

@@ -64,6 +64,10 @@ class AdvancedForm extends Component {
       item = {},
       onSubmit,
       onCancel,
+      listSource,
+      listDivision,
+      listDepartment,
+      listSubdepartment,
       onGetSupplier,
       disabled,
       loadingButton,
@@ -577,6 +581,11 @@ class AdvancedForm extends Component {
       }
     }
 
+    const productSource = (listSource || []).length > 0 ? listSource.map(c => <Option value={c.id} key={c.id}>{c.sourceName}</Option>) : []
+    const productDivision = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.divisionName}</Option>) : []
+    const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.divisionId === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id}>{c.departmentName}</Option>) : []
+    const productSubdepartment = (listSubdepartment || []).length > 0 ? listSubdepartment.filter(filtered => filtered.departmentId === getFieldValue('departmentId')).map(c => <Option value={c.id} key={c.id}>{c.subdepartmentName}</Option>) : []
+
     return (
       <Form layout="horizontal">
         <FooterToolbar>
@@ -725,20 +734,14 @@ class AdvancedForm extends Component {
                   ]
                 })(<Select
                   showSearch
-                  allowClear
-                  onFocus={() => category()}
-                  onChange={handleChangeCategoryId}
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productCategory}
+                >{productSource}
                 </Select>)}
               </FormItem>
               <FormItem label={(<Link target="_blank" to="/stock-division">Division</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('divisionId', {
-                  initialValue: item.divisionId ? {
-                    key: item.divisionId,
-                    label: item.divisionName
-                  } : {},
+                  initialValue: item.divisionId,
                   rules: [
                     {
                       required: true
@@ -746,21 +749,15 @@ class AdvancedForm extends Component {
                   ]
                 })(<Select
                   showSearch
-                  allowClear
-                  onFocus={() => category()}
-                  onChange={handleChangeCategoryId}
+                  onChange={() => setFieldsValue({ departmentId: null, subdepartmentId: null })}
                   optionFilterProp="children"
-                  labelInValue
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productCategory}
+                >{productDivision}
                 </Select>)}
               </FormItem>
               <FormItem label={(<Link target="_blank" to="/stock-department">Department</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('departmentId', {
-                  initialValue: item.departmentId ? {
-                    key: item.departmentId,
-                    label: item.departmentName
-                  } : {},
+                  initialValue: item.departmentId,
                   rules: [
                     {
                       required: true
@@ -768,21 +765,15 @@ class AdvancedForm extends Component {
                   ]
                 })(<Select
                   showSearch
-                  allowClear
-                  onFocus={() => category()}
-                  onChange={handleChangeCategoryId}
+                  onChange={() => setFieldsValue({ subdepartmentId: null })}
                   optionFilterProp="children"
-                  labelInValue
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productCategory}
+                >{productDepartment}
                 </Select>)}
               </FormItem>
               <FormItem label={(<Link target="_blank" to="/stock-subdepartment">Subdepartment</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('subdepartmentId', {
-                  initialValue: item.subdepartmentId ? {
-                    key: item.subdepartmentId,
-                    label: item.subdepartmentName
-                  } : {},
+                  initialValue: item.subdepartmentId,
                   rules: [
                     {
                       required: true
@@ -790,13 +781,9 @@ class AdvancedForm extends Component {
                   ]
                 })(<Select
                   showSearch
-                  allowClear
-                  onFocus={() => category()}
-                  onChange={handleChangeCategoryId}
                   optionFilterProp="children"
-                  labelInValue
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productCategory}
+                >{productSubdepartment}
                 </Select>)}
               </FormItem>
               <FormItem label={(<Link target="_blank" to="/master/product/category">Category</Link>)} hasFeedback {...formItemLayout}>
