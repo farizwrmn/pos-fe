@@ -47,7 +47,9 @@ const Filter = ({
             }
           ]
         })(
-          <RangePicker />
+          <RangePicker
+            allowClear={false}
+          />
         )}
       </FormItem>
       <FormItem>
