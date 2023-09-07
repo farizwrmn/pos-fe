@@ -37,8 +37,7 @@ export default modelExtend(pageModel, {
           })
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
         }
-        if (
-          pathname === '/stock'
+        if (pathname === '/stock'
           || pathname === '/stock-department'
           || pathname === '/stock-subdepartment') {
           if (activeKey !== '1') dispatch({ type: 'query', payload: { type: 'all' } })
