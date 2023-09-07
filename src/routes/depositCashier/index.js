@@ -7,6 +7,7 @@ import List from './List'
 class DepositCashier extends React.Component {
   render () {
     const {
+      location,
       dispatch,
 
       depositCashier
@@ -17,6 +18,7 @@ class DepositCashier extends React.Component {
     } = depositCashier
 
     const listProps = {
+      location,
       dataSource: list
     }
 

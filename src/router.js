@@ -517,7 +517,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/accounts/accountRule'))
               registerModel(app, require('./models/deposit/cashier'))
-              cb(null, require('./routes/depositCashier/FormDeposit'))
+              cb(null, require('./routes/depositCashier/Detail'))
             }, 'deposit-cashier-detail')
           }
         }, {

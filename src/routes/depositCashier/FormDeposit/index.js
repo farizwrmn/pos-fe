@@ -256,7 +256,7 @@ class DepositCashierDetail extends React.Component {
               onClick={handleBackButton}
               loading={loading.effects['depositCashier/queryAdd']}
             >
-              Back
+              Cancel
             </Button>
           </Col>
           <Button

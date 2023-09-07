@@ -3,8 +3,17 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
-import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
-import { query, queryBalance as queryBalanceList, queryAdd } from 'services/balancePayment/balanceDepositService'
+import {
+  queryInvoice as queryBalanceSummary
+} from 'services/balancePayment/balanceSummaryService'
+import {
+  query,
+  queryBalance as queryBalanceList,
+  queryAdd
+} from 'services/balancePayment/balanceDepositService'
+import {
+  queryDetail as queryBalanceDepositDetail
+} from 'services/balancePayment/balanceDepositDetailService'
 import {
   queryResolveOption
 } from 'services/balancePayment/balanceResolveService'
@@ -20,11 +29,13 @@ export default modelExtend(pageModel, {
   namespace: 'depositCashier',
 
   state: {
+    // setoran/cashier
     list: [],
     pagination: {
       current: 1
     },
 
+    // setoran/cashier/add
     summaryDetail: {},
     listDetail: [],
     paginationDetail: {
@@ -36,10 +47,16 @@ export default modelExtend(pageModel, {
 
     visibleModalJournal: false,
 
+    listCreateJournal: [],
+
+    // setoran/cashier/balance/:id
     depositBalanceDetailInfo: {},
     listDepositBalanceDetailSummary: [],
 
-    listCreateJournal: []
+    // setoran/cashier/detail/:id
+    balanceDepositInfo: {},
+    listDepositBalance: [],
+    listDepositJournal: []
   },
 
   subscriptions: {
@@ -47,7 +64,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname, query } = location
         const { page, pageSize, startDate, endDate } = query
+        const matchCashierDetail = pathToRegexp('/setoran/cashier/detail/:id').exec(pathname)
         const matchCashierBalanceDetail = pathToRegexp('/setoran/cashier/balance/:id').exec(pathname)
+        if (matchCashierDetail) {
+          dispatch({
+            type: 'queryBalanceDepositDetail',
+            payload: {
+              transId: matchCashierDetail[1]
+            }
+          })
+        }
         if (matchCashierBalanceDetail) {
           dispatch({
             type: 'queryDepositBalanceDetail',
@@ -106,6 +132,21 @@ export default modelExtend(pageModel, {
               pageSize: Number(response.pageSize || 10),
               total: Number(response.total || 0)
             }
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * queryBalanceDepositDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryBalanceDepositDetail, payload)
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            balanceDepositInfo: response.data.balanceDeposit,
+            listDepositBalance: response.data.balanceData,
+            listDepositJournal: response.data.journalData
           }
         })
       } else {
