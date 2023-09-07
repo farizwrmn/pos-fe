@@ -2,6 +2,9 @@ import modelExtend from 'dva-model-extend'
 import {
   message
 } from 'antd'
+import moment from 'moment'
+import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import {
   query,
   bulkInsert,
@@ -13,7 +16,8 @@ import {
   queryBalance,
   queryErrorLog,
   queryReconLog,
-  queryImportLog
+  queryImportLog,
+  deleteReconLog
 } from 'services/master/importBcaRecon'
 import {
   pageModel
@@ -32,6 +36,7 @@ export default modelExtend(pageModel, {
     currentItemSettlement: {},
     modalType: 'add',
     modalVisible: false,
+    modalStoreVisible: false,
     modalSettlementVisible: false,
     list: [],
     listRecon: [],
@@ -52,7 +57,11 @@ export default modelExtend(pageModel, {
       showQuickJumper: true,
       current: 1
     },
-    submitLoading: false
+    reconLogId: 0,
+    storeName: '',
+    storeId: 0,
+    submitLoading: false,
+    transDate: ''
   },
 
   subscriptions: {
@@ -71,26 +80,77 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    // eslint-disable-next-line no-unused-vars
+    * processChangeStore ({ payload }, { put, select }) {
+      const user = yield select(({ app }) => app.user)
+      let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
+      let transDate = yield select(({ importBcaRecon }) => importBcaRecon.transDate)
+      const { query, pathname } = payload.location
+      const { ...other } = query
+      const loginTimeDiff = lstorage.getLoginTimeDiff()
+      const localId = lstorage.getStorageKey('udi')
+      const listUserStores = lstorage.getListUserStores()
+      const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+      const dataUdi = [
+        localId[1],
+        localId[2],
+        [storeId],
+        localId[4],
+        moment(new Date(serverTime)),
+        localId[6],
+        listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
+      ]
+      lstorage.putStorageKey('udi', dataUdi, localId[0])
+      localStorage.setItem('newItem', JSON.stringify({ store: false }))
+      localStorage.removeItem('cashier_trans')
+      localStorage.removeItem('queue')
+      localStorage.removeItem('member')
+      localStorage.removeItem('workorder')
+      localStorage.removeItem('memberUnit')
+      localStorage.removeItem('mechanic')
+      localStorage.removeItem('service_detail')
+      localStorage.removeItem('consignment')
+      localStorage.removeItem('bundle_promo')
+      localStorage.removeItem('cashierNo')
+      yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
+
+      yield put({ type: 'closeModalStore' })
+      yield put({
+        type: 'sortNullMdrAmount',
+        payload: {
+          other,
+          payment: { storeId, transDate: moment(transDate).format('YYYY-MM-DD') },
+          paymentImportBca: {
+            transactionDate: moment(transDate).format('YYYY-MM-DD'),
+            recordSource: ['TC', 'TD'],
+            storeId,
+            type: 'all'
+          }
+        }
+      })
+      yield put(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          storeId,
+          transDate
+        }
+      }))
+    },
     * sortNullMdrAmount ({ payload }, { call, put }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
       const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
       const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
       const dataMappingStore = yield call(queryMappingStore)
+      const listReconLog = yield call(queryReconLog, {
+        ...payload.other,
+        order: '-transDate'
+      })
       // update list Total Transfer
-
       yield put({
         type: 'queryErrorLog',
         payload: { transDate: payload.payment.transDate }
       })
-
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            listPaymentMachine: data.data
-          }
-        })
-      }
 
       const posPaymentData = yield call(queryPosPayment, payload.payment)
       const paymentImportBcaData = yield call(query, payload.paymentImportBca)
@@ -133,8 +193,15 @@ export default modelExtend(pageModel, {
             })
           }
         }
-        console.log('dataBalance', dataBalance)
-
+        // console.log('dataBalance', dataBalance)
+        if (listReconLog.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listReconLog: listReconLog.data
+            }
+          })
+        }
         // validation import bank ?
         // mengecek data di tbl balance dan transaction ada storeId dan transDate
         const Transaction = dataTransaction.length > 0
@@ -151,6 +218,15 @@ export default modelExtend(pageModel, {
           return
         }
 
+        if (data.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listPaymentMachine: data.data
+            }
+          })
+        }
+
         yield put({
           type: 'updateState',
           payload: {
@@ -158,7 +234,6 @@ export default modelExtend(pageModel, {
             list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0))
           }
         })
-        yield put({ type: 'queryReconLog' })
       } else if (!posPaymentData.success) {
         throw posPaymentData
       } else if (!paymentImportBcaData.success) {
@@ -240,6 +315,7 @@ export default modelExtend(pageModel, {
       const data = yield call(updateMatchPaymentAndRecon, requestData)
       if (data.success) {
         message.success('Success reconcile this account')
+        yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.transDate).format('YYYY-MM-DD') } })
         yield put({
           type: 'updateState',
           payload: {
@@ -250,6 +326,18 @@ export default modelExtend(pageModel, {
             listSettlementAccumulated: []
           }
         })
+        yield put({ type: 'resetListImportCSVAndPayment', payload: { location: payload.location } })
+        // delete recon targeted recon log
+      } else {
+        throw data
+      }
+    },
+    * deleteReconLog ({ payload = {} }, { put, call }) {
+      const data = yield call(deleteReconLog, { transDate: payload.transDate, storeId: lstorage.getCurrentUserStore() })
+      if (data.success) {
+        // message.success('Success delete')
+        yield put({ type: 'queryReconLog', payload: { page: 1 } })
+        // delete recon targeted recon log
       } else {
         throw data
       }
@@ -262,6 +350,33 @@ export default modelExtend(pageModel, {
         type: 'updateState',
         payload: {
           listReconNotMatch: filterList
+        }
+      })
+    },
+    * openModalStore ({ payload = {} }, { put }) {
+      payload.updated = 0
+      const listUserStores = lstorage.getListUserStores()
+      const filterStore = listUserStores.filter(filtered => filtered.value === payload.storeId)
+      if (filterStore && filterStore.length > 0) {
+        const store = filterStore[0]
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalStoreVisible: true,
+            storeName: store.label,
+            storeId: store.value,
+            transDate: payload.transDate,
+            reconLogId: payload.id
+          }
+        })
+      }
+    },
+    * closeModalStore ({ payload = {} }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalStoreVisible: false
         }
       })
     },
@@ -448,6 +563,8 @@ export default modelExtend(pageModel, {
     },
     * resetListImportCSVAndPayment ({ payload }, { put }) {
       payload.updated = 0
+      const { pathname } = payload.location
+      yield put(routerRedux.push({ pathname }))
       yield put({
         type: 'updateState',
         payload: {
@@ -455,11 +572,6 @@ export default modelExtend(pageModel, {
           listSortPayment: [],
           listReconNotMatch: [],
           listReconLog: [],
-          paginationListReconLog: {
-            current: 1,
-            pageSize: 10,
-            total: 0
-          },
           listPaymentMachine: [],
           listSettlementAccumulated: []
         }

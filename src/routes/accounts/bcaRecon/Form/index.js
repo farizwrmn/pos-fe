@@ -25,6 +25,8 @@ const formItemLayout = {
 const FormAutoCounter = ({
   onSortNullMdrAmount,
   onClearListImportCSVAndPayment,
+  query,
+  location,
   dispatch,
   loading,
   form: {
@@ -62,6 +64,7 @@ const FormAutoCounter = ({
   const handleSubmitBcaRecon = (params) => {
     let data = getFieldsValue()
     const requestData = {
+      location,
       transDate: data.rangePicker,
       ...params
     }
@@ -87,8 +90,15 @@ const FormAutoCounter = ({
         <Row>
           <Col span={4}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('rangePicker')(
-                <DatePicker disabled={getFieldValue('rangePicker')} onChange={(value, dateString) => handleSubmit(dateString)} size="large" format="DD-MMM-YYYY" />
+              {getFieldDecorator('rangePicker', {
+                initialValue: query && query.transDate ? moment.utc(query.transDate, 'YYYY-MM-DD') : null
+              })(
+                <DatePicker
+                  disabled={getFieldValue('rangePicker')}
+                  onChange={(value, dateString) => handleSubmit(dateString)}
+                  size="large"
+                  format="DD-MMM-YYYY"
+                />
               )}
             </FormItem>
           </Col>
