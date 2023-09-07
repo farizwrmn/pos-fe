@@ -89,7 +89,7 @@ const FormAutoCounter = ({
           <Col span={4}>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('rangePicker', {
-                initialValue: query.transDate
+                initialValue: query && query.transDate ? moment.utc(query.transDate, 'YYYY-MM-DD') : null
               })(
                 <DatePicker
                   disabled={getFieldValue('rangePicker')}

@@ -48,7 +48,7 @@ const ImportBcaRecon = ({
       dispatch({ type: 'importBcaRecon/openModalStore', payload: { ...params } })
     },
     onOk: () => {
-      dispatch({ type: 'importBcaRecon/processChangeStore' })
+      dispatch({ type: 'importBcaRecon/processChangeStore', payload: { location } })
     },
     onCancel () {
       dispatch({ type: 'importBcaRecon/closeModalStore' })

@@ -85,7 +85,7 @@ export default modelExtend(pageModel, {
       const user = yield select(({ app }) => app.user)
       let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
       let transDate = yield select(({ importBcaRecon }) => importBcaRecon.transDate)
-      const { query, pathname } = location
+      const { query, pathname } = payload.location
 
       const loginTimeDiff = lstorage.getLoginTimeDiff()
       const localId = lstorage.getStorageKey('udi')
@@ -132,7 +132,9 @@ export default modelExtend(pageModel, {
       yield put(routerRedux.push({
         pathname,
         query: {
-          ...query
+          ...query,
+          storeId,
+          transDate
         }
       }))
     },
@@ -141,13 +143,12 @@ export default modelExtend(pageModel, {
       const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
       const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
       const dataMappingStore = yield call(queryMappingStore)
-      const { ...other } = location.query
       // update list Total Transfer
       yield put({
         type: 'queryErrorLog',
         payload: { transDate: payload.payment.transDate }
       })
-      yield put({ type: 'queryReconLog', payload: other })
+      yield put({ type: 'queryReconLog', payload: {} })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -321,13 +322,12 @@ export default modelExtend(pageModel, {
       yield put({ type: 'deleteReconLog' })
     },
     * deleteReconLog ({ payload = {} }, { put, call, select }) {
-      const { ...other } = location.query
       let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
       let reconLogId = yield select(({ importBcaRecon }) => importBcaRecon.reconLogId)
       const data = yield call(deleteReconLog, { id: reconLogId, transDate: payload.transDate, storeId })
       if (data.success) {
         // message.success('Success delete')
-        yield put({ type: 'queryReconLog', payload: other })
+        yield put({ type: 'queryReconLog', payload: {} })
         // delete recon targeted recon log
       } else {
         throw data
