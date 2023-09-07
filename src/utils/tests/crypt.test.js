@@ -9,7 +9,7 @@ import {
 const crypto = require('crypto')
 
 const algorithm = 'aes-256-ctr'
-const password = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+const password = 'k3mart'
 
 const encryptTest = (text, rdmtxt) => {
   const cipher = crypto.createCipher(algorithm, (rdmtxt || '') + password)

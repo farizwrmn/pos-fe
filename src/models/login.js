@@ -1,5 +1,5 @@
-import { routerRedux } from 'dva/router'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import { configCompany, queryURL, lstorage, messageInfo } from 'utils'
 import { APPNAME } from 'utils/config.company'
 import { prefix } from 'utils/config.main'

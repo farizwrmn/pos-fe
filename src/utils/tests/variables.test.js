@@ -165,7 +165,7 @@ it('Return Object of Customer Umum by memberId with mobileNumber', () => {
   })
 })
 
-it('Return Object of Customer Umum by memberId without cashback', () => {
+it('Return Object of Customer Umum by memberId without cashback 1', () => {
   const data = {
     memberCode: 'UMUM',
     memberName: 'CUSTOMER UMUM',
@@ -196,7 +196,7 @@ it('Return Object of Customer Umum by memberId without cashback', () => {
   })
 })
 
-it('Return Object of Customer Umum by memberId without cashback', () => {
+it('Return Object of Customer Umum by memberId without cashback 2', () => {
   const lastCashierTrans = getCashierTrans()
   const data = {
     no: 1,
@@ -217,7 +217,25 @@ it('Return Object of Customer Umum by memberId without cashback', () => {
   }
   expect(insertCashierTrans(data, lastCashierTrans)).toEqual([{
     no: data.no,
+    bundleCode: data.bundleCode,
     bundleId: data.bundleId,
+    bundleName: data.bundleName,
+    distPrice01: data.distPrice01,
+    distPrice02: data.distPrice02,
+    distPrice03: data.distPrice03,
+    distPrice04: data.distPrice04,
+    distPrice05: data.distPrice05,
+    distPrice06: data.distPrice06,
+    distPrice07: data.distPrice07,
+    distPrice08: data.distPrice08,
+    distPrice09: data.distPrice09,
+    categoryCode: data.categoryCode,
+    hide: data.hide,
+    inputTime: new Date().valueOf(),
+    newValue: data.newValue,
+    oldValue: data.oldValue,
+    replaceable: data.replaceable,
+    retailPrice: data.retailPrice,
     employeeId: data.employeeId,
     employeeName: data.employeeName,
     productId: data.productId,

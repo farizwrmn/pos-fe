@@ -29,7 +29,7 @@ const APIIMAGEURL = `${APIIMAGEPROTOCOL}://${APIIMAGEHOST}:${APIIMAGEPORT}${APII
 
 module.exports = {
   idCompany: 'SMI',
-  companyName: 'Smartech Indo',
+  companyName: 'K3MART',
   APISOCKET,
   IMAGEURL,
   S3URL,

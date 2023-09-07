@@ -219,8 +219,47 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/customer'))
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/productSource'))
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
+          }
+        }, {
+          path: 'stock-source',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productSource'))
+              cb(null, require('./routes/master/product/productSource'))
+            }, 'product-source')
+          }
+        }, {
+          path: 'stock-division',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productDivision'))
+            }, 'product-division')
+          }
+        }, {
+          path: 'stock-department',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productDepartment'))
+            }, 'product-department')
+          }
+        }, {
+          path: 'stock-subdepartment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productSubdepartment'))
+            }, 'product-subdepartment')
           }
         }, {
           path: 'integration/subagro/promo',
@@ -1135,6 +1174,24 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/report/accounting/statement'))
             }, 'report-accounting-balance-sheet')
+          }
+        }, {
+          path: 'report/accounting/statement/balance-sheet',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatementBalanceSheet'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/report/accounting/balance-sheet'))
+            }, 'report-accounting-statement-balance-sheet')
+          }
+        }, {
+          path: 'report/accounting/statement/profit-loss',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/accounting/accountingStatementProfitLoss'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/report/accounting/profit-loss'))
+            }, 'report-accounting-statement-profit-loss')
           }
         }, {
           path: 'report/accounting/tax-report',

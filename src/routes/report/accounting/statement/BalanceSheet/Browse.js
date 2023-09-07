@@ -220,8 +220,8 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
                 {
                   type: 'FASS',
                   level: 2,
-                  bodyTitle: 'Nilai Histori',
-                  totalTitle: 'Jumlah Nilai Histori'
+                  bodyTitle: 'Aset Tetap',
+                  totalTitle: 'Jumlah Aset Tetap'
                 },
                 {
                   type: 'DEPR',
@@ -314,6 +314,8 @@ const Browse = ({ onGetDetail, from, to, compareFrom, compareTo, listTrans, list
   const onClickDetail = (record) => {
     onGetDetail(record)
   }
+
+  console.log('dataSource', dataSource)
 
   return (
     <Table
