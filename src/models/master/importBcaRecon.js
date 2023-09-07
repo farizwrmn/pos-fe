@@ -315,6 +315,7 @@ export default modelExtend(pageModel, {
       const data = yield call(updateMatchPaymentAndRecon, requestData)
       if (data.success) {
         message.success('Success reconcile this account')
+        yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.transDate).format('YYYY-MM-DD') } })
         yield put({
           type: 'updateState',
           payload: {
@@ -330,14 +331,12 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-      yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.transDate).format('YYYY-MM-DD') } })
     },
-    * deleteReconLog ({ payload = {} }, { put, call, select }) {
-      let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
-      const data = yield call(deleteReconLog, { transDate: payload.transDate, storeId })
+    * deleteReconLog ({ payload = {} }, { put, call }) {
+      const data = yield call(deleteReconLog, { transDate: payload.transDate, storeId: lstorage.getCurrentUserStore() })
       if (data.success) {
         // message.success('Success delete')
-        yield put({ type: 'queryReconLog', payload: { transDate: payload.transDate } })
+        yield put({ type: 'queryReconLog', payload: { page: 1 } })
         // delete recon targeted recon log
       } else {
         throw data
