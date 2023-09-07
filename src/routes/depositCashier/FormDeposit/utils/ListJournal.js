@@ -11,13 +11,13 @@ const ListJournal = ({
       key: 'accountName'
     },
     {
-      title: 'Amount IN',
+      title: 'Debit',
       dataIndex: 'amountIn',
       key: 'amountIn',
       render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
     },
     {
-      title: 'Amount OUT',
+      title: 'Credit',
       dataIndex: 'amountOut',
       key: 'amountOut',
       render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>

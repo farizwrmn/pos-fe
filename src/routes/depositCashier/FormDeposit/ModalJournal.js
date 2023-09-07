@@ -55,6 +55,17 @@ class ModalResolve extends React.Component {
       validateFields((error) => {
         if (error) return error
 
+        const debit = listDetailJournal.reduce((prev, curr) => { return prev + curr.amountIn }, 0)
+        const credit = listDetailJournal.reduce((prev, curr) => { return prev + curr.amountOut }, 0)
+
+        if (debit !== credit) {
+          Modal.warning({
+            title: 'Warning!',
+            content: 'Journal is imbalance'
+          })
+          return
+        }
+
         const data = {
           ...getFieldsValue()
         }
