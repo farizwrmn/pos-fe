@@ -4,13 +4,11 @@ import { connect } from 'dva'
 import { Row, Col, Card } from 'antd'
 import { NumberCard, Sales } from './components'
 import SalesDetail from './SalesDetail'
-import Profit from './Profit'
 import Product from './Product'
 
-function Dashboard ({ dispatch, loading, fifoReport, dashboard, pos }) {
-  const { data, numbers } = dashboard
+function Dashboard ({ dispatch, loading, dashboard, pos }) {
+  const { data, numbers, listPareto } = dashboard
   const { listPosDetail } = pos
-  const { listRekap } = fifoReport
   const numberCards = numbers.map((item, key) => (<Col key={key} lg={6} md={12}>
     <NumberCard {...item} />
   </Col>))
@@ -31,50 +29,19 @@ function Dashboard ({ dispatch, loading, fifoReport, dashboard, pos }) {
     }
   }
 
-  const sales = listRekap.reduce((prev, next) => prev + parseFloat(next.posPrice), 0)
-  const value = listRekap.reduce((prev, next) => prev + parseFloat(next.valuePrice), 0)
-
-  const profitProps = {
-    dataSource: [
-      {
-        title: 'Sales Total',
-        value
-      },
-      {
-        title: 'Cost',
-        value: sales
-      },
-      {
-        title: 'Gross Profit',
-        value: (parseInt(value, 10) - parseInt(sales, 10))
-      }
-    ],
-    pagination: false,
-    width: 90,
-    size: 'small',
-    loading: loading.effects['fifo/queryFifoValues'],
-    footer: () => {
-      return (
-        <a target="_blank" href="/report/fifo/value">
-          Go to report
-        </a>
-      )
-    }
-  }
-
   const productProps = {
-    dataSource: listRekap && listRekap.length > 0 ? listRekap.sort((a, b) => b.count - a.count).slice(0, 15) : [],
+    dataSource: listPareto,
     pagination: false,
     width: 90,
     size: 'small',
-    loading: loading.effects['fifo/queryFifoValues'],
-    footer: () => {
-      return (
-        <a target="_blank" href="/stock?activeKey=1">
-          Go to report
-        </a>
-      )
-    }
+    loading: loading.effects['dashboard/queryPareto']
+    // footer: () => {
+    //   return (
+    //     <a target="_blank" href="/stock?activeKey=1">
+    //       Go to report
+    //     </a>
+    //   )
+    // }
   }
 
   return (
@@ -99,7 +66,6 @@ function Dashboard ({ dispatch, loading, fifoReport, dashboard, pos }) {
         <Col lg={2} md={24} />
         <Col lg={6} md={24}>
           <SalesDetail {...salesDetailProps} />
-          <Profit {...profitProps} />
         </Col>
       </Row>
     </div>

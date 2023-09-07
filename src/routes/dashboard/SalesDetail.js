@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button, Table } from 'antd'
 import moment from 'moment'
-import { numberFormatter } from 'utils/numberFormat'
 
 const SalesDetail = ({ dispatch, ...other }) => {
   const onClickCopy = () => {
@@ -24,7 +23,7 @@ const SalesDetail = ({ dispatch, ...other }) => {
           <div>
             <div>{moment(record.createdAt).format('lll')}</div>
             <div>{`${text || record.serviceCode} - ${record.productName || record.serviceName}`}</div>
-            <div>{`${record.qty} x ${numberFormatter(record.DPP / record.qty)}`}<strong style={{ float: 'right' }}>{`IDR ${numberFormatter(record.DPP)}`}</strong></div>
+            <div>{`${(record.qty || '').toLocaleString()} x ${(record.DPP / (record.qty || 1)).toLocaleString()}`}<strong style={{ float: 'right' }}>{`IDR ${(record.DPP || 0).toLocaleString()}`}</strong></div>
           </div>
         )
       }

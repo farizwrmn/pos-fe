@@ -17,6 +17,16 @@ const { dashboard, ipaddr, dashboards } = api
 //   })
 // }
 
+export async function queryPareto (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/pareto-product',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   return request({
     url: dashboard,
@@ -24,6 +34,7 @@ export async function query (params) {
     data: params
   })
 }
+
 export async function getIpAddr (params) {
   return request({
     url: ipaddr,
