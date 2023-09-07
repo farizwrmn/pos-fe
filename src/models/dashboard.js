@@ -5,7 +5,7 @@ import { prefix } from 'utils/config.main'
 import {
   queryByDate
 } from 'services/report/pos'
-import { getDashboards } from '../services/dashboard'
+import { getDashboards, queryPareto } from '../services/dashboard'
 import {
   queryFifoCategory
 } from '../services/report/fifo'
@@ -78,6 +78,9 @@ export default {
               typeText: 'Last 30 Days'
             }
           })
+          dispatch({
+            type: 'queryPareto'
+          })
         }
       })
     }
@@ -97,6 +100,20 @@ export default {
       })
       yield put({ type: 'querySuccess', payload: { data: formatData, ...payload } })
     },
+
+
+    * queryPareto (payload, { call, put }) {
+      const result = yield call(queryPareto, { storeId: lstorage.getCurrentUserStore() })
+      if (result.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPareto: result.data
+          }
+        })
+      }
+    },
+
     * querySalesCategory ({ payload = {} }, { call, put }) {
       let copiedText = ''
 
@@ -168,6 +185,9 @@ export default {
         ...state,
         ...action.payload
       }
+    },
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
     }
   }
 }

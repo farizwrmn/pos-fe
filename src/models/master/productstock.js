@@ -231,7 +231,7 @@ export default modelExtend(pageModel, {
               productCode: response.data.product_code,
               productName: response.data.product_name,
               barCode01: response.data.barcode,
-              categoryColor: '#33BBFF',
+              categoryColor: '#FFCCFF',
               brandName: 'CONSIGNMENT',
               sellPrice: response.data.stock.price
             },
