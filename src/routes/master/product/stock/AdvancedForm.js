@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link, routerRedux } from 'dva/router'
+import { Link } from 'dva/router'
 import { Form, Input, Spin, InputNumber, Button, Row, Col, Checkbox, Upload, Icon, Select, Modal, Card, message, Table, BackTop } from 'antd'
 import { DataQuery, FooterToolbar } from 'components'
 import moment from 'moment'
@@ -39,16 +39,6 @@ const column = {
   md: { span: 24 },
   lg: { span: 12 }
 }
-
-// const parentRight = {
-//   md: { span: 24 },
-//   lg: { span: 14 }
-// }
-
-// const parentLeft = {
-//   md: { span: 24 },
-//   lg: { span: 10 }
-// }
 
 const parentThreeDivision = {
   md: { span: 24 },
@@ -301,34 +291,13 @@ class AdvancedForm extends Component {
       setFieldsValue({ dummyCode: value })
     }
 
-    const handleImportStock = () => {
-      dispatch(routerRedux.push({
-        pathname: '/master/product/stock/import'
-      }))
-    }
-
     const cardProps = {
       bordered: true,
       style: {
         padding: 8,
         marginLeft: 8,
         marginBottom: 8
-      },
-      title: (
-        <Row>
-          <Col md={12} lg={3}>
-            <h3>Product Info</h3>
-          </Col>
-          <Col md={12} lg={9}>
-            <Button
-              type="default"
-              onClick={handleImportStock}
-            >
-              Import
-            </Button>
-          </Col>
-        </Row>
-      )
+      }
     }
 
     const InputNumberProps = {
@@ -644,50 +613,6 @@ class AdvancedForm extends Component {
                   ]
                 })(<Input maxLength={85} onChange={this.changeName} />)}
               </FormItem>
-              <FormItem label="Category" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('categoryId', {
-                  initialValue: item.categoryId ? {
-                    key: item.categoryId,
-                    label: item.categoryName
-                  } : {},
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  allowClear
-                  onFocus={() => category()}
-                  onChange={handleChangeCategoryId}
-                  optionFilterProp="children"
-                  labelInValue
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productCategory}
-                </Select>)}
-              </FormItem>
-              <FormItem label="Brand" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('brandId', {
-                  initialValue: item.brandId ? {
-                    key: item.brandId,
-                    label: item.brandName
-                  } : {},
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  allowClear
-                  onFocus={() => brand()}
-                  optionFilterProp="children"
-                  labelInValue
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productBrand}
-                </Select>)}
-              </FormItem>
-
               <FormItem label="Image" {...formItemLayout}>
                 {getFieldDecorator('productImage', {
                   initialValue: item.productImage
@@ -789,6 +714,135 @@ class AdvancedForm extends Component {
         </Card>
         <Row>
           <Col {...parentThreeDivision}>
+            <Card {...cardProps} title={<h3>Category & Brand</h3>}>
+              <FormItem label={(<Link target="_blank" to="/stock-source">Source</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('supplierSource', {
+                  initialValue: item.supplierSource,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  onFocus={() => category()}
+                  onChange={handleChangeCategoryId}
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productCategory}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/stock-division">Division</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('divisionId', {
+                  initialValue: item.divisionId ? {
+                    key: item.divisionId,
+                    label: item.divisionName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  onFocus={() => category()}
+                  onChange={handleChangeCategoryId}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productCategory}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/stock-department">Department</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('departmentId', {
+                  initialValue: item.departmentId ? {
+                    key: item.departmentId,
+                    label: item.departmentName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  onFocus={() => category()}
+                  onChange={handleChangeCategoryId}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productCategory}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/stock-subdepartment">Subdepartment</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('subdepartmentId', {
+                  initialValue: item.subdepartmentId ? {
+                    key: item.subdepartmentId,
+                    label: item.subdepartmentName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  onFocus={() => category()}
+                  onChange={handleChangeCategoryId}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productCategory}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/master/product/category">Category</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('categoryId', {
+                  initialValue: item.categoryId ? {
+                    key: item.categoryId,
+                    label: item.categoryName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  onFocus={() => category()}
+                  onChange={handleChangeCategoryId}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productCategory}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/master/product/brand">Brand</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('brandId', {
+                  initialValue: item.brandId ? {
+                    key: item.brandId,
+                    label: item.brandName
+                  } : {},
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  allowClear
+                  onFocus={() => brand()}
+                  optionFilterProp="children"
+                  labelInValue
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productBrand}
+                </Select>)}
+              </FormItem>
+            </Card>
             <Card {...cardProps} title={<h3>Global Pricing</h3>}>
               <Row>
                 <FormItem label={getDistPriceName('sellPrice')} help={getDistPriceDescription('sellPrice')} hasFeedback {...formItemLayout}>
