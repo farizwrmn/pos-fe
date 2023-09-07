@@ -777,7 +777,22 @@ export default {
       }
     },
 
-    * cancelInvoice ({ payload }, { call, put }) {
+    * cancelInvoice ({ payload }, { select, call, put }) {
+      const userRole = lstorage.getCurrentUserRole()
+      if (userRole !== 'OWN') {
+        const listPayment = yield select(({ pos }) => pos.listPayment)
+        const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
+        const paymentTransDate = moment(selectedPayment.transDate, 'YYYY-MM-DD')
+        const restrictedDate = moment().subtract(1, 'days')
+        const restrictCancel = restrictedDate.isAfter(paymentTransDate)
+        if (!selectedPayment || restrictCancel) {
+          Modal.error({
+            title: 'Failed to cancel invoice',
+            content: 'Please contact administrator to complete this action!'
+          })
+          return
+        }
+      }
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
       const cancel = yield call(updatePos, payload)
