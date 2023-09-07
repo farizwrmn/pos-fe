@@ -36,12 +36,13 @@ const List = ({ cancelPayment, ...tableProps }) => {
       dataIndex: 'active',
       key: 'active',
       width: 120,
-      render: text =>
-      (<span>
-        <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
-          {parseInt(text, 10) ? 'Active' : 'Canceled'}
-        </Tag>
-      </span>)
+      render: text => (
+        <span>
+          <Tag color={parseInt(text, 10) ? 'blue' : 'red'}>
+            {parseInt(text, 10) ? 'Active' : 'Canceled'}
+          </Tag>
+        </span>
+      )
     },
     {
       title: 'Date',
