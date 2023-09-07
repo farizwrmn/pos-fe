@@ -11,8 +11,7 @@ const Profit = ({ ...other }) => {
       render: (text, record) => {
         return (
           <div style={{ color: record.color }}>
-            <div><strong>{record.productCode}</strong></div>
-            <div>{record.productName}</div>
+            <div><strong>{record.productCode}</strong>-{record.productName}</div>
           </div>
         )
       }
