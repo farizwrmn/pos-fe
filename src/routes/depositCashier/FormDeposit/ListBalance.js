@@ -42,7 +42,7 @@ const ListBalance = ({
       render: value => <div style={{ textAlign: 'right' }}>{currencyFormatter(value)}</div>
     },
     {
-      title: 'Journal',
+      title: 'Journal Reference',
       render: (_, record) => {
         const currentCreateJournal = listCreateJournal.find(item => item.balanceId === record.balanceId)
         if (currentCreateJournal) return <div style={{ textAlign: 'center' }} onClick={handleEdit}>{currentCreateJournal.reference}</div>

@@ -15,8 +15,10 @@ const {
 
 class DepositCashierDetail extends React.Component {
   state = {
-    selectedBalanceResolve: {},
-    journalType: ''
+    selectedBalanceResolve: undefined,
+    journalType: '',
+
+    selectedJournal: undefined
   }
 
   render () {
@@ -29,7 +31,9 @@ class DepositCashierDetail extends React.Component {
     } = this.props
     const {
       selectedBalanceResolve,
-      journalType
+      journalType,
+
+      selectedJournal
     } = this.state
 
     const {
@@ -55,7 +59,9 @@ class DepositCashierDetail extends React.Component {
     const handleModalJournal = () => {
       if (visibleModalJournal) {
         this.setState({
-          journalType: ''
+          selectedBalanceResolve: undefined,
+          journalType: '',
+          selectedJournal: undefined
         })
       }
       dispatch({
@@ -115,7 +121,7 @@ class DepositCashierDetail extends React.Component {
       }
     }
 
-    const listGeneratedJournal = {
+    const listJournalProps = {
       loading,
       dataSource: listCreateJournal,
       handleChangePagination: (pagination) => {
@@ -135,6 +141,27 @@ class DepositCashierDetail extends React.Component {
           journalType: 'normal'
         })
         handleModalJournal()
+      },
+      handleEdit: (data) => {
+        this.setState({
+          selectedJournal: data,
+          journalType: data.journalType
+        })
+        handleModalJournal()
+      },
+      handleDelete: (data) => {
+        const filteredListCreateJournal = listCreateJournal.filter(filtered => filtered.id !== data.id)
+        const result = filteredListCreateJournal.map((record, index) => ({
+          ...record,
+          id: index + 1
+        }))
+        setBalanceListCreateJournal(JSON.stringify(result))
+        dispatch({
+          type: 'depositCashier/updateState',
+          payload: {
+            listCreateJournal: result
+          }
+        })
       }
     }
 
@@ -163,10 +190,38 @@ class DepositCashierDetail extends React.Component {
     const modalJournalProps = {
       journalType,
       selectedBalanceResolve,
+      selectedJournal,
       listAccountCodeLov,
       visible: visibleModalJournal,
       listResolveOption,
       onCancel: handleModalJournal,
+      onEdit: (data) => {
+        Modal.confirm({
+          title: 'Submit Edited Journal',
+          content: 'Are you sure to overwrite this journal?',
+          onOk: () => {
+            const result = listCreateJournal.map((record) => {
+              if (record.id === data.id) {
+                return ({
+                  ...data
+                })
+              }
+
+              return ({
+                ...record
+              })
+            })
+            setBalanceListCreateJournal(JSON.stringify(result))
+            handleModalJournal()
+            dispatch({
+              type: 'depositCashier/updateState',
+              payload: {
+                listCreateJournal: result
+              }
+            })
+          }
+        })
+      },
       onSubmit: (data) => {
         const result = [
           ...listCreateJournal,
@@ -176,11 +231,11 @@ class DepositCashierDetail extends React.Component {
           }
         ]
         setBalanceListCreateJournal(JSON.stringify(result))
+        handleModalJournal()
         dispatch({
           type: 'depositCashier/updateState',
           payload: {
-            listCreateJournal: result,
-            visibleModalJournal: false
+            listCreateJournal: result
           }
         })
       }
@@ -221,7 +276,7 @@ class DepositCashierDetail extends React.Component {
           <ListBalance {...listBalanceProps} />
         </Row>
         <Row style={{ marginBottom: '10px' }}>
-          <ListJournal {...listGeneratedJournal} />
+          <ListJournal {...listJournalProps} />
         </Row>
       </div>
     )

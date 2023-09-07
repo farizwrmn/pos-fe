@@ -21,9 +21,11 @@ const formItemProps = {
 }
 
 const ModalJournalDetail = ({
+  selectedDetail,
   listAccountCodeLov,
   onCancel,
   onSubmit,
+  onEdit,
   form: {
     getFieldDecorator,
     validateFields,
@@ -44,9 +46,20 @@ const ModalJournalDetail = ({
 
       const selectedAccount = listAccountCodeLov.find(item => item.id === data.accountId)
 
-      onSubmit({
+      if (!selectedDetail) {
+        return onSubmit({
+          accountId: data.accountId,
+          accountName: selectedAccount ? `${selectedAccount.accountCode} - ${selectedAccount.accountName}` : 'Not Found!',
+          amountIn: data.amountIn === true ? data.amount : null,
+          amountOut: data.amountIn === false ? data.amount : null,
+          description: data.description
+        })
+      }
+
+      onEdit({
+        id: selectedDetail.id,
         accountId: data.accountId,
-        accountName: selectedAccount ? `${selectedAccount.accountName} (${selectedAccount.accountCode})` : 'Not Found!',
+        accountName: selectedAccount ? `${selectedAccount.accountCode} - ${selectedAccount.accountName}` : 'Not Found!',
         amountIn: data.amountIn === true ? data.amount : null,
         amountOut: data.amountIn === false ? data.amount : null,
         description: data.description
@@ -67,6 +80,7 @@ const ModalJournalDetail = ({
       <Form>
         <FormItem label="Account" {...formItemProps}>
           {getFieldDecorator('accountId', {
+            initialValue: selectedDetail ? selectedDetail.accountId : undefined,
             rules: [
               {
                 required: true
@@ -87,13 +101,18 @@ const ModalJournalDetail = ({
         <FormItem label="Amount type" {...formItemProps}>
           {getFieldDecorator('amountIn', {
             valuePropName: 'checked',
-            initialValue: true
+            initialValue: selectedDetail ? selectedDetail.amountIn > 0 : true
           })(
             <Switch checkedChildren="IN" unCheckedChildren="OUT" />
           )}
         </FormItem>
         <FormItem label="Amount" {...formItemProps}>
           {getFieldDecorator('amount', {
+            initialValue: selectedDetail
+              ? (selectedDetail.amountIn > 0
+                ? selectedDetail.amountIn
+                : selectedDetail.amountOut)
+              : undefined,
             rules: [
               {
                 required: true
@@ -110,6 +129,7 @@ const ModalJournalDetail = ({
         </FormItem>
         <FormItem label="Desription" {...formItemProps}>
           {getFieldDecorator('description', {
+            initialValue: selectedDetail ? selectedDetail.description : undefined,
             rules: [
               {
                 required: true

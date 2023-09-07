@@ -1,4 +1,6 @@
+/* eslint-disable react/no-did-mount-set-state */
 import React from 'react'
+import moment from 'moment'
 import { Modal, Select, Form, DatePicker, Input, Row, Button } from 'antd'
 import ModalJournalDetail from './utils/ModalJournalDetail'
 import ListJournal from './utils/ListJournal'
@@ -26,16 +28,29 @@ const formItemProps = {
 class ModalResolve extends React.Component {
   state = {
     visibleModalDetail: false,
-    listDetailJournal: []
+    listDetailJournal: [],
+
+    selectedDetail: undefined
+  }
+
+  componentDidMount () {
+    const { selectedJournal } = this.props
+    if (selectedJournal) {
+      this.setState({
+        listDetailJournal: selectedJournal.detail
+      })
+    }
   }
 
   render () {
     const {
       journalType,
       selectedBalanceResolve,
+      selectedJournal,
       listAccountCodeLov,
       listResolveOption,
       onCancel,
+      onEdit,
       onSubmit,
       form: {
         getFieldDecorator,
@@ -46,7 +61,8 @@ class ModalResolve extends React.Component {
     } = this.props
     const {
       visibleModalDetail,
-      listDetailJournal
+      listDetailJournal,
+      selectedDetail
     } = this.state
 
     const listResolveOpt = listResolveOption.map(record => <Option key={record} value={record}>{record}</Option>)
@@ -70,22 +86,38 @@ class ModalResolve extends React.Component {
           ...getFieldsValue()
         }
 
-        onSubmit({
+        if (!selectedJournal) {
+          return onSubmit({
+            ...data,
+            journalType,
+            balanceId: selectedBalanceResolve ? selectedBalanceResolve.balanceId : null,
+            detail: listDetailJournal
+          })
+        }
+
+        onEdit({
           ...data,
           journalType,
-          balanceId: selectedBalanceResolve.balanceId,
-          detail: listDetailJournal
+          balanceId: selectedJournal.balanceId,
+          detail: listDetailJournal,
+          id: selectedJournal.id
         })
       })
     }
 
-    const handleAddButton = () => [
+    const handleAddButton = () => {
+      if (visibleModalDetail) {
+        this.setState({
+          selectedDetail: undefined
+        })
+      }
       this.setState({
         visibleModalDetail: !visibleModalDetail
       })
-    ]
+    }
 
     const modalJournalDetailProps = {
+      selectedDetail,
       listAccountCodeLov,
       visible: visibleModalDetail,
       onCancel: () => {
@@ -99,15 +131,56 @@ class ModalResolve extends React.Component {
               id: listDetailJournal.length + 1,
               ...data
             }
-          ],
-          visibleModalDetail: false
+          ]
         })
+        handleAddButton()
+      },
+      onEdit: (data) => {
+        const result = listDetailJournal.map((record) => {
+          if (record.id === data.id) {
+            return data
+          }
+          return record
+        })
+
+        this.setState({
+          listDetailJournal: result
+        })
+        handleAddButton()
       }
     }
 
     const listJournalProps = {
-      dataSource: listDetailJournal
+      dataSource: listDetailJournal,
+      onDelete: (data) => {
+        const filteredListDetailJournal = listDetailJournal.filter(filtered => filtered.id !== data.id)
+        const result = filteredListDetailJournal.map((record, index) => ({
+          ...record,
+          id: index + 1
+        }))
+        this.setState({
+          listDetailJournal: result
+        })
+      },
+      onEdit: (data) => {
+        this.setState({
+          selectedDetail: data
+        })
+        handleAddButton()
+      }
     }
+
+    const modalFooter = [
+      <Button type="ghost" onClick={onCancel}>Cancel</Button>,
+      <Button
+        type="primary"
+        icon="check"
+        onClick={handleSubmit}
+        disabled={listDetailJournal.length === 0}
+      >
+        Submit
+      </Button>
+    ]
 
     return (
       <Modal
@@ -116,21 +189,13 @@ class ModalResolve extends React.Component {
         maskClosable={false}
         width="50%"
         style={{ minWidth: '500px' }}
-        footer={[
-          <Button type="ghost" onClick={onCancel}>Cancel</Button>,
-          <Button
-            type="primary"
-            onClick={handleSubmit}
-            disabled={listDetailJournal.length === 0}
-          >
-            Submit
-          </Button>
-        ]}
+        footer={modalFooter}
       >
         {visibleModalDetail && <ModalJournalDetail {...modalJournalDetailProps} />}
         <Form horizontal>
           <FormItem label="Transaction Date" {...formItemProps}>
             {getFieldDecorator('transDate', {
+              initialValue: selectedJournal ? moment.utc(selectedJournal.transDate) : undefined,
               rules: [
                 {
                   required: true
@@ -149,6 +214,7 @@ class ModalResolve extends React.Component {
           {journalType === 'resolve' && (
             <FormItem label="Status Resolved" {...formItemProps}>
               {getFieldDecorator('statusResolved', {
+                initialValue: selectedJournal ? selectedJournal.statusResolved : undefined,
                 rules: [
                   {
                     required: true
@@ -168,6 +234,7 @@ class ModalResolve extends React.Component {
           )}
           <FormItem label="Reference" {...formItemProps}>
             {getFieldDecorator('reference', {
+              initialValue: selectedJournal ? selectedJournal.reference : undefined,
               rules: [
                 {
                   required: true
@@ -184,6 +251,7 @@ class ModalResolve extends React.Component {
           </FormItem>
           <FormItem label="Description" {...formItemProps}>
             {getFieldDecorator('description', {
+              initialValue: selectedJournal ? selectedJournal.description : undefined,
               rules: [
                 {
                   required: true

@@ -1,6 +1,8 @@
 import React from 'react'
-import { Button, Col, Row, Table } from 'antd'
+import { Button, Col, Modal, Row, Table } from 'antd'
 import { currencyFormatter } from 'utils/string'
+import { DropOption } from 'components'
+import moment from 'moment'
 
 class ListJournal extends React.Component {
   render () {
@@ -8,8 +10,24 @@ class ListJournal extends React.Component {
       loading,
       handleAddButton,
       handleChangePagination,
+      handleEdit,
+      handleDelete,
       ...tableProps
     } = this.props
+
+    const hdlDropOptionClick = (record, e) => {
+      if (e.key === '1') {
+        handleEdit(record)
+      }
+
+      if (e.key === '2') {
+        Modal.confirm({
+          title: 'Delete Journal',
+          content: 'Are you sure to delete this journal?',
+          onOk: () => handleDelete(record)
+        })
+      }
+    }
 
     const columns = [
       {
@@ -19,9 +37,15 @@ class ListJournal extends React.Component {
         render: value => <div style={{ textAlign: 'center' }}>{value}</div>
       },
       {
+        title: 'Tanggal',
+        dataIndex: 'transDate',
+        key: 'transDate',
+        render: value => moment(value).format('DD MMM YYYY')
+      },
+      {
         title: 'Reference',
         dataIndex: 'reference',
-        key: 'accountName'
+        key: 'reference'
       },
       {
         title: 'Amount IN',
@@ -49,6 +73,22 @@ class ListJournal extends React.Component {
         title: 'Description',
         dataIndex: 'description',
         key: 'description'
+      },
+      {
+        title: 'Action',
+        render: (_, record) => {
+          return (
+            <div style={{ textAlign: 'center' }}>
+              <DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
+                type="primary"
+                menuOptions={[
+                  { key: '1', name: 'Edit', icon: 'edit' },
+                  { key: '2', name: 'Delete', icon: 'close', disabled: false }
+                ]}
+              />
+            </div>
+          )
+        }
       }
     ]
 

@@ -53,6 +53,7 @@ const Filter = ({
       <FormItem>
         <Button
           type="primary"
+          icon="filter"
           onClick={handleSubmit}
           loading={loading.effects['depositCashier/queryBalanceList']
             || loading.effects['depositCashier/queryAdd']}

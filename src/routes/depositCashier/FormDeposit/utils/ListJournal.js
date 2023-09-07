@@ -1,12 +1,36 @@
-import { Col, Row, Table } from 'antd'
+import { Col, Modal, Row, Table } from 'antd'
+import { DropOption } from 'components'
 import { currencyFormatter } from 'utils/string'
 
 const ListJournal = ({
+  onDelete,
+  onEdit,
   ...tableProps
 }) => {
   const { dataSource } = tableProps
 
+  const hdlDropOptionClick = (record, e) => {
+    if (e.key === '1') {
+      onEdit(record)
+    }
+
+    if (e.key === '2') {
+      Modal.confirm({
+        title: 'Remove Item',
+        content: 'Are you sure to remove this item?',
+        onOk: () => {
+          onDelete(record)
+        }
+      })
+    }
+  }
+
   const columns = [
+    {
+      title: 'No',
+      dataIndex: 'id',
+      key: 'id'
+    },
     {
       title: 'Account',
       dataIndex: 'accountName',
@@ -28,6 +52,22 @@ const ListJournal = ({
       title: 'Description',
       dataIndex: 'description',
       key: 'description'
+    },
+    {
+      title: 'action',
+      render: (_, record) => {
+        return (
+          <div style={{ textAlign: 'center' }}>
+            <DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
+              type="primary"
+              menuOptions={[
+                { key: '1', name: 'Edit', icon: 'edit' },
+                { key: '2', name: 'Delete', icon: 'close', disabled: false }
+              ]}
+            />
+          </div>
+        )
+      }
     }
   ]
 

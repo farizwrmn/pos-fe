@@ -196,7 +196,6 @@ export default modelExtend(pageModel, {
       const list = getBalanceListCreateJournal()
 
       const listCreateJournal = JSON.parse(list)
-      console.log('listCreateJournal', listCreateJournal)
 
       return {
         ...state,
