@@ -564,11 +564,6 @@ export default modelExtend(pageModel, {
           listSortPayment: [],
           listReconNotMatch: [],
           listReconLog: [],
-          paginationListReconLog: {
-            current: 1,
-            pageSize: 10,
-            total: 0
-          },
           listPaymentMachine: [],
           listSettlementAccumulated: []
         }
