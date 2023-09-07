@@ -315,6 +315,7 @@ export default modelExtend(pageModel, {
             listSettlementAccumulated: []
           }
         })
+        yield put({ type: 'resetListImportCSVAndPayment', payload: { location: payload.location } })
         // delete recon targeted recon log
       } else {
         throw data
@@ -554,6 +555,8 @@ export default modelExtend(pageModel, {
     },
     * resetListImportCSVAndPayment ({ payload }, { put }) {
       payload.updated = 0
+      const { pathname } = payload.location
+      yield put(routerRedux.push({ pathname }))
       yield put({
         type: 'updateState',
         payload: {

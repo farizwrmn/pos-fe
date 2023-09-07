@@ -127,7 +127,7 @@ const ImportBcaRecon = ({
     dispatch,
     query: location.query,
     onClearListImportCSVAndPayment (params) {
-      dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params } })
+      dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params, location } })
     },
     onSortNullMdrAmount (params) {
       dispatch({
@@ -149,6 +149,7 @@ const ImportBcaRecon = ({
       dispatch({
         type: 'importBcaRecon/query',
         payload: {
+          location,
           ...params
         }
       })
