@@ -223,6 +223,41 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'stock-source',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productSource'))
+              cb(null, require('./routes/master/product/productSource'))
+            }, 'product-source')
+          }
+        }, {
+          path: 'stock-division',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productDivision'))
+            }, 'product-division')
+          }
+        }, {
+          path: 'stock-department',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productDepartment'))
+            }, 'product-department')
+          }
+        }, {
+          path: 'stock-subdepartment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productSubdepartment'))
+            }, 'product-subdepartment')
+          }
+        }, {
           path: 'integration/subagro/promo',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
