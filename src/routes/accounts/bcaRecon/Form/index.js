@@ -26,6 +26,7 @@ const FormAutoCounter = ({
   onSortNullMdrAmount,
   onClearListImportCSVAndPayment,
   query,
+  location,
   dispatch,
   loading,
   form: {
@@ -63,6 +64,7 @@ const FormAutoCounter = ({
   const handleSubmitBcaRecon = (params) => {
     let data = getFieldsValue()
     const requestData = {
+      location,
       transDate: data.rangePicker,
       ...params
     }

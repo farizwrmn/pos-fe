@@ -128,7 +128,6 @@ export default modelExtend(pageModel, {
           }
         }
       })
-
       yield put(routerRedux.push({
         pathname,
         query: {
@@ -138,11 +137,12 @@ export default modelExtend(pageModel, {
         }
       }))
     },
-    * sortNullMdrAmount ({ payload }, { call, put }) {
+    * sortNullMdrAmount ({ payload }, { call, put, select }) {
       const data = yield call(getDataPaymentMachine, { transDate: payload.payment.transDate })
       const dataTransaction = yield call(queryTransaction, { transDate: payload.payment.transDate })
       const dataBalance = yield call(queryBalance, { transDate: payload.payment.transDate })
       const dataMappingStore = yield call(queryMappingStore)
+      const dataListReconLog = yield select(({ importBcaRecon }) => importBcaRecon.listReconLog)
       // update list Total Transfer
       yield put({
         type: 'queryErrorLog',
@@ -221,7 +221,8 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listSortPayment: sortDataPayment.sort((a, b) => a.matchMdr - b.matchMdr),
-            list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0))
+            list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0)),
+            listReconLog: dataListReconLog
           }
         })
       } else if (!posPaymentData.success) {
@@ -320,12 +321,11 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-      yield put({ type: 'deleteReconLog', payload: { transDate: payload.transDate } })
+      yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.transDate).format('YYYY-MM-DD') } })
     },
     * deleteReconLog ({ payload = {} }, { put, call, select }) {
       let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
-      let reconLogId = yield select(({ importBcaRecon }) => importBcaRecon.reconLogId)
-      const data = yield call(deleteReconLog, { id: reconLogId, transDate: payload.transDate, storeId })
+      const data = yield call(deleteReconLog, { transDate: payload.transDate, storeId })
       if (data.success) {
         // message.success('Success delete')
         yield put({ type: 'queryReconLog', payload: { transDate: payload.transDate } })

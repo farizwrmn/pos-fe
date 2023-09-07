@@ -125,6 +125,7 @@ const ImportBcaRecon = ({
   const formProps = {
     loading,
     dispatch,
+    location,
     query: location.query,
     onClearListImportCSVAndPayment (params) {
       dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params, location } })
