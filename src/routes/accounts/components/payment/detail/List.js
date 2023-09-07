@@ -121,7 +121,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Void', icon: 'delete' }
+            { key: '1', name: 'Void', icon: 'delete', disabled: true }
           ]}
         />)
       }

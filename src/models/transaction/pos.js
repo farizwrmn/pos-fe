@@ -20,6 +20,7 @@ import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
+import { getDateTime } from 'services/setting/time'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -782,8 +783,11 @@ export default {
       if (userRole !== 'OWN') {
         const listPayment = yield select(({ pos }) => pos.listPayment)
         const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
+        const responseRestrictDateTimeStamp = yield call(getDateTime, { id: 'timestamp' })
+        const restrictedDate = responseRestrictDateTimeStamp && responseRestrictDateTimeStamp.success
+          ? moment(responseRestrictDateTimeStamp.data).subtract(1, 'days')
+          : moment().subtract(1, 'days')
         const paymentTransDate = moment(selectedPayment.transDate, 'YYYY-MM-DD')
-        const restrictedDate = moment().subtract(1, 'days')
         const restrictCancel = restrictedDate.isAfter(paymentTransDate)
         if (!selectedPayment || restrictCancel) {
           Modal.error({
