@@ -29,6 +29,12 @@ const ListSummary = ({
       render: value => <div style={{ textAlign: 'end', color: value > 0 ? '#008000' : value < 0 ? '#FF0000' : '#000' }}>{currencyFormatter(value)}</div>
     },
     {
+      title: 'Status Resolve',
+      dataIndex: 'statusResolve',
+      key: 'statusResolve',
+      render: value => <div style={{ textAlign: 'center' }}>{value || '-'}</div>
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',

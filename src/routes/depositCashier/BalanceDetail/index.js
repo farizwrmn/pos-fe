@@ -2,7 +2,6 @@ import React from 'react'
 import { Row } from 'antd'
 import { connect } from 'dva'
 import ListSummary from './ListSummary'
-import ListResolve from './ListResolve'
 import BalanceInfo from './Info'
 
 class DetailBalance extends React.Component {
@@ -13,16 +12,11 @@ class DetailBalance extends React.Component {
 
     const {
       depositBalanceDetailInfo,
-      listDepositBalanceDetailSummary,
-      listDepositBalanceDetailResolve
+      listDepositBalanceDetailSummary
     } = depositCashier
 
     const listSummaryProps = {
       dataSource: listDepositBalanceDetailSummary
-    }
-
-    const listResolveProps = {
-      dataSource: listDepositBalanceDetailResolve
     }
 
     return (
@@ -30,9 +24,6 @@ class DetailBalance extends React.Component {
         <BalanceInfo balanceInfo={depositBalanceDetailInfo} />
         <Row>
           <ListSummary {...listSummaryProps} />
-        </Row>
-        <Row>
-          <ListResolve {...listResolveProps} />
         </Row>
       </div>
     )

@@ -17,7 +17,7 @@ const ListBalance = ({
       dataIndex: 'userName',
       key: 'userName',
       render: (value, record) => {
-        return <a href={`/setoran/cashier/detail/${record.balanceId}`} target="_blank">{value}</a>
+        return <a href={`/setoran/cashier/balance/${record.balanceId}`} target="_blank">{value}</a>
       }
     },
     {
@@ -54,7 +54,7 @@ const ListBalance = ({
               onClick={() => handleResolve(record)}
               loading={loading.effects['depositCashier/queryAdd']}
             >
-              Create Journal
+              Add Journal
             </Button>
           </div>
         )

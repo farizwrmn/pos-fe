@@ -6,7 +6,6 @@ import { routerRedux } from 'dva/router'
 import { queryInvoice as queryBalanceSummary } from 'services/balancePayment/balanceSummaryService'
 import { query, queryBalance as queryBalanceList, queryAdd } from 'services/balancePayment/balanceDepositService'
 import {
-  query as queryBalanceResolve,
   queryResolveOption
 } from 'services/balancePayment/balanceResolveService'
 import { pageModel } from '../common'
@@ -39,7 +38,6 @@ export default modelExtend(pageModel, {
 
     depositBalanceDetailInfo: {},
     listDepositBalanceDetailSummary: [],
-    listDepositBalanceDetailResolve: [],
 
     listCreateJournal: []
   },
@@ -49,12 +47,12 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname, query } = location
         const { page, pageSize, startDate, endDate } = query
-        const matchCashierDetail = pathToRegexp('/setoran/cashier/detail/:id').exec(pathname)
-        if (matchCashierDetail) {
+        const matchCashierBalanceDetail = pathToRegexp('/setoran/cashier/balance/:id').exec(pathname)
+        if (matchCashierBalanceDetail) {
           dispatch({
             type: 'queryDepositBalanceDetail',
             payload: {
-              balanceId: decodeURIComponent(matchCashierDetail[1])
+              balanceId: decodeURIComponent(matchCashierBalanceDetail[1])
             }
           })
         }
@@ -139,18 +137,6 @@ export default modelExtend(pageModel, {
         })
       } else {
         message.error(responseSummary.message)
-      }
-      payload.type = 'all'
-      const responseResolve = yield call(queryBalanceResolve, payload)
-      if (responseResolve && responseResolve.success && responseResolve.data) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            listDepositBalanceDetailResolve: responseResolve.data
-          }
-        })
-      } else {
-        message.error(responseResolve.message)
       }
     },
     * queryBalanceList ({ payload = {} }, { call, put }) {
