@@ -148,7 +148,7 @@ export default modelExtend(pageModel, {
         type: 'queryErrorLog',
         payload: { transDate: payload.payment.transDate }
       })
-      yield put({ type: 'queryReconLog', payload: {} })
+      yield put({ type: 'queryReconLog', payload: { transDate: payload.payment.transDate } })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -320,7 +320,7 @@ export default modelExtend(pageModel, {
       } else {
         throw data
       }
-      yield put({ type: 'deleteReconLog' })
+      yield put({ type: 'deleteReconLog', payload: { transDate: payload.transDate } })
     },
     * deleteReconLog ({ payload = {} }, { put, call, select }) {
       let storeId = yield select(({ importBcaRecon }) => importBcaRecon.storeId)
@@ -328,7 +328,7 @@ export default modelExtend(pageModel, {
       const data = yield call(deleteReconLog, { id: reconLogId, transDate: payload.transDate, storeId })
       if (data.success) {
         // message.success('Success delete')
-        yield put({ type: 'queryReconLog', payload: {} })
+        yield put({ type: 'queryReconLog', payload: { transDate: payload.transDate } })
         // delete recon targeted recon log
       } else {
         throw data

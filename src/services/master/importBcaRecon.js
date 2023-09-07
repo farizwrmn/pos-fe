@@ -210,7 +210,7 @@ export async function deleteReconLog (params) {
   const url = params.id ? `${importbcarecon}/recon-log/${encodeURIComponent(params.id)}` : `${importbcarecon}/recon-log`
   return request({
     url,
-    method: 'delete',
+    method: 'put',
     data: params,
     headers: apiHeaderToken
   })
