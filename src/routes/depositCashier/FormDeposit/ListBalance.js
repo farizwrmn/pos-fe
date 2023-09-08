@@ -44,6 +44,8 @@ const ListBalance = ({
     {
       title: 'Journal Reference',
       render: (_, record) => {
+        if (record.journalId) return <div style={{ textAlign: 'center' }}><a href={`/journal-entry/${record.journalId}`} target="_blank">See Journal</a></div>
+
         const currentCreateJournal = listCreateJournal.find(item => item.balanceId === record.balanceId)
         if (currentCreateJournal) return <div style={{ textAlign: 'center' }} onClick={handleEdit}>{currentCreateJournal.reference}</div>
         return (

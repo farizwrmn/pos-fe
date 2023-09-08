@@ -213,7 +213,7 @@ class ModalResolve extends React.Component {
           </FormItem>
           {journalType === 'resolve' && (
             <FormItem label="Status Resolved" {...formItemProps}>
-              {getFieldDecorator('statusResolved', {
+              {getFieldDecorator('statusResolve', {
                 initialValue: selectedJournal ? selectedJournal.statusResolved : undefined,
                 rules: [
                   {
