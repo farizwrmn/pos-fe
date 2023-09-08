@@ -3,7 +3,9 @@ import { Link } from 'dva/router'
 import moment from 'moment'
 
 const List = ({
+  loading,
   location,
+  handleChangePagination,
   ...tableProps
 }) => {
   const columns = [
@@ -46,6 +48,8 @@ const List = ({
       {...tableProps}
       columns={columns}
       bordered
+      onChange={handleChangePagination}
+      loading={loading.effects['depositCashier/query']}
     />
   )
 }

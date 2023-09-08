@@ -2,6 +2,7 @@ import { Table, Tag } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListSummary = ({
+  loading,
   ...tableProps
 }) => {
   const columns = [
@@ -50,6 +51,7 @@ const ListSummary = ({
         bordered
         columns={columns}
         pagination={{ pageSize: 10 }}
+        loading={loading.effects['depositCashier/queryDepositBalanceDetail']}
       />
     </div>
   )

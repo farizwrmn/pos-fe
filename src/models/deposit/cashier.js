@@ -33,14 +33,18 @@ export default modelExtend(pageModel, {
     // setoran/cashier
     list: [],
     pagination: {
-      current: 1
+      current: 1,
+      showSizeChanger: true,
+      showQuickJumper: true
     },
 
     // setoran/cashier/add
     summaryDetail: {},
     listDetail: [],
     paginationDetail: {
-      current: 1
+      current: 1,
+      showSizeChanger: true,
+      showQuickJumper: true
     },
 
     selectedResolve: {},
@@ -138,7 +142,9 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(response.page || 1),
               pageSize: Number(response.pageSize || 10),
-              total: Number(response.total || 0)
+              total: Number(response.total || 0),
+              showSizeChanger: true,
+              showQuickJumper: true
             }
           }
         })
@@ -203,7 +209,9 @@ export default modelExtend(pageModel, {
             paginationDetail: {
               current: Number(response.page || 1),
               pageSize: Number(response.pageSize || 10),
-              total: Number(response.total || 0)
+              total: Number(response.total || 0),
+              showSizeChanger: true,
+              showQuickJumper: true
             }
           }
         })

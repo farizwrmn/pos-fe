@@ -7,6 +7,8 @@ import BalanceInfo from './Info'
 class DetailBalance extends React.Component {
   render () {
     const {
+      loading,
+
       depositCashier
     } = this.props
 
@@ -16,6 +18,7 @@ class DetailBalance extends React.Component {
     } = depositCashier
 
     const listSummaryProps = {
+      loading,
       dataSource: listDepositBalanceDetailSummary
     }
 
@@ -31,8 +34,10 @@ class DetailBalance extends React.Component {
 }
 
 export default connect(({
+  loading,
   depositCashier
 }) => ({
+  loading,
   depositCashier
 }))(DetailBalance)
 

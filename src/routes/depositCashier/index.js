@@ -23,6 +23,7 @@ class DepositCashier extends React.Component {
 
   render () {
     const {
+      loading,
       location,
       dispatch,
 
@@ -30,13 +31,9 @@ class DepositCashier extends React.Component {
     } = this.props
 
     const {
-      list
+      list,
+      pagination
     } = depositCashier
-
-    const listProps = {
-      location,
-      dataSource: list
-    }
 
     const { all = false } = location.query
     const userRole = getCurrentUserRole()
@@ -55,6 +52,25 @@ class DepositCashier extends React.Component {
           all: checked
         }
       }))
+    }
+
+    const listProps = {
+      loading,
+      location,
+      dataSource: list,
+      pagination,
+      handleChangePagination: (paginationProps) => {
+        const { current: page, pageSize } = paginationProps
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
+      }
     }
 
     return (

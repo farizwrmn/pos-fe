@@ -8,6 +8,7 @@ import ListJournal from './ListJournal'
 class BalanceDepositDetail extends React.Component {
   render () {
     const {
+      loading,
       location,
       dispatch,
 
@@ -29,11 +30,13 @@ class BalanceDepositDetail extends React.Component {
     }
 
     const listBalanceProps = {
+      loading,
       balanceDepositInfo,
       dataSource: listDepositBalance
     }
 
     const listJournalProps = {
+      loading,
       dataSource: listDepositJournal
     }
 
@@ -54,7 +57,9 @@ class BalanceDepositDetail extends React.Component {
 }
 
 export default connect(({
+  loading,
   depositCashier
 }) => ({
+  loading,
   depositCashier
 }))(BalanceDepositDetail)

@@ -3,6 +3,7 @@ import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
 const ListBalance = ({
+  loading,
   balanceDepositInfo,
   ...tableProps
 }) => {
@@ -53,10 +54,11 @@ const ListBalance = ({
         <Table
           {...tableProps}
           columns={columns}
+          bordered
+          loading={loading.effects['depositCashier/queryBalanceDepositDetail']}
           pagination={{
             pageSize: 10
           }}
-          bordered
         />
       </Row>
     </div>

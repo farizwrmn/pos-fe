@@ -2,6 +2,7 @@ import { Row, Table } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const ListJournal = ({
+  loading,
   ...tableProps
 }) => {
   const columns = [
@@ -47,6 +48,7 @@ const ListJournal = ({
           {...tableProps}
           columns={columns}
           bordered
+          loading={loading.effects['depositCashier/queryBalanceDepositDetail']}
           pagination={{
             pageSize: 10
           }}
