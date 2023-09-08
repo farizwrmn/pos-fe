@@ -569,6 +569,14 @@ const Routers = function ({ history, app }) {
             }, 'deposit-cashier-detail')
           }
         }, {
+          path: 'setoran/finance',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deposit/finance'))
+              cb(null, require('./routes/depositFinance'))
+            }, 'deposit-finance')
+          }
+        }, {
           path: 'balance/current',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
