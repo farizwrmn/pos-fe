@@ -191,6 +191,18 @@ const FormCounter = ({
               <Input disabled={loading} />
             )}
           </FormItem>
+          <FormItem label="Alamat" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('address', {
+              initialValue: selectedVendor.address || null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Input disabled={loading} />
+            )}
+          </FormItem>
           <FormItem label="Phone" hasFeedback {...formItemLayout}>
             {getFieldDecorator('phone', {
               initialValue: selectedVendor.phone || null,
