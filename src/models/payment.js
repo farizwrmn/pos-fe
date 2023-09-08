@@ -460,7 +460,8 @@ export default {
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
                 if (data_create.message === 'Please set your balance') {
-                  yield put(routerRedux.push('/balance/current'))
+                  // yield put(routerRedux.push('/balance/current'))
+                  yield put(routerRedux.push('/setoran/current'))
                 }
               }
               Modal.error({
@@ -944,7 +945,8 @@ export default {
             } else {
               if (response && response.message && typeof response.message === 'string') {
                 if (response.message === 'Please set your balance') {
-                  yield put(routerRedux.push('/balance/current'))
+                  // yield put(routerRedux.push('/balance/current'))
+                  yield put(routerRedux.push('/setoran/current'))
                 }
               }
               Modal.error({
