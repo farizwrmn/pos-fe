@@ -111,6 +111,9 @@ class ListJournal extends React.Component {
           {...tableProps}
           columns={columns}
           bordered
+          pagination={{
+            pageSize: 10
+          }}
           onChange={handleChangePagination}
         />
       </Col>

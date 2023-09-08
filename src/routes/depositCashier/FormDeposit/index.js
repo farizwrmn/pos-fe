@@ -100,8 +100,8 @@ class DepositCashierDetail extends React.Component {
       listCreateJournal,
       dataSource: listDetail,
       pagination: paginationDetail,
-      handleChangePagination: (pagination) => {
-        const { current: page, pageSize } = pagination
+      handleChangePagination: (paginationProps) => {
+        const { current: page, pageSize } = paginationProps
         const { pathname, query } = location
         dispatch(routerRedux.push({
           pathname,
@@ -124,18 +124,6 @@ class DepositCashierDetail extends React.Component {
     const listJournalProps = {
       loading,
       dataSource: listCreateJournal,
-      handleChangePagination: (pagination) => {
-        const { current: page, pageSize } = pagination
-        const { pathname, query } = location
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            page,
-            pageSize
-          }
-        }))
-      },
       handleAddButton: () => {
         this.setState({
           journalType: 'normal'
