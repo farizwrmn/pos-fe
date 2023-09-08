@@ -1,3 +1,4 @@
+import moment from 'moment'
 import {
   name,
   prefix,
@@ -8,7 +9,7 @@ import {
 } from '../config.main'
 
 it('Should render App name', () =>
-  expect(name).toEqual('www.k3bike.com')
+  expect(name).toEqual('www.k3mart.id')
 )
 
 it('Should render App Prefix', () =>
@@ -16,11 +17,11 @@ it('Should render App Prefix', () =>
 )
 
 it('Should render App footerText', () =>
-  expect(footerText).toEqual('Smartech Indo')
+  expect(footerText).toEqual('K3MART')
 )
 
 it('Should render App footerSubText', () =>
-  expect(footerSubText).toEqual('Point of Sales © 2019')
+  expect(footerSubText).toEqual(`K3MART © ${moment().format('YYYY')}`)
 )
 
 it('Should render App openPages', () =>
@@ -31,7 +32,9 @@ it('Should render App openPages', () =>
       '/nps/02',
       '/nps/03',
       '/transaction/pos/customer-view',
-      '/transaction/pos/invoice/:id'
+      '/transaction/pos/admin-invoice/:id',
+      '/transaction/pos/invoice/:id',
+      '/balance/invoice/:id'
     ])
 )
 
