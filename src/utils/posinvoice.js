@@ -1,9 +1,14 @@
 export const rearrangeDirectPrinting = (pos, directPrinting) => {
   const headerPrint = [
     {
+      alignment: 'two',
+      text: 'Antrian:',
+      rightText: ''
+    },
+    {
       style: 'title',
       alignment: 'center',
-      text: directPrinting.groupName
+      text: pos.orderShortNumber
     },
     {
       alignment: 'line',
@@ -12,7 +17,7 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     {
       style: 'subtitle',
       alignment: 'center',
-      text: `Antrian: ${pos.orderShortNumber}`
+      text: directPrinting.groupName
     },
     {
       alignment: 'line',
@@ -38,6 +43,7 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     })
     headerPrint.push({
       alignment: 'two',
+      style: 'subtitle',
       text: '',
       rightText: `Qty: ${item.qty.toLocaleString()}`
     })
