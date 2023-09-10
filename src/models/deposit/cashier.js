@@ -116,6 +116,8 @@ export default modelExtend(pageModel, {
             payload: {
               page,
               pageSize,
+              startDate,
+              endDate,
               all
             }
           })

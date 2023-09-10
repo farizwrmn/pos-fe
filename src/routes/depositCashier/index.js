@@ -1,9 +1,11 @@
 import React from 'react'
-import { Button, Checkbox, Row } from 'antd'
+import moment from 'moment'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Button, Checkbox, Row } from 'antd'
 import { lstorage } from 'utils'
 import List from './List'
+import Filter from './Filter'
 
 const { getCurrentUserRole } = lstorage
 
@@ -73,14 +75,32 @@ class DepositCashier extends React.Component {
       }
     }
 
+    const filterProps = {
+      location,
+      handleChangeDate: (rangeDate) => {
+        const { pathname, query } = location
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
+            endDate: moment(rangeDate[1]).format('YYYY-MM-DD')
+          }
+        }))
+      }
+    }
+
     return (
       <div className="content-inner">
         {userRole === 'OWN' && (
-          <Row>
+          <Row style={{ marginBottom: '10px' }}>
             <Checkbox onChange={onChangeAllStore} checked={JSON.parse(all)}>All Store</Checkbox>
           </Row>
         )}
-        <Row justify="end" type="flex" style={{ marginBottom: '10px' }}>
+        <Row type="flex" align="middle" style={{ marginBottom: '10px' }}>
+          <div style={{ flex: 1 }}>
+            <Filter {...filterProps} />
+          </div>
           <Button
             type="primary"
             icon="plus"
