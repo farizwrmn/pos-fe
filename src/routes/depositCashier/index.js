@@ -51,7 +51,8 @@ class DepositCashier extends React.Component {
         pathname,
         query: {
           ...query,
-          all: checked
+          all: checked,
+          page: 1
         }
       }))
     }
@@ -84,7 +85,8 @@ class DepositCashier extends React.Component {
           query: {
             ...query,
             startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
-            endDate: moment(rangeDate[1]).format('YYYY-MM-DD')
+            endDate: moment(rangeDate[1]).format('YYYY-MM-DD'),
+            page: 1
           }
         }))
       }
