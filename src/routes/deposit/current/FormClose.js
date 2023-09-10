@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Select } from 'antd'
+import { Button, Form, Input, Modal, Select } from 'antd'
 import TableClose from './TableClose'
 
 const FormItem = Form.Item
@@ -91,66 +91,70 @@ const FormClose = ({
       const inputData = balanceInputFormatter(data)
 
 
-      onSubmit(inputData, data.approveUserId)
+      Modal.confirm({
+        title: 'Close Balance',
+        content: 'Click \'OK\' to complete this action',
+        onOk: () => {
+          onSubmit(inputData, data.approveUserId)
+        }
+      })
     })
   }
 
   return (
-    <Col span={24}>
-      <Form>
-        <FormItem label="Shift" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('shift', {
-            initialValue: currentShift ? currentShift.shiftName : undefined,
-            rules: [
-              {
-                required: true,
-                message: 'Required!'
-              }
-            ]
-          })(
-            <Input placeholder="No Shift Detected" disabled />
-          )}
-        </FormItem>
-        <FormItem label="Memo" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('memo', {
-            initialValue: currentBalance ? currentBalance.description : undefined
-          })(
-            <Input placeholder="No Memo Detected" disabled />
-          )}
-        </FormItem>
-        <FormItem label="Cashier" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('approveUserId', {
-            rules: [
-              {
-                required: true,
-                message: 'Required!'
-              }
-            ]
-          })(
-            <Select
-              placeholder="Select PIC for this shift"
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            >
-              {listUser && listUser.map(item => (<Option value={item.id} key={item.id}>{item.userName}</Option>))}
-            </Select>
-          )}
-        </FormItem>
-        <TableClose {...tableCloseProps} />
-        <FormItem {...tailFormItemLayout}>
-          <Button
-            type="primary"
-            onClick={handleSubmit}
-            loading={loading.effects['deposit/closeBalance']}
-            disabled={loading.effects['deposit/closeBalance']}
+    <Form>
+      <FormItem label="Shift" {...formItemLayout} hasFeedback>
+        {getFieldDecorator('shift', {
+          initialValue: currentShift ? currentShift.shiftName : undefined,
+          rules: [
+            {
+              required: true,
+              message: 'Required!'
+            }
+          ]
+        })(
+          <Input placeholder="No Shift Detected" disabled />
+        )}
+      </FormItem>
+      <FormItem label="Memo" {...formItemLayout} hasFeedback>
+        {getFieldDecorator('memo', {
+          initialValue: currentBalance ? currentBalance.description : undefined
+        })(
+          <Input placeholder="No Memo Detected" disabled />
+        )}
+      </FormItem>
+      <FormItem label="Cashier" {...formItemLayout} hasFeedback>
+        {getFieldDecorator('approveUserId', {
+          rules: [
+            {
+              required: true,
+              message: 'Required!'
+            }
+          ]
+        })(
+          <Select
+            placeholder="Select PIC for this shift"
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
-            Close
-          </Button>
-        </FormItem>
-      </Form>
-    </Col>
+            {listUser && listUser.map(item => (<Option value={item.id} key={item.id}>{item.userName}</Option>))}
+          </Select>
+        )}
+      </FormItem>
+      <TableClose {...tableCloseProps} />
+      <FormItem {...tailFormItemLayout}>
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          loading={loading.effects['deposit/closeBalance']}
+          disabled={loading.effects['deposit/closeBalance']}
+        >
+          Close
+        </Button>
+      </FormItem>
+    </Form>
   )
 }
 

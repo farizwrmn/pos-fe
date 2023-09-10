@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Select } from 'antd'
+import { Button, Form, Input, Modal, Select } from 'antd'
 import { lstorage } from 'utils'
 
 const FormItem = Form.Item
@@ -13,22 +13,22 @@ const formItemLayout = {
     xl: 2
   },
   wrapperCol: {
-    xs: 12,
-    sm: 12,
-    md: 6,
-    lg: 6,
-    xl: 3
+    xs: 16,
+    sm: 16,
+    md: 20,
+    lg: 20,
+    xl: 22
   }
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
-    span: 24,
+    // span: 24,
     xs: {
-      offset: 19
+      offset: 15
     },
     sm: {
-      offset: 19
+      offset: 15
     },
     md: {
       offset: 9
@@ -71,39 +71,48 @@ const BalanceCurrentForm = ({
   }
 
   return (
-    <Col span={24}>
-      <Form layout="horizontal">
-        <FormItem label="Shift" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('shiftId', {
-            rules: [
-              {
-                required: true,
-                message: 'Required'
-              }
-            ]
-          })(
-            <Select placeholder="Choose Shift">
-              {listShift && listShift.map(record => (<Option value={record.id} key={record.id}>{record.shiftName}</Option>))}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem label="Memo" {...formItemLayout} hasFeedback>
-          {getFieldDecorator('description')(
-            <Input placeholder="Balance Memo (Optional)" />
-          )}
-        </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button
-            type="primary"
-            onClick={handleSubmit}
-            loading={loading.effects['deposit/openBalance']}
-            disabled={loading.effects['deposit/openBalance']}
+    <Form horizontal>
+      <FormItem label="Shift" {...formItemLayout} hasFeedback>
+        {getFieldDecorator('shiftId', {
+          rules: [
+            {
+              required: true,
+              message: 'Required'
+            }
+          ]
+        })(
+          <Select
+            placeholder="Choose Shift"
+            style={{
+              maxWidth: '250px'
+            }}
           >
-            Open
-          </Button>
-        </FormItem>
-      </Form>
-    </Col>
+            {listShift && listShift.map(record => (<Option value={record.id} key={record.id}>{record.shiftName}</Option>))}
+          </Select>
+        )}
+      </FormItem>
+      <FormItem label="Memo" {...formItemLayout} hasFeedback>
+        {getFieldDecorator('description')(
+          <Input
+            placeholder="Balance Memo (Optional)"
+            style={{
+              maxWidth: '250px'
+            }}
+          />
+        )}
+      </FormItem>
+      <FormItem {...tailFormItemLayout}>
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          loading={loading.effects['deposit/openBalance']}
+          disabled={loading.effects['deposit/openBalance']}
+          style={{ maxWidth: '100px' }}
+        >
+          Open
+        </Button>
+      </FormItem>
+    </Form>
   )
 }
 
