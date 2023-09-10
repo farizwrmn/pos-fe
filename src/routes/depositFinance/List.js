@@ -3,6 +3,7 @@ import { Row, Table, Tag } from 'antd'
 const List = ({
   loading,
   onClickRecord,
+  handlePagination,
   ...tableProps
 }) => {
   const handleClickRecord = (transId) => {
@@ -59,6 +60,7 @@ const List = ({
           bordered
           columns={columns}
           loading={loading.effects['depositFinance/query']}
+          onChange={handlePagination}
         />
       </Row>
     </div>

@@ -89,6 +89,18 @@ class DepositFinance extends React.Component {
             transId
           }
         }))
+      },
+      handlePagination: (paginationProps) => {
+        const { pathname, query } = location
+        const { current: page, pageSize } = paginationProps
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page,
+            pageSize
+          }
+        }))
       }
     }
 
@@ -103,7 +115,8 @@ class DepositFinance extends React.Component {
           pathname,
           query: {
             ...query,
-            all: checked
+            all: checked,
+            page: 1
           }
         }))
       },
@@ -116,13 +129,17 @@ class DepositFinance extends React.Component {
             query: {
               ...query,
               startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
-              endDate: moment(rangeDate[1]).format('YYYY-MM-DD')
+              endDate: moment(rangeDate[1]).format('YYYY-MM-DD'),
+              page: 1
             }
           }))
         } else {
           dispatch(routerRedux.push({
             pathname,
-            query: other
+            query: {
+              ...other,
+              page: 1
+            }
           }))
         }
       }
