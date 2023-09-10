@@ -2,6 +2,7 @@ import { Checkbox, DatePicker, Form } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
+const RangePicker = DatePicker.RangePicker
 
 const Filter = ({
   location,
@@ -16,14 +17,14 @@ const Filter = ({
   return (
     <Form inline>
       <FormItem>
-        {getFieldDecorator('transDate', {
-          initialValue: (location && location.query && location.query.transDate)
-            ? moment(location.query.transDate, 'YYYY-MM-DD')
-            : moment()
+        {getFieldDecorator('rangeDate', {
+          initialValue: (location && location.query && location.query.startDate && location.query.endDate)
+            ? [moment(location.query.startDate, 'YYYY-MM-DD'), moment(location.query.endDate, 'YYYY-MM-DD')]
+            : undefined
         })(
-          <DatePicker
+          <RangePicker
             style={{ minWidth: '150px' }}
-            allowClear={false}
+            allowClear
             onChange={onChangeTransDate}
           />
         )}

@@ -1,4 +1,3 @@
-import moment from 'moment'
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
@@ -35,7 +34,8 @@ export default modelExtend(pageModel, {
           page,
           pageSize,
           all,
-          transDate = moment().format('YYYY-MM-DD')
+          startDate,
+          endDate
         } = query
         if (pathname === '/setoran/finance') {
           dispatch({
@@ -44,7 +44,8 @@ export default modelExtend(pageModel, {
               all,
               page,
               pageSize,
-              transDate
+              startDate,
+              endDate
             }
           })
           if (transId) {

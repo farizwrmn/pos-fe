@@ -107,15 +107,24 @@ class DepositFinance extends React.Component {
           }
         }))
       },
-      onChangeTransDate: (transDate) => {
+      onChangeTransDate: (rangeDate) => {
         const { pathname, query } = location
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            transDate: moment(transDate).format('YYYY-MM-DD')
-          }
-        }))
+        const { startDate, endDate, ...other } = query
+        if (rangeDate.length > 0) {
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
+              endDate: moment(rangeDate[1]).format('YYYY-MM-DD')
+            }
+          }))
+        } else {
+          dispatch(routerRedux.push({
+            pathname,
+            query: other
+          }))
+        }
       }
     }
 
