@@ -406,6 +406,14 @@ const Routers = function ({ history, app }) {
             }, 'master-shift')
           }
         }, {
+          path: 'master/setoran-shift',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balanceShift'))
+              cb(null, require('./routes/master/balanceShift'))
+            }, 'master-shift')
+          }
+        }, {
           path: 'master/product/location',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
