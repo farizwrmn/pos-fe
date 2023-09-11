@@ -46,6 +46,13 @@ const Member = ({
           </div>
         </div>
       )}
+      {invoiceInfo.posData && invoiceInfo.posData.orderType && (
+        <div>
+          <div span={12} className={styles.invoiceQueue} style={{ fontSize: 16, alignItems: 'center', justifyContent: 'center' }}>
+            <strong>{invoiceInfo.posData.orderType}</strong>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

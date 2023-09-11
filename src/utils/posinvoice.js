@@ -12,6 +12,11 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
       text: directPrinting.groupName
     },
     {
+      style: 'title',
+      alignment: 'left',
+      text: directPrinting.orderType || ''
+    },
+    {
       alignment: 'line',
       text: ''
     },
