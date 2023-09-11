@@ -180,14 +180,22 @@ class DepositCashierDetail extends React.Component {
       location,
       handleChangeDate: (rangeDate) => {
         const { pathname, query } = location
-        dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...query,
-            startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
-            endDate: moment(rangeDate[0]).format('YYYY-MM-DD')
-          }
-        }))
+        if (rangeDate && rangeDate.length > 0) {
+          dispatch(routerRedux.push({
+            pathname,
+            query: {
+              ...query,
+              startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
+              endDate: moment(rangeDate[0]).format('YYYY-MM-DD')
+            }
+          }))
+        } else {
+          const { startDate, endDate, ...other } = query
+          dispatch(routerRedux.push({
+            pathname,
+            query: other
+          }))
+        }
       }
     }
 
