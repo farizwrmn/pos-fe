@@ -23,7 +23,6 @@ const List = ({
     {
       title: 'Balance Range Date',
       render: (_, record) => {
-        console.log('record', record)
         return (
           <div>
             {moment(record.startDate, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(record.endDate, 'YYYY-MM-DD').format('DD MMM YYYY')}

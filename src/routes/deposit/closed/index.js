@@ -50,8 +50,6 @@ class DepositClosed extends React.Component {
     const {
       data
     } = userDetail
-    console.log('currentBalance', currentBalance)
-    console.log('listShift', listShift)
 
     const formProps = {
       listBalanceInputPaymentOption,

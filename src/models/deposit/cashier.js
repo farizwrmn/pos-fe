@@ -31,7 +31,6 @@ export default modelExtend(pageModel, {
   namespace: 'depositCashier',
 
   state: {
-    // setoran/cashier
     list: [],
     pagination: {
       current: 1,
@@ -39,7 +38,6 @@ export default modelExtend(pageModel, {
       showQuickJumper: true
     },
 
-    // setoran/cashier/add
     summaryDetail: {},
     listDetail: [],
     paginationDetail: {
@@ -55,11 +53,9 @@ export default modelExtend(pageModel, {
 
     listCreateJournal: [],
 
-    // setoran/cashier/balance/:id
     depositBalanceDetailInfo: {},
     listDepositBalanceDetailSummary: [],
 
-    // setoran/cashier/detail/:id
     balanceDepositInfo: {},
     listDepositBalance: [],
     listDepositJournal: []

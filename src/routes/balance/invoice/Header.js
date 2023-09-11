@@ -18,7 +18,7 @@ const Header = ({ invoiceInfo }) => {
         <div>Printed By : {invoiceInfo.employeeName}</div>
         <Row>
           <Col span={12}>
-            <strong>Closing Balance</strong>
+            <strong>Closing Setoran</strong>
           </Col>
           <Col span={12} className={styles.right} />
         </Row>
