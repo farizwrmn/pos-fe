@@ -298,12 +298,7 @@ export default {
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-          const listPaymentShortcut = lstorage.getPaymentShortcut()
           let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
-
-          if (listPaymentShortcut && listPaymentShortcut.length > 0) {
-            selectedPaymentShortcut = listPaymentShortcut[0]
-          }
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
               dataPos: newArrayProd,
