@@ -1,9 +1,25 @@
 export const rearrangeDirectPrinting = (pos, directPrinting) => {
   const headerPrint = [
     {
+      alignment: 'two',
+      style: 'subtitle',
+      text: ' ',
+      rightText: ''
+    },
+    {
       style: 'title',
       alignment: 'left',
       text: directPrinting.groupName
+    },
+    {
+      alignment: 'line',
+      text: ''
+    },
+    {
+      alignment: 'two',
+      style: 'subtitle',
+      text: `Date: ${pos.transDate} ${pos.transTime}`,
+      rightText: ''
     },
     {
       alignment: 'line',
