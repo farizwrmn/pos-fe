@@ -9,12 +9,12 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     {
       style: 'title',
       alignment: 'left',
-      text: directPrinting.groupName
+      text: directPrinting.groupName || ''
     },
     {
-      style: 'title',
+      style: 'subtitle',
       alignment: 'left',
-      text: directPrinting.orderType || ''
+      text: pos.orderType || ''
     },
     {
       alignment: 'line',
@@ -78,7 +78,7 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     {
       style: 'title',
       alignment: 'center',
-      text: pos.orderShortNumber
+      text: pos.orderShortNumber || ''
     }
   ]
   const resultData = headerPrint.concat(footerPrint)
