@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
+import https from 'https'
 import { request, config, crypt, lstorage } from '../utils'
 // const { apiURL, apiPrefix, api } = config
 const { pos, posdetail } = config.api
@@ -76,6 +77,9 @@ export async function queryById (params) {
 
 export async function directPrinting (params) {
   const url = params.url
+  const agent = new https.Agent({
+    rejectUnauthorized: false
+  })
   return axios.request({
     method: 'POST',
     withCredentials: false,
@@ -84,6 +88,7 @@ export async function directPrinting (params) {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json'
     },
+    httpsAgent: agent,
     data: params.data
   })
 }
