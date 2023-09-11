@@ -14,6 +14,19 @@ const {
 } = lstorage
 
 class DepositFinance extends React.Component {
+  componentDidMount () {
+    const { dispatch, location } = this.props
+    const { pathname, query } = location
+    const { all, ...other } = query
+    const userRole = getCurrentUserRole()
+    if (userRole !== 'OWN') {
+      dispatch(routerRedux.push({
+        pathname,
+        query: other
+      }))
+    }
+  }
+
   render () {
     const {
       loading,
