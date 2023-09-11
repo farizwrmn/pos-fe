@@ -98,18 +98,26 @@ export default modelExtend(pageModel, {
     },
 
     * delete ({ payload = {} }, { call, put }) {
-      const data = yield call(remove, payload)
-      if (data.success) {
-        yield put({ type: 'query' })
+      const response = yield call(remove, payload)
+      if (response && response.success && response.data) {
+        message.success('Berhasil')
+        const { pathname, query } = payload.location
+        yield put(routerRedux.push({
+          pathname,
+          query: {
+            ...query
+          }
+        }))
       } else {
-        throw data
+        message.error(response.message)
       }
     },
 
     * add ({ payload = {} }, { call, put }) {
       payload.storeId = lstorage.getCurrentUserStore()
-      const data = yield call(add, payload)
-      if (data && data.success) {
+      const response = yield call(add, payload)
+      if (response && response.success && response.data) {
+        message.success('Berhasil')
         yield put({
           type: 'updateState',
           payload: {
@@ -124,15 +132,16 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
-        throw data
+        message.error(response.message)
       }
     },
 
     * edit ({ payload = {} }, { select, call, put }) {
       const id = yield select(({ balanceShift }) => balanceShift.currentItem.id)
       const newShift = { ...payload, id }
-      const data = yield call(edit, newShift)
-      if (data.success) {
+      const response = yield call(edit, newShift)
+      if (response && response.data && response.success) {
+        message.success('Berhasil')
         yield put({
           type: 'updateState',
           payload: {
@@ -148,7 +157,6 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         }))
-        yield put({ type: 'query' })
       } else {
         yield put({
           type: 'updateState',
@@ -156,7 +164,7 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
-        throw data
+        message.error(response.message)
       }
     }
   },

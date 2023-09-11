@@ -6,7 +6,11 @@ import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ editItem, deleteItem, ...tableProps }) => {
+const List = ({
+  editItem,
+  deleteItem,
+  ...tableProps
+}) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)

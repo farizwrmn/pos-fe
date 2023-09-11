@@ -53,8 +53,9 @@ export async function queryEdit (params) {
   })
 }
 
-export async function queryDelete (id) {
+export async function queryDelete (params) {
   const apiHeaderToken = crypt.apiheader()
+  const { id } = params
   if (!id) {
     message.error('id needed to complete this action!')
     return

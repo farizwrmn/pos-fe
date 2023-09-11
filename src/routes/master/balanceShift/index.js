@@ -63,7 +63,10 @@ const BalanceShift = ({ balanceShift, loading, dispatch, location, app }) => {
     deleteItem (id) {
       dispatch({
         type: 'balanceShift/delete',
-        payload: id
+        payload: {
+          id,
+          location
+        }
       })
     }
   }
