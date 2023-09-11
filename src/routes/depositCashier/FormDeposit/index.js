@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { Button, Col, Modal, Row } from 'antd'
+import { Button, Modal, Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
@@ -53,7 +53,26 @@ class DepositCashierDetail extends React.Component {
     } = accountRule
 
     const handleBackButton = () => {
-      dispatch(routerRedux.push('/setoran/cashier'))
+      if (listCreateJournal && listCreateJournal.length > 0) {
+        Modal.confirm({
+          title: 'Cancel Form',
+          content: (
+            <div>
+              <Row>
+                Are you sure to cancel this form?
+              </Row>
+              <Row>
+                {'(NB: All changes wouldn\'t be save)'}
+              </Row>
+            </div>
+          ),
+          onOk: () => {
+            dispatch(routerRedux.push('/setoran/cashier'))
+          }
+        })
+      } else {
+        dispatch(routerRedux.push('/setoran/cashier'))
+      }
     }
 
     const handleModalJournal = () => {
@@ -75,10 +94,10 @@ class DepositCashierDetail extends React.Component {
     const handleSubmit = () => {
       const { query } = location
       const { startDate, endDate } = query
-      if (!startDate || !endDate) {
+      if (!listDetail || listDetail.length === 0) {
         Modal.warning({
           title: 'Submittion Failed',
-          content: 'Date is not defined!'
+          content: 'Balance is empty!'
         })
         return
       }
@@ -159,23 +178,16 @@ class DepositCashierDetail extends React.Component {
 
     const filterProps = {
       location,
-      loading,
-      onSubmit: (data) => {
-        const { rangeDate } = data
+      handleChangeDate: (rangeDate) => {
         const { pathname, query } = location
-        if (rangeDate && rangeDate.length > 0) {
-          const startDate = moment(rangeDate[0]).format('YYYY-MM-DD')
-          const endDate = moment(rangeDate[1]).format('YYYY-MM-DD')
-          dispatch(routerRedux.push({
-            pathname,
-            query: {
-              ...query,
-              startDate,
-              endDate,
-              page: 1
-            }
-          }))
-        }
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            startDate: moment(rangeDate[0]).format('YYYY-MM-DD'),
+            endDate: moment(rangeDate[0]).format('YYYY-MM-DD')
+          }
+        }))
       }
     }
 
@@ -236,21 +248,16 @@ class DepositCashierDetail extends React.Component {
     return (
       <div className="content-inner">
         {visibleModalJournal && <ModalJournal {...modalJournalProps} />}
-        <Row type="flex" style={{ marginBottom: '30px' }}>
-          <Col
-            style={{
-              flex: 1
-            }}
+        <Row style={{ marginBottom: '30px' }}>
+          <Button
+            type="danger"
+            icon="rollback"
+            onClick={handleBackButton}
+            loading={loading.effects['depositCashier/queryAdd']}
+            style={{ marginRight: '10px' }}
           >
-            <Button
-              type="danger"
-              icon="rollback"
-              onClick={handleBackButton}
-              loading={loading.effects['depositCashier/queryAdd']}
-            >
-              Cancel
-            </Button>
-          </Col>
+            Cancel
+          </Button>
           <Button
             type="primary"
             icon="check"
@@ -261,7 +268,7 @@ class DepositCashierDetail extends React.Component {
             Submit
           </Button>
         </Row>
-        <Row style={{ marginBottom: '10px' }}>
+        <Row type="flex" justify="end" style={{ marginBottom: '10px' }}>
           <Filter {...filterProps} />
         </Row>
         <Row style={{ marginBottom: '30px' }}>

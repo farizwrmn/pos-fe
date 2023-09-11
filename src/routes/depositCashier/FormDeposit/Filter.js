@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form } from 'antd'
+import { DatePicker, Form } from 'antd'
 import moment from 'moment'
 
 const FormItem = Form.Item
@@ -6,14 +6,12 @@ const RangePicker = DatePicker.RangePicker
 
 const Filter = ({
   location,
-  loading,
-  onSubmit,
+  handleChangeDate,
   form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue
+    getFieldDecorator
   }
 }) => {
+  const currentDate = moment()
   const rangeDateDefaultValue = (location
     && location.query
     && location.query.startDate
@@ -21,19 +19,7 @@ const Filter = ({
     ? [
       moment(location.query.startDate, 'YYYY-MM-DD'),
       moment(location.query.endDate, 'YYYY-MM-DD')
-    ] : []
-
-  const handleSubmit = () => {
-    validateFields((error) => {
-      if (error) return error
-
-      const data = {
-        ...getFieldsValue()
-      }
-
-      onSubmit(data)
-    })
-  }
+    ] : [currentDate, currentDate]
 
   return (
     <Form inline>
@@ -49,20 +35,9 @@ const Filter = ({
         })(
           <RangePicker
             allowClear={false}
+            onChange={handleChangeDate}
           />
         )}
-      </FormItem>
-      <FormItem>
-        <Button
-          type="primary"
-          icon="filter"
-          onClick={handleSubmit}
-          loading={loading.effects['depositCashier/queryBalanceList']
-            || loading.effects['depositCashier/queryAdd']}
-          disabled={loading.effects['depositCashier/queryBalanceList']}
-        >
-          Filter
-        </Button>
       </FormItem>
     </Form>
   )

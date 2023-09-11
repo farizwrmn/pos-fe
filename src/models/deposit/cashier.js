@@ -1,3 +1,4 @@
+import moment from 'moment'
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
@@ -105,6 +106,16 @@ export default modelExtend(pageModel, {
               type: 'loadListCreateJournal'
             })
           } else {
+            const currentDate = moment().format('YYYY-MM-DD')
+            dispatch({
+              type: 'queryBalanceList',
+              payload: {
+                page,
+                pageSize,
+                startDate: currentDate,
+                endDate: currentDate
+              }
+            })
             dispatch({
               type: 'removeListCreateJournal'
             })

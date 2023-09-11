@@ -34,23 +34,27 @@ class ListJournal extends React.Component {
         title: 'No',
         dataIndex: 'id',
         key: 'id',
+        width: 10,
         render: value => <div style={{ textAlign: 'center' }}>{value}</div>
       },
       {
         title: 'Tanggal',
         dataIndex: 'transDate',
         key: 'transDate',
+        width: 40,
         render: value => moment(value).format('DD MMM YYYY')
       },
       {
         title: 'Reference',
         dataIndex: 'reference',
-        key: 'reference'
+        key: 'reference',
+        width: 40
       },
       {
         title: 'Total',
         dataIndex: 'detail',
         key: 'detail',
+        width: 40,
         render: (detail) => {
           const amountIn = Array.isArray(detail) && detail.reduce((prev, curr) => { return prev + curr.amountIn }, 0)
           return (
@@ -61,10 +65,12 @@ class ListJournal extends React.Component {
       {
         title: 'Description',
         dataIndex: 'description',
-        key: 'description'
+        key: 'description',
+        width: 40
       },
       {
         title: 'Action',
+        width: 40,
         render: (_, record) => {
           return (
             <div style={{ textAlign: 'center' }}>
