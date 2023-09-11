@@ -41,7 +41,6 @@ const BalanceCurrent = ({
     loading,
     currentBalance,
     listBalanceInputPaymentOption,
-    listShift,
     listUser: data.data,
     listOpts,
     onSubmit: (data, approveUserId) => {

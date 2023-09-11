@@ -62,7 +62,6 @@ const FormClose = ({
   loading,
   currentBalance,
   listBalanceInputPaymentOption,
-  listShift,
   listUser,
   listOpts,
   onSubmit,
@@ -72,7 +71,8 @@ const FormClose = ({
     getFieldsValue
   }
 }) => {
-  const currentShift = listShift.find(item => item.id === currentBalance.shiftId)
+  const currentShift = currentBalance.shift
+  const currentStore = currentBalance.store
 
   const tableCloseProps = {
     listOpts,
@@ -103,7 +103,20 @@ const FormClose = ({
 
   return (
     <Form>
-      <FormItem label="Shift" {...formItemLayout} hasFeedback>
+      <FormItem label="Store" {...formItemLayout} >
+        {getFieldDecorator('store', {
+          initialValue: currentStore ? currentStore.storeName : undefined,
+          rules: [
+            {
+              required: true,
+              message: 'Required!'
+            }
+          ]
+        })(
+          <Input placeholder="No Store Detected" disabled />
+        )}
+      </FormItem>
+      <FormItem label="Shift" {...formItemLayout} >
         {getFieldDecorator('shift', {
           initialValue: currentShift ? currentShift.shiftName : undefined,
           rules: [
@@ -116,7 +129,7 @@ const FormClose = ({
           <Input placeholder="No Shift Detected" disabled />
         )}
       </FormItem>
-      <FormItem label="Memo" {...formItemLayout} hasFeedback>
+      <FormItem label="Memo" {...formItemLayout} >
         {getFieldDecorator('memo', {
           initialValue: currentBalance ? currentBalance.description : undefined
         })(

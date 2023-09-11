@@ -59,7 +59,7 @@ const List = ({
           {...tableProps}
           bordered
           columns={columns}
-          loading={loading.effects['depositFinance/query']}
+          loading={loading.effects['depositFinance/query'] || loading.effects['depositFinance/queryApproveLedger']}
           onChange={handlePagination}
         />
       </Row>

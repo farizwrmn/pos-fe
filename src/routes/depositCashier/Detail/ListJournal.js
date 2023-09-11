@@ -18,15 +18,9 @@ const ListJournal = ({
       key: 'reference'
     },
     {
-      title: 'Debit',
+      title: 'Total',
       dataIndex: 'debit',
       key: 'debit',
-      render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
-    },
-    {
-      title: 'Credit',
-      dataIndex: 'credit',
-      key: 'credit',
       render: value => <div style={{ textAlign: 'end' }}>{currencyFormatter(value)}</div>
     },
     {

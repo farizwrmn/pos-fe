@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import { routerRedux } from 'dva/router'
 import { getActive } from 'services/balance/balanceProcess'
 import { queryClose, queryOpen } from 'services/balancePayment/balancePaymentService'
@@ -97,6 +98,7 @@ export default modelExtend(pageModel, {
       }
     },
     * closedBalanceDetail ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
       const response = yield call(queryClosedDetail, payload)
       if (response && response.success && response.data && response.data.balanceSummary && response.data.balance) {
         yield put({
@@ -111,6 +113,7 @@ export default modelExtend(pageModel, {
       }
     },
     * queryInvoice ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
       const response = yield call(queryInvoice, payload)
       if (response && response.success && response.data) {
         let totalBalanceInput = 0

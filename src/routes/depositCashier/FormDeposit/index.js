@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { Button, Col, Modal, Row, message } from 'antd'
+import { Button, Col, Modal, Row } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
@@ -76,7 +76,11 @@ class DepositCashierDetail extends React.Component {
       const { query } = location
       const { startDate, endDate } = query
       if (!startDate || !endDate) {
-        message.error('Date is not defined!')
+        Modal.warning({
+          title: 'Submittion Failed',
+          content: 'Date is not defined!'
+        })
+        return
       }
       Modal.confirm({
         title: 'Confirmation',

@@ -48,24 +48,13 @@ class ListJournal extends React.Component {
         key: 'reference'
       },
       {
-        title: 'Amount IN',
+        title: 'Total',
         dataIndex: 'detail',
-        key: 'detailIn',
+        key: 'detail',
         render: (detail) => {
           const amountIn = Array.isArray(detail) && detail.reduce((prev, curr) => { return prev + curr.amountIn }, 0)
           return (
             <div style={{ textAlign: 'end' }}>{currencyFormatter(amountIn)}</div>
-          )
-        }
-      },
-      {
-        title: 'Amount OUT',
-        dataIndex: 'detail',
-        key: 'detailOut',
-        render: (detail) => {
-          const amountOut = Array.isArray(detail) && detail.reduce((prev, curr) => { return prev + curr.amountOut }, 0)
-          return (
-            <div style={{ textAlign: 'end' }}>{currencyFormatter(amountOut)}</div>
           )
         }
       },

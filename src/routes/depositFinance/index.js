@@ -165,7 +165,7 @@ class DepositFinance extends React.Component {
                     type="danger"
                     icon="close"
                     onClick={handleClickDeselectAll}
-                    loading={loading.effects['depositFinance/queryApproveLedger']}
+                    loading={loading.effects['depositFinance/queryApproveLedger'] || loading.effects['depositFinance/queryLedger']}
                   >
                     Deselect All
                   </Button>
@@ -173,7 +173,7 @@ class DepositFinance extends React.Component {
                   <Button
                     type="primary"
                     onClick={handleClickSelectAll}
-                    loading={loading.effects['depositFinance/queryApproveLedger']}
+                    loading={loading.effects['depositFinance/queryApproveLedger'] || loading.effects['depositFinance/queryLedger']}
                     disabled={listLedger.filter(filtered => filtered.recon === 0).length === 0}
                   >
                     Select All
@@ -185,7 +185,7 @@ class DepositFinance extends React.Component {
                   icon="check"
                   onClick={handleClickReconciliation}
                   style={{ marginLeft: '10px' }}
-                  loading={loading.effects['depositFinance/queryApproveLedger']}
+                  loading={loading.effects['depositFinance/queryApproveLedger'] || loading.effects['depositFinance/queryLedger']}
                 >
                   {`Approve (Total: ${currencyFormatter(total)})`}
                 </Button>
@@ -197,7 +197,7 @@ class DepositFinance extends React.Component {
                 item: record,
                 isChecked: !!isChecked,
                 listSelectedLedger,
-                loading: loading.effects['depositFinance/queryApproveLedger'],
+                loading: loading.effects['depositFinance/queryApproveLedger'] || loading.effects['depositFinance/queryLedger'],
                 handleCheckItem: (result) => {
                   dispatch({
                     type: 'depositFinance/updateState',

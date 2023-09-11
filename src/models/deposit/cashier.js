@@ -183,6 +183,7 @@ export default modelExtend(pageModel, {
       }
     },
     * queryDepositBalanceDetail ({ payload = {} }, { call, put }) {
+      payload.storeId = getCurrentUserStore()
       const responseSummary = yield call(queryBalanceSummary, payload)
       if (responseSummary && responseSummary.success && responseSummary.data && responseSummary.data.detail) {
         yield put({
