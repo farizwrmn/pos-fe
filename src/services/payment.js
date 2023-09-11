@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios'
 import { request, config, crypt, lstorage } from '../utils'
 // const { apiURL, apiPrefix, api } = config
 const { pos, posdetail } = config.api
@@ -70,6 +71,20 @@ export async function queryById (params) {
     method: 'get',
     data: params,
     headers: apiHeaderToken
+  })
+}
+
+export async function directPrinting (params) {
+  const url = params.url
+  return axios.request({
+    method: 'POST',
+    withCredentials: false,
+    url,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json'
+    },
+    data: params.data
   })
 }
 
