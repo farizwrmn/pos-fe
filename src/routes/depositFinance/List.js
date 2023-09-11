@@ -1,4 +1,5 @@
-import { Row, Table, Tag } from 'antd'
+import { Button, Row, Table, Tag } from 'antd'
+import { Link } from 'dva/router'
 
 const List = ({
   loading,
@@ -43,6 +44,24 @@ const List = ({
             <Tag color={value > 0 ? 'red' : 'green'}>
               {value > 0 ? 'Not Recon' : 'Recon'}
             </Tag>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Action',
+      render: (_, record) => {
+        return (
+          <div style={{ textAlign: 'center' }}>
+            <Link to={`/setoran/cashier/detail/${record.id}`}>
+              <Button
+                type="primary"
+                icon="search"
+                size="small"
+              >
+                See Detail
+              </Button>
+            </Link>
           </div>
         )
       }
