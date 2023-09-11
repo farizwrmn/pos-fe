@@ -113,7 +113,7 @@ export default modelExtend(pageModel, {
           type: 'setListPaymentDetail',
           payload: response.pos
         })
-        if (response.directPrinting && response.directPrinting.length > 0) {
+        if (response.pos && response.directPrinting && response.directPrinting.length > 0) {
           for (let key in response.directPrinting) {
             const item = response.directPrinting[key]
             const responseDirect = yield call(directPrinting, {
