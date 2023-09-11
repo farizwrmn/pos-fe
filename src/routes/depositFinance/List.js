@@ -20,7 +20,9 @@ const List = ({
       key: 'transDate',
       render: (value, record) => {
         return (
-          <a onClick={() => handleClickRecord(record.id)}>{value}</a>
+          <div style={{ textAlign: 'center' }}>
+            <a onClick={() => handleClickRecord(record.id)}>{value}</a>
+          </div>
         )
       }
     },
@@ -53,7 +55,7 @@ const List = ({
       render: (_, record) => {
         return (
           <div style={{ textAlign: 'center' }}>
-            <Link to={`/setoran/cashier/detail/${record.id}`}>
+            <Link to={`/setoran/cashier/detail/${record.id}`} target="_blank">
               <Button
                 type="primary"
                 icon="search"
