@@ -1,22 +1,8 @@
 export const rearrangeDirectPrinting = (pos, directPrinting) => {
   const headerPrint = [
     {
-      alignment: 'two',
-      text: 'Antrian:',
-      rightText: ''
-    },
-    {
       style: 'title',
-      alignment: 'center',
-      text: pos.orderShortNumber
-    },
-    {
-      alignment: 'line',
-      text: ''
-    },
-    {
-      style: 'subtitle',
-      alignment: 'center',
+      alignment: 'left',
       text: directPrinting.groupName
     },
     {
@@ -25,27 +11,29 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     },
     {
       alignment: 'two',
+      style: 'subtitle',
       text: 'Item',
-      rightText: 'Price'
-    },
-    {
-      alignment: 'line',
-      text: ''
+      rightText: ''
     }
   ]
 
   for (let key in directPrinting.detail) {
     const item = directPrinting.detail[key]
     headerPrint.push({
+      alignment: 'line',
+      text: ''
+    })
+    headerPrint.push({
       alignment: 'two',
-      text: `${item.productName} - ${item.productCode}`,
+      style: 'subtitle',
+      text: `${item.productName}`,
       rightText: ''
     })
     headerPrint.push({
       alignment: 'two',
       style: 'subtitle',
-      text: '',
-      rightText: `Qty: ${item.qty.toLocaleString()}`
+      text: `Qty: ${item.qty.toLocaleString()}`,
+      rightText: ''
     })
   }
 
@@ -56,16 +44,14 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     },
     {
       alignment: 'two',
-      text: 'Total',
-      rightText: directPrinting.detail.reduce((prev, next) => prev + next.qty, 0)
+      style: 'subtitle',
+      text: `Total: ${directPrinting.detail.reduce((prev, next) => prev + next.qty, 0)}`,
+      rightText: ''
     },
     {
-      alignment: 'line',
-      text: ''
-    },
-    {
+      style: 'title',
       alignment: 'center',
-      text: 'Thank you for shopping with us!'
+      text: pos.orderShortNumber
     }
   ]
   const resultData = headerPrint.concat(footerPrint)
