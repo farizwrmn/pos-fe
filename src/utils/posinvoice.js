@@ -18,6 +18,12 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     {
       alignment: 'two',
       style: 'subtitle',
+      text: `No Transaksi: ${pos.transNo}`,
+      rightText: ''
+    },
+    {
+      alignment: 'two',
+      style: 'subtitle',
       text: `Date: ${pos.transDate} ${pos.transTime}`,
       rightText: ''
     },
