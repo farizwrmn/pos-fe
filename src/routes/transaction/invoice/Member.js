@@ -39,6 +39,20 @@ const Member = ({
           </Col>
         </Row>
       )}
+      {invoiceInfo.posData && invoiceInfo.posData.orderShortNumber && (
+        <div>
+          <div span={12} className={styles.invoiceQueue} style={{ fontSize: 30, alignItems: 'center', justifyContent: 'center' }}>
+            <strong>{invoiceInfo.posData.orderShortNumber}</strong>
+          </div>
+        </div>
+      )}
+      {invoiceInfo.posData && invoiceInfo.posData.orderType && (
+        <div>
+          <div span={12} className={styles.invoiceQueue} style={{ fontSize: 16, alignItems: 'center', justifyContent: 'center' }}>
+            <strong>{invoiceInfo.posData.orderType}</strong>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

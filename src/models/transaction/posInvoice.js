@@ -4,6 +4,7 @@ import { prefix } from 'utils/config.main'
 import { lstorage } from 'utils'
 import { allowPrint } from 'utils/validation'
 import {
+  directPrinting,
   queryDetail,
   queryDetailConsignment,
   queryById as queryInvoiceById,
@@ -17,6 +18,7 @@ import {
 } from 'services/master/employee'
 import { query as queryOpts } from 'services/payment/paymentOptions'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { rearrangeDirectPrinting } from 'utils/posinvoice'
 import { pageModel } from '../common'
 
 
@@ -111,6 +113,16 @@ export default modelExtend(pageModel, {
           type: 'setListPaymentDetail',
           payload: response.pos
         })
+        if (response.pos && response.directPrinting && response.directPrinting.length > 0) {
+          for (let key in response.directPrinting) {
+            const item = response.directPrinting[key]
+            const responseDirect = yield call(directPrinting, {
+              url: item.printingUrl,
+              data: rearrangeDirectPrinting(response.pos, item)
+            })
+            console.log('responseDirect', responseDirect)
+          }
+        }
       } else {
         throw response
       }
