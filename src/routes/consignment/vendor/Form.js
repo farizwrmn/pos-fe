@@ -185,10 +185,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  len: 16
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={16} />
             )}
           </FormItem>
           <FormItem label="Phone" hasFeedback {...formItemLayout}>
