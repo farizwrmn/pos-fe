@@ -1,6 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { queryPending } from 'services/notification/requestCancelPos/requestCancelPosService'
+import {
+  queryAdd,
+  queryPending
+} from 'services/notification/requestCancelPos/requestCancelPosService'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -36,9 +39,26 @@ export default modelExtend(pageModel, {
       } else {
         message.error(response.message)
       }
+    },
+    * queryAdd ({ payload = {} }, { call, put }) {
+      const response = yield call(queryAdd, payload)
+      if (response && response.success && response.data) {
+        message.success('Successfully adding request cancel pos')
+        yield put({
+          type: 'queryPending'
+        })
+      } else {
+        message.error(response.message)
+      }
     }
   },
 
   reducers: {
+    updateState (state, { payload = {} }) {
+      return ({
+        ...state,
+        ...payload
+      })
+    }
   }
 })

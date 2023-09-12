@@ -25,6 +25,7 @@ import {
   Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
+import { CANCEL_INPUT } from 'utils/variable'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -2390,6 +2391,8 @@ const Pos = ({
             type: 'login/updateState',
             payload: {
               modalLoginData: {
+                transDate: moment().format('YYYY-MM-DD'),
+                transType: CANCEL_INPUT,
                 transNo: user.username,
                 memo: `Cancel Input POS ${getCurrentUserStoreName()}`
               }

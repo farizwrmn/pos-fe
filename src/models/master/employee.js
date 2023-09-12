@@ -205,8 +205,6 @@ export default modelExtend(pageModel, {
       const modalLoginData = yield select(({ login }) => login && login.modalLoginData)
       if (response.success) {
         if (modalLoginType === 'editPayment'
-          || modalLoginType === 'cancelHistory'
-          || modalLoginType === 'resetAllPosInput'
           || modalLoginType === 'resetPaymentPaylabsQRIS') {
           yield put({
             type: 'salesDiscount/add',
@@ -214,6 +212,12 @@ export default modelExtend(pageModel, {
               fingerprintId: response.data.id,
               value: modalLoginData
             }
+          })
+        }
+        if (modalLoginType === 'resetAllPosInput'
+          || modalLoginType === 'cancelHistory') {
+          yield put({
+            type: 'requestCancelPos/add'
           })
         }
       } else {
