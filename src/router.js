@@ -556,6 +556,13 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
+          path: 'request-cancel-pos',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              cb(null, require('./routes/notification/requestCancelPos'))
+            }, 'request-cancel-pos')
+          }
+        }, {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
