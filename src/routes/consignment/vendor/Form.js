@@ -190,11 +190,11 @@ const FormCounter = ({
                   required: true
                 },
                 {
-                  max: 255
+                  len: 16
                 }
               ]
             })(
-              <Input disabled={loading} maxLength={255} />
+              <Input disabled={loading} maxLength={16} />
             )}
           </FormItem>
           <FormItem label="Alamat" hasFeedback {...formItemLayout}>
