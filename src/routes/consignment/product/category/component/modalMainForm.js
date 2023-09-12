@@ -66,9 +66,12 @@ const ModalForm = ({
             rules: [
               {
                 required: true
+              },
+              {
+                max: 191
               }
             ]
-          })(<Input />)}
+          })(<Input maxLength={191} />)}
         </FormItem>
         {modalType === 'sub' && (
           <FormItem label="Kategori Utama" hasFeedback {...formItemLayout}>

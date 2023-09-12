@@ -102,10 +102,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Nama Outlet" hasFeedback {...formItemLayout}>
@@ -114,10 +117,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Alamat" hasFeedback {...formItemLayout}>
@@ -126,10 +132,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Jumlah Baris Box" hasFeedback {...formItemLayout}>
@@ -201,10 +210,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Nama Pemilik Rekening" hasFeedback {...formItemLayout}>
@@ -213,10 +225,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
@@ -225,10 +240,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Nomor Handphone" hasFeedback {...formItemLayout}>
@@ -237,10 +255,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loadingAdd || loadingEdit} />
+              <Input disabled={loadingAdd || loadingEdit} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Harga Sewa Box A" hasFeedback {...formItemLayout}>
