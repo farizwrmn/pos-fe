@@ -2391,7 +2391,6 @@ const Pos = ({
             type: 'login/updateState',
             payload: {
               modalLoginData: {
-                transDate: moment().format('YYYY-MM-DD'),
                 transType: CANCEL_INPUT,
                 transNo: user.username,
                 memo: `Cancel Input POS ${getCurrentUserStoreName()}`
