@@ -190,7 +190,8 @@ const FormCounter = ({
                   required: true
                 },
                 {
-                  len: 16
+                  pattern: /^\d{16}$/,
+                  message: 'Value must contain numbers only and 16 character length'
                 }
               ]
             })(
