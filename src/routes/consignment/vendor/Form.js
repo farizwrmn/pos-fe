@@ -158,6 +158,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
@@ -185,6 +188,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 255
                 }
               ]
             })(
@@ -197,6 +203,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 255
                 }
               ]
             })(
@@ -209,6 +218,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
@@ -223,6 +235,9 @@ const FormCounter = ({
                   required: true,
                   pattern: /^([a-zA-Z0-9._-a-zA-Z0-9])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
                   message: 'The input is not valid E-mail!'
+                },
+                {
+                  max: 191
                 }
               ]
             })(
@@ -274,6 +289,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
@@ -286,6 +304,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
@@ -298,6 +319,9 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
