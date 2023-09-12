@@ -190,11 +190,12 @@ const FormCounter = ({
                   required: true
                 },
                 {
-                  max: 255
+                  pattern: /^\d{16}$/,
+                  message: 'Value must contain numbers only and 16 character length'
                 }
               ]
             })(
-              <Input disabled={loading} maxLength={255} />
+              <Input disabled={loading} maxLength={16} />
             )}
           </FormItem>
           <FormItem label="Alamat" hasFeedback {...formItemLayout}>
