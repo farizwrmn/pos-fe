@@ -144,7 +144,7 @@ export default modelExtend(pageModel, {
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('cashierNo')
         yield put({ type: 'app/query', payload: { userid: user.userid, role: data.data.storeId } })
-        yield put(routerRedux.push(`/accounts/payment/${encodeURIComponent(data.data.transNo)}`, { target: '_blank' }))
+        window.open(`/accounts/payment/${encodeURIComponent(data.data.transNo)}`, '_blank')
       } else {
         throw data
       }

@@ -581,13 +581,22 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
     button: `${formType === 'add' ? 'Add' : 'Update'}`,
     handleItemEdit,
     onSubmit (data, list, reset) {
-      dispatch({
-        type: `transferOut/${formType}`,
-        payload: {
-          storeId: data.storeId,
-          data,
-          detail: list,
-          reset
+      Modal.confirm({
+        title: 'Create Transfer',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: `transferOut/${formType}`,
+            payload: {
+              storeId: data.storeId,
+              data,
+              detail: list,
+              reset
+            }
+          })
+        },
+        onCancel () {
+
         }
       })
     },

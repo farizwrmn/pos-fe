@@ -460,26 +460,21 @@ export default modelExtend(pageModel, {
           if (payload && payload.reset) {
             payload.reset()
           }
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalConfirmVisible: true,
-              currentItemPrint: response.data
-            }
-          })
         } else {
           success()
           if (payload && payload.reset) {
             payload.reset()
           }
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalConfirmVisible: true,
-              currentItemPrint: response.data
-            }
-          })
         }
+        if (response.data && response.data.transNo) {
+          window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: []
+          }
+        })
       } else {
         error(response)
         if (response && typeof response.message === 'object') {
