@@ -246,6 +246,7 @@ class ModalResolve extends React.Component {
             })(
               <Input
                 placeholder="Input Reference"
+                maxLength={40}
               />
             )}
           </FormItem>
