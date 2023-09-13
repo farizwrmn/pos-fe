@@ -41,7 +41,7 @@ const ListTransfer = (tableProps) => {
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
     footer: null,
-    width: 200,
+    width: '300px',
     visible: showPrintModal,
     onCancel () {
       onClosePrint()
@@ -137,7 +137,7 @@ const ListTransfer = (tableProps) => {
       width: 100,
       fixed: 'right',
       render: (record) => {
-        return <Button onClick={() => clickPrint(record)}>Print</Button>
+        return <Button onClick={() => clickPrint(record)} loading={tableProps.loading}>Print</Button>
         // return <div onClick={() => clickPrint(record.transNo)}><PrintPDF listItem={listProducts} itemPrint={record} itemHeader={transHeader} storeInfo={storeInfo} user={user} printNo={1} /></div>
       }
     }
@@ -145,12 +145,14 @@ const ListTransfer = (tableProps) => {
 
   return (
     <div>
-      <Modal {...modalProps} >
+      <Modal {...modalProps} title="Print">
         <PrintPDF {...printProps} />
         <PrintPDFv2 {...printProps} />
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-green"
+          loading={tableProps['autoReplenishSubmission/edit']}
+          style={{ marginLeft: '100px' }}
           onClick={() => {
             if (listTransOut && listTransOut.id) {
               onClickPrinted(listTransOut.id)

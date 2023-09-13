@@ -20,6 +20,7 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
     itemPrint: currentItemPrint,
     loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
     location,
+    loadingEffect: loading.effects,
     deliveryOrderNo: query.deliveryOrderNo,
     filter,
     sort,
