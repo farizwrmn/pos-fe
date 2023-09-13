@@ -7,6 +7,7 @@ import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
 import FormAccounting from 'components/accounting/FormAccounting'
 import { prefix } from 'utils/config.main'
+import { routerRedux } from 'dva/router'
 import ModalCancel from './ModalCancel'
 import ModalEdit from './ModalEdit'
 import PrintPDF from './PrintPDF'
@@ -47,7 +48,7 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
   }
 
   const BackToList = () => {
-    window.history.back()
+    dispatch(routerRedux.push('/inventory/transfer/out?activeKey=1'))
   }
 
   const voidTrans = () => {
@@ -114,35 +115,20 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
     }
   }
 
-  const getProducts = (transNo) => {
-    dispatch({
-      type: 'transferOut/queryProducts',
-      payload: {
-        transNo,
-        storeId: lstorage.getCurrentUserStore()
-      }
-    })
-  }
   const getTrans = (transNo, storeId) => {
     dispatch({
       type: 'transferOut/queryByTrans',
       payload: {
         transNo,
-        storeId
+        storeId,
+        type: 'detail'
       }
     })
   }
 
   const clickPrint = () => {
     const { transNo, storeId } = data[0]
-    getProducts(transNo)
     getTrans(transNo, storeId)
-    dispatch({
-      type: 'transferOutDetail/updateState',
-      payload: {
-        showPrint: true
-      }
-    })
   }
 
   const modalCancelProps = {
@@ -237,7 +223,7 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
               <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
             </Col>
             <Col lg={10} md={10} offset={2}>
-              {!showPrint && <Button onClick={() => clickPrint()}>Print</Button>}
+              {!showPrint && <Button onClick={() => clickPrint()} disabled={loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans']}>Print</Button>}
               {showPrint && <PrintPDF {...printProps} />}
               {showPrint && <PrintPDFv2 {...printProps} />}
             </Col>

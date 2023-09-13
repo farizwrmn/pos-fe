@@ -20,6 +20,12 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       }
     },
     {
+      title: 'Date',
+      dataIndex: 'transDate',
+      key: 'transDate',
+      render: (text, record) => moment(record.transDate).format('YYYY-MM-DD')
+    },
+    {
       title: 'Time',
       dataIndex: 'transTime',
       key: 'transTime',

@@ -661,7 +661,7 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
     pagination,
     listTransOut,
     itemPrint: currentItemPrint,
-    loading: loading.effects['transferOut/queryTransferOut'],
+    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
     location,
     deliveryOrderNo: query.deliveryOrderNo,
     filter,
@@ -691,15 +691,6 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
               total: listTransferOut.length
             }
           }
-        }
-      })
-    },
-    getProducts (transNo) {
-      dispatch({
-        type: 'transferOut/queryProducts',
-        payload: {
-          transNo,
-          storeId: lstorage.getCurrentUserStore()
         }
       })
     },

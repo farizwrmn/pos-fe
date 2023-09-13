@@ -125,6 +125,13 @@ module.exports = {
     paymentXenditTransactionImport: '/payment-xendit-transaction-import',
     paymentXenditTransactionImportDetail: '/payment-xendit-transaction-import-detail',
     errorLog: '/error-log',
+    balanceShift: '/balance-shift',
+    balancePayment: '/balance-payment',
+    balanceSummary: '/balance-summary',
+    balanceInput: '/balance-input',
+    balanceResolve: '/balance-resolve',
+    balanceDeposit: '/balance-deposit',
+    balanceDepositDetail: '/balance-deposit-detail',
     requestCancelPos: '/request-cancel-pos'
   }
 }
