@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
+import { currencyFormatter } from 'utils/string'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
@@ -18,12 +19,20 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
+        const averagePrice = (data.transferOutHPokok && data.transferOutHPokok[0])
+          ? data.transferOutHPokok[0].purchasePrice / data.qty
+          : 0
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 11 })
         row.push({ text: data.productCode.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.productName.toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: data.qty.toString(), alignment: 'right', fontSize: 11 })
-        row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
+        row.push({ text: currencyFormatter(averagePrice), alignment: 'right', fontSize: 11 })
+        row.push({
+          text: currencyFormatter(averagePrice * data.qty),
+          alignment: 'right',
+          fontSize: 11
+        })
         body.push(row)
       }
       count += 1
@@ -33,6 +42,10 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
 
   // Declare Variable
   let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+  let priceTotal = listItem.reduce((cnt, o) => {
+    const averagePrice = o.transferOutHPokok[0].purchasePrice / o.qty
+    return cnt + parseFloat(averagePrice * o.qty)
+  }, 0)
   const styles = {
     header: {
       fontSize: 18,
@@ -205,7 +218,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
       { fontSize: 12, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'NAME', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'DESKRIPSI', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 10, text: '@PRICE', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 10, text: 'TOTAL', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
@@ -220,7 +234,8 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
       {},
       {},
       { text: formatNumberIndonesia(parseFloat(productTotal)), alignment: 'right', fontSize: 12 },
-      {}
+      {},
+      { text: currencyFormatter(priceTotal), alignment: 'right', fontSize: 12 }
     ]
   ]
   const tableLayout = {
@@ -240,7 +255,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '20%', '34%', '6%', '34%'],
+    width: ['6%', '15%', '39%', '5%', '15%', '20%'],
     pageMargins: [40, 180, 40, 150],
     pageSize: { width: 813, height: 530 },
     pageOrientation: 'landscape',
