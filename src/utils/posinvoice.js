@@ -1,9 +1,36 @@
 export const rearrangeDirectPrinting = (pos, directPrinting) => {
   const headerPrint = [
     {
+      alignment: 'two',
+      style: 'subtitle',
+      text: ' ',
+      rightText: ''
+    },
+    {
       style: 'title',
       alignment: 'left',
-      text: directPrinting.groupName
+      text: directPrinting.groupName || ''
+    },
+    {
+      style: 'subtitle',
+      alignment: 'left',
+      text: pos.orderType || ''
+    },
+    {
+      alignment: 'line',
+      text: ''
+    },
+    {
+      alignment: 'two',
+      style: 'subtitle',
+      text: `No: ${pos.transNo}`,
+      rightText: ''
+    },
+    {
+      alignment: 'two',
+      style: 'subtitle',
+      text: `Date: ${pos.transDate} ${pos.transTime}`,
+      rightText: ''
     },
     {
       alignment: 'line',
@@ -51,7 +78,7 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
     {
       style: 'title',
       alignment: 'center',
-      text: pos.orderShortNumber
+      text: pos.orderShortNumber || ''
     }
   ]
   const resultData = headerPrint.concat(footerPrint)

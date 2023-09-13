@@ -31,6 +31,12 @@ export default {
         const { deliveryOrderNo } = location.query
         const match = pathToRegexp('/inventory/transfer/out/:id').exec(location.pathname)
         if (match) {
+          dispatch({
+            type: 'transferOutDetail/updateState',
+            payload: {
+              showPrint: false
+            }
+          })
           if (deliveryOrderNo) {
             dispatch({
               type: 'queryDetail',

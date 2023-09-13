@@ -298,11 +298,13 @@ export default {
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
           const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
+          let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
+              orderType: selectedPaymentShortcut && selectedPaymentShortcut.shortcutName ? selectedPaymentShortcut.shortcutName : 'Take Away',
               grabOrder: lstorage.getGrabmartOrder(),
               transNo: trans,
               taxType: companySetting,

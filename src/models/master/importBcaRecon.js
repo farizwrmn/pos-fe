@@ -230,8 +230,8 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listSortPayment: sortDataPayment.sort((a, b) => a.matchMdr - b.matchMdr),
-            list: paymentImportBcaData.data.sort((a, b) => Number(a.match || 0) - Number(b.match || 0))
+            listSortPayment: sortDataPayment,
+            list: paymentImportBcaData.data
           }
         })
       } else if (!posPaymentData.success) {

@@ -6,13 +6,13 @@ import { Table, Button, Modal, Tag } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, sort, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint }) => {
-  const clickPrint = (record) => {
-    const { transNo, storeId } = record
-    getProducts(transNo)
-    getTrans(transNo, storeId)
-    onShowPrint()
-  }
+const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, sort, updateFilter, showPrintModal, storeInfo, user, listProducts, onClosePrint }) => {
+  // const clickPrint = (record) => {
+  // const { transNo, storeId } = record
+  // getProducts(transNo)
+  // getTrans(transNo, storeId)
+  // onShowPrint()
+  // }
 
   const printProps = {
     listItem: listProducts,
@@ -239,7 +239,7 @@ const ListTransfer = ({ ...tableProps, deliveryOrderNo, listTransOut, filter, so
       width: 100,
       fixed: 'right',
       render: (record) => {
-        return <Button onClick={() => clickPrint(record)}>Print</Button>
+        return <Link target="_blank" to={`/inventory/transfer/out/${encodeURIComponent(record.transNo)}`}><Button>Print</Button></Link>
         // return <div onClick={() => clickPrint(record.transNo)}><PrintPDF listItem={listProducts} itemPrint={record} itemHeader={transHeader} storeInfo={storeInfo} user={user} printNo={1} /></div>
       }
     }

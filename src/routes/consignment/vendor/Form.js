@@ -158,10 +158,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Tipe Identitas" hasFeedback {...formItemLayout}>
@@ -185,10 +188,29 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  pattern: /^\d{16}$/,
+                  message: 'Value must contain numbers only and 16 character length'
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={16} />
+            )}
+          </FormItem>
+          <FormItem label="Alamat" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('address', {
+              initialValue: selectedVendor.address || null,
+              rules: [
+                {
+                  required: true
+                },
+                {
+                  max: 255
+                }
+              ]
+            })(
+              <Input disabled={loading} maxLength={255} />
             )}
           </FormItem>
           <FormItem label="Phone" hasFeedback {...formItemLayout}>
@@ -197,10 +219,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input addonBefore="+62" disabled={loading} />
+              <Input addonBefore="+62" disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Email" hasFeedback {...formItemLayout}>
@@ -211,10 +236,13 @@ const FormCounter = ({
                   required: true,
                   pattern: /^([a-zA-Z0-9._-a-zA-Z0-9])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
                   message: 'The input is not valid E-mail!'
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Password" hasFeedback {...formItemLayout}>
@@ -262,10 +290,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Nama Pemilik Rekening" hasFeedback {...formItemLayout}>
@@ -274,10 +305,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
@@ -286,10 +320,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>

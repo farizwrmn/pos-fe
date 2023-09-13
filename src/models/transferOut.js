@@ -460,26 +460,21 @@ export default modelExtend(pageModel, {
           if (payload && payload.reset) {
             payload.reset()
           }
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalConfirmVisible: true,
-              currentItemPrint: response.data
-            }
-          })
         } else {
           success()
           if (payload && payload.reset) {
             payload.reset()
           }
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalConfirmVisible: true,
-              currentItemPrint: response.data
-            }
-          })
         }
+        if (response.data && response.data.transNo) {
+          window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: []
+          }
+        })
       } else {
         error(response)
         if (response && typeof response.message === 'object') {
@@ -567,22 +562,49 @@ export default modelExtend(pageModel, {
     },
 
     * queryProducts ({ payload = {} }, { call, put }) {
-      const data = yield call(queryDetail, payload)
+      const { type, ...other } = payload
+      const data = yield call(queryDetail, other)
       if (data) {
         yield put({
           type: 'querySuccessProducts',
           payload: data.mutasi
         })
+        if (payload.type === 'detail') {
+          yield put({
+            type: 'transferOutDetail/updateState',
+            payload: {
+              showPrint: true
+            }
+          })
+        } else {
+          yield put({
+            type: 'transferOut/updateState',
+            payload: {
+              showPrintModal: true
+            }
+          })
+        }
       }
     },
 
     * queryByTrans ({ payload = {} }, { call, put }) {
-      const data = yield call(queryByTrans, payload)
+      const { type, ...other } = payload
+      const data = yield call(queryByTrans, other)
       if (data.mutasi) {
+        yield put({
+          type: 'transferOut/queryProducts',
+          payload: {
+            transNo: payload.transNo,
+            storeId: payload.storeId,
+            type: payload.type
+          }
+        })
         yield put({
           type: 'querySuccessTrans',
           payload: data.mutasi
         })
+      } else {
+        throw data
       }
     },
     // Get purchase invoice

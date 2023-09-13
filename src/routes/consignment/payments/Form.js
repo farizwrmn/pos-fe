@@ -110,10 +110,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 191
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={191} />
             )}
           </FormItem>
           <FormItem label="Kode Akun" hasFeedback {...formItemLayout}>
@@ -122,10 +125,13 @@ const FormCounter = ({
               rules: [
                 {
                   required: true
+                },
+                {
+                  max: 3
                 }
               ]
             })(
-              <Input disabled={loading} />
+              <Input disabled={loading} maxLength={3} />
             )}
           </FormItem>
           <FormItem label="Biaya Food (%)" hasFeedback {...formItemLayout}>
