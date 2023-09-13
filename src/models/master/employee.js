@@ -217,7 +217,14 @@ export default modelExtend(pageModel, {
         if (modalLoginType === 'resetAllPosInput'
           || modalLoginType === 'cancelHistory') {
           yield put({
-            type: 'requestCancelPos/add'
+            type: 'requestCancelPos/queryAdd',
+            payload: {
+              fingerprintId: response.data.id,
+              transNo: modalLoginData.transNo,
+              memo: modalLoginData.memo,
+              transType: modalLoginData.transType,
+              detail: modalLoginData.detail
+            }
           })
         }
       } else {

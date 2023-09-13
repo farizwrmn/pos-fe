@@ -2381,6 +2381,7 @@ const Pos = ({
         title: 'Reset unsaved process',
         content: 'this action will reset your current process',
         onOk () {
+          const cashierTrans = getCashierTrans()
           dispatch({
             type: 'pos/showModalLogin',
             payload: {
@@ -2393,7 +2394,17 @@ const Pos = ({
               modalLoginData: {
                 transType: CANCEL_INPUT,
                 transNo: user.username,
-                memo: `Cancel Input POS ${getCurrentUserStoreName()}`
+                memo: `Cancel Input POS ${getCurrentUserStoreName()}`,
+                detail: cashierTrans && Array.isArray(cashierTrans)
+                  ? cashierTrans.map(record => ({
+                    productId: record.productId,
+                    productName: record.name,
+                    productCode: record.code,
+                    price: record.price,
+                    quantity: record.qty,
+                    total: record.total
+                  }))
+                  : []
               }
             }
           })

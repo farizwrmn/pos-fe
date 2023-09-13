@@ -1,3 +1,4 @@
+import { message } from 'antd'
 import { request, config, crypt } from '../../../utils'
 
 const { requestCancelPos } = config.api
@@ -18,6 +19,21 @@ export async function queryPending (params) {
     url: `${requestCancelPos}/pending`,
     data: params,
     method: 'get',
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryVerify (params) {
+  const apiHeaderToken = crypt.apiheader()
+  const { id, ...other } = params
+  if (!id) {
+    message.error('id needed to complete this action!')
+    return
+  }
+  return request({
+    url: `${requestCancelPos}/verify/${id}`,
+    data: other,
+    method: 'put',
     headers: apiHeaderToken
   })
 }
