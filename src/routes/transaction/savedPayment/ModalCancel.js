@@ -25,7 +25,8 @@ const ModalCancel = ({
       const data = {
         ...getFieldsValue(),
         transNo: invoiceCancel,
-        transType: CANCEL_INVOICE
+        transType: CANCEL_INVOICE,
+        detail: []
       }
       onOk(data)
     })

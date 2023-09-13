@@ -96,52 +96,63 @@ class RequestCancelPos extends React.Component {
     return (
       <div className="content-inner">
         {visibleModalDetail && <ModalDetail {...modalDetailProps} />}
+        <Row>
+          <h2 style={{ fontWeight: 'bold' }}>
+            Approval
+          </h2>
+        </Row>
         <Row gutter={2}>
-          {listPending && Array.isArray(listPending) && listPending.map((record) => {
-            return (
-              <Col {...columnProps} style={{ padding: '10px' }}>
-                <Card
-                  title={(
-                    <Row>
-                      {record.transType === CANCEL_INPUT ? 'Cancel Input' : record.transType === CANCEL_INVOICE ? 'Cancel Invoice' : 'Undefined!'}
+          {listPending && Array.isArray(listPending) && listPending.length > 0
+            ? listPending.map((record) => {
+              return (
+                <Col {...columnProps} style={{ padding: '10px' }}>
+                  <Card
+                    title={(
+                      <Row>
+                        {record.transType === CANCEL_INPUT ? 'Cancel Input' : record.transType === CANCEL_INVOICE ? 'Cancel Invoice' : 'Undefined!'}
+                      </Row>
+                    )}
+                    extra={<Button shape="circle" type="primary" icon="check" onClick={() => handleApprove(record)} loading={loading.effects['requestCancelPos/approve']} />}
+                    bordered
+                    loading={loading.effects['requestCancelPos/queryPending']}
+                  >
+                    <Row type="flex" style={{ marginBottom: '10px' }}>
+                      <div style={{ flex: 1, fontWeight: 'bold' }}>
+                        Trans No
+                      </div>
+                      <div>
+                        {record.transNo}
+                      </div>
                     </Row>
-                  )}
-                  extra={<Button shape="circle" type="primary" icon="check" onClick={() => handleApprove(record)} loading={loading.effects['requestCancelPos/approve']} />}
-                  bordered
-                  loading={loading.effects['requestCancelPos/queryPending']}
-                >
-                  <Row type="flex" style={{ marginBottom: '10px' }}>
-                    <div style={{ flex: 1, fontWeight: 'bold' }}>
-                      Trans No
-                    </div>
-                    <div>
-                      {record.transNo}
-                    </div>
-                  </Row>
-                  <Row type="flex" style={{ marginBottom: '10px' }}>
-                    <div style={{ flex: 1, fontWeight: 'bold' }}>
-                      Memo
-                    </div>
-                    <div>
-                      {record.memo}
-                    </div>
-                  </Row>
-                  <Row type="flex">
-                    <Button
-                      type="primary"
-                      icon="bars"
-                      size="large"
-                      onClick={() => handleModalDetailVisible(record)}
-                      style={{ flex: 1 }}
-                      loading={loading.effects['requestCancelPos/approve']}
-                    >
-                      See Detail
-                    </Button>
-                  </Row>
-                </Card>
-              </Col>
-            )
-          })}
+                    <Row type="flex" style={{ marginBottom: '10px' }}>
+                      <div style={{ flex: 1, fontWeight: 'bold' }}>
+                        Memo
+                      </div>
+                      <div>
+                        {record.memo}
+                      </div>
+                    </Row>
+                    <Row type="flex">
+                      <Button
+                        type="primary"
+                        icon="bars"
+                        size="large"
+                        onClick={() => handleModalDetailVisible(record)}
+                        style={{ flex: 1 }}
+                        loading={loading.effects['requestCancelPos/approve']}
+                      >
+                        See Detail
+                      </Button>
+                    </Row>
+                  </Card>
+                </Col>
+              )
+            })
+            : (
+              <h3 style={{ marginTop: '10px' }}>
+                {'everything\'s done, have a nice day'}
+              </h3>
+            )}
         </Row>
       </div>
     )

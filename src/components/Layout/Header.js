@@ -277,7 +277,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
               <Link to="/sales-discount" />
             </Menu.Item>
             <Menu.Item key="reqCancelPos">
-              Request Cancel Pos
+              Request Cancel POS
               <Link to="/request-cancel-pos" />
             </Menu.Item>
             {/* <Menu.Item key="password">
