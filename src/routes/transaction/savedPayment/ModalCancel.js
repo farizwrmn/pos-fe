@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Button } from 'antd'
+import { CANCEL_INVOICE } from 'utils/variable'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -23,7 +24,8 @@ const ModalCancel = ({
       }
       const data = {
         ...getFieldsValue(),
-        transNo: invoiceCancel
+        transNo: invoiceCancel,
+        transType: CANCEL_INVOICE
       }
       onOk(data)
     })
