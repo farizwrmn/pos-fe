@@ -637,6 +637,14 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
+          path: 'request-cancel-pos',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/requestCancelPos'))
+              cb(null, require('./routes/notification/requestCancelPos'))
+            }, 'request-cancel-pos')
+          }
+        }, {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -649,6 +657,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
+              registerModel(app, require('./models/notification/requestCancelPos'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/balance/balance'))
@@ -1051,6 +1060,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/notification/salesDiscount'))
+              registerModel(app, require('./models/notification/requestCancelPos'))
               cb(null, require('./routes/transaction/history/'))
             }, 'transaction-pos-history')
           }

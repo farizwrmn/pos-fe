@@ -131,6 +131,7 @@ module.exports = {
     balanceInput: '/balance-input',
     balanceResolve: '/balance-resolve',
     balanceDeposit: '/balance-deposit',
-    balanceDepositDetail: '/balance-deposit-detail'
+    balanceDepositDetail: '/balance-deposit-detail',
+    requestCancelPos: '/request-cancel-pos'
   }
 }
