@@ -18,7 +18,7 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
     pagination,
     listTransOut,
     itemPrint: currentItemPrint,
-    loading: loading.effects['transferOut/queryTransferOut'],
+    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
     location,
     deliveryOrderNo: query.deliveryOrderNo,
     filter,
@@ -62,15 +62,6 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
         }
       })
     },
-    getProducts (transNo, storeId) {
-      dispatch({
-        type: 'transferOut/queryProducts',
-        payload: {
-          transNo,
-          storeId
-        }
-      })
-    },
     getTrans (transNo, storeId) {
       dispatch({
         type: 'transferOut/queryByTrans',
@@ -81,12 +72,7 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
       })
     },
     onShowPrint () {
-      dispatch({
-        type: 'transferOut/updateState',
-        payload: {
-          showPrintModal: true
-        }
-      })
+
     },
     onClosePrint () {
       dispatch({

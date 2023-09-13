@@ -6,12 +6,10 @@ import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
 const ListTransfer = (tableProps) => {
-  const { listTransOut, onClickPrinted, updateFilter, onShowPrint, showPrintModal, storeInfo, user, getProducts, getTrans, listProducts, onClosePrint } = tableProps
+  const { listTransOut, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
   const clickPrint = (record) => {
     const { transNo, storeId } = record
-    getProducts(transNo, storeId)
     getTrans(transNo, storeId)
-    onShowPrint()
   }
 
   const printProps = {
