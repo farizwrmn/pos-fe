@@ -22,7 +22,6 @@ export default {
           })
         }
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(location.pathname)
-        const matchBalanceClosed = pathToRegexp('/setoran/closed/:id').exec(location.pathname)
         if (
           location.pathname === '/transaction/pos/'
           || location.pathname === '/transaction/pos'
@@ -34,9 +33,7 @@ export default {
           || location.pathname === '/balance/closing'
           || location.pathname === '/balance/history'
           || location.pathname === '/balance/approvement'
-          || location.pathname === '/setoran/current'
           || matchEdc
-          || matchBalanceClosed
         ) {
           dispatch({
             type: 'queryOptionMaster',

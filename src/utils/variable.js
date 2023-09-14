@@ -1,7 +1,3 @@
-// Request transactionType
-export const CANCEL_INPUT = 'CANCEL_INPUT'
-export const CANCEL_INVOICE = 'CANCEL_INVOICE'
-
 // balanceType
 export const BALANCE_TYPE_AWAL = 0
 export const BALANCE_TYPE_CLOSING = 1

@@ -346,18 +346,6 @@ const removeAvailablePaymentType = () => {
   return localStorage.removeItem('pos_available_payment_type')
 }
 
-const getBalanceListCreateJournal = () => {
-  return localStorage.getItem('balance_list_create_journal') ? localStorage.getItem('balance_list_create_journal') : null
-}
-
-const setBalanceListCreateJournal = (data) => {
-  return localStorage.setItem('balance_list_create_journal', data)
-}
-
-const removeBalanceListCreateJournal = () => {
-  return localStorage.removeItem('balance_list_create_journal')
-}
-
 // remove item
 const removeItemKey = (key) => {
   localStorage.removeItem(`${prefix}${key}`)
@@ -398,7 +386,6 @@ const removeItemKeys = () => {
   localStorage.removeItem('dynamic_qris_pos_trans_id')
   localStorage.removeItem('pos_available_payment_type')
   localStorage.removeItem('current_payment_transaction_id')
-  localStorage.removeItem('balance_list_create_journal')
 }
 
 const removeAllKey = () => {
@@ -564,8 +551,5 @@ module.exports = {
   getDynamicQrisImageTTL,
   getAvailablePaymentType,
   setAvailablePaymentType,
-  removeAvailablePaymentType,
-  getBalanceListCreateJournal,
-  setBalanceListCreateJournal,
-  removeBalanceListCreateJournal
+  removeAvailablePaymentType
 }

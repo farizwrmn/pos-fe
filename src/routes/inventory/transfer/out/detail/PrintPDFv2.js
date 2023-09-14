@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { numberFormat } from 'utils'
 import { BasicInvoice } from 'components'
-import { currencyFormatter } from 'utils/string'
 
 const formatNumber = numberFormat.numberFormatter
 
@@ -19,22 +18,11 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
     for (let key in rows) {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
-        const averagePrice = (data.transferOutHPokok && data.transferOutHPokok[0])
-          ? data.transferOutHPokok[0].purchasePrice / data.qty
-          : 0
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 9 })
         row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 9 })
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 9 })
         row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 9 })
-        row.push({ text: currencyFormatter(averagePrice), alignment: 'right', fontSize: 9 })
-        row.push({
-          text: (data.transferOutHPokok && data.transferOutHPokok[0])
-            ? currencyFormatter(data.transferOutHPokok[0].purchasePrice)
-            : currencyFormatter(0),
-          alignment: 'right',
-          fontSize: 9
-        })
         body.push(row)
       }
       count += 1
@@ -44,10 +32,6 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
 
   // Declare Variable
   let productTotal = listItem.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
-  let priceTotal = listItem.reduce((cnt, o) => {
-    const averagePrice = o.transferOutHPokok[0].purchasePrice / o.qty
-    return cnt + parseFloat(averagePrice * o.qty)
-  }, 0)
   const styles = {
     header: {
       fontSize: 16,
@@ -242,9 +226,7 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
       { fontSize: 10, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 10, text: 'CODE', style: 'tableHeader', alignment: 'center' },
       { fontSize: 10, text: 'NAME', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 10, text: 'QTY', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 10, text: '@PRICE', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 10, text: 'TOTAL', style: 'tableHeader', alignment: 'right' }
+      { fontSize: 10, text: 'QTY', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
@@ -258,9 +240,7 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
       { text: 'Grand Total', colSpan: 3, alignment: 'center', fontSize: 11 },
       {},
       {},
-      { text: formatNumber(parseFloat(productTotal)), alignment: 'right', fontSize: 11 },
-      {},
-      { text: currencyFormatter(priceTotal), alignment: 'right', fontSize: 11 }
+      { text: formatNumber(parseFloat(productTotal)), alignment: 'right', fontSize: 11 }
     ]
   ]
   const tableLayout = {
@@ -280,7 +260,7 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-green',
-    width: ['6%', '15%', '35%', '12%', '12%', '20%'],
+    width: ['6%', '20%', '62%', '12%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 612, height: 792 },
     pageOrientation: 'portrait',
