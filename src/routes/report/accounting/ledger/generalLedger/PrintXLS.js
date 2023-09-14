@@ -63,6 +63,8 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
   for (let i = 0; i < listRekap.length; i += 1) {
     let master = listRekap[i]
     let tableTitle = [
+      [],
+      [],
       [
         { value: 'AKUN', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
         { value: ':', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableTitle },
