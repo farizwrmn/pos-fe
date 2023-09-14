@@ -176,12 +176,10 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        const matchSetoranCashier = pathToRegexp('/setoran/cashier/:id').exec(pathname)
         const matchAutoRecon = pathToRegexp('/auto-recon/:id').exec(pathname)
         if (
           pathname === '/journal-entry'
           || matchAutoRecon
-          || matchSetoranCashier
           || pathname === '/tools/transaction/journal-entry') {
           if (activeKey !== '1') {
             dispatch({

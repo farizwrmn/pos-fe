@@ -94,8 +94,7 @@ const LovButton = ({
     win.document.write(iframe)
   }
   const handleHome = () => {
-    // window.open('/balance/current', '_blank')
-    window.open('/setoran/current', '_blank')
+    window.open('/balance/current', '_blank')
   }
   const currentStoreName = lstorage.getCurrentUserStoreName()
 

@@ -406,14 +406,6 @@ const Routers = function ({ history, app }) {
             }, 'master-shift')
           }
         }, {
-          path: 'master/setoran-shift',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/balance/balanceShift'))
-              cb(null, require('./routes/master/balanceShift'))
-            }, 'master-shift')
-          }
-        }, {
           path: 'master/product/location',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -512,79 +504,6 @@ const Routers = function ({ history, app }) {
             }, 'balance-dashboard')
           }
         }, {
-          path: 'setoran/current',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/balance/balanceShift'))
-              registerModel(app, require('./models/deposit/deposit'))
-              registerModel(app, require('./models/detail/user'))
-              registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/deposit/current'))
-            }, 'deposit-dashboard')
-          }
-        }, {
-          path: 'setoran/closed/:id',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/balance/balanceShift'))
-              registerModel(app, require('./models/deposit/deposit'))
-              registerModel(app, require('./models/detail/user'))
-              registerModel(app, require('./models/payment/paymentOpts'))
-              cb(null, require('./routes/deposit/closed'))
-            }, 'deposit-closed')
-          }
-        }, {
-          path: 'setoran/invoice/:id',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/deposit/deposit'))
-              cb(null, require('./routes/deposit/invoice'))
-            }, 'deposit-closed')
-          }
-        }, {
-          path: 'setoran/cashier',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/deposit/cashier'))
-              cb(null, require('./routes/depositCashier'))
-            }, 'deposit-cashier')
-          }
-        }, {
-          path: 'setoran/cashier/add',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/accounts/accountRule'))
-              registerModel(app, require('./models/deposit/cashier'))
-              cb(null, require('./routes/depositCashier/FormDeposit'))
-            }, 'deposit-cashier-detail')
-          }
-        }, {
-          path: 'setoran/cashier/detail/:id',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/accounts/accountRule'))
-              registerModel(app, require('./models/deposit/cashier'))
-              cb(null, require('./routes/depositCashier/Detail'))
-            }, 'deposit-cashier-detail')
-          }
-        }, {
-          path: 'setoran/cashier/balance/:id',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/accounts/accountRule'))
-              registerModel(app, require('./models/deposit/cashier'))
-              cb(null, require('./routes/depositCashier/BalanceDetail'))
-            }, 'deposit-cashier-detail')
-          }
-        }, {
-          path: 'setoran/finance',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/deposit/finance'))
-              cb(null, require('./routes/depositFinance'))
-            }, 'deposit-finance')
-          }
-        }, {
           path: 'balance/current',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -637,14 +556,6 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
-          path: 'request-cancel-pos',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/notification/requestCancelPos'))
-              cb(null, require('./routes/notification/requestCancelPos'))
-            }, 'request-cancel-pos')
-          }
-        }, {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -657,7 +568,6 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/notification/salesDiscount'))
-              registerModel(app, require('./models/notification/requestCancelPos'))
               registerModel(app, require('./models/transaction/pos'))
               registerModel(app, require('./models/finance/pettyCashDetail'))
               registerModel(app, require('./models/balance/balance'))
@@ -1060,7 +970,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/notification/salesDiscount'))
-              registerModel(app, require('./models/notification/requestCancelPos'))
               cb(null, require('./routes/transaction/history/'))
             }, 'transaction-pos-history')
           }
