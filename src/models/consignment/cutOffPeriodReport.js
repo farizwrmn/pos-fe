@@ -84,7 +84,7 @@ export default modelExtend(pageModel, {
           payload: {}
         })
       } else {
-        message.error(response.message)
+        throw response
       }
     },
     * queryAdd ({ payload = {} }, { call, put }) {
