@@ -95,6 +95,9 @@ export default {
         if (modalLoginType === 'consignment') {
           yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
         }
+        if (modalLoginType === 'bundle') {
+          yield put({ type: 'pos/bundleDelete', payload: modalLoginData })
+        }
         if (modalLoginType === 'cancelHistory') {
           yield put({ type: 'pos/cancelInvoice', payload: modalLoginData })
         }
