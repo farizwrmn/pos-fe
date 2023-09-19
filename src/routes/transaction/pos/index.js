@@ -984,7 +984,7 @@ const Pos = ({
             productName: record.name,
             productCode: record.code,
             price: record.price,
-            quantity: record.qty,
+            qty: record.qty,
             total: record.total,
             singleDeletion: record.singleDeletion || 0
           }))
@@ -1128,7 +1128,7 @@ const Pos = ({
           productName: record.name,
           productCode: record.code,
           price: record.price,
-          quantity: record.qty,
+          qty: record.qty,
           total: record.total,
           singleDeletion: record.singleDeletion || 0
         }))
@@ -1223,7 +1223,7 @@ const Pos = ({
           productName: record.name,
           productCode: record.code,
           price: record.price,
-          quantity: record.qty,
+          qty: record.qty,
           total: record.total,
           singleDeletion: record.singleDeletion || 0
         }))
@@ -2513,7 +2513,7 @@ const Pos = ({
               productName: record.name,
               productCode: record.code,
               price: record.price,
-              quantity: record.qty,
+              qty: record.qty,
               total: record.total,
               singleDeletion: record.singleDeletion || 0
             }))
@@ -2777,7 +2777,7 @@ const Pos = ({
           productName: record.name,
           productCode: record.code,
           price: record.price,
-          quantity: record.qty,
+          qty: record.qty,
           total: record.total,
           singleDeletion: record.singleDeletion || 0
         }))

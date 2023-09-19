@@ -21,6 +21,7 @@ export default modelExtend(pageModel, {
     modalApproveVisible: false,
     modalDetailVisible: false,
     listSalesDiscount: [],
+    listRequestCancel: [],
     activeKey: '0',
     disable: '',
     show: 1,
@@ -52,6 +53,7 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             listSalesDiscount: data.data,
+            requestCancel: data && data.requestCancel ? data.requestCancel : [],
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -85,9 +87,10 @@ export default modelExtend(pageModel, {
 
   reducers: {
     querySuccess (state, action) {
-      const { listSalesDiscount, pagination } = action.payload
+      const { listSalesDiscount, requestCancel, pagination } = action.payload
       return {
         ...state,
+        listRequestCancel: requestCancel,
         list: listSalesDiscount,
         listSalesDiscount,
         pagination: {
