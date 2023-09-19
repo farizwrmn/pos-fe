@@ -86,16 +86,21 @@ export default {
           }
         })
 
+        console.log('modalLoginType', modalLoginType)
         if (modalLoginType === 'payment') {
+          console.log('payment', modalLoginData)
           yield put({ type: 'pos/paymentDelete', payload: modalLoginData })
         }
         if (modalLoginType === 'service') {
+          console.log('service', modalLoginData)
           yield put({ type: 'pos/serviceDelete', payload: modalLoginData })
         }
         if (modalLoginType === 'consignment') {
+          console.log('consignment', modalLoginData)
           yield put({ type: 'pos/consignmentDelete', payload: modalLoginData })
         }
         if (modalLoginType === 'bundle') {
+          console.log('bundle', modalLoginData)
           yield put({ type: 'pos/bundleDelete', payload: modalLoginData })
         }
         if (modalLoginType === 'cancelHistory') {

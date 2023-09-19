@@ -657,8 +657,8 @@ export default {
         let newPos = dataPos
           .filter(filtered => filtered.bundleId !== checkExists[0].bundleId)
           .map((item, index) => ({ ...item, no: index + 1 }))
-        setBundleTrans(newBundle)
-        setCashierTrans(newPos)
+        setBundleTrans(JSON.stringify(newBundle))
+        setCashierTrans(JSON.stringify(newPos))
         yield put({
           type: 'setCurTotal'
         })

@@ -957,13 +957,6 @@ const Pos = ({
       if (currentBuildComponent && currentBuildComponent.no) {
         dispatch({ type: 'pos/paymentDelete', payload: data })
       } else {
-        dispatch({
-          type: 'pos/showModalLogin',
-          payload: {
-            modalLoginType: 'payment'
-          }
-        })
-
         const cashierTrans = product
           .filter(filtered => !filtered.bundleId)
           .map((item) => {
@@ -992,7 +985,7 @@ const Pos = ({
         dispatch({
           type: 'pos/showModalLogin',
           payload: {
-            modalLoginType: 'resetPosItem'
+            modalLoginType: 'payment'
           }
         })
         dispatch({
@@ -1002,7 +995,11 @@ const Pos = ({
               transType: CANCEL_ITEM,
               transNo: user.username,
               memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
-              detail: listTrans
+              detail: listTrans,
+              Record: data.Record,
+              Name: data.name,
+              Payment: data.Payment,
+              VALUE: data.VALUE
             }
           }
         })
@@ -1137,7 +1134,7 @@ const Pos = ({
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'resetAllPosInput'
+          modalLoginType: 'service'
         }
       })
       dispatch({
@@ -1147,7 +1144,11 @@ const Pos = ({
             transType: CANCEL_ITEM,
             transNo: user.username,
             memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
-            detail: listTrans
+            detail: listTrans,
+            Record: data.Record,
+            Name: data.name,
+            Payment: data.Payment,
+            VALUE: data.VALUE
           }
         }
       })
@@ -1232,7 +1233,7 @@ const Pos = ({
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'resetAllPosInput'
+          modalLoginType: 'consignment'
         }
       })
       dispatch({
@@ -1242,7 +1243,11 @@ const Pos = ({
             transType: CANCEL_ITEM,
             transNo: user.username,
             memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
-            detail: listTrans
+            detail: listTrans,
+            Record: data.Record,
+            Name: data.name,
+            Payment: data.Payment,
+            VALUE: data.VALUE
           }
         }
       })
@@ -2786,7 +2791,7 @@ const Pos = ({
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'resetAllPosInput'
+          modalLoginType: 'bundle'
         }
       })
       dispatch({
@@ -2796,7 +2801,11 @@ const Pos = ({
             transType: CANCEL_ITEM,
             transNo: user.username,
             memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
-            detail: listTrans
+            detail: listTrans,
+            Record: data.Record,
+            Name: data.name,
+            Payment: data.Payment,
+            VALUE: data.VALUE
           }
         }
       })

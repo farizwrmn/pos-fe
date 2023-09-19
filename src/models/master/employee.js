@@ -208,7 +208,10 @@ export default modelExtend(pageModel, {
         if (modalLoginType === 'editPayment'
           || modalLoginType === 'cancelHistory'
           || modalLoginType === 'resetAllPosInput'
-          || modalLoginType === 'resetPosItem'
+          || modalLoginType === 'payment'
+          || modalLoginType === 'bundle'
+          || modalLoginType === 'service'
+          || modalLoginType === 'consignment'
           || modalLoginType === 'resetPaymentPaylabsQRIS') {
           yield put({
             type: 'salesDiscount/add',
@@ -221,7 +224,10 @@ export default modelExtend(pageModel, {
           })
         }
         if (modalLoginType === 'resetAllPosInput'
-          || modalLoginType === 'resetPosItem'
+          || modalLoginType === 'bundle'
+          || modalLoginType === 'service'
+          || modalLoginType === 'consignment'
+          || modalLoginType === 'payment'
           || modalLoginType === 'cancelHistory') {
           yield put({
             type: 'requestCancelPos/queryAdd',
