@@ -25,7 +25,7 @@ import {
   Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
-import { CANCEL_INPUT } from 'utils/variable'
+import { CANCEL_ITEM, CANCEL_INPUT } from 'utils/variable'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -963,10 +963,47 @@ const Pos = ({
             modalLoginType: 'payment'
           }
         })
+
+        const cashierTrans = product
+          .filter(filtered => !filtered.bundleId)
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Product', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Product' }
+          })
+          .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+          .concat(service.map(item => ({ ...item, type: 'Service' })))
+          .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+          .sort((a, b) => a.inputTime - b.inputTime)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+          .sort((a, b) => b.no - a.no)
+        const listTrans = cashierTrans && Array.isArray(cashierTrans)
+          ? cashierTrans.map(record => ({
+            productId: record.productId || 1,
+            productName: record.name,
+            productCode: record.code,
+            price: record.price,
+            quantity: record.qty,
+            total: record.total,
+            singleDeletion: record.singleDeletion || 0
+          }))
+          : []
+        dispatch({
+          type: 'pos/showModalLogin',
+          payload: {
+            modalLoginType: 'resetPosItem'
+          }
+        })
         dispatch({
           type: 'login/updateState',
           payload: {
-            modalLoginData: data
+            modalLoginData: {
+              transType: CANCEL_ITEM,
+              transNo: user.username,
+              memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+              detail: listTrans
+            }
           }
         })
       }
@@ -1070,10 +1107,48 @@ const Pos = ({
           modalLoginType: 'service'
         }
       })
+      const cashierTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+        .concat(service
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Service', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Service' }
+          }))
+        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+        .sort((a, b) => a.inputTime - b.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no)
+      const listTrans = cashierTrans && Array.isArray(cashierTrans)
+        ? cashierTrans.map(record => ({
+          productId: record.productId || 1,
+          productName: record.name,
+          productCode: record.code,
+          price: record.price,
+          quantity: record.qty,
+          total: record.total,
+          singleDeletion: record.singleDeletion || 0
+        }))
+        : []
+      console.log('listTrans', listTrans)
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'resetAllPosInput'
+        }
+      })
       dispatch({
         type: 'login/updateState',
         payload: {
-          modalLoginData: data
+          modalLoginData: {
+            transType: CANCEL_ITEM,
+            transNo: user.username,
+            memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+            detail: listTrans
+          }
         }
       })
     },
@@ -1127,10 +1202,48 @@ const Pos = ({
           modalLoginType: 'consignment'
         }
       })
+      const cashierTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+        .concat(service.map(item => ({ ...item, type: 'Service' })))
+        .concat(consignment
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Consignment', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Consignment' }
+          }))
+        .sort((a, b) => a.inputTime - b.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no)
+      const listTrans = cashierTrans && Array.isArray(cashierTrans)
+        ? cashierTrans.map(record => ({
+          productId: record.productId || 1,
+          productName: record.name,
+          productCode: record.code,
+          price: record.price,
+          quantity: record.qty,
+          total: record.total,
+          singleDeletion: record.singleDeletion || 0
+        }))
+        : []
+      console.log('listTrans', listTrans)
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'resetAllPosInput'
+        }
+      })
       dispatch({
         type: 'login/updateState',
         payload: {
-          modalLoginData: data
+          modalLoginData: {
+            transType: CANCEL_ITEM,
+            transNo: user.username,
+            memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+            detail: listTrans
+          }
         }
       })
     },
@@ -2402,7 +2515,7 @@ const Pos = ({
               price: record.price,
               quantity: record.qty,
               total: record.total,
-              singleDeletion: 0
+              singleDeletion: record.singleDeletion || 0
             }))
             : []
           console.log('listTrans', listTrans)
@@ -2643,16 +2756,48 @@ const Pos = ({
     visible: modalBundleDetailVisible,
     item: currentBundle,
     DeleteItem (data) {
+      console.log('bundle', bundle, data)
+      const cashierTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map((item) => {
+          if (item.code === data.Record) {
+            return ({ ...item, type: 'Bundle', singleDeletion: 1 })
+          }
+          return ({ ...item, type: 'Bundle' })
+        }) : [])
+        .concat(service.map(item => ({ ...item, type: 'Service' })))
+        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+        .sort((a, b) => a.inputTime - b.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no)
+      const listTrans = cashierTrans && Array.isArray(cashierTrans)
+        ? cashierTrans.map(record => ({
+          productId: record.productId || 1,
+          productName: record.name,
+          productCode: record.code,
+          price: record.price,
+          quantity: record.qty,
+          total: record.total,
+          singleDeletion: record.singleDeletion || 0
+        }))
+        : []
+      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
-          modalLoginType: 'bundle'
+          modalLoginType: 'resetAllPosInput'
         }
       })
       dispatch({
         type: 'login/updateState',
         payload: {
-          modalLoginData: data
+          modalLoginData: {
+            transType: CANCEL_ITEM,
+            transNo: user.username,
+            memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+            detail: listTrans
+          }
         }
       })
     },

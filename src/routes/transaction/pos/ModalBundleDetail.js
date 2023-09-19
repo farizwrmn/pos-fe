@@ -9,6 +9,7 @@ const ModalBundleDetail = ({
   const handleDelete = () => {
     const data = {
       Record: item.code,
+      Name: item.name,
       Payment: 'Delete',
       VALUE: 0
     }

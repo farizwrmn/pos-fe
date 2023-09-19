@@ -58,6 +58,9 @@ const ModalLogin = ({
       })
     },
     registerFingerprint (payload) {
+      if (payload) {
+        payload.transType = modalLoginData.transType
+      }
       dispatch({
         type: 'employee/registerFingerprint',
         payload

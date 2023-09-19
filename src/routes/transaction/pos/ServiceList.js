@@ -75,6 +75,7 @@ const PaymentList = ({
   }
   const handleDelete = () => {
     const data = {
+      Name: item.name,
       Record: item.no,
       Payment: 'Delete',
       VALUE: 0
