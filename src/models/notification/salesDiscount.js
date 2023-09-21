@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import moment from 'moment'
+import { lstorage } from 'utils'
 import { query, add, approve } from 'services/notification/salesDiscount'
 import { pageModel } from '../common'
 
@@ -47,6 +48,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getListUserStores().map(item => item.value)
       const data = yield call(query, payload)
       if (data) {
         yield put({
