@@ -67,7 +67,7 @@ const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
-  setCashierTrans, setServiceTrans, setConsignment,
+  setCashierTrans, setBundleTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
@@ -129,6 +129,7 @@ export default {
     modalAssetVisible: false,
     modalMemberVisible: false,
     modalPaymentVisible: false,
+    modalBundleDetailVisible: false,
     modalConfirmQrisPaymentVisible: false,
     modalCancelQrisPaymentVisible: false,
     modalQrisPaymentVisible: false,
@@ -195,6 +196,7 @@ export default {
     tmpProductList: [],
     mechanicInformation: localStorage.getItem('mechanic') ? JSON.parse(localStorage.getItem('mechanic'))[0] : {},
     memberUnitInfo: {},
+    currentBundle: {},
     curRecord: 1,
     effectedRecord: '',
     curRounding: 0,
@@ -639,6 +641,32 @@ export default {
         })
         yield put({
           type: 'hideServiceListModal'
+        })
+      }
+    },
+
+    * bundleDelete ({ payload }, { put }) {
+      let dataBundle = getBundleTrans()
+      let dataPos = getCashierTrans()
+      let checkExists = dataBundle
+        .filter(filtered => filtered.code === payload.Record)
+      if (checkExists && checkExists[0]) {
+        let newBundle = dataBundle
+          .filter(filtered => filtered.code !== payload.Record)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+        let newPos = dataPos
+          .filter(filtered => filtered.bundleId !== checkExists[0].bundleId)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+        setBundleTrans(JSON.stringify(newBundle))
+        setCashierTrans(JSON.stringify(newPos))
+        yield put({
+          type: 'setCurTotal'
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalBundleDetailVisible: false
+          }
         })
       }
     },
@@ -2165,6 +2193,14 @@ export default {
             }
           })
         }
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentBundle,
+            modalBundleDetailVisible: true
+          }
+        })
       }
     },
 
@@ -2788,7 +2824,7 @@ export default {
       const setting = yield select(({ app }) => app.setting)
       if (!!(memberInformation && memberInformation.id) && !!(mechanicInformation && mechanicInformation.employeeId)) {
         let arrayProd = getCashierTrans()
-        const checkExists = arrayProd.filter(el => el.code === item.productCode)
+        const checkExists = arrayProd.filter(filtered => filtered.code === item.productCode && filtered.bundleId == null)
         if (currentReward && currentReward.categoryCode && currentReward.type === 'P' && checkExists && checkExists[0]) {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty

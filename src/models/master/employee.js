@@ -5,6 +5,7 @@ import {
   registerEmployeeFingerprint
 } from 'services/fingerprint/fingerprintEmployee'
 import moment from 'moment'
+import { lstorage } from 'utils'
 import { query, queryField, add, edit, remove, getReportCheckin } from '../../services/master/employee'
 import { query as querySequence } from '../../services/sequence'
 import { pageModel } from './../common'
@@ -207,12 +208,35 @@ export default modelExtend(pageModel, {
         if (modalLoginType === 'editPayment'
           || modalLoginType === 'cancelHistory'
           || modalLoginType === 'resetAllPosInput'
+          || modalLoginType === 'payment'
+          || modalLoginType === 'bundle'
+          || modalLoginType === 'service'
+          || modalLoginType === 'consignment'
           || modalLoginType === 'resetPaymentPaylabsQRIS') {
           yield put({
             type: 'salesDiscount/add',
             payload: {
+              storeId: lstorage.getCurrentUserStore(),
+              transType: payload.transType,
               fingerprintId: response.data.id,
               value: modalLoginData
+            }
+          })
+        }
+        if (modalLoginType === 'resetAllPosInput'
+          || modalLoginType === 'bundle'
+          || modalLoginType === 'service'
+          || modalLoginType === 'consignment'
+          || modalLoginType === 'payment'
+          || modalLoginType === 'cancelHistory') {
+          yield put({
+            type: 'requestCancelPos/queryAdd',
+            payload: {
+              fingerprintId: response.data.id,
+              transNo: modalLoginData.transNo,
+              memo: modalLoginData.memo,
+              transType: modalLoginData.transType,
+              detail: modalLoginData.detail
             }
           })
         }

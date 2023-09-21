@@ -65,6 +65,7 @@ const ConsignmentList = ({
   const handleDelete = () => {
     const data = {
       Record: itemConsignment.no,
+      Name: itemConsignment.name,
       Payment: 'Delete',
       VALUE: 0
     }

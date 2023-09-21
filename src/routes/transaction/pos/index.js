@@ -25,6 +25,7 @@ import {
   Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
+import { CANCEL_ITEM, CANCEL_INPUT } from 'utils/variable'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -46,6 +47,7 @@ import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
+import ModalBundleDetail from './ModalBundleDetail'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
@@ -181,8 +183,10 @@ const Pos = ({
     modalConsignmentVisible,
     modalPaymentVisible,
     modalQrisPaymentVisible,
+    modalBundleDetailVisible,
     modalQrisPaymentType,
     listAdvertising,
+    currentBundle,
     curQty,
     totalItem,
     curTotal,
@@ -953,6 +957,31 @@ const Pos = ({
       if (currentBuildComponent && currentBuildComponent.no) {
         dispatch({ type: 'pos/paymentDelete', payload: data })
       } else {
+        const cashierTrans = product
+          .filter(filtered => !filtered.bundleId)
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Product', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Product' }
+          })
+          .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+          .concat(service.map(item => ({ ...item, type: 'Service' })))
+          .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+          .sort((a, b) => a.inputTime - b.inputTime)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+          .sort((a, b) => b.no - a.no)
+        const listTrans = cashierTrans && Array.isArray(cashierTrans)
+          ? cashierTrans.map(record => ({
+            productId: record.productId || 1,
+            productName: record.name,
+            productCode: record.code,
+            price: record.price,
+            qty: record.qty,
+            total: record.total,
+            singleDeletion: record.singleDeletion || 0
+          }))
+          : []
         dispatch({
           type: 'pos/showModalLogin',
           payload: {
@@ -962,7 +991,16 @@ const Pos = ({
         dispatch({
           type: 'login/updateState',
           payload: {
-            modalLoginData: data
+            modalLoginData: {
+              transType: CANCEL_ITEM,
+              transNo: user.username,
+              memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+              detail: listTrans,
+              Record: data.Record,
+              Name: data.name,
+              Payment: data.Payment,
+              VALUE: data.VALUE
+            }
           }
         })
       }
@@ -1066,10 +1104,52 @@ const Pos = ({
           modalLoginType: 'service'
         }
       })
+      const cashierTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+        .concat(service
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Service', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Service' }
+          }))
+        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+        .sort((a, b) => a.inputTime - b.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no)
+      const listTrans = cashierTrans && Array.isArray(cashierTrans)
+        ? cashierTrans.map(record => ({
+          productId: record.productId || 1,
+          productName: record.name,
+          productCode: record.code,
+          price: record.price,
+          qty: record.qty,
+          total: record.total,
+          singleDeletion: record.singleDeletion || 0
+        }))
+        : []
+      console.log('listTrans', listTrans)
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'service'
+        }
+      })
       dispatch({
         type: 'login/updateState',
         payload: {
-          modalLoginData: data
+          modalLoginData: {
+            transType: CANCEL_ITEM,
+            transNo: user.username,
+            memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+            detail: listTrans,
+            Record: data.Record,
+            Name: data.name,
+            Payment: data.Payment,
+            VALUE: data.VALUE
+          }
         }
       })
     },
@@ -1123,10 +1203,52 @@ const Pos = ({
           modalLoginType: 'consignment'
         }
       })
+      const cashierTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+        .concat(service.map(item => ({ ...item, type: 'Service' })))
+        .concat(consignment
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Consignment', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Consignment' }
+          }))
+        .sort((a, b) => a.inputTime - b.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no)
+      const listTrans = cashierTrans && Array.isArray(cashierTrans)
+        ? cashierTrans.map(record => ({
+          productId: record.productId || 1,
+          productName: record.name,
+          productCode: record.code,
+          price: record.price,
+          qty: record.qty,
+          total: record.total,
+          singleDeletion: record.singleDeletion || 0
+        }))
+        : []
+      console.log('listTrans', listTrans)
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'consignment'
+        }
+      })
       dispatch({
         type: 'login/updateState',
         payload: {
-          modalLoginData: data
+          modalLoginData: {
+            transType: CANCEL_ITEM,
+            transNo: user.username,
+            memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+            detail: listTrans,
+            Record: data.Record,
+            Name: data.name,
+            Payment: data.Payment,
+            VALUE: data.VALUE
+          }
         }
       })
     },
@@ -1293,7 +1415,7 @@ const Pos = ({
       if (Object.assign(mechanicInformation || {}).length !== 0) {
         let listByCode = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
         let arrayProd = listByCode
-        let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode) : []
+        let checkExists = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')).filter(el => el.code === item.serviceCode && el.bundleId == null) : []
         const { currentReward } = pospromo
         let qty = curQty
         if (currentReward && currentReward.categoryCode && currentReward.type === 'S') {
@@ -2376,10 +2498,32 @@ const Pos = ({
       })
     },
     handleCancel () {
+      console.log('bundle', bundle)
       Modal.confirm({
         title: 'Reset unsaved process',
         content: 'this action will reset your current process',
         onOk () {
+          const cashierTrans = product
+            .filter(filtered => !filtered.bundleId)
+            .map(item => ({ ...item, type: 'Product' }))
+            .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+            .concat(service.map(item => ({ ...item, type: 'Service' })))
+            .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+            .sort((a, b) => a.inputTime - b.inputTime)
+            .map((item, index) => ({ ...item, no: index + 1 }))
+            .sort((a, b) => b.no - a.no)
+          const listTrans = cashierTrans && Array.isArray(cashierTrans)
+            ? cashierTrans.map(record => ({
+              productId: record.productId || 1,
+              productName: record.name,
+              productCode: record.code,
+              price: record.price,
+              qty: record.qty,
+              total: record.total,
+              singleDeletion: record.singleDeletion || 0
+            }))
+            : []
+          console.log('listTrans', listTrans)
           dispatch({
             type: 'pos/showModalLogin',
             payload: {
@@ -2390,8 +2534,10 @@ const Pos = ({
             type: 'login/updateState',
             payload: {
               modalLoginData: {
+                transType: CANCEL_INPUT,
                 transNo: user.username,
-                memo: `Cancel Input POS ${getCurrentUserStoreName()}`
+                memo: `Cancel Input POS ${getCurrentUserStoreName()}`,
+                detail: listTrans
               }
             }
           })
@@ -2611,6 +2757,70 @@ const Pos = ({
     }
   }
 
+  const modalBundleDetailProps = {
+    visible: modalBundleDetailVisible,
+    item: currentBundle,
+    DeleteItem (data) {
+      console.log('bundle', bundle, data)
+      const cashierTrans = product
+        .filter(filtered => !filtered.bundleId)
+        .map(item => ({ ...item, type: 'Product' }))
+        .concat(bundle ? bundle.map((item) => {
+          if (item.code === data.Record) {
+            return ({ ...item, type: 'Bundle', singleDeletion: 1 })
+          }
+          return ({ ...item, type: 'Bundle' })
+        }) : [])
+        .concat(service.map(item => ({ ...item, type: 'Service' })))
+        .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+        .sort((a, b) => a.inputTime - b.inputTime)
+        .map((item, index) => ({ ...item, no: index + 1 }))
+        .sort((a, b) => b.no - a.no)
+      const listTrans = cashierTrans && Array.isArray(cashierTrans)
+        ? cashierTrans.map(record => ({
+          productId: record.productId || 1,
+          productName: record.name,
+          productCode: record.code,
+          price: record.price,
+          qty: record.qty,
+          total: record.total,
+          singleDeletion: record.singleDeletion || 0
+        }))
+        : []
+      console.log('listTrans', listTrans)
+      dispatch({
+        type: 'pos/showModalLogin',
+        payload: {
+          modalLoginType: 'bundle'
+        }
+      })
+      dispatch({
+        type: 'login/updateState',
+        payload: {
+          modalLoginData: {
+            transType: CANCEL_ITEM,
+            transNo: user.username,
+            memo: `Cancel Item POS ${data.Name} at ${getCurrentUserStoreName()}`,
+            detail: listTrans,
+            Record: data.Record,
+            Name: data.name,
+            Payment: data.Payment,
+            VALUE: data.VALUE
+          }
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          currentBundle: {},
+          modalBundleDetailVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
@@ -2714,6 +2924,7 @@ const Pos = ({
             {modalQrisTransactionFailedVisible && <ModalQrisTransactionFailed {...modalQrisTransactionFailedProps} />}
             {modalAddUnit && <ModalUnit {...modalAddUnitProps} />}
             {modalAddMember && <ModalMember {...modaladdMemberProps} />}
+            {modalBundleDetailVisible && <ModalBundleDetail {...modalBundleDetailProps} />}
             {modalWorkOrderVisible && <Browse {...modalWorkOrderProps} />}
             {modalMemberVisible && <Browse {...modalMemberProps} />}
             {modalAssetVisible && <Browse {...modalAssetProps} />}

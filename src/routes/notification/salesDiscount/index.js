@@ -11,6 +11,7 @@ import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
 import { posTotal, posDiscount, numberFormat } from 'utils'
 import styles from './index.less'
+import CancelPos from './CancelPos'
 
 const numberFormatter = numberFormat.numberFormatter
 
@@ -46,7 +47,8 @@ class SalesDiscount extends Component {
       dispatch
     } = this.props
     const {
-      listSalesDiscount
+      listSalesDiscount,
+      listRequestCancel
     } = salesDiscount
 
     const handleClick = (item) => {
@@ -70,7 +72,7 @@ class SalesDiscount extends Component {
     return (
       <div>
         <Row>
-          <Col lg={6}>
+          <Col lg={12}>
             <h1>Approval</h1>
             <div className={styles.content} >
               {listSalesDiscount && listSalesDiscount.length > 0 ? listSalesDiscount.map((item) => {
@@ -81,10 +83,7 @@ class SalesDiscount extends Component {
                     bordered
                   >
                     {item && item.value && item.value.transNo ? (
-                      <div>
-                        <div>{`Trans No: ${item.value.transNo}`}</div>
-                        <div>{`Memo: ${item.value.memo}`}</div>
-                      </div>
+                      <CancelPos fingerprintId={item.fingerprintId} transNo={item.value.transNo} memo={item.value.memo} listRequestCancel={listRequestCancel} />
                     )
                       : item && item.discountUser && item.discountUser.fullName ? (
                         <div>
@@ -102,7 +101,7 @@ class SalesDiscount extends Component {
                 )}
             </div>
           </Col>
-          <Col lg={18} />
+          <Col lg={12} />
         </Row>
       </div>
     )
