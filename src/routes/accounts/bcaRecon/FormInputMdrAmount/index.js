@@ -62,8 +62,8 @@ const FormInputMdrAmount = ({
       }
       console.log('currentItem', currentItem, listReconNotMatch)
       const amountDiff = currentItem.amount - grossAmount
-      if (amountDiff > 2000 || amountDiff < -2000) {
-        message.error('Different between amount more than 2000')
+      if (amountDiff !== 0) {
+        message.error('Different between amount')
         return
       }
       onSubmit(data, resetFields)

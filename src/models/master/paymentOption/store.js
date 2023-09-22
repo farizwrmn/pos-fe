@@ -121,7 +121,7 @@ export default modelExtend(pageModel, {
         }))
         message.success('Data berhasil ditambahkan')
       } else {
-        message.error(response.message)
+        throw response
       }
     },
     * queryDelete ({ payload = {} }, { call, put }) {
@@ -141,7 +141,7 @@ export default modelExtend(pageModel, {
         })
         message.success('Data berhasil dihapus')
       } else {
-        message.error(response.message)
+        throw response
       }
     }
   },

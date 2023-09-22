@@ -565,11 +565,23 @@ class FormPayment extends React.Component {
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',
-                      pattern: /^[a-z0-9-/.,_]+$/i,
+                      pattern: getFieldValue('typeCode') === 'D'
+                        || getFieldValue('typeCode') === 'K'
+                        ? /^[0-9]{16}$/i
+                        : /^[a-z0-9-/.,_]+$/i,
                       message: 'please insert the value'
                     }
                   ]
-                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
+                })(<Input
+                  disabled={getFieldValue('typeCode') === 'C'}
+                  maxLength={
+                    getFieldValue('typeCode') === 'D'
+                      || getFieldValue('typeCode') === 'K'
+                      ? 16
+                      : 30
+                  }
+                  style={{ width: '100%', fontSize: '14pt' }}
+                />)}
               </FormItem>
             )}
             {getFieldValue('typeCode') !== 'C' && (

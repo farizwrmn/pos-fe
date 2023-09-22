@@ -268,20 +268,10 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar,
               My Profile
               <Link to="/user_profile" />
             </Menu.Item>
-            <Menu.Item key="reqReturn">
-              Request Return
-              <Link to="/return-request" />
-            </Menu.Item>
             <Menu.Item key="reqDiscount">
-              Request Discount
+              Request Return
               <Link to="/sales-discount" />
             </Menu.Item>
-            {/* <Menu.Item key="password">
-              Change Password
-            </Menu.Item>
-            <Menu.Item key="totp">
-              {`${user.totp ? 'Change' : 'Enable'} TOTP`}
-            </Menu.Item> */}
             <Menu.Divider />
             <Menu.Item key="logout">
               Sign out
