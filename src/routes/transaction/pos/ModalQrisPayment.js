@@ -8,7 +8,6 @@ import QrisPayment from './qrisPayment'
 import Success from './qrisPayment/Success'
 import Failed from './qrisPayment/Failed'
 import ModalCancel from './qrisPayment/ModalCancel'
-import moneyRegistered from '../../../../public/mp3/moneyRegistered.mp3'
 
 const {
   getDynamicQrisPosTransId,
@@ -55,12 +54,6 @@ class ModalQrisPayment extends React.Component {
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
       const posId = getDynamicQrisPosTransId()
-      try {
-        // eslint-disable-next-line no-undef
-        new Audio(moneyRegistered).play()
-      } catch (error) {
-        console.log('Audio error:', error)
-      }
       dispatch({
         type: 'pos/updateState',
         payload: {

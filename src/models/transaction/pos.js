@@ -60,7 +60,6 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
-import moneyRegistered from '../../../public/mp3/moneyRegistered.mp3'
 import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
@@ -3650,12 +3649,6 @@ export default {
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
         const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
-        try {
-          // eslint-disable-next-line no-undef
-          new Audio(moneyRegistered).play()
-        } catch (error) {
-          console.log('Audio error:', error)
-        }
         yield put({
           type: 'payment/updateState',
           payload: {
