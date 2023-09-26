@@ -63,6 +63,7 @@ class Invoice extends React.Component {
       mechanicPrint,
       companyPrint: storeInfo
     }
+    console.log('posData', posData)
     let dataPos = []
     let dataService = []
     let dataGroup = []

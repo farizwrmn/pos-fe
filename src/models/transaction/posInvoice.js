@@ -213,6 +213,12 @@ export default modelExtend(pageModel, {
             listAmountInvoice: dataPaymentInvoice
           }
         })
+
+        if (PosData.taxInfo && PosData.taxInfo.length > 0) {
+          PosData.pos.taxInfo = PosData.taxInfo
+        } else {
+          PosData.pos.taxInfo = []
+        }
         yield put({
           type: 'querySuccessPaymentDetail',
           payload: {
