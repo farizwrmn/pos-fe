@@ -19,6 +19,7 @@ import {
 import { query as queryOpts } from 'services/payment/paymentOptions'
 import { queryPaymentInvoice } from 'services/payment/payment'
 import { rearrangeDirectPrinting } from 'utils/posinvoice'
+import { query as querySetting } from 'services/setting'
 import { pageModel } from '../common'
 
 
@@ -213,11 +214,22 @@ export default modelExtend(pageModel, {
             listAmountInvoice: dataPaymentInvoice
           }
         })
+        const companyData = yield call(querySetting, { settingCode: 'Company' })
 
         if (PosData.taxInfo && PosData.taxInfo.length > 0) {
           PosData.pos.taxInfo = PosData.taxInfo
         } else {
           PosData.pos.taxInfo = []
+        }
+        if (companyData && companyData.success && companyData.data && companyData.data[0] && companyData.data[0].settingValue) {
+          try {
+            PosData.pos.companyInfo = JSON.parse(companyData.data[0].settingValue)
+          } catch (error) {
+            console.log('Error parsing companyInfo', error)
+            PosData.pos.companyInfo = {}
+          }
+        } else {
+          PosData.pos.companyInfo = {}
         }
         yield put({
           type: 'querySuccessPaymentDetail',

@@ -11,6 +11,7 @@ import Total from './Total'
 import Footer from './Footer'
 import MerchantCopy from './MerchantCopy'
 import Member from './Member'
+import TaxInfo from './TaxInfo'
 import { groupProduct } from './utils'
 import ModalConfirm from './ModalConfirm'
 
@@ -214,6 +215,7 @@ class Invoice extends React.Component {
         })
       }
     }
+    console.log('posData', posData)
 
     return (
       <LocaleProvider locale={enUS}>
@@ -237,6 +239,7 @@ class Invoice extends React.Component {
             dataConsignment={listPaymentDetail.dataConsignment || []}
           />
           <Member invoiceInfo={invoiceInfo} />
+          <TaxInfo posData={posData} />
           {/* <div className={styles.separator} /> */}
           <Footer />
           <MerchantCopy
