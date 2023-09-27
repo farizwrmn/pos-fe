@@ -84,6 +84,38 @@ const Total = ({
           </strong>
         </Col>
       </Row>
+      <Row>
+        <Col span={12} className={styles.right}>
+          <span>
+            <strong>
+              DPP
+            </strong>
+            :Rp
+          </span>
+        </Col>
+        <Col span={12} className={styles.right}>
+          {posData.dpp ? posData.dpp.toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : 0}
+        </Col>
+      </Row>
+      {posData && posData.taxInfo && posData.taxInfo.length > 0 && (
+        posData.taxInfo.map((item) => {
+          return (
+            <Row>
+              <Col span={12} className={styles.right}>
+                <span>
+                  <strong>
+                    {item.taxName}
+                  </strong>
+                  :Rp
+                </span>
+              </Col>
+              <Col span={12} className={styles.right}>
+                {item.PPN ? (item.PPN).toLocaleString(['ban', 'id'], { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : 0}
+              </Col>
+            </Row>
+          )
+        })
+      )}
     </div>
   )
 }
