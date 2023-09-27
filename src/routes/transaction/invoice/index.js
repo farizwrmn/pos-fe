@@ -215,7 +215,6 @@ class Invoice extends React.Component {
         })
       }
     }
-    console.log('posData', posData)
 
     return (
       <LocaleProvider locale={enUS}>
