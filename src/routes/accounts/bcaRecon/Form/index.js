@@ -47,7 +47,7 @@ const FormAutoCounter = ({
         payment: { storeId, transDate: moment(value).format('YYYY-MM-DD') },
         paymentImportBca: {
           transactionDate: moment(value).format('YYYY-MM-DD'),
-          recordSource: ['TC', 'TD'],
+          recordSource: ['TC', 'TD', 'PC', 'PD'],
           storeId,
           type: 'all'
         }
