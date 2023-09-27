@@ -15,6 +15,9 @@ const TaxInfo = ({
         {posData.companyInfo.companyName}
       </div>
       <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
+        <pre>{posData.companyInfo.companyAddress}</pre>
+      </div>
+      <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
         NPWP: {posData.companyInfo.taxID}
       </div>
       <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
