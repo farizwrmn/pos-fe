@@ -85,17 +85,21 @@ const convertCSVtoArray = (string) => {
   reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
     || String(filtered.recordSource).trim() === 'TF'
     || String(filtered.recordSource).trim() === 'TC'
+    || String(filtered.recordSource).trim() === 'PC'
+    || String(filtered.recordSource).trim() === 'PD'
   )
 
   currentArray = reformatArray.map((record) => {
     let type
 
     if (String(record.recordSource).trim() === 'TD'
+      || String(record.recordSource).trim() === 'PD'
       || String(record.recordSource).trim() === 'TF') {
       type = 'D'
     }
 
-    if (String(record.recordSource).trim() === 'TC') {
+    if (String(record.recordSource).trim() === 'TC'
+      || String(record.recordSource).trim() === 'PC') {
       type = 'K'
     }
 
