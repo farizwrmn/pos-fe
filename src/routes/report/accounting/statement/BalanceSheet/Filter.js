@@ -136,10 +136,10 @@ const Filter = ({ listAllStores, compareTo, loading, onDateChange, onListReset, 
         </Button>
         {((printProps.listTrans && printProps.listTrans.length > 0) || (printProps.listProfit && printProps.listProfit.length > 0))
           && !loading.effects['accountingStatementReport/queryBalanceSheet'] && !loading.effects['accountingStatementReport/query']
-          && <PrintPDF {...printProps} />}
+          && <PrintPDF listAllStores={listAllStores} {...printProps} />}
         {((printProps.listTrans && printProps.listTrans.length > 0) || (printProps.listProfit && printProps.listProfit.length > 0))
           && !loading.effects['accountingStatementReport/queryBalanceSheet'] && !loading.effects['accountingStatementReport/query']
-          && <PrintXLS {...printProps} />}
+          && <PrintXLS listAllStores={listAllStores} {...printProps} />}
       </Col>
     </Row>
   )

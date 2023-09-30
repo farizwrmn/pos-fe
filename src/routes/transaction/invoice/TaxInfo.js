@@ -20,11 +20,14 @@ const TaxInfo = ({
       <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
         NPWP: {posData.companyInfo.taxID}
       </div>
-      <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
-        WA BUSINESS: {posData.companyInfo.contact}
-      </div>
       <div>
         BARANG KENA PAJAK SUDAH TERMASUK PPN
+      </div>
+      <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
+        KRITIK & SARAN MOHON DM di IG
+      </div>
+      <div span={12} className={styles.invoiceQueue} style={{ fontSize: 11, alignItems: 'center', justifyContent: 'center' }}>
+        {posData.companyInfo.contact}
       </div>
     </div>
   )

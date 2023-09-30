@@ -22,6 +22,7 @@ export default {
     listCashflow: [],
     from: '',
     to: '',
+    storeId: [],
     date: null,
     activeKey: '1',
     category: 'ALL CATEGORY',
@@ -125,6 +126,7 @@ export default {
           pagination: {
             total: data.total
           },
+          storeId: payload.storeId ? payload.storeId : [],
           from: payload.from,
           to: payload.to
         }
@@ -172,6 +174,7 @@ export default {
             pagination: {
               total: data.total
             },
+            storeId: payload.storeId ? payload.storeId : [],
             to: payload.to
           }
         })
@@ -223,13 +226,14 @@ export default {
   },
   reducers: {
     querySuccessTrans (state, action) {
-      const { pagination, tmpList, from, to, ...other } = action.payload
+      const { pagination, tmpList, storeId, from, to, ...other } = action.payload
 
       return {
         ...state,
         ...other,
         from,
         to,
+        storeId,
         tmpList,
         pagination: {
           ...state.pagination,

@@ -7,7 +7,16 @@ import moment from 'moment'
 import { BasicReport } from 'components'
 import { createTableBody, createTableBodyProfit } from './utils'
 
-const PrintPDF = ({ user, listTrans, listProfitCompare, listProfit, storeInfo, to }) => {
+const PrintPDF = ({ user, storeId, listAllStores, listTrans, listProfitCompare, listProfit, storeInfo, to }) => {
+  const filteredStore = (storeId || (Array.isArray(storeId) && storeId.length > 0)) ? listAllStores.filter((filtered) => {
+    if (Array.isArray(storeId)) {
+      const filteredStoreId = storeId.filter(filteredStore => Number(filteredStore) === filtered.id)
+      if (filteredStoreId && filteredStoreId[0]) {
+        return true
+      }
+    }
+    return Number(storeId) === filtered.id
+  }).map(item => item.storeName) : []
   // Declare Variable
   const styles = {
     header: {
@@ -61,14 +70,14 @@ const PrintPDF = ({ user, listTrans, listProfitCompare, listProfit, storeInfo, t
           {
             columns: [
               {
-                text: `\nPERIODE: ${moment(to).format('DD-MMM-YYYY')}`,
+                text: `${filteredStore && filteredStore[0] ? `STORE: ${filteredStore}` : ''}\nPERIODE: ${moment(to).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },
               {
                 text: '',
                 fontSize: 12,
-                alignment: 'center'
+                alignment: 'left'
               },
               {
                 text: '',

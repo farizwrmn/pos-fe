@@ -142,8 +142,8 @@ const Filter = ({ listAllStores, compareFrom, compareTo, loading, onDateChange, 
         >
           <Icon type="rollback" className="icon-large" />
         </Button>
-        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintPDF {...printProps} />}
-        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintXLS {...printProps} />}
+        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintPDF listAllStores={listAllStores} {...printProps} />}
+        {!loading.effects['accountingStatementReport/query'] && printProps.listTrans && printProps.listTrans.length > 0 && <PrintXLS listAllStores={listAllStores} {...printProps} />}
       </Col>
     </Row>
   )
