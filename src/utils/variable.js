@@ -32,7 +32,8 @@ export const ACCOUNT_TYPE_ADJUST = [
   'EXPS',
   'OEXP',
   'EQTY',
-  'COGS'
+  'COGS',
+  'AREC'
 ]
 export const ACCOUNT_TYPE_PETTY_CASH = [
   'BANK',
