@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { Modal, Button, Select, Input, Form, Radio, InputNumber } from 'antd'
 import { lstorage } from 'utils'
 
-const { getListUserStores } = lstorage
-
 const Option = Select.Option
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -45,6 +43,7 @@ class ModalList extends Component {
         }
         const data = {
           id: item.id,
+          storeId: lstorage.getCurrentUserStore(),
           ...getFieldsValue()
         }
         data.no = item.no
@@ -56,9 +55,6 @@ class ModalList extends Component {
         resetFields()
       })
     }
-
-    const listStoreId = getListUserStores()
-    const Options = (listStoreId || []).length > 0 ? listStoreId.map(data => <Option value={data.value} key={data.value}>{data.label}</Option>) : []
 
     const modalOpts = {
       ...modalProps,
@@ -76,18 +72,6 @@ class ModalList extends Component {
         ]}
       >
         <Form>
-          <FormItem label="Store" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('storeId', {
-              initialValue: item.storeId ? item.storeId : lstorage.getCurrentUserStore(),
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(<Select placeholder="Choose Store">
-              {Options}
-            </Select>)}
-          </FormItem>
           <FormItem {...formItemLayout} label="Entry Type">
             {getFieldDecorator('type', {
               initialValue: modalItemType === 'edit'
