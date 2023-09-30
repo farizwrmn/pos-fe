@@ -11,7 +11,7 @@ import Browse from './Browse'
 import Filter from './Filter'
 
 const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }) => {
-  const { modalBalanceSheetDetailVisible, listDetailStore, listProfit: listTrans, listProfitCompare: listCompare, from, to, compareFrom, compareTo, productCode } = accountingStatementReport
+  const { modalBalanceSheetDetailVisible, storeId, listDetailStore, listProfit: listTrans, listProfitCompare: listCompare, from, to, compareFrom, compareTo, productCode } = accountingStatementReport
   const { listAllStores } = userStore
   const { user, storeInfo } = app
   const browseProps = {
@@ -56,6 +56,7 @@ const Report = ({ dispatch, userStore, accountingStatementReport, loading, app }
     compareFrom,
     compareTo,
     storeInfo,
+    storeId,
     from,
     to,
     productCode,

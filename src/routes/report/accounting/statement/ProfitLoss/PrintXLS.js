@@ -93,12 +93,21 @@ const groupByType = (
   }
 }
 
-const PrintXLS = ({ listTrans, storeInfo, fromDate, toDate }) => {
-  const title = [
-    { value: 'LAPORAN LABA RUGI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(fromDate).format('DD-MMM-YYYY')}  TO  ${moment(toDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
-  ]
+const PrintXLS = ({ storeId, listAllStores, listTrans, from, to }) => {
+  const filteredStore = (storeId || (Array.isArray(storeId) && storeId.length > 0)) ? listAllStores.filter((filtered) => {
+    if (Array.isArray(storeId)) {
+      const filteredStoreId = storeId.filter(filteredStore => Number(filteredStore) === filtered.id)
+      if (filteredStoreId && filteredStoreId[0]) {
+        return true
+      }
+    }
+    return Number(storeId) === filtered.id
+  }).map(item => item.storeName) : []
+  const title = [{ value: 'LAPORAN LABA RUGI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title }]
+  if (filteredStore && filteredStore[0]) {
+    title.push({ value: `STORE: ${filteredStore}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant })
+  }
+  title.push({ value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period })
 
   let tableTitle = []
   let tableBody = []
