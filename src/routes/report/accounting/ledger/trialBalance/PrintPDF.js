@@ -9,7 +9,17 @@ import { BasicReport } from 'components'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
+const PrintPDF = ({ user, listAllStores, storeId, listRekap, storeInfo, from, to }) => {
+  const filteredStore = (storeId || (Array.isArray(storeId) && storeId.length > 0)) ? listAllStores.filter((filtered) => {
+    if (Array.isArray(storeId)) {
+      const filteredStoreId = storeId.filter(filteredStore => Number(filteredStore) === filtered.id)
+      if (filteredStoreId && filteredStoreId[0]) {
+        return true
+      }
+    }
+    return Number(storeId) === filtered.id
+  }).map(item => item.storeName) : []
+  console.log('filteredStore', listAllStores, storeId, filteredStore)
   const styles = {
     header: {
       fontSize: 18,
@@ -128,7 +138,7 @@ const PrintPDF = ({ user, listRekap, storeInfo, from, to }) => {
           {
             columns: [
               {
-                text: `\nPERIODE : ${from} - ${to}`,
+                text: `${filteredStore && filteredStore[0] ? `STORE: ${filteredStore}` : ''}\nPERIODE: ${moment(from).format('DD-MMM-YYYY')} TO ${moment(to).format('DD-MMM-YYYY')}`,
                 fontSize: 12,
                 alignment: 'left'
               },

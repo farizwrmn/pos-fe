@@ -3,7 +3,16 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { RepeatExcelReport } from 'components'
 
-const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
+const PrintXLS = ({ storeId, listAllStores, listRekap, from, to }) => {
+  const filteredStore = (storeId || (Array.isArray(storeId) && storeId.length > 0)) ? listAllStores.filter((filtered) => {
+    if (Array.isArray(storeId)) {
+      const filteredStoreId = storeId.filter(filteredStore => Number(filteredStore) === filtered.id)
+      if (filteredStoreId && filteredStoreId[0]) {
+        return true
+      }
+    }
+    return Number(storeId) === filtered.id
+  }).map(item => item.storeName) : []
   const styles = {
     title: {
       name: 'Courier New',
@@ -51,11 +60,11 @@ const PrintXLS = ({ listRekap, storeInfo, from, to }) => {
     }
   }
 
-  const title = [
-    { value: 'LAPORAN HISTORY BUKU BESAR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant },
-    { value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period }
-  ]
+  const title = [{ value: 'LAPORAN HISTORY BUKU BESAR', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title }]
+  if (filteredStore && filteredStore[0]) {
+    title.push({ value: `STORE: ${filteredStore}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant })
+  }
+  title.push({ value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period })
 
   let tableTitles = []
   let tableBodies = []

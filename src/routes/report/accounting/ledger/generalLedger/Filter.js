@@ -179,8 +179,8 @@ const Filter = ({
         >
           <Icon type="search" className="icon-large" />
         </Button>
-        {printProps.listRekap && printProps.listRekap.length > 0 && <PrintXLS {...printProps} />}
-        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintCSV {...printProps} />)}
+        {printProps.listRekap && printProps.listRekap.length > 0 && <PrintXLS listAllStores={listAllStores} {...printProps} />}
+        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintCSV listAllStores={listAllStores} {...printProps} />)}
       </Col>
     </Row>
   )
