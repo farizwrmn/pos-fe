@@ -42,9 +42,15 @@ const rightColumn = {
   lg: 12
 }
 
-const Filter = ({ listAllStores, loading, onDateChange, from, to, form: { getFieldsValue, validateFields, getFieldDecorator }, user, listRekap, storeInfo }) => {
+const Filter = ({ listAllStores, storeId, loading, onDateChange, from, to, form: { getFieldsValue, validateFields, getFieldDecorator }, user, listRekap, storeInfo }) => {
   const printProps = {
-    user, listRekap, storeInfo, from, to
+    user,
+    listRekap,
+    storeInfo,
+    from,
+    to,
+    storeId,
+    listAllStores
   }
 
   const handleSearch = () => {
@@ -104,8 +110,8 @@ const Filter = ({ listAllStores, loading, onDateChange, from, to, form: { getFie
         >
           <Icon type="search" className="icon-large" />
         </Button>
-        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintPDF {...printProps} />)}
-        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintXLS {...printProps} />)}
+        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintPDF listAllStores={listAllStores} {...printProps} />)}
+        {printProps.listRekap && printProps.listRekap.length > 0 && (<PrintXLS listAllStores={listAllStores} {...printProps} />)}
       </Col>
     </Row>
   )

@@ -17,6 +17,7 @@ export default {
     from: moment().startOf('month'),
     to: moment().endOf('month'),
     listProduct: [],
+    storeId: [],
     // productCode: [],
     // productName: [],
     activeKey: '0',
@@ -73,6 +74,7 @@ export default {
             listRekap: data.data,
             from: payload.from,
             to: payload.to,
+            storeId: payload.storeId || [],
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -92,7 +94,8 @@ export default {
         type: 'updateState',
         payload: {
           from: payload.from,
-          to: payload.to
+          to: payload.to,
+          storeId: payload.storeId
         }
       })
       yield put({
@@ -109,6 +112,7 @@ export default {
             year: payload.year,
             from: payload.from,
             to: payload.to,
+            storeId: payload.storeId || [],
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -125,13 +129,14 @@ export default {
   },
   reducers: {
     querySuccessTrans (state, action) {
-      const { listRekap, date, pagination, period, year } = action.payload
+      const { listRekap, storeId, date, pagination, period, year } = action.payload
       return {
         ...state,
         period,
         year,
         listRekap,
         fromDate: date.period,
+        storeId,
         toDate: date.year,
         pagination: {
           ...state.pagination,

@@ -3,9 +3,19 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ listRekap, from, to, storeInfo }) => {
+const PrintXLS = ({ listRekap, listAllStores, storeId, from, to }) => {
+  const filteredStore = (storeId || (Array.isArray(storeId) && storeId.length > 0)) ? listAllStores.filter((filtered) => {
+    if (Array.isArray(storeId)) {
+      const filteredStoreId = storeId.filter(filteredStore => Number(filteredStore) === filtered.id)
+      if (filteredStoreId && filteredStoreId[0]) {
+        return true
+      }
+    }
+    return Number(storeId) === filtered.id
+  }).map(item => item.storeName) : []
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -110,11 +120,11 @@ const PrintXLS = ({ listRekap, from, to, storeInfo }) => {
     return tableBody
   }
 
-  const title = [
-    { value: 'LAPORAN NERACA SALDO', alignment: styles.alignmentCenter, font: styles.title },
-    { value: `${storeInfo.name}`, alignment: styles.alignmentCenter, font: styles.merchant },
-    { value: `PERIODE : ${from} - ${to}`, alignment: styles.alignmentCenter, font: styles.title }
-  ]
+  const title = [{ value: 'LAPORAN NERACA SALDO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.title }]
+  if (filteredStore && filteredStore[0]) {
+    title.push({ value: `STORE: ${filteredStore}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.merchant })
+  }
+  title.push({ value: `PERIODE : ${moment(from).format('DD-MMM-YYYY')}  TO  ${moment(to).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.period })
 
   let tableBody = []
   try {
