@@ -120,6 +120,11 @@ const FormCounter = ({
                 ]
               })(<Input disabled maxLength={30} />)}
             </FormItem>
+            <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('taxInvoiceNo', {
+                initialValue: item.taxInvoiceNo
+              })(<Input maxLength={25} autoFocus />)}
+            </FormItem>
             <FormItem label="Reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('reference', {
                 initialValue: item.reference

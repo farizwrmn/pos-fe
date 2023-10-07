@@ -74,6 +74,16 @@ const ListInvoice = ({ loading, updateSelectedKey, selectedRowKeys, listInvoice,
       key: 'supplierName'
     },
     {
+      title: 'Tax Invoice No',
+      dataIndex: 'taxInvoiceNo',
+      key: 'taxInvoiceNo'
+    },
+    {
+      title: 'Tax Date',
+      dataIndex: 'taxDate',
+      key: 'taxDate'
+    },
+    {
       title: 'Must Paid',
       dataIndex: 'paymentTotal',
       key: 'paymentTotal',

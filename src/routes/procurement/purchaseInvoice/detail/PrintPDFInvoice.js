@@ -18,6 +18,7 @@ const PrintPDFInvoice = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
         row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.qty || '').toString(), alignment: 'center', fontSize: 11 })
         row.push({ text: (data.purchasePrice || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
+        row.push({ text: (data.dpp || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.ppn || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         row.push({ text: (data.dpp + data.ppn || 0).toLocaleString(), alignment: 'right', fontSize: 11 })
         body.push(row)
@@ -217,7 +218,8 @@ const PrintPDFInvoice = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { fontSize: 12, text: 'NAMA PRODUK', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PAJAK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'DPP', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PPN', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
     ]
   ]
@@ -233,12 +235,14 @@ const PrintPDFInvoice = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: '', border: [false] },
       { text: '', border: [false] },
       { text: '', border: [false] },
+      { text: '', border: [false] },
       { text: 'Sub Total', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
       { text: (subTotal || '').toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
       { text: 'Catatan', colSpan: 3 },
+      {},
       {},
       {},
       { text: '', border: [false] },
@@ -250,6 +254,7 @@ const PrintPDFInvoice = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: `1. Total Qty: ${productTotal}`, colSpan: 3, border: [true, false, true, false] },
       {},
       {},
+      {},
       { text: '', border: [false] },
       { text: 'Rounding', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
@@ -259,12 +264,14 @@ const PrintPDFInvoice = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
       { text: `2. Total pembayaran jatuh tempo dalam ${invoiceInfo.tempo ? invoiceInfo.tempo : 0} hari`, colSpan: 3, border: [true, false, true, true] },
       {},
       {},
+      {},
       { text: '', border: [false] },
       { text: 'Delivery', colSpan: 2, alignment: 'right', fontSize: 12, bold: true },
       {},
       { text: (deliveryFeeTotal || '').toLocaleString(), alignment: 'right', fontSize: 12, bold: true }
     ],
     [
+      { text: '', border: [false] },
       { text: '', border: [false] },
       { text: '', border: [false] },
       { text: '', border: [false] },
@@ -295,7 +302,7 @@ const PrintPDFInvoice = ({ user, storeInfo, invoiceInfo, invoiceItem }) => {
     className: 'bgcolor-blue',
     buttonType: '',
     iconSize: '',
-    width: ['4%', '15%', '40%', '9%', '10%', '10%', '12%'],
+    width: ['4%', '15%', '30%', '9%', '10%', '10%', '10%', '12%'],
     pageMargins: [10, 190, 10, 150],
     pageSize: { width: 813, height: 650 },
     pageOrientation: 'landscape',
