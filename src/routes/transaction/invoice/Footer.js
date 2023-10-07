@@ -7,7 +7,7 @@ const Footer = () => {
     <div>
       {APPNAME === 'k3mart' && (
         <div className={styles.reward}>
-          <img src="/invoice-k3mart-express.svg" width="100%" alt="" />
+          <img src="/invoice-k3mart-footer-20231007.jpg" width="100%" alt="" />
         </div>
       )}
     </div>
