@@ -128,7 +128,7 @@ const FormCounter = ({
             <FormItem label="Tax Invoice" hasFeedback {...formItemLayout}>
               {getFieldDecorator('taxInvoiceNo', {
                 initialValue: item.taxInvoiceNo
-              })(<Input maxLength={25} autoFocus />)}
+              })(<Input maxLength={25} />)}
             </FormItem>
             <FormItem label="Description" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description', {
