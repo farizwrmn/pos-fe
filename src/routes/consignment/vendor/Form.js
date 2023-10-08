@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Select, Input, Modal, message } from 'antd'
+import { Form, Button, Row, Col, Select, Input, Modal, message, InputNumber } from 'antd'
 import PasswordForm from '../components/PasswordForm'
 
 const FormItem = Form.Item
@@ -165,6 +165,20 @@ const FormCounter = ({
               ]
             })(
               <Input disabled={loading} maxLength={191} />
+            )}
+          </FormItem>
+          <FormItem label="Commission (%)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('commission', {
+              initialValue: selectedVendor.commission || 0,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^([0-9]{0,3})$/i,
+                  message: 'Invalid discount'
+                }
+              ]
+            })(
+              <InputNumber min={0} max={100} step={1} style={{ width: '100%' }} />
             )}
           </FormItem>
           <FormItem label="Tipe Identitas" hasFeedback {...formItemLayout}>
