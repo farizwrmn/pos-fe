@@ -174,7 +174,7 @@ const FormCounter = ({
                 {
                   required: true,
                   pattern: /^([0-9]{0,3})$/i,
-                  message: 'Invalid discount'
+                  message: 'Commission is Required'
                 }
               ]
             })(
