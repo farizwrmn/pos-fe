@@ -43,7 +43,8 @@ const FormCounter = ({
     getFieldDecorator,
     getFieldsValue,
     validateFields,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   const tailFormItemLayout = {
@@ -120,6 +121,16 @@ const FormCounter = ({
     return Promise.resolve()
   }
 
+  const onChangeType = (categoryId) => {
+    const selectedCategory = categoryList.filter(filtered => filtered.id === categoryId)
+    if (selectedCategory && selectedCategory[0]) {
+      console.log('categoryId', categoryId)
+      setFieldsValue({
+        commission: selectedCategory[0].commissionValue
+      })
+    }
+  }
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -133,7 +144,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select disabled={loading || formType === 'edit'}>
+              <Select onChange={value => onChangeType(value)} disabled={loading || formType === 'edit'}>
                 {categoryOption}
               </Select>
             )}
