@@ -2,15 +2,19 @@ import React from 'react'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
+import { getConsignmentId } from 'utils/lstorage'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import ModalCommission from './ModalCommission'
 
 const TabPane = Tabs.TabPane
 
-function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) {
-  const { list, selectedVendor, lastVendor, activeKey, formType, pagination, q, modalState } = consignmentVendor
+function Vendor ({ consignmentVendor, consignmentOutlet, consignmentCategory, consignmentVendorCommission, dispatch, loading }) {
+  const { list, selectedVendor, modalCommissionItem, modalCommissionVisible, lastVendor, activeKey, formType, pagination, q, modalState } = consignmentVendor
   const { list: categoryList } = consignmentCategory
+  const { list: listVendorCommission } = consignmentVendorCommission
+  const { list: listOutlet } = consignmentOutlet
 
   const changeTab = (key) => {
     dispatch({
@@ -43,6 +47,14 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
           formType: 'edit'
         }
       })
+      const consignmentId = getConsignmentId()
+      dispatch({
+        type: 'consignmentVendorCommission/query',
+        payload: {
+          outletId: consignmentId,
+          vendorId: record.id
+        }
+      })
     },
     onFilterChange ({ pagination }) {
       const { current, pageSize } = pagination
@@ -73,6 +85,7 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
     selectedVendor,
     lastVendor,
     categoryList,
+    listVendorCommission,
     modalState,
     loading: (loading.effects['consignmentVendor/add']
       || loading.effects['consignmentVendor/edit']
@@ -83,6 +96,17 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
         payload: {
           selectedVendor: {},
           formType: 'add'
+        }
+      })
+    },
+    onClickAddCommission () {
+      dispatch({
+        type: 'consignmentVendor/updateState',
+        payload: {
+          modalCommissionVisible: true,
+          modalCommissionItem: {
+            commissionValue: selectedVendor.commissionValue
+          }
         }
       })
     },
@@ -124,6 +148,28 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
     }
   }
 
+  const modalCommissionProps = {
+    visible: modalCommissionVisible,
+    title: 'Add Commission',
+    item: modalCommissionItem,
+    listOutlet,
+    onOk (data) {
+      dispatch({
+        type: 'consignmentVendorCommission/add',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'consignmentVendor/updateState',
+        payload: {
+          modalCommissionVisible: false,
+          modalCommissionItem: {}
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
@@ -131,6 +177,7 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
           {activeKey === '0' &&
             <div>
               <Form {...formProps} />
+              {modalCommissionVisible && <ModalCommission {...modalCommissionProps} />}
             </div>
           }
         </TabPane>
@@ -150,6 +197,8 @@ function Vendor ({ consignmentVendor, consignmentCategory, dispatch, loading }) 
 export default connect(({
   consignmentVendor,
   consignmentCategory,
+  consignmentOutlet,
+  consignmentVendorCommission,
   dispatch,
   loading
-}) => ({ consignmentVendor, consignmentCategory, dispatch, loading }))(Vendor)
+}) => ({ consignmentVendor, consignmentOutlet, consignmentCategory, consignmentVendorCommission, dispatch, loading }))(Vendor)
