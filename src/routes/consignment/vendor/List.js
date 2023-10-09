@@ -33,7 +33,7 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
           <div>
             <div style={{ fontWeight: 'bolder' }}>KODE: {record.vendor_code || ''}</div>
             <div>{record.name || ''}</div>
-            <br />
+            <div>Commission: {record.commissionValue} %</div>
             <div>+62{record.phone || ''}</div>
             <div>
               <Tooltip placement="top" title="Whatsapp">
