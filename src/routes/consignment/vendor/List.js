@@ -66,15 +66,18 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
             const daysLeft = moment(record.end_date).diff(todayTime, 'days')
             return {
               outletName: record.outlet.outlet_name,
+              commissionValue: record.commissionValue,
               daysLeft
             }
           })
+          console.log('outlet', outlet)
           return (
             <div>
               {outlet.map((record) => {
                 return (
                   <div>
                     <div>{record.outletName}</div>
+                    <div>Commission: {record.commissionValue} %</div>
                     <div>Berakhir {record.daysLeft} hari lagi</div>
                     <br />
                   </div>
