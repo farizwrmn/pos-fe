@@ -13,7 +13,7 @@ const formItemLayout = {
 class ModalCommission extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('amountIn')
+      const selector = document.getElementById('commissionValue')
       if (selector) {
         selector.focus()
         selector.select()
