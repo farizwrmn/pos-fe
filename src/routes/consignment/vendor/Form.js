@@ -189,7 +189,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <InputNumber min={0} max={100} step={1} style={{ width: '100%' }} />
+              <InputNumber min={0} max={100} step={1} style={{ width: '100%' }} disabled={loading || formType === 'edit'} />
             )}
           </FormItem>
           <FormItem label="Tipe Identitas" hasFeedback {...formItemLayout}>
