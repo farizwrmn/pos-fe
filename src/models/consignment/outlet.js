@@ -27,6 +27,14 @@ export default modelExtend(pageModel, {
     setup ({ history, dispatch }) {
       const consignmentId = getConsignmentId()
       history.listen((location) => {
+        if (location.pathname === '/integration/consignment/vendor') {
+          dispatch({
+            type: 'query',
+            payload: {
+              type: 'all'
+            }
+          })
+        }
         if (location.pathname === '/integration/consignment/outlet') {
           dispatch({
             type: 'query',

@@ -20,6 +20,8 @@ export default modelExtend(pageModel, {
     list: [],
     selectedVendor: {},
     lastVendor: {},
+    modalCommissionItem: {},
+    modalCommissionVisible: false,
     q: null,
     pagination: {
       showSizeChanger: true,

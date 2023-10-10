@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Select, Input, Modal, message } from 'antd'
+import { Form, Button, Row, Col, Select, Input, Modal, message, InputNumber, Table } from 'antd'
 import PasswordForm from '../components/PasswordForm'
 
 const FormItem = Form.Item
@@ -20,7 +20,7 @@ const formItemLayout = {
   }
 }
 
-const column = {
+const colSpan = {
   sm: { span: 24 },
   md: { span: 24 },
   lg: { span: 12 },
@@ -32,18 +32,21 @@ const FormCounter = ({
   loading,
   modalState,
   selectedVendor,
+  listVendorCommission,
   lastVendor,
   categoryList,
   cancelEdit,
   add,
   edit,
+  onClickAddCommission,
   resetPassword,
   handleModal,
   form: {
     getFieldDecorator,
     getFieldsValue,
     validateFields,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   const tailFormItemLayout = {
@@ -120,10 +123,35 @@ const FormCounter = ({
     return Promise.resolve()
   }
 
+  const onChangeType = (categoryId) => {
+    const selectedCategory = categoryList.filter(filtered => filtered.id === categoryId)
+    if (selectedCategory && selectedCategory[0]) {
+      console.log('categoryId', categoryId)
+      setFieldsValue({
+        commission: selectedCategory[0].commissionValue
+      })
+    }
+  }
+
+  const columns = [
+    {
+      title: 'Outlet',
+      dataIndex: 'outletName',
+      key: 'outletName'
+    },
+    {
+      title: 'Commission',
+      dataIndex: 'commissionValue',
+      key: 'commissionValue',
+      render: record => <div>Commission: {record.commissionValue}</div>
+    }
+  ]
+
   return (
     <Form layout="horizontal">
       <Row>
-        <Col {...column}>
+        <Col {...colSpan}>
+          <h1>Vendor Data</h1>
           <FormItem label="Tipe" hasFeedback {...formItemLayout}>
             {getFieldDecorator('type', {
               initialValue: selectedVendor.category_id || null,
@@ -133,7 +161,7 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select disabled={loading || formType === 'edit'}>
+              <Select onChange={value => onChangeType(value)} disabled={loading || formType === 'edit'}>
                 {categoryOption}
               </Select>
             )}
@@ -165,6 +193,20 @@ const FormCounter = ({
               ]
             })(
               <Input disabled={loading} maxLength={191} />
+            )}
+          </FormItem>
+          <FormItem label="Commission (%)" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('commissionValue', {
+              initialValue: selectedVendor.commissionValue || 0,
+              rules: [
+                {
+                  required: true,
+                  pattern: /^([0-9]{0,3})$/i,
+                  message: 'Commission is Required'
+                }
+              ]
+            })(
+              <InputNumber min={0} max={100} step={1} style={{ width: '100%' }} disabled={loading || formType === 'edit'} />
             )}
           </FormItem>
           <FormItem label="Tipe Identitas" hasFeedback {...formItemLayout}>
@@ -333,6 +375,23 @@ const FormCounter = ({
             {formType === 'edit' && <Button type="danger" onClick={() => handleCancel()} disabled={loading}>Cancel</Button>}
             <Button type="primary" onClick={() => handleSubmit()} loading={loading}>{formType === 'add' ? 'Simpan' : 'Ubah'}</Button>
           </FormItem>
+        </Col>
+        <Col {...colSpan}>
+          <h1>Custom Store Commission</h1>
+          <br />
+          {formType === 'add' && (
+            <Button type="primary" onClick={() => onClickAddCommission()}>Add</Button>
+          )}
+          <br />
+          <br />
+          <Table
+            bordered
+            pagination={false}
+            dataSource={listVendorCommission}
+            columns={columns}
+            simple
+            rowKey={record => record.id}
+          />
         </Col>
         <PasswordForm handleSubmitPassword={handleResetPassword} modalState={modalState} handleModal={handleModal} loading={loading} />
       </Row>
