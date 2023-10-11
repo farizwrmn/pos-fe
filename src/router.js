@@ -1448,7 +1448,9 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/consignment/vendor'))
+              registerModel(app, require('./models/consignment/outlet'))
               registerModel(app, require('./models/consignment/category'))
+              registerModel(app, require('./models/consignment/vendorCommission'))
               cb(null, require('./routes/consignment/vendor'))
             }, 'consignment/vendor')
           }
