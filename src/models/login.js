@@ -78,6 +78,7 @@ export default {
         || data.profile.role === 'SFC'
         || data.profile.role === 'PCS'
         || data.profile.role === 'HPC'
+        || data.profile.role === 'HKS'
         || data.profile.role === 'SPC') {
         yield put({
           type: 'updateState',
