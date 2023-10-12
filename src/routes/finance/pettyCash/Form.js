@@ -102,6 +102,7 @@ const FormCounter = ({
                 mode="default"
                 size="large"
                 style={{ width: '100%' }}
+                showSearch
                 placeholder="Choose Store"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
@@ -109,7 +110,7 @@ const FormCounter = ({
               </Select>
             )}
           </FormItem>
-          <FormItem {...formItemLayout} label="Bank">
+          <FormItem {...formItemLayout} label="Source Account">
             {getFieldDecorator('accountId', {
               initialValue: item.accountId,
               rules: [{

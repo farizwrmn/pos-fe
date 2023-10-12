@@ -85,7 +85,7 @@ export default modelExtend(pageModel, {
       if (response.success && response.data && response.data.id) {
         if (response.data.journalEntryId) {
           const reconData = yield call(queryEntryList, {
-            transactionId: response.data.journalEntryId,
+            transactionId: ([response.data.journalEntryId]).concat(response.detailOpen.filter(item => item.journalEntryId != null).map(item => item.journalEntryId)),
             transactionType: JOURNALENTRY,
             type: 'all'
           })

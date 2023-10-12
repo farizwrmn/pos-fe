@@ -129,6 +129,8 @@ const ModalItem = ({
               style={{ width: '100%' }}
               value={0}
               min={0}
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
               onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   handleOk()

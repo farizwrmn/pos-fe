@@ -25,6 +25,12 @@ const List = (tableProps) => {
       width: 80
     },
     {
+      title: 'Store',
+      dataIndex: 'storeId',
+      key: 'storeId',
+      width: 80
+    },
+    {
       title: 'Code',
       dataIndex: 'accountCode',
       key: 'accountCode',
