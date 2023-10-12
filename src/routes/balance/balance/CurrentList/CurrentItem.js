@@ -12,7 +12,7 @@ class CurrentItem extends React.Component {
     return (
       <div>
         <Card title={title}>
-          {list && list.filter(filtered => filtered.balanceIn > 0).map(item => <Item item={item} />)}
+          <Item item={{ paymentOption: { typeName: 'TOTAL' }, balanceIn: list.reduce((prev, next) => prev + next.balanceIn, 0) }} />
         </Card>
       </div>
     )

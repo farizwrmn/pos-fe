@@ -13,7 +13,7 @@ const Item = ({
   return (
     <div>
       <Card.Grid style={gridStyle}>
-        <div>{item && item.paymentOption && `${item.paymentOption.typeName} (${item.paymentOption.typeCode})`}</div>
+        <div>{item && item.paymentOption && `${item.paymentOption.typeName}`}</div>
         <div>{currencyFormatter(item.balanceIn)}</div>
       </Card.Grid>
     </div>
