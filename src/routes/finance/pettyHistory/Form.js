@@ -126,6 +126,7 @@ const FormCounter = ({
               <Select
                 mode="default"
                 size="large"
+                showSearch
                 style={{ width: '100%' }}
                 placeholder="Choose Store"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
