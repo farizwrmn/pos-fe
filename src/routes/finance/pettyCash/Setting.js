@@ -135,7 +135,7 @@ const Setting = ({
             })
           )}
           <FormItem {...tailFormItemLayout}>
-            <Button style={{ float: 'right' }} type="primary" onClick={handleSubmit}>Save</Button>
+            <Button type="primary" onClick={handleSubmit}>Save</Button>
           </FormItem>
         </Col>
       </Row>

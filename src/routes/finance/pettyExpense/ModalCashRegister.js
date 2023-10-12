@@ -153,6 +153,8 @@ class ModalCashRegister extends Component {
                 value={0}
                 min={0}
                 autoFocus
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
                 onKeyDown={(e) => {
                   if (e.keyCode === 13) {
                     handleOk()
@@ -184,7 +186,15 @@ class ModalCashRegister extends Component {
               </Select>
             )}
           </FormItem>
-
+          <FormItem label="Reference" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('reference', {
+              rules: [{
+                required: true,
+                pattern: /^[A-Za-z0-9-.,;:?() _/]{5,40}$/i,
+                message: 'a-Z & 0-9, min: 5, max: 40'
+              }]
+            })(<Input maxLength={40} autoFocus />)}
+          </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
               rules: [{
