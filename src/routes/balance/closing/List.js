@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Button, Modal, InputNumber, Row, Col } from 'antd'
 import { lstorage } from 'utils'
 import {
-  BALANCE_TYPE_TRANSACTION,
-
-  TYPE_SALES,
-  TYPE_PETTY_CASH,
-  TYPE_CONSIGNMENT
+  BALANCE_TYPE_TRANSACTION
 } from 'utils/variable'
 import FormHeader from './Form'
 
@@ -33,8 +29,6 @@ const FormLabel = () => {
       <Col {...formItemLayout.wrapperCol}>
         <Row>
           <Col span={8}><div>Sales</div></Col>
-          <Col span={8}><div>Petty-Cash</div></Col>
-          <Col span={8}><div>Consignment</div></Col>
         </Row>
       </Col>
     </Row>
@@ -44,27 +38,15 @@ const FormLabel = () => {
 const FormComponent = ({
   label,
   name,
-  getFieldDecorator,
-  defaultValue
+  getFieldDecorator
 }) => {
-  let sales = 0
-  let petty = 0
-  let consignment = 0
-  if (defaultValue.length > 0) {
-    const salesList = defaultValue.filter(filtered => filtered.type === TYPE_SALES)
-    sales = salesList && salesList[0] ? salesList[0].balanceIn : 0
-    const pettyList = defaultValue.filter(filtered => filtered.type === TYPE_PETTY_CASH)
-    petty = pettyList && pettyList[0] ? pettyList[0].balanceIn : 0
-    const consignmentList = defaultValue.filter(filtered => filtered.type === TYPE_CONSIGNMENT)
-    consignment = consignmentList && consignmentList[0] ? consignmentList[0].balanceIn : 0
-  }
   return (
     <FormItem label={label} hasFeedback {...formItemLayout}>
       <Row>
         <Col span={8}>
           <div>
             {getFieldDecorator(`detail[${name}][balanceIn]`, {
-              initialValue: sales,
+              initialValue: 0,
               rules: [
                 {
                   required: true
@@ -73,48 +55,6 @@ const FormComponent = ({
             })(
               <InputNumber
                 min={0}
-                disabled
-                style={{ width: '60%' }}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              />
-            )}
-          </div>
-        </Col>
-        <Col span={8}>
-          {name === 'C' && (
-            <div>
-              {getFieldDecorator(`cash[${name}][balanceIn]`, {
-                initialValue: petty,
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <InputNumber
-                  min={0}
-                  style={{ width: '60%' }}
-                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                />
-              )}
-            </div>
-          )}
-        </Col>
-        <Col span={8}>
-          <div>
-            {getFieldDecorator(`consignment[${name}][balanceIn]`, {
-              initialValue: consignment,
-              rules: [
-                {
-                  required: true
-                }
-              ]
-            })(
-              <InputNumber
-                min={0}
-                disabled
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
