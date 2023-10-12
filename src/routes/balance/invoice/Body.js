@@ -6,12 +6,10 @@ import styles from './index.less'
 const Body = ({
   dataPos = []
 }) => {
-  console.log('dataPos', dataPos)
   return (
     <div>
       <div className={styles.borderedSection}>
         {dataPos && dataPos
-          .filter(filtered => filtered.balanceIn > 0)
           .map((item, index) => {
             const filteredBalance = dataPos.filter(filteredItem => filteredItem.balanceType === BALANCE_TYPE_TRANSACTION
               && filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
