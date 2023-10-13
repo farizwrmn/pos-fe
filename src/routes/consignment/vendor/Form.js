@@ -128,7 +128,7 @@ const FormCounter = ({
     if (selectedCategory && selectedCategory[0]) {
       console.log('categoryId', categoryId)
       setFieldsValue({
-        commission: selectedCategory[0].commissionValue
+        commissionValue: selectedCategory[0].commissionValue
       })
     }
   }
@@ -379,7 +379,7 @@ const FormCounter = ({
         <Col {...colSpan}>
           <h1>Custom Store Commission</h1>
           <br />
-          <Button type="primary" disabled={formType === 'edit'} onClick={() => onClickAddCommission()}>Add</Button>
+          <Button type="primary" disabled={formType === 'add'} onClick={() => onClickAddCommission()}>Add</Button>
           {formType === 'add' ? 'You can only add custom store commission by Edit the vendor' : null}
           <br />
           <br />

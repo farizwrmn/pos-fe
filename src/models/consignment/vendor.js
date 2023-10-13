@@ -129,6 +129,7 @@ export default modelExtend(pageModel, {
         email: payload.email,
         password: payload.password,
         bankName: payload.bankName,
+        commissionValue: payload.commissionValue,
         accountName: payload.accountName,
         accountNumber: payload.accountNumber,
         categoryId: payload.type
@@ -152,6 +153,7 @@ export default modelExtend(pageModel, {
         phone: payload.phone,
         email: payload.email,
         bankName: payload.bankName,
+        commissionValue: payload.commissionValue,
         accountName: payload.accountName,
         accountNumber: payload.accountNumber
       }
