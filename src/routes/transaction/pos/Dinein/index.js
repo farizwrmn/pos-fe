@@ -27,7 +27,8 @@ const Express = ({
 
   const listProps = {
     dataSource: list,
-    onEditItem
+    onEditItem,
+    loading
   }
 
   return (
