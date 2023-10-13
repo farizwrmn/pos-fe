@@ -27,7 +27,6 @@ export default modelExtend(pageModel, {
 
   effects: {
     * query ({ payload = {} }, { call, put }) {
-      console.log('consignmentVendorCommission/query', payload)
       const params = {
         vendorId: payload.vendorId,
         type: 'all',
