@@ -2973,7 +2973,8 @@ const Pos = ({
                     size="medium"
                     icon="tool"
                     onClick={handleExpressBrowse}
-                    // disabled={currentBuildComponent && currentBuildComponent.no}
+                    loading={loading.effects['pos/getExpress']}
+                    disabled={loading.effects['pos/getExpress']}
                     style={{
                       margin: '0px 5px',
                       marginBottom: '5px'

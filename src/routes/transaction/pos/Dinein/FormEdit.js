@@ -72,7 +72,7 @@ const EditProductForm = ({
           </FormItem>
 
           <FormItem wrapperCol={{ span: 16, offset: 8 }}>
-            <Button disabled={loading.effects['pos/queryExpress'] || loading.effects['pos/editExpress']} style={{ float: 'right' }} type="primary" size="large" onClick={() => handleSubmit()}>
+            <Button disabled={loading.effects['pos/queryExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/editExpress']} style={{ float: 'right' }} type="primary" size="large" onClick={() => handleSubmit()}>
               Submit
             </Button>
           </FormItem>
