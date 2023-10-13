@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
-import { getConsignmentId } from 'utils/lstorage'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
@@ -47,11 +46,9 @@ function Vendor ({ consignmentVendor, consignmentOutlet, consignmentCategory, co
           formType: 'edit'
         }
       })
-      const consignmentId = getConsignmentId()
       dispatch({
         type: 'consignmentVendorCommission/query',
         payload: {
-          outletId: consignmentId,
           vendorId: record.id
         }
       })
@@ -105,6 +102,7 @@ function Vendor ({ consignmentVendor, consignmentOutlet, consignmentCategory, co
         payload: {
           modalCommissionVisible: true,
           modalCommissionItem: {
+            vendorId: selectedVendor.id,
             commissionValue: selectedVendor.commissionValue
           }
         }
@@ -153,10 +151,13 @@ function Vendor ({ consignmentVendor, consignmentOutlet, consignmentCategory, co
     title: 'Add Commission',
     item: modalCommissionItem,
     listOutlet,
-    onOk (data) {
+    onOk (data, reset) {
       dispatch({
         type: 'consignmentVendorCommission/add',
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
     onCancel () {

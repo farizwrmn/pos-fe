@@ -37,10 +37,10 @@ class ModalCommission extends Component {
           return
         }
         const data = {
+          vendorId: item.vendorId,
           ...getFieldsValue()
         }
-        onOk(data)
-        resetFields()
+        onOk(data, resetFields)
       })
     }
 

@@ -145,7 +145,7 @@ const FormCounter = ({
       title: 'Commission',
       dataIndex: 'commissionValue',
       key: 'commissionValue',
-      render: record => <div>Commission: {record.commissionValue}</div>
+      render: (text, record) => <div>Commission: {record.commissionValue} %</div>
     }
   ]
 

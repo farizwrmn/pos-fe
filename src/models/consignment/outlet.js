@@ -95,6 +95,7 @@ export default modelExtend(pageModel, {
         q,
         page: current,
         pageSize,
+        type: payload.type,
         id
       }
       if (consignmentId) {

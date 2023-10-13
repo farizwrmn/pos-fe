@@ -1,9 +1,14 @@
+import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import {
-  query
+  query,
+  add
 } from 'services/consignment/vendorCommission'
 import { pageModel } from '../common'
 
+const success = () => {
+  message.success('Consignment has been saved')
+}
 
 export default modelExtend(pageModel, {
   namespace: 'consignmentVendorCommission',
@@ -28,7 +33,6 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const params = {
-        outletId: payload.outletId,
         vendorId: payload.vendorId,
         type: 'all',
         order: 'outletId'
@@ -41,6 +45,29 @@ export default modelExtend(pageModel, {
           payload: {
             ...payload,
             list: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+    * add ({ payload }, { call, put }) {
+      const response = yield call(add, payload.data)
+      if (response.success) {
+        success()
+        if (payload.reset) {
+          payload.reset()
+        }
+        yield put({
+          type: 'consignmentVendor/updateState',
+          payload: {
+            modalCommissionVisible: false
+          }
+        })
+        yield put({
+          type: 'query',
+          payload: {
+            vendorId: payload.data.vendorId
           }
         })
       } else {
