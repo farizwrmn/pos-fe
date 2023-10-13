@@ -61,6 +61,36 @@ export async function uploadRentImage (params) {
   })
 }
 
+export async function uploadConsignmentIdImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/rentpayment?folder=consignmentVendorIdImage`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
+
+export async function uploadConsignmentTaxIdImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/rentpayment?folder=consignmentVendorTaxIdImage`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
+
 export async function uploadBundleImage (params) {
   const apiHeaderToken = {
     'Content-Type': 'application/x-www-form-urlencoded',

@@ -70,7 +70,7 @@ const List = ({ ...tableProps, edit, onFilterChange }) => {
               daysLeft
             }
           })
-          console.log('outlet', outlet)
+
           return (
             <div>
               {outlet.map((record) => {
