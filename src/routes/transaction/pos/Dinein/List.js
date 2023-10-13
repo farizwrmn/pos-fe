@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table, Button } from 'antd'
 
-const List = ({ onEditItem, ...tableProps }) => {
+const List = ({ onEditItem, loading, ...tableProps }) => {
   const handleMenuClick = (record) => {
     onEditItem(record)
   }
@@ -38,7 +38,10 @@ const List = ({ onEditItem, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <Button onMenuClick={e => handleMenuClick(record, e)}>Edit</Button>
+        if (Number(record.active) === 1) {
+          return <Button type="danger" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Disable</Button>
+        }
+        return <Button type="primary" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Enable</Button>
       }
     }
   ]
@@ -51,6 +54,7 @@ const List = ({ onEditItem, ...tableProps }) => {
         columns={columns}
         simple
         onRowClick={record => handleMenuClick(record)}
+        pagination={false}
       />
     </div>
   )
