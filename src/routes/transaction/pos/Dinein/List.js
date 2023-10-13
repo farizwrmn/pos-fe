@@ -54,6 +54,7 @@ const List = ({ onEditItem, loading, ...tableProps }) => {
         columns={columns}
         simple
         onRowClick={record => handleMenuClick(record)}
+        pagination={false}
       />
     </div>
   )
