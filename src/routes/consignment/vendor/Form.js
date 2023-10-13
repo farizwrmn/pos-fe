@@ -379,9 +379,8 @@ const FormCounter = ({
         <Col {...colSpan}>
           <h1>Custom Store Commission</h1>
           <br />
-          {formType === 'add' && (
-            <Button type="primary" onClick={() => onClickAddCommission()}>Add</Button>
-          )}
+          <Button type="primary" disabled={formType === 'edit'} onClick={() => onClickAddCommission()}>Add</Button>
+          {formType === 'add' ? 'You can only add custom store commission by Edit the vendor' : null}
           <br />
           <br />
           <Table
