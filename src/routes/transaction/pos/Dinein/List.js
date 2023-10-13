@@ -39,9 +39,9 @@ const List = ({ onEditItem, loading, ...tableProps }) => {
       fixed: 'right',
       render: (text, record) => {
         if (Number(record.active) === 1) {
-          return <Button disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Enable</Button>
+          return <Button type="danger" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Disable</Button>
         }
-        return <Button disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Disable</Button>
+        return <Button type="primary" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Enable</Button>
       }
     }
   ]
