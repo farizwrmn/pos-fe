@@ -102,13 +102,6 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
           type: 'userStore/saveCheckedStore',
           payload: { userId, data: { store: data } }
         })
-      } else if (activeTab === '5') { // tab Security
-        dispatch({
-          type: 'user/edit',
-          payload: {
-            id: userId, data, activeTab
-          }
-        })
       } else {
         dispatch({
           type: `user/${modalType}`,
