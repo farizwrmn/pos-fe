@@ -102,6 +102,7 @@ function Vendor ({ consignmentVendor, consignmentOutlet, consignmentCategory, co
         payload: {
           modalCommissionVisible: true,
           modalCommissionItem: {
+            vendorId: selectedVendor.id,
             commissionValue: selectedVendor.commissionValue
           }
         }
@@ -150,10 +151,13 @@ function Vendor ({ consignmentVendor, consignmentOutlet, consignmentCategory, co
     title: 'Add Commission',
     item: modalCommissionItem,
     listOutlet,
-    onOk (data) {
+    onOk (data, reset) {
       dispatch({
         type: 'consignmentVendorCommission/add',
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
     onCancel () {
