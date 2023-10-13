@@ -155,10 +155,10 @@ const ModalEntry = ({
         && listUserRoleChange.in
         && listUserRoleChange.out
         && (listUserRoleChange.in.length > 0 || listUserRoleChange.out.length > 0)) {
-        modalButtonSaveClick(data.userId, listUserRoleChange, '3')
+        modalButtonSaveClick(data.userId, listUserRoleChange, activeTab)
       }
       if (listCheckedStores && listCheckedStores.length > 0) {
-        modalButtonSaveClick(data.userId, listCheckedStores, '4')
+        modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
       }
     })
   }
@@ -298,7 +298,7 @@ const ModalEntry = ({
         <Button key="submit" onClick={() => hdlButtonSaveClick()} type="primary" >Save</Button>
       ]}
     >
-      <Tabs type="card" ActiveKey="2" size="small" tabPosition="top" onChange={hdlTabCallback}>
+      <Tabs type="card" activeKey={activeTab} size="small" tabPosition="top" onChange={hdlTabCallback}>
         <TabPane tab="Main" key="1">
           <Form layout="horizontal">
             <FormItem label="is Employee ?" {...formItemLayout} >
