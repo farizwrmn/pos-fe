@@ -47,6 +47,7 @@ import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
+import ModalExpressDineIn from './Dinein'
 import ModalBundleDetail from './ModalBundleDetail'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
@@ -202,6 +203,8 @@ const Pos = ({
     mechanicInformation,
     curRecord,
     modalBookmarkVisible,
+    modalExpressVisible,
+    modalEditExpressVisible,
     modalBookmarkItem,
     modalBookmarkList,
     // modalShiftVisible,
@@ -217,6 +220,7 @@ const Pos = ({
     modalWorkOrderVisible,
     dataReward,
     currentCategory,
+    listExpress,
     listUnitUsage,
     showAlert,
     // cashierBalance,
@@ -225,6 +229,7 @@ const Pos = ({
     modalAddUnit,
     cashierInformation,
     dineInTax,
+    currentItem: itemExpress,
     // typePembelian,
     modalLoginType,
     listPaymentShortcut,
@@ -318,6 +323,12 @@ const Pos = ({
       payload: {
         searchText: ''
       }
+    })
+  }
+
+  const handleExpressBrowse = () => {
+    dispatch({
+      type: 'pos/getExpress'
     })
   }
 
@@ -2694,6 +2705,49 @@ const Pos = ({
     })
   }
 
+
+  const modalExpressProps = {
+    visible: modalExpressVisible,
+    editVisible: modalEditExpressVisible,
+    list: listExpress,
+    item: itemExpress,
+    loading,
+    onClose () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalExpressVisible: false,
+          modalEditExpressVisible: false
+        }
+      })
+    },
+    onCloseEditVisible () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalEditExpressVisible: false
+        }
+      })
+    },
+    onEditItem (data) {
+      dispatch({
+        type: 'pos/editExpressItem',
+        payload: data
+      })
+    },
+    onEdit (data, resetFields) {
+      dispatch({
+        type: 'pos/editExpress',
+        payload: {
+          id: data.id,
+          productId: data.productId,
+          active: data.active,
+          resetFields
+        }
+      })
+    }
+  }
+
   const modalBookmarkProps = {
     visible: modalBookmarkVisible,
     list: modalBookmarkList,
@@ -2828,6 +2882,7 @@ const Pos = ({
         handlers={hotKeysHandler}
       />
       {modalBookmarkVisible && <ModalBookmark {...modalBookmarkProps} />}
+      {modalExpressVisible && <ModalExpressDineIn {...modalExpressProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
@@ -2913,6 +2968,18 @@ const Pos = ({
                     }}
                   >
                     Bundle
+                  </Button>
+                  <Button
+                    size="medium"
+                    icon="tool"
+                    onClick={handleExpressBrowse}
+                    // disabled={currentBuildComponent && currentBuildComponent.no}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    K3Express
                   </Button>
                 </Col>
               </Row>

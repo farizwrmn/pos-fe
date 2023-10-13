@@ -21,6 +21,10 @@ import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { getDateTime } from 'services/setting/time'
+import {
+  query as queryExpress,
+  edit as editExpress
+} from 'services/k3express/dinein/dineinMap'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -80,6 +84,10 @@ const {
 } = lstorage
 
 const { updateCashierTrans } = cashierService
+
+const success = () => {
+  message.success('Success')
+}
 
 export default {
 
@@ -333,6 +341,52 @@ export default {
   },
 
   effects: {
+    * editExpressItem ({ payload }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditExpressVisible: true,
+          currentItem: payload
+        }
+      })
+    },
+    * editExpress ({ payload = {} }, { call, put }) {
+      const response = yield call(editExpress, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {},
+            modalEditExpressVisible: false
+          }
+        })
+        yield put({ type: 'getExpress' })
+        success()
+        payload.resetFields()
+      } else {
+        throw response
+      }
+    },
+    * getExpress ({ payload = {} }, { call, put }) {
+      const response = yield call(queryExpress, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listExpress: response.data,
+            modalExpressVisible: true,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: response.total
+            }
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * getAdvertising (payload, { call, put }) {
       yield put({
         type: 'updateState',

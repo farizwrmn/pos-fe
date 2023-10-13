@@ -1,0 +1,59 @@
+import React from 'react'
+import { Table, Button } from 'antd'
+
+const List = ({ onEditItem, ...tableProps }) => {
+  const handleMenuClick = (record) => {
+    onEditItem(record)
+  }
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      render: text => (text || '-').toLocaleString()
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: (
+            <div>
+              <div>{record.productCode}</div>
+              <div>{record.productName}</div>
+              <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
+            </div>
+          )
+        }
+      }
+    },
+    {
+      title: 'Operation',
+      key: 'operation',
+      width: 100,
+      fixed: 'right',
+      render: (text, record) => {
+        return <Button onMenuClick={e => handleMenuClick(record, e)}>Edit</Button>
+      }
+    }
+  ]
+
+  return (
+    <div>
+      <Table {...tableProps}
+        bordered
+        scroll={{ x: 500 }}
+        columns={columns}
+        simple
+        onRowClick={record => handleMenuClick(record)}
+      />
+    </div>
+  )
+}
+
+export default List
