@@ -8,12 +8,6 @@ const List = ({ onEditItem, loading, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      render: text => (text || '-').toLocaleString()
-    },
-    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
@@ -23,11 +17,7 @@ const List = ({ onEditItem, loading, ...tableProps }) => {
             style: { background: record.color }
           },
           children: (
-            <div>
-              <div>{record.productCode}</div>
-              <div>{record.productName}</div>
-              <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
-            </div>
+            <div>{record.productName}</div>
           )
         }
       }
