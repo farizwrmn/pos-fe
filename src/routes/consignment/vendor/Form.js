@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Select, Input, Modal, message, InputNumber, Table } from 'antd'
+import { Form, Button, Row, Col, Select, Input, Modal, message, InputNumber, Table, Upload, Icon } from 'antd'
+import { IMAGEURL, rest } from 'utils/config.company'
 import PasswordForm from '../components/PasswordForm'
 
+const { apiCompanyURL } = rest
 const FormItem = Form.Item
 const Option = Select.Option
 const Confirm = Modal.confirm
@@ -232,12 +234,140 @@ const FormCounter = ({
                   required: true
                 },
                 {
-                  pattern: /^\d{16}$/,
+                  pattern: /^\d{15,16}$/,
                   message: 'Value must contain numbers only and 16 character length'
                 }
               ]
             })(
               <Input disabled={loading} maxLength={16} />
+            )}
+          </FormItem>
+          <FormItem help="Only 1 Image" label="Foto Identitas" {...formItemLayout}>
+            {getFieldDecorator('identityImage', {
+              initialValue: selectedVendor.identityImage
+                && selectedVendor.identityImage != null
+                && selectedVendor.identityImage !== '["no_image.png"]'
+                && selectedVendor.identityImage !== '"no_image.png"'
+                && selectedVendor.identityImage !== 'no_image.png' ?
+                {
+                  fileList: [{
+                    uid: 0,
+                    name: selectedVendor.identityImage,
+                    status: 'done',
+                    url: `${IMAGEURL}/${selectedVendor.identityImage}`,
+                    thumbUrl: `${IMAGEURL}/${selectedVendor.identityImage}`
+                  }]
+                }
+                : undefined,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <Upload
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                defaultFileList={
+                  selectedVendor.identityImage
+                    && selectedVendor.identityImage != null
+                    && selectedVendor.identityImage !== '["no_image.png"]'
+                    && selectedVendor.identityImage !== '"no_image.png"'
+                    && selectedVendor.identityImage !== 'no_image.png' ?
+                    [{
+                      uid: 0,
+                      name: selectedVendor.identityImage,
+                      status: 'done',
+                      url: `${IMAGEURL}/${selectedVendor.identityImage}`,
+                      thumbUrl: `${IMAGEURL}/${selectedVendor.identityImage}`
+                    }]
+                    : undefined
+                }
+                listType="picture"
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            )}
+          </FormItem>
+          <FormItem help="Only 1 Image" label="Foto NPWP" {...formItemLayout}>
+            {getFieldDecorator('taxIdImage', {
+              initialValue: selectedVendor.taxIdImage
+                && selectedVendor.taxIdImage != null
+                && selectedVendor.taxIdImage !== '["no_image.png"]'
+                && selectedVendor.taxIdImage !== '"no_image.png"'
+                && selectedVendor.taxIdImage !== 'no_image.png' ?
+                {
+                  fileList: [{
+                    uid: 0,
+                    name: selectedVendor.taxIdImage,
+                    status: 'done',
+                    url: `${IMAGEURL}/${selectedVendor.taxIdImage}`,
+                    thumbUrl: `${IMAGEURL}/${selectedVendor.taxIdImage}`
+                  }]
+                }
+                : undefined,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(
+              <Upload
+                showUploadList={{
+                  showPreviewIcon: true
+                }}
+                defaultFileList={
+                  selectedVendor.taxIdImage
+                    && selectedVendor.taxIdImage != null
+                    && selectedVendor.identityImage !== '["no_image.png"]'
+                    && selectedVendor.identityImage !== '"no_image.png"'
+                    && selectedVendor.identityImage !== 'no_image.png' ?
+                    [{
+                      uid: 0,
+                      name: selectedVendor.taxIdImage,
+                      status: 'done',
+                      url: `${IMAGEURL}/${selectedVendor.taxIdImage}`,
+                      thumbUrl: `${IMAGEURL}/${selectedVendor.taxIdImage}`
+                    }]
+                    : undefined
+                }
+                listType="picture"
+                action={`${apiCompanyURL}/time/time`}
+                onPreview={file => console.log('file', file)}
+                onChange={(info) => {
+                  if (info.file.status !== 'uploading') {
+                    console.log('pending', info.fileList)
+                  }
+                  if (info.file.status === 'done') {
+                    console.log('success', info)
+                    message.success(`${info.file.name} file staged success`)
+                  } else if (info.file.status === 'error') {
+                    console.log('error', info)
+                    message.error(`${info.file.name} file staged failed.`)
+                  }
+                }}
+              >
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
             )}
           </FormItem>
           <FormItem label="Alamat" hasFeedback {...formItemLayout}>
