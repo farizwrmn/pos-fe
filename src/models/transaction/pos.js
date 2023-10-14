@@ -3721,7 +3721,7 @@ export default {
         removeCurrentPaymentTransactionId()
         invoiceWindow.focus()
       } else {
-        Modal.error({
+        Modal.warning({
           title: 'Check Status',
           content: response.message
         })
