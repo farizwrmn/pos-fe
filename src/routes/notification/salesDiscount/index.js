@@ -80,7 +80,7 @@ class SalesDiscount extends Component {
                 return (
                   <Card
                     title={item.value.transNo ? 'Cancel Invoice' : `${item.value.code} - ${item.value.name}`}
-                    extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} disabled={item && item.value && item.value.transNo && listRequestCancel && listRequestCancel.length === 0 && defaultRole === 'HKS'} icon="check" onClick={() => handleClick(item)} />}
+                    extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} disabled={item && item.value && item.value.transNo && listRequestCancel && listRequestCancel.filter(filtered => filtered.fingerprintId === item.fingerprintId && filtered.requestCancelDetail && filtered.requestCancelDetail.length > 0).length === 0 && defaultRole === 'HKS'} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
                     {item && item.value && item.value.transNo ? (
