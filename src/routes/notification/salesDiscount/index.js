@@ -9,7 +9,7 @@ import {
 import { connect } from 'dva'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
-import { posTotal, posDiscount, numberFormat } from 'utils'
+import { lstorage, posTotal, posDiscount, numberFormat } from 'utils'
 import styles from './index.less'
 import CancelPos from './CancelPos'
 
@@ -50,6 +50,7 @@ class SalesDiscount extends Component {
       listSalesDiscount,
       listRequestCancel
     } = salesDiscount
+    let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
 
     const handleClick = (item) => {
       Modal.confirm({
@@ -79,7 +80,7 @@ class SalesDiscount extends Component {
                 return (
                   <Card
                     title={item.value.transNo ? 'Cancel Invoice' : `${item.value.code} - ${item.value.name}`}
-                    extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} icon="check" onClick={() => handleClick(item)} />}
+                    extra={<Button shape="circle" type="primary" loading={loading.effects['salesDiscount/query']} disabled={item && item.value && item.value.transNo && listRequestCancel && listRequestCancel.length === 0 && defaultRole === 'HKS'} icon="check" onClick={() => handleClick(item)} />}
                     bordered
                   >
                     {item && item.value && item.value.transNo ? (
