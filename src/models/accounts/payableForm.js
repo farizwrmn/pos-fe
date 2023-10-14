@@ -279,6 +279,7 @@ export default modelExtend(pageModel, {
         payload: {
           currentItem: {
             ...currentItem,
+            reference: transNo,
             transNo
           }
         }
