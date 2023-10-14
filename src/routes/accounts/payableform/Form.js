@@ -292,6 +292,16 @@ const FormCounter = ({
                 ]
               })(<Input disabled maxLength={30} />)}
             </FormItem>
+            <FormItem label="Reference" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('reference', {
+                initialValue: item.reference,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<Input maxLength={30} />)}
+            </FormItem>
             <FormItem label="Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('transDate', {
                 initialValue: item.transDate ? moment.utc(item.transDate) : moment(),
