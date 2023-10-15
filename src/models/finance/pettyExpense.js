@@ -73,6 +73,8 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      } else {
+        throw data
       }
     },
 

@@ -76,7 +76,6 @@ export default modelExtend(pageModel, {
           from: payload.transDate && payload.transDate.length > 0 ? payload.transDate[0] : undefined,
           to: payload.transDate && payload.transDate.length > 0 ? payload.transDate[1] : undefined
         }
-        console.log('currentItem', currentItem)
         yield put({
           type: 'updateState',
           payload: {

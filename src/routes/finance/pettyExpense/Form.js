@@ -64,6 +64,7 @@ const FormCounter = ({
                   <div>Store Name: <b>{item.storeName}</b></div>
                   <div>Reference: <b>{item.reference}</b></div>
                   <div>Expense: <b>{numberFormatter(parseFloat(item.expenseTotal))}</b></div>
+                  {item.discount > 0 && <div>Discount: <b>{numberFormatter(parseFloat(item.discount))}</b></div>}
                   {item.description && <div style={{ color: '#55a756' }} onClick={() => onClickNotes(item)}>Cashier Notes: {item.description} <Icon type="edit" /></div>}
                   {item.pettyCash.description && <div>{`Finance Notes: ${item.pettyCash.description}`}</div>}
                   <div>{`Employee: ${item.employeeName}`}</div>

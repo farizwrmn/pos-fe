@@ -85,6 +85,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
             [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (`${itemHeader.transNo || ''} (${itemHeader.status || ''})` || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(itemHeader.createdAt).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'STORE', fontSize: 11 }, ':', { text: (listItem && listItem[0] && listItem[0].storeName ? listItem[0].storeName : '' || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
+            [{ text: 'REFERENCE', fontSize: 11 }, ':', { text: (itemHeader.reference || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'MEMO', fontSize: 11 }, ':', { text: (itemHeader.description || '').toString(), fontSize: 11 }, {}, {}, {}, {}]
           ]
         },

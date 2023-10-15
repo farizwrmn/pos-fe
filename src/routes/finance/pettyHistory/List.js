@@ -68,6 +68,24 @@ const List = ({ ...tableProps }) => {
       }
     },
     {
+      title: 'Discount',
+      dataIndex: 'discount',
+      key: 'discount',
+      width: '100px',
+      className: styles.alignRight,
+      render (text, record) {
+        if (!record.active) {
+          return <div style={{ color: 'red' }}>{(text || '-').toLocaleString()}</div>
+        }
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: <div>{(text || '-').toLocaleString()}</div>
+        }
+      }
+    },
+    {
       title: 'Approval',
       dataIndex: 'cashEntryId',
       key: 'cashEntryId',
@@ -94,9 +112,19 @@ const List = ({ ...tableProps }) => {
       width: '360px',
       render (text, record) {
         if (!record.active) {
-          return <div style={{ color: 'red' }}>{text}</div>
+          return (
+            <div style={{ color: 'red' }}>
+              <div>Description: {text}</div>
+              <div>Memo: {record.memo}</div>
+            </div>
+          )
         }
-        return text
+        return (
+          <div>
+            <div>Reference: {record.reference}</div>
+            <div>Description: {text}</div>
+          </div>
+        )
       }
     },
     {
