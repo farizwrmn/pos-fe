@@ -81,6 +81,9 @@ const FormCounter = ({
           data.storeName = filteredStore[0].storeName
         }
       }
+      if (data && data.transDate && data.transDate[0] && data.transDate[1]) {
+        data.transDate = [data.transDate[0].format('YYYY-MM-DD'), data.transDate[1].format('YYYY-MM-DD')]
+      }
       onSubmit(data)
     })
   }
