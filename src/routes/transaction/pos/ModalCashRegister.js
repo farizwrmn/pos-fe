@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -66,14 +67,48 @@ class ModalCashRegister extends Component {
       <Modal
         {...modalOpts}
         onCancel={onCancel}
+        title="Input Expense"
         footer={[
           <Button disabled={loading} size="large" key="back" onClick={onCancel}>Cancel</Button>,
           <Button disabled={loading} size="large" key="submit" type="primary" onClick={handleOk}>Ok</Button>
         ]}
       >
         <Form layout="horizontal">
+          <FormItem label="Date" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('dateTime', {
+              initialValue: moment().format('YYYY-MM-DD'),
+              rules: [{
+                required: true
+              }]
+            })(
+              <Input disabled />
+            )}
+          </FormItem>
           <FormItem label="Expense" hasFeedback {...formItemLayout}>
             {getFieldDecorator('expenseTotal', {
+              initialValue: 0,
+              rules: [{
+                pattern: /^([0-9]{0,19})$/i,
+                required: true
+              }]
+            })(
+              <InputNumber
+                style={{ width: '100%' }}
+                value={0}
+                min={0}
+                autoFocus
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    handleOk()
+                  }
+                }}
+              />
+            )}
+          </FormItem>
+          <FormItem label="Discount" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discount', {
               initialValue: 0,
               rules: [{
                 required: true

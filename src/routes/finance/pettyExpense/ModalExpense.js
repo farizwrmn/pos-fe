@@ -16,6 +16,7 @@ const ModalExpense = ({
   item,
   onOk,
   onCancel,
+  loading,
   ...modalProps
 }) => {
   const handleOk = () => {
@@ -52,10 +53,11 @@ const ModalExpense = ({
   return (
     <Modal
       {...modalOpts}
+      title="Approval"
       onCancel={onCancel}
       footer={[
-        <Button size="large" key="back" onClick={onCancel}>Cancel</Button>,
-        <Button size="large" key="submit" type="primary" onClick={handleOk}>
+        <Button disabled={loading} size="large" key="back" onClick={onCancel}>Cancel</Button>,
+        <Button disabled={loading} size="large" key="submit" type="primary" onClick={handleOk}>
           Ok
         </Button>
       ]}
@@ -105,6 +107,29 @@ const ModalExpense = ({
             />
           )}
         </FormItem>
+
+        {item.discount > 0 && <FormItem label="Discount" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('discount', {
+            initialValue: item.discount,
+            rules: [{
+              required: true
+            }]
+          })(
+            <InputNumber
+              style={{ width: '100%' }}
+              value={0}
+              min={0}
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleOk()
+                }
+              }}
+              disabled
+            />
+          )}
+        </FormItem>}
 
         <FormItem label="Description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {

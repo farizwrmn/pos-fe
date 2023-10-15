@@ -71,6 +71,7 @@ class ModalCashRegister extends Component {
     return (
       <Modal
         {...modalOpts}
+        title="Add More Cash/Discount"
         onCancel={onCancel}
         footer={[
           <Button disabled={loading} size="large" key="back" onClick={onCancel}>Cancel</Button>,
@@ -91,6 +92,7 @@ class ModalCashRegister extends Component {
               <Select
                 mode="default"
                 size="large"
+                showSearch
                 style={{ width: '100%' }}
                 placeholder="Choose Store"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -133,6 +135,7 @@ class ModalCashRegister extends Component {
               <Select
                 mode="default"
                 size="large"
+                showSearch
                 style={{ width: '100%' }}
                 placeholder="Choose Store"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

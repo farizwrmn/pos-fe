@@ -70,12 +70,6 @@ const Counter = ({ pettyHistory, accountRule, userStore, loading, dispatch, loca
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data) {
-      dispatch({
-        type: 'pettyHistory/query',
-        payload: {
-          ...data
-        }
-      })
       const { query, pathname } = location
       dispatch(routerRedux.push({
         pathname,

@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Button, Row, Spin, Col } from 'antd'
+import { Card, Button, Row, Spin, Col, Icon } from 'antd'
 import { numberFormatter } from 'utils/string'
 import moment from 'moment'
 import styles from './index.less'
 import ModalExpense from './ModalExpense'
 import ModalCancel from './ModalCancel'
 import ModalCashRegister from './ModalCashRegister'
+import ModalEditNotes from './ModalEditNotes'
 
 const column = {
   sm: { span: 24 },
@@ -18,8 +19,10 @@ const column = {
 const FormCounter = ({
   modalExpenseProps,
   modalCancelProps,
+  modalEditNotesProps,
   modalCashRegisterProps,
   onRefresh,
+  onClickNotes,
   loadingExpense,
   loading,
   list,
@@ -37,6 +40,7 @@ const FormCounter = ({
 
   return (
     <Row>
+      {modalEditNotesProps.visible && <ModalEditNotes {...modalEditNotesProps} />}
       {modalCancelProps.visible && <ModalCancel {...modalCancelProps} />}
       {modalExpenseProps.visible && <ModalExpense {...modalExpenseProps} />}
       {modalCashRegisterProps.visible && <ModalCashRegister {...modalCashRegisterProps} />}
@@ -57,9 +61,11 @@ const FormCounter = ({
                 bordered
               >
                 <div>
-                  <div>{`Store Name: ${item.storeName}`}</div>
-                  <div>{`Expense: ${numberFormatter(parseFloat(item.expenseTotal))}`}</div>
-                  {item.description && <div>{`Cashier Notes: ${item.description}`}</div>}
+                  <div>Store Name: <b>{item.storeName}</b></div>
+                  <div>Reference: <b>{item.reference}</b></div>
+                  <div>Expense: <b>{numberFormatter(parseFloat(item.expenseTotal))}</b></div>
+                  {item.discount > 0 && <div>Discount: <b>{numberFormatter(parseFloat(item.discount))}</b></div>}
+                  {item.description && <div style={{ color: '#55a756' }} onClick={() => onClickNotes(item)}>Cashier Notes: {item.description} <Icon type="edit" /></div>}
                   {item.pettyCash.description && <div>{`Finance Notes: ${item.pettyCash.description}`}</div>}
                   <div>{`Employee: ${item.employeeName}`}</div>
                   <div>{`Created By: ${item.userName}`}</div>
@@ -74,7 +80,7 @@ const FormCounter = ({
         </div>
       </Col>
       <Col {...column}>
-        <Button style={{ float: 'right' }} type="primary" onClick={addNewBalance}>Add New</Button>
+        <Button style={{ float: 'right' }} type="primary" onClick={addNewBalance}>Add More Cash/Discount</Button>
         <Button style={{ float: 'right', marginRight: '10px' }} type="default" icon onClick={onRefresh}>Refresh</Button>
       </Col>
     </Row>
