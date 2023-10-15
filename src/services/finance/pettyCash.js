@@ -70,6 +70,16 @@ export async function generateExpense (params) {
   })
 }
 
+export async function editExpense (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/petty-cash-detail/${params.id}`,
+    method: 'put',
+    data: params.data,
+    headers: apiHeaderToken
+  })
+}
+
 export async function addCashEntry (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

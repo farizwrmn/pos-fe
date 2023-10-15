@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { generateExpense, deleteExpenseRequest, queryPurchase, queryActive, addCashEntry } from 'services/finance/pettyCash'
+import { generateExpense, deleteExpenseRequest, queryPurchase, queryActive, editExpense, addCashEntry } from 'services/finance/pettyCash'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -18,6 +18,8 @@ export default modelExtend(pageModel, {
     listPurchaseExpense: [],
     modalExpenseVisible: false,
     modalCashRegisterVisible: false,
+    modalEditNotesVisible: false,
+    modalEditNotesItem: {},
     currentItemExpense: {},
     currentItemCancel: {},
     modalCancelVisible: false,
@@ -127,6 +129,22 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
+      } else {
+        throw response
+      }
+    },
+
+    * editExpense ({ payload }, { call, put }) {
+      const response = yield call(editExpense, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditNotesVisible: false,
+            modalEditNotesItem: {}
+          }
+        })
+        yield put({ type: 'queryActive' })
       } else {
         throw response
       }

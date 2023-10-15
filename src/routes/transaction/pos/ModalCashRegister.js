@@ -66,6 +66,7 @@ class ModalCashRegister extends Component {
       <Modal
         {...modalOpts}
         onCancel={onCancel}
+        title="Input Expense"
         footer={[
           <Button disabled={loading} size="large" key="back" onClick={onCancel}>Cancel</Button>,
           <Button disabled={loading} size="large" key="submit" type="primary" onClick={handleOk}>Ok</Button>

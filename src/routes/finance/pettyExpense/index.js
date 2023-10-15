@@ -11,7 +11,7 @@ import Form from './Form'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountRule, loading, dispatch, location }) => {
-  const { list, modalCashRegisterVisible, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
+  const { list, modalCashRegisterVisible, modalEditNotesItem, modalEditNotesVisible, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
   const { listEmployee } = pettyCashDetail
   const { listAccountCode, listAccountCodeExpense } = accountRule
   const { listAllStores } = userStore
@@ -168,16 +168,54 @@ const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountRule, loadin
     }
   }
 
+  const modalEditNotesProps = {
+    item: modalEditNotesItem,
+    visible: modalEditNotesVisible,
+    loading: loading.effects['pettyExpense/editExpense'],
+    onOk (data, reset) {
+      console.log('modalEditNotesItem', data, modalEditNotesItem)
+      if (modalEditNotesItem && modalEditNotesItem.id) {
+        dispatch({
+          type: 'pettyExpense/editExpense',
+          payload: {
+            id: modalEditNotesItem.id,
+            data,
+            reset
+          }
+        })
+      }
+    },
+    onCancel () {
+      dispatch({
+        type: 'pettyExpense/updateState',
+        payload: {
+          modalEditNotesVisible: false,
+          modalEditNotesItem: {}
+        }
+      })
+    }
+  }
+
   const formProps = {
     list,
     loading: loading.effects['pettyExpense/generateExpense'],
     loadingExpense: loading.effects['pettyExpense/queryActive'],
     modalExpenseProps,
     modalCancelProps,
+    modalEditNotesProps,
     modalCashRegisterProps,
     onRefresh () {
       dispatch({
         type: 'pettyExpense/queryActive'
+      })
+    },
+    onClickNotes (item) {
+      dispatch({
+        type: 'pettyExpense/updateState',
+        payload: {
+          modalEditNotesVisible: true,
+          modalEditNotesItem: item
+        }
       })
     },
     addNewBalance () {
