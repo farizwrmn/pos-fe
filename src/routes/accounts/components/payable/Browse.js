@@ -8,42 +8,36 @@ import styles from '../../../../themes/index.less'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 
-const { MonthPicker } = DatePicker
+const { RangePicker } = DatePicker
 const Search = Input.Search
 const FormItem = Form.Item
 // const { prefix } = configMain
 
 const leftColumn = {
-  xs: 12,
-  sm: 16,
-  md: 16,
-  lg: 17
+  md: 24,
+  lg: 12
 }
 
 const rightColumn = {
-  xs: 24,
-  sm: 8,
-  md: 8,
-  lg: 7
+  md: 24,
+  lg: 12
 }
 
 const BrowseGroup = ({
-  dataSource, tmpDataSource, onSearchChange, onChangePeriod,
-  form: { getFieldDecorator }, ...browseProps }) => {
-  // const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
-  const hdlSearch = (e) => {
-    const reg = new RegExp(e, 'gi')
-    let newData = tmpDataSource.map((record) => {
-      const match = (record.transNo || '').match(reg) || (record.invoiceNo || '').match(reg) || (record.supplierName || '').match(reg) || (record.supplierCode || '').match(reg) || (record.reference || '').match(reg)
-      if (!match) {
-        return null
-      }
-      return {
-        ...record
-      }
-    }).filter(record => !!record)
-    onSearchChange(newData)
-  }
+  dataSource,
+  tmpDataSource,
+  onChangePeriod,
+  q,
+  from,
+  to,
+  loading,
+  form: {
+    getFieldDecorator,
+    getFieldsValue,
+    validateFields
+  },
+  ...browseProps
+}) => {
   const columns = [
     {
       title: 'Transaction No',
@@ -178,10 +172,23 @@ const BrowseGroup = ({
       onFilter: (value, record) => record.statusActive.indexOf(value) === 0
     }
   ]
-  const onChange = (date, dateString) => {
-    let dateFormat = moment(dateString).format('YYYY-MM-DD')
-    let lastDate = moment(moment(dateFormat).endOf('month')).format('YYYY-MM-DD')
-    onChangePeriod(dateFormat, lastDate)
+
+  const handleOk = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue()
+      }
+      let from
+      let to
+      if (data.transDate && data.transDate[0] && data.transDate[1]) {
+        from = data.transDate[0].format('YYYY-MM-DD')
+        to = data.transDate[1].format('YYYY-MM-DD')
+      }
+      onChangePeriod(data.q, from, to)
+    })
   }
 
   return (
@@ -189,13 +196,24 @@ const BrowseGroup = ({
       <Row style={{ marginBottom: '10px' }}>
         <Col {...leftColumn}>
           <FormItem hasFeedBack >
-            {getFieldDecorator('typeCode', {
-              initialValue: moment.utc(moment(), 'YYYYMM'),
+            {getFieldDecorator('transDate', {
+              initialValue: from && to ? [moment.utc(from, 'YYYY-MM-DD'), moment.utc(to, 'YYYY-MM-DD')] : [],
               rules: [{
-                required: true
+                required: false
               }]
-            })(<MonthPicker onChange={onChange} placeholder="Select Period" />)}
+            })(<RangePicker placeholder="Select Period" />)}
           </FormItem>
+          <FormItem>
+            {getFieldDecorator('q', {
+              initialValue: q
+            })(
+              <Search
+                placeholder="Search"
+                onSearch={() => handleOk()}
+              />
+            )}
+          </FormItem>
+          <Button disabled={loading} onClick={() => handleOk()} type="primary" icon="search">Search</Button>
         </Col>
         <Col {...rightColumn}>
           <FormItem>
@@ -209,12 +227,6 @@ const BrowseGroup = ({
                 Payable Form
               </Button>
             </Link>
-          </FormItem>
-          <FormItem>
-            <Search
-              placeholder="Search Invoice"
-              onSearch={value => hdlSearch(value)}
-            />
           </FormItem>
         </Col>
       </Row>

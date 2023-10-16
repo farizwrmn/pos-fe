@@ -6,10 +6,10 @@ import { connect } from 'dva'
 import { Payable } from '../components'
 
 
-const PaymentTab = () => {
+const PaymentTab = ({ location }) => {
   return (
     <div className="content-inner">
-      <Payable />
+      <Payable location={location} />
     </div>
   )
 }
