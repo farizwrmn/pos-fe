@@ -11,13 +11,18 @@ export default {
     from: null,
     to: null,
     listPayment: [],
-    tmpListPayment: []
+    tmpListPayment: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey, q, from, to } = location.query
+        const { activeKey, q, from, to, ...otherQuery } = location.query
         if (location.pathname === '/accounts/payable') {
           let defaultFrom
           let defaultTo
@@ -25,13 +30,18 @@ export default {
             defaultFrom = from
             defaultTo = to
           }
+          if (!q && !from && !to) {
+            defaultFrom = moment().startOf('months').format('YYYY-MM-DD')
+            defaultTo = moment().endOf('months').format('YYYY-MM-DD')
+          }
 
           dispatch({
             type: 'queryPurchase',
             payload: {
               from: defaultFrom,
               to: defaultTo,
-              q
+              q,
+              ...otherQuery
             }
           })
         }
@@ -86,7 +96,7 @@ export default {
             listPayment: data.data,
             pagination: {
               current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 5,
+              pageSize: Number(payload.pageSize) || 10,
               // pageSizeOptions: ['5','10','20','50'],
               total: data.total
             }
