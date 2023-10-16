@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
+import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
@@ -15,7 +16,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     mechanicPrint,
     modalPrintVisible,
     posData } = pos
-  const { listPayment, tmpListPayment } = accountPayment
+  const { listPayment, from, to, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
   const modalProps = {
@@ -151,6 +152,9 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     dataSource: listPayment,
     tmpDataSource: tmpListPayment,
     width: 90,
+    from,
+    to,
+    q: location.query.q,
     size: 'small',
     loading: loading.effects['accountPayment/queryPurchase'],
     location,
@@ -185,22 +189,46 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
         type: 'pos/showPrintModal'
       })
     },
-    onChangePeriod (start, end) {
-      dispatch({
-        type: 'accountPayment/queryPurchase',
-        payload: {
-          from: start,
-          to: end
+    onChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          pageSize: page.pageSize
         }
-      })
+      }))
+    },
+    onChangePeriod (q, from, to) {
+      console.log('onChangePeriod', q, from, to)
+      const { query, pathname } = location
+      if (from && to) {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            q,
+            from: from || null,
+            to: to || null
+          }
+        }))
+      } else {
+        dispatch(routerRedux.push({
+          pathname,
+          query: {
+            q
+          }
+        }))
+      }
     }
   }
 
   return (
     <div>
       <Browse {...browseProps} />
-      <Modal {...modalProps} />
-      <ModalCancel {...modalCancelProps} />
+      {modalProps.visible && <Modal {...modalProps} />}
+      {modalCancelProps.visible && <ModalCancel {...modalCancelProps} />}
     </div>
   )
 }

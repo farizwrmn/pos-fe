@@ -8,6 +8,8 @@ export default {
 
   state: {
     activeKey: '1',
+    from: null,
+    to: null,
     listPayment: [],
     tmpListPayment: []
   },
@@ -15,22 +17,21 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { activeKey } = location.query
+        const { activeKey, q, from, to } = location.query
         if (location.pathname === '/accounts/payable') {
-          dispatch({
-            type: 'updateState',
-            payload: {
-              listPayment: [],
-              tmpListPayment: [],
-              changed: false,
-              activeKey: activeKey || '2'
-            }
-          })
+          let defaultFrom
+          let defaultTo
+          if (from && to) {
+            defaultFrom = from
+            defaultTo = to
+          }
+
           dispatch({
             type: 'queryPurchase',
             payload: {
-              from: moment().startOf('month').format('YYYY-MM-DD'),
-              to: moment().endOf('month').format('YYYY-MM-DD')
+              from: defaultFrom,
+              to: defaultTo,
+              q
             }
           })
         }
@@ -83,7 +84,6 @@ export default {
           type: 'querySuccessPayment',
           payload: {
             listPayment: data.data,
-            tmpListPayment: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 5,
@@ -92,6 +92,15 @@ export default {
             }
           }
         })
+        if (payload && payload.from && payload.to) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              from: payload.from,
+              to: payload.to
+            }
+          })
+        }
       }
     }
   },
@@ -102,7 +111,7 @@ export default {
       return {
         ...state,
         listPayment,
-        tmpListPayment,
+        tmpListPayment: tmpListPayment || [],
         pagination: {
           ...state.pagination,
           ...pagination
