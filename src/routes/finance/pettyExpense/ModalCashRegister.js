@@ -193,7 +193,7 @@ class ModalCashRegister extends Component {
             {getFieldDecorator('reference', {
               rules: [{
                 required: true,
-                pattern: /^[A-Za-z0-9-.,;:?() _/]{5,40}$/i,
+                pattern: /^[A-Za-z0-9-.,;:?()@= _/]{5,40}$/i,
                 message: 'a-Z & 0-9, min: 5, max: 40'
               }]
             })(<Input maxLength={40} autoFocus />)}
@@ -202,7 +202,7 @@ class ModalCashRegister extends Component {
             {getFieldDecorator('description', {
               rules: [{
                 required: true,
-                pattern: /^[A-Za-z0-9-.,;:?() _/]{20,255}$/i,
+                pattern: /^[A-Za-z0-9-.,;:?()@= _/]{20,255}$/i,
                 message: 'a-Z & 0-9, min: 20, max: 255'
               }]
             })(<TextArea maxLength={255} autosize={{ minRows: 2, maxRows: 6 }} />)}
