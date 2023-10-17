@@ -929,6 +929,7 @@ const Pos = ({
   }
 
   const modalCashRegisterProps = {
+    dispatch,
     modalCashRegisterVisible,
     listEmployee,
     currentItem: currentItemPos,
@@ -952,6 +953,16 @@ const Pos = ({
       })
     },
     registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          modalLoginType: 'expense'
+        }
+      })
+      console.log('Fingerprint Verification', payload)
+      if (payload) {
+        payload.transType = CANCEL_INPUT
+      }
       dispatch({
         type: 'employee/registerFingerprint',
         payload

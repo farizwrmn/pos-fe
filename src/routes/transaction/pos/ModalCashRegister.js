@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
+import { Modal, Select, InputNumber, Form, Input, Button, message } from 'antd'
 import { generateId } from 'utils/crypt'
 import moment from 'moment'
 import io from 'socket.io-client'
@@ -45,42 +45,52 @@ class ModalCashRegister extends Component {
     socket.off(`fingerprint/${endpoint}`)
   }
 
+  onCopy = (endpoint) => {
+    let textarea = document.createElement('textarea')
+    textarea.id = 'temp_element'
+    textarea.style.height = 0
+    document.body.appendChild(textarea)
+    textarea.value = endpoint
+    let selector = document.querySelector('#temp_element')
+    selector.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+    message.success('Success to key to clipboard')
+  }
+
   setEndpoint = () => {
     const {
       registerFingerprint,
-      validationType = 'hris',
-      currentItem
+      validationType = 'login'
     } = this.props
     const endpoint = generateId(16)
-    this.setState({
-      endpoint
-    })
+    this.setState({ endpoint })
     if (registerFingerprint) {
       registerFingerprint({
-        employeeId: currentItem.id,
+        employeeId: undefined,
         endpoint,
         validationType,
         applicationSource: 'web'
       })
+      this.onCopy(endpoint)
     }
     this.setSocket(endpoint)
   }
 
   setSocket = (endpoint) => {
-    if (endpoint === 'verification') {
+    const { endpoint: endpointState } = this.state
+    if (endpointState === 'verification' && endpoint) {
       socket.on(`fingerprint/${endpoint}`, this.handleData)
     }
   }
 
   handleData = (data) => {
     const { dispatch } = this.props
-    console.log('handleData', data)
     if (dispatch && data && data.success) {
+      console.log('handleData', data)
       dispatch({
         type: 'pos/setEmployee',
-        payload: {
-          data
-        }
+        payload: data.profile
       })
     }
   }
