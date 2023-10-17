@@ -53,6 +53,12 @@ const BrowseGroup = ({
       width: 120
     },
     {
+      title: 'Tax Invoice',
+      dataIndex: 'taxInvoiceNo',
+      key: 'taxInvoiceNo',
+      width: 120
+    },
+    {
       title: 'Supplier',
       dataIndex: 'supplierName',
       key: 'supplierName',
@@ -230,7 +236,7 @@ const BrowseGroup = ({
           </FormItem>
         </Col>
       </Row>
-      <Table {...browseProps} bordered pagination={false} size="small" scroll={{ x: 1000, y: 500 }} columns={columns} dataSource={dataSource} />
+      <Table {...browseProps} bordered size="small" scroll={{ x: 1000, y: 500 }} columns={columns} dataSource={dataSource} />
     </Form>
   )
 }

@@ -17,8 +17,6 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
       current: 1
     }
   },

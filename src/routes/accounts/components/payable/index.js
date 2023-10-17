@@ -16,7 +16,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     mechanicPrint,
     modalPrintVisible,
     posData } = pos
-  const { listPayment, from, to, tmpListPayment } = accountPayment
+  const { listPayment, from, to, pagination, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
   const modalProps = {
@@ -155,6 +155,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     from,
     to,
     q: location.query.q,
+    pagination,
     size: 'small',
     loading: loading.effects['accountPayment/queryPurchase'],
     location,

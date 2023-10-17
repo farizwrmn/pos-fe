@@ -35,6 +35,8 @@ const formItemLayout1 = {
 }
 
 const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, showSupplier, disableButton, dataBrowse, rounding, onOk, onChangeRounding, transNo, handleBrowseInvoice, handleBrowseProduct, handleBrowseVoid, modalProductVisible, modalPurchaseVisible, form: { getFieldDecorator, getFieldsValue, validateFields, resetFields, getFieldValue }, ...purchaseProps }) => {
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+  const allowedRole = defaultRole === 'SFC' || defaultRole === 'ADF' || defaultRole === 'HFC'
   const {
     onInvoiceHeader
   } = purchaseProps
@@ -201,7 +203,8 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   || user.permissions.role === 'HPC'
                   || user.permissions.role === 'SPC'
                   || user.permissions.role === 'HFC'
-                  || user.permissions.role === 'SFC')}
+                  || user.permissions.role === 'SFC'
+                ) || allowedRole}
                 />)}
               </FormItem>
               <FormItem label="Supplier" hasFeedback {...formItemLayout}>
@@ -221,6 +224,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   onBlur={hdlChangePercent}
                   optionFilterProp="children"
                   labelInValue
+                  disabled={allowedRole}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                 >{supplierData}
                 </Select>)}
@@ -238,6 +242,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   defaultValue={0}
                   step={10}
                   max={100}
+                  disabled={allowedRole}
                   min={0}
                 />)}
               </FormItem>
@@ -253,6 +258,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   onBlur={hdlChangePercent}
                   defaultValue={0}
                   step={500}
+                  disabled={allowedRole}
                   min={0}
                 />)}
               </FormItem>
@@ -321,7 +327,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   || user.permissions.role === 'SPC'
                   || user.permissions.role === 'HFC'
                   || user.permissions.role === 'SFC'
-                )}
+                ) || allowedRole}
                 />)}
               </FormItem>
               <FormItem label="Delivery Fee" hasFeedback {...formItemLayout}>
@@ -332,7 +338,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                     pattern: /^([0-9.-]{0,19})$/i,
                     message: 'Required'
                   }]
-                })(<InputNumber onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
+                })(<InputNumber disabled={allowedRole} onBlur={hdlChangePercent} defaultValue={0} step={500} min={0} />)}
               </FormItem>
             </Col>
           </Row>
@@ -341,12 +347,12 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
       <Row style={{ padding: '10px' }}>
         <Col span={24}>
           <Button type="primary" size="large" icon="plus-square-o" onClick={() => hdlBrowseInvoice()} style={{ marginRight: '5px', marginBottom: '5px' }}>INVOICE</Button>
-          <Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>
-          {modalProductVisible && <ModalBrowse {...purchaseOpts} />}
-          <Button size="large" type="primary" onClick={() => hdlBrowseVoid()} style={{ float: 'right' }}>Void List</Button>
+          {!allowedRole && <Button size="large" type="primary" onClick={() => hdlBrowseProduct()}>Product</Button>}
+          <ModalBrowse {...purchaseOpts} />
+          {!allowedRole && <Button size="large" type="primary" onClick={() => hdlBrowseVoid()} style={{ float: 'right' }}>Void List</Button>}
         </Col>
       </Row>
-      <Browse {...browseProps} />
+      {!allowedRole && <Browse {...browseProps} />}
       {modalPurchaseVisible && <PurchaseList {...purchaseProps} />}
       <div style={{ float: 'right' }}>
         <Row>
@@ -378,7 +384,7 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                 message: 'Rounding is not defined',
                 required: true
               }]
-            })((<Input disabled={transNo.readOnly} onBlur={hdlChangePercent} onChange={_value => hdlChangeRounding(_value)} />))}
+            })((<Input disabled={transNo.readOnly || allowedRole} onBlur={hdlChangePercent} onChange={_value => hdlChangeRounding(_value)} />))}
           </FormItem>
         </Row>
         <Row>
