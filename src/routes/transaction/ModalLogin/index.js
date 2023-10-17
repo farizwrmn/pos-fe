@@ -58,6 +58,7 @@ const ModalLogin = ({
       })
     },
     registerFingerprint (payload) {
+      console.log('Fingerprint Verification', payload)
       if (payload) {
         payload.transType = modalLoginData.transType
       }

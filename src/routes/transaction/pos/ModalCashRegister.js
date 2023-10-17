@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
 import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
+import { generateId } from 'utils/crypt'
 import moment from 'moment'
+import io from 'socket.io-client'
+import { APISOCKET } from 'utils/config.company'
+
+const options = {
+  upgrade: true,
+  transports: ['websocket'],
+  pingTimeout: 100,
+  pingInterval: 100
+}
+
+const socket = io(APISOCKET, options)
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -12,7 +24,12 @@ const formItemLayout = {
 }
 
 class ModalCashRegister extends Component {
+  state = {
+    endpoint: 'verification'
+  }
+
   componentDidMount () {
+    this.setEndpoint()
     setTimeout(() => {
       const selector = document.getElementById('expenseTotal')
       if (selector) {
@@ -20,6 +37,52 @@ class ModalCashRegister extends Component {
         selector.select()
       }
     }, 300)
+  }
+
+  componentWillUnmount () {
+    const { endpoint } = this.state
+    console.log('componentWillUnmount endpoint', endpoint)
+    socket.off(`fingerprint/${endpoint}`)
+  }
+
+  setEndpoint = () => {
+    const {
+      registerFingerprint,
+      validationType = 'hris',
+      currentItem
+    } = this.props
+    const endpoint = generateId(16)
+    this.setState({
+      endpoint
+    })
+    if (registerFingerprint) {
+      registerFingerprint({
+        employeeId: currentItem.id,
+        endpoint,
+        validationType,
+        applicationSource: 'web'
+      })
+    }
+    this.setSocket(endpoint)
+  }
+
+  setSocket = (endpoint) => {
+    if (endpoint === 'verification') {
+      socket.on(`fingerprint/${endpoint}`, this.handleData)
+    }
+  }
+
+  handleData = (data) => {
+    const { dispatch } = this.props
+    console.log('handleData', data)
+    if (dispatch && data && data.success) {
+      dispatch({
+        type: 'pos/setEmployee',
+        payload: {
+          data
+        }
+      })
+    }
   }
 
   render () {
@@ -31,6 +94,7 @@ class ModalCashRegister extends Component {
         resetFields
       },
       loading,
+      currentItem,
       listEmployee,
       onOk,
       onCancel,
@@ -135,6 +199,7 @@ class ModalCashRegister extends Component {
             {...formItemLayout}
           >
             {getFieldDecorator('employeeId', {
+              initialValue: currentItem.employeeId,
               rules: [{
                 required: true
               }]
@@ -146,6 +211,7 @@ class ModalCashRegister extends Component {
                 style={{ width: '100%' }}
                 placeholder="Choose Employee"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                disabled
               >
                 {listEmployeeOpt}
               </Select>
