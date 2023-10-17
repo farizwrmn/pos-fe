@@ -948,6 +948,7 @@ const Pos = ({
       dispatch({
         type: 'pos/updateState',
         payload: {
+          currentItem: {},
           modalCashRegisterVisible: false
         }
       })
@@ -959,7 +960,6 @@ const Pos = ({
           modalLoginType: 'expense'
         }
       })
-      console.log('Fingerprint Verification', payload)
       if (payload) {
         payload.transType = CANCEL_INPUT
       }

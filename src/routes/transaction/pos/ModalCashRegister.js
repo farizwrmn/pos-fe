@@ -29,6 +29,7 @@ class ModalCashRegister extends Component {
   }
 
   componentDidMount () {
+    message.info('Buka aplikasi Fingerprint')
     this.setEndpoint()
     setTimeout(() => {
       const selector = document.getElementById('expenseTotal')
@@ -41,7 +42,6 @@ class ModalCashRegister extends Component {
 
   componentWillUnmount () {
     const { endpoint } = this.state
-    console.log('componentWillUnmount endpoint', endpoint)
     socket.off(`fingerprint/${endpoint}`)
   }
 
@@ -87,7 +87,6 @@ class ModalCashRegister extends Component {
   handleData = (data) => {
     const { dispatch } = this.props
     if (dispatch && data && data.success) {
-      console.log('handleData', data)
       dispatch({
         type: 'pos/setEmployee',
         payload: data.profile
@@ -130,17 +129,22 @@ class ModalCashRegister extends Component {
       })
     }
 
+    const handleCancel = () => {
+      resetFields()
+      onCancel()
+    }
+
     const modalOpts = {
       ...modalProps,
       onOk: handleOk
     }
 
-    const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.employeeId} key={x.employeeId}>{x.employeeName}</Option>))
+    const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.id} key={x.id}>{x.employeeName}</Option>))
 
     return (
       <Modal
         {...modalOpts}
-        onCancel={onCancel}
+        onCancel={handleCancel}
         title="Input Expense"
         footer={[
           <Button disabled={loading} size="large" key="back" onClick={onCancel}>Cancel</Button>,
@@ -209,7 +213,7 @@ class ModalCashRegister extends Component {
             {...formItemLayout}
           >
             {getFieldDecorator('employeeId', {
-              initialValue: currentItem.employeeId,
+              initialValue: currentItem.id,
               rules: [{
                 required: true
               }]
