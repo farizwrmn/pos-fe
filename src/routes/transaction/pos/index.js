@@ -229,7 +229,7 @@ const Pos = ({
     modalAddUnit,
     cashierInformation,
     dineInTax,
-    currentItem: itemExpress,
+    currentItem: currentItemPos,
     // typePembelian,
     modalLoginType,
     listPaymentShortcut,
@@ -929,8 +929,10 @@ const Pos = ({
   }
 
   const modalCashRegisterProps = {
+    dispatch,
     modalCashRegisterVisible,
     listEmployee,
+    currentItem: currentItemPos,
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,
     onOk (item, reset) {
@@ -946,8 +948,24 @@ const Pos = ({
       dispatch({
         type: 'pos/updateState',
         payload: {
+          currentItem: {},
           modalCashRegisterVisible: false
         }
+      })
+    },
+    registerFingerprint (payload) {
+      dispatch({
+        type: 'employee/updateState',
+        payload: {
+          modalLoginType: 'expense'
+        }
+      })
+      if (payload) {
+        payload.transType = CANCEL_INPUT
+      }
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
       })
     }
   }
@@ -2710,7 +2728,7 @@ const Pos = ({
     visible: modalExpressVisible,
     editVisible: modalEditExpressVisible,
     list: listExpress,
-    item: itemExpress,
+    item: currentItemPos,
     loading,
     onClose () {
       dispatch({

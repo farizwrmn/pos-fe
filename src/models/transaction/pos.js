@@ -25,6 +25,10 @@ import {
   query as queryExpress,
   edit as editExpress
 } from 'services/k3express/dinein/dineinMap'
+import {
+  getDataEmployeeByUserId
+} from 'services/fingerprint/fingerprintEmployee'
+
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -432,6 +436,18 @@ export default {
         })
       } else {
         throw response
+      }
+    },
+
+    * setEmployee ({ payload = {} }, { call, put }) {
+      const response = yield call(getDataEmployeeByUserId, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: response.data[0]
+          }
+        })
       }
     },
 

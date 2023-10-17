@@ -1,10 +1,21 @@
 import React, { Component } from 'react'
-import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
+import { Modal, InputNumber, Form, Input, Button, message } from 'antd'
+import { generateId } from 'utils/crypt'
 import moment from 'moment'
+import io from 'socket.io-client'
+import { APISOCKET } from 'utils/config.company'
+
+const options = {
+  upgrade: true,
+  transports: ['websocket'],
+  pingTimeout: 100,
+  pingInterval: 100
+}
+
+const socket = io(APISOCKET, options)
 
 const FormItem = Form.Item
 const { TextArea } = Input
-const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -12,7 +23,13 @@ const formItemLayout = {
 }
 
 class ModalCashRegister extends Component {
+  state = {
+    endpoint: 'verification'
+  }
+
   componentDidMount () {
+    message.info('Buka aplikasi Fingerprint')
+    this.setEndpoint()
     setTimeout(() => {
       const selector = document.getElementById('expenseTotal')
       if (selector) {
@@ -20,6 +37,60 @@ class ModalCashRegister extends Component {
         selector.select()
       }
     }, 300)
+  }
+
+  componentWillUnmount () {
+    const { endpoint } = this.state
+    socket.off(`fingerprint/${endpoint}`)
+  }
+
+  onCopy = (endpoint) => {
+    let textarea = document.createElement('textarea')
+    textarea.id = 'temp_element'
+    textarea.style.height = 0
+    document.body.appendChild(textarea)
+    textarea.value = endpoint
+    let selector = document.querySelector('#temp_element')
+    selector.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+    message.success('Success to key to clipboard')
+  }
+
+  setEndpoint = () => {
+    const {
+      registerFingerprint,
+      validationType = 'login'
+    } = this.props
+    const endpoint = generateId(16)
+    this.setState({ endpoint })
+    if (registerFingerprint) {
+      registerFingerprint({
+        employeeId: undefined,
+        endpoint,
+        validationType,
+        applicationSource: 'web'
+      })
+      this.onCopy(endpoint)
+    }
+    this.setSocket(endpoint)
+  }
+
+  setSocket = (endpoint) => {
+    const { endpoint: endpointState } = this.state
+    if (endpointState === 'verification' && endpoint) {
+      socket.on(`fingerprint/${endpoint}`, this.handleData)
+    }
+  }
+
+  handleData = (data) => {
+    const { dispatch } = this.props
+    if (dispatch && data && data.success) {
+      dispatch({
+        type: 'pos/setEmployee',
+        payload: data.profile
+      })
+    }
   }
 
   render () {
@@ -31,6 +102,7 @@ class ModalCashRegister extends Component {
         resetFields
       },
       loading,
+      currentItem,
       listEmployee,
       onOk,
       onCancel,
@@ -44,16 +116,17 @@ class ModalCashRegister extends Component {
         }
 
         const data = {
-          ...getFieldsValue()
+          ...getFieldsValue(),
+          employeeId: currentItem.id
         }
-        if (data && data.employeeId) {
-          const selectedEmployee = listEmployee.filter(filtered => filtered.employeeId === data.employeeId)
-          if (selectedEmployee && selectedEmployee[0]) {
-            data.employeeName = selectedEmployee[0].employeeName
-            onOk(data, resetFields)
-          }
-        }
+
+        onOk(data, resetFields)
       })
+    }
+
+    const handleCancel = () => {
+      resetFields()
+      onCancel()
     }
 
     const modalOpts = {
@@ -61,12 +134,10 @@ class ModalCashRegister extends Component {
       onOk: handleOk
     }
 
-    const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.employeeId} key={x.employeeId}>{x.employeeName}</Option>))
-
     return (
       <Modal
         {...modalOpts}
-        onCancel={onCancel}
+        onCancel={handleCancel}
         title="Input Expense"
         footer={[
           <Button disabled={loading} size="large" key="back" onClick={onCancel}>Cancel</Button>,
@@ -134,21 +205,13 @@ class ModalCashRegister extends Component {
             hasFeedback
             {...formItemLayout}
           >
-            {getFieldDecorator('employeeId', {
+            {getFieldDecorator('employeeName', {
+              initialValue: currentItem.employeeName,
               rules: [{
                 required: true
               }]
             })(
-              <Select
-                showSearch
-                mode="default"
-                size="large"
-                style={{ width: '100%' }}
-                placeholder="Choose Employee"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {listEmployeeOpt}
-              </Select>
+              <Input disabled />
             )}
           </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>

@@ -9,3 +9,13 @@ export async function registerEmployeeFingerprint (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function getDataEmployeeByUserId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/fingerprint-employee/user/${params.userid}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}

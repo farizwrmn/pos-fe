@@ -224,6 +224,7 @@ export default modelExtend(pageModel, {
           })
         }
         if (modalLoginType === 'resetAllPosInput'
+          || modalLoginType === 'expense'
           || modalLoginType === 'bundle'
           || modalLoginType === 'service'
           || modalLoginType === 'consignment'
