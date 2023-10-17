@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Select, InputNumber, Form, Input, Button, message } from 'antd'
+import { Modal, InputNumber, Form, Input, Button, message } from 'antd'
 import { generateId } from 'utils/crypt'
 import moment from 'moment'
 import io from 'socket.io-client'
@@ -16,7 +16,6 @@ const socket = io(APISOCKET, options)
 
 const FormItem = Form.Item
 const { TextArea } = Input
-const { Option } = Select
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -117,15 +116,11 @@ class ModalCashRegister extends Component {
         }
 
         const data = {
-          ...getFieldsValue()
+          ...getFieldsValue(),
+          employeeId: currentItem.id
         }
-        if (data && data.employeeId) {
-          const selectedEmployee = listEmployee.filter(filtered => filtered.employeeId === data.employeeId)
-          if (selectedEmployee && selectedEmployee[0]) {
-            data.employeeName = selectedEmployee[0].employeeName
-            onOk(data, resetFields)
-          }
-        }
+
+        onOk(data, resetFields)
       })
     }
 
@@ -138,8 +133,6 @@ class ModalCashRegister extends Component {
       ...modalProps,
       onOk: handleOk
     }
-
-    const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.id} key={x.id}>{x.employeeName}</Option>))
 
     return (
       <Modal
@@ -212,23 +205,13 @@ class ModalCashRegister extends Component {
             hasFeedback
             {...formItemLayout}
           >
-            {getFieldDecorator('employeeId', {
-              initialValue: currentItem.id,
+            {getFieldDecorator('employeeName', {
+              initialValue: currentItem.employeeName,
               rules: [{
                 required: true
               }]
             })(
-              <Select
-                showSearch
-                mode="default"
-                size="large"
-                style={{ width: '100%' }}
-                placeholder="Choose Employee"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                disabled
-              >
-                {listEmployeeOpt}
-              </Select>
+              <Input disabled />
             )}
           </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>
