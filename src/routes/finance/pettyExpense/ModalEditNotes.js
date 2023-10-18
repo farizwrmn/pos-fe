@@ -67,6 +67,26 @@ class ModalCashRegister extends Component {
         ]}
       >
         <Form layout="horizontal">
+          <FormItem label="Expense" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('expense', {
+              initialValue: item.expense,
+              rules: [{
+                required: true,
+                pattern: /^[A-Za-z0-9-.,;:?()@= _/]{5,40}$/i,
+                message: 'a-Z & 0-9, min: 5, max: 40'
+              }]
+            })(<Input maxLength={40} autoFocus />)}
+          </FormItem>
+          <FormItem label="Discount" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discount', {
+              initialValue: item.discount,
+              rules: [{
+                required: true,
+                pattern: /^[A-Za-z0-9-.,;:?()@= _/]{5,40}$/i,
+                message: 'a-Z & 0-9, min: 5, max: 40'
+              }]
+            })(<Input maxLength={40} autoFocus />)}
+          </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>
             {getFieldDecorator('reference', {
               initialValue: item.reference,
