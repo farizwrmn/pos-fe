@@ -68,8 +68,8 @@ class ModalCashRegister extends Component {
       >
         <Form layout="horizontal">
           <FormItem label="Expense" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('expense', {
-              initialValue: item.expense,
+            {getFieldDecorator('expenseTotal', {
+              initialValue: item.expenseTotal,
               rules: [{
                 required: true,
                 pattern: /^[A-Za-z0-9-.,;:?()@= _/]{5,40}$/i,
