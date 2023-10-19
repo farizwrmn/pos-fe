@@ -73,7 +73,7 @@ class ModalCashRegister extends Component {
               rules: [{
                 required: true
               }]
-            })(<InputNumber min={0} autoFocus />)}
+            })(<InputNumber min={0} autoFocus style={{ width: 285 }} />)}
           </FormItem>
           <FormItem label="Discount" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discount', {
@@ -81,7 +81,7 @@ class ModalCashRegister extends Component {
               rules: [{
                 required: true
               }]
-            })(<InputNumber min={0} autoFocus />)}
+            })(<InputNumber min={0} autoFocus style={{ width: 285 }} />)}
           </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>
             {getFieldDecorator('reference', {
