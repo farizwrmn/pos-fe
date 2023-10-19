@@ -126,8 +126,6 @@ class ModalCashRegister extends Component {
           employeeId: currentItem.id
         }
         data.cashierInput = JSON.stringify(data)
-        delete data.expenseTotal
-        delete data.discount
         onOk(data, resetFields)
       })
     }
