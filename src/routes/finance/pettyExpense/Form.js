@@ -70,7 +70,7 @@ const FormCounter = ({
                   <div>{`Employee: ${item.employeeName}`}</div>
                   <div>{`Created By: ${item.userName}`}</div>
                   <div>{`Created At: ${moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}`}</div>
-                  <div>{`Last Updated By: ${item.lastUpdate.employeeName}`}</div>
+                  <div>{`Last Updated By: ${item.lastUpdate && item.lastUpdate.employeeName}`}</div>
                   <div>{`Last Updated At: ${moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}`}</div>
                 </div>
               </Card>
