@@ -173,7 +173,6 @@ const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountRule, loadin
     visible: modalEditNotesVisible,
     loading: loading.effects['pettyExpense/editExpense'],
     onOk (data, reset) {
-      console.log('modalEditNotesItem', data, modalEditNotesItem)
       if (modalEditNotesItem && modalEditNotesItem.id) {
         dispatch({
           type: 'pettyExpense/editExpense',

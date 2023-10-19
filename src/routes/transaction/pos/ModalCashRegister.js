@@ -4,6 +4,7 @@ import { generateId } from 'utils/crypt'
 import moment from 'moment'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
+import { lstorage } from 'utils'
 
 const options = {
   upgrade: true,
@@ -109,7 +110,12 @@ class ModalCashRegister extends Component {
       ...modalProps
     } = this.props
 
+    let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
     const handleOk = () => {
+      if (defaultRole === 'HKS') {
+        message.info('Hanya Kepala Toko yang boleh menginput expense')
+        return
+      }
       validateFields((errors) => {
         if (errors) {
           return
@@ -119,7 +125,7 @@ class ModalCashRegister extends Component {
           ...getFieldsValue(),
           employeeId: currentItem.id
         }
-
+        data.cashierInput = JSON.stringify(data)
         onOk(data, resetFields)
       })
     }

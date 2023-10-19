@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Form, Input, Button } from 'antd'
+import { Modal, Form, Input, InputNumber, Button } from 'antd'
 import { lstorage } from 'utils'
 
 const FormItem = Form.Item
@@ -67,6 +67,22 @@ class ModalCashRegister extends Component {
         ]}
       >
         <Form layout="horizontal">
+          <FormItem label="Expense" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('expenseTotal', {
+              initialValue: item.expenseTotal,
+              rules: [{
+                required: true
+              }]
+            })(<InputNumber min={0} autoFocus style={{ width: 285 }} />)}
+          </FormItem>
+          <FormItem label="Discount" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('discount', {
+              initialValue: item.discount,
+              rules: [{
+                required: true
+              }]
+            })(<InputNumber min={0} autoFocus style={{ width: 285 }} />)}
+          </FormItem>
           <FormItem label="Reference" hasFeedback {...formItemLayout}>
             {getFieldDecorator('reference', {
               initialValue: item.reference,
