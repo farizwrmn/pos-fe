@@ -112,7 +112,10 @@ class ModalCashRegister extends Component {
 
     let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
     const handleOk = () => {
-      if (defaultRole === 'HKS') return message.info('Hanya Kepala Toko yang boleh menginput expense')
+      if (defaultRole === 'HKS') {
+        message.info('Hanya Kepala Toko yang boleh menginput expense')
+        return
+      }
       validateFields((errors) => {
         if (errors) {
           return
