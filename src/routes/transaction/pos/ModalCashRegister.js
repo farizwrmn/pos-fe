@@ -104,17 +104,12 @@ class ModalCashRegister extends Component {
       loading,
       currentItem,
       listEmployee,
-      checkUserRoleHks,
       onOk,
       onCancel,
       ...modalProps
     } = this.props
 
     const handleOk = () => {
-      if (checkUserRoleHks) {
-        message.info('Hanya Kepala Toko yang boleh menginput expense')
-        return
-      }
       validateFields((errors) => {
         if (errors) {
           return
