@@ -1950,6 +1950,7 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/in',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/fingerEmployee'))
               registerModel(app, require('./models/transferIn'))
               registerModel(app, require('./models/master/employee'))
               registerModel(app, require('./models/master/productstock'))
