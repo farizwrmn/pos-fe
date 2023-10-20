@@ -26,7 +26,8 @@ import {
   edit as editExpress
 } from 'services/k3express/dinein/dineinMap'
 import {
-  getDataEmployeeByUserId
+  getDataEmployeeByUserId,
+  checkUserRole
 } from 'services/fingerprint/fingerprintEmployee'
 
 import { validateVoucher } from '../../services/marketing/voucher'
@@ -441,13 +442,19 @@ export default {
 
     * setEmployee ({ payload = {} }, { call, put }) {
       const response = yield call(getDataEmployeeByUserId, payload)
+      const checkUserRoleResponse = yield call(checkUserRole, payload)
+
       if (response && response.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: response.data[0]
-          }
-        })
+        if (checkUserRoleResponse.data && checkUserRoleResponse.data.length > 0) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: response.data[0]
+            }
+          })
+        } else {
+          message.info('Hanya Kepala Toko yang boleh menginput expense')
+        }
       }
     },
 

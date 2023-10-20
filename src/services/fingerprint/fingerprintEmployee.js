@@ -19,3 +19,13 @@ export async function getDataEmployeeByUserId (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function checkUserRole (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/fingerprint-employee/user-role',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
