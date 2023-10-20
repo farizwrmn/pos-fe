@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Button, Row, Spin, Col, Icon } from 'antd'
+import { Card, Button, Row, Spin, Col, Icon, Tooltip } from 'antd'
 import { numberFormatter } from 'utils/string'
 import moment from 'moment'
 import styles from './index.less'
@@ -46,12 +46,35 @@ const FormCounter = ({
       {modalCashRegisterProps.visible && <ModalCashRegister {...modalCashRegisterProps} />}
       <Col {...column}>
         <h1>Approval</h1>
+
         <div className={styles.content} >
           {list && list.length > 0 ? list.map((item) => {
             return (
               <Card
                 style={{ marginBottom: '10px', color: item.isPurchase ? '#324aa8' : 'black' }}
-                title={item.isPurchase ? (<div style={{ color: item.isPurchase ? '#324aa8' : 'black' }}><strong>Purchase</strong></div>) : 'Expense'}
+                title={(
+                  <div>
+                    {item.isPurchase ? (<div style={{ color: item.isPurchase ? '#324aa8' : 'black' }}><strong>Purchase</strong></div>) : 'Expense'}
+                    &nbsp;
+                    {item.cashierInput && JSON.parse(item.cashierInput).expenseTotal &&
+                      <Tooltip
+                        placement="rightTop"
+                        title={(
+                          <div>
+                            <div><b>Cashier Input</b></div>
+                            <div>dateTime: <b>{JSON.parse(item.cashierInput).dateTime}</b></div>
+                            <div>expenseTotal: <b>{JSON.parse(item.cashierInput).expenseTotal}</b></div>
+                            <div>discount: <b>{JSON.parse(item.cashierInput).discount}</b></div>
+                            <div>employeeName: <b>{JSON.parse(item.cashierInput).employeeName}</b></div>
+                            <div>reference: <b>{JSON.parse(item.cashierInput).reference}</b></div>
+                            <div>description: <b>{JSON.parse(item.cashierInput).description}</b></div>
+                          </div>
+                        )}
+                      >
+                        <Icon type="info-circle-o" />
+                      </Tooltip>}
+                  </div>
+                )}
                 extra={(
                   <div>
                     <Button disabled={loading} shape="circle" type="danger" loading={loading} icon="close" onClick={() => handleDelete(item)} />
@@ -85,7 +108,7 @@ const FormCounter = ({
         <Button style={{ float: 'right' }} type="primary" onClick={addNewBalance}>Add More Cash/Discount</Button>
         <Button style={{ float: 'right', marginRight: '10px' }} type="default" icon onClick={onRefresh}>Refresh</Button>
       </Col>
-    </Row>
+    </Row >
   )
 }
 
