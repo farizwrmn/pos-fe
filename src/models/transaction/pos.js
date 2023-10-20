@@ -367,7 +367,6 @@ export default {
         })
         yield put({ type: 'getExpress' })
         success()
-        // payload.resetFields()
       } else {
         throw response
       }
