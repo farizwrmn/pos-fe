@@ -101,7 +101,6 @@ export default {
   state: {
     currentBundlePayment: {},
     listVoucher: getVoucherList(),
-    checkUserRoleHks: false,
     modalVoucherVisible: false,
     modalGrabmartCodeVisible: false,
     modalGrabmartCodeItem: {},
@@ -446,14 +445,16 @@ export default {
       const checkUserRoleResponse = yield call(checkUserRole, payload)
 
       if (response && response.success) {
-        let checkUserRoleHks = checkUserRoleResponse.data && checkUserRoleResponse.data.length > 0
-        yield put({
-          type: 'updateState',
-          payload: {
-            checkUserRoleHks,
-            currentItem: response.data[0]
-          }
-        })
+        if (checkUserRoleResponse.data && checkUserRoleResponse.data.length > 0) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: response.data[0]
+            }
+          })
+        } else {
+          message.info('Hanya Kepala Toko yang boleh menginput expense')
+        }
       }
     },
 

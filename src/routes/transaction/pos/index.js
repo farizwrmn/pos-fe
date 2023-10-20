@@ -250,7 +250,6 @@ const Pos = ({
     curTotalDiscount,
     curRounding,
     curShift,
-    checkUserRoleHks,
     curCashierNo
   } = pos
   const { listEmployee } = pettyCashDetail
@@ -931,7 +930,6 @@ const Pos = ({
 
   const modalCashRegisterProps = {
     dispatch,
-    checkUserRoleHks,
     modalCashRegisterVisible,
     listEmployee,
     currentItem: currentItemPos,
