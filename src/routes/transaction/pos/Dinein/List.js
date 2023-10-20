@@ -1,9 +1,19 @@
 import React from 'react'
-import { Table, Button } from 'antd'
+import { Table, Button, Modal } from 'antd'
 
-const List = ({ onEditItem, loading, ...tableProps }) => {
-  const handleMenuClick = (record) => {
-    onEditItem(record)
+const List = ({ onEdit, loading, ...tableProps }) => {
+  const handleMenuClick = (record, state) => {
+    let editState = state ? 'Enable' : 'Disable'
+    Modal.confirm({
+      title: `${editState} ${record.productName}`,
+      content: 'Are you sure ?',
+      onOk () {
+        onEdit({
+          ...record,
+          active: state
+        })
+      }
+    })
   }
 
   const columns = [
@@ -29,9 +39,9 @@ const List = ({ onEditItem, loading, ...tableProps }) => {
       fixed: 'right',
       render: (text, record) => {
         if (Number(record.active) === 1) {
-          return <Button type="danger" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Disable</Button>
+          return <Button type="danger" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/queryExpress']} onClick={() => handleMenuClick(record, 0)}>Disable</Button>
         }
-        return <Button type="primary" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/editExpressItem'] || loading.effects['pos/queryExpress']} onMenuClick={e => handleMenuClick(record, e)}>Enable</Button>
+        return <Button type="primary" disabled={loading.effects['pos/editExpress'] || loading.effects['pos/queryExpress']} onClick={() => handleMenuClick(record, 1)}>Enable</Button>
       }
     }
   ]
@@ -43,7 +53,6 @@ const List = ({ onEditItem, loading, ...tableProps }) => {
         scroll={{ x: 500 }}
         columns={columns}
         simple
-        onRowClick={record => handleMenuClick(record)}
         pagination={false}
       />
     </div>
