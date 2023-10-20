@@ -26,7 +26,8 @@ import {
   edit as editExpress
 } from 'services/k3express/dinein/dineinMap'
 import {
-  getDataEmployeeByUserId
+  getDataEmployeeByUserId,
+  checkUserRole
 } from 'services/fingerprint/fingerprintEmployee'
 
 import { validateVoucher } from '../../services/marketing/voucher'
@@ -100,6 +101,7 @@ export default {
   state: {
     currentBundlePayment: {},
     listVoucher: getVoucherList(),
+    checkUserRoleHks: false,
     modalVoucherVisible: false,
     modalGrabmartCodeVisible: false,
     modalGrabmartCodeItem: {},
@@ -441,10 +443,14 @@ export default {
 
     * setEmployee ({ payload = {} }, { call, put }) {
       const response = yield call(getDataEmployeeByUserId, payload)
+      const checkUserRoleResponse = yield call(checkUserRole, payload)
+
       if (response && response.success) {
+        let checkUserRoleHks = checkUserRoleResponse.data && checkUserRoleResponse.data.length > 0
         yield put({
           type: 'updateState',
           payload: {
+            checkUserRoleHks,
             currentItem: response.data[0]
           }
         })

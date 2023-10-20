@@ -4,7 +4,6 @@ import { generateId } from 'utils/crypt'
 import moment from 'moment'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
-import { lstorage } from 'utils'
 
 const options = {
   upgrade: true,
@@ -105,14 +104,14 @@ class ModalCashRegister extends Component {
       loading,
       currentItem,
       listEmployee,
+      checkUserRoleHks,
       onOk,
       onCancel,
       ...modalProps
     } = this.props
 
-    let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
     const handleOk = () => {
-      if (defaultRole === 'HKS') {
+      if (checkUserRoleHks) {
         message.info('Hanya Kepala Toko yang boleh menginput expense')
         return
       }
