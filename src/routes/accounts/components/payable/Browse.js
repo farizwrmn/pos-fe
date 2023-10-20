@@ -31,6 +31,7 @@ const BrowseGroup = ({
   from,
   to,
   loading,
+  openModalTax,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -56,7 +57,10 @@ const BrowseGroup = ({
       title: 'Tax Invoice',
       dataIndex: 'taxInvoiceNo',
       key: 'taxInvoiceNo',
-      width: 120
+      width: 120,
+      render: (text, record) => {
+        return <Button type="primary" onClick={() => openModalTax(record)}>Add Tax</Button>
+      }
     },
     {
       title: 'Supplier',

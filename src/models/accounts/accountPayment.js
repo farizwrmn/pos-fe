@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { queryPayable } from '../../services/payment/payable'
+import { queryPayable, updatePurchaseById } from '../../services/payment/payable'
 import { queryPaymentPos } from '../../services/payment'
 
 export default {
@@ -10,6 +10,8 @@ export default {
     activeKey: '1',
     from: null,
     to: null,
+    currentItem: {},
+    modalVisible: {},
     listPayment: [],
     tmpListPayment: [],
     pagination: {
@@ -69,6 +71,40 @@ export default {
   },
 
   effects: {
+    * openModalTax ({ payload }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalVisible: true,
+          currentItem: payload.currentItem
+        }
+      })
+    },
+    * addTax ({ payload }, { put, call }) {
+      const data = yield call(updatePurchaseById, payload)
+      const { activeKey, q, from, to, ...otherQuery } = location.query
+      if (data.success) {
+        let defaultFrom
+        let defaultTo
+        if (from && to) {
+          defaultFrom = from
+          defaultTo = to
+        }
+        if (!q && !from && !to) {
+          defaultFrom = moment().startOf('months').format('YYYY-MM-DD')
+          defaultTo = moment().endOf('months').format('YYYY-MM-DD')
+        }
+        yield put({
+          type: 'queryPurchase',
+          payload: {
+            from: defaultFrom,
+            to: defaultTo,
+            q,
+            ...otherQuery
+          }
+        })
+      }
+    },
     * queryHistoryPayment ({ payload = {} }, { call, put }) {
       const data = yield call(queryPaymentPos, payload)
       if (data) {
