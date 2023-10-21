@@ -152,7 +152,13 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
   const modalTaxProps = {
     loading,
     currentItem,
-    modalVisible
+    visible: modalVisible,
+    onOk (data) {
+      dispatch({
+        type: 'accountPayment/addTax',
+        payload: data
+      })
+    }
   }
 
   const browseProps = {
