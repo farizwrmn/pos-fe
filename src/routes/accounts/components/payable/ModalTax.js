@@ -51,7 +51,9 @@ const ModalTax = ({
   }
 
   return (
-    <Modal {...modalOpts}
+    <Modal
+      title={currentItem && currentItem.transNo}
+      {...modalOpts}
       footer={[
         <Button key="submit" disabled={loading.effects['accountPayment/queryPurchase']} type="primary" size="large" onClick={() => handleOk()}>Submit</Button>
       ]}
