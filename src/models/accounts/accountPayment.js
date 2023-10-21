@@ -152,6 +152,9 @@ export default {
   },
 
   reducers: {
+    changeHide (state) {
+      return { ...state, modalVisible: false }
+    },
     querySuccessPayment (state, action) {
       const { listPayment, pagination, tmpListPayment } = action.payload
       return {
