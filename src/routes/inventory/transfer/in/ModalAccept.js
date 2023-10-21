@@ -101,7 +101,7 @@ class ModalAccept extends Component {
     if (dispatch && data && data.success) {
       dispatch({
         type: 'fingerEmployee/setEmployee',
-        payload: data
+        payload: data.profile
       })
     }
   }
