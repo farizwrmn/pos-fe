@@ -27,7 +27,7 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/inventory/transfer/in') {
+        if (pathname === '/inventory/transfer/in' || pathname === '/transaction/pos') {
           dispatch({
             type: 'updateState',
             payload: {
