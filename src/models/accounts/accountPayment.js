@@ -76,7 +76,7 @@ export default {
         type: 'updateState',
         payload: {
           modalVisible: true,
-          currentItem: payload.currentItem
+          currentItem: payload
         }
       })
     },
