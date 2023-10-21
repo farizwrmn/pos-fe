@@ -152,7 +152,6 @@ const FormComponent = ({
 FormComponent.propTypes = {
   button: PropTypes.string,
   form: PropTypes.object.isRequired,
-  showCities: PropTypes.func,
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func

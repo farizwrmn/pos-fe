@@ -148,11 +148,6 @@ const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch,
       dispatch({
         type: 'jobposition/lov'
       })
-    },
-    showCities () {
-      dispatch({
-        type: 'city/query'
-      })
     }
   }
 
