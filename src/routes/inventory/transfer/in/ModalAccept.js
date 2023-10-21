@@ -200,16 +200,12 @@ class ModalAccept extends Component {
         if (errors) {
           return
         }
-        const data = {
-          ...getFieldsValue(),
-          employeeId: currentItem.id
-        }
         const dataHeader = {
           storeIdSender: item.storeId,
           // receiveDate: moment().format('YYYY-MM-DD HH:mm:ss'),
           reference: item.id,
           transType: 'MUIN',
-          employeeId: data.employeeId.key,
+          employeeId: currentItem.id,
           carNumber: item.carNumber,
           totalColly: item.totalColly,
           description: item.description
