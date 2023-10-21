@@ -11,12 +11,14 @@ const formItemLayout = {
 
 const ModalTax = ({
   onOk,
+  onCancel,
   currentItem,
   loading,
   form: {
     getFieldDecorator,
     validateFields,
-    getFieldsValue
+    getFieldsValue,
+    resetFields
   },
   ...modalProps
 }) => {
@@ -37,8 +39,14 @@ const ModalTax = ({
     })
   }
 
+  const handleCancel = () => {
+    resetFields()
+    onCancel()
+  }
+
   const modalOpts = {
     ...modalProps,
+    onCancel: handleCancel,
     onOk: handleOk
   }
 

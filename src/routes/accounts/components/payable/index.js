@@ -158,6 +158,9 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
         type: 'accountPayment/addTax',
         payload: data
       })
+    },
+    onCancel () {
+      dispatch({ type: 'app/changeHide' })
     }
   }
 

@@ -132,6 +132,9 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
+    changeHide (state) {
+      return { ...state, modalVisible: false }
+    },
     querySuccessCounter (state, action) {
       const { listPayment, pagination } = action.payload
       return {
