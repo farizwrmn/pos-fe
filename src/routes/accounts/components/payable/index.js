@@ -160,7 +160,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
       })
     },
     onCancel () {
-      dispatch({ type: 'app/changeHide' })
+      dispatch({ type: 'accountPayment/changeHide' })
     }
   }
 
