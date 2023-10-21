@@ -93,3 +93,13 @@ export async function cancelPayment (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function updatePurchaseById (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/payment/payable/purchase/${params.id}`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
