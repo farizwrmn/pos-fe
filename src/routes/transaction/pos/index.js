@@ -151,6 +151,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  fingerEmployee,
   pospromo,
   paymentEdc,
   paymentCost,
@@ -175,6 +176,7 @@ const Pos = ({
   const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
+  const { currentItem: currentItemFinger } = fingerEmployee
   const {
     modalServiceVisible,
     modalMemberVisible,
@@ -932,7 +934,7 @@ const Pos = ({
     dispatch,
     modalCashRegisterVisible,
     listEmployee,
-    currentItem: currentItemPos,
+    currentItem: currentItemFinger,
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,
     onOk (item, reset) {
@@ -3173,6 +3175,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  fingerEmployee,
   pospromo,
   paymentEdc,
   paymentCost,
@@ -3192,6 +3195,7 @@ export default connect(({
   customerunit,
   payment
 }) => ({
+  fingerEmployee,
   pospromo,
   paymentEdc,
   paymentCost,
