@@ -251,7 +251,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     <div>
       <Browse {...browseProps} />
       {modalProps.visible && <Modal {...modalProps} />}
-      {modalTaxProps.visible && <ModalTax {...modalTaxProps} />}
+      {modalVisible && <ModalTax {...modalTaxProps} />}
       {modalCancelProps.visible && <ModalCancel {...modalCancelProps} />}
     </div>
   )

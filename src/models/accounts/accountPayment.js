@@ -11,7 +11,7 @@ export default {
     from: null,
     to: null,
     currentItem: {},
-    modalVisible: {},
+    modalVisible: false,
     listPayment: [],
     tmpListPayment: [],
     pagination: {
