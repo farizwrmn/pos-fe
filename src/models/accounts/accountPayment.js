@@ -85,6 +85,7 @@ export default {
       if (data.success) {
         let defaultFrom = moment().startOf('months').format('YYYY-MM-DD')
         let defaultTo = moment().endOf('months').format('YYYY-MM-DD')
+        yield put({ type: 'changeHide' })
         yield put({
           type: 'queryPurchase',
           payload: {
