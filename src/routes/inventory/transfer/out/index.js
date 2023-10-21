@@ -646,11 +646,6 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
           currentItemList: {}
         }
       })
-    },
-    showCities () {
-      dispatch({
-        type: 'transferOut/query'
-      })
     }
   }
 
