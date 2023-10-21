@@ -32,7 +32,6 @@ const formSupplier = ({
   modalType,
   disabled,
   button,
-  showCities,
   listCity,
   form: {
     getFieldDecorator,
@@ -57,10 +56,6 @@ const formSupplier = ({
         offset: modalType === 'edit' ? 13 : 18
       }
     }
-  }
-
-  const city = () => {
-    showCities()
   }
 
   const handleCancel = () => {
@@ -170,7 +165,7 @@ const formSupplier = ({
             })(<Select
               optionFilterProp="children"
               mode="default"
-              onFocus={city}
+              showSearch
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >{cities}
             </Select>)}
@@ -258,7 +253,6 @@ const formSupplier = ({
 formSupplier.propTypes = {
   form: PropTypes.object.isRequired,
   listCity: PropTypes.object,
-  showCities: PropTypes.func,
   disabled: PropTypes.string,
   item: PropTypes.object,
   onSubmit: PropTypes.func,

@@ -41,7 +41,6 @@ const FormInput = ({
   listCity,
   listShift,
   listCounter,
-  showCities,
   showParents,
   modalType,
   onSubmit,
@@ -219,8 +218,8 @@ const FormInput = ({
                   rules: [{ required: true }]
                 })(<Select
                   allowClear
+                  showSearch
                   optionFilterProp="children"
-                  onFocus={showCities}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >{cities}
                 </Select>)}
