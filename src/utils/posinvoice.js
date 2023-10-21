@@ -1,3 +1,5 @@
+import { lstorage } from 'utils'
+
 export const rearrangeDirectPrinting = (pos, directPrinting) => {
   const headerPrint = [
     {
@@ -83,4 +85,102 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
   ]
   const resultData = headerPrint.concat(footerPrint)
   return resultData
+}
+
+export const rearrangeDirectPrintingQris = (pos, directPrinting) => {
+  const storeInfoData = lstorage.getCurrentUserStoreDetail()
+  const headerPrint = [
+    {
+      alignment: 'two',
+      style: 'subtitle',
+      text: ' ',
+      rightText: ''
+    },
+    {
+      style: 'title',
+      alignment: 'left',
+      text: directPrinting.groupName || ''
+    },
+    {
+      style: 'subtitle',
+      alignment: 'left',
+      text: storeInfoData && storeInfoData.label ? storeInfoData.label.replace('* ', '') : ''
+    },
+    {
+      style: 'subtitle',
+      alignment: 'left',
+      text: storeInfoData && storeInfoData.address01 ? storeInfoData.address01 : ''
+    },
+    {
+      alignment: 'line',
+      text: ''
+    },
+    {
+      alignment: 'two',
+      style: 'subtitle',
+      text: `No: ${pos.transNo}`,
+      rightText: ''
+    },
+    {
+      alignment: 'two',
+      style: 'subtitle',
+      text: `Date: ${pos.transDate} ${pos.transTime}`,
+      rightText: ''
+    }
+  ]
+
+  for (let key in directPrinting.detail) {
+    const item = directPrinting.detail[key]
+    headerPrint.push({
+      alignment: 'line',
+      text: ''
+    })
+    headerPrint.push({
+      alignment: 'two',
+      style: 'subtitle',
+      text: `Amount: ${item.qty.toLocaleString()}`,
+      rightText: ''
+    })
+    headerPrint.push({
+      alignment: 'line',
+      text: ''
+    })
+  }
+
+  headerPrint.push({
+    alignment: 'left',
+    style: 'subtitle',
+    text: `Bank: ${directPrinting.platformTransactionId}`,
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'left',
+    style: 'subtitle',
+    text: `rrn: ${directPrinting.rrn}`,
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'left',
+    style: 'subtitle',
+    text: `Ref: ${directPrinting.merchantTradeNo}`,
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'left',
+    style: 'subtitle',
+    text: `Vendor ID: ${directPrinting.vendorTransactionId}`,
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'left',
+    style: 'subtitle',
+    text: `STATUS: ${directPrinting.validPayment ? 'VALID' : 'BELUM VALID'}`,
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'line',
+    text: ''
+  })
+
+  return headerPrint
 }
