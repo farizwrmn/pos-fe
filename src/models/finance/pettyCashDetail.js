@@ -170,6 +170,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'pos/updateState',
           payload: {
+            currentItem: {},
             modalCashRegisterVisible: false
           }
         })

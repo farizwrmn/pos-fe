@@ -23,6 +23,22 @@ export default {
     }
   },
 
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        const { pathname } = location
+        if (pathname === '/inventory/transfer/in') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              currentItem: {}
+            }
+          })
+        }
+      })
+    }
+  },
+
   effects: {
     * setEmployee ({ payload = {} }, { call, put }) {
       const response = yield call(getDataEmployeeByUserId, payload)

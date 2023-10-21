@@ -256,6 +256,14 @@ export default {
             type: 'getAdvertisingCustomer'
           })
         }
+        if (location.pathname === '/inventory/transfer/in') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              currentItem: {}
+            }
+          })
+        }
         if (location.pathname === '/transaction/pos') {
           getDynamicQrisImage()
           dispatch({ type: 'getAdvertising' })
