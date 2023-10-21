@@ -134,11 +134,6 @@ const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
           currentItem: {}
         }
       })
-    },
-    showCities () {
-      dispatch({
-        type: 'city/query'
-      })
     }
   }
 

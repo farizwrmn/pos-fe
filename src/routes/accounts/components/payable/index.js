@@ -6,6 +6,7 @@ import { routerRedux } from 'dva/router'
 import Browse from './Browse'
 import Modal from './Modal'
 import ModalCancel from './ModalCancel'
+import ModalTax from './ModalTax'
 
 const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
   const {
@@ -16,7 +17,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     mechanicPrint,
     modalPrintVisible,
     posData } = pos
-  const { listPayment, from, to, pagination, tmpListPayment } = accountPayment
+  const { currentItem, modalVisible, listPayment, from, to, pagination, tmpListPayment } = accountPayment
   const { storeInfo } = app
 
   const modalProps = {
@@ -148,6 +149,21 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     }
   }
 
+  const modalTaxProps = {
+    loading,
+    item: currentItem,
+    visible: modalVisible,
+    onOk (data) {
+      dispatch({
+        type: 'accountPayment/addTax',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({ type: 'accountPayment/changeHide' })
+    }
+  }
+
   const browseProps = {
     dataSource: listPayment,
     tmpDataSource: tmpListPayment,
@@ -159,6 +175,12 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     size: 'small',
     loading: loading.effects['accountPayment/queryPurchase'],
     location,
+    openModalTax (data) {
+      dispatch({
+        type: 'accountPayment/openModalTax',
+        payload: data
+      })
+    },
     onSearchChange (data) {
       dispatch({
         type: 'accountPayment/updateState',
@@ -229,6 +251,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
     <div>
       <Browse {...browseProps} />
       {modalProps.visible && <Modal {...modalProps} />}
+      {modalVisible && <ModalTax {...modalTaxProps} />}
       {modalCancelProps.visible && <ModalCancel {...modalCancelProps} />}
     </div>
   )

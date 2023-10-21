@@ -28,7 +28,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey } = location.query
         const { pathname } = location
-        if (pathname === '/setting/store') dispatch({ type: 'query' })
+        if (pathname === '/setting/store' || pathname === '/master/employee' || pathname === '/master/supplier') dispatch({ type: 'query' })
         else if (pathname === '/master/city') {
           if (!activeKey) dispatch({ type: 'refreshView' })
           dispatch({

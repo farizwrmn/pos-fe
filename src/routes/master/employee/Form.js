@@ -39,7 +39,6 @@ class FormEmployee extends Component {
       button,
       modalType,
       showPosition,
-      showCities,
       listLovJobPosition,
       registerFingerprint,
       listCity,
@@ -75,10 +74,6 @@ class FormEmployee extends Component {
 
     const jobPosition = () => {
       showPosition()
-    }
-
-    const city = () => {
-      showCities()
     }
 
     const handleSubmit = () => {
@@ -194,7 +189,7 @@ class FormEmployee extends Component {
                   ]
                 })(<Select
                   optionFilterProp="children"
-                  onFocus={() => city()}
+                  showSearch
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >{cities}
                 </Select>)}
@@ -359,7 +354,6 @@ FormEmployee.propTypes = {
   form: PropTypes.object.isRequired,
   listLovJobPosition: PropTypes.object,
   listCity: PropTypes.object,
-  showCities: PropTypes.func,
   showPosition: PropTypes.func,
   disabled: PropTypes.bool,
   item: PropTypes.object,

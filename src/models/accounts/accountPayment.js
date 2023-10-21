@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { queryPayable } from '../../services/payment/payable'
+import { queryPayable, updatePurchaseById } from '../../services/payment/payable'
 import { queryPaymentPos } from '../../services/payment'
 
 export default {
@@ -10,6 +10,8 @@ export default {
     activeKey: '1',
     from: null,
     to: null,
+    currentItem: {},
+    modalVisible: false,
     listPayment: [],
     tmpListPayment: [],
     pagination: {
@@ -69,6 +71,30 @@ export default {
   },
 
   effects: {
+    * openModalTax ({ payload }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalVisible: true,
+          currentItem: payload
+        }
+      })
+    },
+    * addTax ({ payload }, { put, call }) {
+      const data = yield call(updatePurchaseById, payload)
+      if (data.success) {
+        let defaultFrom = moment().startOf('months').format('YYYY-MM-DD')
+        let defaultTo = moment().endOf('months').format('YYYY-MM-DD')
+        yield put({ type: 'changeHide' })
+        yield put({
+          type: 'queryPurchase',
+          payload: {
+            from: defaultFrom,
+            to: defaultTo
+          }
+        })
+      }
+    },
     * queryHistoryPayment ({ payload = {} }, { call, put }) {
       const data = yield call(queryPaymentPos, payload)
       if (data) {
@@ -116,6 +142,9 @@ export default {
   },
 
   reducers: {
+    changeHide (state) {
+      return { ...state, modalVisible: false }
+    },
     querySuccessPayment (state, action) {
       const { listPayment, pagination, tmpListPayment } = action.payload
       return {

@@ -133,11 +133,6 @@ const City = ({ city, loading, dispatch, location, app }) => {
           currentItem: {}
         }
       })
-    },
-    showCities () {
-      dispatch({
-        type: 'city/query'
-      })
     }
   }
 
