@@ -12,7 +12,7 @@ const formItemLayout = {
 const ModalTax = ({
   onOk,
   onCancel,
-  currentItem,
+  item,
   loading,
   form: {
     getFieldDecorator,
@@ -27,7 +27,7 @@ const ModalTax = ({
       if (errors) return
       const data = {
         ...getFieldsValue(),
-        id: currentItem.id
+        id: item.id
       }
       Modal.confirm({
         title: 'Add Tax',
@@ -52,7 +52,7 @@ const ModalTax = ({
 
   return (
     <Modal
-      title={currentItem && currentItem.transNo}
+      title={item && item.transNo}
       {...modalOpts}
       footer={[
         <Button key="submit" disabled={loading.effects['accountPayment/queryPurchase']} type="primary" size="large" onClick={() => handleOk()}>Submit</Button>

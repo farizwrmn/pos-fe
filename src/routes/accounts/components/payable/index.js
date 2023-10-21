@@ -151,7 +151,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
 
   const modalTaxProps = {
     loading,
-    currentItem,
+    item: currentItem,
     visible: modalVisible,
     onOk (data) {
       dispatch({
@@ -165,6 +165,7 @@ const Pos = ({ location, dispatch, loading, pos, accountPayment, app }) => {
   }
 
   const browseProps = {
+    item: currentItem,
     dataSource: listPayment,
     tmpDataSource: tmpListPayment,
     width: 90,

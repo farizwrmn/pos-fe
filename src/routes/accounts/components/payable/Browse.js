@@ -25,6 +25,7 @@ const rightColumn = {
 
 const BrowseGroup = ({
   dataSource,
+  item,
   tmpDataSource,
   onChangePeriod,
   q,
@@ -59,6 +60,9 @@ const BrowseGroup = ({
       key: 'taxInvoiceNo',
       width: 120,
       render: (text, record) => {
+        if (item && item.transInvoiceNo) {
+          return text
+        }
         return <Button type="primary" onClick={() => openModalTax(record)}>Add Tax</Button>
       }
     },
