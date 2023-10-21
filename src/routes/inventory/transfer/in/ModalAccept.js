@@ -109,6 +109,7 @@ class ModalAccept extends Component {
   render () {
     const {
       item,
+      currentItem,
       disableButton,
       sequenceNumber,
       listTransDetail,
@@ -129,7 +130,6 @@ class ModalAccept extends Component {
         getFieldsValue
       },
       printMode,
-      currentItemFinger,
       selectedRowKeys,
       onPrintBarcode,
       dispatch,
@@ -201,7 +201,8 @@ class ModalAccept extends Component {
           return
         }
         const data = {
-          ...getFieldsValue()
+          ...getFieldsValue(),
+          employeeId: currentItem.id
         }
         const dataHeader = {
           storeIdSender: item.storeId,
@@ -321,7 +322,7 @@ class ModalAccept extends Component {
                 </FormItem>
                 <FormItem label="Received By" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('employeeName', {
-                    initialValue: currentItemFinger.employeeName,
+                    initialValue: currentItem.employeeName,
                     rules: [{
                       required: true
                     }]

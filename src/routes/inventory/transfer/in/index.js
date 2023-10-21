@@ -180,7 +180,7 @@ const Transfer = ({ fingerEmployee, transferIn, employee, loading, dispatch, app
     modalConfirmVisible,
     disableButton,
     item: transHeader,
-    currentItemFinger,
+    currentItem: currentItemFinger,
     listTransDetail,
     user,
     storeInfo,
