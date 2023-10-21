@@ -82,25 +82,14 @@ export default {
     },
     * addTax ({ payload }, { put, call }) {
       const data = yield call(updatePurchaseById, payload)
-      const { activeKey, q, from, to, ...otherQuery } = location.query
       if (data.success) {
-        let defaultFrom
-        let defaultTo
-        if (from && to) {
-          defaultFrom = from
-          defaultTo = to
-        }
-        if (!q && !from && !to) {
-          defaultFrom = moment().startOf('months').format('YYYY-MM-DD')
-          defaultTo = moment().endOf('months').format('YYYY-MM-DD')
-        }
+        let defaultFrom = moment().startOf('months').format('YYYY-MM-DD')
+        let defaultTo = moment().endOf('months').format('YYYY-MM-DD')
         yield put({
           type: 'queryPurchase',
           payload: {
             from: defaultFrom,
-            to: defaultTo,
-            q,
-            ...otherQuery
+            to: defaultTo
           }
         })
       }

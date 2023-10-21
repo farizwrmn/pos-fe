@@ -98,9 +98,8 @@ export async function updatePurchaseById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `/payment/payable/purchase/${params.id}`,
-    method: 'put',
+    method: 'post',
     data: params,
-    body: params,
     headers: apiHeaderToken
   })
 }
