@@ -18,7 +18,7 @@ import {
 } from 'services/master/employee'
 import { query as queryOpts } from 'services/payment/paymentOptions'
 import { queryPaymentInvoice } from 'services/payment/payment'
-import { rearrangeDirectPrinting } from 'utils/posinvoice'
+import { rearrangeDirectPrintingQris, rearrangeDirectPrinting } from 'utils/posinvoice'
 import { query as querySetting } from 'services/setting'
 import { pageModel } from '../common'
 
@@ -119,7 +119,7 @@ export default modelExtend(pageModel, {
             const item = response.directPrinting[key]
             const responseDirect = yield call(directPrinting, {
               url: item.printingUrl,
-              data: rearrangeDirectPrinting(response.pos, item)
+              data: item.groupName === 'QRIS' ? rearrangeDirectPrintingQris(response.pos, item) : rearrangeDirectPrinting(response.pos, item)
             })
             console.log('responseDirect', responseDirect)
           }

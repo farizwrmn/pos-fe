@@ -120,6 +120,12 @@ const BrowseGroup = ({
       width: 120
     },
     {
+      title: 'Payment',
+      dataIndex: 'paymentVia',
+      key: 'paymentVia',
+      width: 120
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
