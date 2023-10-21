@@ -60,10 +60,10 @@ const BrowseGroup = ({
       key: 'taxInvoiceNo',
       width: 120,
       render: (text, record) => {
-        if (item && item.taxInvoiceNo) {
-          return text
+        if (!item.taxInvoiceNo) {
+          return <Button type="primary" onClick={() => openModalTax(record)}>Add Tax</Button>
         }
-        return <Button type="primary" onClick={() => openModalTax(record)}>Add Tax</Button>
+        return text
       }
     },
     {
