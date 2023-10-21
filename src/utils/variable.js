@@ -39,6 +39,7 @@ export const ACCOUNT_TYPE_PETTY_CASH = [
   'BANK',
   'COGS',
   'EXPS',
+  'AREC',
   'OEXP'
 ]
 
@@ -49,6 +50,7 @@ export const ACCOUNT_TYPE_BANK = [
 export const ACCOUNT_TYPE_PETTY_CASH_EXPENSE = [
   'COGS',
   'EXPS',
+  'AREC',
   'OEXP'
 ]
 
