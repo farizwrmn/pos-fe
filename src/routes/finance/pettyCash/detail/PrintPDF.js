@@ -22,7 +22,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         row.push({ text: (data.transactionType).toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.description || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: numberFormatter(data.depositTotal || 0), alignment: 'left', fontSize: 11 })
-        row.push({ text: numberFormatter(data.expenseTotal || 0), alignment: 'right', fontSize: 11 })
+        row.push({ text: numberFormatter(data.expenseTotal - data.discount || 0), alignment: 'right', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -31,12 +31,12 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
   }
 
   // Declare Variable
-  let openTotal = listItem.filter(filtered => filtered.transactionType === 'OPEN').reduce((cnt, o) => cnt + (o.depositTotal - o.expenseTotal), 0)
-  let depositTotal = listItem.filter(filtered => filtered.transactionType === 'IN').reduce((cnt, o) => cnt + (o.depositTotal - o.expenseTotal), 0)
-  let expenseTotal = listItem.filter(filtered => filtered.transactionType === 'OUT').reduce((cnt, o) => cnt + (o.depositTotal - o.expenseTotal), 0)
-  let purchaseTotal = listItem.filter(filtered => filtered.transactionType === 'PRC').reduce((cnt, o) => cnt + (o.depositTotal - o.expenseTotal), 0)
-  let adjustTotal = listItem.filter(filtered => filtered.transactionType === 'ADJ').reduce((cnt, o) => cnt + (o.depositTotal - o.expenseTotal), 0)
-  let closeTotal = listItem.filter(filtered => filtered.transactionType === 'CLOSE').reduce((cnt, o) => cnt + (o.depositTotal - o.expenseTotal), 0)
+  let openTotal = listItem.filter(filtered => filtered.transactionType === 'OPEN').reduce((cnt, o) => cnt + ((o.depositTotal - o.expenseTotal) + o.discount), 0)
+  let depositTotal = listItem.filter(filtered => filtered.transactionType === 'IN').reduce((cnt, o) => cnt + ((o.depositTotal - o.expenseTotal) + o.discount), 0)
+  let expenseTotal = listItem.filter(filtered => filtered.transactionType === 'OUT').reduce((cnt, o) => cnt + ((o.depositTotal - o.expenseTotal) + o.discount), 0)
+  let purchaseTotal = listItem.filter(filtered => filtered.transactionType === 'PRC').reduce((cnt, o) => cnt + ((o.depositTotal - o.expenseTotal) + o.discount), 0)
+  let adjustTotal = listItem.filter(filtered => filtered.transactionType === 'ADJ').reduce((cnt, o) => cnt + ((o.depositTotal - o.expenseTotal) + o.discount), 0)
+  let closeTotal = listItem.filter(filtered => filtered.transactionType === 'CLOSE').reduce((cnt, o) => cnt + ((o.depositTotal - o.expenseTotal) + o.discount), 0)
   const styles = {
     header: {
       fontSize: 18,
