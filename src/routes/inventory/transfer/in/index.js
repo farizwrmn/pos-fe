@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { Row, Tabs, message } from 'antd'
 import moment from 'moment'
 import { lstorage } from 'utils'
+import { CANCEL_INPUT } from 'utils/variable'
 import Filter from './Filter'
 import Modal from './Modal'
 import ModalAccept from './ModalAccept'
@@ -15,7 +16,7 @@ const TabPane = Tabs.TabPane
 
 moment.locale('id')
 
-const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
+const Transfer = ({ fingerEmployee, transferIn, employee, loading, dispatch, app }) => {
   const {
     listTrans,
     listTransIn,
@@ -39,6 +40,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     printMode,
     selectedRowKeys
   } = transferIn
+  const { currentItem: currentItemFinger } = fingerEmployee
   const { list } = employee
   const { user, storeInfo } = app
   let listEmployee = list
@@ -178,6 +180,7 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
     modalConfirmVisible,
     disableButton,
     item: transHeader,
+    currentItem: currentItemFinger,
     listTransDetail,
     user,
     storeInfo,
@@ -247,6 +250,15 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
         payload: {
           listEmployee: {}
         }
+      })
+    },
+    registerFingerprint (payload) {
+      if (payload) {
+        payload.transType = CANCEL_INPUT
+      }
+      dispatch({
+        type: 'employee/registerFingerprint',
+        payload
       })
     }
   }
@@ -358,11 +370,12 @@ const Transfer = ({ transferIn, employee, loading, dispatch, app }) => {
 
 Transfer.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  fingerEmployee: PropTypes.object,
   transferIn: PropTypes.object,
   employee: PropTypes.object,
   loading: PropTypes.object,
   app: PropTypes.object
 }
 
-export default connect(({ transferIn, employee, loading, app }) => ({ transferIn, employee, loading, app }))(Transfer)
+export default connect(({ fingerEmployee, transferIn, employee, loading, app }) => ({ fingerEmployee, transferIn, employee, loading, app }))(Transfer)
 

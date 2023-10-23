@@ -575,6 +575,7 @@ const Routers = function ({ history, app }) {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/fingerEmployee'))
               registerModel(app, require('./models/notification/salesDiscount'))
               registerModel(app, require('./models/notification/requestCancelPos'))
               registerModel(app, require('./models/transaction/pos'))
@@ -1950,6 +1951,7 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/in',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/fingerEmployee'))
               registerModel(app, require('./models/transferIn'))
               registerModel(app, require('./models/master/employee'))
               registerModel(app, require('./models/master/productstock'))

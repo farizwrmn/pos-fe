@@ -168,6 +168,12 @@ export default modelExtend(pageModel, {
       })
       if (response.success) {
         yield put({
+          type: 'fingerEmployee/updateState',
+          payload: {
+            currentItem: {}
+          }
+        })
+        yield put({
           type: 'pos/updateState',
           payload: {
             modalCashRegisterVisible: false
