@@ -98,10 +98,10 @@ class ModalCashRegister extends Component {
               initialValue: item.description,
               rules: [{
                 required: true,
-                pattern: /^[A-Za-z0-9-.,;:?()@= _/]{20,255}$/i,
-                message: 'a-Z & 0-9, min: 20, max: 255'
+                pattern: /^[A-Za-z0-9-.,;:?()@= _/]{20,99999}$/i,
+                message: 'a-Z & 0-9, min: 20, max: 99999'
               }]
-            })(<TextArea maxLength={255} autosize={{ minRows: 2, maxRows: 6 }} />)}
+            })(<TextArea maxLength={99999} autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
         </Form>
       </Modal>
