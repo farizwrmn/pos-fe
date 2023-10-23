@@ -87,7 +87,7 @@ class ModalCashRegister extends Component {
     const { dispatch } = this.props
     if (dispatch && data && data.success) {
       dispatch({
-        type: 'pos/setEmployee',
+        type: 'fingerEmployee/setEmployee',
         payload: data.profile
       })
     }
