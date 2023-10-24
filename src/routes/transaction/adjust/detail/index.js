@@ -12,6 +12,7 @@ import TransDetail from './TransDetail'
 import FormAccounting from './FormAccounting'
 import styles from './index.less'
 import PrintPDF from './PrintPDF'
+import PrintPDFOnlyQty from './PrintPDFOnlyQty'
 
 
 const Detail = ({ adjustDetail, app, dispatch }) => {
@@ -63,6 +64,7 @@ const Detail = ({ adjustDetail, app, dispatch }) => {
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
           <PrintPDF {...printProps} />
+          <PrintPDFOnlyQty {...printProps} />
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
