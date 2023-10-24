@@ -6,7 +6,7 @@ import { numberFormatter } from 'utils/string'
 import PrintPDF from './PrintPDF'
 import styles from '../../../../themes/index.less'
 
-const List = ({ ...tableProps, storeInfo, user, data, listDetailTrans, editList }) => {
+const List = ({ storeInfo, user, data, listDetailTrans, editList, loading, ...tableProps }) => {
   const handleMenuClick = (record) => {
     editList(record)
   }
@@ -67,6 +67,7 @@ const List = ({ ...tableProps, storeInfo, user, data, listDetailTrans, editList 
         columns={columns}
         pagination={false}
         simple
+        loading={loading.effects['pettyCashDetail/queryAccounting']}
         rowKey={record => record.no}
         // title={() => {
         //   const total = tableProps.dataSource.reduce((prev, next) => prev + (next.adjInQty > 0 ? next.adjInQty * next.sellingPrice : next.adjOutQty * next.sellingPrice), 0)

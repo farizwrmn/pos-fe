@@ -1,83 +1,69 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import {
-  Row,
-  Col,
-  // Tag,
-  Button
+  Form
+  // Button,
+  // Row
 } from 'antd'
-import TransDetail from './TransDetail'
-import FormAccounting from './FormAccounting'
-import styles from './index.less'
+import ListAccounting from './ListAccounting'
 
-const Detail = ({ pettyCashDetail, app, dispatch }) => {
-  const { listDetail, listAccounting, listDetailTrans, data } = pettyCashDetail
-  const { user, storeInfo } = app
-  const content = []
-  for (let key in data) {
-    if ({}.hasOwnProperty.call(data, key)) {
-      if (key !== 'policeNoId' && key !== 'storeId' && key !== 'id' && key !== 'memberId') {
-        content.push(
-          <div key={key} className={styles.item}>
-            <div>{key}</div>
-            <div>{String(data[key])}</div>
-          </div>
-        )
-      }
-    }
+// const FormItem = Form.Item
+
+// const formItemLayout = {
+//   labelCol: {
+//     xs: {
+//       span: 13
+//     },
+//     sm: {
+//       span: 8
+//     },
+//     md: {
+//       span: 7
+//     }
+//   },
+//   wrapperCol: {
+//     xs: {
+//       span: 11
+//     },
+//     sm: {
+//       span: 14
+//     },
+//     md: {
+//       span: 14
+//     }
+//   }
+// }
+
+const FormAccounting = ({
+  listAccounting,
+  loading
+}) => {
+  const listProps = {
+    dataSource: listAccounting,
+    loading
   }
 
-  const BackToList = () => {
-    dispatch(routerRedux.push('/balance/finance/petty-cash?activeKey=1'))
-  }
-
-  const formDetailProps = {
-    storeInfo,
-    user,
-    dataSource: listDetail,
-    listDetailTrans,
-    data
-  }
-
-  return (<div className="wrapper">
-    <Row>
-      <Col lg={6}>
-        <div className="content-inner-zero-min-height">
-          <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
-          <h1>Invoice Info</h1>
-          <div className={styles.content}>
-            {content}
-          </div>
-        </div>
-      </Col>
-      <Col lg={18}>
-        <div className="content-inner-zero-min-height">
-          <h1>Items</h1>
-          <Row style={{ padding: '10px', margin: '4px' }}>
-            <TransDetail {...formDetailProps} />
-          </Row>
-        </div>
-
-        {(user.permissions.role === 'OWN'
-          || user.permissions.role === 'SPR'
-          || user.permissions.role === 'HFC'
-          || user.permissions.role === 'SFC') && (
-            <div className="content-inner-zero-min-height">
-              <h1>Accounting Journal</h1>
-              <Row style={{ padding: '10px', margin: '4px' }}>
-                <FormAccounting listAccounting={listAccounting} />
-              </Row>
-            </div>
-          )}
-      </Col>
-    </Row>
-  </div>)
+  return (
+    <Form layout="horizontal">
+      {/* <Row>
+        <FormItem style={{ margin: '5px 10px', float: 'right' }} {...formItemLayout}>
+          <Button onClick={() => showModal('modalVisible')} disabled={curPayment >= (data.length > 0 ? data[0].nettoTotal : 0)}>Add</Button>
+        </FormItem>
+      </Row> */}
+      <ListAccounting {...listProps} />
+    </Form>
+  )
 }
 
-Detail.propTypes = {
-  pettyCashDetail: PropTypes.object
+FormAccounting.propTypes = {
+  form: PropTypes.object.isRequired,
+  disabled: PropTypes.string,
+  item: PropTypes.object,
+  onSubmit: PropTypes.func,
+  changeTab: PropTypes.func,
+  clickBrowse: PropTypes.func,
+  activeKey: PropTypes.string,
+  button: PropTypes.string
 }
 
-export default connect(({ app, pettyCashDetail }) => ({ app, pettyCashDetail }))(Detail)
+export default Form.create()(FormAccounting)
