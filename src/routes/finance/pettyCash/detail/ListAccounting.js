@@ -10,7 +10,7 @@ import { numberFormat } from 'utils'
 
 const numberFormatter = numberFormat.numberFormatter
 
-const List = ({ loading, ...tableProps }) => {
+const List = ({ ...tableProps }) => {
   // const hdlDropOptionClick = (record, e) => {
   //   if (e.key === '1') {
   //     cancelPayment(record)
@@ -74,7 +74,6 @@ const List = ({ loading, ...tableProps }) => {
   return (
     <div>
       <Table {...tableProps}
-        loading={loading.effects['pettyCashDetail/queryAccounting']}
         bordered={false}
         pagination={false}
         scroll={{ x: 700, y: 700 }}
