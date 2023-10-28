@@ -85,7 +85,15 @@ export default modelExtend(pageModel, {
       if (response.success && response.data && response.data.id) {
         if (response.data.journalEntryId) {
           const reconData = yield call(queryEntryList, {
-            transactionId: ([response.data.journalEntryId]).concat(response.detailOpen.filter(item => item.journalEntryId != null).map(item => item.journalEntryId)),
+            transactionId: ([response.data.journalEntryId]).concat(
+              response.detailOpen
+                .filter(item => item.journalEntryId != null)
+                .map(item => item.journalEntryId))
+              .concat(
+                response.detail
+                  .filter(item => item.journalEntryToStoreId != null)
+                  .map(item => item.journalEntryToStoreId)
+              ),
             transactionType: JOURNALENTRY,
             type: 'all'
           })
@@ -141,7 +149,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            listAccounting
+            listAccounting: listAccounting.sort((a, b) => a.id - b.id)
           }
         })
       }

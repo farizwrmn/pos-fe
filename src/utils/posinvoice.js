@@ -181,6 +181,22 @@ export const rearrangeDirectPrintingQris = (pos, directPrinting) => {
     alignment: 'line',
     text: ''
   })
+  headerPrint.push({
+    alignment: 'left',
+    style: 'bold',
+    text: '*NB: Struk ini disimpan oleh kasir,',
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'left',
+    style: 'bold',
+    text: 'dan diserah terima dengan finance',
+    rightText: ''
+  })
+  headerPrint.push({
+    alignment: 'line',
+    text: ''
+  })
 
   return headerPrint
 }
