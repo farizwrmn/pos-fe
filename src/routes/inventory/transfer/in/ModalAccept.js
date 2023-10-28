@@ -1,16 +1,18 @@
 /* eslint-disable no-return-assign */
 import React, { Component } from 'react'
-import { Form, Modal, Button, DatePicker, Input, Row, Col, message } from 'antd'
-import { generateId } from 'utils/crypt'
+// import { Form, Modal, Button, DatePicker, Select, Input, Row, Col, message } from 'antd'
+import { Form, Modal, Button, DatePicker, Select, Input, Row, Col } from 'antd'
+// import { generateId } from 'utils/crypt'
 import moment from 'moment'
-import io from 'socket.io-client'
-import { APISOCKET } from 'utils/config.company'
+// import io from 'socket.io-client'
+// import { APISOCKET } from 'utils/config.company'
 import List from './ListItem'
 import ModalConfirm from './ModalConfirm'
 import PrintShelf from '../../../master/product/printSticker/PrintShelf'
 import PrintAvancedShelf from '../../../master/product/printSticker/PrintAvancedShelf'
 
 const FormItem = Form.Item
+const Option = Select.Option
 const { TextArea } = Input
 
 const formItemLayout = {
@@ -28,21 +30,21 @@ const formItemLayout = {
   }
 }
 
-const options = {
-  upgrade: true,
-  transports: ['websocket'],
-  pingTimeout: 100,
-  pingInterval: 100
-}
+// const options = {
+//   upgrade: true,
+//   transports: ['websocket'],
+//   pingTimeout: 100,
+//   pingInterval: 100
+// }
 
-const socket = io(APISOCKET, options)
+// const socket = io(APISOCKET, options)
 class ModalAccept extends Component {
-  state = {
-    endpoint: 'verification'
-  }
+  // state = {
+  //   endpoint: 'verification'
+  // }
   componentDidMount () {
-    message.info('Buka aplikasi Fingerprint')
-    this.setEndpoint()
+    // message.info('Buka aplikasi Fingerprint')
+    // this.setEndpoint()
     setTimeout(() => {
       const selector = document.getElementById('Product')
       if (selector) {
@@ -52,59 +54,59 @@ class ModalAccept extends Component {
     }, 300)
   }
 
-  componentWillUnmount () {
-    const { endpoint } = this.state
-    socket.off(`fingerprint/${endpoint}`)
-  }
+  // componentWillUnmount () {
+  //   const { endpoint } = this.state
+  //   socket.off(`fingerprint/${endpoint}`)
+  // }
 
-  onCopy = (endpoint) => {
-    let textarea = document.createElement('textarea')
-    textarea.id = 'temp_element'
-    textarea.style.height = 0
-    document.body.appendChild(textarea)
-    textarea.value = endpoint
-    let selector = document.querySelector('#temp_element')
-    selector.select()
-    document.execCommand('copy')
-    document.body.removeChild(textarea)
-    message.success('Success to key to clipboard')
-  }
+  // onCopy = (endpoint) => {
+  //   let textarea = document.createElement('textarea')
+  //   textarea.id = 'temp_element'
+  //   textarea.style.height = 0
+  //   document.body.appendChild(textarea)
+  //   textarea.value = endpoint
+  //   let selector = document.querySelector('#temp_element')
+  //   selector.select()
+  //   document.execCommand('copy')
+  //   document.body.removeChild(textarea)
+  //   message.success('Success to key to clipboard')
+  // }
 
-  setEndpoint = () => {
-    const {
-      registerFingerprint,
-      validationType = 'login'
-    } = this.props
-    const endpoint = generateId(16)
-    this.setState({ endpoint })
-    if (registerFingerprint) {
-      registerFingerprint({
-        employeeId: undefined,
-        endpoint,
-        validationType,
-        applicationSource: 'web'
-      })
-      this.onCopy(endpoint)
-    }
-    this.setSocket(endpoint)
-  }
+  // setEndpoint = () => {
+  //   const {
+  //     registerFingerprint,
+  //     validationType = 'login'
+  //   } = this.props
+  //   const endpoint = generateId(16)
+  //   this.setState({ endpoint })
+  //   if (registerFingerprint) {
+  //     registerFingerprint({
+  //       employeeId: undefined,
+  //       endpoint,
+  //       validationType,
+  //       applicationSource: 'web'
+  //     })
+  //     this.onCopy(endpoint)
+  //   }
+  //   this.setSocket(endpoint)
+  // }
 
-  setSocket = (endpoint) => {
-    const { endpoint: endpointState } = this.state
-    if (endpointState === 'verification' && endpoint) {
-      socket.on(`fingerprint/${endpoint}`, this.handleData)
-    }
-  }
+  // setSocket = (endpoint) => {
+  //   const { endpoint: endpointState } = this.state
+  //   if (endpointState === 'verification' && endpoint) {
+  //     socket.on(`fingerprint/${endpoint}`, this.handleData)
+  //   }
+  // }
 
-  handleData = (data) => {
-    const { dispatch } = this.props
-    if (dispatch && data && data.success) {
-      dispatch({
-        type: 'fingerEmployee/setEmployee',
-        payload: data.profile
-      })
-    }
-  }
+  // handleData = (data) => {
+  //   const { dispatch } = this.props
+  //   if (dispatch && data && data.success) {
+  //     dispatch({
+  //       type: 'fingerEmployee/setEmployee',
+  //       payload: data.profile
+  //     })
+  //   }
+  // }
 
   render () {
     const {
@@ -159,6 +161,7 @@ class ModalAccept extends Component {
       listDetailProps.rowSelection = rowSelection
     }
 
+    const childrenEmployee = listEmployee.length > 0 ? listEmployee.map(list => <Option value={list.id}>{list.employeeName}</Option>) : []
     const formConfirmOpts = {
       user,
       storeInfo,
@@ -200,12 +203,16 @@ class ModalAccept extends Component {
         if (errors) {
           return
         }
+        const data = {
+          ...getFieldsValue()
+        }
         const dataHeader = {
           storeIdSender: item.storeId,
           // receiveDate: moment().format('YYYY-MM-DD HH:mm:ss'),
           reference: item.id,
           transType: 'MUIN',
-          employeeId: currentItem.id,
+          employeeId: data.employeeId.key,
+          // employeeId: currentItem.id,
           carNumber: item.carNumber,
           totalColly: item.totalColly,
           description: item.description
@@ -317,14 +324,34 @@ class ModalAccept extends Component {
                   })(<Input disabled />)}
                 </FormItem>
                 <FormItem label="Received By" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('employeeName', {
+                  {getFieldDecorator('employeeId', {
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(
+                    <Select
+                      labelInValue
+                      onFocus={getEmployee}
+                      onBlur={hideEmployee}
+                      showSearch
+                      allowClear
+                      optionFilterProp="children"
+                      placeholder="Choose Employee"
+                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                    >
+                      {childrenEmployee}
+                    </Select>
+                  )}
+                  {/* {getFieldDecorator('employeeName', {
                     initialValue: currentItem.employeeName,
                     rules: [{
                       required: true
                     }]
                   })(
                     <Input disabled />
-                  )}
+                  )} */}
                 </FormItem>
               </Col>
               <Col lg={12} md={24}>
