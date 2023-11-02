@@ -227,6 +227,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'master/product/planogram',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
+              cb(null, require('./routes/master/product/planogram'))
+            }, 'master-product-planogram')
+          }
+        }, {
           path: 'stock-source',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
