@@ -29,8 +29,9 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        const { activeKey, edit, ...other } = location.query
         if (pathname === '/master/product/planogram') {
-          dispatch({ type: 'query' })
+          dispatch({ type: 'query', payload: other })
         }
       })
     }
