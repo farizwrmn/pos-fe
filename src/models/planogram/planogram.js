@@ -4,7 +4,7 @@ import {
   add,
   remove,
   edit
-} from 'services/planogram/planogram.js'
+} from 'services/planogram/planogram'
 
 const success = () => {
   message.success('Success')
@@ -15,6 +15,7 @@ export default {
 
   state: {
     list: [],
+    activeKey: '0',
     currentItem: {},
     modalVisible: false,
     pagination: {
@@ -30,7 +31,7 @@ export default {
       history.listen((location) => {
         const { pathname } = location
         const { activeKey, edit, ...other } = location.query
-        if (pathname === '/master/product/planogram') {
+        if (pathname === '/stock') {
           dispatch({ type: 'query', payload: other })
         }
       })
@@ -38,6 +39,14 @@ export default {
   },
 
   effects: {
+    * changeTab ({ payload = {} }, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          activeKey: payload
+        }
+      })
+    },
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
       if (response && response.success) {

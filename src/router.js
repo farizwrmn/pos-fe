@@ -200,6 +200,7 @@ const Routers = function ({ history, app }) {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
@@ -225,14 +226,6 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productDivision'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
-          }
-        }, {
-          path: 'master/product/planogram',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/planogram/planogram'))
-              cb(null, require('./routes/master/product/planogram'))
-            }, 'master-product-planogram')
           }
         }, {
           path: 'stock-source',
