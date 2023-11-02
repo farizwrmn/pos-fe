@@ -29,7 +29,7 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
-        if (pathname === '/planogram') {
+        if (pathname === '/master/product/planogram') {
           dispatch({ type: 'query' })
         }
       })
