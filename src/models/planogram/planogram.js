@@ -44,7 +44,7 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: response.data
+            list: response.data
           }
         })
       }
