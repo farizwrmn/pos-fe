@@ -180,7 +180,8 @@ const Pos = ({
   // const { listCounter } = counter
   const {
     modalVisible: modalPlanogramCashierVisible,
-    modalEditVisible: modalEditPlanogramCashierVisible
+    modalEditVisible: modalEditPlanogramCashierVisible,
+    list: listPlanogram
   } = planogram
   const { currentItem: currentItemFinger } = fingerEmployee
   const {
@@ -2741,7 +2742,7 @@ const Pos = ({
   const modalPlanogramCashierProps = {
     visible: modalPlanogramCashierVisible,
     editVisible: modalEditPlanogramCashierVisible,
-    list: listExpress,
+    list: listPlanogram,
     item: currentItemPos,
     loading,
     onClose () {

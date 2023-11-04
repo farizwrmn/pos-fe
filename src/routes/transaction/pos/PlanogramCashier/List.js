@@ -3,10 +3,9 @@ import { Table, Button, Modal } from 'antd'
 
 const List = ({ onEdit, loading, ...tableProps }) => {
   const handleMenuClick = (record, state) => {
-    let editState = state ? 'Enable' : 'Disable'
     Modal.confirm({
-      title: `${editState} ${record.productName}`,
-      content: 'Are you sure ?',
+      title: 'Validate planogram',
+      content: 'Are you sure already print planogram file from given url ?',
       onOk () {
         onEdit({
           ...record,
@@ -35,7 +34,7 @@ const List = ({ onEdit, loading, ...tableProps }) => {
             style: { background: record.color }
           },
           children: (
-            <div>{record.productName}</div>
+            <div>{record.url}</div>
           )
         }
       }
@@ -46,8 +45,8 @@ const List = ({ onEdit, loading, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        if (Number(record.active) === 1) {
-          return <Button type="danger" disabled={loading.effects['planogram/edit']} onClick={() => handleMenuClick(record, 0)}>Printed</Button>
+        if (Number(record.isPrinted) === 1) {
+          return <Button type="danger" disabled={loading.effects['planogram/edit']}>Printed</Button>
         }
         return <Button type="primary" disabled={loading.effects['planogram/edit']} onClick={() => handleMenuClick(record, 1)}>Not Printed</Button>
       }

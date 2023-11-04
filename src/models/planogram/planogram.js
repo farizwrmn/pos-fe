@@ -129,6 +129,7 @@ export default {
           modalVisible: true
         }
       })
+      yield put({ type: 'query' })
     },
     * closeModal ({ payload = {} }, { put }) {
       payload.updated = 0
