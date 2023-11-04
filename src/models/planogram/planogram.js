@@ -107,6 +107,8 @@ export default {
             activeKey: '0'
           }
         })
+      } else {
+        message.error("can't edit data")
       }
     },
     * editItem ({ payload = {} }, { put }) {
