@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table, Button, Modal } from 'antd'
+import moment from 'moment'
 
 const List = ({ onEdit, loading, ...tableProps }) => {
   const handleMenuClick = (record, state) => {
@@ -35,6 +36,21 @@ const List = ({ onEdit, loading, ...tableProps }) => {
           },
           children: (
             <div>{record.url}</div>
+          )
+        }
+      }
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render (text, record) {
+        return {
+          props: {
+            style: { background: record.color }
+          },
+          children: (
+            <div>{moment(record.updatedAt).format('DD-MM-YYYY')}</div>
           )
         }
       }
