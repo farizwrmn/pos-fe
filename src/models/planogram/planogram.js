@@ -120,24 +120,48 @@ export default {
           activeKey: '0'
         }
       })
+    },
+    * openModal ({ payload = {} }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalVisible: true
+        }
+      })
+    },
+    * closeModal ({ payload = {} }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalVisible: false
+        }
+      })
+    },
+    * openModalEdit ({ payload = {} }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditVisible: true
+        }
+      })
+    },
+    * closeModalEdit ({ payload = {} }, { put }) {
+      payload.updated = 0
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalEditVisible: false
+        }
+      })
     }
   },
 
   reducers: {
     updateState (state, { payload }) {
       return { ...state, ...payload }
-    },
-    openModal (state, { payload }) {
-      return { ...state, ...payload, modalVisible: true }
-    },
-    closeModal (state, { payload }) {
-      return { ...state, ...payload, modalVisible: false }
-    },
-    openModalEdit (state, { payload }) {
-      return { ...state, ...payload, modalEditVisible: true }
-    },
-    closeModalEdit (state, { payload }) {
-      return { ...state, ...payload, modalEditVisible: false }
     },
     querySuccess (state, action) {
       const { list, pagination } = action.payload
