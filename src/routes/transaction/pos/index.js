@@ -3228,6 +3228,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  planogram,
   fingerEmployee,
   pospromo,
   paymentEdc,
@@ -3248,6 +3249,7 @@ export default connect(({
   customerunit,
   payment
 }) => ({
+  planogram,
   fingerEmployee,
   pospromo,
   paymentEdc,
