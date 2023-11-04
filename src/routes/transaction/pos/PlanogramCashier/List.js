@@ -10,7 +10,7 @@ const List = ({ onEdit, loading, ...tableProps }) => {
       onOk () {
         onEdit({
           ...record,
-          active: state
+          isPrinted: state
         })
       }
     })
@@ -50,7 +50,7 @@ const List = ({ onEdit, loading, ...tableProps }) => {
             style: { background: record.color }
           },
           children: (
-            <div>{moment(record.updatedAt).format('DD-MM-YYYY')}</div>
+            <div>{moment(record.updatedAt).format('DD-MM-YYYY HH:mm:ss')}</div>
           )
         }
       }

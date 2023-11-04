@@ -107,6 +107,7 @@ export default {
             activeKey: '0'
           }
         })
+        yield put({ type: 'query' })
       } else {
         message.error("can't edit data")
       }
