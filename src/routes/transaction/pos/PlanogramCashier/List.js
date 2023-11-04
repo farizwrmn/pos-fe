@@ -48,7 +48,7 @@ const List = ({ onEdit, loading, ...tableProps }) => {
         if (Number(record.isPrinted) === 1) {
           return <Button type="danger" disabled={loading.effects['planogram/edit']}>Printed</Button>
         }
-        return <Button type="primary" disabled={loading.effects['planogram/edit']} onClick={() => handleMenuClick(record, 1)}>Not Printed</Button>
+        return <Button type="primary" disabled={loading.effects['planogram/edit']} onClick={() => handleMenuClick(record, 1)}>Validate Printed</Button>
       }
     }
   ]
