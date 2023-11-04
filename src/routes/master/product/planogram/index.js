@@ -48,15 +48,6 @@ const Planogram = ({ planogram, userStore, loading, dispatch, location, app }) =
         type: 'planogram/editItem',
         payload: item
       })
-
-      const { pathname, query } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          activeKey: 0
-        }
-      }))
     },
     delete (id) {
       dispatch({
