@@ -178,7 +178,10 @@ const Pos = ({
   const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
-  const { modalVisible: modalPlanogramCashierVisible } = planogram
+  const {
+    modalVisible: modalPlanogramCashierVisible,
+    modalEditVisible: modalEditPlanogramCashierVisible
+  } = planogram
   const { currentItem: currentItemFinger } = fingerEmployee
   const {
     modalServiceVisible,
@@ -2736,8 +2739,8 @@ const Pos = ({
 
 
   const modalPlanogramCashierProps = {
-    visible: modalExpressVisible,
-    editVisible: modalEditExpressVisible,
+    visible: modalPlanogramCashierVisible,
+    editVisible: modalEditPlanogramCashierVisible,
     list: listExpress,
     item: currentItemPos,
     loading,
