@@ -128,13 +128,13 @@ const Planogram = ({ planogram, userStore, loading, dispatch, location, app }) =
         }
       })
     },
-    onSubmit (id, data, reset) {
+    onSubmit (id, data, resetFields) {
       dispatch({
         type: `planogram/${modalType}`,
         payload: {
           id,
           location,
-          reset,
+          resetFields,
           ...data
         }
       })
