@@ -122,7 +122,7 @@ class AdvancedForm extends Component {
       }
     }
     const listStore = listAllStores && listAllStores.length > 0 && listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
-
+    console.log('currentItem', currentItem)
     return (
       <Form layout="horizontal">
         <FooterToolbar>
@@ -136,21 +136,27 @@ class AdvancedForm extends Component {
           <Row>
             <Col {...column}>
               <FormItem label="Store" hasFeedback {...formItemLayout}>
+
                 {getFieldDecorator('storeId', {
                   initialValue: currentItem.storeId,
                   rules: [{
                     required: true
                   }]
                 })(
-                  <Select
-                    mode="default"
-                    size="large"
-                    style={{ width: '100%' }}
-                    placeholder="Choose Store"
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    {listStore}
-                  </Select>
+                  <div>
+                    {modalType === 'edit' ?
+                      <Input value={currentItem.storeId} disabled />
+                      : (<Select
+                        mode="default"
+                        size="large"
+                        style={{ width: '100%' }}
+                        placeholder="Choose Store"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >
+                        {listStore}
+                      </Select>
+                      )}
+                  </div>
                 )}
               </FormItem>
               <FormItem label="Printed" hasFeedback {...formItemLayout}>
