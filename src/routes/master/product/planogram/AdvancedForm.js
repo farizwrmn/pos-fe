@@ -122,7 +122,6 @@ class AdvancedForm extends Component {
       }
     }
     const listStore = listAllStores && listAllStores.length > 0 && listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
-    console.log('currentItem', currentItem)
     return (
       <Form layout="horizontal">
         <FooterToolbar>
