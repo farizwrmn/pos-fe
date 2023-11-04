@@ -48,6 +48,7 @@ import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
 import ModalExpressDineIn from './Dinein'
+import ModalPlanogramCashier from './PlanogramCashier'
 import ModalBundleDetail from './ModalBundleDetail'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
@@ -151,6 +152,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  planogram,
   fingerEmployee,
   pospromo,
   paymentEdc,
@@ -176,6 +178,7 @@ const Pos = ({
   const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
+  const { modalVisible: modalPlanogramCashierVisible } = planogram
   const { currentItem: currentItemFinger } = fingerEmployee
   const {
     modalServiceVisible,
@@ -331,6 +334,12 @@ const Pos = ({
   const handleExpressBrowse = () => {
     dispatch({
       type: 'pos/getExpress'
+    })
+  }
+
+  const handlePlanogramBrowse = () => {
+    dispatch({
+      type: 'planogram/openModal'
     })
   }
 
@@ -2726,6 +2735,36 @@ const Pos = ({
   }
 
 
+  const modalPlanogramCashierProps = {
+    visible: modalExpressVisible,
+    editVisible: modalEditExpressVisible,
+    list: listExpress,
+    item: currentItemPos,
+    loading,
+    onClose () {
+      dispatch({ type: 'planogram/closeModal' })
+    },
+    onCloseEditVisible () {
+      dispatch({ type: 'planogram/closeModalEdit' })
+    },
+    onEditItem (data) {
+      dispatch({
+        type: 'planogram/openModalEdit',
+        payload: data
+      })
+    },
+    onEdit (data, resetFields) {
+      dispatch({
+        type: 'planogram/edit',
+        payload: {
+          id: data.id,
+          isPrinted: data.isPrinted,
+          resetFields
+        }
+      })
+    }
+  }
+
   const modalExpressProps = {
     visible: modalExpressVisible,
     editVisible: modalEditExpressVisible,
@@ -2903,6 +2942,7 @@ const Pos = ({
       />
       {modalBookmarkVisible && <ModalBookmark {...modalBookmarkProps} />}
       {modalExpressVisible && <ModalExpressDineIn {...modalExpressProps} />}
+      {modalPlanogramCashierVisible && <ModalPlanogramCashier {...modalPlanogramCashierProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
@@ -3001,6 +3041,19 @@ const Pos = ({
                     }}
                   >
                     K3Express
+                  </Button>
+                  <Button
+                    size="medium"
+                    icon="tool"
+                    onClick={handlePlanogramBrowse}
+                    loading={loading.effects['planogram/query'] || loading.effects['planogram/openModal']}
+                    disabled={loading.effects['planogram/query'] || loading.effects['planogram/openModal']}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    Planogram
                   </Button>
                 </Col>
               </Row>

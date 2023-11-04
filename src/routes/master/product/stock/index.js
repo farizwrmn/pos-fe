@@ -14,6 +14,7 @@ import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
 import ModalQuantity from './ModalQuantity'
 import ModalPrice from './ModalPrice'
+import Planogram from '../planogram'
 
 const TabPane = Tabs.TabPane
 
@@ -357,6 +358,14 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
     dispatch,
     disabled: modalType === 'edit' && currentItem.isStaging != null ? !currentItem.isStaging : '',
     button: `${modalType === 'add' ? 'Save' : 'Update'}`,
+    onClickPlanogram () {
+      dispatch({
+        type: 'productstock/updateState',
+        payload: {
+          activeKey: '2'
+        }
+      })
+    },
     onSubmit (id, data, reset) {
       dispatch({
         type: `productstock/${modalType}`,
@@ -659,10 +668,14 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
           <List {...listProps} />
           {modalStorePriceVisible && <ModalPrice {...modalPriceProps} />}
         </TabPane>
+        <TabPane tab="Planogram" key="2" disabled>
+          <Planogram />
+        </TabPane>
       </Tabs>
     </div >
   )
 }
+
 
 ProductStock.propTypes = {
   expressProductCategory: PropTypes.object,
