@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Select, Form, Input, Button, Row, Col, Modal, Card, message, BackTop } from 'antd'
+import { Select, Form, Input, Button, Row, Col, Modal, Card, message, Popover, BackTop } from 'antd'
 import { FooterToolbar } from 'components'
+import moment from 'moment'
 
 const { TextArea } = Input
 const { Option } = Select
@@ -83,12 +84,20 @@ class AdvancedForm extends Component {
           id: currentItem.id,
           ...getFieldsValue()
         }
+        if (modalType === 'edit') {
+          data.viewAt = null
+          data.viewBy = null
+        }
         if (modalType === 'edit' && !currentItem.id) {
           message.warning('Data cannot be updated. Try to click edit button in browse tab again')
           return
         }
         if (!data.storeId && !currentItem.storeId) {
           message.warning('Must Choose storeId')
+          return
+        }
+        if (!data.name && !currentItem.name) {
+          message.warning('Must entry name of planogram. contoh: Planogram [Product Category] [DATE]')
           return
         }
         if (!data.url && !currentItem.url) {
@@ -134,18 +143,41 @@ class AdvancedForm extends Component {
           <BackTop visibilityHeight={10} />
           <Row>
             <Col {...column}>
-              <FormItem label="Store" hasFeedback {...formItemLayout}>
-
-                {getFieldDecorator('storeId', {
-                  initialValue: currentItem.storeId,
-                  rules: [{
-                    required: true
-                  }]
-                })(
-                  <div>
-                    {modalType === 'edit' ?
-                      <Input value={currentItem.storeId} disabled />
-                      : (<Select
+              <Popover trigger="hover" open placement="topLeft" content={(<h5> message: contoh: Planogram Product Cipher 2023-11-10</h5>)}>
+                <FormItem label="Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('name', {
+                    initialValue: currentItem.storeId || `Planogram [Product Category] ${moment().format('YYYY-MM-DD')}`,
+                    rules: [{
+                      required: true,
+                      message: 'contoh: Planogram Product Cipher 2023-11-10'
+                    }]
+                  })(
+                    <Input placeholder="Planogram [Product Category] [DATE]" />
+                  )}
+                </FormItem>
+              </Popover>
+              {modalType === 'edit' ? (
+                <FormItem label="Store" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('storeId', {
+                    initialValue: currentItem.storeId,
+                    rules: [{
+                      required: true
+                    }]
+                  })(
+                    <Input value={currentItem.storeId} disabled />
+                  )}
+                </FormItem>
+              )
+                : (
+                  <FormItem label="Store" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('storeId', {
+                      initialValue: currentItem.storeId,
+                      rules: [{
+                        required: true
+                      }]
+                    })(
+                      <Select
+                        showSearch
                         mode="default"
                         size="large"
                         style={{ width: '100%' }}
@@ -154,14 +186,18 @@ class AdvancedForm extends Component {
                       >
                         {listStore}
                       </Select>
-                      )}
-                  </div>
+                    )}
+                  </FormItem>
                 )}
+              <FormItem label="View At" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('viewAt', {
+                  initialValue: currentItem.viewAt
+                })(<Input disabled />)}
               </FormItem>
-              <FormItem label="Printed" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('isPrinted', {
-                  initialValue: currentItem.isPrinted
-                })(<Switch disabled />)}
+              <FormItem label="View By" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('viewBy', {
+                  initialValue: currentItem.viewBy
+                })(<Input disabled />)}
               </FormItem>
               <FormItem label="URL" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('url', {

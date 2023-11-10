@@ -40,11 +40,27 @@ const List = ({
       }
     },
     {
-      title: 'Printed',
-      dataIndex: 'isPrinted',
-      key: 'isPrinted',
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) => {
-        return <Tag color={record.isPrinted ? 'blue' : 'red'}>{record.isPrinted ? 'Printed' : 'Not-Printed'}</Tag>
+        return <Tag color={record.name ? 'blue' : 'red'}>{record.name}</Tag>
+      }
+    },
+    {
+      title: 'viewAt',
+      dataIndex: 'viewAt',
+      key: 'viewAt',
+      render: (text, record) => {
+        return <Tag color={record.viewBy ? 'blue' : 'red'}>{record.viewAt}</Tag>
+      }
+    },
+    {
+      title: 'viewBy',
+      dataIndex: 'viewBy',
+      key: 'viewBy',
+      render: (text, record) => {
+        return <Tag color={record.viewBy ? 'blue' : 'red'}>{record.viewBy}</Tag>
       }
     },
     {
@@ -63,8 +79,8 @@ const List = ({
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '1', name: 'Edit' },
-              { key: '2', name: 'Delete' }
+              { key: '1', name: 'Edit' }
+              // { key: '2', name: 'Delete' }
               // { key: '3', name: 'History' }
             ]}
           />
