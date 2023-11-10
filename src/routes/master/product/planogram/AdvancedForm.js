@@ -146,7 +146,7 @@ class AdvancedForm extends Component {
               <Popover trigger="hover" open placement="topLeft" content={(<h5> message: contoh: Planogram Product Cipher 2023-11-10</h5>)}>
                 <FormItem label="Name" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('name', {
-                    initialValue: currentItem.storeId || `Planogram [Product Category] ${moment().format('YYYY-MM-DD')}`,
+                    initialValue: currentItem.name || `Planogram [Product Category] ${moment().format('YYYY-MM-DD')}`,
                     rules: [{
                       required: true,
                       message: 'contoh: Planogram Product Cipher 2023-11-10'
