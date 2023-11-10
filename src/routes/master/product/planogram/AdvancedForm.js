@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Switch, Select, Form, Input, Button, Row, Col, Modal, Card, message, BackTop } from 'antd'
+import { Switch, Select, Form, Input, Button, Row, Col, Modal, Card, message, Popover, BackTop } from 'antd'
 import { FooterToolbar } from 'components'
 
 const { TextArea } = Input
@@ -134,18 +134,40 @@ class AdvancedForm extends Component {
           <BackTop visibilityHeight={10} />
           <Row>
             <Col {...column}>
-              <FormItem label="Store" hasFeedback {...formItemLayout}>
-
-                {getFieldDecorator('storeId', {
-                  initialValue: currentItem.storeId,
-                  rules: [{
-                    required: true
-                  }]
-                })(
-                  <div>
-                    {modalType === 'edit' ?
-                      <Input value={currentItem.storeId} disabled />
-                      : (<Select
+              <Popover trigger="hover" open placement="topLeft" content={(<h5> message: contoh: Planogram Product Cipher 2023-11-10</h5>)}>
+                <FormItem label="Name" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('name', {
+                    initialValue: currentItem.storeId,
+                    rules: [{
+                      required: true,
+                      message: 'contoh: Planogram Product Cipher 2023-11-10'
+                    }]
+                  })(
+                    <Input placeholder="Planogram [Product Category] [DATE]" />
+                  )}
+                </FormItem>
+              </Popover>
+              {modalType === 'edit' ? (
+                <FormItem label="Store" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('storeId', {
+                    initialValue: currentItem.storeId,
+                    rules: [{
+                      required: true
+                    }]
+                  })(
+                    <Input value={currentItem.storeId} disabled />
+                  )}
+                </FormItem>
+              )
+                : (
+                  <FormItem label="Store" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('storeId', {
+                      initialValue: currentItem.storeId,
+                      rules: [{
+                        required: true
+                      }]
+                    })(
+                      <Select
                         mode="default"
                         size="large"
                         style={{ width: '100%' }}
@@ -154,14 +176,23 @@ class AdvancedForm extends Component {
                       >
                         {listStore}
                       </Select>
-                      )}
-                  </div>
+                    )}
+                  </FormItem>
                 )}
-              </FormItem>
               <FormItem label="Printed" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('isPrinted', {
                   initialValue: currentItem.isPrinted
                 })(<Switch disabled />)}
+              </FormItem>
+              <FormItem label="View At" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('viewAt', {
+                  initialValue: currentItem.viewAt
+                })(<Input disabled />)}
+              </FormItem>
+              <FormItem label="View By" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('viewBy', {
+                  initialValue: currentItem.viewBy
+                })(<Input disabled />)}
               </FormItem>
               <FormItem label="URL" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('url', {

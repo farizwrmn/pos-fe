@@ -41,16 +41,16 @@ const List = ({ onEdit, loading, ...tableProps }) => {
       }
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
+      title: 'View At',
+      dataIndex: 'viewAt',
+      key: 'viewAt',
       render (text, record) {
         return {
           props: {
             style: { background: record.color }
           },
           children: (
-            <div>{moment(record.updatedAt).format('DD-MM-YYYY HH:mm:ss')}</div>
+            <div>{moment(record.viewAt).format('DD-MM-YYYY HH:mm:ss')}</div>
           )
         }
       }
