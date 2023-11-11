@@ -1,19 +1,21 @@
 import React from 'react'
-import { Table, Icon, Modal } from 'antd'
+import { Table, Icon } from 'antd'
 import moment from 'moment'
 
 const List = ({ onEdit, loading, ...tableProps }) => {
   const handleMenuClick = (record) => {
-    Modal.confirm({
-      title: 'Validate planogram',
-      content: 'validasi ini menandakan bahwa anda telah melihat dokumen ini?',
-      onOk () {
-        onEdit({
-          ...record,
-          viewAt: moment().format('YYYY-MM-DD HH:mm:ss')
-        })
-      }
-    })
+    window.onbeforeprint = function () {
+      console.log('This will be called before the user prints.')
+    }
+
+    window.onafterprint = function () {
+      console.log('This will be called after the user prints')
+    }
+    alert('validasi ini menandakan bahwa anda telah melihat dokumen ini?',
+      onEdit({
+        ...record,
+        viewAt: moment().format('YYYY-MM-DD HH:mm:ss')
+      }))
   }
 
   const columns = [
@@ -35,15 +37,7 @@ const List = ({ onEdit, loading, ...tableProps }) => {
             style: { background: record.color }
           },
           children: (
-            <a
-              onClick={(event) => {
-                event.preventDefault()
-                handleMenuClick(record)
-              }}
-              href={record.url ? record.url : ''}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a onClick={() => handleMenuClick(record)} href={record.url ? record.url : ''} target="_blank" rel="noopener noreferrer">
               {record.url}
             </a>
           )
