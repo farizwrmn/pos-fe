@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Button, DatePicker, Row, Col, Icon, Form, Select, Modal, Spin } from 'antd'
 import { FilterItem } from 'components'
-import PrintXLS from './PrintXLS'
+// import PrintXLS from './PrintXLS'
 import PrintPDF from './PrintPDF'
 
 const Option = Select.Option
@@ -181,7 +181,7 @@ const Filter = ({
           <Icon type="rollback" className="icon-large" />
         </Button>
         {<PrintPDF {...exportProps} />}
-        {<PrintXLS {...exportProps} />}
+        {/* {<PrintXLS {...exportProps} />} */}
       </Col>
     </Row>
   )

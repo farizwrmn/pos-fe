@@ -31,28 +31,10 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
     }, {})
   }
 
-  // const unique = (group, code) => {
-  //   return group.map((key) => {
-  //     return key[code]
-  //   }).filter((e, index, array) => {
-  //     return index === array.indexOf(e)
-  //   })
-  // }
-  // const groupCode = unique(outJSON, 'productCode')
-  // let groups = []
-  // groupCode.map((code) => {
-  //   groups.push(outJSON.filter(group => group.productCode === code))
-  //   return code
-  // })
-
   let groubedByTeam = groupBy(outJSON, 'productCode')
   let arr = Object.keys(groubedByTeam).map(index => groubedByTeam[index])
 
   const createTableBody = (tabledata) => {
-    let inQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.pQty) || 0), 0)
-    let inAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.pAmount) || 0), 0)
-    let outQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sQty) || 0), 0)
-    let outAmount = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.sAmount) || 0), 0)
     const headers = [
       [
         { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
@@ -60,15 +42,10 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
         { fontSize: 12, text: 'CREATED', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'NO_FAKTUR', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TIPE', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'MASUK', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
         { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'KELUAR', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'HARGA SATUAN', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'HARGA JUAL', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'JUMLAH', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 12, text: 'TOTAL', style: 'tableHeader', alignment: 'center' }
+        { fontSize: 12, text: 'REFERENCE', style: 'tableHeader', alignment: 'center' }
       ]
     ]
 
@@ -88,39 +65,16 @@ const PrintPDF = ({ user, listRekap, storeInfo, period, year }) => {
           { text: moment(data.createdAt).format('DD-MMM-YYYY'), alignment: 'left', fontSize: 11 },
           { text: (data.transNo || '').toString(), link: getLinkName(data.transNo, data.transType), decoration: getLinkName(data.transNo, data.transType) ? 'underline' : undefined, alignment: 'left', fontSize: 11 },
           { text: data.transType.toString(), alignment: 'left', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.pQty) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.pPrice) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.pAmount) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.sQty) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.sPrice) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.sValue) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(parseFloat(data.sAmount) || 0), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia(countQtyValue), alignment: 'right', fontSize: 11 },
-          { text: formatNumberIndonesia((parseFloat(data.pAmount) || 0) - (parseFloat(data.sAmount) || 0)), alignment: 'right', fontSize: 11 }
+          { text: formatNumberIndonesia(parseFloat(data.type === 'IN' ? data.qty : data.qty * -1) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.DPP) || 0), alignment: 'right', fontSize: 11 },
+          { text: formatNumberIndonesia(parseFloat(data.type === 'IN' ? data.total : data.total * -1) || 0), alignment: 'right', fontSize: 11 },
+          { text: data.purchaseNo, alignment: 'right', fontSize: 11 }
         ]
         body.push(row)
       }
       counter += 1
     }
-
-    let totalRow = [
-      { text: 'Total', colSpan: 5, alignment: 'center', fontSize: 12 },
-      {},
-      {},
-      {},
-      {},
-      { text: formatNumberIndonesia(inQty), alignment: 'right', fontSize: 12 },
-      {},
-      { text: formatNumberIndonesia(inAmount), alignment: 'right', fontSize: 12 },
-      { text: formatNumberIndonesia(outQty), alignment: 'right', fontSize: 12 },
-      {},
-      {},
-      { text: formatNumberIndonesia(outAmount), alignment: 'right', fontSize: 12 },
-      {},
-      { text: formatNumberIndonesia((inAmount - outAmount)), alignment: 'right', fontSize: 12 }
-    ]
-    body.push(totalRow)
-    width.push(['3%', '7%', '7%', '13%', '4%', '5%', '9%', '9%', '5%', '9%', '9%', '9%', '5%', '9%'])
+    width.push(['3%', '7%', '7%', '13%', '4%', '5%', '9%', '9%', '12%'])
     return body
   }
 
