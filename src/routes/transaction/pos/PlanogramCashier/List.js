@@ -6,7 +6,7 @@ const List = ({ onEdit, loading, ...tableProps }) => {
   const handleMenuClick = (record) => {
     Modal.confirm({
       title: 'Validate planogram',
-      content: 'Are you sure already print planogram file from given url ?',
+      content: 'validasi ini menandakan bahwa anda telah melihat dokumen ini?',
       onOk () {
         onEdit({
           ...record,
@@ -35,10 +35,14 @@ const List = ({ onEdit, loading, ...tableProps }) => {
             style: { background: record.color }
           },
           children: (
-            <div
-              disabled={loading.effects['planogram/edit']}
+            <a
               onClick={() => handleMenuClick(record)}
-            >{record.url}</div>
+              href={record.url ? record.url : ''}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {record.url}
+            </a>
           )
         }
       }
