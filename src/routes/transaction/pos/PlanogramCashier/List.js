@@ -36,7 +36,10 @@ const List = ({ onEdit, loading, ...tableProps }) => {
           },
           children: (
             <a
-              onClick={() => handleMenuClick(record)}
+              onClick={(event) => {
+                event.preventDefault()
+                handleMenuClick(record)
+              }}
               href={record.url ? record.url : ''}
               target="_blank"
               rel="noopener noreferrer"

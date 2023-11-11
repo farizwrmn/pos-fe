@@ -2761,7 +2761,9 @@ const Pos = ({
       dispatch({
         type: 'planogram/edit',
         payload: {
-          id: data.id,
+          ...data,
+          viewBy: data.viewBy,
+          viewAt: data.viewAt,
           isPrinted: data.isPrinted,
           resetFields
         }
