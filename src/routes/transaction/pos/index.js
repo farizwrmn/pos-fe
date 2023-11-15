@@ -1093,7 +1093,7 @@ const Pos = ({
             modalLoginData: {
               transType: DISCOUNT_ITEM,
               transNo: user.username,
-              memo: `Cancel Input POS ${getCurrentUserStoreName()}`,
+              memo: `Discount Item POS ${getCurrentUserStoreName()}`,
               detail: listTrans,
               ...data
             }
