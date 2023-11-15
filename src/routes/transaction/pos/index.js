@@ -25,7 +25,7 @@ import {
   Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
-import { CANCEL_ITEM, CANCEL_INPUT } from 'utils/variable'
+import { CANCEL_ITEM, CANCEL_INPUT, DISCOUNT_ITEM } from 'utils/variable'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -1062,10 +1062,41 @@ const Pos = ({
             modalLoginType: 'editPayment'
           }
         })
+        const cashierTrans = product
+          .filter(filtered => !filtered.bundleId)
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Product', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Product' }
+          })
+          .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+          .concat(service.map(item => ({ ...item, type: 'Service' })))
+          .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+          .sort((a, b) => a.inputTime - b.inputTime)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+          .sort((a, b) => b.no - a.no)
+        const listTrans = cashierTrans && Array.isArray(cashierTrans)
+          ? cashierTrans.map(record => ({
+            productId: record.productId || 1,
+            productName: record.name,
+            productCode: record.code,
+            price: record.price,
+            qty: record.qty,
+            total: record.total,
+            singleDeletion: record.singleDeletion || 0
+          }))
+          : []
         dispatch({
           type: 'login/updateState',
           payload: {
-            modalLoginData: data
+            modalLoginData: {
+              transType: DISCOUNT_ITEM,
+              transNo: user.username,
+              memo: `Cancel Input POS ${getCurrentUserStoreName()}`,
+              detail: listTrans,
+              ...data
+            }
           }
         })
       }
