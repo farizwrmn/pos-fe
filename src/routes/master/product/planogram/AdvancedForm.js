@@ -189,7 +189,7 @@ class AdvancedForm extends Component {
                     )}
                   </FormItem>
                 )}
-              <FormItem label="View At" hasFeedback {...formItemLayout}>
+              {/* <FormItem label="View At" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('viewAt', {
                   initialValue: currentItem.viewAt
                 })(<Input disabled />)}
@@ -198,7 +198,7 @@ class AdvancedForm extends Component {
                 {getFieldDecorator('viewBy', {
                   initialValue: currentItem.viewBy
                 })(<Input disabled />)}
-              </FormItem>
+              </FormItem> */}
               <FormItem label="URL" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('url', {
                   initialValue: currentItem.url,
