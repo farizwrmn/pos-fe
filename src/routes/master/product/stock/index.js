@@ -359,6 +359,12 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
     disabled: modalType === 'edit' && currentItem.isStaging != null ? !currentItem.isStaging : '',
     button: `${modalType === 'add' ? 'Save' : 'Update'}`,
     onClickPlanogram () {
+      dispatch(routerRedux.push({
+        pathname: 'stock-planogram',
+        query: {
+          activeKey: 0
+        }
+      }))
       dispatch({
         type: 'productstock/updateState',
         payload: {
