@@ -64,6 +64,7 @@ class AdvancedForm extends Component {
       item = {},
       onSubmit,
       onCancel,
+      onClickPlanogram,
       listSource,
       listDivision,
       listDepartment,
@@ -588,6 +589,7 @@ class AdvancedForm extends Component {
 
     return (
       <Form layout="horizontal">
+        <Button type="primary" disabled={loadingButton && (loadingButton.effects['planogram/add'] || loadingButton.effects['planogram/edit'])} onClick={onClickPlanogram}>Planogram</Button>
         <FooterToolbar>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button disabled={loadingButton && (loadingButton.effects['productstock/add'] || loadingButton.effects['productstock/edit'])} type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
