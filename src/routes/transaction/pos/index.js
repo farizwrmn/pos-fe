@@ -151,6 +151,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  sequenceValue,
   fingerEmployee,
   pospromo,
   paymentEdc,
@@ -257,6 +258,7 @@ const Pos = ({
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
   const { modalPromoVisible, listMinimumPayment } = promo
+  const { currentItem: currentItemSeqValue } = sequenceValue
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -2810,6 +2812,7 @@ const Pos = ({
 
   const latestQrisTransactionProps = {
     loading,
+    currentItem: currentItemSeqValue,
     latestTransaction: qrisLatestTransaction,
     list: listQrisLatestTransaction,
     modalVisible: modalQrisLatestTransactionVisible,
@@ -3176,6 +3179,7 @@ Pos.propTypes = {
 
 export default connect(({
   fingerEmployee,
+  sequenceValue,
   pospromo,
   paymentEdc,
   paymentCost,
@@ -3196,6 +3200,7 @@ export default connect(({
   payment
 }) => ({
   fingerEmployee,
+  sequenceValue,
   pospromo,
   paymentEdc,
   paymentCost,

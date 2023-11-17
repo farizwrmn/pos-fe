@@ -3,7 +3,7 @@ import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 import ModalList from './ModalList'
 
-const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction, handleClickLatestTransaction }) => {
+const LatestQrisTransaction = ({ currentItem, loading, modalVisible, list, latestTransaction, handleClickLatestTransaction }) => {
   const modalListProps = {
     loading,
     visible: modalVisible,
@@ -18,6 +18,7 @@ const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction,
       {
         Boolean(latestTransaction) && (
           <Col span={24}>
+            <h1>{currentItem.refrence} {currentItem.seqValue}</h1>
             <Tag
               color="green"
               style={{ width: '100%' }}
