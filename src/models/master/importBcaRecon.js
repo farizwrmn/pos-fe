@@ -122,7 +122,7 @@ export default modelExtend(pageModel, {
           payment: { storeId, transDate: moment(transDate).format('YYYY-MM-DD') },
           paymentImportBca: {
             transactionDate: moment(transDate).format('YYYY-MM-DD'),
-            recordSource: ['TC', 'TD', 'PC', 'PD'],
+            recordSource: ['TC', 'TD', 'TQ', 'PC', 'PD', 'PQ'],
             storeId,
             type: 'all'
           }
