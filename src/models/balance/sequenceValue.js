@@ -3,6 +3,7 @@ import {
   query,
   checkUserRole
 } from 'services/balance/sequenceValue'
+import { lstorage } from 'utils'
 
 // const success = () => {
 //   message.success('Success')
@@ -27,7 +28,9 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname } = location
+        let storeId = lstorage.getCurrentUserStore()
         if (pathname === '/transaction/pos') {
+          dispatch({ type: 'query', payload: { storeId } })
           dispatch({
             type: 'updateState',
             payload: {
