@@ -1,5 +1,4 @@
 import React from 'react'
-import QRCode from 'qrcode'
 
 class QRCodeGenerator extends React.Component {
   componentDidMount () {
@@ -13,18 +12,15 @@ class QRCodeGenerator extends React.Component {
   }
 
   generateQRCode = () => {
-    const { data, size } = this.props
+    const { data } = this.props
+    // Replace 'yourBase64String' with your actual Base64 encoded PNG string
+    const base64String = `data:image/png;base64,${data}`
     const canvas = document.getElementById('qrcode-canvas')
-
-    QRCode.toCanvas(canvas, data, { width: size, height: size }, (error) => {
-      if (error) {
-        console.error('Error generating QR code:', error)
-      }
-    })
+    canvas.setAttribute('src', base64String)
   }
 
   render () {
-    return <canvas id="qrcode-canvas" width="100%" height="auto" style={{ minHeight: '200px', maxHeight: '250px', maxWidth: '250px', marginTop: '30px' }} />
+    return <img id="qrcode-canvas" alt="qrcode" style={{ minHeight: '250px', width: 'auto', marginTop: '10px' }} />
   }
 }
 
