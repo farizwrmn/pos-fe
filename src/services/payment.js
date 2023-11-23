@@ -16,6 +16,16 @@ const { pos, posdetail } = config.api
 //   })
 // }
 
+export async function queryReference (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/sequence-refpos',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryList (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

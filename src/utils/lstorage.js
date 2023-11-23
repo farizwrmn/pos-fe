@@ -135,6 +135,14 @@ const setQrisImage = (data) => {
   return localStorage.setItem('qris_image', data)
 }
 
+const getPosReference = () => {
+  return localStorage.getItem('pos_reference') ? localStorage.getItem('pos_reference') : null
+}
+
+const setPosReference = (data) => {
+  return localStorage.setItem('pos_reference', data)
+}
+
 const getDynamicQrisPosTransId = () => {
   return localStorage.getItem('dynamic_qris_pos_trans_id') ? localStorage.getItem('dynamic_qris_pos_trans_id') : null
 }
@@ -523,6 +531,8 @@ module.exports = {
   getVoucherList,
   setVoucherList,
   removeQrisImage,
+  getPosReference,
+  setPosReference,
   getConsignmentId,
   getGrabmartOrder,
   setGrabmartOrder,
