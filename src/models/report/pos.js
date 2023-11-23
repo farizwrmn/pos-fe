@@ -84,6 +84,8 @@ export default {
           }
         })
 
+        // TODO Buat querySequenceReference untuk get current reference lalu save ke localStorage insertPosReference
+
         if (location.pathname === '/report/pos/summary') {
           const { query } = location
           if (query.activeKey === '4' && query.from && query.to) {

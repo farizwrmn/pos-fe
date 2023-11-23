@@ -189,6 +189,8 @@ export default {
           })
         } else {
           let arrayProd = []
+          // TODO getPosReference dari localStorage dan masukkan ke variable reference
+          let reference = 0
           const product = getCashierTrans()
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
@@ -301,6 +303,7 @@ export default {
           let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
+              reference,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
@@ -358,6 +361,7 @@ export default {
                 removeDynamicQrisPosTransId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
+                // TODO panggil pos/querySequenceReference
                 yield put({
                   type: 'pos/setAllNull'
                 })
@@ -738,6 +742,8 @@ export default {
           })
         } else {
           let arrayProd = []
+          // TODO getPosReference dari localStorage dan masukkan ke variable reference
+          let reference = 0
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
@@ -851,6 +857,7 @@ export default {
             const goodsInfo = product.map(item => `${item.productId}:${item.qty}:${item.total}`).join(';')
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
+              reference,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
@@ -905,6 +912,7 @@ export default {
                     paymentTransactionLimitTime: Number(paymentTransactionLimitTime || 15)
                   }
                 })
+                // TODO panggil pos/querySequenceReference
                 yield put({
                   type: 'pos/updateState',
                   payload: {
