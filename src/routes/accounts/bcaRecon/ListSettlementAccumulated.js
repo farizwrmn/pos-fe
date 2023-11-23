@@ -25,6 +25,9 @@ const ListAccumulatedAmount = ({ openModalInputMdrAmount, ...tableProps }) => {
         if (text === 'AD') {
           return 'Debit'
         }
+        if (text === 'AS') {
+          return 'QRIS'
+        }
         return ''
       }
     },

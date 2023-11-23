@@ -25,7 +25,7 @@ import {
   Tag
 } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
-import { CANCEL_ITEM, CANCEL_INPUT } from 'utils/variable'
+import { CANCEL_ITEM, CANCEL_INPUT, DISCOUNT_ITEM } from 'utils/variable'
 import Browse from './Browse'
 import ModalEditBrowse from './ModalEditBrowse'
 // import ModalShift from './ModalShift'
@@ -48,6 +48,7 @@ import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
 import ModalExpressDineIn from './Dinein'
+import ModalPlanogramCashier from './PlanogramCashier'
 import ModalBundleDetail from './ModalBundleDetail'
 import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
@@ -151,7 +152,7 @@ const setTime = () => {
 
 
 const Pos = ({
-  sequenceValue,
+  planogram,
   fingerEmployee,
   pospromo,
   paymentEdc,
@@ -177,6 +178,11 @@ const Pos = ({
   const { user, setting } = app
   // const { listShift } = shift
   // const { listCounter } = counter
+  const {
+    modalVisible: modalPlanogramCashierVisible,
+    modalEditVisible: modalEditPlanogramCashierVisible,
+    list: listPlanogram
+  } = planogram
   const { currentItem: currentItemFinger } = fingerEmployee
   const {
     modalServiceVisible,
@@ -258,7 +264,6 @@ const Pos = ({
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
   const { modalPromoVisible, listMinimumPayment } = promo
-  const { currentItem: currentItemSeqValue } = sequenceValue
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -333,6 +338,12 @@ const Pos = ({
   const handleExpressBrowse = () => {
     dispatch({
       type: 'pos/getExpress'
+    })
+  }
+
+  const handlePlanogramBrowse = () => {
+    dispatch({
+      type: 'planogram/openModal'
     })
   }
 
@@ -1064,10 +1075,41 @@ const Pos = ({
             modalLoginType: 'editPayment'
           }
         })
+        const cashierTrans = product
+          .filter(filtered => !filtered.bundleId)
+          .map((item) => {
+            if (Number(item.no) === Number(data.Record)) {
+              return ({ ...item, type: 'Product', singleDeletion: 1 })
+            }
+            return { ...item, type: 'Product' }
+          })
+          .concat(bundle ? bundle.map(item => ({ ...item, type: 'Bundle' })) : [])
+          .concat(service.map(item => ({ ...item, type: 'Service' })))
+          .concat(consignment.map(item => ({ ...item, type: 'Consignment' })))
+          .sort((a, b) => a.inputTime - b.inputTime)
+          .map((item, index) => ({ ...item, no: index + 1 }))
+          .sort((a, b) => b.no - a.no)
+        const listTrans = cashierTrans && Array.isArray(cashierTrans)
+          ? cashierTrans.map(record => ({
+            productId: record.productId || 1,
+            productName: record.name,
+            productCode: record.code,
+            price: record.price,
+            qty: record.qty,
+            total: record.total,
+            singleDeletion: record.singleDeletion || 0
+          }))
+          : []
         dispatch({
           type: 'login/updateState',
           payload: {
-            modalLoginData: data
+            modalLoginData: {
+              transType: DISCOUNT_ITEM,
+              transNo: user.username,
+              memo: `Discount Item POS ${getCurrentUserStoreName()}`,
+              detail: listTrans,
+              ...data
+            }
           }
         })
       }
@@ -2728,6 +2770,38 @@ const Pos = ({
   }
 
 
+  const modalPlanogramCashierProps = {
+    visible: modalPlanogramCashierVisible,
+    editVisible: modalEditPlanogramCashierVisible,
+    list: listPlanogram,
+    item: currentItemPos,
+    loading,
+    onClose () {
+      dispatch({ type: 'planogram/closeModal' })
+    },
+    onCloseEditVisible () {
+      dispatch({ type: 'planogram/closeModalEdit' })
+    },
+    onEditItem (data) {
+      dispatch({
+        type: 'planogram/openModalEdit',
+        payload: data
+      })
+    },
+    onEdit (data, resetFields) {
+      dispatch({
+        type: 'planogram/edit',
+        payload: {
+          ...data,
+          viewBy: data.viewBy,
+          viewAt: data.viewAt,
+          isPrinted: data.isPrinted,
+          resetFields
+        }
+      })
+    }
+  }
+
   const modalExpressProps = {
     visible: modalExpressVisible,
     editVisible: modalEditExpressVisible,
@@ -2812,7 +2886,6 @@ const Pos = ({
 
   const latestQrisTransactionProps = {
     loading,
-    currentItem: currentItemSeqValue,
     latestTransaction: qrisLatestTransaction,
     list: listQrisLatestTransaction,
     modalVisible: modalQrisLatestTransactionVisible,
@@ -2906,6 +2979,7 @@ const Pos = ({
       />
       {modalBookmarkVisible && <ModalBookmark {...modalBookmarkProps} />}
       {modalExpressVisible && <ModalExpressDineIn {...modalExpressProps} />}
+      {modalPlanogramCashierVisible && <ModalPlanogramCashier {...modalPlanogramCashierProps} />}
       <Row gutter={24} style={{ marginBottom: 16 }}>
         {hasBookmark ? (
           <Col md={7} sm={0} xs={0}>
@@ -3004,6 +3078,19 @@ const Pos = ({
                     }}
                   >
                     K3Express
+                  </Button>
+                  <Button
+                    size="medium"
+                    icon="tool"
+                    onClick={handlePlanogramBrowse}
+                    loading={loading.effects['planogram/query'] || loading.effects['planogram/openModal']}
+                    disabled={loading.effects['planogram/query'] || loading.effects['planogram/openModal']}
+                    style={{
+                      margin: '0px 5px',
+                      marginBottom: '5px'
+                    }}
+                  >
+                    Planogram
                   </Button>
                 </Col>
               </Row>
@@ -3178,8 +3265,8 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  planogram,
   fingerEmployee,
-  sequenceValue,
   pospromo,
   paymentEdc,
   paymentCost,
@@ -3199,8 +3286,8 @@ export default connect(({
   customerunit,
   payment
 }) => ({
+  planogram,
   fingerEmployee,
-  sequenceValue,
   pospromo,
   paymentEdc,
   paymentCost,
