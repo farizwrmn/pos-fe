@@ -3,7 +3,6 @@ import {
   query,
   checkUserRole
 } from 'services/balance/sequenceValue'
-import { lstorage } from 'utils'
 
 // const success = () => {
 //   message.success('Success')
