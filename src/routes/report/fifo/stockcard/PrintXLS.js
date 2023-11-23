@@ -75,18 +75,13 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     [
       { value: 'NO', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'DATE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TRANS', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'TYPE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'IN', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'PRICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'OUT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'PRICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'S.PRICE', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'COUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'AMOUNT', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableHeader, border: styles.tableBorder }
+      { value: 'TANGGAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'NO_FAKTUR', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TIPE', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'HARGA SATUAN', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'TOTAL', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'REFERENCE', alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
 
@@ -115,41 +110,13 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
       tableBody.push({ value: `${moment(arr[i][n].transDate).format('DD-MMM-YYYY')}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${arr[i][n].transNo}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       tableBody.push({ value: `${arr[i][n].transType}`, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].pQty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].pPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].pAmount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sQty) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sPrice) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sValue) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: (parseFloat(arr[i][n].sAmount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({ value: countQtyValue, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-      tableBody.push({
-        value: (parseFloat(arr[i][n].pAmount) || 0) - (parseFloat(arr[i][n].sAmount) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder
-      })
+      tableBody.push({ value: arr[i][n].transType === 'IN' ? (parseFloat(arr[i][n].qty) || 0) : (parseFloat(arr[i][n].qty) || 0) * -1, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: (parseFloat(arr[i][n].DPP) || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].transType === 'IN' ? (parseFloat(arr[i][n].total) || 0) : (parseFloat(arr[i][n].total) || 0) * -1, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+      tableBody.push({ value: arr[i][n].purchaseNo, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
       group.push(tableBody)
     }
     tableBodies.push(group)
-
-    let pAmount = arr[i].reduce((cnt, o) => cnt + (parseFloat(o.pAmount) || 0), 0)
-    let sAmount = arr[i].reduce((cnt, o) => cnt + (parseFloat(o.sAmount) || 0), 0)
-    let pQty = arr[i].reduce((cnt, o) => cnt + (parseFloat(o.pQty) || 0), 0)
-    let sQty = arr[i].reduce((cnt, o) => cnt + (parseFloat(o.sQty) || 0), 0)
-    let tableFooter = []
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: 'GRAND TOTAL', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: pQty, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: pAmount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: sQty, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: sAmount, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooter.push({ value: '', alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter })
-    tableFooter.push({ value: (pAmount - sAmount), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableFooter, border: styles.tableBorder })
-    tableFooters.push(tableFooter)
   }
 
   // Declare additional Props
@@ -164,7 +131,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: arr,
-    fileName: 'Purchase-Summary'
+    fileName: 'Stock-Card'
   }
 
   return (
