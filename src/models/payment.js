@@ -16,6 +16,7 @@ import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 const { stockMinusAlert } = alertModal
 const {
   getCashierTrans,
+  getPosReference,
   getConsignment,
   removeQrisImage,
   setDynamicQrisImage,
@@ -189,8 +190,14 @@ export default {
           })
         } else {
           let arrayProd = []
-          // TODO getPosReference dari localStorage dan masukkan ke variable reference
-          let reference = 0
+          let reference = getPosReference()
+          if (!reference) {
+            Modal.error({
+              title: 'Refresh the browser',
+              content: 'Refresh the browser'
+            })
+            return
+          }
           const product = getCashierTrans()
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
@@ -361,7 +368,9 @@ export default {
                 removeDynamicQrisPosTransId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
-                // TODO panggil pos/querySequenceReference
+                yield put({
+                  type: 'pos/querySequenceReference'
+                })
                 yield put({
                   type: 'pos/setAllNull'
                 })
@@ -742,8 +751,14 @@ export default {
           })
         } else {
           let arrayProd = []
-          // TODO getPosReference dari localStorage dan masukkan ke variable reference
-          let reference = 0
+          let reference = getPosReference()
+          if (!reference) {
+            Modal.error({
+              title: 'Refresh the browser',
+              content: 'Refresh the browser'
+            })
+            return
+          }
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
@@ -912,7 +927,9 @@ export default {
                     paymentTransactionLimitTime: Number(paymentTransactionLimitTime || 15)
                   }
                 })
-                // TODO panggil pos/querySequenceReference
+                yield put({
+                  type: 'pos/querySequenceReference'
+                })
                 yield put({
                   type: 'pos/updateState',
                   payload: {

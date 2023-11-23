@@ -24,24 +24,6 @@ export default {
     }
   },
 
-  subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
-        const { pathname } = location
-        let storeId = lstorage.getCurrentUserStore()
-        if (pathname === '/transaction/pos') {
-          dispatch({ type: 'query', payload: { storeId } })
-          dispatch({
-            type: 'updateState',
-            payload: {
-              currentItem: {}
-            }
-          })
-        }
-      })
-    }
-  },
-
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
