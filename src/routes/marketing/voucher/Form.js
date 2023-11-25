@@ -127,14 +127,14 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Voucher Value" help="Price charge when customer use the voucher" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherValue', {
-              initialValue: modalType === 'add' ? 10000 : item.voucherValue,
+              initialValue: modalType === 'add' ? 5000 : item.voucherValue,
               rules: [
                 {
                   pattern: /^[0-9/]{1,50}$/i,
                   required: true
                 }
               ]
-            })(<InputNumber defaultValue={10000} disabled={modalType === 'edit' ? item.soldOne : false} style={{ width: '100%' }} min={10000} />)}
+            })(<InputNumber defaultValue={5000} disabled={modalType === 'edit' ? item.soldOne : false} style={{ width: '100%' }} min={5000} />)}
           </FormItem>
           <FormItem label="Voucher Price" help="Price charge when customer buy the voucher" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherPrice', {
