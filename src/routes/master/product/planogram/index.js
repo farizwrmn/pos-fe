@@ -29,17 +29,12 @@ const Planogram = ({ planogram, userStore, loading, dispatch, location, app }) =
     loadingModel: loading,
     loading: loading.effects['planogram/query'] || loading.effects['planogram/edit'] || loading.effects['planogram/editItem'],
     location,
-    onChange (page, filters) {
-      const { brandId, categoryId } = filters
-      const { query, pathname } = location
+    onChange (page) {
       dispatch(routerRedux.push({
-        pathname,
+        pathname: '/stock-planogram',
         query: {
-          ...query,
           page: page.current,
-          pageSize: page.pageSize,
-          brandId,
-          categoryId
+          pageSize: page.pageSize
         }
       }))
     },
