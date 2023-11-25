@@ -33,11 +33,8 @@ const List = ({
   const columns = [
     {
       title: 'Store',
-      dataIndex: 'storeId',
-      key: 'storeId',
-      render: (text, record) => {
-        return <p>{record.storeId}</p>
-      }
+      dataIndex: 'store.storeName',
+      key: 'store.storeName'
     },
     {
       title: 'Name',
