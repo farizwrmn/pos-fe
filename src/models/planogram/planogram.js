@@ -33,10 +33,22 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname } = location
+        const { pathname, query } = location
+        const { page, pageSize } = query
+
         // const { activeKey, edit, ...other } = location.query
         if (pathname === '/stock') {
           dispatch({ type: 'query' })
+        }
+        if (pathname === '/stock-planogram') {
+          dispatch({
+            type: 'query',
+            payload: {
+              page,
+              pageSize,
+              q: null
+            }
+          })
         }
       })
     }
