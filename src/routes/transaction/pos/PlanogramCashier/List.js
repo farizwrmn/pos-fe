@@ -12,6 +12,11 @@ const List = ({ onEdit, loading, ...tableProps }) => {
 
   const columns = [
     {
+      title: 'Store',
+      dataIndex: 'store.storeName',
+      key: 'store.storeName'
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',

@@ -62,7 +62,6 @@ const Planogram = ({ planogram, userStore, loading, dispatch, location, app }) =
       }
     })
     dispatch({
-      activeKey: key,
       type: 'planogram/query'
     })
   }
