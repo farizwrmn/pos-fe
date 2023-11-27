@@ -78,7 +78,13 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const { data, resetFields } = payload
-      if (data && typeof data.storeId === 'object' && data.storeId && data.storeId.length > 0) {
+      if (data) {
+        if (typeof data.storeId === 'object' && data.storeId && data.storeId.length === 0) {
+          return
+        }
+        if (typeof data.storeId !== 'object' && data.storeId) {
+          data.storeId = [data.storeId]
+        }
         for (let key in data.storeId) {
           const storeId = data.storeId[key]
           yield call(add, {
