@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { Link } from 'dva/router'
 import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal } from 'antd'
 import { getVATPercentage } from 'utils/tax'
 import { lstorage } from 'utils'
@@ -269,6 +270,7 @@ const FormCounter = ({
         <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
       </Button.Group>
       {item && !item.addProduct && <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>}
+      <Link target="_blank" to="/transaction/procurement/price?activeKey=1"><Button type="default" size="large" icon="plus" style={{ marginLeft: '10px', float: 'right' }}>Import Pricing</Button></Link>
       <Button type="primary" size="large" onClick={() => onHistoryClick()} style={{ marginLeft: '10px', float: 'right' }}>History</Button>
       <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />
       <Button type="primary" onClick={handleSubmit} style={{ float: 'right', marginTop: '10px' }}>Save</Button>

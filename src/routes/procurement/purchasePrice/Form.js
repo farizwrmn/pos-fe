@@ -119,7 +119,6 @@ const FormCounter = ({
           <FormItem label="Product" hasFeedback {...formItemLayout}>
             {getFieldDecorator('productId', {
             })(<Select
-              mode="multiple"
               style={{ width: '250px' }}
               placeholder="Select Product"
 
@@ -129,7 +128,6 @@ const FormCounter = ({
 
               notFoundContent={loading.effects['productstock/query'] ? <Spin size="small" /> : null}
               onSearch={value => showLov('productstock', { q: value })}
-              labelInValue
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {optionSelect}
@@ -151,24 +149,6 @@ const FormCounter = ({
             >
               {supplierData}
             </Select>)}
-          </FormItem>
-          <FormItem label="Qty" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('qty', {
-              initialValue: item.qty,
-              rules: [{
-                required: true
-              }]
-            })(
-              <InputNumber
-                value={0}
-                min={0}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    handleSubmit()
-                  }
-                }}
-              />
-            )}
           </FormItem>
           <FormItem label="Price" hasFeedback {...formItemLayout}>
             {getFieldDecorator('purchasePrice', {

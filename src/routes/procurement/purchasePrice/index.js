@@ -6,13 +6,19 @@ import { Button, Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
+import ImportExcel from './ImportExcel'
 
 const TabPane = Tabs.TabPane
 
 const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = purchasePrice
   const { listSupplier } = purchase
-  const { list: listProduct } = productstock
+  const {
+    list: listProduct,
+    changed,
+    listPrintAllStock,
+    stockLoading
+  } = productstock
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -152,6 +158,15 @@ const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, loc
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
   }
 
+  const importExcelProps = {
+    dispatch,
+    user,
+    storeInfo,
+    changed,
+    stockLoading,
+    listPrintAllStock
+  }
+
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
@@ -161,6 +176,7 @@ const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, loc
         <TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
+              <ImportExcel {...importExcelProps} />
               <Filter {...filterProps} />
               <List {...listProps} />
             </div>

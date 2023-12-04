@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
+import { formatNumberQty } from 'utils/numberFormat'
 
 const confirm = Modal.confirm
 
@@ -21,19 +22,87 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'Store',
+      dataIndex: 'storeId',
+      key: 'storeId',
+      render: (text, record) => {
+        if (record.store) {
+          return (
+            <div>
+              <div><b>{record.store.id}</b></div>
+              <div>{record.store.storeName}</div>
+            </div>
+          )
+        }
+        return text
+      }
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Product',
+      dataIndex: 'productId',
+      key: 'productId',
+      render: (text, record) => {
+        if (record.product) {
+          return (
+            <div>
+              <div><b>{record.product.id}</b></div>
+              <div><b>{record.product.productCode}</b></div>
+              <div>{record.product.productName}</div>
+            </div>
+          )
+        }
+        return text
+      }
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Supplier',
+      dataIndex: 'supplierId',
+      key: 'supplierId',
+      render: (text, record) => {
+        if (record.supplier) {
+          return (
+            <div>
+              <div><b>{record.supplier.id}</b></div>
+              <div><b>{record.supplier.supplierCode}</b></div>
+              <div>{record.supplier.supplierName}</div>
+            </div>
+          )
+        }
+        return text
+      }
+    },
+    {
+      title: 'Price',
+      dataIndex: 'qty',
+      key: 'qty',
+      render: (text, record) => {
+        return (
+          <div>
+            <div>Purchase Price: {formatNumberQty(record.purchasePrice)}</div>
+            <div>Disc 1 (%): {formatNumberQty(record.discPercent)}</div>
+            <div>Disc 2 (%): {formatNumberQty(record.discPercent02)}</div>
+            <div>Disc 3 (%): {formatNumberQty(record.discPercent03)}</div>
+            <div>Disc (N): {formatNumberQty(record.discNominal)}</div>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'Tax Type',
+      dataIndex: 'taxType',
+      key: 'taxType',
+      render: (text, record) => {
+        if (record.taxType === 'E') {
+          return <div>Non Tax</div>
+        }
+        if (record.taxType === 'S') {
+          return <div>Include Tax</div>
+        }
+        if (record.taxType === 'I') {
+          return <div>Exclude Tax</div>
+        }
+        return text
+      }
     },
     {
       title: 'Operation',
