@@ -233,7 +233,7 @@ const PrintPDF = ({ user, listItem, itemPrint }) => {
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: ['5%', '15%', '58%', '22%'],
     pageMargins: [40, 160, 40, 150],
-    pageSize: { width: 813, height: 530 },
+    pageSize: { width: 612, height: 792 },
     pageOrientation: 'landscape',
     tableStyle: styles,
     layout: tableLayout,
