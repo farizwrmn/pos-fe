@@ -200,6 +200,7 @@ const Routers = function ({ history, app }) {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
               registerModel(app, require('./models/grab/grabCategory'))
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
@@ -225,6 +226,35 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productDivision'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
+          }
+        }, {
+          path: 'stock-planogram',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
+              registerModel(app, require('./models/app'))
+              registerModel(app, require('./models/grab/grabCategory'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              registerModel(app, require('./models/product/stockLocation'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              registerModel(app, require('./models/master/specification'))
+              registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/product/productcountry'))
+              registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/productSource'))
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/planogram'))
+            }, 'planogram-stock')
           }
         }, {
           path: 'stock-source',
@@ -575,6 +605,7 @@ const Routers = function ({ history, app }) {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
               registerModel(app, require('./models/transaction/fingerEmployee'))
               registerModel(app, require('./models/notification/salesDiscount'))
               registerModel(app, require('./models/notification/requestCancelPos'))

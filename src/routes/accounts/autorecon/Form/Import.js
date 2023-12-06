@@ -83,6 +83,8 @@ const convertCSVtoArray = (string) => {
 
 
   reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
+    || String(filtered.recordSource).trim() === 'TQ'
+    || String(filtered.recordSource).trim() === 'PQ'
     || String(filtered.recordSource).trim() === 'TF'
     || String(filtered.recordSource).trim() === 'TC'
     || String(filtered.recordSource).trim() === 'PC'
@@ -96,6 +98,11 @@ const convertCSVtoArray = (string) => {
       || String(record.recordSource).trim() === 'PD'
       || String(record.recordSource).trim() === 'TF') {
       type = 'D'
+    }
+
+    if (String(record.recordSource).trim() === 'TQ'
+      || String(record.recordSource).trim() === 'PQ') {
+      type = 'QR'
     }
 
     if (String(record.recordSource).trim() === 'TC'

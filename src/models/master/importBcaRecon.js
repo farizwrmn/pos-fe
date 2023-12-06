@@ -122,7 +122,7 @@ export default modelExtend(pageModel, {
           payment: { storeId, transDate: moment(transDate).format('YYYY-MM-DD') },
           paymentImportBca: {
             transactionDate: moment(transDate).format('YYYY-MM-DD'),
-            recordSource: ['TC', 'TD', 'PC', 'PD'],
+            recordSource: ['TC', 'TD', 'TQ', 'PC', 'PD', 'PQ'],
             storeId,
             type: 'all'
           }
@@ -178,6 +178,8 @@ export default modelExtend(pageModel, {
               matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
+              typeCode: tablePayment.typeCode,
+              transNo: tablePayment.transNo,
               match: true,
               editState: true
             })
@@ -188,6 +190,8 @@ export default modelExtend(pageModel, {
               matchMdr: null,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
+              typeCode: tablePayment.typeCode,
+              transNo: tablePayment.transNo,
               match: false,
               editState: false
             })
