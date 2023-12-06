@@ -36,7 +36,7 @@ const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, loc
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['purchasePrice/query'],
+    loading: loading.effects['purchasePrice/query'] || loading.effects['purchasePrice/add'],
     location,
     onChange (page) {
       const { query, pathname } = location

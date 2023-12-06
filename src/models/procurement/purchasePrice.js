@@ -58,7 +58,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const response = yield call(add, [payload.data])
+      const response = yield call(add, payload.data)
       if (response.success) {
         success()
         yield put({

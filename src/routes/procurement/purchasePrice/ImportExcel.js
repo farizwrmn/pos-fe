@@ -48,6 +48,8 @@ const ImportExcel = ({
               const discPercent02 = row.values[7]
               const discPercent03 = row.values[8]
               const discNominal = row.values[9]
+              const taxType = row.values[10]
+              console.log('row.values', row.values)
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
                 && typeof supplierId !== 'undefined'
@@ -56,7 +58,9 @@ const ImportExcel = ({
                 && typeof discPercent !== 'undefined'
                 && typeof discPercent02 !== 'undefined'
                 && typeof discPercent03 !== 'undefined'
-                && typeof discNominal !== 'undefined') {
+                && typeof discNominal !== 'undefined'
+                && typeof taxType !== 'undefined'
+              ) {
                 const data = {
                   productId: Number(productId),
                   supplierId: Number(supplierId),
@@ -65,7 +69,8 @@ const ImportExcel = ({
                   discPercent: Number(discPercent),
                   discPercent02: Number(discPercent02),
                   discPercent03: Number(discPercent03),
-                  discNominal: Number(discNominal)
+                  discNominal: Number(discNominal),
+                  taxType: taxType || 'E'
                 }
                 uploadData.push(data)
               }
@@ -74,9 +79,9 @@ const ImportExcel = ({
         .then(() => {
           if (uploadData && uploadData.length > 0) {
             dispatch({
-              type: 'importTransferOut/add',
+              type: 'purchasePrice/add',
               payload: {
-                detail: uploadData
+                data: uploadData
               }
             })
           } else {

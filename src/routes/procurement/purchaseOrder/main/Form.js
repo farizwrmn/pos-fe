@@ -215,7 +215,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
         <Col {...col}>
-          <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
+          <FormItem label="Disc 1 (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
               rules: [

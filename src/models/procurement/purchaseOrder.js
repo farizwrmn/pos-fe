@@ -241,10 +241,10 @@ export default modelExtend(pageModel, {
     * changeTotalData ({ payload = {} }, { put }) {
       const { listItem, header } = payload
       let ppnType = header.taxType
-      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100))) * (1 - ((next.discPercent02 / 100))) * (1 - ((next.discPercent03 / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
       const dataProduct = listItem
       for (let key = 0; key < dataProduct.length; key += 1) {
-        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100))) * (1 - ((dataProduct[key].discPercent02 / 100))) * (1 - ((dataProduct[key].discPercent03 / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
         dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
         const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
         if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
@@ -576,12 +576,12 @@ export default modelExtend(pageModel, {
       const listItem = yield select(({ purchaseOrder }) => purchaseOrder.listItem)
       const header = payload.data
       let ppnType = header.taxType
-      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100))) * (1 - ((next.discPercent02 / 100))) * (1 - ((next.discPercent03 / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
       const dataProduct = [
         ...listItem
       ]
       for (let key = 0; key < dataProduct.length; key += 1) {
-        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100))) * (1 - ((dataProduct[key].discPercent02 / 100))) * (1 - ((dataProduct[key].discPercent03 / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
         dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
         const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
         if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
@@ -601,6 +601,8 @@ export default modelExtend(pageModel, {
           qty: item.qty,
           purchasePrice: item.purchasePrice,
           discPercent: item.discPercent,
+          discPercent02: item.discPercent02,
+          discPercent03: item.discPercent03,
           discNominal: item.discNominal,
           deliveryFee: item.deliveryFee,
           DPP: item.DPP,
