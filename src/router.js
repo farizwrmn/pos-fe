@@ -436,6 +436,14 @@ const Routers = function ({ history, app }) {
             }, 'master-shift')
           }
         }, {
+          path: 'stock-uom',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productUom'))
+              cb(null, require('./routes/master/productUom'))
+            }, 'stock-uom')
+          }
+        }, {
           path: 'master/product/location',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
