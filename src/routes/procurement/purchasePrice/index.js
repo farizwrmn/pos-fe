@@ -10,8 +10,9 @@ import ImportExcel from './ImportExcel'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, location, app }) => {
+const Counter = ({ productUom, purchasePrice, purchase, productstock, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = purchasePrice
+  const { list: listUom } = productUom
   const { listSupplier } = purchase
   const {
     list: listProduct,
@@ -159,6 +160,7 @@ const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, loc
   }
 
   const importExcelProps = {
+    listUom,
     dispatch,
     user,
     storeInfo,
@@ -188,6 +190,7 @@ const Counter = ({ purchasePrice, purchase, productstock, loading, dispatch, loc
 }
 
 Counter.propTypes = {
+  productUom: PropTypes.object,
   purchasePrice: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -195,4 +198,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ purchasePrice, purchase, productstock, loading, app }) => ({ purchasePrice, purchase, productstock, loading, app }))(Counter)
+export default connect(({ productUom, purchasePrice, purchase, productstock, loading, app }) => ({ productUom, purchasePrice, purchase, productstock, loading, app }))(Counter)

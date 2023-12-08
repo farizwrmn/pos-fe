@@ -7,6 +7,7 @@ import PrintXLS from './PrintXLS'
 
 const ImportExcel = ({
   dispatch,
+  listUom,
   user,
   storeInfo,
   changed,
@@ -22,7 +23,7 @@ const ImportExcel = ({
     dispatch({
       type: 'productstock/queryAllStock',
       payload: {
-        type: 'all'
+        pageSize: 1
       }
     })
   }
@@ -97,7 +98,7 @@ const ImportExcel = ({
   }
 
   let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
+    ? (<PrintXLS listUom={listUom} data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   return (
