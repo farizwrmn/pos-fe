@@ -27,7 +27,7 @@ const PurchaseReceiveList = ({
       dataIndex: 'transNo',
       key: 'transNo',
       width: '130px',
-      render: (text, record) => <Link target="_blank" to={`/transaction/procurement/order/${record.id}`}>{text}</Link>
+      render: (text, record) => <Link to={`/transaction/procurement/receive/${record.id}`}>{text}</Link>
     },
     {
       title: 'Status',

@@ -101,6 +101,7 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/report/accounts/payable'
           || location.pathname === '/transaction/purchase/return'
           || location.pathname === '/transaction/purchase/order'
+          || location.pathname === '/transaction/procurement/price'
           || location.pathname === '/transaction/procurement/order'
           || location.pathname === '/transaction/procurement/order-history'
           || location.pathname === '/transaction/procurement/invoice') {
