@@ -1,31 +1,18 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable jsx-a11y/label-has-for */
 import React from 'react'
-import { Button, Icon, message } from 'antd'
+import { message } from 'antd'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import PrintXLS from './PrintXLS'
 
 const ImportExcel = ({
-  dispatch,
-  listUom,
+  // dispatch,
   user,
-  storeInfo,
-  changed,
-  stockLoading,
-  listPrintAllStock
+  storeInfo
 }) => {
   const printProps = {
     user,
     storeInfo
-  }
-
-  const getAllStock = () => {
-    dispatch({
-      type: 'productstock/queryAllStock',
-      payload: {
-        pageSize: 1
-      }
-    })
   }
 
   const handleChangeFile = (event) => {
@@ -79,12 +66,12 @@ const ImportExcel = ({
         })
         .then(() => {
           if (uploadData && uploadData.length > 0) {
-            dispatch({
-              type: 'purchasePrice/add',
-              payload: {
-                data: uploadData
-              }
-            })
+            // dispatch({
+            //   type: 'purchasePrice/add',
+            //   payload: {
+            //     data: uploadData
+            //   }
+            // })
           } else {
             message.error('No Data to Upload')
           }
@@ -97,13 +84,10 @@ const ImportExcel = ({
     processData: false
   }
 
-  let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS listUom={listUom} data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
-    : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
+  let buttonClickXLS = (<PrintXLS name="Export Template Stock" {...printProps} />)
 
   return (
-    <div>
-      {'Stock: '}
+    <span>
       {buttonClickXLS}
       <span>
         <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
@@ -122,7 +106,7 @@ const ImportExcel = ({
           }}
         />
       </span>
-    </div>
+    </span>
   )
 }
 

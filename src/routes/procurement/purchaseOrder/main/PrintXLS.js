@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ listUom, data, name }) => {
+const PrintXLS = ({ data = [{ id: 1 }], name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -31,7 +31,6 @@ const PrintXLS = ({ listUom, data, name }) => {
   }
   const createTableBody = (list) => {
     let body = []
-    const uomValidation = listUom.map(item => `${item.uomCode}|${item.uomName}`)
     for (let key in list) {
       if (list.hasOwnProperty(key)) {
         let row = []
@@ -39,12 +38,6 @@ const PrintXLS = ({ listUom, data, name }) => {
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, dataValidation: uomValidation, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
@@ -78,7 +71,7 @@ const PrintXLS = ({ listUom, data, name }) => {
     buttonSize: 'large',
     name,
     className: '',
-    buttonStyle: { background: 'transparent', padding: 0 },
+    buttonStyle: { marginLeft: '10px', background: 'transparent', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
     data,

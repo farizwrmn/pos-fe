@@ -8,7 +8,8 @@ import ModalProduct from './ModalProduct'
 import ModalEdit from './ModalEdit'
 import ModalAddProduct from './ModalAddProduct'
 
-const Counter = ({ purchaseSafetyStock, purchaseOrder, productbrand, productcategory, purchase, loading, dispatch, location }) => {
+const Counter = ({ app, purchaseSafetyStock, purchaseOrder, productbrand, productcategory, purchase, loading, dispatch, location }) => {
+  const { user, storeInfo } = app
   const {
     listQuotationTrans,
     listQuotationSupplier,
@@ -86,6 +87,9 @@ const Counter = ({ purchaseSafetyStock, purchaseOrder, productbrand, productcate
   }
 
   const formProps = {
+    dispatch,
+    user,
+    storeInfo,
     item: currentItem,
     listStore: listDistributionCenter.concat(listStore),
     listSupplier,
