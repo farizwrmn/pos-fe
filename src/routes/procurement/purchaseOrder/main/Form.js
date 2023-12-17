@@ -6,7 +6,6 @@ import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal }
 import { getVATPercentage } from 'utils/tax'
 import { lstorage } from 'utils'
 import ListItem from './ListItem'
-import ImportExcel from './ImportExcel'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -34,9 +33,6 @@ const col = {
 
 const FormCounter = ({
   item = {},
-  dispatch,
-  user,
-  storeInfo,
   onSubmit,
   onGetProduct,
   onOpenHistory,
@@ -130,13 +126,6 @@ const FormCounter = ({
     onGetProduct(data)
   }
 
-  const importExcelProps = {
-    data: [{ id: 1 }],
-    dispatch,
-    user,
-    storeInfo
-  }
-
   const showModalProductAdd = () => {
     const data = {
       ...item,
@@ -226,7 +215,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
         <Col {...col}>
-          <FormItem label="Disc 1 (%)" hasFeedback {...formItemLayout}>
+          <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
               rules: [
@@ -276,12 +265,12 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
-      <ImportExcel {...importExcelProps} />
       <Button.Group>
         <Button type="default" size="large" icon="plus" onClick={() => showModalProductAdd()} />
         <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
       </Button.Group>
       {item && !item.addProduct && <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>}
+      <Link target="_blank" to="/transaction/procurement/import-purchase"><Button type="default" size="large" icon="plus" style={{ marginLeft: '10px', float: 'right' }}>Import Purchase Order</Button></Link>
       <Link target="_blank" to="/transaction/procurement/price?activeKey=1"><Button type="default" size="large" icon="plus" style={{ marginLeft: '10px', float: 'right' }}>Import Pricing</Button></Link>
       <Button type="primary" size="large" onClick={() => onHistoryClick()} style={{ marginLeft: '10px', float: 'right' }}>History</Button>
       <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />

@@ -711,9 +711,9 @@ const Routers = function ({ history, app }) {
           path: 'transaction/procurement/import-purchase',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/procurement/purchaseOrder'))
+              registerModel(app, require('./models/procurement/importPurchaseOrder'))
               cb(null, require('./routes/procurement/purchaseOrder/importPurchaseOrder'))
-            }, 'transaction-procurement-order')
+            }, 'transaction-procurement-order-import')
           }
         }, {
           path: 'transaction/procurement/order-history',

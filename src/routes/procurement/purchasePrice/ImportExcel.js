@@ -98,7 +98,7 @@ const ImportExcel = ({
   }
 
   let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS listUom={listUom} data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
+    ? (<PrintXLS listUom={listUom} data={listPrintAllStock} name="Export Template Product" {...printProps} />)
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   return (
