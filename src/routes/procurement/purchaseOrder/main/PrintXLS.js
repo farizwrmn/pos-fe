@@ -78,7 +78,7 @@ const PrintXLS = ({ data = [{ id: 1 }], name }) => {
     title,
     tableHeader,
     tableBody,
-    fileName: 'ProductStock-Summary'
+    fileName: 'PurchaseOrderImport-Template'
   }
 
   return (
