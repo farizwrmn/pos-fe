@@ -700,20 +700,13 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/procurement/importPurchaseOrder'))
               registerModel(app, require('./models/procurement/purchaseSafetyStock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
               registerModel(app, require('./models/procurement/purchaseOrder'))
               cb(null, require('./routes/procurement/purchaseOrder/main'))
             }, 'transaction-procurement-order')
-          }
-        }, {
-          path: 'transaction/procurement/import-purchase',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/procurement/importPurchaseOrder'))
-              cb(null, require('./routes/procurement/purchaseOrder/importPurchaseOrder'))
-            }, 'transaction-procurement-order-import')
           }
         }, {
           path: 'transaction/procurement/order-history',

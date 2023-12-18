@@ -71,15 +71,13 @@ export default modelExtend(pageModel, {
       const response = yield call(add, payload)
       if (response.success) {
         success()
+        yield put(routerRedux.push('/transaction/procurement/order-history'))
         yield put({
           type: 'updateState',
           payload: {
             modalType: 'add',
             currentItem: {}
           }
-        })
-        yield put({
-          type: 'query'
         })
         if (payload.reset) {
           payload.reset()

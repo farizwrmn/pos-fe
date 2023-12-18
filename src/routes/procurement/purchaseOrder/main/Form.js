@@ -6,6 +6,7 @@ import { Form, Input, InputNumber, Select, DatePicker, Button, Row, Col, Modal }
 import { getVATPercentage } from 'utils/tax'
 import { lstorage } from 'utils'
 import ListItem from './ListItem'
+import ImportExcel from './ImportExcel'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -33,6 +34,9 @@ const col = {
 
 const FormCounter = ({
   item = {},
+  dispatch,
+  user,
+  storeInfo,
   onSubmit,
   onGetProduct,
   onOpenHistory,
@@ -141,6 +145,13 @@ const FormCounter = ({
   const storeData = (listStore || []).length > 0 ?
     listStore.map(store => <Option title={`${store.sellingStore.address01}`} value={store.sellingStore.id} key={store.sellingStore.id}>{store.sellingStore.storeName}</Option>)
     : []
+
+  const importExcelProps = {
+    data: [{ id: 1 }],
+    dispatch,
+    user,
+    storeInfo
+  }
 
   return (
     <Form layout="horizontal">
@@ -265,6 +276,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
       </Row>
+      <ImportExcel {...importExcelProps} />
       <Button.Group>
         <Button type="default" size="large" icon="plus" onClick={() => showModalProductAdd()} />
         <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>

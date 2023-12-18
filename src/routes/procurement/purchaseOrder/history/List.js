@@ -43,6 +43,12 @@ const List = (tableProps) => {
       width: '100px'
     },
     {
+      title: 'Time',
+      dataIndex: 'transTime',
+      key: 'transTime',
+      width: '100px'
+    },
+    {
       title: 'Deadline',
       dataIndex: 'expectedArrival',
       key: 'expectedArrival',
