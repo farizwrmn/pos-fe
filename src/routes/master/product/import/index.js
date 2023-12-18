@@ -69,7 +69,7 @@ const ImportStock = ({
 
 
   let buttonClickXLS = (changed && listPrintAllStock.length)
-    ? (<PrintXLS data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
+    ? (<PrintXLS data={listPrintAllStock} name="Export Template Product" {...printProps} />)
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
   const handleChangeFile = (event) => {

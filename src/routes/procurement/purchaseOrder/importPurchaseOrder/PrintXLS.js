@@ -38,7 +38,6 @@ const PrintXLS = ({ data = [{ id: 1 }], name }) => {
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
     }
@@ -51,7 +50,6 @@ const PrintXLS = ({ data = [{ id: 1 }], name }) => {
     [
       { value: 'PRODUCT ID', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'SUPPLIER ID', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'STORE ID', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'REFERENCE (FOR GROUPING)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
@@ -78,7 +76,7 @@ const PrintXLS = ({ data = [{ id: 1 }], name }) => {
     title,
     tableHeader,
     tableBody,
-    fileName: 'ProductStock-Summary'
+    fileName: 'PurchaseOrderImport-Template'
   }
 
   return (

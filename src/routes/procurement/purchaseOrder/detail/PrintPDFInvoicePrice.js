@@ -22,8 +22,8 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
         row.push({ text: count, alignment: 'center', fontSize: 8 })
         row.push({ text: `${data.product.productCode}`, alignment: 'left', fontSize: 8 })
         row.push({ text: `${data.product.productName}`, alignment: 'left', fontSize: 8 })
-        row.push({ text: formatNumberIndonesia(data.qty), alignment: 'right', fontSize: 8 })
         row.push({ text: `${data.qtyUom != null ? data.qtyUom : data.qty} (${data.qtyUom != null ? data.uom : 'PCS'})`, alignment: 'right', fontSize: 8 })
+        row.push({ text: `${data.fraction}`, alignment: 'right', fontSize: 8 })
         row.push({ text: formatNumberIndonesia(data.purchasePrice), alignment: 'right', fontSize: 8 })
         row.push({ text: formatNumberIndonesia(data.discPercent), alignment: 'right', fontSize: 8 })
         row.push({ text: formatNumberIndonesia(data.discPercent02), alignment: 'right', fontSize: 8 })
@@ -87,7 +87,7 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
         table: {
           widths: ['15%', '1%', '27%', '10%', '15%', '1%', '32%'],
           body: [
-            [{ text: 'NO PO', fontSize: 8 }, ':', { text: (`${itemPrint.transNo}\n${itemPrint.supplier.supplierName}` || '').toString(), fontSize: 8 }, {}, { text: 'DELIVERY TO', fontSize: 8 }, ':', { text: (itemPrint.delivery.address01 || '').toString(), fontSize: 8 }],
+            [{ text: 'NO PO', fontSize: 8 }, ':', { text: (`${itemPrint.transNo}\n${itemPrint.supplier.supplierCode}\n${itemPrint.supplier.supplierName}` || '').toString(), fontSize: 8 }, {}, { text: 'DELIVERY TO', fontSize: 8 }, ':', { text: (itemPrint.delivery.address01 || '').toString(), fontSize: 8 }],
             [{ text: 'NPWP', fontSize: 8 }, ':', { text: (`${itemPrint.delivery.taxID} a/n ${itemPrint.delivery.companyName}`).toString(), fontSize: 8 }, {}, { text: 'MEMO', fontSize: 8 }, ':', { text: (`${itemPrint.delivery.address02 || ''}\n${itemPrint.description || ''}`).toString(), fontSize: 8 }]
           ]
         },
@@ -203,9 +203,9 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
       { fontSize: 8, text: 'NO', style: 'tableHeader', alignment: 'center' },
       { fontSize: 8, text: 'KODE BARANG', style: 'tableHeader', alignment: 'left' },
       { fontSize: 8, text: 'NAMA BARANG', style: 'tableHeader', alignment: 'left' },
-      { fontSize: 8, text: 'QTY (PCS)', style: 'tableHeader', alignment: 'right' },
       { fontSize: 8, text: 'QTY (UOM)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'PRICE', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 8, text: 'FRACTION', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 8, text: 'PRICE (PCS)', style: 'tableHeader', alignment: 'right' },
       { fontSize: 8, text: 'DISC 1 (%)', style: 'tableHeader', alignment: 'right' },
       { fontSize: 8, text: 'DISC 2 (%)', style: 'tableHeader', alignment: 'right' },
       { fontSize: 8, text: 'DISC 3 (%)', style: 'tableHeader', alignment: 'right' },
@@ -222,7 +222,6 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
     console.log('error', e)
   }
 
-  const qtyTotal = listItem.reduce((prev, next) => prev + next.qty, 0)
   const qtyUomTotal = listItem.reduce((prev, next) => prev + (next.qtyUom || 1), 0)
   const subtotal = listItem.reduce((prev, next) => prev + next.DPP + next.PPN, 0)
   const tableFooter = [
@@ -230,7 +229,7 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
       { text: 'Total', colSpan: 3, alignment: 'center', fontSize: 8 },
       {},
       {},
-      { text: formatNumberIndonesia(parseFloat(qtyTotal)), alignment: 'right', fontSize: 8 },
+      {},
       { text: formatNumberIndonesia(parseFloat(qtyUomTotal)), alignment: 'right', fontSize: 8 },
       {},
       {},
@@ -259,7 +258,7 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-green',
-    width: ['5%', '8%', '15%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%'],
+    width: ['5%', '15%', '15%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '8%'],
     pageMargins: [40, 160, 40, 150],
     pageSize: { width: 612, height: 792 },
     pageOrientation: 'landscape',

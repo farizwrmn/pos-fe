@@ -84,7 +84,7 @@ const ImportExcel = ({
     processData: false
   }
 
-  let buttonClickXLS = (<PrintXLS name="Export Template Stock" {...printProps} />)
+  let buttonClickXLS = (<PrintXLS name="Export Template" {...printProps} />)
 
   return (
     <span>

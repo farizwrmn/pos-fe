@@ -91,7 +91,7 @@ const PrintXLS = ({ listUom, data, name }) => {
     title,
     tableHeader,
     tableBody,
-    fileName: 'ProductStock-Summary'
+    fileName: 'PurchasePriceImport-Template'
   }
 
   return (
