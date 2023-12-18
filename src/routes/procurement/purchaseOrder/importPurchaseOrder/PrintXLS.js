@@ -44,7 +44,7 @@ const PrintXLS = ({ data = [{ id: 1 }], name }) => {
     return body
   }
   const title = [
-    { value: 'TEMPLATE IMPORT TRANSFER OUT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'TEMPLATE IMPORT PURCHASE ORDER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const tableHeader = [
     [

@@ -48,7 +48,7 @@ const ImportExcel = ({
               const discPercent = row.values[6]
               const discPercent02 = row.values[7]
               const discPercent03 = row.values[8]
-              const taxType = row.values[10]
+              const taxType = row.values[9]
               console.log('row.values', row.values)
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'

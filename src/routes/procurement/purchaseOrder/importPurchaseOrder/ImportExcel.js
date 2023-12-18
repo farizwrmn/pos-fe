@@ -2,11 +2,12 @@
 /* eslint-disable jsx-a11y/label-has-for */
 import React from 'react'
 import { message } from 'antd'
+import { lstorage } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
 import PrintXLS from './PrintXLS'
 
 const ImportExcel = ({
-  // dispatch,
+  dispatch,
   user,
   storeInfo
 }) => {
@@ -30,35 +31,23 @@ const ImportExcel = ({
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
               const supplierId = row.values[3]
-              const storeId = row.values[4]
-              const purchasePrice = row.values[5]
-              const discPercent = row.values[6]
-              const discPercent02 = row.values[7]
-              const discPercent03 = row.values[8]
-              const discNominal = row.values[9]
-              const taxType = row.values[10]
+              const storeId = lstorage.getCurrentUserStore()
+              const groupReference = row.values[4]
+              const qty = row.values[5]
               console.log('row.values', row.values)
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
                 && typeof supplierId !== 'undefined'
                 && typeof storeId !== 'undefined'
-                && typeof purchasePrice !== 'undefined'
-                && typeof discPercent !== 'undefined'
-                && typeof discPercent02 !== 'undefined'
-                && typeof discPercent03 !== 'undefined'
-                && typeof discNominal !== 'undefined'
-                && typeof taxType !== 'undefined'
+                && typeof groupReference !== 'undefined'
+                && typeof qty !== 'undefined'
               ) {
                 const data = {
                   productId: Number(productId),
                   supplierId: Number(supplierId),
                   storeId: Number(storeId),
-                  purchasePrice: Number(purchasePrice),
-                  discPercent: Number(discPercent),
-                  discPercent02: Number(discPercent02),
-                  discPercent03: Number(discPercent03),
-                  discNominal: Number(discNominal),
-                  taxType: taxType || 'E'
+                  groupReference: Number(groupReference),
+                  qty: Number(qty)
                 }
                 uploadData.push(data)
               }
@@ -66,12 +55,12 @@ const ImportExcel = ({
         })
         .then(() => {
           if (uploadData && uploadData.length > 0) {
-            // dispatch({
-            //   type: 'purchasePrice/add',
-            //   payload: {
-            //     data: uploadData
-            //   }
-            // })
+            dispatch({
+              type: 'importPurchaseOrder/add',
+              payload: {
+                data: uploadData
+              }
+            })
           } else {
             message.error('No Data to Upload')
           }
