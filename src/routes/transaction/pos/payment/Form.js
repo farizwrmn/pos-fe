@@ -15,7 +15,8 @@ import {
   InputNumber,
   Radio
 } from 'antd'
-import { arrayToTree, lstorage } from 'utils'
+import { arrayToTree } from 'utils'
+import lstorage from 'utils/lstorage'
 import moment from 'moment'
 import List from './List'
 
@@ -397,6 +398,8 @@ class FormPayment extends React.Component {
       }
     }
 
+    console.log('storeId', lstorage.getCurrentUserStore())
+
     return (
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
@@ -438,7 +441,7 @@ class FormPayment extends React.Component {
         </Button>
         <Row>
           <Col md={24} lg={12}>
-            {lstorage.getCurrentUserStore() === 30 ? (
+            {Number(lstorage.getCurrentUserStore()) !== 30 ? (
               <FormItem label="Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('typeCode', {
                   initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
