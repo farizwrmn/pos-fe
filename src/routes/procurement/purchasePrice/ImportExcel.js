@@ -48,7 +48,6 @@ const ImportExcel = ({
               const discPercent = row.values[6]
               const discPercent02 = row.values[7]
               const discPercent03 = row.values[8]
-              const discNominal = row.values[9]
               const taxType = row.values[10]
               console.log('row.values', row.values)
               if (rowIndex >= 6
@@ -59,7 +58,6 @@ const ImportExcel = ({
                 && typeof discPercent !== 'undefined'
                 && typeof discPercent02 !== 'undefined'
                 && typeof discPercent03 !== 'undefined'
-                && typeof discNominal !== 'undefined'
                 && typeof taxType !== 'undefined'
               ) {
                 const data = {
@@ -70,7 +68,7 @@ const ImportExcel = ({
                   discPercent: Number(discPercent),
                   discPercent02: Number(discPercent02),
                   discPercent03: Number(discPercent03),
-                  discNominal: Number(discNominal),
+                  discNominal: 0,
                   taxType: taxType || 'E'
                 }
                 uploadData.push(data)
