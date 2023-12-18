@@ -31,21 +31,18 @@ const ImportExcel = ({
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
               const supplierId = row.values[3]
-              const storeId = lstorage.getCurrentUserStore()
               const groupReference = row.values[4]
               const qty = row.values[5]
               console.log('row.values', row.values)
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
                 && typeof supplierId !== 'undefined'
-                && typeof storeId !== 'undefined'
                 && typeof groupReference !== 'undefined'
                 && typeof qty !== 'undefined'
               ) {
                 const data = {
                   productId: Number(productId),
                   supplierId: Number(supplierId),
-                  storeId: Number(storeId),
                   groupReference: Number(groupReference),
                   qty: Number(qty)
                 }
@@ -58,6 +55,7 @@ const ImportExcel = ({
             dispatch({
               type: 'importPurchaseOrder/add',
               payload: {
+                storeId: lstorage.getCurrentUserStore(),
                 data: uploadData
               }
             })
