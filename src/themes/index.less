@@ -44,6 +44,16 @@ a {
 }
 
 :global {
+  .ant-radio-button-wrapper-checked {
+    background: @primary-color;
+    color: white;
+  }
+
+   .ant-radio-button-wrapper-checked:hover {
+    background: fade(@primary-color, 15%);
+    color: @primary-color;
+  }
+
   .ant-table-tbody>tr.ant-table-row-level-1:hover>td {
     background: unset;
   }

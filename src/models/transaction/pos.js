@@ -29,7 +29,9 @@ import {
   getDataEmployeeByUserId,
   checkUserRole
 } from 'services/fingerprint/fingerprintEmployee'
-
+import {
+  queryReference
+} from 'services/payment'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -83,6 +85,7 @@ const {
   removeDynamicQrisImage,
   removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
   getDynamicQrisImage,
+  setPosReference,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
   getQrisPaymentTimeLimit,
   setAvailablePaymentType
@@ -258,6 +261,7 @@ export default {
         }
         if (location.pathname === '/transaction/pos') {
           getDynamicQrisImage()
+          dispatch({ type: 'querySequenceReference' })
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
           dispatch({ type: 'app/foldSider' })
@@ -332,6 +336,7 @@ export default {
       history.listen(() => {
         const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
         const userId = lstorage.getStorageKey('udi')[1]
+
         if (match) {
           dispatch({
             type: 'loadDataPos',
@@ -346,6 +351,17 @@ export default {
   },
 
   effects: {
+    * querySequenceReference (payload, { call }) {
+      const response = yield call(queryReference, {
+        storeId: lstorage.getCurrentUserStore()
+      })
+      if (response && response.success && response.data) {
+        setPosReference(response.data)
+      } else {
+        throw response
+      }
+    },
+
     * editExpressItem ({ payload }, { put }) {
       yield put({
         type: 'updateState',

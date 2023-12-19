@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/storePrice/stockExtraPriceStore'
-import { pageModel } from '../common'
+import { query, add, edit, remove } from 'services/procurement/importPurchaseOrder'
+import { pageModel } from 'models/common'
 
 const success = () => {
-  message.success('Store Price has been saved')
+  message.success('Import purchase order success')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'stockExtraPriceStore',
+  namespace: 'importPurchaseOrder',
 
   state: {
     currentItem: {},
@@ -17,8 +17,6 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
       current: 1
     }
   },
@@ -28,7 +26,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/master/store-price') {
+        if (pathname === '/master/account') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -44,59 +42,36 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data.success) {
+      const response = yield call(query, payload)
+      if (response.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: response.data,
             pagination: {
-              current: Number(data.page) || 1,
-              pageSize: Number(data.pageSize) || 10,
-              total: data.total
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total
             }
           }
         })
       }
     },
 
-    * delete ({ payload }, { call, put, select }) {
-      const data = yield call(remove, payload)
-      const pagination = yield select(({ stockExtraPriceStore }) => stockExtraPriceStore.pagination)
-      if (data.success) {
-        yield put({
-          type: 'query',
-          payload: {
-            page: pagination.current,
-            pageSize: pagination.pageSize
-          }
-        })
+    * delete ({ payload }, { call, put }) {
+      const response = yield call(remove, payload)
+      if (response.success) {
+        yield put({ type: 'query' })
       } else {
-        throw data
+        throw response
       }
     },
 
     * add ({ payload }, { call, put }) {
-      const { data, resetFields } = payload
-      if (data) {
-        if (typeof data.storeId === 'object' && data.storeId && data.storeId.length === 0) {
-          return
-        }
-        if (typeof data.storeId !== 'object' && data.storeId) {
-          data.storeId = [data.storeId]
-        }
-        for (let key in data.storeId) {
-          const storeId = data.storeId[key]
-          yield call(add, {
-            ...data,
-            storeId
-          })
-        }
-
-        yield put({
-          type: 'query'
-        })
-
+      const response = yield call(add, payload)
+      if (response.success) {
+        success()
+        yield put(routerRedux.push('/transaction/procurement/order-history'))
         yield put({
           type: 'updateState',
           payload: {
@@ -104,18 +79,23 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
         yield put({
-          type: 'productstock/hideModalStorePrice'
+          type: 'updateState',
+          payload: {
+            currentItem: payload
+          }
         })
-        resetFields()
-        success()
+        throw response
       }
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const { data, resetFields } = payload
-      const id = yield select(({ stockExtraPriceStore }) => stockExtraPriceStore.currentItem.id)
-      const newCounter = { ...data, id }
+      const id = yield select(({ importPurchaseOrder }) => importPurchaseOrder.currentItem.id)
+      const newCounter = { ...payload.data, id }
       const response = yield call(edit, newCounter)
       if (response.success) {
         success()
@@ -135,7 +115,9 @@ export default modelExtend(pageModel, {
           }
         }))
         yield put({ type: 'query' })
-        resetFields()
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         yield put({
           type: 'updateState',
@@ -143,7 +125,7 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
-        throw data
+        throw response
       }
     }
   },

@@ -12,6 +12,7 @@ import TransDetail from './TransDetail'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
 import PurchaseReceiveList from './PurchaseReceiveList'
+import PrintPDFInvoicePrice from './PrintPDFInvoicePrice'
 
 
 const Detail = ({ app, loading, purchaseOrder, dispatch }) => {
@@ -105,6 +106,7 @@ const Detail = ({ app, loading, purchaseOrder, dispatch }) => {
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
           {listDetail && listDetail.length && <PrintPDFInvoice {...printProps} />}
+          {listDetail && listDetail.length && <PrintPDFInvoicePrice {...printProps} />}
           {listPurchaseReceive && listPurchaseReceive.length > 0 ? <Button type="primary" icon="check" disabled={loading.effects['purchaseOrder/updateFinish']} onClick={() => onFinished(data.id)}>Finished</Button> : null}
           {listPurchaseReceive && listPurchaseReceive.length === 0 ? <Button type="danger" icon="close" disabled={loading.effects['purchaseOrder/updateCancel']} onClick={() => onCancel(data.id)}>Cancel</Button> : null}
           <h1>Purchase Receive List</h1>

@@ -181,7 +181,7 @@ const PrintXLS = ({
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: Object.keys(diffData),
-    fileName: 'Inventory Transfer Out-Summary'
+    fileName: 'Inventory Transfer In-Summary'
   }
 
   return (

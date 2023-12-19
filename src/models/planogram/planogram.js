@@ -5,6 +5,7 @@ import {
   remove,
   edit
 } from 'services/planogram/planogram'
+import { lstorage } from 'utils'
 
 const success = () => {
   message.success('Success')
@@ -33,10 +34,23 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname } = location
+        const { pathname, query } = location
+        const { page, pageSize } = query
+
         // const { activeKey, edit, ...other } = location.query
         if (pathname === '/stock') {
           dispatch({ type: 'query' })
+        }
+        if (pathname === '/stock-planogram') {
+          dispatch({
+            type: 'query',
+            payload: {
+              relationship: 1,
+              page,
+              pageSize,
+              q: null
+            }
+          })
         }
       })
     }
@@ -52,7 +66,7 @@ export default {
       })
     },
     * query ({ payload = {} }, { call, put }) {
-      const response = yield call(query, payload)
+      const response = yield call(query, { ...payload, relationship: 1 })
       if (response && response.success) {
         yield put({
           type: 'updateState',
@@ -107,7 +121,7 @@ export default {
             activeKey: '0'
           }
         })
-        yield put({ type: 'query' })
+        yield put({ type: 'queryByStore' })
       } else {
         message.error("can't edit data")
       }
@@ -122,6 +136,10 @@ export default {
         }
       })
     },
+    * queryByStore ({ payload = {} }, { put }) {
+      payload.edit = 0
+      yield put({ type: 'query', payload: { type: 'all', storeId: lstorage.getCurrentUserStore() } })
+    },
     * openModal ({ payload = {} }, { put }) {
       payload.updated = 0
       yield put({
@@ -130,7 +148,7 @@ export default {
           modalVisible: true
         }
       })
-      yield put({ type: 'query' })
+      yield put({ type: 'queryByStore' })
     },
     * closeModal ({ payload = {} }, { put }) {
       payload.updated = 0

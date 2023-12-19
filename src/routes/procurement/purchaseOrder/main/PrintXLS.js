@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BasicExcelReport } from 'components'
 
-const PrintXLS = ({ data, name }) => {
+const PrintXLS = ({ data = [{ id: 1 }], name }) => {
   const styles = {
     merchant: {
       name: 'Courier New',
@@ -35,22 +35,22 @@ const PrintXLS = ({ data, name }) => {
       if (list.hasOwnProperty(key)) {
         let row = []
         row.push({ value: (list[key].id || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].productCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (list[key].productName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: null, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody, border: styles.tableBorder })
         body.push(row)
       }
     }
     return body
   }
   const title = [
-    { value: 'TEMPLATE IMPORT BCA RECON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'TEMPLATE IMPORT PURCHASE ORDER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const tableHeader = [
     [
-      { value: 'ID', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'CODE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'NAMA', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'PRODUCT ID', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'SUPPLIER ID', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'REFERENCE (FOR GROUPING)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
     ]
   ]
@@ -69,14 +69,14 @@ const PrintXLS = ({ data, name }) => {
     buttonSize: 'large',
     name,
     className: '',
-    buttonStyle: { background: 'transparent', padding: 0 },
+    buttonStyle: { marginLeft: '10px', background: 'transparent', padding: 0 },
     paperSize: 9,
     orientation: 'portrait',
     data,
     title,
     tableHeader,
     tableBody,
-    fileName: 'ProductStock-Summary'
+    fileName: 'PurchaseOrderImport-Template'
   }
 
   return (
