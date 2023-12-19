@@ -12,9 +12,11 @@ import {
   TreeSelect,
   Select,
   message,
-  InputNumber
+  InputNumber,
+  Radio
 } from 'antd'
-import { arrayToTree, lstorage } from 'utils'
+import { arrayToTree } from 'utils'
+import lstorage from 'utils/lstorage'
 import moment from 'moment'
 import List from './List'
 
@@ -396,6 +398,8 @@ class FormPayment extends React.Component {
       }
     }
 
+    console.log('storeId', lstorage.getCurrentUserStore())
+
     return (
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
@@ -437,31 +441,61 @@ class FormPayment extends React.Component {
         </Button>
         <Row>
           <Col md={24} lg={12}>
-            <FormItem label="Type" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('typeCode', {
-                initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
-                  currentBundlePayment.paymentOption
-                  : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
-                    typeCode : (item.typeCode ? item.typeCode : 'C')),
-                rules: [
-                  {
-                    required: true
-                  }
-                ]
-              })(
-                <TreeSelect
-                  showSearch
-                  disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeNodeFilterProp="title"
-                  filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  treeDefaultExpandAll
-                  onChange={onChangePaymentType}
-                >
-                  {getMenus(menuTree)}
-                </TreeSelect>
-              )}
-            </FormItem>
+            {Number(lstorage.getCurrentUserStore()) !== 30 ? (
+              <FormItem label="Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('typeCode', {
+                  initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
+                    currentBundlePayment.paymentOption
+                    : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+                      typeCode : (item.typeCode ? item.typeCode : 'C')),
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <TreeSelect
+                    showSearch
+                    disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                    treeNodeFilterProp="title"
+                    filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                    treeDefaultExpandAll
+                    onChange={onChangePaymentType}
+                  >
+                    {getMenus(menuTree)}
+                  </TreeSelect>
+                )}
+              </FormItem>
+            ) : (
+              <FormItem label="Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('typeCode', {
+                  initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
+                    currentBundlePayment.paymentOption
+                    : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+                      typeCode : (item.typeCode ? item.typeCode : 'C')),
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <Radio.Group>
+                    {filteredOptions.map((item) => {
+                      return (
+                        <Radio.Button
+                          disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
+                          value={item.typeCode}
+                          onChange={onChangePaymentType}
+                        >
+                          {item.typeName}
+                        </Radio.Button>
+                      )
+                    })}
+                  </Radio.Group>
+                )}
+              </FormItem>
+            )}
             <FormItem label="EDC" hasFeedback {...formItemLayout}>
               {getFieldDecorator('machine', {
                 initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (

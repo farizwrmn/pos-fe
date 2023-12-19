@@ -130,13 +130,6 @@ const FormCounter = ({
     onGetProduct(data)
   }
 
-  const importExcelProps = {
-    data: [{ id: 1 }],
-    dispatch,
-    user,
-    storeInfo
-  }
-
   const showModalProductAdd = () => {
     const data = {
       ...item,
@@ -152,6 +145,13 @@ const FormCounter = ({
   const storeData = (listStore || []).length > 0 ?
     listStore.map(store => <Option title={`${store.sellingStore.address01}`} value={store.sellingStore.id} key={store.sellingStore.id}>{store.sellingStore.storeName}</Option>)
     : []
+
+  const importExcelProps = {
+    data: [{ id: 1 }],
+    dispatch,
+    user,
+    storeInfo
+  }
 
   return (
     <Form layout="horizontal">
@@ -226,7 +226,7 @@ const FormCounter = ({
           </FormItem>
         </Col>
         <Col {...col}>
-          <FormItem label="Disc 1 (%)" hasFeedback {...formItemLayout}>
+          <FormItem label="Disc (%)" hasFeedback {...formItemLayout}>
             {getFieldDecorator('discInvoicePercent', {
               initialValue: item.discInvoicePercent || 0,
               rules: [
@@ -282,6 +282,7 @@ const FormCounter = ({
         <Button type="default" size="large" onClick={() => showModalProduct()}>Product</Button>
       </Button.Group>
       {item && !item.addProduct && <Button type="primary" size="large" onClick={() => onQuotationClick()} style={{ marginLeft: '10px' }}>Quotation</Button>}
+      <Link target="_blank" to="/transaction/procurement/import-purchase"><Button type="default" size="large" icon="plus" style={{ marginLeft: '10px', float: 'right' }}>Import Purchase Order</Button></Link>
       <Link target="_blank" to="/transaction/procurement/price?activeKey=1"><Button type="default" size="large" icon="plus" style={{ marginLeft: '10px', float: 'right' }}>Import Pricing</Button></Link>
       <Button type="primary" size="large" onClick={() => onHistoryClick()} style={{ marginLeft: '10px', float: 'right' }}>History</Button>
       <ListItem {...listItemProps} deliveryFee={getFieldValue('deliveryFee') || 0} onModalVisible={record => onShowModal(record)} style={{ marginTop: '10px' }} />

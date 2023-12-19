@@ -52,7 +52,7 @@ const PrintXLS = ({ listUom, data, name }) => {
     return body
   }
   const title = [
-    { value: 'TEMPLATE IMPORT TRANSFER OUT', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'TEMPLATE IMPORT PURCHASE PRICE', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const tableHeader = [
     [
@@ -63,7 +63,6 @@ const PrintXLS = ({ listUom, data, name }) => {
       { value: 'DISC 1 (%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC 2 (%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'DISC 3 (%)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
-      { value: 'DISC (N)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'TAX TYPE (I/E)', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'UOM', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'FRACTION', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder }
@@ -91,7 +90,7 @@ const PrintXLS = ({ listUom, data, name }) => {
     title,
     tableHeader,
     tableBody,
-    fileName: 'ProductStock-Summary'
+    fileName: 'PurchasePriceImport-Template'
   }
 
   return (
