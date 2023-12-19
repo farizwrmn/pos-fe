@@ -55,7 +55,7 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
     },
     tableHeader: {
       bold: true,
-      fontSize: 13,
+      fontSize: 8,
       color: 'black'
     }
   }
@@ -87,8 +87,8 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
         table: {
           widths: ['15%', '1%', '27%', '10%', '15%', '1%', '32%'],
           body: [
-            [{ text: 'NO PO', fontSize: 8 }, ':', { text: (`${itemPrint.transNo}\n${itemPrint.supplier.supplierCode}\n${itemPrint.supplier.supplierName}` || '').toString(), fontSize: 8 }, {}, { text: 'DELIVERY TO', fontSize: 8 }, ':', { text: (itemPrint.delivery.address01 || '').toString(), fontSize: 8 }],
-            [{ text: 'NPWP', fontSize: 8 }, ':', { text: (`${itemPrint.delivery.taxID} a/n ${itemPrint.delivery.companyName}`).toString(), fontSize: 8 }, {}, { text: 'MEMO', fontSize: 8 }, ':', { text: (`${itemPrint.delivery.address02 || ''}\n${itemPrint.description || ''}`).toString(), fontSize: 8 }]
+            [{ text: 'NO PO', fontSize: 8 }, { text: ':', fontSize: 8 }, { text: (`${itemPrint.transNo}\n${itemPrint.supplier.supplierCode}\n${itemPrint.supplier.supplierName}` || '').toString(), fontSize: 8 }, {}, { text: 'DELIVERY TO', fontSize: 8 }, { text: ':', fontSize: 8 }, { text: (itemPrint.delivery.address01 || '').toString(), fontSize: 8 }],
+            [{ text: 'TANGGAL', fontSize: 8 }, { text: ':', fontSize: 8 }, { text: (itemPrint.transDate || '').toString(), fontSize: 8 }, {}, { text: 'EXPIRED PO', fontSize: 8 }, { text: ':', fontSize: 8 }, { text: (itemPrint.expectedArrival || '').toString(), fontSize: 8 }]
           ]
         },
         layout: 'noBorders'
@@ -113,6 +113,15 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
             //   { fontSize: 8, text: `Terbilang : ${terbilang(Total).toUpperCase()} RUPIAH`, alignment: 'left' },
             //   { fontSize: 8, text: `TOTAL : Rp ${(Total).toLocaleString(['ban', 'id'])}`, alignment: 'right' },
             // ],
+          },
+          {
+            table: {
+              widths: ['15%', '1%', '27%', '10%', '15%', '1%', '32%'],
+              body: [
+                [{ text: 'NPWP', fontSize: 8 }, ':', { text: (`${itemPrint.delivery.taxID} a/n ${itemPrint.delivery.companyName}`).toString(), fontSize: 8 }, {}, { text: 'MEMO', fontSize: 8 }, ':', { text: (`${itemPrint.delivery.address02 || ''}\n${itemPrint.description || ''}`).toString(), fontSize: 8 }]
+              ]
+            },
+            layout: 'noBorders'
           },
           {
             columns: [
@@ -200,19 +209,19 @@ const PrintPDFInvoicePrice = ({ user, listItem, itemPrint }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 8, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 8, text: 'KODE BARANG', style: 'tableHeader', alignment: 'left' },
-      { fontSize: 8, text: 'NAMA BARANG', style: 'tableHeader', alignment: 'left' },
-      { fontSize: 8, text: 'QTY (UOM)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'FRACTION', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'PRICE (PCS)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'DISC 1 (%)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'DISC 2 (%)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'DISC 3 (%)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'DISC (N)', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'DPP', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'PPN', style: 'tableHeader', alignment: 'right' },
-      { fontSize: 8, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' }
+      { fontSize: 7, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 7, text: 'KODE BARANG', style: 'tableHeader', alignment: 'left' },
+      { fontSize: 7, text: 'NAMA BARANG', style: 'tableHeader', alignment: 'left' },
+      { fontSize: 7, text: 'QTY (UOM)', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'FRACTION', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'PRICE (PCS)', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'DISC 1 (%)', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'DISC 2 (%)', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'DISC 3 (%)', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'DISC (N)', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'DPP', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'PPN', style: 'tableHeader', alignment: 'right' },
+      { fontSize: 7, text: 'SUBTOTAL', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
