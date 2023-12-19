@@ -77,7 +77,7 @@ const ImportExcel = ({
     <span>
       {buttonClickXLS}
       <span>
-        <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+        <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Import Excel</label>
         <input
           id="opname"
           type="file"
