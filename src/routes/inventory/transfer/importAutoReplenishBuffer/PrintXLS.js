@@ -46,7 +46,7 @@ const PrintXLS = ({ data, name }) => {
     return body
   }
   const title = [
-    { value: 'TEMPLATE IMPORT BCA RECON', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
+    { value: 'TEMPLATE IMPORT BUFFER TRANSFER', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.date }
   ]
   const tableHeader = [
     [
