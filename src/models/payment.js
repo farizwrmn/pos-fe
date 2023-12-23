@@ -1,7 +1,7 @@
 import { Modal } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
-import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
+import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
@@ -38,6 +38,7 @@ const { listCreditCharge, getCreditCharge } = creditChargeService
 export default {
   namespace: 'payment',
   state: {
+    listQueryPosDirectPrinting: [],
     currentItem: {},
     modalVisible: false,
     modalPaymentConfirmVisible: false,
@@ -112,6 +113,35 @@ export default {
   // confirm payment
 
   effects: {
+    * directPrinting ({ payload }, { call }) {
+      try {
+        const data = yield call(directPrinting, payload)
+        if (data.succes) {
+          return {
+            data: data.data
+          }
+        }
+      } catch (error) {
+        throw error
+      }
+    },
+    * queryPosDirectPrinting ({ payload }, { call, put }) {
+      // params
+      // payload.id
+      // payload.transNo
+      try {
+        const transNo = yield call(querySequence, payload)
+        const data = yield call(queryPosDirectPrinting, { transNo, ...payload })
+        if (data.success) {
+          yield put({
+            listQueryPosDirectPrinting: data.data
+          })
+          return data.data
+        }
+      } catch (error) {
+        throw error
+      }
+    },
     * create ({ payload }, { select, call, put }) {
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -463,6 +493,22 @@ export default {
                   dineInTax: 0
                 }
               })
+
+              // get template
+              const kasirTemplate = yield put({
+                type: 'queryPosDirectPrinting',
+                payload: {
+                  storeId: lstorage.getCurrentUserStore(),
+                  transNo: responsInsertPos.transNo
+                }
+              })
+              if (kasirTemplate.success) {
+                // direct print
+                yield put({
+                  type: 'directPrinting',
+                  payload: kasirTemplate
+                })
+              }
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
                 type: 'updateState',
