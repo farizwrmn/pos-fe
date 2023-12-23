@@ -495,18 +495,18 @@ export default {
               })
 
               // get template
-              const kasirTemplate = yield put({
+              const kasirResponse = yield put({
                 type: 'queryPosDirectPrinting',
                 payload: {
                   storeId: lstorage.getCurrentUserStore(),
                   transNo: responsInsertPos.transNo
                 }
               })
-              if (kasirTemplate.success) {
+              if (kasirResponse.success) {
                 // direct print
                 yield put({
                   type: 'directPrinting',
-                  payload: kasirTemplate
+                  payload: kasirResponse.data
                 })
               }
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
