@@ -115,29 +115,19 @@ export default {
   effects: {
     * directPrinting ({ payload }, { call }) {
       try {
-        const data = yield call(directPrinting, payload)
-        if (data.succes) {
-          return {
-            data: data.data
-          }
-        }
+        yield call(directPrinting, payload)
       } catch (error) {
         throw error
       }
     },
     * queryPosDirectPrinting ({ payload }, { call, put }) {
-      // params
-      // payload.id
-      // payload.transNo
       try {
-        const transNo = yield call(querySequence, payload)
-        const data = yield call(queryPosDirectPrinting, { transNo, ...payload })
-        if (data.success) {
-          yield put({
-            listQueryPosDirectPrinting: data.data
-          })
-          return data.data
-        }
+        const data = yield call(queryPosDirectPrinting, payload)
+        // direct print
+        yield put({
+          type: 'directPrinting',
+          payload: data.data
+        })
       } catch (error) {
         throw error
       }
@@ -495,20 +485,14 @@ export default {
               })
 
               // get template
-              const kasirResponse = yield put({
+              yield put({
                 type: 'queryPosDirectPrinting',
                 payload: {
                   storeId: lstorage.getCurrentUserStore(),
                   transNo: responsInsertPos.transNo
                 }
               })
-              if (kasirResponse.success) {
-                // direct print
-                yield put({
-                  type: 'directPrinting',
-                  payload: kasirResponse.data
-                })
-              }
+
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
                 type: 'updateState',

@@ -64,7 +64,7 @@ export const queryPosDirectPrinting = (params) => {
 export const directPrinting = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: 'http://localhost:8080/api/message?printerName=KASIR&paperWidth=58',
+    fullUrl: 'http://localhost:8080/api/message?printerName=KASIR&paperWidth=58',
     method: 'post',
     data: params,
     headers: apiHeaderToken
