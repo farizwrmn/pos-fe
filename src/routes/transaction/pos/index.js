@@ -43,7 +43,7 @@ import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
 import ModalCashRegister from './ModalCashRegister'
-import { groupProduct } from './utils'
+import { isChromeBrowser, groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
@@ -174,6 +174,13 @@ const Pos = ({
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
+  // validation: is user using electron base application
+  if (isChromeBrowser()) {
+    console.log('User is using Chrome or a Chromium-based browser.')
+  } else {
+    console.log('User is not using Chrome or a Chromium-based browser.')
+  }
+
   const { currentReward } = pospromo
   const { user, setting } = app
   // const { listShift } = shift

@@ -1,5 +1,10 @@
 import reduce from 'lodash/reduce'
 
+const isChromeBrowser = () => {
+  // Check for the presence of the 'webkitPersistentStorage' property
+  return 'webkitPersistentStorage' in navigator
+}
+
 const chooseOnePaymentType = (type = 'C', list = []) => {
   if (!type) return 'Cash'
   if (!list) return 'Cash'
@@ -46,5 +51,6 @@ const groupProduct = (list, dataBundle = []) => {
 
 export {
   chooseOnePaymentType,
-  groupProduct
+  groupProduct,
+  isChromeBrowser
 }
