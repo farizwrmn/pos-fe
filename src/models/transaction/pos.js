@@ -12,6 +12,7 @@ import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
+import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'services/store/expressStore'
 import { queryPaymentInvoice } from 'services/payment/payment'
 import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
@@ -102,6 +103,9 @@ export default {
   namespace: 'pos',
 
   state: {
+    enableDineIn: 1,
+    enableDineInLastUpdatedAt: null,
+    enableDineInLastUpdatedBy: null,
     currentBundlePayment: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
@@ -261,6 +265,12 @@ export default {
         }
         if (location.pathname === '/transaction/pos') {
           getDynamicQrisImage()
+          dispatch({
+            type: 'getEnableDineIn',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
           dispatch({ type: 'querySequenceReference' })
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
@@ -3132,6 +3142,39 @@ export default {
           currentBuildComponent: {}
         }
       })
+    },
+
+    * getEnableDineIn ({ payload }, { call, put }) {
+      const response = yield call(queryEnableDineIn, payload)
+      if (response.success && response.data && response.data.id) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            enableDineInLastUpdatedBy: response.data.updatedBy,
+            enableDineInLastUpdatedAt: response.data.updatedAt,
+            enableDineIn: response.data.enableDineIn
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * updateEnableDineIn ({ payload }, { call, put }) {
+      const response = yield call(updateEnableDineIn, payload)
+      if (response.success && response.data && response.data.id) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            enableDineInLastUpdatedBy: response.data.updatedBy,
+            enableDineInLastUpdatedAt: response.data.updatedAt,
+            enableDineIn: response.data.enableDineIn
+          }
+        })
+        message.success('Success update store dine in')
+      } else {
+        throw response
+      }
     },
 
     * getProductByBarcode ({ payload }, { call, put }) {
