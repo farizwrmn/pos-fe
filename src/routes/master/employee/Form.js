@@ -145,7 +145,9 @@ class FormEmployee extends Component {
                   initialValue: item.employeeName,
                   rules: [
                     {
-                      required: true
+                      required: true,
+                      pattern: /^[a-zA-Z_ ]+$/,
+                      message: 'Input tidak valid. Nama karyawan hanya boleh mengandung huruf dan spasi'
                     }
                   ]
                 })(<Input autoFocus />)}

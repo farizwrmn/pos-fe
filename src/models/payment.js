@@ -1,7 +1,7 @@
 import { Modal } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
-import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
+import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
@@ -38,6 +38,7 @@ const { listCreditCharge, getCreditCharge } = creditChargeService
 export default {
   namespace: 'payment',
   state: {
+    listQueryPosDirectPrinting: [],
     currentItem: {},
     modalVisible: false,
     modalPaymentConfirmVisible: false,
@@ -112,6 +113,25 @@ export default {
   // confirm payment
 
   effects: {
+    * directPrinting ({ payload }, { call }) {
+      try {
+        yield call(directPrinting, payload)
+      } catch (error) {
+        throw error
+      }
+    },
+    * queryPosDirectPrinting ({ payload }, { call, put }) {
+      try {
+        const data = yield call(queryPosDirectPrinting, payload)
+        // direct print
+        yield put({
+          type: 'directPrinting',
+          payload: data.data
+        })
+      } catch (error) {
+        throw error
+      }
+    },
     * create ({ payload }, { select, call, put }) {
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -463,6 +483,16 @@ export default {
                   dineInTax: 0
                 }
               })
+
+              // get template
+              yield put({
+                type: 'queryPosDirectPrinting',
+                payload: {
+                  storeId: lstorage.getCurrentUserStore(),
+                  transNo: responsInsertPos.transNo
+                }
+              })
+
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
                 type: 'updateState',
