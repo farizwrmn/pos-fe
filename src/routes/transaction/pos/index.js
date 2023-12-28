@@ -271,7 +271,8 @@ const Pos = ({
     curTotalDiscount,
     curRounding,
     curShift,
-    curCashierNo
+    curCashierNo,
+    electronABTesting
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -309,6 +310,19 @@ const Pos = ({
     status: null,
     cashActive: null
   }
+  const { getCurrentUserStore } = lstorage
+  if (electronABTesting && electronABTesting.paramValue) {
+    let stringElArr = electronABTesting.paramValue.split(',')
+    let dataElectronABTesting = stringElArr.map(item => Number(item))
+    let storeId = getCurrentUserStore()
+    if (dataElectronABTesting.includes(storeId)) {
+      console.log('page able to access for this store')
+    } else {
+      console.log('page are not able to access for this store')
+      return <NotFoundPage />
+    }
+  }
+
   if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
 
   let product = getCashierTrans()
@@ -3296,7 +3310,8 @@ export default connect(({
   app,
   loading,
   customerunit,
-  payment
+  payment,
+  parameter
 }) => ({
   planogram,
   fingerEmployee,
@@ -3317,5 +3332,6 @@ export default connect(({
   app,
   loading,
   customerunit,
-  payment
+  payment,
+  parameter
 }))(Pos)

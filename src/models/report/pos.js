@@ -2,6 +2,7 @@
  * Created by Veirry on 25/04/2018.
  */
 import moment from 'moment'
+import { queryId } from 'services/utils/parameter'
 import {
   // variables,
   lstorage
@@ -32,6 +33,7 @@ export default {
 
   state: {
     list: [],
+    electronABTesting: {},
     listTrans: [],
     listDaily: [],
     listDailyTempBrands: [],
@@ -128,10 +130,34 @@ export default {
             type: 'setListNull'
           })
         }
+
+        if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'queryParameter',
+            payload: {
+              paramCode: 'electronABTesting'
+            }
+          })
+        }
       })
     }
   },
   effects: {
+    * queryParameter ({ payload = {} }, { call, put }) {
+      // Hanya Kepala Toko dengan store yang telah ditentukan
+      // get paramCode like electronABTesting to targeted storeId had access to electron POS
+      // payload { paramCode: 'electronABTesting' }
+      const response = yield call(queryId, payload)
+      if (response && response.success) {
+        // validate current storeId
+        yield put({
+          type: 'updateState',
+          payload: {
+            electronABTesting: response.data
+          }
+        })
+      }
+    },
     * queryPart ({ payload }, { call, put }) {
       let data = []
       if (payload) {
