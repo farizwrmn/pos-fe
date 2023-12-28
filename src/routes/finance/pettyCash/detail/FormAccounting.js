@@ -35,10 +35,12 @@ import ListAccounting from './ListAccounting'
 // }
 
 const FormAccounting = ({
-  listAccounting
+  listAccounting,
+  loading
 }) => {
   const listProps = {
-    dataSource: listAccounting
+    dataSource: listAccounting,
+    loading
   }
 
   return (
