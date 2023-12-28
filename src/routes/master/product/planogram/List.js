@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
+import { lstorage } from 'utils'
 import moment from 'moment'
 
 const confirm = Modal.confirm
+const userRole = lstorage.getCurrentUserRole()
 
 const List = ({
   listAllStores,
@@ -22,7 +24,7 @@ const List = ({
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.productName} ?`,
+        title: `Are you sure delete ${record.name} ?`,
         onOk () {
           deleteItem(record.id)
         }
@@ -76,8 +78,8 @@ const List = ({
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '1', name: 'Edit' }
-              // { key: '2', name: 'Delete' }
+              { key: '1', name: 'Edit' },
+              { key: '2', name: 'Delete', disabled: userRole !== 'OWN' }
               // { key: '3', name: 'History' }
             ]}
           />

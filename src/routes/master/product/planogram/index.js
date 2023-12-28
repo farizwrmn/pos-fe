@@ -44,7 +44,7 @@ const Planogram = ({ planogram, userStore, loading, dispatch, location, app }) =
         payload: item
       })
     },
-    delete (id) {
+    deleteItem (id) {
       dispatch({
         type: 'planogram/delete',
         payload: id

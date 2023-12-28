@@ -93,8 +93,10 @@ export default {
         })
       }
     },
-    * delete ({ payload = {} }, { call, put }) {
+    * delete ({ payload = {} }, { call, put, select }) {
       const response = yield call(remove, payload)
+      const pagination = yield select(({ planogram }) => planogram.pagination)
+      const { current, pageSize } = pagination
       if (response && response.success) {
         yield put({
           type: 'updateState',
@@ -102,6 +104,7 @@ export default {
             currentItem: response.data
           }
         })
+        yield put({ type: 'query', payload: { ...payload, page: current, pageSize } })
       } else {
         throw response
       }
