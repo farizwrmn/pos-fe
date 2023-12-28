@@ -43,7 +43,7 @@ import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
 import ModalCashRegister from './ModalCashRegister'
-import { isChromeBrowser, groupProduct } from './utils'
+import { isElectron, isChromeBrowser, groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
@@ -54,6 +54,7 @@ import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
+import NotFoundPage from './NotFoundPage'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -177,6 +178,10 @@ const Pos = ({
   // validation: is user using electron base application
   if (isChromeBrowser()) {
     console.log('User is using Chrome or a Chromium-based browser.')
+    if (!isElectron()) {
+      console.log('User is using Electron')
+      return <NotFoundPage />
+    }
   } else {
     console.log('User is not using Chrome or a Chromium-based browser.')
   }
