@@ -159,7 +159,8 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
-    const onChangePaymentType = (value) => {
+    const onChangePaymentType = (event) => {
+      const { value } = event.target
       removeQrisImage()
       setFieldsValue({
         printDate: moment(),
@@ -396,8 +397,6 @@ class FormPayment extends React.Component {
       }
     }
 
-    console.log('storeId', lstorage.getCurrentUserStore())
-
     return (
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
@@ -451,13 +450,12 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(
-                <Radio.Group>
+                <Radio.Group onChange={value => onChangePaymentType(value)}>
                   {filteredOptions.map((item) => {
                     return (
                       <Radio.Button
                         disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
                         value={item.typeCode}
-                        onChange={onChangePaymentType}
                       >
                         {item.typeName}
                       </Radio.Button>

@@ -485,13 +485,13 @@ export default {
               })
 
               // get template
-              yield put({
-                type: 'queryPosDirectPrinting',
-                payload: {
-                  storeId: lstorage.getCurrentUserStore(),
-                  transNo: responsInsertPos.transNo
-                }
-              })
+              // yield put({
+              //   type: 'queryPosDirectPrinting',
+              //   payload: {
+              //     storeId: lstorage.getCurrentUserStore(),
+              //     transNo: responsInsertPos.transNo
+              //   }
+              // })
 
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
