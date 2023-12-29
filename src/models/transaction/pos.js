@@ -25,6 +25,7 @@ import {
   query as queryExpress,
   edit as editExpress
 } from 'services/k3express/dinein/dineinMap'
+import { queryId } from 'services/utils/parameter'
 import {
   getDataEmployeeByUserId,
   checkUserRole
@@ -103,6 +104,7 @@ export default {
 
   state: {
     currentBundlePayment: {},
+    electronABTesting: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
     modalGrabmartCodeVisible: false,
@@ -331,6 +333,15 @@ export default {
             }
           })
         }
+
+        if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'queryParameter',
+            payload: {
+              paramCode: 'electronABTesting'
+            }
+          })
+        }
       })
 
       history.listen(() => {
@@ -351,6 +362,21 @@ export default {
   },
 
   effects: {
+    * queryParameter ({ payload = {} }, { call, put }) {
+      // Hanya Kepala Toko dengan store yang telah ditentukan
+      // get paramCode like electronABTesting to targeted storeId had access to electron POS
+      // payload { paramCode: 'electronABTesting' }
+      const response = yield call(queryId, payload)
+      if (response && response.success) {
+        // validate current storeId
+        yield put({
+          type: 'updateState',
+          payload: {
+            electronABTesting: response.data
+          }
+        })
+      }
+    },
     * querySequenceReference (payload, { call }) {
       const response = yield call(queryReference, {
         storeId: lstorage.getCurrentUserStore()

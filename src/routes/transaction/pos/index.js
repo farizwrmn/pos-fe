@@ -43,7 +43,7 @@ import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
 import ModalCashRegister from './ModalCashRegister'
-import { isElectron, isChromeBrowser, groupProduct } from './utils'
+import { isElectron, groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
@@ -175,17 +175,6 @@ const Pos = ({
   workOrderItem = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {},
   payment
 }) => {
-  // validation: is user using electron base application
-  if (isChromeBrowser()) {
-    console.log('User is using Chrome or a Chromium-based browser.')
-    if (!isElectron()) {
-      console.log('User is using Electron')
-      return <NotFoundPage />
-    }
-  } else {
-    console.log('User is not using Chrome or a Chromium-based browser.')
-  }
-
   const { currentReward } = pospromo
   const { user, setting } = app
   // const { listShift } = shift
@@ -310,16 +299,17 @@ const Pos = ({
     status: null,
     cashActive: null
   }
+
   const { getCurrentUserStore } = lstorage
   if (electronABTesting && electronABTesting.paramValue) {
     let stringElArr = electronABTesting.paramValue.split(',')
     let dataElectronABTesting = stringElArr.map(item => Number(item))
     let storeId = getCurrentUserStore()
-    if (dataElectronABTesting.includes(storeId)) {
-      console.log('page able to access for this store')
-    } else {
-      console.log('page are not able to access for this store')
-      return <NotFoundPage />
+    if (dataElectronABTesting.includes(Number(storeId))) {
+      // validation: is user using electron base application
+      if (!isElectron()) {
+        return <NotFoundPage />
+      }
     }
   }
 
