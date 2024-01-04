@@ -1,11 +1,11 @@
 import { deliveryOrderDB, destroyDeliveryOrderDB } from './pouchdb'
 
 const defaultLocalDeliveryOrder = {
-  _id: '_local/deliveryOrder',
+  type: 'deliveryOrder',
   collapsedSections: []
 }
 const defaultDeliveryOrder = {
-  _id: 'deliveryOrder'
+  type: 'deliveryOrder'
 }
 
 function destroy () {
@@ -20,28 +20,31 @@ async function save (deliveryOrder) {
 }
 
 function saveLocal (deliveryOrder) {
+  console.log('deliveryOrder', deliveryOrder)
   return deliveryOrderDB()
-    .get('_local/deliveryOrder')
-    .then(doc => doc, () => defaultLocalDeliveryOrder)
-    .then(doc => deliveryOrderDB().put({ ...doc, ...deliveryOrder }))
+    .get(deliveryOrder.transNo)
+    .then(doc => doc, () => ({ _id: deliveryOrder.transNo, ...defaultLocalDeliveryOrder }))
+    .then(doc => deliveryOrderDB().put({ ...doc, _id: deliveryOrder.transNo, ...deliveryOrder }))
 }
 
-async function mergeLocalWithSyncedDeliveryOrder (local) {
+function load ({ transNo }) {
   return deliveryOrderDB()
-    .get('deliveryOrder')
-    .then(deliveryOrder => deliveryOrder, () => defaultDeliveryOrder)
-    .then(deliveryOrder => ({ ...deliveryOrder, ...local }))
-}
-
-function load () {
-  return deliveryOrderDB()
-    .get('_local/deliveryOrder')
+    .get(transNo)
     .then(local => local, () => defaultLocalDeliveryOrder)
-    .then(local => mergeLocalWithSyncedDeliveryOrder(local))
+}
+
+function loadAll () {
+  return deliveryOrderDB()
+    .allDocs({
+      include_docs: true,
+      conflicts: true
+    })
+    .then(response => response.rows.map(row => row.doc))
 }
 
 
 export default {
+  loadAll,
   load,
   save,
   saveLocal,

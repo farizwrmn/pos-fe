@@ -2042,6 +2042,14 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-out-detail')
           }
         }, {
+          path: 'delivery-order-packer/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrderPacker'))
+            }, 'inventory-delivery-order-packer')
+          }
+        }, {
           path: 'inventory/transfer/auto-replenish-submission',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
