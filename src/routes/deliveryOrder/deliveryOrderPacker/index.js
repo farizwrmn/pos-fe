@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Col, Collapse, Input, Row } from 'antd'
+import { Button, Col, Collapse, Input, Row, Modal } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
@@ -46,9 +46,13 @@ class DeliveryOrderPacker extends Component {
       user,
       storeInfo,
       pagination: false,
+      dispatch,
       loading: loading.effects['deliveryOrderPacker/queryDetail']
         || loading.effects['deliveryOrderPacker/groupingDeliveryOrderCart']
-        || loading.effects['deliveryOrderPacker/addItemByBarcode'],
+        || loading.effects['deliveryOrderPacker/addItemByBarcode']
+        || loading.effects['deliveryOrderPacker/saveDeliveryOrderCart']
+        || loading.effects['deliveryOrderPacker/loadDeliveryOrderCart']
+        || loading.effects['deliveryOrderPacker/deleteDeliveryOrderCartItem'],
       location
     }
 
@@ -59,7 +63,10 @@ class DeliveryOrderPacker extends Component {
       pagination: false,
       loading: loading.effects['deliveryOrderPacker/queryDetail']
         || loading.effects['deliveryOrderPacker/groupingDeliveryOrderCart']
-        || loading.effects['deliveryOrderPacker/addItemByBarcode'],
+        || loading.effects['deliveryOrderPacker/addItemByBarcode']
+        || loading.effects['deliveryOrderPacker/saveDeliveryOrderCart']
+        || loading.effects['deliveryOrderPacker/loadDeliveryOrderCart']
+        || loading.effects['deliveryOrderPacker/deleteDeliveryOrderCartItem'],
       location
     }
 
@@ -107,29 +114,34 @@ class DeliveryOrderPacker extends Component {
       }
     }
 
+    const onDeleteAll = () => {
+      Modal.confirm({
+        title: 'Delete all item in Scan Item',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'deliveryOrderPacker/deleteDeliveryOrderCart'
+          })
+        }
+      })
+    }
+
     return (
       <div className="content-inner">
         <GlobalHotKeys
           keyMap={keyMap}
           handlers={hotKeysHandler}
         />
-        <Input
-          id="input-product"
-          size="medium"
-          autoFocus
-          value={this.state.product}
-          onChange={(event) => {
-            this.setState({ product: event.target.value })
-          }}
-          style={{ fontSize: 24, marginBottom: 8 }}
-          placeholder="Product (F2); ie. 2*Barcode"
-          onPressEnter={(event) => {
-            onEnter(event, 'barcode')
-            this.setState({ product: '' })
-          }}
-        />
-        <Row>
-          <Col span={14}>
+        <Row gutter={6}>
+          <Col lg={10} md={24}>
+            <h1 style={{ marginBottom: '10px' }}>Delivery Order</h1>
+            <Collapse>
+              <Panel header="Requested Item" key="1">
+                <ListOrder {...listOrderProps} />
+              </Panel>
+            </Collapse>
+          </Col>
+          <Col lg={14} md={24}>
             <h1>
               <span>
                 Scan Item
@@ -138,12 +150,29 @@ class DeliveryOrderPacker extends Component {
             </h1>
             <List {...listProps} />
           </Col>
-          <Col span={10}>
-            <Collapse style={{ marginTop: '46px' }}>
-              <Panel header="Requested Item" key="1">
-                <ListOrder {...listOrderProps} />
-              </Panel>
-            </Collapse>
+        </Row>
+        <Input
+          id="input-product"
+          size="large"
+          autoFocus
+          value={this.state.product}
+          onChange={(event) => {
+            this.setState({ product: event.target.value })
+          }}
+          style={{ fontSize: 24, marginBottom: 10, marginTop: 10 }}
+          placeholder="Product (F2); ie. 2*Barcode | g to grouping"
+          onPressEnter={(event) => {
+            onEnter(event, 'barcode')
+            this.setState({ product: '' })
+          }}
+        />
+
+        <Row gutter={6}>
+          <Col lg={10} md={24}>
+            <Button size="large" style={{ width: '100%' }} type="danger" onClick={() => onDeleteAll()}>Cancel</Button>
+          </Col>
+          <Col lg={14} md={24}>
+            <Button size="large" style={{ width: '100%' }} type="primary">Submit</Button>
           </Col>
         </Row>
       </div>

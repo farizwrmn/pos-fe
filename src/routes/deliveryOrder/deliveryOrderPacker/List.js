@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Modal } from 'antd'
 import styles from '../../../themes/index.less'
 
-const List = ({ editItem, deleteItem, ...tableProps }) => {
+const List = ({ dispatch, ...tableProps }) => {
   const columns = [
     {
       title: 'No',
@@ -42,6 +42,21 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
     }
   ]
 
+  const onModalClick = (record) => {
+    Modal.confirm({
+      title: 'Delete Delivery Order Item',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'deliveryOrderPacker/deleteDeliveryOrderCartItem',
+          payload: {
+            time: record.time
+          }
+        })
+      }
+    })
+  }
+
   return (
     <div>
       <Table {...tableProps}
@@ -52,6 +67,11 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
         locale={{
           emptyText: 'Your Transfer Out List'
         }}
+        onRowClick={record => onModalClick({
+          ...record,
+          no: record.posit
+        })}
+        style={{ height: '510px' }}
         size="small"
         scroll={{ y: '480px' }}
         rowKey={record => record.time}

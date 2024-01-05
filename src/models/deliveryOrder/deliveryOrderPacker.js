@@ -90,6 +90,31 @@ export default modelExtend(pageModel, {
         }
       })
     },
+
+    * deleteDeliveryOrderCart (payload, { select, put }) {
+      const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      yield put({
+        type: 'saveDeliveryOrderCart',
+        payload: {
+          transNo: deliveryOrder.transNo,
+          listItem: []
+        }
+      })
+    },
+
+    * deleteDeliveryOrderCartItem ({ payload = {} }, { select, put }) {
+      const { time } = payload
+      const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
+      yield put({
+        type: 'saveDeliveryOrderCart',
+        payload: {
+          transNo: deliveryOrder.transNo,
+          listItem: listItem.filter(filtered => filtered.time !== time)
+        }
+      })
+    },
+
     * addItemByBarcode ({ payload = {} }, { select, put }) {
       const { orderQty, barcode } = payload
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
