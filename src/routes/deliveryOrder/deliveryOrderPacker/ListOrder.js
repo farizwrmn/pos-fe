@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 
-const List = ({ editItem, deleteItem, ...tableProps }) => {
+const ListOrder = ({ editItem, deleteItem, ...tableProps }) => {
   const columns = [
     {
       title: 'No',
@@ -16,6 +16,7 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
+      width: 'auto',
       className: styles.productPos,
       render: (text, record) => {
         return (
@@ -53,9 +54,9 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
   )
 }
 
-List.propTypes = {
+ListOrder.propTypes = {
   editItem: PropTypes.func,
   deleteItem: PropTypes.func
 }
 
-export default List
+export default ListOrder
