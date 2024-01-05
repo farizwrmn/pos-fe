@@ -12,9 +12,10 @@ import {
   TreeSelect,
   Select,
   message,
-  InputNumber
+  InputNumber,
+  Radio
 } from 'antd'
-import { arrayToTree, lstorage } from 'utils'
+import lstorage from 'utils/lstorage'
 import moment from 'moment'
 import List from './List'
 
@@ -346,7 +347,6 @@ class FormPayment extends React.Component {
     const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
       || currentBundlePayment.paymentOption === filtered.typeCode
       || typeCode === filtered.typeCode))
-    const menuTree = arrayToTree(filteredOptions.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
 
     const getMenus = (menuTreeN) => {
       return menuTreeN.map((item) => {
@@ -449,17 +449,26 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(
-                <TreeSelect
-                  showSearch
-                  disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeNodeFilterProp="title"
-                  filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  treeDefaultExpandAll
-                  onChange={onChangePaymentType}
+                <Radio.Group
+                  onChange={(e) => {
+                    if (e && e.target) {
+                      onChangePaymentType(e.target.value)
+                    } else {
+                      onChangePaymentType(e)
+                    }
+                  }}
                 >
-                  {getMenus(menuTree)}
-                </TreeSelect>
+                  {filteredOptions.map((item) => {
+                    return (
+                      <Radio.Button
+                        disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
+                        value={item.typeCode}
+                      >
+                        {item.typeName}
+                      </Radio.Button>
+                    )
+                  })}
+                </Radio.Group>
               )}
             </FormItem>
             <FormItem label="EDC" hasFeedback {...formItemLayout}>
@@ -540,7 +549,7 @@ class FormPayment extends React.Component {
               <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('batchNumber', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.batchNumber,
-                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {
                         required: true,

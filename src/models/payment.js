@@ -1,7 +1,7 @@
 import { Modal } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
-import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
+import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
@@ -16,6 +16,7 @@ import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 const { stockMinusAlert } = alertModal
 const {
   getCashierTrans,
+  getPosReference,
   getConsignment,
   removeQrisImage,
   setDynamicQrisImage,
@@ -37,6 +38,7 @@ const { listCreditCharge, getCreditCharge } = creditChargeService
 export default {
   namespace: 'payment',
   state: {
+    listQueryPosDirectPrinting: [],
     currentItem: {},
     modalVisible: false,
     modalPaymentConfirmVisible: false,
@@ -111,6 +113,25 @@ export default {
   // confirm payment
 
   effects: {
+    * directPrinting ({ payload }, { call }) {
+      try {
+        yield call(directPrinting, payload)
+      } catch (error) {
+        throw error
+      }
+    },
+    * queryPosDirectPrinting ({ payload }, { call, put }) {
+      try {
+        const data = yield call(queryPosDirectPrinting, payload)
+        // direct print
+        yield put({
+          type: 'directPrinting',
+          payload: data.data
+        })
+      } catch (error) {
+        throw error
+      }
+    },
     * create ({ payload }, { select, call, put }) {
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -189,6 +210,14 @@ export default {
           })
         } else {
           let arrayProd = []
+          let reference = getPosReference()
+          if (!reference) {
+            Modal.error({
+              title: 'Refresh the browser',
+              content: 'Refresh the browser'
+            })
+            return
+          }
           const product = getCashierTrans()
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
@@ -301,6 +330,7 @@ export default {
           let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
+              reference,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
@@ -358,6 +388,9 @@ export default {
                 removeDynamicQrisPosTransId()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
+                yield put({
+                  type: 'pos/querySequenceReference'
+                })
                 yield put({
                   type: 'pos/setAllNull'
                 })
@@ -450,6 +483,16 @@ export default {
                   dineInTax: 0
                 }
               })
+
+              // get template
+              // yield put({
+              //   type: 'queryPosDirectPrinting',
+              //   payload: {
+              //     storeId: lstorage.getCurrentUserStore(),
+              //     transNo: responsInsertPos.transNo
+              //   }
+              // })
+
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
                 type: 'updateState',
@@ -738,6 +781,14 @@ export default {
           })
         } else {
           let arrayProd = []
+          let reference = getPosReference()
+          if (!reference) {
+            Modal.error({
+              title: 'Refresh the browser',
+              content: 'Refresh the browser'
+            })
+            return
+          }
           const consignment = getConsignment()
           const consignmentTotal = consignment && consignment.length > 0 ? consignment.reduce((prev, next) => prev + next.total, 0) : 0
           const dineInTax = localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0
@@ -851,6 +902,7 @@ export default {
             const goodsInfo = product.map(item => `${item.productId}:${item.qty}:${item.total}`).join(';')
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
+              reference,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
@@ -904,6 +956,9 @@ export default {
                     paymentTransactionId: createdPaymentTransaction.payment.id,
                     paymentTransactionLimitTime: Number(paymentTransactionLimitTime || 15)
                   }
+                })
+                yield put({
+                  type: 'pos/querySequenceReference'
                 })
                 yield put({
                   type: 'pos/updateState',

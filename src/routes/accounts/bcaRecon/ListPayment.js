@@ -39,6 +39,18 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       className: styles.alignRight
     },
     {
+      title: 'Type Code',
+      dataIndex: 'typeCode',
+      key: 'typeCode',
+      className: styles.alignRight
+    },
+    {
+      title: 'Trans No',
+      dataIndex: 'transNo',
+      key: 'transNo',
+      className: styles.alignRight
+    },
+    {
       title: 'MDR',
       dataIndex: 'matchMdr',
       key: 'matchMdr',

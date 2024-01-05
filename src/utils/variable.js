@@ -1,6 +1,7 @@
 // Request transactionType
 export const CANCEL_ITEM = 'CANCEL_ITEM'
 export const CANCEL_INPUT = 'CANCEL_INPUT'
+export const DISCOUNT_ITEM = 'DISCOUNT_ITEM'
 export const CANCEL_INVOICE = 'CANCEL_INVOICE'
 
 // balanceType

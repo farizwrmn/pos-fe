@@ -2,9 +2,8 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
-import { querySupplier, add, edit, remove } from 'services/procurement/purchaseReceive'
+import { query as getPurchaseReveive, queryId as getPurchaseReceiveById, querySupplier, add, edit, remove } from 'services/procurement/purchaseReceive'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
-import { query as getPurchaseOrder, queryById as getPurchaseOrderById } from 'services/procurement/purchaseOrder'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -17,6 +16,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    data: {},
     modalEditVisible: false,
     modalEditItem: {},
     modalType: 'add',
@@ -51,7 +51,7 @@ export default modelExtend(pageModel, {
             }
           })
           dispatch({
-            type: 'queryPurchaseOrder',
+            type: 'queryPurchaseReceive',
             payload: {
               id: match[1]
             }
@@ -63,8 +63,8 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * queryPurchaseOrder ({ payload = {} }, { call, put }) {
-      const response = yield call(getPurchaseOrderById, {
+    * queryPurchaseReceive ({ payload = {} }, { call, put }) {
+      const response = yield call(getPurchaseReceiveById, {
         id: payload.id,
         storeId: lstorage.getCurrentUserStore()
       })
@@ -72,6 +72,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            data: response.data,
             currentItem: response.data
           }
         })
@@ -114,10 +115,10 @@ export default modelExtend(pageModel, {
     * changeTotalData ({ payload = {} }, { put }) {
       const { listItem, header } = payload
       let ppnType = header.taxType
-      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.receivedQty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
       const dataProduct = listItem
       for (let key = 0; key < dataProduct.length; key += 1) {
-        const discItem = ((((dataProduct[key].receivedQty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
         dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
         const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
         if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
@@ -166,7 +167,7 @@ export default modelExtend(pageModel, {
           listDetail: []
         }
       })
-      const response = yield call(getPurchaseOrder, {
+      const response = yield call(getPurchaseReveive, {
         storeId: lstorage.getCurrentUserStore(),
         supplierId: payload.supplierId,
         type: 'all',

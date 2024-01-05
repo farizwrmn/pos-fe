@@ -7,6 +7,7 @@ import {
 import List from './ListDetail'
 
 const FormPayment = ({
+  loading,
   storeInfo,
   user,
   data,
@@ -17,6 +18,7 @@ const FormPayment = ({
   }
 }) => {
   const listProps = {
+    loading,
     storeInfo,
     user,
     data,

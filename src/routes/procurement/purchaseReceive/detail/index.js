@@ -2,123 +2,84 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Form from './Form'
-import ModalEdit from './ModalEdit'
+import {
+  Row,
+  Col,
+  Button
+} from 'antd'
+import TransDetail from './TransDetail'
+import styles from './index.less'
+import PrintPDFInvoice from './PrintPDFInvoice'
 
-const Counter = ({ purchaseReceive, app, dispatch, loading, location }) => {
-  const { modalEditVisible, modalEditItem, modalType, listItem, currentItem } = purchaseReceive
+
+const Detail = ({ app, purchaseReceive, dispatch }) => {
   const { user, storeInfo } = app
-
-  const listItemProps = {
-    dataSource: listItem,
-    listItem,
-    pagination: false,
-    item: currentItem,
-    loading: loading.effects['purchaseReceive/queryRequisitionDetail']
-      || loading.effects['purchaseReceive/add']
-      || loading.effects['purchaseReceive/createPurchaseOrder'],
-    onModalVisible (modalEditItem) {
-      dispatch({
-        type: 'purchaseReceive/updateState',
-        payload: {
-          modalEditItem,
-          modalEditVisible: true
-        }
-      })
+  const { listItem, data } = purchaseReceive
+  console.log('data', data)
+  console.log('listItem', listItem)
+  const content = []
+  for (let key in data) {
+    if ({}.hasOwnProperty.call(data, key)) {
+      if (key !== 'policeNoId' && key !== 'storeId' && key !== 'id' && key !== 'memberId') {
+        content.push(
+          <div key={key} className={styles.item}>
+            <div>{key}</div>
+            <div>{String(data[key])}</div>
+          </div>
+        )
+      }
     }
+  }
+
+  const BackToList = () => {
+    dispatch(routerRedux.push('/transaction/procurement/order-history'))
+  }
+
+  const formDetailProps = {
+    dataSource: listItem
   }
 
   const printProps = {
-    user,
+    // listItem: listProducts,
+    // itemPrint: transHeader,
+    // itemHeader: transHeader,
+    listItem,
+    itemPrint: data,
+    itemHeader: data,
     storeInfo,
-    item: currentItem
-  }
-
-  const formProps = {
-    modalType,
-    listItemProps,
-    printProps,
-    item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    loading: loading.effects['purchaseReceive/add']
-      || loading.effects['purchaseReceive/createPurchaseOrder'],
-    onSubmit (data, reset) {
-      dispatch({
-        type: 'purchaseReceive/add',
-        payload: {
-          transNoId: currentItem.id,
-          listItem,
-          data,
-          reset
-        }
-      })
-    },
-    onCancel () {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: '1'
-        }
-      }))
-      dispatch({
-        type: 'purchaseReceive/updateState',
-        payload: {
-          currentItem: {}
-        }
-      })
-    }
-  }
-
-  const modalEditProps = {
-    visible: modalEditVisible,
-    loading,
-    currentItem,
-    item: currentItem,
-    currentItemList: modalEditItem,
-    onOk (data) {
-      dispatch({
-        type: 'purchaseReceive/receive',
-        payload: {
-          id: currentItem.id,
-          productId: data.productId,
-          receivedQty: data.receivedQty
-        }
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'purchaseReceive/updateState',
-        payload: {
-          modalEditItem: {},
-          modalEditVisible: false
-        }
-      })
-    },
-    onDeleteItem (item) {
-      dispatch({
-        type: 'purchaseOrder/deleteItem',
-        payload: {
-          item
-        }
-      })
-    }
+    user,
+    printNo: 1
   }
 
   return (
-    <div className="content-inner">
-      <Form {...formProps} />
-      {modalEditVisible && <ModalEdit {...modalEditProps} />}
+    <div className="wrapper">
+      <Row>
+        <Col lg={6}>
+          <div className="content-inner-zero-min-height">
+            <Button type="primary" icon="rollback" onClick={() => BackToList()}>Back</Button>
+            <h1>Invoice Info</h1>
+            <div className={styles.content}>
+              {content}
+            </div>
+          </div>
+        </Col>
+        <Col lg={18}>
+          <div className="content-inner-zero-min-height">
+            {listItem && listItem.length > 0 ? <PrintPDFInvoice {...printProps} /> : null}
+            <h1>Purchase Receive Items</h1>
+            <Row style={{ padding: '10px', margin: '4px' }}>
+              <TransDetail {...formDetailProps} />
+            </Row>
+          </div>
+        </Col>
+      </Row>
     </div>
   )
 }
 
-Counter.propTypes = {
-  purchaseReceive: PropTypes.object,
-  loading: PropTypes.object,
-  location: PropTypes.object,
+Detail.propTypes = {
   app: PropTypes.object,
-  dispatch: PropTypes.func
+  purchaseReceive: PropTypes.object
 }
 
-export default connect(({ purchaseReceive, loading, app }) => ({ purchaseReceive, loading, app }))(Counter)
+export default connect(({ app, loading, purchaseReceive }) => ({ app, loading, purchaseReceive }))(Detail)
