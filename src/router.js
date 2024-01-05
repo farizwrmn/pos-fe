@@ -2022,16 +2022,16 @@ const Routers = function ({ history, app }) {
           path: 'delivery-order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
-              cb(null, require('./routes/deliveryOrder/deliveryOrderPacker'))
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrder'))
             }, 'inventory-delivery-order')
           }
         }, {
           path: 'delivery-order-detail/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
-              cb(null, require('./routes/deliveryOrder/deliveryOrderPacker/detail'))
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrder/detail'))
             }, 'inventory-delivery-order-detail')
           }
         }, {
