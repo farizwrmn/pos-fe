@@ -1,26 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import { Link } from 'dva/router'
+import moment from 'moment'
+// import { Link } from 'dva/router'
 
-
-const List = (tableProps) => {
+const List = ({ toDetail, ...tableProps }) => {
   const columns = [
+    // {
+    //   title: 'id',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    //   render: (text, record) => {
+    //     return (<Link target="_blank" to={`/delivery-order-detail/${record.id}?storeId=${record.storeIdReceiver}`}>{text}</Link>)
+    //   }
+    // },
     {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
-      render: (text, record) => {
-        return (<Link target="_blank" to={`/delivery-order-detail/${record.id}?storeId=${record.storeIdReceiver}`}>{text}</Link>)
-      }
-    },
-    {
-      title: 'No Transaksi DO',
+      title: 'DO Transaction Number',
       dataIndex: 'transNo',
       key: 'transNo'
     },
     {
-      title: 'Jumlah MUOUT (Angka)',
+      title: 'Quantity MUOUT',
       dataIndex: 'totalColly',
       key: 'totalColly'
     },
@@ -35,9 +35,16 @@ const List = (tableProps) => {
       key: 'memo'
     },
     {
-      title: 'Hari Tanggal Jam',
+      title: 'Day/Date/Hour',
       dataIndex: 'transDate',
-      key: 'transDate'
+      key: 'transDate',
+      render: (text, record) => {
+        const parsedDate = moment(record)
+        const day = parsedDate.format('dddd') // 'dddd' gives the full day name (e.g., Monday)
+        const date = parsedDate.format('YYYY-MM-DD') // 'YYYY-MM-DD' gives the date in the specified format
+        const hour = parsedDate.format('HH') // 'HH' gives the hour in 24-hour format
+        return `${day}, ${date} ${hour}`
+      }
     },
     {
       title: 'Distribution Center',
@@ -45,12 +52,12 @@ const List = (tableProps) => {
       key: 'storeName'
     },
     {
-      title: 'Durasi DO (Count Hari)',
+      title: 'Duration of DO',
       dataIndex: '',
       key: ''
     },
     {
-      title: 'Expired DO (Tanggal)',
+      title: 'Expired DO',
       dataIndex: '',
       key: ''
     }
@@ -71,6 +78,7 @@ const List = (tableProps) => {
         columns={columns}
         pagination={false}
         simple
+        onRowClick={record => toDetail(record)}
         rowKey={record => record.id}
       />
     </div>

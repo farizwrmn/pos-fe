@@ -2,6 +2,7 @@ import { message } from 'antd'
 import {
   query,
   queryDetail,
+  queryTransferOut,
   finish,
   add,
   remove,
@@ -19,6 +20,7 @@ export default {
 
   state: {
     list: [],
+    listTransferOut: [],
     activeKey: '0',
     currentItem: {},
     modalVisible: false,
@@ -37,17 +39,19 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname, query } = location
-        const { page, pageSize } = query
+        const { pathname /* query */ } = location
+        // const { page, pageSize } = query
 
         if (pathname === '/delivery-order') {
           dispatch({
             type: 'query',
             payload: {
-              relationship: 1,
-              page,
-              pageSize,
-              q: null
+              type: 'all',
+              storeId: lstorage.getCurrentUserStore()
+              // relationship: 1
+              // page,
+              // pageSize,
+              // q: null
             }
           })
         }
@@ -57,6 +61,14 @@ export default {
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1])
+            }
+          })
+
+          dispatch({
+            type: 'queryTransferOut',
+            payload: {
+              active: 1,
+              deliveryOrderId: decodeURIComponent(match[1])
             }
           })
         }
@@ -100,6 +112,17 @@ export default {
           type: 'updateState',
           payload: {
             currentItem: response.data
+          }
+        })
+      }
+    },
+    * queryTransferOut ({ payload = {} }, { call, put }) {
+      const response = yield call(queryTransferOut, payload)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransferOut: response.data
           }
         })
       }
