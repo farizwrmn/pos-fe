@@ -2019,6 +2019,22 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-in')
           }
         }, {
+          path: 'delivery-order',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrderPacker'))
+            }, 'inventory-delivery-order')
+          }
+        }, {
+          path: 'delivery-order-detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrderPacker/detail'))
+            }, 'inventory-delivery-order-detail')
+          }
+        }, {
           path: 'inventory/transfer/out',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
