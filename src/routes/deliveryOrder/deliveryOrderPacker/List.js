@@ -27,9 +27,16 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       }
     },
     {
-      title: 'Qty',
+      title: 'Request',
       dataIndex: 'qty',
       key: 'qty',
+      width: '80px',
+      className: styles.qtyPos
+    },
+    {
+      title: 'Order',
+      dataIndex: 'orderQty',
+      key: 'orderQty',
       width: '80px',
       className: styles.qtyPos
     }

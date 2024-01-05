@@ -3,7 +3,7 @@ import { queryDetail } from 'services/deliveryOrder/deliveryOrderPacker'
 import deliveryOrderStorage from 'utils/storage/deliveryOrder'
 import deliveryOrderCartStorage from 'utils/storage/deliveryOrderCart'
 import { lstorage } from 'utils'
-import { Modal } from 'antd'
+import { message, Modal } from 'antd'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
 
@@ -40,6 +40,28 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * groupingDeliveryOrderCart (payload, { select, put }) {
+      const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
+      const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      let result = []
+      listItem.reduce((res, value) => {
+        if (!res[value.productId]) {
+          res[value.productId] = { ...value, orderQty: 0 }
+          result.push(res[value.productId])
+        }
+        res[value.productId].orderQty += value.orderQty
+        return res
+      }, {})
+      yield put({
+        type: 'saveDeliveryOrderCart',
+        payload: {
+          transNo: deliveryOrder.transNo,
+          listItem: result
+        }
+      })
+      message.success('Grouping is success')
+    },
+
     * loadDeliveryOrderCart ({ payload = {} }, { call, put }) {
       const { transNo } = payload
       const listItemResponse = yield call(deliveryOrderCartStorage.load, {
@@ -69,7 +91,7 @@ export default modelExtend(pageModel, {
       })
     },
     * addItemByBarcode ({ payload = {} }, { select, put }) {
-      const { qty, barcode } = payload
+      const { orderQty, barcode } = payload
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
       const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
       if (deliveryOrder && deliveryOrder.id) {
@@ -80,7 +102,7 @@ export default modelExtend(pageModel, {
             {
               time: new Date().valueOf(),
               ...filteredDeliveryOrderDetail[0],
-              qty
+              orderQty
             }
           ]
           currentListItem = currentListItem.concat(listItem)

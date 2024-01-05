@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Col, Collapse, Input, Row } from 'antd'
+import { Button, Col, Collapse, Input, Row } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
@@ -9,7 +9,8 @@ import ListOrder from './ListOrder'
 const { Panel } = Collapse
 
 const keyMap = {
-  PRODUCT: 'f2'
+  PRODUCT: 'f2',
+  GROUPING: 'ctrl+1'
 }
 
 class DeliveryOrderPacker extends Component {
@@ -40,15 +41,14 @@ class DeliveryOrderPacker extends Component {
     const { listItem, deliveryOrder } = deliveryOrderPacker
     const { user, storeInfo } = app
 
-    console.log('listItem', listItem)
-    console.log('deliveryOrder', deliveryOrder)
-
     const listProps = {
       dataSource: listItem,
       user,
       storeInfo,
       pagination: false,
-      loading: loading.effects['deliveryOrderPacker/queryDetail'],
+      loading: loading.effects['deliveryOrderPacker/queryDetail']
+        || loading.effects['deliveryOrderPacker/groupingDeliveryOrderCart']
+        || loading.effects['deliveryOrderPacker/addItemByBarcode'],
       location
     }
 
@@ -57,30 +57,41 @@ class DeliveryOrderPacker extends Component {
       user,
       storeInfo,
       pagination: false,
-      loading: loading.effects['deliveryOrderPacker/queryDetail'],
+      loading: loading.effects['deliveryOrderPacker/queryDetail']
+        || loading.effects['deliveryOrderPacker/groupingDeliveryOrderCart']
+        || loading.effects['deliveryOrderPacker/addItemByBarcode'],
       location
+    }
+
+    const onGrouping = () => {
+      dispatch({
+        type: 'deliveryOrderPacker/groupingDeliveryOrderCart'
+      })
     }
 
     const onEnter = (event) => {
       const { value } = event.target
       if (value && value !== '') {
-        let qty = 1
+        if (value && value.toLowerCase() === 'g') {
+          onGrouping()
+          return
+        }
+        let orderQty = 1
         let barcode = value
         if (value && value.includes('*') && value.split('*').length === 2) {
           const splittedValue = value.split('*')
           if (splittedValue[0] && splittedValue[0].length < 4) {
-            qty = parseFloat(splittedValue[0])
-            if (!qty) {
-              qty = 1
+            orderQty = parseFloat(splittedValue[0])
+            if (!orderQty) {
+              orderQty = 1
             }
-            console.log('splittedValue qty', qty)
             barcode = splittedValue[1]
           }
         }
         dispatch({
           type: 'deliveryOrderPacker/addItemByBarcode',
           payload: {
-            qty,
+            orderQty,
             barcode
           }
         })
@@ -90,6 +101,9 @@ class DeliveryOrderPacker extends Component {
     const hotKeysHandler = {
       PRODUCT: () => {
         document.getElementById('input-product').focus()
+      },
+      GROUPING: () => {
+        onGrouping()
       }
     }
 
@@ -116,11 +130,16 @@ class DeliveryOrderPacker extends Component {
         />
         <Row>
           <Col span={14}>
-            <h1>Scan Item</h1>
+            <h1>
+              <span>
+                Scan Item
+                <Button type="primary" onClick={() => onGrouping()} style={{ marginLeft: '10px', marginBottom: '10px' }}>Grouping</Button>
+              </span>
+            </h1>
             <List {...listProps} />
           </Col>
           <Col span={10}>
-            <Collapse style={{ marginTop: '36px' }}>
+            <Collapse style={{ marginTop: '46px' }}>
               <Panel header="Requested Item" key="1">
                 <ListOrder {...listOrderProps} />
               </Panel>
