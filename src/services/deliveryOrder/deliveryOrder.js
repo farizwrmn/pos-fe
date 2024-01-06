@@ -22,6 +22,16 @@ export async function queryDetail (params) {
   })
 }
 
+export async function queryTransferOut (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/transfer/out',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function finish (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

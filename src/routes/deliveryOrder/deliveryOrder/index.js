@@ -1,13 +1,17 @@
 import React from 'react'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import List from './List'
 
-const DeliveryOrder = ({ deliveryOrder, loading }) => {
+const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
   const { list } = deliveryOrder
 
   const ListProps = {
     dataSource: list,
-    loading: loading.effects['deliveryOrder/query']
+    loading: loading.effects['deliveryOrder/query'],
+    toDetail: (record) => {
+      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}?storeId=${record.storeIdReceiver}`))
+    }
   }
 
   return (

@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Card, Row, Col } from 'antd'
+import { Card, Button, Row, Col } from 'antd'
+import { routerRedux } from 'dva/router'
 import List from './List'
+import ListTransferOut from './ListTransferOut'
 
 const columnProps = {
   xs: 12,
@@ -10,107 +12,124 @@ const columnProps = {
   lg: 3
 }
 
-const DeliveryOrderDetail = ({ deliveryOrder }) => {
-  const { currentItem } = deliveryOrder
+const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
+  const { listTransferOut, currentItem } = deliveryOrder
   const listProps = {
     dataSource: currentItem && currentItem.deliveryOrderDetail
   }
 
+  const listTransferOutProps = {
+    dataSource: listTransferOut && listTransferOut.length > 0 ? listTransferOut : [],
+    toDetail: (record) => {
+      dispatch(routerRedux.push(`/inventory/transfer/out/${record.transNo}`))
+    }
+  }
+
+  const startScan = () => {
+    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
+  }
+
   return (
     <Card>
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>ID</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.id}</h3>
-        </Col>
-      </Row>
+      <div style={{ display: 'grid', gridTemplateColumns: '80% minmax(0, 20%)' }}>
+        <div>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Trans No.</h3>
+            </Col>
+            <Col {...columnProps}>
+              <strong>{currentItem.transNo}</strong>
+            </Col>
+          </Row>
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>No Transaksi DO</h3>
-        </Col>
-        <Col {...columnProps}>
-          <strong>{currentItem.transNo}</strong>
-        </Col>
-      </Row>
+          {/* <Row>
+            <Col {...columnProps}>
+              <h3>Quantity MUOUT</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.totalColly}</h3>
+            </Col>
+          </Row> */}
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Jumlah MUOUT</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.totalColly}</h3>
-        </Col>
-      </Row>
+          {/* <Row>
+            <Col {...columnProps}>
+              <h3>Box Number</h3>
+            </Col>
+            <Col {...columnProps}>
+              <span />
+            </Col>
+          </Row> */}
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Nomor Box</h3>
-        </Col>
-        <Col {...columnProps}>
-          {/* <h3>{currentItem}</h3> */}
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>From</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.storeName}</h3>
+            </Col>
+          </Row>
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Distribution Center</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.storeName}</h3>
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>To</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.storeNameReceiver}</h3>
+            </Col>
+          </Row>
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Store Name Receiver</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.storeNameReceiver}</h3>
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Date</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.transDate}</h3>
+            </Col>
+          </Row>
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Tanggal Kirim</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.transDate}</h3>
-        </Col>
-      </Row>
+          {/* <Row>
+            <Col {...columnProps}>
+              <h3>Duration</h3>
+            </Col>
+            <Col {...columnProps}>
+              <span />
+            </Col>
+          </Row> */}
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Durasi</h3>
-        </Col>
-        <Col {...columnProps}>
-          {/* <h3>{currentItem.memo}</h3> */}
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Expired DO</h3>
+            </Col>
+            <Col {...columnProps}>
+              <span />
+            </Col>
+          </Row>
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>{'Expired DO (Tanggal)'}</h3>
-        </Col>
-        <Col {...columnProps}>
-          {/* <h3>{currentItem.memo}</h3> */}
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Notes</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.memo}</h3>
+            </Col>
+          </Row>
+        </div>
 
-      <Row gutter={8}>
-        <Col {...columnProps}>
-          <h3>Notes</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.memo}</h3>
-        </Col>
-      </Row>
+        <div>
+          <Button type="primary" onClick={() => startScan()}>
+            Start Scan
+          </Button>
+        </div>
+      </div>
 
       <Row style={{ marginTop: '1em' }}>
         <Col>
           <List {...listProps} />
+        </Col>
+      </Row>
+      <Row style={{ marginTop: '1em' }}>
+        <Col>
+          <ListTransferOut {...listTransferOutProps} />
         </Col>
       </Row>
     </Card>
