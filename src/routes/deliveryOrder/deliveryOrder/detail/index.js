@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Card, Button, Row, Col } from 'antd'
+import { Card, Button, Row, Col, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
@@ -27,6 +27,170 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
 
   const startScan = () => {
     dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
+  }
+
+  const templatePrint = () => {
+    const printDate = () => {
+      const parsedDate = new Date()
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+        timeZone: 'Asia/Jakarta' // Set the time zone to Jakarta (GMT+7)
+      }
+      return parsedDate.toLocaleDateString('id-ID', options)
+    }
+
+    const totalQty = () => {
+      const data = currentItem && currentItem.deliveryOrderDetail
+      const totalQty = data.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
+      return totalQty
+    }
+
+    let template = [
+      {
+        alignment: 'two',
+        text: '',
+        rightText: ''
+      },
+      {
+        alignment: 'center',
+        text: 'Delivery Order',
+        rightText: ''
+      },
+      {
+        alignment: 'center',
+        text: `Ref: ${currentItem.transNo}`,
+        rightText: ''
+      },
+      {
+        alignment: 'center',
+        text: `Store: ${currentItem.storeName} ke ${currentItem.storeNameReceiver}`,
+        rightText: ''
+      },
+      {
+        alignment: 'center',
+        text: printDate(),
+        rightText: ''
+      },
+      {
+        alignment: 'line',
+        text: ''
+      }
+    ]
+
+    const pushProductToTemplate = () => {
+      let data = currentItem && currentItem.deliveryOrderDetail
+      for (let key in data) {
+        let item = data[key]
+        template.push({
+          alignment: 'two',
+          text: item.productName,
+          rightText: ''
+        }, {
+          alignment: 'two',
+          text: `qty: ${item.qty}`,
+          rightText: item.productCode
+        })
+      }
+    }
+
+    const pushFooterToTemplate = () => {
+      let arr = [
+        {
+          alignment: 'line',
+          text: ''
+        },
+        {
+          alignment: 'two',
+          text: 'Total Item:',
+          rightText: totalQty()
+        },
+        {
+          alignment: 'line',
+          text: ''
+        },
+        {
+          alignment: 'two',
+          text: 'Picking By',
+          rightText: 'Staging By'
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'two',
+          text: 'ttd',
+          rightText: 'ttd'
+        },
+        {
+          alignment: 'two',
+          text: 'nama staff',
+          rightText: 'nama staff'
+        },
+        {
+          alignment: 'line',
+          text: ''
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        }
+      ]
+      for (let key in arr) {
+        let item = arr[key]
+        template.push(item)
+      }
+    }
+    pushProductToTemplate()
+    pushFooterToTemplate()
+
+    return template
+  }
+
+  const printDO = () => {
+    Modal.confirm({
+      title: 'Print Delivery Order ?',
+      content: '',
+      onOk () {
+        dispatch({
+          type: 'payment/directPrinting',
+          payload: templatePrint()
+        })
+      }
+    })
   }
 
   return (
@@ -115,10 +279,17 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
           </Row>
         </div>
 
-        <div>
-          <Button type="primary" onClick={() => startScan()}>
-            Start Scan
-          </Button>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={{ margin: '0.5em' }}>
+            <Button type="primary" onClick={() => printDO()}>
+              Print
+            </Button>
+          </div>
+          <div style={{ margin: '0.5em' }}>
+            <Button type="primary" onClick={() => startScan()}>
+              Start Scan
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -136,4 +307,4 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
   )
 }
 
-export default connect(({ deliveryOrder, loading, app }) => ({ deliveryOrder, loading, app }))(DeliveryOrderDetail)
+export default connect(({ deliveryOrder, payment, loading, app }) => ({ deliveryOrder, payment, loading, app }))(DeliveryOrderDetail)
