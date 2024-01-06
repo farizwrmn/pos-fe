@@ -436,6 +436,14 @@ const Routers = function ({ history, app }) {
             }, 'master-shift')
           }
         }, {
+          path: 'stock-uom',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productUom'))
+              cb(null, require('./routes/master/productUom'))
+            }, 'stock-uom')
+          }
+        }, {
           path: 'master/product/location',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -677,10 +685,22 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-payment')
           }
         }, {
+          path: 'transaction/procurement/price',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/product/productUom'))
+              registerModel(app, require('./models/procurement/purchasePrice'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/procurement/purchasePrice'))
+            }, 'transaction-procurement-price')
+          }
+        }, {
           path: 'transaction/procurement/order',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/procurement/importPurchaseOrder'))
               registerModel(app, require('./models/procurement/purchaseSafetyStock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))

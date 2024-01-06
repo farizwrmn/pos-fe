@@ -259,7 +259,10 @@ const Pos = ({
     curTotalDiscount,
     curRounding,
     curShift,
-    curCashierNo
+    curCashierNo,
+    enableDineIn,
+    enableDineInLastUpdatedBy,
+    enableDineInLastUpdatedAt
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
@@ -2805,9 +2808,27 @@ const Pos = ({
   const modalExpressProps = {
     visible: modalExpressVisible,
     editVisible: modalEditExpressVisible,
+    enableDineIn,
+    enableDineInLastUpdatedBy,
+    enableDineInLastUpdatedAt,
     list: listExpress,
     item: currentItemPos,
     loading,
+    updateEnableDineIn (enableDineIn) {
+      Modal.confirm({
+        title: 'Update Dine In Status',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'pos/updateEnableDineIn',
+            payload: {
+              storeId: lstorage.getCurrentUserStore(),
+              enableDineIn
+            }
+          })
+        }
+      })
+    },
     onClose () {
       dispatch({
         type: 'pos/updateState',
