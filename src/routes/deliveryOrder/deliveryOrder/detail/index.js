@@ -19,7 +19,10 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
   }
 
   const listTransferOutProps = {
-    dataSource: listTransferOut && listTransferOut.length > 0 ? listTransferOut : []
+    dataSource: listTransferOut && listTransferOut.length > 0 ? listTransferOut : [],
+    toDetail: (record) => {
+      dispatch(routerRedux.push(`/inventory/transfer/out/${record.transNo}`))
+    }
   }
 
   const startScan = () => {
@@ -32,34 +35,34 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
         <div>
           <Row>
             <Col {...columnProps}>
-              <h3>Transaction Number DO</h3>
+              <h3>Trans No.</h3>
             </Col>
             <Col {...columnProps}>
               <strong>{currentItem.transNo}</strong>
             </Col>
           </Row>
 
-          <Row>
+          {/* <Row>
             <Col {...columnProps}>
               <h3>Quantity MUOUT</h3>
             </Col>
             <Col {...columnProps}>
               <h3>{currentItem.totalColly}</h3>
             </Col>
-          </Row>
+          </Row> */}
 
-          <Row>
+          {/* <Row>
             <Col {...columnProps}>
               <h3>Box Number</h3>
             </Col>
             <Col {...columnProps}>
               <span />
             </Col>
-          </Row>
+          </Row> */}
 
           <Row>
             <Col {...columnProps}>
-              <h3>Distribution Center</h3>
+              <h3>From</h3>
             </Col>
             <Col {...columnProps}>
               <h3>{currentItem.storeName}</h3>
@@ -68,7 +71,7 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
 
           <Row>
             <Col {...columnProps}>
-              <h3>Store Name Receiver</h3>
+              <h3>To</h3>
             </Col>
             <Col {...columnProps}>
               <h3>{currentItem.storeNameReceiver}</h3>
@@ -77,21 +80,21 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
 
           <Row>
             <Col {...columnProps}>
-              <h3>Shipment Date</h3>
+              <h3>Date</h3>
             </Col>
             <Col {...columnProps}>
               <h3>{currentItem.transDate}</h3>
             </Col>
           </Row>
 
-          <Row>
+          {/* <Row>
             <Col {...columnProps}>
               <h3>Duration</h3>
             </Col>
             <Col {...columnProps}>
               <span />
             </Col>
-          </Row>
+          </Row> */}
 
           <Row>
             <Col {...columnProps}>

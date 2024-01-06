@@ -15,24 +15,19 @@ const List = ({ toDetail, ...tableProps }) => {
     //   }
     // },
     {
-      title: 'DO Transaction Number',
+      title: 'Trans No.',
       dataIndex: 'transNo',
       key: 'transNo'
     },
     {
-      title: 'Quantity MUOUT',
-      dataIndex: 'totalColly',
-      key: 'totalColly'
-    },
-    {
-      title: 'Store Name Receiver',
+      title: 'From',
       dataIndex: 'storeNameReceiver',
       key: 'storeNameReceiver'
     },
     {
-      title: 'Notes',
-      dataIndex: 'memo',
-      key: 'memo'
+      title: 'To',
+      dataIndex: 'storeName',
+      key: 'storeName'
     },
     {
       title: 'Day/Date/Hour',
@@ -46,20 +41,20 @@ const List = ({ toDetail, ...tableProps }) => {
         return `${day}, ${date} ${hour}`
       }
     },
-    {
-      title: 'Distribution Center',
-      dataIndex: 'storeName',
-      key: 'storeName'
-    },
-    {
-      title: 'Duration of DO',
-      dataIndex: '',
-      key: ''
-    },
+    // {
+    //   title: 'Duration of DO',
+    //   dataIndex: '',
+    //   key: ''
+    // },
     {
       title: 'Expired DO',
       dataIndex: '',
       key: ''
+    },
+    {
+      title: 'Notes',
+      dataIndex: 'memo',
+      key: 'memo'
     }
     // {
     //   title: 'Created At',

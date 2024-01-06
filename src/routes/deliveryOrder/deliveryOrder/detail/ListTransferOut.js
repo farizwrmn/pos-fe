@@ -3,22 +3,12 @@ import { Table } from 'antd'
 // import { IMAGEURL } from 'utils/config.company'
 // import { withoutFormat } from 'utils/string'
 
-const ListTransferOut = (tableProps) => {
+const ListTransferOut = ({ toDetail, ...tableProps }) => {
   const columns = [
     {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
-      title: 'DO Transaction Number',
+      title: 'Trans No.',
       dataIndex: 'transNo',
       key: 'transNo'
-    },
-    {
-      title: 'Quantity MUOUT',
-      dataIndex: 'totalColly',
-      key: 'totalColly'
     },
     {
       title: 'Box Number',
@@ -26,30 +16,20 @@ const ListTransferOut = (tableProps) => {
       key: 'boxNumber'
     },
     {
-      title: 'Distribution Center',
+      title: 'From',
       dataIndex: 'storeName',
       key: 'storeName'
     },
     {
-      title: 'Store Name Receiver',
+      title: 'To',
       dataIndex: 'storeNameReceiver',
       key: 'storeNameReceiver'
     },
     {
-      title: 'Sent date',
+      title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate'
     },
-    // {
-    //   title: 'Duration',
-    //   dataIndex: '',
-    //   key: ''
-    // },
-    // {
-    //   title: 'Expired DO',
-    //   dataIndex: '',
-    //   key: ''
-    // },
     {
       title: 'Notes',
       dataIndex: 'memo',
@@ -65,6 +45,7 @@ const ListTransferOut = (tableProps) => {
         columns={columns}
         simple
         pagination={false}
+        onRowClick={record => toDetail(record)}
         rowKey={record => record.id}
       />
     </div>
