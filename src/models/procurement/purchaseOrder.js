@@ -377,7 +377,7 @@ export default modelExtend(pageModel, {
         discPercent03: 0,
         discNominal: 0,
         deliveryFee: 0,
-        portion: 0.1,
+        portion: 0,
         DPP: payload.costPrice,
         PPN: 0,
         total: payload.costPrice
