@@ -6,12 +6,15 @@ import { lstorage } from 'utils'
 import { message, Modal } from 'antd'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
+import { queryLov } from 'services/transferStockOut'
 
 export default modelExtend(pageModel, {
   namespace: 'deliveryOrderPacker',
 
   state: {
     currentItem: {},
+    latestBoxNumber: 1,
+    modalBoxNumberVisible: false,
     deliveryOrder: {},
     listItem: [],
     modalType: 'add',
@@ -198,6 +201,26 @@ export default modelExtend(pageModel, {
         }
         throw response
       }
+    },
+
+    * showBoxNumberModal ({ payload = {} }, { call, put }) {
+      const { detail } = payload
+      let latestBoxNumber = 1
+      if (detail && detail.id) {
+        const response = yield call(queryLov, { deliveryOrderId: detail.id, pageSize: 1, order: '-boxNumber' })
+        if (response.success && response.data && response.data.length > 0) {
+          if (response.data && response.data[0] && response.data[0].boxNumber) {
+            latestBoxNumber = response.data[0].boxNumber
+          }
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          latestBoxNumber,
+          modalBoxNumberVisible: true
+        }
+      })
     }
   },
 
