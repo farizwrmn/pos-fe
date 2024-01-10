@@ -21,13 +21,13 @@ const List = ({ toDetail, ...tableProps }) => {
     },
     {
       title: 'From',
-      dataIndex: 'storeNameReceiver',
-      key: 'storeNameReceiver'
+      dataIndex: 'storeName',
+      key: 'storeName'
     },
     {
       title: 'To',
-      dataIndex: 'storeName',
-      key: 'storeName'
+      dataIndex: 'storeNameReceiver',
+      key: 'storeNameReceiver'
     },
     {
       title: 'Day/Date/Hour',
