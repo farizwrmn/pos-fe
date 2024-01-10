@@ -282,7 +282,7 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '0.5em' }}>
             <Button type="primary" onClick={() => printDO()}>
-              Print
+              Print Picking
             </Button>
           </div>
           <div style={{ margin: '0.5em' }}>
