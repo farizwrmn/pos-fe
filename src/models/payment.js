@@ -22,9 +22,11 @@ const {
   setDynamicQrisImage,
   setQrisMerchantTradeNo,
   setDynamicQrisPosTransId,
+  setDynamicQrisPosTransNo,
   removeDynamicQrisImage,
   removeQrisMerchantTradeNo,
   removeDynamicQrisPosTransId,
+  removeDynamicQrisPosTransNo,
   setDynamicQrisTimeLimit,
   getQrisPaymentTimeLimit,
   setCurrentPaymentTransactionId,
@@ -386,6 +388,7 @@ export default {
                 removeDynamicQrisImage()
                 removeQrisMerchantTradeNo()
                 removeDynamicQrisPosTransId()
+                removeDynamicQrisPosTransNo()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -485,22 +488,22 @@ export default {
               })
 
               // get template
-              // yield put({
-              //   type: 'queryPosDirectPrinting',
-              //   payload: {
-              //     storeId: lstorage.getCurrentUserStore(),
-              //     transNo: responsInsertPos.transNo
-              //   }
-              // })
-
-              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
-                type: 'updateState',
+                type: 'queryPosDirectPrinting',
                 payload: {
-                  paymentTransactionInvoiceWindow: invoiceWindow
+                  storeId: lstorage.getCurrentUserStore(),
+                  transNo: responsInsertPos.transNo
                 }
               })
-              invoiceWindow.focus()
+
+              // const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              // yield put({
+              //   type: 'updateState',
+              //   payload: {
+              //     paymentTransactionInvoiceWindow: invoiceWindow
+              //   }
+              // })
+              // invoiceWindow.focus()
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
@@ -946,6 +949,7 @@ export default {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
                 const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
                 setDynamicQrisPosTransId(responsInsertPos.id)
+                setDynamicQrisPosTransNo(responsInsertPos.transNo)
                 setDynamicQrisImage(createdQrisPaymentResponse.qrCode)
                 setQrisMerchantTradeNo(merchantTradeNo)
                 setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
@@ -1035,6 +1039,7 @@ export default {
         removeDynamicQrisImage()
         removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
+        removeDynamicQrisPosTransNo()
         removeCurrentPaymentTransactionId()
         yield put({
           type: 'updateState',
