@@ -488,22 +488,22 @@ export default {
               })
 
               // get template
-              yield put({
-                type: 'queryPosDirectPrinting',
-                payload: {
-                  storeId: lstorage.getCurrentUserStore(),
-                  transNo: responsInsertPos.transNo
-                }
-              })
-
-              // const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               // yield put({
-              //   type: 'updateState',
+              //   type: 'queryPosDirectPrinting',
               //   payload: {
-              //     paymentTransactionInvoiceWindow: invoiceWindow
+              //     storeId: lstorage.getCurrentUserStore(),
+              //     transNo: responsInsertPos.transNo
               //   }
               // })
-              // invoiceWindow.focus()
+
+              const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+              yield put({
+                type: 'updateState',
+                payload: {
+                  paymentTransactionInvoiceWindow: invoiceWindow
+                }
+              })
+              invoiceWindow.focus()
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {
