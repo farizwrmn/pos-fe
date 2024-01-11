@@ -11,7 +11,7 @@ import ModalCancel from './qrisPayment/ModalCancel'
 
 const {
   getDynamicQrisPosTransId,
-  getDynamicQrisPosTransNo,
+  // getDynamicQrisPosTransNo,
   removeCurrentPaymentTransactionId
 } = lstorage
 
@@ -55,7 +55,7 @@ class ModalQrisPayment extends React.Component {
     const url = `payment_transaction/${paymentTransactionId}`
     socket.on(url, () => {
       const posId = getDynamicQrisPosTransId()
-      const transNo = getDynamicQrisPosTransNo()
+      // const transNo = getDynamicQrisPosTransNo()
       dispatch({
         type: 'pos/updateState',
         payload: {
@@ -74,13 +74,13 @@ class ModalQrisPayment extends React.Component {
         }
       })
 
-      dispatch({
-        type: 'payment/queryPosDirectPrinting',
-        payload: {
-          storeId: lstorage.getCurrentUserStore(),
-          transNo
-        }
-      })
+      // dispatch({
+      //   type: 'payment/queryPosDirectPrinting',
+      //   payload: {
+      //     storeId: lstorage.getCurrentUserStore(),
+      //     transNo
+      //   }
+      // })
       invoiceWindow.focus()
     })
   }
