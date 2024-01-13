@@ -186,7 +186,7 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
       content: '',
       onOk () {
         dispatch({
-          type: 'payment/directPrinting',
+          type: 'deliveryOrder/directPrinting',
           payload: templatePrint()
         })
       }

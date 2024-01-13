@@ -8,6 +8,7 @@ import {
   remove,
   edit
 } from 'services/deliveryOrder/deliveryOrder'
+import { directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
@@ -77,6 +78,13 @@ export default {
   },
 
   effects: {
+    * directPrinting ({ payload }, { call }) {
+      try {
+        yield call(directPrinting, payload)
+      } catch (error) {
+        throw error
+      }
+    },
     * switchIsChecked ({ payload = {} }, { put }) {
       yield put({
         type: 'updateState',
