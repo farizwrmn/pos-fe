@@ -6,10 +6,8 @@ import List from './List'
 import ListTransferOut from './ListTransferOut'
 
 const columnProps = {
-  xs: 12,
-  sm: 12,
-  md: 3,
-  lg: 3
+  md: 12,
+  lg: 6
 }
 
 const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
@@ -180,7 +178,7 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
     return template
   }
 
-  const onCompleteDeliveryOrder = (id, storeId, transNo) => {
+  const onCompleteDeliveryOrder = (id, storeId, transNo, storeIdReceiver) => {
     Modal.confirm({
       title: 'Complete delivery order',
       content: 'Are you sure ?',
@@ -190,7 +188,8 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
           payload: {
             id,
             storeId,
-            transNo
+            transNo,
+            storeIdReceiver
           }
         })
       }
@@ -299,7 +298,7 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
               <h3>Complete</h3>
             </Col>
             <Col {...columnProps}>
-              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo)}>
+              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
                 Complete
               </Button>
             </Col>
