@@ -16,7 +16,7 @@ const List = ({ toDetail, ...tableProps }) => {
       dataIndex: 'transNo',
       key: 'transNo',
       render: (text, record) => {
-        return (<Link target="_blank" to={`/delivery-order-detail/${record.id}?storeId=${record.storeId}`}>{text}</Link>)
+        return (<Link to={`/delivery-order-detail/${record.id}?storeId=${record.storeId}`}>{text}</Link>)
       }
     },
     {

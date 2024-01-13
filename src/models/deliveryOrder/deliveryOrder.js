@@ -41,7 +41,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname /* query */ } = location
+        const { pathname, query } = location
         const { storeIdReceiver } = query
 
         if (pathname === '/delivery-order') {

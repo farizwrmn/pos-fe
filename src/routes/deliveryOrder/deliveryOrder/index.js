@@ -5,7 +5,7 @@ import { lstorage } from 'utils'
 import List from './List'
 import Filter from './Filter'
 
-const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
+const DeliveryOrder = ({ location, dispatch, deliveryOrder, loading }) => {
   const { list } = deliveryOrder
 
   const ListProps = {
@@ -15,9 +15,10 @@ const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
       dispatch(routerRedux.push(`/delivery-order-detail/${record.id}?storeId=${record.storeIdReceiver}`))
     }
   }
+
   const filterProps = {
     // dataSource: list,
-    storeId: lstorage.getCurrentUserStore(),
+    storeId: location && location.query && location.query.storeIdReceiver ? Number(location.query.storeIdReceiver) : undefined,
     listStore: lstorage.getListUserStores(),
     loading: loading.effects['deliveryOrder/query'],
     onFilter (storeIdReceiver) {
