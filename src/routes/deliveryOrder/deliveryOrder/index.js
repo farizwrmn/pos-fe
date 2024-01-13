@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 import List from './List'
+import Filter from './Filter'
 
 const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
   const { list } = deliveryOrder
@@ -13,9 +15,28 @@ const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
       dispatch(routerRedux.push(`/delivery-order-detail/${record.id}?storeId=${record.storeIdReceiver}`))
     }
   }
+  const filterProps = {
+    // dataSource: list,
+    loading: loading.effects['deliveryOrder/query'],
+    onFilter: (storeIdReceiver) => {
+      dispatch({
+        type: 'query',
+        payload: {
+          type: 'all',
+          storeIdReceiver,
+          storeId: lstorage.getCurrentUserStore()
+          // relationship: 1
+          // page,
+          // pageSize,
+          // q: null
+        }
+      })
+    }
+  }
 
   return (
     <div>
+      <Filter {...filterProps} />
       <List {...ListProps} />
     </div>
   )
