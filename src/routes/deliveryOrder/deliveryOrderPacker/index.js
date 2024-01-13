@@ -5,6 +5,7 @@ import { Button, Col, Collapse, Input, Row, Modal } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
+import ModalBoxNumber from './ModalBoxNumber'
 
 const { Panel } = Collapse
 
@@ -38,7 +39,7 @@ class DeliveryOrderPacker extends Component {
 
   render () {
     const { deliveryOrderPacker, loading, dispatch, location, app } = this.props
-    const { listItem, deliveryOrder } = deliveryOrderPacker
+    const { listItem, deliveryOrder, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
     const { user, storeInfo } = app
 
     const listProps = {
@@ -126,12 +127,43 @@ class DeliveryOrderPacker extends Component {
       })
     }
 
+    const onSubmit = () => {
+      dispatch({
+        type: 'deliveryOrderPacker/showBoxNumberModal',
+        payload: {
+          detail: deliveryOrder
+        }
+      })
+    }
+
+    const modalBoxNumberProps = {
+      visible: modalBoxNumberVisible,
+      boxNumber: latestBoxNumber,
+      loading,
+      onOk (data) {
+        dispatch({
+          type: 'deliveryOrderPacker/submitTransferOut',
+          payload: data
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'deliveryOrderPacker/updateState',
+          payload: {
+            modalBoxNumberVisible: false,
+            latestBoxNumber: 1
+          }
+        })
+      }
+    }
+
     return (
       <div className="content-inner">
         <GlobalHotKeys
           keyMap={keyMap}
           handlers={hotKeysHandler}
         />
+        {modalBoxNumberProps.visible && <ModalBoxNumber {...modalBoxNumberProps} />}
         <Row gutter={6}>
           <Col lg={10} md={24}>
             <h1 style={{ marginBottom: '10px' }}>Delivery Order</h1>
@@ -169,10 +201,32 @@ class DeliveryOrderPacker extends Component {
 
         <Row gutter={6}>
           <Col lg={10} md={24}>
-            <Button size="large" style={{ width: '100%' }} type="danger" onClick={() => onDeleteAll()}>Cancel</Button>
+            <Button
+              size="large"
+              style={{ width: '100%' }}
+              type="danger"
+              onClick={() => onDeleteAll()}
+              disabled={
+                loading.effects['deliveryOrderPacker/deleteDeliveryOrderCart']
+                || loading.effects['deliveryOrderPacker/showBoxNumberModal']
+              }
+            >
+              Cancel
+            </Button>
           </Col>
           <Col lg={14} md={24}>
-            <Button size="large" style={{ width: '100%' }} type="primary">Submit</Button>
+            <Button
+              size="large"
+              style={{ width: '100%' }}
+              type="primary"
+              onClick={() => onSubmit()}
+              disabled={
+                loading.effects['deliveryOrderPacker/deleteDeliveryOrderCart']
+                || loading.effects['deliveryOrderPacker/showBoxNumberModal']
+              }
+            >
+              Submit
+            </Button>
           </Col>
         </Row>
       </div>
