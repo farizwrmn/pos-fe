@@ -1,17 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Form, Row, Col, Select } from 'antd'
 
 // const Search = Input.Search
 const Option = Select.Option
 const FormItem = Form.Item
-
-const searchBarLayout = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
-}
 
 const Filter = ({
   onFilter,
@@ -28,14 +20,11 @@ const Filter = ({
   //   onFilter(field.storeIdReceiver)
   // }
 
-  const storeData = (listStore || []).length > 0 ?
-    listStore.map(store => <Option title={`${store.sellingStore.address01}`} value={store.sellingStore.id} key={store.sellingStore.id}>{store.sellingStore.storeName}</Option>)
-    : []
+  const storeData = listStore.map(x => (<Option value={x.value}>{x.label}</Option>))
 
   return (
     <Row>
-      <Col span={12} />
-      <Col {...searchBarLayout} >
+      <Col span={12}>
         <FormItem label="To Store" hasFeedback>
           {getFieldDecorator('storeIdReceiver', {
             initialValue: storeId,
@@ -45,6 +34,7 @@ const Filter = ({
               }
             ]
           })(<Select
+            style={{ width: '100%' }}
             onChange={value => onFilter(value)}
           >
             {storeData}
@@ -53,11 +43,6 @@ const Filter = ({
       </Col>
     </Row>
   )
-}
-
-Filter.propTypes = {
-  form: PropTypes.object,
-  onFilterChange: PropTypes.func
 }
 
 export default Form.create()(Filter)
