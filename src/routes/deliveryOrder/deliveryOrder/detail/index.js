@@ -92,10 +92,10 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
           text: item.productName,
           rightText: ''
         }, {
-          alignment: 'two',
-          text: `qty: ${item.qty}`,
-          rightText: item.productCode
-        })
+            alignment: 'two',
+            text: `qty: ${item.qty}`,
+            rightText: item.productCode
+          })
       }
     }
 
@@ -178,6 +178,23 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
     pushFooterToTemplate()
 
     return template
+  }
+
+  const onCompleteDeliveryOrder = (id, storeId, transNo) => {
+    Modal.confirm({
+      title: 'Complete delivery order',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'deliveryOrder/updateAsFinished',
+          payload: {
+            id,
+            storeId,
+            transNo
+          }
+        })
+      }
+    })
   }
 
   const printDO = () => {
@@ -271,10 +288,20 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
 
           <Row>
             <Col {...columnProps}>
-              <h3>Notes</h3>
+              <h3>Description</h3>
             </Col>
             <Col {...columnProps}>
-              <h3>{currentItem.memo}</h3>
+              <h3>{currentItem.description}</h3>
+            </Col>
+          </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Complete</h3>
+            </Col>
+            <Col {...columnProps}>
+              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo)}>
+                Complete
+              </Button>
             </Col>
           </Row>
         </div>

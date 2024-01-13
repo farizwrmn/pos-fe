@@ -11,6 +11,7 @@ import {
 import { directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
+import { routerRedux } from 'dva/router'
 
 const success = () => {
   message.success('Success')
@@ -41,14 +42,15 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname /* query */ } = location
-        // const { page, pageSize } = query
+        const { storeIdReceiver } = query
 
         if (pathname === '/delivery-order') {
           dispatch({
             type: 'query',
             payload: {
               type: 'all',
-              storeId: lstorage.getCurrentUserStore()
+              storeId: lstorage.getCurrentUserStore(),
+              storeIdReceiver
               // relationship: 1
               // page,
               // pageSize,
@@ -135,18 +137,17 @@ export default {
         })
       }
     },
-    * finish ({ payload = {} }, { call, put }) {
+
+    * updateAsFinished ({ payload = {} }, { call, put }) {
       const response = yield call(finish, payload)
       if (response && response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: response.data
-          }
-        })
+        message.success('Success update as Finished')
+        yield put(routerRedux.push(`/delivery-order?storeIdReceiver=${payload.storeIdReceiver}`))
+      } else {
+        throw response
       }
     },
+
     * add ({ payload = {} }, { call, put }) {
       const response = yield call(add, payload)
       if (response && response.success) {
