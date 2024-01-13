@@ -17,6 +17,8 @@ const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
   }
   const filterProps = {
     // dataSource: list,
+    storeId: lstorage.getCurrentUserStore(),
+    listStore: lstorage.getListUserStores(),
     loading: loading.effects['deliveryOrder/query'],
     onFilter: (storeIdReceiver) => {
       dispatch({
