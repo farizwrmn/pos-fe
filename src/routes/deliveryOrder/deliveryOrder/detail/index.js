@@ -67,6 +67,11 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
       },
       {
         alignment: 'center',
+        text: `Description: ${currentItem.description}`,
+        rightText: ''
+      },
+      {
+        alignment: 'center',
         text: `Store: ${currentItem.storeName} ke ${currentItem.storeNameReceiver}`,
         rightText: ''
       },
@@ -85,11 +90,13 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
       let data = currentItem && currentItem.deliveryOrderDetail
       for (let key in data) {
         let item = data[key]
-        template.push({
-          alignment: 'two',
-          text: item.productName,
-          rightText: ''
-        }, {
+        template.push(
+          {
+            alignment: 'two',
+            text: item.productName,
+            rightText: ''
+          },
+          {
             alignment: 'two',
             text: `qty: ${item.qty}`,
             rightText: item.productCode
