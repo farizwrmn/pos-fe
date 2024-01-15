@@ -6,10 +6,8 @@ import List from './List'
 import ListTransferOut from './ListTransferOut'
 
 const columnProps = {
-  xs: 12,
-  sm: 12,
-  md: 3,
-  lg: 3
+  md: 12,
+  lg: 6
 }
 
 const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
@@ -69,6 +67,11 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
       },
       {
         alignment: 'center',
+        text: `Description: ${currentItem.description}`,
+        rightText: ''
+      },
+      {
+        alignment: 'center',
         text: `Store: ${currentItem.storeName} ke ${currentItem.storeNameReceiver}`,
         rightText: ''
       },
@@ -87,15 +90,17 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
       let data = currentItem && currentItem.deliveryOrderDetail
       for (let key in data) {
         let item = data[key]
-        template.push({
-          alignment: 'two',
-          text: item.productName,
-          rightText: ''
-        }, {
-          alignment: 'two',
-          text: `qty: ${item.qty}`,
-          rightText: item.productCode
-        })
+        template.push(
+          {
+            alignment: 'two',
+            text: item.productName,
+            rightText: ''
+          },
+          {
+            alignment: 'two',
+            text: `qty: ${item.qty}`,
+            rightText: item.productCode
+          })
       }
     }
 
@@ -178,6 +183,24 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
     pushFooterToTemplate()
 
     return template
+  }
+
+  const onCompleteDeliveryOrder = (id, storeId, transNo, storeIdReceiver) => {
+    Modal.confirm({
+      title: 'Complete delivery order',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'deliveryOrder/updateAsFinished',
+          payload: {
+            id,
+            storeId,
+            transNo,
+            storeIdReceiver
+          }
+        })
+      }
+    })
   }
 
   const printDO = () => {
@@ -271,18 +294,28 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
 
           <Row>
             <Col {...columnProps}>
-              <h3>Notes</h3>
+              <h3>Description</h3>
             </Col>
             <Col {...columnProps}>
-              <h3>{currentItem.memo}</h3>
+              <h3>{currentItem.description}</h3>
+            </Col>
+          </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Complete</h3>
+            </Col>
+            <Col {...columnProps}>
+              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+                Complete
+              </Button>
             </Col>
           </Row>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '0.5em' }}>
-            <Button type="primary" onClick={() => printDO()}>
-              Print Picking
+            <Button type="default" onClick={() => printDO()}>
+              Print For Picking
             </Button>
           </div>
           <div style={{ margin: '0.5em' }}>

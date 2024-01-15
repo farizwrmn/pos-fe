@@ -141,9 +141,15 @@ class DeliveryOrderPacker extends Component {
       boxNumber: latestBoxNumber,
       loading,
       onOk (data) {
-        dispatch({
-          type: 'deliveryOrderPacker/submitTransferOut',
-          payload: data
+        Modal.confirm({
+          title: 'Submit Transfer Out',
+          content: 'Are you sure ?',
+          onOk () {
+            dispatch({
+              type: 'deliveryOrderPacker/submitTransferOut',
+              payload: data
+            })
+          }
         })
       },
       onCancel () {

@@ -2,11 +2,11 @@ import modelExtend from 'dva-model-extend'
 import { queryDetail } from 'services/deliveryOrder/deliveryOrderPacker'
 import deliveryOrderStorage from 'utils/storage/deliveryOrder'
 import deliveryOrderCartStorage from 'utils/storage/deliveryOrderCart'
+import { queryLov, add as submitTransferOut } from 'services/transferStockOut'
 import { lstorage } from 'utils'
 import { message, Modal } from 'antd'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
-import { queryLov } from 'services/transferStockOut'
 
 export default modelExtend(pageModel, {
   namespace: 'deliveryOrderPacker',
@@ -203,15 +203,77 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * submitTransferOut ({ payload = {} }, { select, call, put }) {
+      const { boxNumber } = payload
+      const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      yield put({
+        type: 'deliveryOrderPacker/groupingDeliveryOrderCart'
+      })
+      const listItemResponse = yield call(deliveryOrderCartStorage.load, {
+        transNo: deliveryOrder.transNo
+      })
+      let listItem = listItemResponse && listItemResponse.listItem ? listItemResponse.listItem : []
+      listItem = listItem.map((item, index) => ({ ...item, no: listItem.length - index }))
+
+      const response = yield call(submitTransferOut, {
+        transNo: deliveryOrder.transNo,
+        storeId: deliveryOrder.storeId,
+        data: {
+          deliveryOrder: 0,
+          deliveryOrderId: deliveryOrder.id,
+          deliveryOrderNo: deliveryOrder.transNo,
+          boxNumber,
+          employeeId: 1,
+          storeId: deliveryOrder.storeId,
+          storeIdReceiver: deliveryOrder.storeIdReceiver,
+          totalColly: 1,
+          transNo: deliveryOrder.transNo,
+          transType: 'MUOUT'
+        },
+        detail: listItem.map((item) => {
+          return ({
+            no: item.no,
+            productId: item.productId,
+            productCode: item.productCode,
+            productName: item.productName,
+            transType: 'MUOUT',
+            qty: item.qty,
+            description: null
+          })
+        })
+      })
+      if (response.success) {
+        message.success('Success generate Transfer Out')
+        yield put({
+          type: 'deliveryOrderPacker/deleteDeliveryOrderCart'
+        })
+        yield put({
+          type: 'deliveryOrderPacker/updateState',
+          payload: {
+            modalBoxNumberVisible: false
+          }
+        })
+        if (response.data && response.data.transNo) {
+          window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
+        }
+      } else {
+        throw response
+      }
+    },
+
     * showBoxNumberModal ({ payload = {} }, { call, put }) {
       const { detail } = payload
       let latestBoxNumber = 1
       if (detail && detail.id) {
-        const response = yield call(queryLov, { deliveryOrderId: detail.id, pageSize: 1, order: '-boxNumber' })
-        if (response.success && response.data && response.data.length > 0) {
-          if (response.data && response.data[0] && response.data[0].boxNumber) {
-            latestBoxNumber = response.data[0].boxNumber
+        const response = yield call(queryLov, { deliveryOrderId: detail.id, pageSize: 1 })
+        try {
+          if (response.success && response.data && response.data.length > 0) {
+            if (response.data && response.data.length > 0) {
+              latestBoxNumber = response.data[response.data.length - 1].boxNumber
+            }
           }
+        } catch (error) {
+          console.log('Not found latestBoxNumber')
         }
       }
       yield put({

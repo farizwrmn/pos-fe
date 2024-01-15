@@ -21,6 +21,7 @@ const Filter = ({
   // }
 
   const storeData = listStore.map(x => (<Option value={x.value}>{x.label}</Option>))
+  const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
 
   return (
     <Row>
@@ -36,6 +37,8 @@ const Filter = ({
           })(<Select
             style={{ width: '100%' }}
             onChange={value => onFilter(value)}
+            showSearch
+            filterOption={filterOption}
           >
             {storeData}
           </Select>)}

@@ -82,9 +82,9 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
               ':',
               { text: (itemPrint.transNo || '').toString(), fontSize: 9 },
               {},
-              { text: 'PIC', fontSize: 9 },
+              { text: 'BOX', fontSize: 9 },
               ':',
-              { text: (itemPrint.employeeName || '').toString(), fontSize: 9 }
+              { text: (itemPrint.boxNumber || '').toString(), fontSize: 9 }
             ],
             [
               { text: 'TANGGAL', fontSize: 9 },
