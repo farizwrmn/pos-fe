@@ -14,6 +14,7 @@ const formItemLayout = {
 
 const ModalPayment = ({
   onOk,
+  loading,
   data,
   form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   listAccountCode,
@@ -47,7 +48,7 @@ const ModalPayment = ({
   return (
     <Modal {...modalOpts}
       footer={[
-        <Button key="submit" onClick={() => handleOk()} type="primary" >Process</Button>
+        <Button key="submit" onClick={() => handleOk()} disabled={loading.effects['voucherdetail/paymentVoucher']} type="primary" >Process</Button>
       ]}
     >
       <Form>
