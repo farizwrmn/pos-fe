@@ -159,8 +159,7 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
-    const onChangePaymentType = (event) => {
-      const { value } = event.target
+    const onChangePaymentType = (value) => {
       removeQrisImage()
       setFieldsValue({
         printDate: moment(),
@@ -450,7 +449,15 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(
-                <Radio.Group onChange={value => onChangePaymentType(value)}>
+                <Radio.Group
+                  onChange={(e) => {
+                    if (e && e.target) {
+                      onChangePaymentType(e.target.value)
+                    } else {
+                      onChangePaymentType(e)
+                    }
+                  }}
+                >
                   {filteredOptions.map((item) => {
                     return (
                       <Radio.Button

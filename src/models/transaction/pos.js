@@ -84,7 +84,7 @@ const {
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
-  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
+  removeDynamicQrisPosTransId, removeDynamicQrisPosTransNo, removeQrisMerchantTradeNo,
   getDynamicQrisImage,
   setPosReference,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
@@ -974,6 +974,7 @@ export default {
         removeDynamicQrisImage()
         removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
+        removeDynamicQrisPosTransNo()
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('payShortcutSelected')
         yield put({
