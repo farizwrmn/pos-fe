@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Card, Button, Row, Col, Modal } from 'antd'
+import { Button, Row, Col, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
@@ -217,64 +217,44 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
   }
 
   return (
-    <Card>
-      <div style={{ display: 'grid', gridTemplateColumns: '80% minmax(0, 20%)' }}>
-        <div>
-          <Row>
-            <Col {...columnProps}>
-              <h3>Trans No.</h3>
-            </Col>
-            <Col {...columnProps}>
-              <strong>{currentItem.transNo}</strong>
-            </Col>
-          </Row>
+    <div className="content-inner">
+      <Row>
+        <Col {...columnProps}>
+          <h3>Trans No.</h3>
+        </Col>
+        <Col {...columnProps}>
+          <strong>{currentItem.transNo}</strong>
+        </Col>
+      </Row>
 
-          {/* <Row>
-            <Col {...columnProps}>
-              <h3>Quantity MUOUT</h3>
-            </Col>
-            <Col {...columnProps}>
-              <h3>{currentItem.totalColly}</h3>
-            </Col>
-          </Row> */}
+      <Row>
+        <Col {...columnProps}>
+          <h3>From</h3>
+        </Col>
+        <Col {...columnProps}>
+          <h3>{currentItem.storeName}</h3>
+        </Col>
+      </Row>
 
-          {/* <Row>
-            <Col {...columnProps}>
-              <h3>Box Number</h3>
-            </Col>
-            <Col {...columnProps}>
-              <span />
-            </Col>
-          </Row> */}
+      <Row>
+        <Col {...columnProps}>
+          <h3>To</h3>
+        </Col>
+        <Col {...columnProps}>
+          <h3>{currentItem.storeNameReceiver}</h3>
+        </Col>
+      </Row>
 
-          <Row>
-            <Col {...columnProps}>
-              <h3>From</h3>
-            </Col>
-            <Col {...columnProps}>
-              <h3>{currentItem.storeName}</h3>
-            </Col>
-          </Row>
+      <Row>
+        <Col {...columnProps}>
+          <h3>Date</h3>
+        </Col>
+        <Col {...columnProps}>
+          <h3>{currentItem.transDate}</h3>
+        </Col>
+      </Row>
 
-          <Row>
-            <Col {...columnProps}>
-              <h3>To</h3>
-            </Col>
-            <Col {...columnProps}>
-              <h3>{currentItem.storeNameReceiver}</h3>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col {...columnProps}>
-              <h3>Date</h3>
-            </Col>
-            <Col {...columnProps}>
-              <h3>{currentItem.transDate}</h3>
-            </Col>
-          </Row>
-
-          {/* <Row>
+      {/* <Row>
             <Col {...columnProps}>
               <h3>Duration</h3>
             </Col>
@@ -283,46 +263,44 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
             </Col>
           </Row> */}
 
-          <Row>
-            <Col {...columnProps}>
-              <h3>Expired DO</h3>
-            </Col>
-            <Col {...columnProps}>
-              <span />
-            </Col>
-          </Row>
+      <Row>
+        <Col {...columnProps}>
+          <h3>Expired DO</h3>
+        </Col>
+        <Col {...columnProps}>
+          <span />
+        </Col>
+      </Row>
 
-          <Row>
-            <Col {...columnProps}>
-              <h3>Description</h3>
-            </Col>
-            <Col {...columnProps}>
-              <h3>{currentItem.description}</h3>
-            </Col>
-          </Row>
-          <Row>
-            <Col {...columnProps}>
-              <h3>Complete</h3>
-            </Col>
-            <Col {...columnProps}>
-              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
-                Complete
-              </Button>
-            </Col>
-          </Row>
+      <Row>
+        <Col {...columnProps}>
+          <h3>Description</h3>
+        </Col>
+        <Col {...columnProps}>
+          <h3>{currentItem.description}</h3>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...columnProps}>
+          <h3>Complete</h3>
+        </Col>
+        <Col {...columnProps}>
+          <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+            Complete
+          </Button>
+        </Col>
+      </Row>
+
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ margin: '0.5em' }}>
+          <Button type="default" onClick={() => printDO()}>
+            Print For Picking
+          </Button>
         </div>
-
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div style={{ margin: '0.5em' }}>
-            <Button type="default" onClick={() => printDO()}>
-              Print For Picking
-            </Button>
-          </div>
-          <div style={{ margin: '0.5em' }}>
-            <Button type="primary" onClick={() => startScan()}>
-              Start Scan
-            </Button>
-          </div>
+        <div style={{ margin: '0.5em' }}>
+          <Button type="primary" onClick={() => startScan()}>
+            Start Scan
+          </Button>
         </div>
       </div>
 
@@ -336,7 +314,7 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
           <ListTransferOut {...listTransferOutProps} />
         </Col>
       </Row>
-    </Card>
+    </div>
   )
 }
 
