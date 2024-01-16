@@ -59,6 +59,7 @@ export default {
           })
         }
         const match = pathToRegexp('/delivery-order-detail/:id').exec(location.pathname)
+          || pathToRegexp('/delivery-order-packer/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',

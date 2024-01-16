@@ -5,6 +5,7 @@ import { Button, Col, Collapse, Input, Row, Modal } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
+import ListDO from './ListDO'
 import ModalBoxNumber from './ModalBoxNumber'
 
 const { Panel } = Collapse
@@ -38,7 +39,8 @@ class DeliveryOrderPacker extends Component {
   }
 
   render () {
-    const { deliveryOrderPacker, loading, dispatch, location, app } = this.props
+    const { deliveryOrderPacker, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
+    const { currentItem } = DOmodel
     const { listItem, deliveryOrder, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
     const { user, storeInfo } = app
 
@@ -55,6 +57,10 @@ class DeliveryOrderPacker extends Component {
         || loading.effects['deliveryOrderPacker/loadDeliveryOrderCart']
         || loading.effects['deliveryOrderPacker/deleteDeliveryOrderCartItem'],
       location
+    }
+
+    const listDOProps = {
+      currentItem
     }
 
     const listOrderProps = {
@@ -174,7 +180,12 @@ class DeliveryOrderPacker extends Component {
           <Col lg={10} md={24}>
             <h1 style={{ marginBottom: '10px' }}>Delivery Order</h1>
             <Collapse>
-              <Panel header="Requested Item" key="1">
+              <Panel header="Delivery Order Info" key="1">
+                <ListDO {...listDOProps} />
+              </Panel>
+            </Collapse>
+            <Collapse>
+              <Panel header="Requested Item" key="2">
                 <ListOrder {...listOrderProps} />
               </Panel>
             </Collapse>
@@ -248,4 +259,4 @@ DeliveryOrderPacker.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ deliveryOrderPacker, loading, app }) => ({ deliveryOrderPacker, loading, app }))(DeliveryOrderPacker)
+export default connect(({ deliveryOrderPacker, deliveryOrder, loading, app }) => ({ deliveryOrderPacker, deliveryOrder, loading, app }))(DeliveryOrderPacker)
