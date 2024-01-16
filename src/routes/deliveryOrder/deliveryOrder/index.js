@@ -12,7 +12,7 @@ const DeliveryOrder = ({ location, dispatch, deliveryOrder, loading }) => {
     dataSource: list.map((item, index) => ({ no: index + 1, ...item })),
     loading: loading.effects['deliveryOrder/query'],
     toDetail: (record) => {
-      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}?storeId=${record.storeIdReceiver}`))
+      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
     }
   }
 
