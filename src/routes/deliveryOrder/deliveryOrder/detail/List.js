@@ -88,7 +88,7 @@ const List = (tableProps) => {
       }
     },
     {
-      title: 'Request Order',
+      title: 'Delivery Order Qty',
       dataIndex: 'qty',
       key: 'qty'
     },
