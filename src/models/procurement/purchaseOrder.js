@@ -349,7 +349,6 @@ export default modelExtend(pageModel, {
         storeId: lstorage.getCurrentUserStore()
       })
       let hasPPN = false
-      console.log('payload', payload)
       if (productCost && productCost.success && productCost.data && productCost.data[0]) {
         const item = productCost.data[0]
         if (payload.PPN > 0) {
