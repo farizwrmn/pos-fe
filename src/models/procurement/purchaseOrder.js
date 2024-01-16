@@ -349,6 +349,7 @@ export default modelExtend(pageModel, {
         storeId: lstorage.getCurrentUserStore()
       })
       let hasPPN = false
+      console.log('payload', payload)
       if (productCost && productCost.success && productCost.data && productCost.data[0]) {
         const item = productCost.data[0]
         if (payload.PPN > 0) {
@@ -361,7 +362,17 @@ export default modelExtend(pageModel, {
             payload.costPrice += PPN
           }
         }
+      } else {
+        if (payload.PPN > 0) {
+          hasPPN = true
+        }
+
+        if (hasPPN) {
+          const PPN = (payload.costPrice || 0) * (11 / 100)
+          payload.costPrice += PPN
+        }
       }
+
       newListItem.push({
         no: newListItem.length + 1,
         productId: payload.id,
