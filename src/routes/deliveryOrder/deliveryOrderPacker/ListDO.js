@@ -1,12 +1,30 @@
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Modal, Button, Row, Col } from 'antd'
 
 const columnProps = {
   md: 12,
   lg: 6
 }
 
-const ListDO = ({ currentItem }) => {
+const ListDO = ({ dispatch, currentItem }) => {
+  const onCompleteDeliveryOrder = (id, storeId, transNo, storeIdReceiver) => {
+    Modal.confirm({
+      title: 'Complete delivery order',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'deliveryOrder/updateAsFinished',
+          payload: {
+            id,
+            storeId,
+            transNo,
+            storeIdReceiver
+          }
+        })
+      }
+    })
+  }
+
   return (
     <div>
       <div>
@@ -61,6 +79,16 @@ const ListDO = ({ currentItem }) => {
           </Col>
           <Col {...columnProps}>
             <h3>{currentItem.description}</h3>
+          </Col>
+        </Row>
+        <Row>
+          <Col {...columnProps}>
+            <h3>Complete</h3>
+          </Col>
+          <Col {...columnProps}>
+            <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+              Complete
+            </Button>
           </Col>
         </Row>
       </div>
