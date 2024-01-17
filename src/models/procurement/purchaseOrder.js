@@ -361,7 +361,17 @@ export default modelExtend(pageModel, {
             payload.costPrice += PPN
           }
         }
+      } else {
+        if (payload.PPN > 0) {
+          hasPPN = true
+        }
+
+        if (hasPPN) {
+          const PPN = (payload.costPrice || 0) * (11 / 100)
+          payload.costPrice += PPN
+        }
       }
+
       newListItem.push({
         no: newListItem.length + 1,
         productId: payload.id,
