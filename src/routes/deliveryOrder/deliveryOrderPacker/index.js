@@ -6,6 +6,7 @@ import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
 import ListDO from './ListDO'
+import ListTransferOutDetail from './ListTransferOutDetail'
 import ModalBoxNumber from './ModalBoxNumber'
 
 const { Panel } = Collapse
@@ -39,8 +40,9 @@ class DeliveryOrderPacker extends Component {
   }
 
   render () {
-    const { deliveryOrderPacker, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
+    const { deliveryOrderPacker, transferOutDetail, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
     const { currentItem } = DOmodel
+    const { listDetail } = transferOutDetail
     const { listItem, deliveryOrder, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
     const { user, storeInfo } = app
 
@@ -61,6 +63,11 @@ class DeliveryOrderPacker extends Component {
 
     const listDOProps = {
       currentItem
+    }
+
+    const listTransferOutDetailProps = {
+      dataSource: listDetail,
+      pagination: false
     }
 
     const listOrderProps = {
@@ -189,6 +196,11 @@ class DeliveryOrderPacker extends Component {
                 <ListOrder {...listOrderProps} />
               </Panel>
             </Collapse>
+            <Collapse>
+              <Panel header="List Transfer Out Detaiil" key="3">
+                <ListTransferOutDetail {...listTransferOutDetailProps} />
+              </Panel>
+            </Collapse>
           </Col>
           <Col lg={14} md={24}>
             <h1>
@@ -256,7 +268,8 @@ DeliveryOrderPacker.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  transferOutDetail: PropTypes.object
 }
 
-export default connect(({ deliveryOrderPacker, deliveryOrder, loading, app }) => ({ deliveryOrderPacker, deliveryOrder, loading, app }))(DeliveryOrderPacker)
+export default connect(({ deliveryOrderPacker, transferOutDetail, deliveryOrder, loading, app }) => ({ deliveryOrderPacker, transferOutDetail, deliveryOrder, loading, app }))(DeliveryOrderPacker)
