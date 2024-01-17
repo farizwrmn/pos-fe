@@ -219,14 +219,14 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
   }
 
   const printProps = {
-    listTrans: currentItem.deliveryOrderDetail,
+    listTrans: currentItem && currentItem.deliveryOrderDetail ? currentItem.deliveryOrderDetail : [],
     itemPrint: currentItem,
     user
   }
 
   return (
     <Card>
-      <PrintPDF name="Print PDF" {...printProps} />
+      {currentItem && currentItem.id && <PrintPDF name="Print PDF" {...printProps} />}
       <div style={{ display: 'grid', gridTemplateColumns: '80% minmax(0, 20%)' }}>
         <div>
           <Row>
