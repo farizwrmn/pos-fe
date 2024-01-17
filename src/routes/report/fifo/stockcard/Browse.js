@@ -18,15 +18,9 @@ const Browse = ({ ...browseProps }) => {
       width: '150px'
     },
     {
-      title: 'Product Name',
-      dataIndex: 'productName',
-      key: 'productName',
-      width: '150px'
-    },
-    {
       title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'transType',
+      key: 'transType',
       width: '50px'
     },
     {
@@ -37,25 +31,53 @@ const Browse = ({ ...browseProps }) => {
       render: text => <p style={{ textAlign: 'left' }}>{moment(text).format('DD-MMM-YYYY')}</p>
     },
     {
-      title: 'Qty',
-      dataIndex: 'qty',
-      key: 'qty',
+      title: 'IN',
+      dataIndex: 'pQty',
+      key: 'pQty',
       width: '50px',
-      render: (text, record) => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(record.type === 'IN' ? record.qty : record.qty * -1) || '')}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Price',
-      dataIndex: 'DPP',
-      key: 'DPP',
-      width: '150px',
+      dataIndex: 'pPrice',
+      key: 'pPrice',
+      width: '100px',
       render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     },
     {
       title: 'Amount',
-      dataIndex: 'total',
-      key: 'total',
+      dataIndex: 'pAmount',
+      key: 'pAmount',
       width: '150px',
-      render: (text, record) => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(record.type === 'IN' ? record.total : record.total * -1) || '')}</p>
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
+    },
+    {
+      title: 'Out',
+      dataIndex: 'sQty',
+      key: 'sQty',
+      width: '50px',
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
+    },
+    {
+      title: 'Price',
+      dataIndex: 'sPrice',
+      key: 'sPrice',
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
+    },
+    {
+      title: 'S.Price',
+      dataIndex: 'sValue',
+      key: 'sValue',
+      width: '100px',
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'sAmount',
+      key: 'sAmount',
+      width: '150px',
+      render: text => <p style={{ textAlign: 'right' }}>{formatNumberIndonesia(parseFloat(text) || '')}</p>
     }
   ]
 
