@@ -1,17 +1,23 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Button, Row, Col, Modal } from 'antd'
+import { Button, Row, Col, Modal, Card } from 'antd'
 import { routerRedux } from 'dva/router'
+// import k3martLogo from '../../../../../public/k3mart-text-logo.png'
+import { lstorage } from 'utils'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
+import PrintPDF from './PrintPDF'
+import './index.css'
 
 const columnProps = {
   md: 12,
   lg: 6
 }
 
-const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
+const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
   const { listTransferOut, currentItem } = deliveryOrder
+  const { user } = app
+
   const listProps = {
     dataSource: currentItem && currentItem.deliveryOrderDetail
   }
@@ -24,7 +30,16 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
   }
 
   const startScan = () => {
-    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
+    let data = listTransferOut && listTransferOut.length > 0 ? listTransferOut : []
+    dispatch({
+      type: 'transferOutDetail/queryDetail',
+      payload: {
+        transNo: data[0].transNo,
+        storeId: lstorage.getCurrentUserStore(),
+        deliveryOrderId: currentItem.id
+      }
+    })
+    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}?transNo=${data[0].transNo}`))
   }
 
   const templatePrint = () => {
@@ -205,56 +220,62 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
 
   const printDO = () => {
     Modal.confirm({
-      title: 'Print Delivery Order ?',
+      title: 'Print Delivery Order?',
       content: '',
       onOk () {
-        dispatch({
-          type: 'deliveryOrder/directPrinting',
-          payload: templatePrint()
-        })
+        templatePrint()
       }
     })
   }
 
+  const printProps = {
+    listTrans: currentItem && currentItem.deliveryOrderDetail ? currentItem.deliveryOrderDetail : [],
+    itemPrint: currentItem,
+    user
+  }
+
   return (
-    <div className="content-inner">
-      <Row>
-        <Col {...columnProps}>
-          <h3>Trans No.</h3>
-        </Col>
-        <Col {...columnProps}>
-          <strong>{currentItem.transNo}</strong>
-        </Col>
-      </Row>
+    <Card>
+      {currentItem && currentItem.id && <PrintPDF name="Print PDF" {...printProps} />}
+      <div style={{ display: 'grid', gridTemplateColumns: '80% minmax(0, 20%)' }}>
+        <div>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Trans No.</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.transNo}</h3>
+            </Col>
+          </Row>
 
-      <Row>
-        <Col {...columnProps}>
-          <h3>From</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.storeName}</h3>
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>From</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.storeName}</h3>
+            </Col>
+          </Row>
 
-      <Row>
-        <Col {...columnProps}>
-          <h3>To</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.storeNameReceiver}</h3>
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>To</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.storeNameReceiver}</h3>
+            </Col>
+          </Row>
 
-      <Row>
-        <Col {...columnProps}>
-          <h3>Date</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.transDate}</h3>
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Date</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.transDate}</h3>
+            </Col>
+          </Row>
 
-      {/* <Row>
+          {/* <Row>
             <Col {...columnProps}>
               <h3>Duration</h3>
             </Col>
@@ -263,58 +284,71 @@ const DeliveryOrderDetail = ({ dispatch, deliveryOrder }) => {
             </Col>
           </Row> */}
 
-      <Row>
-        <Col {...columnProps}>
-          <h3>Expired DO</h3>
-        </Col>
-        <Col {...columnProps}>
-          <span />
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Expired DO</h3>
+            </Col>
+            <Col {...columnProps}>
+              <span />
+            </Col>
+          </Row>
 
-      <Row>
-        <Col {...columnProps}>
-          <h3>Description</h3>
-        </Col>
-        <Col {...columnProps}>
-          <h3>{currentItem.description}</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col {...columnProps}>
-          <h3>Complete</h3>
-        </Col>
-        <Col {...columnProps}>
-          <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
-            Complete
-          </Button>
-        </Col>
-      </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Description</h3>
+            </Col>
+            <Col {...columnProps}>
+              <h3>{currentItem.description}</h3>
+            </Col>
+          </Row>
+          <Row>
+            <Col {...columnProps}>
+              <h3>Complete</h3>
+            </Col>
+            <Col {...columnProps}>
+              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+                Complete
+              </Button>
+            </Col>
+          </Row>
 
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ margin: '0.5em' }}>
-          <Button type="default" onClick={() => printDO()}>
-            Print For Picking
-          </Button>
-        </div>
-        <div style={{ margin: '0.5em' }}>
-          <Button type="primary" onClick={() => startScan()}>
-            Start Scan
-          </Button>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ margin: '0.5em' }}>
+              <Button type="default" onClick={() => printDO()}>
+                Print For Picking
+              </Button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ margin: '0.5em' }}>
+                {/* <PrintPDF dataSource={list} name="Print Current Page" {...printProps} /> */}
+              </div>
+              <div style={{ margin: '0.5em' }}>
+                <Button type="default" onClick={() => printDO()}>
+                  Print For Picking
+                </Button>
+              </div>
+              <div style={{ margin: '0.5em' }}>
+                <Button type="primary" onClick={() => startScan()}>
+                  Start Scan
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <Row style={{ marginTop: '1em' }}>
+            <Col>
+              <List {...listProps} />
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '1em' }}>
+            <Col>
+              <ListTransferOut {...listTransferOutProps} />
+            </Col>
+          </Row>
         </div>
       </div>
-
-      <Row style={{ marginTop: '1em' }}>
-        <Col>
-          <List {...listProps} />
-        </Col>
-      </Row>
-      <Row style={{ marginTop: '1em' }}>
-        <Col>
-          <ListTransferOut {...listTransferOutProps} />
-        </Col>
-      </Row>
-    </div>
+    </Card>
   )
 }
 

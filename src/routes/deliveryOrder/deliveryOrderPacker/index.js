@@ -5,6 +5,8 @@ import { Button, Col, Collapse, Input, Row, Modal } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
+import ListDO from './ListDO'
+import ListTransferOutDetail from './ListTransferOutDetail'
 import ModalBoxNumber from './ModalBoxNumber'
 
 const { Panel } = Collapse
@@ -38,7 +40,9 @@ class DeliveryOrderPacker extends Component {
   }
 
   render () {
-    const { deliveryOrderPacker, loading, dispatch, location, app } = this.props
+    const { deliveryOrderPacker, transferOutDetail, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
+    const { currentItem } = DOmodel
+    const { listDetail } = transferOutDetail
     const { listItem, deliveryOrder, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
     const { user, storeInfo } = app
 
@@ -55,6 +59,15 @@ class DeliveryOrderPacker extends Component {
         || loading.effects['deliveryOrderPacker/loadDeliveryOrderCart']
         || loading.effects['deliveryOrderPacker/deleteDeliveryOrderCartItem'],
       location
+    }
+
+    const listDOProps = {
+      currentItem
+    }
+
+    const listTransferOutDetailProps = {
+      dataSource: listDetail,
+      pagination: false
     }
 
     const listOrderProps = {
@@ -174,8 +187,18 @@ class DeliveryOrderPacker extends Component {
           <Col lg={10} md={24}>
             <h1 style={{ marginBottom: '10px' }}>Delivery Order</h1>
             <Collapse>
-              <Panel header="Requested Item" key="1">
+              <Panel header="Delivery Order Info" key="1">
+                <ListDO {...listDOProps} />
+              </Panel>
+            </Collapse>
+            <Collapse>
+              <Panel header="Requested Item" key="2">
                 <ListOrder {...listOrderProps} />
+              </Panel>
+            </Collapse>
+            <Collapse>
+              <Panel header="List Transfer Out Detaiil" key="3">
+                <ListTransferOutDetail {...listTransferOutDetailProps} />
               </Panel>
             </Collapse>
           </Col>
@@ -245,7 +268,8 @@ DeliveryOrderPacker.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  transferOutDetail: PropTypes.object
 }
 
-export default connect(({ deliveryOrderPacker, loading, app }) => ({ deliveryOrderPacker, loading, app }))(DeliveryOrderPacker)
+export default connect(({ deliveryOrderPacker, transferOutDetail, deliveryOrder, loading, app }) => ({ deliveryOrderPacker, transferOutDetail, deliveryOrder, loading, app }))(DeliveryOrderPacker)
