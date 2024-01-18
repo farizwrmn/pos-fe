@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { queryDetail } from 'services/deliveryOrder/deliveryOrderPacker'
+import { queryDetail, queryTransferOutDetail } from 'services/deliveryOrder/deliveryOrderPacker'
 import deliveryOrderStorage from 'utils/storage/deliveryOrder'
 import deliveryOrderCartStorage from 'utils/storage/deliveryOrderCart'
 import { queryLov, add as submitTransferOut } from 'services/transferStockOut'
@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    listTransferOutHistory: [],
     latestBoxNumber: 1,
     modalBoxNumberVisible: false,
     deliveryOrder: {},
@@ -31,6 +32,13 @@ export default modelExtend(pageModel, {
         const match = pathToRegexp('/delivery-order-packer/:id').exec(location.pathname)
         if (match) {
           dispatch({
+            type: 'queryHistory',
+            payload: {
+              id: match[1]
+            }
+          })
+
+          dispatch({
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1]),
@@ -43,6 +51,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryHistory ({ payload }, { call, put }) {
+      const response = yield call(queryTransferOutDetail, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransferOutHistory: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * groupingDeliveryOrderCart (payload, { select, put }) {
       const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
@@ -121,6 +143,7 @@ export default modelExtend(pageModel, {
     * addItemByBarcode ({ payload = {} }, { select, put }) {
       const { orderQty, barcode } = payload
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      const listTransferOutHistory = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listTransferOutHistory)
       const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
       if (deliveryOrder && deliveryOrder.id) {
         const { deliveryOrderDetail } = deliveryOrder
@@ -134,6 +157,25 @@ export default modelExtend(pageModel, {
             }
           ]
           currentListItem = currentListItem.concat(listItem)
+          let totalRequestPerProduct = 0
+          if (deliveryOrder && deliveryOrder.deliveryOrderDetail && deliveryOrder.deliveryOrderDetail.length > 0) {
+            totalRequestPerProduct = deliveryOrder.deliveryOrderDetail
+              .filter(filtered => filtered.barCode01 === barcode)
+              .reduce((prev, next) => prev + next.qty, 0)
+          }
+          const totalCartPerProduct = currentListItem
+            .filter(filtered => filtered.barCode01 === barcode)
+            .reduce((prev, next) => prev + next.orderQty, 0)
+          const totalHistory = listTransferOutHistory && listTransferOutHistory.length > 0
+            ? listTransferOutHistory.filter(filtered => filtered.barCode01 === barcode)
+              .reduce((prev, next) => prev + next.qty, 0) : 0
+          if ((totalCartPerProduct + totalHistory) > totalRequestPerProduct) {
+            Modal.error({
+              title: 'Qty is over request',
+              content: 'Please check your item request'
+            })
+            return
+          }
           yield put({
             type: 'saveDeliveryOrderCart',
             payload: {

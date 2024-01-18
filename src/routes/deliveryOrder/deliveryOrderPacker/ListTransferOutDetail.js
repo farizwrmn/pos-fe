@@ -14,15 +14,13 @@ const ListTransferOutDetail = ({ ...tableProps }) => {
       title: 'Product Code',
       dataIndex: 'productCode',
       key: 'productCode',
-      width: '150px',
-      render: (text, record) => (record.productCode || record.serviceCode)
+      width: '150px'
     },
     {
       title: 'Product Name',
       dataIndex: 'productName',
       key: 'productName',
-      width: '250px',
-      render: (text, record) => (record.productName || record.serviceName)
+      width: '250px'
     },
     {
       title: 'Qty',
@@ -31,30 +29,6 @@ const ListTransferOutDetail = ({ ...tableProps }) => {
       width: '50px',
       className: styles.alignRight,
       render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Price',
-      dataIndex: 'purchasePrice',
-      key: 'purchasePrice',
-      width: '70px',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Latest',
-      dataIndex: 'latestPrice',
-      key: 'latestPrice',
-      width: '70px',
-      className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
-    },
-    {
-      title: 'Subtotal',
-      dataIndex: 'subtotal',
-      key: 'subtotal',
-      width: '75px',
-      className: styles.alignRight,
-      render: (text, record) => (parseFloat(record.qty) * parseFloat(record.purchasePrice) || '-').toLocaleString()
     }
   ]
 
@@ -62,7 +36,7 @@ const ListTransferOutDetail = ({ ...tableProps }) => {
     <div>
       <Table
         bordered={false}
-        scroll={{ x: 600, y: 700 }}
+        scroll={{ y: 700 }}
         columns={columns}
         simple
         rowKey={record => record.transNo}
