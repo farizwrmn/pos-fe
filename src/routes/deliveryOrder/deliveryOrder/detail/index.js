@@ -318,21 +318,10 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
                 Print For Picking
               </Button>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div style={{ margin: '0.5em' }}>
-                {/* <PrintPDF dataSource={list} name="Print Current Page" {...printProps} /> */}
-              </div>
-              <div style={{ margin: '0.5em' }}>
-                <Button type="default" onClick={() => printDO()}>
-                  Print For Picking
-                </Button>
-              </div>
-              <div style={{ margin: '0.5em' }}>
-                <Button type="primary" onClick={() => startScan()}>
-                  Start Scan
-                </Button>
-              </div>
+            <div style={{ margin: '0.5em' }}>
+              <Button type="primary" onClick={() => startScan()}>
+                Start Scan
+              </Button>
             </div>
           </div>
 
