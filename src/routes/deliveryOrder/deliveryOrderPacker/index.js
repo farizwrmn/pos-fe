@@ -40,10 +40,9 @@ class DeliveryOrderPacker extends Component {
   }
 
   render () {
-    const { deliveryOrderPacker, transferOutDetail, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
+    const { deliveryOrderPacker, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
     const { currentItem } = DOmodel
-    const { listDetail } = transferOutDetail
-    const { listItem, deliveryOrder, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
+    const { listItem, deliveryOrder, listTransferOutHistory, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
     const { user, storeInfo } = app
 
     const listProps = {
@@ -62,11 +61,12 @@ class DeliveryOrderPacker extends Component {
     }
 
     const listDOProps = {
+      dispatch,
       currentItem
     }
 
     const listTransferOutDetailProps = {
-      dataSource: listDetail,
+      dataSource: listTransferOutHistory,
       pagination: false
     }
 
