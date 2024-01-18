@@ -6,6 +6,7 @@ import { routerRedux } from 'dva/router'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
 import PrintPDF from './PrintPDF'
+import ModalBoxNumber from './ModalBoxNumber'
 import './index.css'
 
 const columnProps = {
@@ -13,8 +14,8 @@ const columnProps = {
   lg: 6
 }
 
-const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
-  const { listTransferOut, currentItem } = deliveryOrder
+const DeliveryOrderDetail = ({ loading, dispatch, app, deliveryOrder }) => {
+  const { listTransferOut, currentItem, latestBoxNumber, modalBoxNumberVisible } = deliveryOrder
   const { user } = app
 
   const listProps = {
@@ -29,7 +30,13 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
   }
 
   const startScan = () => {
-    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
+    dispatch({
+      type: 'deliveryOrder/showBoxNumberModal',
+      payload: {
+        detail: currentItem
+      }
+    })
+    // dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
   }
 
   const templatePrint = () => {
@@ -187,7 +194,10 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
     pushProductToTemplate()
     pushFooterToTemplate()
 
-    return template
+    dispatch({
+      type: 'deliveryOrder/directPrinting',
+      payload: template
+    })
   }
 
   const onCompleteDeliveryOrder = (id, storeId, transNo, storeIdReceiver) => {
@@ -224,10 +234,41 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
     user
   }
 
+  const modalBoxNumberProps = {
+    visible: modalBoxNumberVisible,
+    boxNumber: latestBoxNumber,
+    loading,
+    onOk (data) {
+      Modal.confirm({
+        title: 'Start Scanning',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'deliveryOrder/printBoxNumber',
+            payload: {
+              boxNumber: data.boxNumber,
+              detail: currentItem
+            }
+          })
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'deliveryOrder/updateState',
+        payload: {
+          modalBoxNumberVisible: false,
+          latestBoxNumber: 1
+        }
+      })
+    }
+  }
+
   return (
     <Card>
       {currentItem && currentItem.id && <PrintPDF name="Print PDF" {...printProps} />}
       <div style={{ display: 'grid', gridTemplateColumns: '80% minmax(0, 20%)' }}>
+        {modalBoxNumberProps.visible && <ModalBoxNumber {...modalBoxNumberProps} />}
         <div>
           <Row>
             <Col {...columnProps}>
