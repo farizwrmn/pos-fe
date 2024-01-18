@@ -170,7 +170,10 @@ export default modelExtend(pageModel, {
             ? listTransferOutHistory.filter(filtered => filtered.barCode01 === barcode)
               .reduce((prev, next) => prev + next.qty, 0) : 0
           if ((totalCartPerProduct + totalHistory) > totalRequestPerProduct) {
-            message.error('Qty is over request')
+            Modal.error({
+              title: 'Qty is over request',
+              content: 'Please check your item request'
+            })
             return
           }
           yield put({
