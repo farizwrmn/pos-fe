@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Card, Button, Row, Col, Modal } from 'antd'
+import { Button, Row, Col, Modal, Card } from 'antd'
 import { routerRedux } from 'dva/router'
 // import k3martLogo from '../../../../../public/k3mart-text-logo.png'
 import { lstorage } from 'utils'
@@ -248,24 +248,6 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
             </Col>
           </Row>
 
-          {/* <Row>
-            <Col {...columnProps}>
-              <h3>Quantity MUOUT</h3>
-            </Col>
-            <Col {...columnProps}>
-              <h3>{currentItem.totalColly}</h3>
-            </Col>
-          </Row> */}
-
-          {/* <Row>
-            <Col {...columnProps}>
-              <h3>Box Number</h3>
-            </Col>
-            <Col {...columnProps}>
-              <span />
-            </Col>
-          </Row> */}
-
           <Row>
             <Col {...columnProps}>
               <h3>From</h3>
@@ -329,35 +311,43 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
               </Button>
             </Col>
           </Row>
-        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div style={{ margin: '0.5em' }}>
-            {/* <PrintPDF dataSource={list} name="Print Current Page" {...printProps} /> */}
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ margin: '0.5em' }}>
+              <Button type="default" onClick={() => printDO()}>
+                Print For Picking
+              </Button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ margin: '0.5em' }}>
+                {/* <PrintPDF dataSource={list} name="Print Current Page" {...printProps} /> */}
+              </div>
+              <div style={{ margin: '0.5em' }}>
+                <Button type="default" onClick={() => printDO()}>
+                  Print For Picking
+                </Button>
+              </div>
+              <div style={{ margin: '0.5em' }}>
+                <Button type="primary" onClick={() => startScan()}>
+                  Start Scan
+                </Button>
+              </div>
+            </div>
           </div>
-          <div style={{ margin: '0.5em' }}>
-            <Button type="default" onClick={() => printDO()}>
-              Print For Picking
-            </Button>
-          </div>
-          <div style={{ margin: '0.5em' }}>
-            <Button type="primary" onClick={() => startScan()}>
-              Start Scan
-            </Button>
-          </div>
+
+          <Row style={{ marginTop: '1em' }}>
+            <Col>
+              <List {...listProps} />
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '1em' }}>
+            <Col>
+              <ListTransferOut {...listTransferOutProps} />
+            </Col>
+          </Row>
         </div>
       </div>
-
-      <Row style={{ marginTop: '1em' }}>
-        <Col>
-          <List {...listProps} />
-        </Col>
-      </Row>
-      <Row style={{ marginTop: '1em' }}>
-        <Col>
-          <ListTransferOut {...listTransferOutProps} />
-        </Col>
-      </Row>
     </Card>
   )
 }
