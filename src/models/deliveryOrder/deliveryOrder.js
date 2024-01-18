@@ -42,7 +42,7 @@ export default {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { pathname, query } = location
-        const { storeIdReceiver, transNo } = query
+        const { storeIdReceiver } = query
 
         if (pathname === '/delivery-order') {
           dispatch({
@@ -61,15 +61,6 @@ export default {
         const match = pathToRegexp('/delivery-order-detail/:id').exec(location.pathname)
           || pathToRegexp('/delivery-order-packer/:id').exec(location.pathname)
         if (match) {
-          dispatch({
-            type: 'transferOutDetail/queryDetail',
-            payload: {
-              transNo,
-              storeId: lstorage.getCurrentUserStore(),
-              deliveryOrderId: decodeURIComponent(match[1])
-            }
-          })
-
           dispatch({
             type: 'queryDetail',
             payload: {

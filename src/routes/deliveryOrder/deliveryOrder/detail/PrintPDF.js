@@ -69,21 +69,21 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
           {
             columns: [
               {
-                text: `\n FROM: ${itemPrint.storeName || ''}  TO  ${itemPrint.storeNameReceiver || ''}`,
-                fontSize: 12,
+                text: `FROM: ${itemPrint.storeName || ''} TO ${itemPrint.storeNameReceiver || ''}`,
+                fontSize: 10,
                 alignment: 'left'
               },
               {
-                text: `\n DESCRIPTION: ${itemPrint.description}`,
-                fontSize: 12,
-                alignment: 'right'
-              },
-              {
-                text: `\n DATE: ${itemPrint.transDate}`,
-                fontSize: 12,
+                text: `DATE: ${itemPrint.transDate}`,
+                fontSize: 10,
                 alignment: 'right'
               }
             ]
+          },
+          {
+            text: `DESCRIPTION: ${itemPrint.description}`,
+            fontSize: 10,
+            alignment: 'left'
           }
         ]
       }
