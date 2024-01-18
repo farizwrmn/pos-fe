@@ -3,6 +3,7 @@ import { connect } from 'dva'
 import { Card, Button, Row, Col, Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 // import k3martLogo from '../../../../../public/k3mart-text-logo.png'
+import { lstorage } from 'utils'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
 import PrintPDF from './PrintPDF'
@@ -29,7 +30,16 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
   }
 
   const startScan = () => {
-    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
+    let data = listTransferOut && listTransferOut.length > 0 ? listTransferOut : []
+    dispatch({
+      type: 'transferOutDetail/queryDetail',
+      payload: {
+        transNo: data[0].transNo,
+        storeId: lstorage.getCurrentUserStore(),
+        deliveryOrderId: currentItem.id
+      }
+    })
+    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}?transNo=${data[0].transNo}`))
   }
 
   const templatePrint = () => {
