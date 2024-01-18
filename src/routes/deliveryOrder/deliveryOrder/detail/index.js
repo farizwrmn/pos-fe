@@ -3,10 +3,10 @@ import { connect } from 'dva'
 import { Button, Row, Col, Modal, Card } from 'antd'
 import { routerRedux } from 'dva/router'
 // import k3martLogo from '../../../../../public/k3mart-text-logo.png'
-import { lstorage } from 'utils'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
 import PrintPDF from './PrintPDF'
+import ModalBoxNumber from './ModalBoxNumber'
 import './index.css'
 
 const columnProps = {
@@ -14,8 +14,8 @@ const columnProps = {
   lg: 6
 }
 
-const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
-  const { listTransferOut, currentItem } = deliveryOrder
+const DeliveryOrderDetail = ({ loading, dispatch, app, deliveryOrder }) => {
+  const { listTransferOut, currentItem, latestBoxNumber, modalBoxNumberVisible } = deliveryOrder
   const { user } = app
 
   const listProps = {
@@ -30,16 +30,13 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
   }
 
   const startScan = () => {
-    let data = listTransferOut && listTransferOut.length > 0 ? listTransferOut : []
     dispatch({
-      type: 'transferOutDetail/queryDetail',
+      type: 'deliveryOrder/showBoxNumberModal',
       payload: {
-        transNo: data[0].transNo,
-        storeId: lstorage.getCurrentUserStore(),
-        deliveryOrderId: currentItem.id
+        detail: currentItem
       }
     })
-    dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}?transNo=${data[0].transNo}`))
+    // dispatch(routerRedux.push(`/delivery-order-packer/${currentItem.id}`))
   }
 
   const templatePrint = () => {
@@ -197,7 +194,10 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
     pushProductToTemplate()
     pushFooterToTemplate()
 
-    return template
+    dispatch({
+      type: 'deliveryOrder/directPrinting',
+      payload: template
+    })
   }
 
   const onCompleteDeliveryOrder = (id, storeId, transNo, storeIdReceiver) => {
@@ -234,10 +234,41 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
     user
   }
 
+  const modalBoxNumberProps = {
+    visible: modalBoxNumberVisible,
+    boxNumber: latestBoxNumber,
+    loading,
+    onOk (data) {
+      Modal.confirm({
+        title: 'Start Scanning',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'deliveryOrder/printBoxNumber',
+            payload: {
+              boxNumber: data.boxNumber,
+              detail: currentItem
+            }
+          })
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'deliveryOrder/updateState',
+        payload: {
+          modalBoxNumberVisible: false,
+          latestBoxNumber: 1
+        }
+      })
+    }
+  }
+
   return (
     <Card>
       {currentItem && currentItem.id && <PrintPDF name="Print PDF" {...printProps} />}
       <div style={{ display: 'grid', gridTemplateColumns: '80% minmax(0, 20%)' }}>
+        {modalBoxNumberProps.visible && <ModalBoxNumber {...modalBoxNumberProps} />}
         <div>
           <Row>
             <Col {...columnProps}>
@@ -318,21 +349,10 @@ const DeliveryOrderDetail = ({ dispatch, app, deliveryOrder }) => {
                 Print For Picking
               </Button>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div style={{ margin: '0.5em' }}>
-                {/* <PrintPDF dataSource={list} name="Print Current Page" {...printProps} /> */}
-              </div>
-              <div style={{ margin: '0.5em' }}>
-                <Button type="default" onClick={() => printDO()}>
-                  Print For Picking
-                </Button>
-              </div>
-              <div style={{ margin: '0.5em' }}>
-                <Button type="primary" onClick={() => startScan()}>
-                  Start Scan
-                </Button>
-              </div>
+            <div style={{ margin: '0.5em' }}>
+              <Button type="primary" onClick={() => startScan()}>
+                Start Scan
+              </Button>
             </div>
           </div>
 

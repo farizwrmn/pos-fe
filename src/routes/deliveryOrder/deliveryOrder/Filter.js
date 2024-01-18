@@ -20,7 +20,7 @@ const Filter = ({
   const hdlSearch = () => {
     let field = getFieldsValue()
     if (!field.transNo) return null
-    onFilter({ transNo: field.transNo })
+    onFilter({ storeIdReceiver: field.storeIdReceiver, transNo: field.transNo })
   }
 
   return (
