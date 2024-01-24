@@ -14,12 +14,13 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
 
   const listDeliveryProps = {
     dataSource: listDeliveryOrder,
+    dispatch,
     listDeliveryOrder,
     listProducts,
     pagination,
     listTransOut,
     itemPrint: currentItemPrint,
-    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
+    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['autoReplenishSubmission/edit'],
     location,
     loadingEffect: loading.effects,
     deliveryOrderNo: query.deliveryOrderNo,
@@ -87,12 +88,13 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
 
   const listTransferProps = {
     dataSource: listTransferOut,
+    dispatch,
     listTransferOut,
     listProducts,
     pagination,
     listTransOut,
     itemPrint: currentItemPrint,
-    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
+    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/edit'],
     location,
     loadingEffect: loading.effects,
     deliveryOrderNo: query.deliveryOrderNo,
