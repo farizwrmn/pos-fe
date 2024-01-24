@@ -1736,6 +1736,7 @@ const Routers = function ({ history, app }) {
           path: 'stock-opname',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/inventory/stockOpname'))
               cb(null, require('./routes/inventory/stockOpname/stockOpname'))
             }, 'stock-opname')

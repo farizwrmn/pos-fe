@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
-import { query, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
+import { query, queryDeliveryOrder, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -18,6 +18,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listTransferOut: [],
+    listDeliveryOrder: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -39,6 +40,13 @@ export default modelExtend(pageModel, {
               storeId: location.query.storeId
             }
           })
+          dispatch({
+            type: 'queryDeliveryOrder',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: location.query.storeId
+            }
+          })
         } else if (pathname === '/inventory/transfer/auto-replenish-submission') {
           dispatch({ type: 'queryHeader' })
         }
@@ -47,6 +55,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryDeliveryOrder ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDeliveryOrder, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDeliveryOrder: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
