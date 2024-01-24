@@ -15,7 +15,7 @@ import ModalPayment from './ModalPayment'
 import PrintXLS from './PrintXLS'
 
 
-const Detail = ({ app, voucherdetail, accountRule, dispatch }) => {
+const Detail = ({ app, loading, voucherdetail, accountRule, dispatch }) => {
   const { user, storeInfo } = app
   const { listDetail, listAccounting, visiblePayment, data, selectedRowKeys } = voucherdetail
   const { listAccountCodeLov } = accountRule
@@ -83,6 +83,7 @@ const Detail = ({ app, voucherdetail, accountRule, dispatch }) => {
 
   const modalPaymentProps = {
     visible: selectedRowKeys.length > 0 && visiblePayment,
+    loading,
     selectedRowKeysLen: selectedRowKeys.length,
     listAccountCode: listAccountCodeLov,
     onOk (data, reset) {
@@ -149,8 +150,9 @@ const Detail = ({ app, voucherdetail, accountRule, dispatch }) => {
 
 Detail.propTypes = {
   app: PropTypes.object,
+  loading: PropTypes.object,
   accountRule: PropTypes.object,
   voucherdetail: PropTypes.object
 }
 
-export default connect(({ app, voucherdetail, accountRule }) => ({ app, voucherdetail, accountRule }))(Detail)
+export default connect(({ app, loading, voucherdetail, accountRule }) => ({ app, loading, voucherdetail, accountRule }))(Detail)

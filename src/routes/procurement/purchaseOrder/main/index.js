@@ -330,7 +330,6 @@ const Counter = ({ app, purchaseSafetyStock, purchaseOrder, productbrand, produc
       })
     },
     onChooseItem (record) {
-      console.log('record', record)
       dispatch({
         type: 'purchaseOrder/addItem',
         payload: record

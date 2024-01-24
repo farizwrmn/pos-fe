@@ -5,6 +5,9 @@ import { Button, Col, Collapse, Input, Row, Modal } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
 import List from './List'
 import ListOrder from './ListOrder'
+import ListDO from './ListDO'
+import ListTransferOutDetail from './ListTransferOutDetail'
+import ModalBoxNumber from './ModalBoxNumber'
 
 const { Panel } = Collapse
 
@@ -37,8 +40,9 @@ class DeliveryOrderPacker extends Component {
   }
 
   render () {
-    const { deliveryOrderPacker, loading, dispatch, location, app } = this.props
-    const { listItem, deliveryOrder } = deliveryOrderPacker
+    const { deliveryOrderPacker, deliveryOrder: DOmodel, loading, dispatch, location, app } = this.props
+    const { currentItem } = DOmodel
+    const { listItem, deliveryOrder, listTransferOutHistory, latestBoxNumber, modalBoxNumberVisible } = deliveryOrderPacker
     const { user, storeInfo } = app
 
     const listProps = {
@@ -54,6 +58,16 @@ class DeliveryOrderPacker extends Component {
         || loading.effects['deliveryOrderPacker/loadDeliveryOrderCart']
         || loading.effects['deliveryOrderPacker/deleteDeliveryOrderCartItem'],
       location
+    }
+
+    const listDOProps = {
+      dispatch,
+      currentItem
+    }
+
+    const listTransferOutDetailProps = {
+      dataSource: listTransferOutHistory,
+      pagination: false
     }
 
     const listOrderProps = {
@@ -126,18 +140,65 @@ class DeliveryOrderPacker extends Component {
       })
     }
 
+    const onSubmit = () => {
+      dispatch({
+        type: 'deliveryOrderPacker/showBoxNumberModal',
+        payload: {
+          detail: deliveryOrder
+        }
+      })
+    }
+
+    const modalBoxNumberProps = {
+      visible: modalBoxNumberVisible,
+      boxNumber: latestBoxNumber,
+      loading,
+      onOk (data) {
+        Modal.confirm({
+          title: 'Submit Transfer Out',
+          content: 'Are you sure ?',
+          onOk () {
+            dispatch({
+              type: 'deliveryOrderPacker/submitTransferOut',
+              payload: data
+            })
+          }
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'deliveryOrderPacker/updateState',
+          payload: {
+            modalBoxNumberVisible: false,
+            latestBoxNumber: 1
+          }
+        })
+      }
+    }
+
     return (
       <div className="content-inner">
         <GlobalHotKeys
           keyMap={keyMap}
           handlers={hotKeysHandler}
         />
+        {modalBoxNumberProps.visible && <ModalBoxNumber {...modalBoxNumberProps} />}
         <Row gutter={6}>
           <Col lg={10} md={24}>
             <h1 style={{ marginBottom: '10px' }}>Delivery Order</h1>
             <Collapse>
-              <Panel header="Requested Item" key="1">
+              <Panel header="Delivery Order Info" key="1">
+                <ListDO {...listDOProps} />
+              </Panel>
+            </Collapse>
+            <Collapse>
+              <Panel header="Requested Item" key="2">
                 <ListOrder {...listOrderProps} />
+              </Panel>
+            </Collapse>
+            <Collapse>
+              <Panel header="List Transfer Out Detaiil" key="3">
+                <ListTransferOutDetail {...listTransferOutDetailProps} />
               </Panel>
             </Collapse>
           </Col>
@@ -169,10 +230,32 @@ class DeliveryOrderPacker extends Component {
 
         <Row gutter={6}>
           <Col lg={10} md={24}>
-            <Button size="large" style={{ width: '100%' }} type="danger" onClick={() => onDeleteAll()}>Cancel</Button>
+            <Button
+              size="large"
+              style={{ width: '100%' }}
+              type="danger"
+              onClick={() => onDeleteAll()}
+              disabled={
+                loading.effects['deliveryOrderPacker/deleteDeliveryOrderCart']
+                || loading.effects['deliveryOrderPacker/showBoxNumberModal']
+              }
+            >
+              Cancel
+            </Button>
           </Col>
           <Col lg={14} md={24}>
-            <Button size="large" style={{ width: '100%' }} type="primary">Submit</Button>
+            <Button
+              size="large"
+              style={{ width: '100%' }}
+              type="primary"
+              onClick={() => onSubmit()}
+              disabled={
+                loading.effects['deliveryOrderPacker/deleteDeliveryOrderCart']
+                || loading.effects['deliveryOrderPacker/showBoxNumberModal']
+              }
+            >
+              Submit
+            </Button>
           </Col>
         </Row>
       </div>
@@ -185,7 +268,8 @@ DeliveryOrderPacker.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  transferOutDetail: PropTypes.object
 }
 
-export default connect(({ deliveryOrderPacker, loading, app }) => ({ deliveryOrderPacker, loading, app }))(DeliveryOrderPacker)
+export default connect(({ deliveryOrderPacker, transferOutDetail, deliveryOrder, loading, app }) => ({ deliveryOrderPacker, transferOutDetail, deliveryOrder, loading, app }))(DeliveryOrderPacker)

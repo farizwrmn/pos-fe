@@ -47,7 +47,7 @@ const ListOrder = ({ editItem, deleteItem, ...tableProps }) => {
           emptyText: 'Your Transfer Out List'
         }}
         size="small"
-        scroll={{ y: '480px' }}
+        scroll={{ y: '370px' }}
         rowKey={record => record.time}
       />
     </div>

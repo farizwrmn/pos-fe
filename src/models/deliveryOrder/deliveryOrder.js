@@ -8,9 +8,12 @@ import {
   remove,
   edit
 } from 'services/deliveryOrder/deliveryOrder'
+import moment from 'moment'
+import { queryLov } from 'services/transferStockOut'
 import { directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { lstorage } from 'utils'
 import pathToRegexp from 'path-to-regexp'
+import { routerRedux } from 'dva/router'
 
 const success = () => {
   message.success('Success')
@@ -21,6 +24,8 @@ export default {
 
   state: {
     list: [],
+    modalBoxNumberVisible: false,
+    latestBoxNumber: 1,
     listTransferOut: [],
     activeKey: '0',
     currentItem: {},
@@ -40,15 +45,16 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const { pathname /* query */ } = location
-        // const { page, pageSize } = query
+        const { pathname, query } = location
+        const { storeIdReceiver } = query
 
         if (pathname === '/delivery-order') {
           dispatch({
             type: 'query',
             payload: {
               type: 'all',
-              storeId: lstorage.getCurrentUserStore()
+              storeId: lstorage.getCurrentUserStore(),
+              storeIdReceiver
               // relationship: 1
               // page,
               // pageSize,
@@ -57,6 +63,7 @@ export default {
           })
         }
         const match = pathToRegexp('/delivery-order-detail/:id').exec(location.pathname)
+          || pathToRegexp('/delivery-order-packer/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -78,6 +85,83 @@ export default {
   },
 
   effects: {
+    * printBoxNumber ({ payload = {} }, { put }) {
+      const { boxNumber, detail } = payload
+      const template = [
+        {
+          alignment: 'two',
+          text: '',
+          rightText: ''
+        },
+        {
+          alignment: 'center',
+          text: 'Delivery Order',
+          rightText: ''
+        },
+        {
+          alignment: 'center',
+          text: `Box: ${boxNumber}`
+        },
+        {
+          alignment: 'center',
+          text: `Ref: ${detail.transNo}`,
+          rightText: ''
+        },
+        {
+          alignment: 'center',
+          text: `Description: ${detail.description}`,
+          rightText: ''
+        },
+        {
+          alignment: 'center',
+          text: `Store: ${detail.storeName} ke ${detail.storeNameReceiver}`,
+          rightText: ''
+        },
+        {
+          alignment: 'center',
+          text: moment().format('ddd, DD MMM YYYY'),
+          rightText: ''
+        }
+      ]
+      yield put({
+        type: 'directPrinting',
+        payload: template
+      })
+      yield put(routerRedux.push(`/delivery-order-packer/${detail.id}`))
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalBoxNumberVisible: false,
+          latestBoxNumber: 1
+        }
+      })
+      // yield put(routerRedux.push)
+    },
+
+    * showBoxNumberModal ({ payload }, { call, put }) {
+      const { detail } = payload
+      let latestBoxNumber = 1
+      if (detail && detail.id) {
+        const response = yield call(queryLov, { deliveryOrderId: detail.id, pageSize: 1 })
+        try {
+          if (response.success && response.data && response.data.length > 0) {
+            if (response.data && response.data.length > 0) {
+              latestBoxNumber = response.data[response.data.length - 1].boxNumber
+            }
+          }
+        } catch (error) {
+          console.log('Not found latestBoxNumber')
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          latestBoxNumber,
+          modalBoxNumberVisible: true
+        }
+      })
+    },
+
     * directPrinting ({ payload }, { call }) {
       try {
         yield call(directPrinting, payload)
@@ -135,18 +219,17 @@ export default {
         })
       }
     },
-    * finish ({ payload = {} }, { call, put }) {
+
+    * updateAsFinished ({ payload = {} }, { call, put }) {
       const response = yield call(finish, payload)
       if (response && response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: response.data
-          }
-        })
+        message.success('Success update as Finished')
+        yield put(routerRedux.push(`/delivery-order?storeIdReceiver=${payload.storeIdReceiver}`))
+      } else {
+        throw response
       }
     },
+
     * add ({ payload = {} }, { call, put }) {
       const response = yield call(add, payload)
       if (response && response.success) {

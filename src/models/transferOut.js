@@ -454,6 +454,11 @@ export default modelExtend(pageModel, {
       }
       const sequence = yield call(querySequence, sequenceData)
       payload.transNo = sequence.data
+      // payload.detail is null
+      if (payload && payload.detail.length === 0) {
+        message.error('data product must be entered')
+        return
+      }
       let response = yield call(add, payload)
       if (response.success) {
         if (response.data && response.data.id && payload.data.deliveryOrder) {
@@ -465,6 +470,9 @@ export default modelExtend(pageModel, {
           if (payload && payload.reset) {
             payload.reset()
           }
+        }
+        if (response.data && response.data.deliveryOrder) {
+          window.open(`/delivery-order/${encodeURIComponent(response.data.deliveryOrder.id)}`, '_blank')
         }
         if (response.data && response.data.transNo) {
           window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
@@ -496,7 +504,8 @@ export default modelExtend(pageModel, {
           productName: arrayProd[n].productName,
           transType: arrayProd[n].transType,
           qty: arrayProd[n].qty,
-          description: arrayProd[n].description
+          description: arrayProd[n].description,
+          stock: arrayProd[n].stock
         })
       }
       yield put({ type: 'updateState', payload: { listItem: ary, modalVisible: false } })

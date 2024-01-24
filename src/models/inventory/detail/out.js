@@ -214,6 +214,7 @@ export default {
         throw response
       }
     },
+
     * queryDetail ({ payload }, { call, put }) {
       payload.storeId = lstorage.getCurrentUserStore()
       const invoiceInfo = yield call(queryByTrans, payload)

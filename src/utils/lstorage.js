@@ -151,6 +151,18 @@ const setDynamicQrisPosTransId = (data) => {
   return localStorage.setItem('dynamic_qris_pos_trans_id', data)
 }
 
+const getDynamicQrisPosTransNo = () => {
+  return localStorage.getItem('dynamic_qris_pos_trans_no') ? localStorage.getItem('dynamic_qris_pos_trans_no') : null
+}
+
+const setDynamicQrisPosTransNo = (data) => {
+  return localStorage.setItem('dynamic_qris_pos_trans_no', data)
+}
+
+const removeDynamicQrisPosTransNo = () => {
+  return localStorage.removeItem('dynamic_qris_pos_trans_no')
+}
+
 const removeDynamicQrisPosTransId = () => {
   return localStorage.removeItem('dynamic_qris_pos_trans_id')
 }
@@ -528,6 +540,9 @@ module.exports = {
   getQrisPaymentLastTransaction,
   setQrisPaymentLastTransaction,
   removeQrisPaymentLastTransaction,
+  getDynamicQrisPosTransNo,
+  setDynamicQrisPosTransNo,
+  removeDynamicQrisPosTransNo,
   getVoucherList,
   setVoucherList,
   removeQrisImage,

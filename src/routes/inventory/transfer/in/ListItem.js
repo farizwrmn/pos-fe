@@ -31,10 +31,11 @@ const ListItem = ({ ...tableProps }) => {
       dataIndex: 'acceptQty',
       key: 'acceptQty',
       className: styles.alignCenter,
-      render: (text, data) =>
-        (data && data.accept
+      render: (text, data) => {
+        return (data && data.accept
           ? (<Icon type="check-circle" style={{ color: '#55a756' }} />)
           : data.acceptQty)
+      }
     },
     {
       title: 'Description',

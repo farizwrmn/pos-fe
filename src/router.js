@@ -2063,7 +2063,9 @@ const Routers = function ({ history, app }) {
           path: 'delivery-order-packer/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/detail/out'))
               registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
               cb(null, require('./routes/deliveryOrder/deliveryOrderPacker'))
             }, 'inventory-delivery-order-packer')
           }

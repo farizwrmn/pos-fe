@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
-import { queryDetail } from 'services/deliveryOrder/deliveryOrderPacker'
+import { queryDetail, queryTransferOutDetail } from 'services/deliveryOrder/deliveryOrderPacker'
 import deliveryOrderStorage from 'utils/storage/deliveryOrder'
 import deliveryOrderCartStorage from 'utils/storage/deliveryOrderCart'
+import { queryLov, add as submitTransferOut } from 'services/transferStockOut'
 import { lstorage } from 'utils'
 import { message, Modal } from 'antd'
 import { pageModel } from 'models/common'
@@ -12,6 +13,9 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    listTransferOutHistory: [],
+    latestBoxNumber: 1,
+    modalBoxNumberVisible: false,
     deliveryOrder: {},
     listItem: [],
     modalType: 'add',
@@ -28,6 +32,13 @@ export default modelExtend(pageModel, {
         const match = pathToRegexp('/delivery-order-packer/:id').exec(location.pathname)
         if (match) {
           dispatch({
+            type: 'queryHistory',
+            payload: {
+              id: match[1]
+            }
+          })
+
+          dispatch({
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1]),
@@ -40,6 +51,20 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryHistory ({ payload }, { call, put }) {
+      const response = yield call(queryTransferOutDetail, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransferOutHistory: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * groupingDeliveryOrderCart (payload, { select, put }) {
       const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
@@ -118,6 +143,7 @@ export default modelExtend(pageModel, {
     * addItemByBarcode ({ payload = {} }, { select, put }) {
       const { orderQty, barcode } = payload
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      const listTransferOutHistory = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listTransferOutHistory)
       const listItem = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.listItem)
       if (deliveryOrder && deliveryOrder.id) {
         const { deliveryOrderDetail } = deliveryOrder
@@ -131,6 +157,25 @@ export default modelExtend(pageModel, {
             }
           ]
           currentListItem = currentListItem.concat(listItem)
+          let totalRequestPerProduct = 0
+          if (deliveryOrder && deliveryOrder.deliveryOrderDetail && deliveryOrder.deliveryOrderDetail.length > 0) {
+            totalRequestPerProduct = deliveryOrder.deliveryOrderDetail
+              .filter(filtered => filtered.barCode01 === barcode)
+              .reduce((prev, next) => prev + next.qty, 0)
+          }
+          const totalCartPerProduct = currentListItem
+            .filter(filtered => filtered.barCode01 === barcode)
+            .reduce((prev, next) => prev + next.orderQty, 0)
+          const totalHistory = listTransferOutHistory && listTransferOutHistory.length > 0
+            ? listTransferOutHistory.filter(filtered => filtered.barCode01 === barcode)
+              .reduce((prev, next) => prev + next.qty, 0) : 0
+          if ((totalCartPerProduct + totalHistory) > totalRequestPerProduct) {
+            Modal.error({
+              title: 'Qty is over request',
+              content: 'Please check your item request'
+            })
+            return
+          }
           yield put({
             type: 'saveDeliveryOrderCart',
             payload: {
@@ -198,6 +243,88 @@ export default modelExtend(pageModel, {
         }
         throw response
       }
+    },
+
+    * submitTransferOut ({ payload = {} }, { select, call, put }) {
+      const { boxNumber } = payload
+      const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
+      yield put({
+        type: 'deliveryOrderPacker/groupingDeliveryOrderCart'
+      })
+      const listItemResponse = yield call(deliveryOrderCartStorage.load, {
+        transNo: deliveryOrder.transNo
+      })
+      let listItem = listItemResponse && listItemResponse.listItem ? listItemResponse.listItem : []
+      listItem = listItem.map((item, index) => ({ ...item, no: listItem.length - index }))
+
+      const response = yield call(submitTransferOut, {
+        transNo: deliveryOrder.transNo,
+        storeId: deliveryOrder.storeId,
+        data: {
+          deliveryOrder: 0,
+          deliveryOrderId: deliveryOrder.id,
+          deliveryOrderNo: deliveryOrder.transNo,
+          boxNumber,
+          employeeId: 1,
+          storeId: deliveryOrder.storeId,
+          storeIdReceiver: deliveryOrder.storeIdReceiver,
+          totalColly: 1,
+          transNo: deliveryOrder.transNo,
+          transType: 'MUOUT'
+        },
+        detail: listItem.map((item) => {
+          return ({
+            no: item.no,
+            productId: item.productId,
+            productCode: item.productCode,
+            productName: item.productName,
+            transType: 'MUOUT',
+            qty: item.qty,
+            description: null
+          })
+        })
+      })
+      if (response.success) {
+        message.success('Success generate Transfer Out')
+        yield put({
+          type: 'deliveryOrderPacker/deleteDeliveryOrderCart'
+        })
+        yield put({
+          type: 'deliveryOrderPacker/updateState',
+          payload: {
+            modalBoxNumberVisible: false
+          }
+        })
+        if (response.data && response.data.transNo) {
+          window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
+        }
+      } else {
+        throw response
+      }
+    },
+
+    * showBoxNumberModal ({ payload = {} }, { call, put }) {
+      const { detail } = payload
+      let latestBoxNumber = 1
+      if (detail && detail.id) {
+        const response = yield call(queryLov, { deliveryOrderId: detail.id, pageSize: 1 })
+        try {
+          if (response.success && response.data && response.data.length > 0) {
+            if (response.data && response.data.length > 0) {
+              latestBoxNumber = response.data[response.data.length - 1].boxNumber
+            }
+          }
+        } catch (error) {
+          console.log('Not found latestBoxNumber')
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          latestBoxNumber,
+          modalBoxNumberVisible: true
+        }
+      })
     }
   },
 

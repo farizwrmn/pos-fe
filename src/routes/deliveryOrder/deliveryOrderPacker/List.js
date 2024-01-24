@@ -71,9 +71,9 @@ const List = ({ dispatch, ...tableProps }) => {
           ...record,
           no: record.posit
         })}
-        style={{ height: '510px' }}
+        style={{ height: '400px' }}
         size="small"
-        scroll={{ y: '480px' }}
+        scroll={{ y: '370px' }}
         rowKey={record => record.time}
       />
     </div>
