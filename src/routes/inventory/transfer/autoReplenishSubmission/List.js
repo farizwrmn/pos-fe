@@ -35,21 +35,21 @@ const List = (tableProps) => {
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
-        if (text == 0) {
+        if (text === 0) {
           return (
             <Tag color="red">
               Canceled
             </Tag>
           )
         }
-        if (text == 1) {
+        if (text === 1) {
           return (
             <Tag color="blue">
               Picking
             </Tag>
           )
         }
-        if (text == 2) {
+        if (text === 2) {
           return (
             <Tag color="green">
               Delivery
