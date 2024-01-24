@@ -14,6 +14,7 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
 
   const listDeliveryProps = {
     dataSource: listDeliveryOrder,
+    dispatch,
     listDeliveryOrder,
     listProducts,
     pagination,
@@ -87,6 +88,7 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
 
   const listTransferProps = {
     dataSource: listTransferOut,
+    dispatch,
     listTransferOut,
     listProducts,
     pagination,

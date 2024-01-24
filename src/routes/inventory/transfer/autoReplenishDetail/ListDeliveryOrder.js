@@ -1,16 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Link } from 'dva/router'
-import { Table, Button, Modal, Tag, Icon } from 'antd'
+import { Link, routerRedux } from 'dva/router'
+import { Table, Button, Modal, Tag, Icon, message } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListDeliveryOrder = (tableProps) => {
-  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
+const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
+  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, onClosePrint } = tableProps
+  const toDetail = (record) => {
+    if (record.active && !record.status) {
+      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
+    } else {
+      message.error('Already complete')
+    }
+  }
   const clickPrint = (record) => {
-    const { transNo, storeId } = record
-    getTrans(transNo, storeId)
+    Modal.confirm({
+      title: 'Mark as Complete ?',
+      content: 'Are you sure ?',
+      onOk () {
+        onClickPrinted(record.id)
+      }
+    })
   }
   const printProps = {
     listItem: listProducts,
@@ -61,17 +73,20 @@ const ListDeliveryOrder = (tableProps) => {
     {
       title: 'Sender',
       dataIndex: 'storeName',
-      key: 'storeName'
+      key: 'storeName',
+      onCellClick: record => toDetail(record)
     },
     {
       title: 'Receiver',
       dataIndex: 'storeNameReceiver',
-      key: 'storeNameReceiver'
+      key: 'storeNameReceiver',
+      onCellClick: record => toDetail(record)
     },
     {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
+      onCellClick: record => toDetail(record),
       render: (text) => {
         return moment(text).format('DD MMM YYYY')
       }
@@ -80,6 +95,7 @@ const ListDeliveryOrder = (tableProps) => {
       title: 'Print',
       dataIndex: 'isPrinted',
       key: 'isPrinted',
+      onCellClick: record => toDetail(record),
       render: (text) => {
         if (text) {
           return (
@@ -99,6 +115,7 @@ const ListDeliveryOrder = (tableProps) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      onCellClick: record => toDetail(record),
       render: (text, record) => {
         const nonActive = !record.active
         const received = record.status
@@ -113,14 +130,14 @@ const ListDeliveryOrder = (tableProps) => {
         if (inProgress) {
           return (
             <Tag color="blue">
-              In Progress
+              Picking
             </Tag>
           )
         }
         if (received) {
           return (
             <Tag color="green">
-              Accepted
+              Completed
             </Tag>
           )
         }
@@ -129,11 +146,10 @@ const ListDeliveryOrder = (tableProps) => {
     {
       title: 'Operation',
       key: 'operation',
-      width: 100,
+      width: 130,
       fixed: 'right',
       render: (record) => {
-        return <Button onClick={() => clickPrint(record)} loading={tableProps.loading}>Print</Button>
-        // return <div onClick={() => clickPrint(record.transNo)}><PrintPDF listItem={listProducts} itemPrint={record} itemHeader={transHeader} storeInfo={storeInfo} user={user} printNo={1} /></div>
+        return <Button onClick={() => clickPrint(record)} type="primary" icon="check" loading={tableProps.loading}>Complete</Button>
       }
     }
   ]
