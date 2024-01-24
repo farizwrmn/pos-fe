@@ -600,12 +600,12 @@ class FormPayment extends React.Component {
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
                     ? [
                       {
-                        required: true,
+                        required: false,
                         message: 'required'
                       }
                     ] : [
                       {
-                        required: getFieldValue('typeCode') !== 'C',
+                        required: false,
                         pattern: /^[a-z0-9 -.,_]+$/i,
                         message: 'please insert the value'
                       }

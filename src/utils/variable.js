@@ -55,7 +55,15 @@ export const ACCOUNT_TYPE_PETTY_CASH_EXPENSE = [
   'OEXP'
 ]
 
+export const ACCOUNT_TYPE_VOUCHER_PAYMENT = [
+  'EXPS',
+  'OEXP',
+  'BANK'
+]
+
 export const ACCOUNT_TYPE_VOUCHER = [
+  'EXPS',
+  'OEXP',
   'REVE',
   'OINC'
 ]

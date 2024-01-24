@@ -22,9 +22,11 @@ const {
   setDynamicQrisImage,
   setQrisMerchantTradeNo,
   setDynamicQrisPosTransId,
+  setDynamicQrisPosTransNo,
   removeDynamicQrisImage,
   removeQrisMerchantTradeNo,
   removeDynamicQrisPosTransId,
+  removeDynamicQrisPosTransNo,
   setDynamicQrisTimeLimit,
   getQrisPaymentTimeLimit,
   setCurrentPaymentTransactionId,
@@ -386,6 +388,7 @@ export default {
                 removeDynamicQrisImage()
                 removeQrisMerchantTradeNo()
                 removeDynamicQrisPosTransId()
+                removeDynamicQrisPosTransNo()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -946,6 +949,7 @@ export default {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
                 const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
                 setDynamicQrisPosTransId(responsInsertPos.id)
+                setDynamicQrisPosTransNo(responsInsertPos.transNo)
                 setDynamicQrisImage(createdQrisPaymentResponse.qrCode)
                 setQrisMerchantTradeNo(merchantTradeNo)
                 setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
@@ -1035,6 +1039,7 @@ export default {
         removeDynamicQrisImage()
         removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
+        removeDynamicQrisPosTransNo()
         removeCurrentPaymentTransactionId()
         yield put({
           type: 'updateState',
