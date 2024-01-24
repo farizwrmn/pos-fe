@@ -188,7 +188,7 @@ const Transfer = ({ fingerEmployee, transferIn, employee, loading, dispatch, app
     listItem: listTransDetail,
     listEmployee,
     sequenceNumber,
-    width: '700px',
+    width: '850px',
     visible: modalAcceptVisible,
     wrapClassName: 'vertical-center-modal',
     onEnter (data) {

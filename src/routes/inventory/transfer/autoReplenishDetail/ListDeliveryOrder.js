@@ -1,28 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { Link } from 'dva/router'
 import { Table, Button, Modal, Tag, Icon } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListTransfer = (tableProps) => {
-  const { listTransOut, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
+const ListDeliveryOrder = (tableProps) => {
+  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
   const clickPrint = (record) => {
     const { transNo, storeId } = record
     getTrans(transNo, storeId)
   }
-
   const printProps = {
     listItem: listProducts,
-    itemPrint: listTransOut && listTransOut.id ? {
-      transNo: listTransOut.transNo,
-      employeeName: listTransOut.employeeName,
-      carNumber: listTransOut.carNumber,
-      storeName: listTransOut.storeName,
-      transDate: listTransOut.transDate,
-      totalColly: listTransOut.totalColly,
-      storeNameReceiver: listTransOut.storeNameReceiver,
-      description: listTransOut.description
+    itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
+      transNo: listDeliveryOrder.transNo,
+      employeeName: listDeliveryOrder.employeeName,
+      carNumber: listDeliveryOrder.carNumber,
+      storeName: listDeliveryOrder.storeName,
+      transDate: listDeliveryOrder.transDate,
+      totalColly: listDeliveryOrder.totalColly,
+      storeNameReceiver: listDeliveryOrder.storeNameReceiver,
+      description: listDeliveryOrder.description
     } : {
       transNo: '',
       employeeName: '',
@@ -36,7 +36,6 @@ const ListTransfer = (tableProps) => {
     user,
     printNo: 1
   }
-
   const modalProps = {
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -47,21 +46,17 @@ const ListTransfer = (tableProps) => {
       onClosePrint()
     }
   }
-
   const handleChange = (pagination, filters, sorter) => {
     updateFilter(pagination, filters, sorter)
   }
-
   const columns = [
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo'
-    },
-    {
-      title: 'Delivery Order',
-      dataIndex: 'deliveryOrderNo',
-      key: 'deliveryOrderNo'
+      key: 'transNo',
+      render: (text, record) => {
+        return (<Link to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
+      }
     },
     {
       title: 'Sender',
@@ -142,7 +137,6 @@ const ListTransfer = (tableProps) => {
       }
     }
   ]
-
   return (
     <div>
       <Modal {...modalProps} title="Print">
@@ -154,15 +148,15 @@ const ListTransfer = (tableProps) => {
           loading={tableProps['autoReplenishSubmission/edit']}
           style={{ marginLeft: '100px' }}
           onClick={() => {
-            if (listTransOut && listTransOut.id) {
-              onClickPrinted(listTransOut.id)
+            if (listDeliveryOrder && listDeliveryOrder.id) {
+              onClickPrinted(listDeliveryOrder.id)
             }
           }}
         >
           <Icon type="check" className="icon-large" />
         </Button>
       </Modal>
-      <h3>Transfer Out</h3>
+      <h3>Delivery Order</h3>
       <Table {...tableProps}
         bordered
         columns={columns}
@@ -174,8 +168,7 @@ const ListTransfer = (tableProps) => {
     </div>
   )
 }
-
-ListTransfer.propTypes = {
+ListDeliveryOrder.propTypes = {
   sort: PropTypes.object,
   filter: PropTypes.object,
   updateFilter: PropTypes.func,
@@ -187,8 +180,7 @@ ListTransfer.propTypes = {
   getProducts: PropTypes.func,
   getTrans: PropTypes.func,
   listProducts: PropTypes.object,
-  listTransOut: PropTypes.object,
+  listDeliveryOrder: PropTypes.object,
   onClosePrint: PropTypes.func
 }
-
-export default ListTransfer
+export default ListDeliveryOrder
