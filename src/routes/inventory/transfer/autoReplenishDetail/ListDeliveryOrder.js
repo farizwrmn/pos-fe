@@ -67,7 +67,10 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
       dataIndex: 'transNo',
       key: 'transNo',
       render: (text, record) => {
-        return (<Link to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
+        if (record.active && !record.status) {
+          return (<Link to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
+        }
+        return text
       }
     },
     {
