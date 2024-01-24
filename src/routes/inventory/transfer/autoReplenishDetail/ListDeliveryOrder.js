@@ -152,7 +152,11 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
       width: 130,
       fixed: 'right',
       render: (record) => {
-        return <Button onClick={() => clickPrint(record)} type="primary" icon="check" loading={tableProps.loading}>Complete</Button>
+        let disabled = false
+        if (record.active && record.status) {
+          disabled = true
+        }
+        return <Button disabled={disabled || tableProps.loading} onClick={() => clickPrint(record)} type="primary" icon="check" loading={tableProps.loading}>Complete</Button>
       }
     }
   ]
