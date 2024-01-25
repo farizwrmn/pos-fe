@@ -4,10 +4,11 @@ import moment from 'moment'
 import { Link } from 'dva/router'
 import { Table, Button, Modal, Tag, Icon } from 'antd'
 import PrintPDF from './PrintPDF'
+import PrintPDFAll from './PrintPDFAll'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListDeliveryOrder = (tableProps) => {
-  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
+const ListDeliveryOrder = ({ loading, ...tableProps }) => {
+  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, listAllProduct, onClosePrint } = tableProps
   const clickPrint = (record) => {
     const { transNo, storeId } = record
     getTrans(transNo, storeId)
@@ -48,6 +49,32 @@ const ListDeliveryOrder = (tableProps) => {
   }
   const handleChange = (pagination, filters, sorter) => {
     updateFilter(pagination, filters, sorter)
+  }
+  const printPDFAllProps = {
+    loading,
+    // listItem: listProducts,
+    listItem: listAllProduct,
+    itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
+      transNo: listDeliveryOrder.transNo,
+      employeeName: listDeliveryOrder.employeeName,
+      carNumber: listDeliveryOrder.carNumber,
+      storeName: listDeliveryOrder.storeName,
+      transDate: listDeliveryOrder.transDate,
+      totalColly: listDeliveryOrder.totalColly,
+      storeNameReceiver: listDeliveryOrder.storeNameReceiver,
+      description: listDeliveryOrder.description
+    } : {
+      transNo: '',
+      employeeName: '',
+      carNumber: '',
+      storeName: '',
+      totalColly: '',
+      storeNameReceiver: '',
+      description: ''
+    },
+    storeInfo,
+    user,
+    printNo: 1
   }
   const columns = [
     {
@@ -157,6 +184,12 @@ const ListDeliveryOrder = (tableProps) => {
         </Button>
       </Modal>
       <h3>Delivery Order</h3>
+
+      <div style={{ margin: '0.5em' }}>
+        {/* <Button type="primary" {...printListProps}>Print List</Button> */}
+        <PrintPDFAll {...printPDFAllProps} />
+      </div>
+
       <Table {...tableProps}
         bordered
         columns={columns}

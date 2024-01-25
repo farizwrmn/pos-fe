@@ -6,7 +6,8 @@ import {
   finish,
   add,
   remove,
-  edit
+  edit,
+  printListDeliveryOrder
 } from 'services/deliveryOrder/deliveryOrder'
 import moment from 'moment'
 import { queryLov } from 'services/transferStockOut'
@@ -24,6 +25,7 @@ export default {
 
   state: {
     list: [],
+    listAllProduct: [],
     modalBoxNumberVisible: false,
     latestBoxNumber: 1,
     listTransferOut: [],
@@ -77,6 +79,16 @@ export default {
             payload: {
               active: 1,
               deliveryOrderId: decodeURIComponent(match[1])
+            }
+          })
+        }
+
+        const matchAutoReplenishRoute = pathToRegexp('/inventory/transfer/auto-replenish-submission/:id').exec(location.pathname)
+        if (matchAutoReplenishRoute) {
+          dispatch({
+            type: 'printList',
+            payload: {
+              transId: decodeURIComponent(matchAutoReplenishRoute[1])
             }
           })
         }
@@ -137,7 +149,27 @@ export default {
       })
       // yield put(routerRedux.push)
     },
-
+    * printList ({ payload = {} }, { put, call }) {
+      try {
+        success()
+        const response = yield call(printListDeliveryOrder, payload)
+        if (response.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listAllProduct: response.data
+            }
+          })
+          if (response.data && response.data.length === 0) {
+            message.warning('data empty')
+          }
+        } else {
+          throw response
+        }
+      } catch (error) {
+        throw error
+      }
+    },
     * showBoxNumberModal ({ payload }, { call, put }) {
       const { detail } = payload
       let latestBoxNumber = 1
