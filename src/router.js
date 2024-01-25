@@ -1736,6 +1736,7 @@ const Routers = function ({ history, app }) {
           path: 'stock-opname',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/inventory/stockOpname'))
               cb(null, require('./routes/inventory/stockOpname/stockOpname'))
             }, 'stock-opname')
@@ -2019,6 +2020,23 @@ const Routers = function ({ history, app }) {
             }, 'inventory-transfer-in')
           }
         }, {
+          path: 'delivery-order',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrder'))
+            }, 'inventory-delivery-order')
+          }
+        }, {
+          path: 'delivery-order-detail/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrder/detail'))
+            }, 'inventory-delivery-order-detail')
+          }
+        }, {
           path: 'inventory/transfer/out',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2040,6 +2058,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/out/detail'))
             }, 'inventory-transfer-out-detail')
+          }
+        }, {
+          path: 'delivery-order-packer/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/detail/out'))
+              registerModel(app, require('./models/deliveryOrder/deliveryOrderPacker'))
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrderPacker'))
+            }, 'inventory-delivery-order-packer')
           }
         }, {
           path: 'inventory/transfer/auto-replenish-submission',

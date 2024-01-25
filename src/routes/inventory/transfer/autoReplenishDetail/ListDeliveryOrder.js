@@ -1,28 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Table, Button, Modal, Tag, Icon } from 'antd'
+import { Link, routerRedux } from 'dva/router'
+import { Table, Button, Modal, Tag, Icon, message } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListTransfer = (tableProps) => {
-  const { listTransOut, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
-  const clickPrint = (record) => {
-    const { transNo, storeId } = record
-    getTrans(transNo, storeId)
+const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
+  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, onClosePrint } = tableProps
+  const toDetail = (record) => {
+    if (record.active && !record.status) {
+      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
+    } else {
+      message.error('Already complete')
+    }
   }
-
+  const clickPrint = (record) => {
+    Modal.confirm({
+      title: 'Mark as Complete ?',
+      content: 'Are you sure ?',
+      onOk () {
+        onClickPrinted(record.id)
+      }
+    })
+  }
   const printProps = {
     listItem: listProducts,
-    itemPrint: listTransOut && listTransOut.id ? {
-      transNo: listTransOut.transNo,
-      employeeName: listTransOut.employeeName,
-      carNumber: listTransOut.carNumber,
-      storeName: listTransOut.storeName,
-      transDate: listTransOut.transDate,
-      totalColly: listTransOut.totalColly,
-      storeNameReceiver: listTransOut.storeNameReceiver,
-      description: listTransOut.description
+    itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
+      transNo: listDeliveryOrder.transNo,
+      employeeName: listDeliveryOrder.employeeName,
+      carNumber: listDeliveryOrder.carNumber,
+      storeName: listDeliveryOrder.storeName,
+      transDate: listDeliveryOrder.transDate,
+      totalColly: listDeliveryOrder.totalColly,
+      storeNameReceiver: listDeliveryOrder.storeNameReceiver,
+      description: listDeliveryOrder.description
     } : {
       transNo: '',
       employeeName: '',
@@ -36,7 +48,6 @@ const ListTransfer = (tableProps) => {
     user,
     printNo: 1
   }
-
   const modalProps = {
     maskClosable: false,
     wrapClassName: 'vertical-center-modal',
@@ -47,36 +58,38 @@ const ListTransfer = (tableProps) => {
       onClosePrint()
     }
   }
-
   const handleChange = (pagination, filters, sorter) => {
     updateFilter(pagination, filters, sorter)
   }
-
   const columns = [
     {
       title: 'Transaction No',
       dataIndex: 'transNo',
-      key: 'transNo'
-    },
-    {
-      title: 'Delivery Order',
-      dataIndex: 'deliveryOrderNo',
-      key: 'deliveryOrderNo'
+      key: 'transNo',
+      render: (text, record) => {
+        if (record.active && !record.status) {
+          return (<Link to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
+        }
+        return text
+      }
     },
     {
       title: 'Sender',
       dataIndex: 'storeName',
-      key: 'storeName'
+      key: 'storeName',
+      onCellClick: record => toDetail(record)
     },
     {
       title: 'Receiver',
       dataIndex: 'storeNameReceiver',
-      key: 'storeNameReceiver'
+      key: 'storeNameReceiver',
+      onCellClick: record => toDetail(record)
     },
     {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
+      onCellClick: record => toDetail(record),
       render: (text) => {
         return moment(text).format('DD MMM YYYY')
       }
@@ -85,6 +98,7 @@ const ListTransfer = (tableProps) => {
       title: 'Print',
       dataIndex: 'isPrinted',
       key: 'isPrinted',
+      onCellClick: record => toDetail(record),
       render: (text) => {
         if (text) {
           return (
@@ -104,6 +118,7 @@ const ListTransfer = (tableProps) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      onCellClick: record => toDetail(record),
       render: (text, record) => {
         const nonActive = !record.active
         const received = record.status
@@ -118,14 +133,14 @@ const ListTransfer = (tableProps) => {
         if (inProgress) {
           return (
             <Tag color="blue">
-              In Progress
+              Picking
             </Tag>
           )
         }
         if (received) {
           return (
             <Tag color="green">
-              Accepted
+              Completed
             </Tag>
           )
         }
@@ -134,15 +149,17 @@ const ListTransfer = (tableProps) => {
     {
       title: 'Operation',
       key: 'operation',
-      width: 100,
+      width: 130,
       fixed: 'right',
       render: (record) => {
-        return <Button onClick={() => clickPrint(record)} loading={tableProps.loading}>Print</Button>
-        // return <div onClick={() => clickPrint(record.transNo)}><PrintPDF listItem={listProducts} itemPrint={record} itemHeader={transHeader} storeInfo={storeInfo} user={user} printNo={1} /></div>
+        let disabled = false
+        if (record.active && record.status) {
+          disabled = true
+        }
+        return <Button disabled={disabled || tableProps.loading} onClick={() => clickPrint(record)} type="primary" icon="check" loading={tableProps.loading}>Complete</Button>
       }
     }
   ]
-
   return (
     <div>
       <Modal {...modalProps} title="Print">
@@ -154,15 +171,15 @@ const ListTransfer = (tableProps) => {
           loading={tableProps['autoReplenishSubmission/edit']}
           style={{ marginLeft: '100px' }}
           onClick={() => {
-            if (listTransOut && listTransOut.id) {
-              onClickPrinted(listTransOut.id)
+            if (listDeliveryOrder && listDeliveryOrder.id) {
+              onClickPrinted(listDeliveryOrder.id)
             }
           }}
         >
           <Icon type="check" className="icon-large" />
         </Button>
       </Modal>
-      <h3>Transfer Out</h3>
+      <h3>Delivery Order</h3>
       <Table {...tableProps}
         bordered
         columns={columns}
@@ -174,8 +191,7 @@ const ListTransfer = (tableProps) => {
     </div>
   )
 }
-
-ListTransfer.propTypes = {
+ListDeliveryOrder.propTypes = {
   sort: PropTypes.object,
   filter: PropTypes.object,
   updateFilter: PropTypes.func,
@@ -187,8 +203,7 @@ ListTransfer.propTypes = {
   getProducts: PropTypes.func,
   getTrans: PropTypes.func,
   listProducts: PropTypes.object,
-  listTransOut: PropTypes.object,
+  listDeliveryOrder: PropTypes.object,
   onClosePrint: PropTypes.func
 }
-
-export default ListTransfer
+export default ListDeliveryOrder
