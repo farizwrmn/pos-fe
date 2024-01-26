@@ -1,14 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Link } from 'dva/router'
-import { Table, Button, Modal, Tag, Icon } from 'antd'
+import { Link, routerRedux } from 'dva/router'
+import { Table, Button, Modal, Tag, Icon, message } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFAll from './PrintPDFAll'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListDeliveryOrder = ({ loading, ...tableProps }) => {
+const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
   const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, onClosePrint } = tableProps
+  const toDetail = (record) => {
+    if (record.active && !record.status) {
+      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
+    } else {
+      message.error('Already complete')
+    }
+  }
   const clickPrint = (record) => {
     Modal.confirm({
       title: 'Mark as Complete ?',
