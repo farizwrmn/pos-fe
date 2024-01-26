@@ -9,8 +9,6 @@ import PrintPDFv2 from './PrintPDFv2'
 
 const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
   const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, itemPrint, onClosePrint } = tableProps
-  console.log('listAllProduct', listAllProduct)
-  console.log('data', itemPrint)
   const toDetail = (record) => {
     if (record.active && !record.status) {
       window.open(`/delivery-order-detail/${record.id}`, '_blank')
