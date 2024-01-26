@@ -8,7 +8,7 @@ import PrintPDFAll from './PrintPDFAll'
 import PrintPDFv2 from './PrintPDFv2'
 
 const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
-  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, onClosePrint } = tableProps
+  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, itemPrint, onClosePrint } = tableProps
   const toDetail = (record) => {
     if (record.active && !record.status) {
       window.open(`/delivery-order-detail/${record.id}`, '_blank')
@@ -63,30 +63,33 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
     updateFilter(pagination, filters, sorter)
   }
   const printPDFAllProps = {
-    loading,
-    // listItem: listProducts,
-    listItem: listAllProduct,
-    itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
-      transNo: listDeliveryOrder.transNo,
-      employeeName: listDeliveryOrder.employeeName,
-      carNumber: listDeliveryOrder.carNumber,
-      storeName: listDeliveryOrder.storeName,
-      transDate: listDeliveryOrder.transDate,
-      totalColly: listDeliveryOrder.totalColly,
-      storeNameReceiver: listDeliveryOrder.storeNameReceiver,
-      description: listDeliveryOrder.description
-    } : {
-      transNo: '',
-      employeeName: '',
-      carNumber: '',
-      storeName: '',
-      totalColly: '',
-      storeNameReceiver: '',
-      description: ''
-    },
-    storeInfo,
-    user,
-    printNo: 1
+    listTrans: listAllProduct,
+    itemPrint,
+    user
+    // loading,
+    // // listItem: listProducts,
+    // listItem: listAllProduct,
+    // itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
+    //   transNo: listDeliveryOrder.transNo,
+    //   employeeName: listDeliveryOrder.employeeName,
+    //   carNumber: listDeliveryOrder.carNumber,
+    //   storeName: listDeliveryOrder.storeName,
+    //   transDate: listDeliveryOrder.transDate,
+    //   totalColly: listDeliveryOrder.totalColly,
+    //   storeNameReceiver: listDeliveryOrder.storeNameReceiver,
+    //   description: listDeliveryOrder.description
+    // } : {
+    //   transNo: '',
+    //   employeeName: '',
+    //   carNumber: '',
+    //   storeName: '',
+    //   totalColly: '',
+    //   storeNameReceiver: '',
+    //   description: ''
+    // },
+    // storeInfo,
+    // user,
+    // printNo: 1
   }
   const columns = [
     {

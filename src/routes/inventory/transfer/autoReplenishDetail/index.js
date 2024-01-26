@@ -9,7 +9,7 @@ import ListDelivery from './ListDeliveryOrder'
 const Transfer = ({ location, autoReplenishSubmission, deliveryOrder, transferOut, app, dispatch, loading }) => {
   const { listProducts, listTransOut, currentItemPrint, pagination, filter, sort, showPrintModal } = transferOut
   const { listTransferOut, listDeliveryOrder } = autoReplenishSubmission
-  const { listAllProduct } = deliveryOrder
+  const { listAllProduct, currentItem } = deliveryOrder
   const { query } = location
   const { user, storeInfo } = app
 
@@ -21,7 +21,7 @@ const Transfer = ({ location, autoReplenishSubmission, deliveryOrder, transferOu
     listAllProduct,
     pagination,
     listTransOut,
-    itemPrint: currentItemPrint,
+    itemPrint: currentItem && currentItem[0],
     loading: loading.effects['deliveryOrder/printList']
       || loading.effects['transferOut/queryTransferOut']
       || loading.effects['transferOut/queryProducts']

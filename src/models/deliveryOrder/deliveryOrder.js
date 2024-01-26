@@ -3,6 +3,7 @@ import {
   query,
   queryDetail,
   queryTransferOut,
+  getAutoReplenishRawId,
   finish,
   add,
   remove,
@@ -87,6 +88,12 @@ export default {
         const matchAutoReplenishRoute = pathToRegexp('/inventory/transfer/auto-replenish-submission/:id').exec(location.pathname)
         if (matchAutoReplenishRoute) {
           dispatch({
+            type: 'getAutoReplenishRawId',
+            payload: {
+              id: decodeURIComponent(matchAutoReplenishRoute[1])
+            }
+          })
+          dispatch({
             type: 'printList',
             payload: {
               transId: decodeURIComponent(matchAutoReplenishRoute[1])
@@ -98,6 +105,21 @@ export default {
   },
 
   effects: {
+    * getAutoReplenishRawId ({ payload = {} }, { put, call }) {
+      try {
+        const response = yield call(getAutoReplenishRawId, payload)
+        if (response.data) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: response.data
+            }
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     * printBoxNumber ({ payload = {} }, { put }) {
       const { boxNumber, detail } = payload
       const template = [
@@ -152,7 +174,6 @@ export default {
     },
     * printList ({ payload = {} }, { put, call }) {
       try {
-        success()
         const response = yield call(printListDeliveryOrder, payload)
         if (response.success) {
           yield put({
