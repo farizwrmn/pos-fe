@@ -471,9 +471,6 @@ export default modelExtend(pageModel, {
             payload.reset()
           }
         }
-        if (response.data && response.data.deliveryOrder) {
-          window.open(`/delivery-order/${encodeURIComponent(response.data.deliveryOrder.id)}`, '_blank')
-        }
         if (response.data && response.data.transNo) {
           window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
         }
