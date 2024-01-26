@@ -27,16 +27,16 @@ const List = ({ dispatch, ...tableProps }) => {
       }
     },
     {
-      title: 'Request',
-      dataIndex: 'qty',
-      key: 'qty',
+      title: 'Qty',
+      dataIndex: 'orderQty',
+      key: 'orderQty',
       width: '80px',
       className: styles.qtyPos
     },
     {
-      title: 'Order',
-      dataIndex: 'orderQty',
-      key: 'orderQty',
+      title: 'Request',
+      dataIndex: 'qty',
+      key: 'qty',
       width: '80px',
       className: styles.qtyPos
     }
