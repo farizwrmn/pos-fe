@@ -69,7 +69,17 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
           {
             columns: [
               {
-                text: `FROM: ${itemPrint.storeName || ''} TO ${itemPrint.storeNameReceiver || ''}`,
+                text: `DARI: ${itemPrint.storeName || ''} KE ${itemPrint.storeNameReceiver || ''}`,
+                fontSize: 18,
+                alignment: 'center'
+              }
+
+            ]
+          },
+          {
+            columns: [
+              {
+                text: `DESCRIPTION: ${itemPrint.description}`,
                 fontSize: 10,
                 alignment: 'left'
               },
@@ -79,11 +89,6 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
                 alignment: 'right'
               }
             ]
-          },
-          {
-            text: `DESCRIPTION: ${itemPrint.description}`,
-            fontSize: 10,
-            alignment: 'left'
           }
         ]
       }

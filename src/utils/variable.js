@@ -56,12 +56,20 @@ export const ACCOUNT_TYPE_PETTY_CASH_EXPENSE = [
 ]
 
 export const ACCOUNT_TYPE_VOUCHER_PAYMENT = [
+  'OCAS',
+  'AREC',
+  'FASS',
+  'OASS',
   'EXPS',
   'OEXP',
   'BANK'
 ]
 
 export const ACCOUNT_TYPE_VOUCHER = [
+  'OCAS',
+  'AREC',
+  'FASS',
+  'OASS',
   'EXPS',
   'OEXP',
   'REVE',

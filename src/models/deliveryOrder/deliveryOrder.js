@@ -9,6 +9,7 @@ import {
   edit,
   printListDeliveryOrder
 } from 'services/deliveryOrder/deliveryOrder'
+import { queryHeader } from 'services/transfer/autoReplenishSubmission'
 import moment from 'moment'
 import { queryLov } from 'services/transferStockOut'
 import { directPrinting } from 'services/master/paymentOption/paymentCostService'
@@ -256,6 +257,17 @@ export default {
       const response = yield call(finish, payload)
       if (response && response.success) {
         message.success('Success update as Finished')
+        const listSubmission = yield call(queryHeader, {
+          storeIdReceiver: payload.storeIdReceiver,
+          storeId: payload.storeId
+        })
+        if (listSubmission.data && listSubmission.data.length > 0) {
+          const listSubmissionDetail = listSubmission.data.filter(filtered => filtered.isPrinted === 0)
+          if (listSubmissionDetail && listSubmissionDetail.length > 0) {
+            yield put(routerRedux.push(`/inventory/transfer/auto-replenish-submission/${listSubmissionDetail[0].id}?storeId=${payload.storeIdReceiver}`))
+            return
+          }
+        }
         yield put(routerRedux.push(`/delivery-order?storeIdReceiver=${payload.storeIdReceiver}`))
       } else {
         throw response

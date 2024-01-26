@@ -22,7 +22,12 @@ const Transfer = ({ location, autoReplenishSubmission, deliveryOrder, transferOu
     pagination,
     listTransOut,
     itemPrint: currentItemPrint,
-    loading: loading.effects['deliveryOrder/printList'] || loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
+    loading: loading.effects['deliveryOrder/printList']
+      || loading.effects['transferOut/queryTransferOut']
+      || loading.effects['transferOut/queryProducts']
+      || loading.effects['transferOut/queryByTrans']
+      || loading.effects['deliveryOrder/updateAsFinished']
+      || loading.effects['autoReplenishSubmission/edit'],
     location,
     loadingEffect: loading.effects,
     deliveryOrderNo: query.deliveryOrderNo,
