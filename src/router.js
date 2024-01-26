@@ -2081,6 +2081,7 @@ const Routers = function ({ history, app }) {
           path: 'inventory/transfer/auto-replenish-submission/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
               registerModel(app, require('./models/transferOut'))
               registerModel(app, require('./models/transfer/autoReplenishSubmission'))
               cb(null, require('./routes/inventory/transfer/autoReplenishDetail'))
