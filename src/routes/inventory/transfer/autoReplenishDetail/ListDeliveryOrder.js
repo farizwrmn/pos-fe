@@ -122,26 +122,6 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
       }
     },
     {
-      title: 'Print',
-      dataIndex: 'isPrinted',
-      key: 'isPrinted',
-      onCellClick: record => toDetail(record),
-      render: (text) => {
-        if (text) {
-          return (
-            <Tag color="red">
-              Printed
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="green">
-            Not Printed
-          </Tag>
-        )
-      }
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
@@ -177,13 +157,12 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
       title: 'Operation',
       key: 'operation',
       width: 130,
-      fixed: 'right',
       render: (record) => {
         let disabled = false
         if (record.active && record.status) {
           disabled = true
         }
-        return <Button disabled={disabled || tableProps.loading} onClick={() => clickPrint(record)} type="primary" icon="check" loading={tableProps.loading}>Complete</Button>
+        return <Button disabled={disabled || loading} onClick={() => clickPrint(record)} type="primary" icon="check" loading={loading}>Complete</Button>
       }
     }
   ]
@@ -195,7 +174,7 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-green"
-          loading={tableProps['autoReplenishSubmission/edit']}
+          loading={loading}
           style={{ marginLeft: '100px' }}
           onClick={() => {
             if (listDeliveryOrder && listDeliveryOrder.id) {
