@@ -152,6 +152,13 @@ export default modelExtend(pageModel, {
             }
           })
           yield put({
+            type: 'queryDeliveryOrder',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: payload.query.storeId
+            }
+          })
+          yield put({
             type: 'transferOut/updateState',
             payload: {
               showPrintModal: false

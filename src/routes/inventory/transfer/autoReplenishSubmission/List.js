@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 
@@ -29,6 +29,34 @@ const List = (tableProps) => {
       title: 'Sales To',
       dataIndex: 'salesDateTo',
       key: 'salesDateTo'
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => {
+        if (text === 0) {
+          return (
+            <Tag color="red">
+              Canceled
+            </Tag>
+          )
+        }
+        if (text === 1) {
+          return (
+            <Tag color="blue">
+              Picking
+            </Tag>
+          )
+        }
+        if (text === 2) {
+          return (
+            <Tag color="green">
+              Delivery
+            </Tag>
+          )
+        }
+      }
     }
   ]
 

@@ -15,6 +15,7 @@ const Transfer = ({ location, autoReplenishSubmission, deliveryOrder, transferOu
 
   const listDeliveryProps = {
     dataSource: listDeliveryOrder,
+    dispatch,
     listDeliveryOrder,
     listProducts,
     listAllProduct,
@@ -89,12 +90,13 @@ const Transfer = ({ location, autoReplenishSubmission, deliveryOrder, transferOu
 
   const listTransferProps = {
     dataSource: listTransferOut,
+    dispatch,
     listTransferOut,
     listProducts,
     pagination,
     listTransOut,
     itemPrint: currentItemPrint,
-    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/queryByTrans'],
+    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['transferOut/edit'],
     location,
     loadingEffect: loading.effects,
     deliveryOrderNo: query.deliveryOrderNo,
