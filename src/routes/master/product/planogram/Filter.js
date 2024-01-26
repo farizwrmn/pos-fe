@@ -21,9 +21,9 @@ const Filter = ({
   }
 }) => {
   const handleFields = (fields) => {
-    const { createTime } = fields
-    if (createTime.length) {
-      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
+    const { createdAt } = fields
+    if (createdAt.length) {
+      fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
     }
     return fields
   }
@@ -57,11 +57,11 @@ const Filter = ({
   }
 
   let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
+  if (filter.createdAt && filter.createdAt[0]) {
+    initialCreateTime[0] = moment(filter.createdAt[0])
   }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
+  if (filter.createdAt && filter.createdAt[1]) {
+    initialCreateTime[1] = moment(filter.createdAt[1])
   }
 
   const params = location.search.substring(1)
@@ -80,8 +80,8 @@ const Filter = ({
       </Col>
       <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={9} style={{ marginBottom: 8 }}>
         <FilterItem label="Createtime" >
-          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
-            <RangePicker disabledDate={disabledDate} style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
+          {getFieldDecorator('createdAt', { initialValue: initialCreateTime })(
+            <RangePicker disabledDate={disabledDate} style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createdAt')} />
           )}
         </FilterItem>
       </Col>
