@@ -69,7 +69,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
           {
             columns: [
               {
-                text: `FROM: ${itemPrint.storeName || ''} TO ${itemPrint.storeReceiverName || ''}`,
+                text: `DARI: ${itemPrint.storeName || ''} KE ${itemPrint.storeReceiverName || ''}`,
                 fontSize: 18,
                 alignment: 'center'
               }

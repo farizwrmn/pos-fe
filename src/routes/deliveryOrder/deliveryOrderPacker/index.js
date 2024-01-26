@@ -63,6 +63,7 @@ class DeliveryOrderPacker extends Component {
 
     const listDOProps = {
       dispatch,
+      loading,
       currentItem
     }
 
