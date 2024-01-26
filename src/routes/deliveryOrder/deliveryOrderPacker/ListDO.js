@@ -6,7 +6,7 @@ const columnProps = {
   lg: 6
 }
 
-const ListDO = ({ dispatch, currentItem }) => {
+const ListDO = ({ dispatch, loading, currentItem }) => {
   const onCompleteDeliveryOrder = (id, storeId, transNo, storeIdReceiver) => {
     Modal.confirm({
       title: 'Complete delivery order',
@@ -86,7 +86,7 @@ const ListDO = ({ dispatch, currentItem }) => {
             <h3>Complete</h3>
           </Col>
           <Col {...columnProps}>
-            <Button disabled={currentItem && currentItem.status} type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+            <Button disabled={(currentItem && currentItem.status) || loading.effects['deliveryOrder/updateAsFinished']} type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
               Complete
             </Button>
           </Col>

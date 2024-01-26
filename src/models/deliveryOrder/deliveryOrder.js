@@ -282,14 +282,7 @@ export default {
           storeIdReceiver: payload.storeIdReceiver,
           storeId: payload.storeId
         })
-        if (listSubmission.data && listSubmission.data.length > 0) {
-          const listSubmissionDetail = listSubmission.data.filter(filtered => filtered.isPrinted === 0)
-          if (listSubmissionDetail && listSubmissionDetail.length > 0) {
-            yield put(routerRedux.push(`/inventory/transfer/auto-replenish-submission/${listSubmissionDetail[0].id}?storeId=${payload.storeIdReceiver}`))
-            return
-          }
-        }
-        yield put(routerRedux.push(`/delivery-order?storeIdReceiver=${payload.storeIdReceiver}`))
+        window.close()
       } else {
         throw response
       }
