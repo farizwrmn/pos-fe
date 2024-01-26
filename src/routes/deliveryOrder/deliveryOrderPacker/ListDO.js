@@ -86,7 +86,7 @@ const ListDO = ({ dispatch, currentItem }) => {
             <h3>Complete</h3>
           </Col>
           <Col {...columnProps}>
-            <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+            <Button disabled={currentItem && currentItem.status} type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
               Complete
             </Button>
           </Col>

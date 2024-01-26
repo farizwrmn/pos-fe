@@ -28,7 +28,7 @@ const ListOrder = ({ editItem, deleteItem, ...tableProps }) => {
       }
     },
     {
-      title: 'Qty',
+      title: 'Request',
       dataIndex: 'qty',
       key: 'qty',
       width: '80px',
