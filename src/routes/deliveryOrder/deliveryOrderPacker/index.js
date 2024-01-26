@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Button, Col, Collapse, Input, Row, Modal } from 'antd'
 import { GlobalHotKeys } from 'react-hotkeys'
+import { lstorage } from 'utils'
 import List from './List'
 import ListOrder from './ListOrder'
 import ListDO from './ListDO'
@@ -174,6 +175,14 @@ class DeliveryOrderPacker extends Component {
           }
         })
       }
+    }
+
+    if (currentItem && currentItem.storeId !== lstorage.getCurrentUserStore()) {
+      return (
+        <div className="content-inner">
+          Please move to store {currentItem.storeName}
+        </div>
+      )
     }
 
     return (

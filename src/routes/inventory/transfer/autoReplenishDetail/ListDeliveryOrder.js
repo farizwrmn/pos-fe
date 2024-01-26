@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Link, routerRedux } from 'dva/router'
+import { Link } from 'dva/router'
 import { Table, Button, Modal, Tag, Icon, message } from 'antd'
 import PrintPDF from './PrintPDF'
 import PrintPDFAll from './PrintPDFAll'
@@ -11,7 +11,7 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
   const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, onClosePrint } = tableProps
   const toDetail = (record) => {
     if (record.active && !record.status) {
-      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
+      window.open(`/delivery-order-detail/${record.id}`, '_blank')
     } else {
       message.error('Already complete')
     }
@@ -95,7 +95,7 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
       key: 'transNo',
       render: (text, record) => {
         if (record.active && !record.status) {
-          return (<Link to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
+          return (<Link target="_blank" to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
         }
         return text
       }
