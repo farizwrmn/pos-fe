@@ -20,11 +20,11 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
         let row = []
-        row.push({ text: count, alignment: 'center', fontSize: 11 })
-        row.push({ text: (data.productCode || ''), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.productName || ''), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.barCode01 || ''), alignment: 'left', fontSize: 11 })
-        row.push({ text: (data.qty || ''), alignment: 'right', fontSize: 11 })
+        row.push({ text: count, alignment: 'center', fontSize: 9 })
+        row.push({ text: (`${data.transNo}\n${data.description}` || ''), alignment: 'left', fontSize: 9 })
+        row.push({ text: (`${data.productCode}\n${data.productName}` || ''), alignment: 'left', fontSize: 9 })
+        row.push({ text: (data.barCode01 || ''), alignment: 'left', fontSize: 9 })
+        row.push({ text: (data.qty || ''), alignment: 'center', fontSize: 9 })
         body.push(row)
       }
       count += 1
@@ -58,7 +58,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
       {
         stack: [
           {
-            text: itemPrint.transNo,
+            text: 'PICKING LIST',
             style: 'header',
             fontSize: 18,
             alignment: 'center'
@@ -69,24 +69,18 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
           {
             columns: [
               {
-                text: `DARI: ${itemPrint.storeName || ''} KE ${itemPrint.storeNameReceiver || ''}`,
+                text: `DARI: ${itemPrint.storeName || ''} KE ${itemPrint.storeReceiverName || ''}`,
                 fontSize: 18,
                 alignment: 'center'
               }
-
             ]
           },
           {
             columns: [
               {
-                text: `DESCRIPTION: ${itemPrint.description}`,
+                text: `DATE: ${moment(itemPrint.createdAt).format('DD-MM-YYYY')}`,
                 fontSize: 10,
                 alignment: 'left'
-              },
-              {
-                text: `DATE: ${itemPrint.transDate}`,
-                fontSize: 10,
-                alignment: 'right'
               }
             ]
           }
@@ -129,11 +123,11 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
   }
   const tableHeader = [
     [
-      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'SKU', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'BARCODE', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' }
+      { fontSize: 10, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 10, text: 'DESC', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 10, text: 'PRODUCT', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 10, text: 'BARCODE', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 10, text: 'QTY', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []
@@ -155,7 +149,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
   // Declare additional Props
   const pdfProps = {
     className: 'button-width02 button-extra-large bgcolor-blue',
-    width: ['6%', '18%', '42%', '18%', '18%'],
+    width: ['4%', '25%', '42%', '17%', '12%'],
     pageMargins: [50, 130, 50, 60],
     pageSize: 'A4',
     pageOrientation: 'portrait',

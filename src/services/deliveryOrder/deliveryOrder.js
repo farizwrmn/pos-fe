@@ -2,10 +2,30 @@ import { request, config, crypt } from '../../utils'
 
 const { deliveryOrder } = config.api
 
+export async function printListDeliveryOrder (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${deliveryOrder}-print-list`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: deliveryOrder,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function getAutoReplenishRawId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/auto-replenish-raw/${params.id}`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import List from './List'
 import Filter from './Filter'
@@ -12,7 +11,7 @@ const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
     dataSource: list.map((item, index) => ({ no: index + 1, ...item })),
     loading: loading.effects['deliveryOrder/query'],
     toDetail: (record) => {
-      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
+      window.open(`/delivery-order-detail/${record.id}`, '_blank')
     }
   }
 

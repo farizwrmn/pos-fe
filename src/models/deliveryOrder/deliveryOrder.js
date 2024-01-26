@@ -3,11 +3,14 @@ import {
   query,
   queryDetail,
   queryTransferOut,
+  getAutoReplenishRawId,
   finish,
   add,
   remove,
-  edit
+  edit,
+  printListDeliveryOrder
 } from 'services/deliveryOrder/deliveryOrder'
+import { queryHeader } from 'services/transfer/autoReplenishSubmission'
 import moment from 'moment'
 import { queryLov } from 'services/transferStockOut'
 import { directPrinting } from 'services/master/paymentOption/paymentCostService'
@@ -24,6 +27,7 @@ export default {
 
   state: {
     list: [],
+    listAllProduct: [],
     modalBoxNumberVisible: false,
     latestBoxNumber: 1,
     listTransferOut: [],
@@ -80,11 +84,42 @@ export default {
             }
           })
         }
+
+        const matchAutoReplenishRoute = pathToRegexp('/inventory/transfer/auto-replenish-submission/:id').exec(location.pathname)
+        if (matchAutoReplenishRoute) {
+          dispatch({
+            type: 'getAutoReplenishRawId',
+            payload: {
+              id: decodeURIComponent(matchAutoReplenishRoute[1])
+            }
+          })
+          dispatch({
+            type: 'printList',
+            payload: {
+              transId: decodeURIComponent(matchAutoReplenishRoute[1])
+            }
+          })
+        }
       })
     }
   },
 
   effects: {
+    * getAutoReplenishRawId ({ payload = {} }, { put, call }) {
+      try {
+        const response = yield call(getAutoReplenishRawId, payload)
+        if (response.data) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentItem: response.data
+            }
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     * printBoxNumber ({ payload = {} }, { put }) {
       const { boxNumber, detail } = payload
       const template = [
@@ -137,7 +172,26 @@ export default {
       })
       // yield put(routerRedux.push)
     },
-
+    * printList ({ payload = {} }, { put, call }) {
+      try {
+        const response = yield call(printListDeliveryOrder, payload)
+        if (response.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listAllProduct: response.data
+            }
+          })
+          if (response.data && response.data.length === 0) {
+            message.warning('data empty')
+          }
+        } else {
+          throw response
+        }
+      } catch (error) {
+        throw error
+      }
+    },
     * showBoxNumberModal ({ payload }, { call, put }) {
       const { detail } = payload
       let latestBoxNumber = 1
@@ -224,7 +278,11 @@ export default {
       const response = yield call(finish, payload)
       if (response && response.success) {
         message.success('Success update as Finished')
-        yield put(routerRedux.push(`/delivery-order?storeIdReceiver=${payload.storeIdReceiver}`))
+        const listSubmission = yield call(queryHeader, {
+          storeIdReceiver: payload.storeIdReceiver,
+          storeId: payload.storeId
+        })
+        window.close()
       } else {
         throw response
       }

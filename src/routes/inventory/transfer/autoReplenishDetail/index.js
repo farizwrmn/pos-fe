@@ -6,9 +6,10 @@ import ListTransfer from './ListTransferOut'
 import ListDelivery from './ListDeliveryOrder'
 
 
-const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatch, loading }) => {
+const Transfer = ({ location, autoReplenishSubmission, deliveryOrder, transferOut, app, dispatch, loading }) => {
   const { listProducts, listTransOut, currentItemPrint, pagination, filter, sort, showPrintModal } = transferOut
   const { listTransferOut, listDeliveryOrder } = autoReplenishSubmission
+  const { listAllProduct, currentItem } = deliveryOrder
   const { query } = location
   const { user, storeInfo } = app
 
@@ -17,10 +18,16 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
     dispatch,
     listDeliveryOrder,
     listProducts,
+    listAllProduct,
     pagination,
     listTransOut,
-    itemPrint: currentItemPrint,
-    loading: loading.effects['transferOut/queryTransferOut'] || loading.effects['transferOut/queryProducts'] || loading.effects['autoReplenishSubmission/edit'],
+    itemPrint: currentItem && currentItem[0],
+    loading: loading.effects['deliveryOrder/printList']
+      || loading.effects['transferOut/queryTransferOut']
+      || loading.effects['transferOut/queryProducts']
+      || loading.effects['transferOut/queryByTrans']
+      || loading.effects['deliveryOrder/updateAsFinished']
+      || loading.effects['autoReplenishSubmission/edit'],
     location,
     loadingEffect: loading.effects,
     deliveryOrderNo: query.deliveryOrderNo,
@@ -170,6 +177,7 @@ const Transfer = ({ location, autoReplenishSubmission, transferOut, app, dispatc
 }
 
 Transfer.propTypes = {
+  deliveryOrder: PropTypes.object,
   transferOut: PropTypes.object,
   app: PropTypes.object,
   location: PropTypes.object,
@@ -178,4 +186,4 @@ Transfer.propTypes = {
 }
 
 
-export default connect(({ transferOut, autoReplenishSubmission, app, loading }) => ({ transferOut, autoReplenishSubmission, app, loading }))(Transfer)
+export default connect(({ transferOut, deliveryOrder, autoReplenishSubmission, app, loading }) => ({ transferOut, deliveryOrder, autoReplenishSubmission, app, loading }))(Transfer)

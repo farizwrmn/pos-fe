@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Link, routerRedux } from 'dva/router'
+import { Link } from 'dva/router'
 import { Table, Button, Modal, Tag, Icon, message } from 'antd'
 import PrintPDF from './PrintPDF'
+import PrintPDFAll from './PrintPDFAll'
 import PrintPDFv2 from './PrintPDFv2'
 
-const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
-  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, onClosePrint } = tableProps
+const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
+  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, itemPrint, onClosePrint } = tableProps
   const toDetail = (record) => {
     if (record.active && !record.status) {
-      dispatch(routerRedux.push(`/delivery-order-detail/${record.id}`))
+      window.open(`/delivery-order-detail/${record.id}`, '_blank')
     } else {
       message.error('Already complete')
     }
@@ -61,6 +62,35 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
   const handleChange = (pagination, filters, sorter) => {
     updateFilter(pagination, filters, sorter)
   }
+  const printPDFAllProps = {
+    listTrans: listAllProduct,
+    itemPrint,
+    user
+    // loading,
+    // // listItem: listProducts,
+    // listItem: listAllProduct,
+    // itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
+    //   transNo: listDeliveryOrder.transNo,
+    //   employeeName: listDeliveryOrder.employeeName,
+    //   carNumber: listDeliveryOrder.carNumber,
+    //   storeName: listDeliveryOrder.storeName,
+    //   transDate: listDeliveryOrder.transDate,
+    //   totalColly: listDeliveryOrder.totalColly,
+    //   storeNameReceiver: listDeliveryOrder.storeNameReceiver,
+    //   description: listDeliveryOrder.description
+    // } : {
+    //   transNo: '',
+    //   employeeName: '',
+    //   carNumber: '',
+    //   storeName: '',
+    //   totalColly: '',
+    //   storeNameReceiver: '',
+    //   description: ''
+    // },
+    // storeInfo,
+    // user,
+    // printNo: 1
+  }
   const columns = [
     {
       title: 'Transaction No',
@@ -68,7 +98,7 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
       key: 'transNo',
       render: (text, record) => {
         if (record.active && !record.status) {
-          return (<Link to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
+          return (<Link target="_blank" to={`/delivery-order-detail/${record.id}`}>{text}</Link>)
         }
         return text
       }
@@ -92,26 +122,6 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
       onCellClick: record => toDetail(record),
       render: (text) => {
         return moment(text).format('DD MMM YYYY')
-      }
-    },
-    {
-      title: 'Print',
-      dataIndex: 'isPrinted',
-      key: 'isPrinted',
-      onCellClick: record => toDetail(record),
-      render: (text) => {
-        if (text) {
-          return (
-            <Tag color="red">
-              Printed
-            </Tag>
-          )
-        }
-        return (
-          <Tag color="green">
-            Not Printed
-          </Tag>
-        )
       }
     },
     {
@@ -150,13 +160,12 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
       title: 'Operation',
       key: 'operation',
       width: 130,
-      fixed: 'right',
       render: (record) => {
         let disabled = false
         if (record.active && record.status) {
           disabled = true
         }
-        return <Button disabled={disabled || tableProps.loading} onClick={() => clickPrint(record)} type="primary" icon="check" loading={tableProps.loading}>Complete</Button>
+        return <Button disabled={disabled || loading} onClick={() => clickPrint(record)} type="primary" icon="check" loading={loading}>Complete</Button>
       }
     }
   ]
@@ -168,7 +177,7 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
         <Button type="dashed"
           size="large"
           className="button-width02 button-extra-large bgcolor-green"
-          loading={tableProps['autoReplenishSubmission/edit']}
+          loading={loading}
           style={{ marginLeft: '100px' }}
           onClick={() => {
             if (listDeliveryOrder && listDeliveryOrder.id) {
@@ -180,6 +189,12 @@ const ListDeliveryOrder = ({ dispatch, ...tableProps }) => {
         </Button>
       </Modal>
       <h3>Delivery Order</h3>
+
+      <div style={{ margin: '0.5em' }}>
+        {/* <Button type="primary" {...printListProps}>Print List</Button> */}
+        <PrintPDFAll {...printPDFAllProps} />
+      </div>
+
       <Table {...tableProps}
         bordered
         columns={columns}

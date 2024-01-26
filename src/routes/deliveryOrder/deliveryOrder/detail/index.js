@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Button, Row, Col, Modal, Card } from 'antd'
 import { routerRedux } from 'dva/router'
+import { lstorage } from 'utils'
 // import k3martLogo from '../../../../../public/k3mart-text-logo.png'
 import List from './List'
 import ListTransferOut from './ListTransferOut'
@@ -264,6 +265,14 @@ const DeliveryOrderDetail = ({ loading, dispatch, app, deliveryOrder }) => {
     }
   }
 
+  if (currentItem && currentItem.storeId !== lstorage.getCurrentUserStore()) {
+    return (
+      <div className="content-inner">
+        Please move to store {currentItem.storeName}
+      </div>
+    )
+  }
+
   return (
     <Card>
       {currentItem && currentItem.id && <PrintPDF name="Print PDF" {...printProps} />}
@@ -337,7 +346,7 @@ const DeliveryOrderDetail = ({ loading, dispatch, app, deliveryOrder }) => {
               <h3>Complete</h3>
             </Col>
             <Col {...columnProps}>
-              <Button type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
+              <Button disabled={(currentItem && currentItem.status) || loading.effects['deliveryOrder/updateAsFinished']} type="primary" icon="check" onClick={() => onCompleteDeliveryOrder(currentItem.id, currentItem.storeId, currentItem.transNo, currentItem.storeIdReceiver)}>
                 Complete
               </Button>
             </Col>
