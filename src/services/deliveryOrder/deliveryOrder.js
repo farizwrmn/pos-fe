@@ -22,6 +22,16 @@ export async function query (params) {
   })
 }
 
+export async function getAutoReplenishRawId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/auto-replenish-raw/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
