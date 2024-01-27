@@ -37,7 +37,7 @@ const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
   }
 
   return (
-    <div>
+    <div className="content-inner">
       <Filter {...filterProps} />
       <List {...ListProps} />
     </div>

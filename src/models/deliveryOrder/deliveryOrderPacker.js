@@ -279,7 +279,7 @@ export default modelExtend(pageModel, {
             productCode: item.productCode,
             productName: item.productName,
             transType: 'MUOUT',
-            qty: item.qty,
+            qty: item.orderQty,
             description: null
           })
         })
