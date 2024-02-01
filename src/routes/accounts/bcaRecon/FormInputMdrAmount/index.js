@@ -31,6 +31,7 @@ const FormInputMdrAmount = ({
   currentItem,
   supplierBank,
   listBank,
+  listSortPayment,
   listReconNotMatch,
   form: {
     getFieldDecorator,
@@ -41,8 +42,12 @@ const FormInputMdrAmount = ({
   onSubmit,
   ...tableProps
 }) => {
+  const listRecon = listReconNotMatch
+    .filter(filtered => filtered.grossAmount === currentItem.amount)
   const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ?
-    listReconNotMatch.map(recon => <Option value={recon.id} key={recon.id}>{`${recon.grossAmount ? recon.grossAmount.toLocaleString() : 'Undefined Amount'} (Date: ${recon.transactionDate} ${formatTimeBCA(recon.transactionTime)})`}</Option>) : []
+    listReconNotMatch
+      .map(recon => <Option value={recon.id} key={recon.id}>{`${recon.grossAmount ? recon.grossAmount.toLocaleString() : 'Undefined Amount'} (Date: ${recon.transactionDate} ${formatTimeBCA(recon.transactionTime)})`}</Option>)
+    : []
 
   const handleOk = () => {
     validateFields((errors) => {
@@ -60,11 +65,16 @@ const FormInputMdrAmount = ({
         data.mdrAmount = filteredMdrAmount[0].mdrAmount
         grossAmount = filteredMdrAmount[0].grossAmount
       }
-      console.log('currentItem', currentItem, listReconNotMatch)
+      data.transNo = currentItem.transNo
+      data.typeCode = currentItem.typeCode
+      const filteredSortPayment = listSortPayment.filter(filtered => !filtered.match)
       const amountDiff = currentItem.amount - grossAmount
       if (amountDiff !== 0) {
-        message.error('Different between amount')
-        return
+        const THRESHOLD_CHECKING_AMOUNT = 3
+        if (filteredSortPayment && filteredSortPayment.length > THRESHOLD_CHECKING_AMOUNT) {
+          message.error('Different between amount')
+          return
+        }
       }
       onSubmit(data, resetFields)
     })
@@ -94,6 +104,7 @@ const FormInputMdrAmount = ({
         </FormItem>
         <FormItem label="Data dari Bank" hasFeedback {...formMandatoryField}>
           {getFieldDecorator('csvId', {
+            initialValue: listRecon && listRecon[0] ? listRecon[0].id : undefined,
             rules: [{ required: true }]
           })(<Select
             showSearch
@@ -103,6 +114,7 @@ const FormInputMdrAmount = ({
           >{childrenLov}
           </Select>)}
         </FormItem>
+        {childrenLov && childrenLov.length === 0 ? (<div>No Amount with the same</div>) : null}
         <FormItem wrapperCol={{ offset: 8, span: 16 }}>
           <Button
             type="primary"
