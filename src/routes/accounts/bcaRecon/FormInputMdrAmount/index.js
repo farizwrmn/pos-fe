@@ -43,7 +43,7 @@ const FormInputMdrAmount = ({
   ...tableProps
 }) => {
   const listRecon = listReconNotMatch
-    .filter(filtered => filtered.grossAmount === currentItem.amount)
+    .filter(filtered => !filtered.match && filtered.grossAmount === currentItem.amount)
   const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ?
     listReconNotMatch
       .map(recon => <Option value={recon.id} key={recon.id}>{`${recon.grossAmount ? recon.grossAmount.toLocaleString() : 'Undefined Amount'} (Date: ${recon.transactionDate} ${formatTimeBCA(recon.transactionTime)})`}</Option>)
