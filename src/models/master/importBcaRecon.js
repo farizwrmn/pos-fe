@@ -186,9 +186,26 @@ export default modelExtend(pageModel, {
               editState: true
             })
           } else {
+            sortDataPayment.push({
+              id: tablePayment.id,
+              amount: tablePayment.amount,
+              matchMdr: null,
+              transDate: tablePayment.transDate,
+              batchNumber: tablePayment.batchNumber,
+              typeCode: tablePayment.typeCode,
+              transNo: tablePayment.transNo,
+              match: false,
+              editState: false
+            })
+          }
+        }
+        for (let key in sortDataPayment) {
+          const tablePayment = sortDataPayment[key]
+          if (!tablePayment.match) {
             const filteredPaymentImportBcaData = paymentImportBcaData.data
               .filter(filtered => !filtered.match
                 && filtered.grossAmount === tablePayment.amount)
+
             if (filteredPaymentImportBcaData && filteredPaymentImportBcaData.length === 1) {
               paymentImportBcaData.data = paymentImportBcaData.data.map((item) => {
                 if (item.id === filteredPaymentImportBcaData[0].id) {
@@ -197,30 +214,13 @@ export default modelExtend(pageModel, {
                 return item
               })
 
-              sortDataPayment.push({
-                id: tablePayment.id,
-                amount: tablePayment.amount,
+              sortDataPayment[key] = {
+                ...sortDataPayment[key],
                 csvId: filteredPaymentImportBcaData[0].id,
                 matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
-                transDate: tablePayment.transDate,
-                batchNumber: tablePayment.batchNumber,
-                typeCode: tablePayment.typeCode,
-                transNo: tablePayment.transNo,
                 match: true,
                 editState: true
-              })
-            } else {
-              sortDataPayment.push({
-                id: tablePayment.id,
-                amount: tablePayment.amount,
-                matchMdr: null,
-                transDate: tablePayment.transDate,
-                batchNumber: tablePayment.batchNumber,
-                typeCode: tablePayment.typeCode,
-                transNo: tablePayment.transNo,
-                match: false,
-                editState: false
-              })
+              }
             }
           }
         }
