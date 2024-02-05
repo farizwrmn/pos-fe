@@ -3,10 +3,16 @@ import { queryDetail, queryTransferOutDetail } from 'services/deliveryOrder/deli
 import deliveryOrderStorage from 'utils/storage/deliveryOrder'
 import deliveryOrderCartStorage from 'utils/storage/deliveryOrderCart'
 import { queryLov, add as submitTransferOut } from 'services/transferStockOut'
-import { lstorage } from 'utils'
+import { lstorage, alertModal } from 'utils'
 import { message, Modal } from 'antd'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
+
+const { stockMinusAlert } = alertModal
+
+const error = (err) => {
+  message.error(typeof err.message === 'string' ? err.message : err.detail)
+}
 
 export default modelExtend(pageModel, {
   namespace: 'deliveryOrderPacker',
@@ -299,7 +305,11 @@ export default modelExtend(pageModel, {
           window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
         }
       } else {
-        throw response
+        // throw response
+        error(response)
+        if (response && typeof response.message === 'object') {
+          stockMinusAlert(response.message)
+        }
       }
     },
 
