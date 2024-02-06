@@ -530,7 +530,7 @@ class FormCounter extends Component {
         <FooterToolbar>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button size="large" type="danger" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button size="large" disabled={item.status === '0'} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>
+            <Button size="large" disabled={item.status === '0' || loading.effects['bundling/add'] || loading.effects['bundling/edit']} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </FooterToolbar>
         <Row>
