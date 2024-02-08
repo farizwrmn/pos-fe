@@ -19,6 +19,13 @@ const success = () => {
   message.success('Transfer process has been saved, waiting for confirmation.')
 }
 
+function getSetting (setting) {
+  let json = setting.Inventory
+  let jsondata = JSON.stringify(eval(`(${json})`))
+  const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+  return outOfStock
+}
+
 const error = (err) => {
   message.error(typeof err.message === 'string' ? err.message : err.detail)
 }
@@ -254,15 +261,17 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * updateQty ({ payload = {} }, { call, put }) {
+    * updateQty ({ payload = {} }, { call, put, select }) {
       const { listItem, item, form, events } = payload
+      const setting = yield select(({ app }) => app.setting)
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const listProductData = yield call(queryPOSproduct, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: item.productId })
       let totalListProduct = 0
       if (listProductData.success) {
         totalListProduct = listProductData.data.filter(filtered => filtered.productId === item.productId)
           .reduce((prev, next) => prev + next.count, 0)
-        if (item.qty > totalListProduct) {
+        const outOfStock = getSetting(setting)
+        if (item.qty > totalListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
             content: `Your input: ${item.qty}, Available: ${totalListProduct}`

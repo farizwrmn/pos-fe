@@ -273,6 +273,7 @@ export default modelExtend(pageModel, {
 
     * adjustEdit ({ payload }, { call, put, select }) {
       const disabledItemIn = yield select(({ adjust }) => adjust.disabledItemIn)
+      const setting = yield select(({ app }) => app.setting)
       const dataBrowse = yield select(({ adjust }) => adjust.dataBrowse)
       const activeKey = yield select(({ adjust }) => adjust.activeKey)
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -318,7 +319,14 @@ export default modelExtend(pageModel, {
         const totalQty = Quantity.reduce((cnt, o) => cnt + parseFloat(o.qty), 0)
         const tempListProduct = listProduct.filter(el => el.productId === data.productId)
         const totalListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-        if (totalQty > totalListProduct) {
+        function getSetting (setting) {
+          let json = setting.Inventory
+          let jsondata = JSON.stringify(eval(`(${json})`))
+          const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+          return outOfStock
+        }
+        const outOfStock = getSetting(setting)
+        if (totalQty > totalListProduct && outOfStock === 0) {
           Modal.warning({
             title: 'No available stock',
             content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`
