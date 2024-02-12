@@ -1637,10 +1637,10 @@ export default {
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
-          Modal.warning({
-            title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
-          })
+          // Modal.warning({
+          //   title: 'Waning Out of stock option',
+          //   content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // })
           yield put({
             type: 'paymentEdit',
             payload: data
@@ -1739,10 +1739,10 @@ export default {
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
-          Modal.warning({
-            title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
-          })
+          // Modal.warning({
+          //   title: 'Waning Out of stock option',
+          //   content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // })
           insertCashierTrans(data)
           yield put({
             type: 'pos/setUtil',
