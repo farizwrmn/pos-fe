@@ -67,14 +67,14 @@ const FormInputMdrAmount = ({
       }
       data.transNo = currentItem.transNo
       data.typeCode = currentItem.typeCode
-      const filteredSortPayment = listSortPayment.filter(filtered => !filtered.match)
-      const amountDiff = currentItem.amount - grossAmount
-      if (amountDiff !== 0) {
-        const THRESHOLD_CHECKING_AMOUNT = 3
-        if (filteredSortPayment && filteredSortPayment.length > THRESHOLD_CHECKING_AMOUNT) {
-          message.error('Different between amount')
-          return
-        }
+      let amountDiff = currentItem.amount - grossAmount
+      if (amountDiff < 0) {
+        amountDiff *= -1
+      }
+      const THRESHOLD_CHECKING_DIFF = 2000
+      if (amountDiff > THRESHOLD_CHECKING_DIFF) {
+        message.error('Different between amount')
+        return
       }
       onSubmit(data, resetFields)
     })
