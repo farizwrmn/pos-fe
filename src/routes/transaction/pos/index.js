@@ -595,6 +595,7 @@ const Pos = ({
 
   const modaladdMemberProps = {
     item: currentItem,
+    loading,
     modalAddMember,
     cancelMember () {
       dispatch({
