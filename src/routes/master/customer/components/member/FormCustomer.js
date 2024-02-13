@@ -57,7 +57,7 @@ class FormCustomer extends Component {
         const data = {
           ...item,
           ...getFieldsValue(),
-          memberName: 'Temporary User',
+          memberName: 'Member K3Mart',
           memberGroupId: 2,
           memberTypeId: 2
         }
