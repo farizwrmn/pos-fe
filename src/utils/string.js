@@ -10,6 +10,22 @@ import {
 } from 'utils/variable'
 import lstorage from './lstorage'
 
+const showOnlyLastWord = (words, digitToShow) => {
+  let result = ''
+  console.log('words', words, words.length)
+  for (let key in words) {
+    let word = words[key]
+    const lastDigit = words.length - digitToShow
+    const isLastDigit = key >= lastDigit
+    if (isLastDigit) {
+      result += word
+    } else {
+      result += 'X'
+    }
+  }
+  return result
+}
+
 const currencyFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
     return `Rp ${(currency || '-').toLocaleString()}`
@@ -103,6 +119,7 @@ function withoutFormat (file) {
 }
 
 export {
+  showOnlyLastWord,
   currencyFormatter,
   numberFormatter,
   discountFormatter,

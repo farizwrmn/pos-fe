@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, Radio, Row, Col, Modal } from 'antd'
+import { showOnlyLastWord } from 'utils/string'
 
 const FormItem = Form.Item
 
@@ -81,11 +82,17 @@ class FormCustomer extends Component {
               if (data && data.memberCode) {
                 data.mobileNumber = data.memberCode
                 data.phoneNumber = data.memberCode
+                if (data.memberCode.length > 6) {
+                  data.memberName = showOnlyLastWord(data.memberCode, 4)
+                }
               }
               onSubmit(data.memberCode, data, modalType)
             } else {
               data.mobileNumber = data.memberCode
               data.phoneNumber = data.memberCode
+              if (data.memberCode.length > 6) {
+                data.memberName = showOnlyLastWord(data.memberCode, 4)
+              }
               confirmSendMember(data.memberCode, data, modalType)
             }
             resetFields()
