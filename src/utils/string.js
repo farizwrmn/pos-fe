@@ -12,7 +12,6 @@ import lstorage from './lstorage'
 
 const showOnlyLastWord = (words, digitToShow) => {
   let result = ''
-  console.log('words', words, words.length)
   for (let key in words) {
     let word = words[key]
     const lastDigit = words.length - digitToShow
