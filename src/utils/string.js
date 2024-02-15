@@ -12,8 +12,9 @@ import lstorage from './lstorage'
 
 const showOnlyLastWord = (words, digitToShow) => {
   let result = ''
-  for (let key in words) {
-    let word = words[key]
+  const splitWord = words.split('')
+  for (let key in splitWord) {
+    let word = splitWord[key]
     const lastDigit = words.length - digitToShow
     const isLastDigit = key >= lastDigit
     if (isLastDigit) {
