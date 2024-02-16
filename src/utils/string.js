@@ -12,6 +12,8 @@ import lstorage from './lstorage'
 
 const showOnlyLastWord = (words, digitToShow) => {
   let result = ''
+  if (!words) return words
+
   const splitWord = words.split('')
   for (let key in splitWord) {
     let word = splitWord[key]
