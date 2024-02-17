@@ -34,7 +34,7 @@ const List = (tableProps) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (text, record) => {
+      render: (text) => {
         if (text === 0) {
           return (
             <Tag color="red">
