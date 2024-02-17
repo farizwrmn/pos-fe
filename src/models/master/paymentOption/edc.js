@@ -71,23 +71,6 @@ export default modelExtend(pageModel, {
       const data = yield call(query, other)
       if (data.success) {
         let listPayment = data.data
-        if (storeId) {
-          listPayment = listPayment.filter((filtered) => {
-            if (filtered.storeHide) {
-              const hideFrom = filtered.storeHide.split(',')
-              let exists = true
-              for (let key in hideFrom) {
-                const item = hideFrom[key]
-                if (parseFloat(item) === parseFloat(storeId)) {
-                  exists = false
-                  break
-                }
-              }
-              return exists
-            }
-            return true
-          })
-        }
         const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
         const currentBundlePayment = yield select(({ pos }) => (pos ? pos.currentBundlePayment : {}))
         if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode) {
@@ -177,23 +160,6 @@ export default modelExtend(pageModel, {
       const cachedEdc = lstorage.getEdc()
       if (cachedEdc && cachedEdc[0] && cachedEdc[0].storeId === storeId) {
         let paymentLov = cachedEdc
-        if (storeId) {
-          paymentLov = paymentLov.filter((filtered) => {
-            if (filtered.storeHide) {
-              const hideFrom = filtered.storeHide.split(',')
-              let exists = true
-              for (let key in hideFrom) {
-                const item = hideFrom[key]
-                if (parseFloat(item) === parseFloat(storeId)) {
-                  exists = false
-                  break
-                }
-              }
-              return exists
-            }
-            return true
-          })
-        }
         yield put({
           type: 'querySuccessLov',
           payload: {
@@ -204,23 +170,6 @@ export default modelExtend(pageModel, {
         const data = yield call(queryLov, { ...payload, storeId })
         if (data.success) {
           let paymentLov = data.data
-          if (storeId) {
-            paymentLov = paymentLov.filter((filtered) => {
-              if (filtered.storeHide) {
-                const hideFrom = filtered.storeHide.split(',')
-                let exists = true
-                for (let key in hideFrom) {
-                  const item = hideFrom[key]
-                  if (parseFloat(item) === parseFloat(storeId)) {
-                    exists = false
-                    break
-                  }
-                }
-                return exists
-              }
-              return true
-            })
-          }
           lstorage.setEdc(paymentLov)
           yield put({
             type: 'querySuccessLov',

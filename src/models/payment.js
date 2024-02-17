@@ -539,7 +539,6 @@ export default {
       const listAmount = yield select(({ payment }) => payment.listAmount)
       const listVoucher = yield select(({ pos }) => pos.listVoucher)
       const curTotal = yield select(({ pos }) => pos.curTotal)
-      const storeId = lstorage.getCurrentUserStore()
       const data = yield call(queryEdc, {
         paymentOption: 'V'
       })
@@ -547,23 +546,6 @@ export default {
       let listCost = []
       if (data.success) {
         listPayment = data.data
-        if (storeId) {
-          listPayment = listPayment.filter((filtered) => {
-            if (filtered.storeHide) {
-              const hideFrom = filtered.storeHide.split(',')
-              let exists = true
-              for (let key in hideFrom) {
-                const item = hideFrom[key]
-                if (parseFloat(item) === parseFloat(storeId)) {
-                  exists = false
-                  break
-                }
-              }
-              return exists
-            }
-            return true
-          })
-        }
         const responseCost = yield call(queryCost, {
           machineId: listPayment[0].id,
           relationship: 1
