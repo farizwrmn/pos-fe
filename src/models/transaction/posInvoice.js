@@ -197,7 +197,7 @@ export default modelExtend(pageModel, {
           && consignment.pos.length > 0) {
           dataConsignment = consignment.pos.map(item => ({
             code: item.productCode,
-            name: '',
+            name: item.productName,
             qty: item.qty,
             price: item.sellingPrice,
             discount: item.discount,
