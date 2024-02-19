@@ -315,8 +315,8 @@ const FormCustomer = ({
                 ]
               })(
                 <Radio.Group value={item.gender}>
-                  <Radio value="M">Male</Radio>
-                  <Radio value="F">Female</Radio>
+                  <Radio value="1">Male</Radio>
+                  <Radio value="0">Female</Radio>
                 </Radio.Group>
               )}
             </FormItem>
