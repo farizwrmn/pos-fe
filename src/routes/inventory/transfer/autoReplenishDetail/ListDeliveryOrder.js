@@ -116,12 +116,17 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
       onCellClick: record => toDetail(record)
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
       onCellClick: record => toDetail(record),
       render: (text) => {
-        return moment(text).format('DD MMM YYYY')
+        return moment(text).format('DD MMM YYYY, HH:mm:ss')
       }
     },
     {
@@ -199,7 +204,6 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1200 }}
         pagination={false}
         onChange={handleChange}
       />
