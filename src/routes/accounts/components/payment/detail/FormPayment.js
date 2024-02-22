@@ -44,6 +44,7 @@ const FormPayment = ({
   }
 }) => {
   const listProps = {
+    loading: loading && loading.effects && loading.effects['paymentDetail/queryPosDetail'],
     dataSource: listAmount,
     cashierInformation,
     cancelPayment,

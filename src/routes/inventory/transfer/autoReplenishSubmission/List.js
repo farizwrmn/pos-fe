@@ -1,11 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag } from 'antd'
+import { Table, Tag, Modal } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 
 
 const List = (tableProps) => {
+  const updateStatus = (id, status) => {
+    if (status === 1) {
+      Modal.confirm({
+        title: 'Update Status to Packing',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 2)
+        }
+      })
+    }
+    if (status === 2) {
+      Modal.confirm({
+        title: 'Update Status to Delivery',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 3)
+        }
+      })
+    }
+    if (status === 3) {
+      Modal.confirm({
+        title: 'Update Status to Picking',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 1)
+        }
+      })
+    }
+  }
   const columns = [
     {
       title: 'Store Name',
@@ -34,6 +63,7 @@ const List = (tableProps) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      onCellClick: record => updateStatus(record.id, record.status),
       render: (text) => {
         if (text === 0) {
           return (
@@ -44,12 +74,19 @@ const List = (tableProps) => {
         }
         if (text === 1) {
           return (
-            <Tag color="blue">
+            <Tag color="yellow">
               Picking
             </Tag>
           )
         }
         if (text === 2) {
+          return (
+            <Tag color="blue">
+              Packing
+            </Tag>
+          )
+        }
+        if (text === 3) {
           return (
             <Tag color="green">
               Delivery

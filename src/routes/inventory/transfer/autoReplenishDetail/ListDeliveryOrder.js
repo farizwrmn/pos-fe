@@ -2,13 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { Link } from 'dva/router'
-import { Table, Button, Modal, Tag, Icon, message } from 'antd'
-import PrintPDF from './PrintPDF'
+import { Table, Button, Modal, Tag, message } from 'antd'
 import PrintPDFAll from './PrintPDFAll'
-import PrintPDFv2 from './PrintPDFv2'
+import PrintPDFTrucking from './PrintPDFTrucking'
 
 const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
-  const { listDeliveryOrder, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, listProducts, listAllProduct, itemPrint, onClosePrint } = tableProps
+  const { listTransferOut, onClickPrinted, updateFilter, user, listAllProduct, itemPrint } = tableProps
   const toDetail = (record) => {
     if (record.active && !record.status) {
       window.open(`/delivery-order-detail/${record.id}`, '_blank')
@@ -25,72 +24,56 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
       }
     })
   }
-  const printProps = {
-    listItem: listProducts,
-    itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
-      transNo: listDeliveryOrder.transNo,
-      employeeName: listDeliveryOrder.employeeName,
-      carNumber: listDeliveryOrder.carNumber,
-      storeName: listDeliveryOrder.storeName,
-      transDate: listDeliveryOrder.transDate,
-      totalColly: listDeliveryOrder.totalColly,
-      storeNameReceiver: listDeliveryOrder.storeNameReceiver,
-      description: listDeliveryOrder.description
-    } : {
-      transNo: '',
-      employeeName: '',
-      carNumber: '',
-      storeName: '',
-      totalColly: '',
-      storeNameReceiver: '',
-      description: ''
-    },
-    storeInfo,
-    user,
-    printNo: 1
-  }
-  const modalProps = {
-    maskClosable: false,
-    wrapClassName: 'vertical-center-modal',
-    footer: null,
-    width: '300px',
-    visible: showPrintModal,
-    onCancel () {
-      onClosePrint()
-    }
-  }
+  // const printProps = {
+  //   listItem: listProducts,
+  //   itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
+  //     transNo: listDeliveryOrder.transNo,
+  //     employeeName: listDeliveryOrder.employeeName,
+  //     carNumber: listDeliveryOrder.carNumber,
+  //     storeName: listDeliveryOrder.storeName,
+  //     transDate: listDeliveryOrder.transDate,
+  //     totalColly: listDeliveryOrder.totalColly,
+  //     storeNameReceiver: listDeliveryOrder.storeNameReceiver,
+  //     description: listDeliveryOrder.description
+  //   } : {
+  //     transNo: '',
+  //     employeeName: '',
+  //     carNumber: '',
+  //     storeName: '',
+  //     totalColly: '',
+  //     storeNameReceiver: '',
+  //     description: ''
+  //   },
+  //   storeInfo,
+  //   user,
+  //   printNo: 1
+  // }
+  // const modalProps = {
+  //   maskClosable: false,
+  //   wrapClassName: 'vertical-center-modal',
+  //   footer: null,
+  //   width: '300px',
+  //   visible: showPrintModal,
+  //   onCancel () {
+  //     onClosePrint()
+  //   }
+  // }
   const handleChange = (pagination, filters, sorter) => {
     updateFilter(pagination, filters, sorter)
   }
+
   const printPDFAllProps = {
     listTrans: listAllProduct,
     itemPrint,
     user
-    // loading,
-    // // listItem: listProducts,
-    // listItem: listAllProduct,
-    // itemPrint: listDeliveryOrder && listDeliveryOrder.id ? {
-    //   transNo: listDeliveryOrder.transNo,
-    //   employeeName: listDeliveryOrder.employeeName,
-    //   carNumber: listDeliveryOrder.carNumber,
-    //   storeName: listDeliveryOrder.storeName,
-    //   transDate: listDeliveryOrder.transDate,
-    //   totalColly: listDeliveryOrder.totalColly,
-    //   storeNameReceiver: listDeliveryOrder.storeNameReceiver,
-    //   description: listDeliveryOrder.description
-    // } : {
-    //   transNo: '',
-    //   employeeName: '',
-    //   carNumber: '',
-    //   storeName: '',
-    //   totalColly: '',
-    //   storeNameReceiver: '',
-    //   description: ''
-    // },
-    // storeInfo,
-    // user,
-    // printNo: 1
   }
+
+  const printPDFTruckingProps = {
+    listTrans: listTransferOut,
+    itemPrint,
+    user
+  }
+
   const columns = [
     {
       title: 'Transaction No',
@@ -155,7 +138,7 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
         if (received) {
           return (
             <Tag color="green">
-              Completed
+              Packed
             </Tag>
           )
         }
@@ -176,28 +159,11 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
   ]
   return (
     <div>
-      <Modal {...modalProps} title="Print">
-        <PrintPDF {...printProps} />
-        <PrintPDFv2 {...printProps} />
-        <Button type="dashed"
-          size="large"
-          className="button-width02 button-extra-large bgcolor-green"
-          loading={loading}
-          style={{ marginLeft: '100px' }}
-          onClick={() => {
-            if (listDeliveryOrder && listDeliveryOrder.id) {
-              onClickPrinted(listDeliveryOrder.id)
-            }
-          }}
-        >
-          <Icon type="check" className="icon-large" />
-        </Button>
-      </Modal>
       <h3>Delivery Order</h3>
 
       <div style={{ margin: '0.5em' }}>
-        {/* <Button type="primary" {...printListProps}>Print List</Button> */}
         <PrintPDFAll {...printPDFAllProps} />
+        <PrintPDFTrucking {...printPDFTruckingProps} />
       </div>
 
       <Table {...tableProps}

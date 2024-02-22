@@ -17,7 +17,7 @@ const Counter = ({ autoReplenish, transferOut, loading, dispatch, location }) =>
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `autoReplenish/${modalType}`,
+        type: 'autoReplenish/add',
         payload: {
           data,
           reset
