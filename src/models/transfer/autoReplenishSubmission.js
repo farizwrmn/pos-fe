@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
 import { query, queryDeliveryOrder, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
+import { queryLov } from 'services/transferStockOut'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -65,8 +66,31 @@ export default modelExtend(pageModel, {
             listDeliveryOrder: response.data
           }
         })
+        if (response.data && response.data.length > 0 && payload.storeId) {
+          yield put({
+            type: 'queryTransferOutPrint',
+            payload: {
+              deliveryOrderNo: response.data.map(item => item.transNo)
+            }
+          })
+        }
       } else {
         throw response
+      }
+    },
+
+    * queryTransferOutPrint ({ payload = {} }, { call, put }) {
+      const request = {}
+      request.active = '1'
+      request.deliveryOrderNo = payload.deliveryOrderNo
+      const response = yield call(queryLov, request)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransferOut: response.data
+          }
+        })
       }
     },
 

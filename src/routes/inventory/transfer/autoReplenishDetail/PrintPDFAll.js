@@ -163,7 +163,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
   }
 
   const pdfProps = {
-    className: 'button-width02 button-extra-large bgcolor-blue',
+    className: 'button-width02',
     pageSize: 'A4',
     pageOrientation: 'portrait',
     width,
@@ -173,6 +173,9 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
     tableBody,
     layout: 'noBorder',
     footer,
+    name: 'Picking List',
+    buttonType: 'default',
+    iconSize: 'icon-medium',
     tableStyle: styles,
     data: arr
   }
