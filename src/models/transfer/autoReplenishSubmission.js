@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
 import { query, queryDeliveryOrder, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
+import { edit as editHeader } from 'services/transfer/autoReplenish'
 import { queryLov } from 'services/transferStockOut'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
@@ -75,6 +76,17 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
+        throw response
+      }
+    },
+
+    * editHeader ({ payload }, { call, put }) {
+      const response = yield call(editHeader, payload)
+      if (response.success) {
+        success()
+        yield put({ type: 'queryHeader' })
+      } else {
+        yield put({ type: 'queryHeader' })
         throw response
       }
     },

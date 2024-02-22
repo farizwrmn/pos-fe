@@ -11,8 +11,17 @@ const Counter = ({ autoReplenishSubmission, loading, dispatch, location }) => {
   const listProps = {
     dataSource: list,
     pagination: false,
-    loading: loading.effects['accountCode/query'],
+    loading: loading.effects['autoReplenishSubmission/queryHeader'],
     location,
+    updateStatus (id, status) {
+      dispatch({
+        type: 'autoReplenishSubmission/editHeader',
+        payload: {
+          id,
+          status
+        }
+      })
+    },
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -33,13 +42,13 @@ const Counter = ({ autoReplenishSubmission, loading, dispatch, location }) => {
         }
       }))
       dispatch({
-        type: 'accountCode/editItem',
+        type: 'autoReplenishSubmission/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'accountCode/delete',
+        type: 'autoReplenishSubmission/delete',
         payload: id
       })
     }
