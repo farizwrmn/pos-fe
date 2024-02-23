@@ -82,26 +82,25 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Line Code" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('lineCode', {
+              initialValue: item.lineCode,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Input maxLength={30} autoFocus />)}
+          </FormItem>
+          <FormItem label="Line Name" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('lineName', {
+              initialValue: item.lineName,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Input maxLength={60} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

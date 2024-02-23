@@ -261,7 +261,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/pickingLine/pickingLine'))
-              cb(null, require('./models/pickingLine/pickingLine'))
+              cb(null, require('./routes/pickingLine/pickingLine'))
             }, 'picking-line')
           }
         }, {
