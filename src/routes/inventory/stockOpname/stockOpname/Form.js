@@ -37,6 +37,7 @@ const FormCounter = ({
   dispatch,
   onSubmit,
   onCancel,
+  location,
   modalType,
   button,
   storeInfo,
@@ -48,6 +49,7 @@ const FormCounter = ({
     resetFields
   }
 }) => {
+  console.log('location', location)
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -122,6 +124,7 @@ const FormCounter = ({
                 }
               ]
             })(<DatePicker
+              disabled={location.pathname === '/stock-opname-partial'}
               disabledDate={(current) => {
                 return current <= moment().add(1, 'd').startOf('day')
               }}
@@ -130,13 +133,13 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
-              initialValue: item.description,
+              initialValue: !item.description && location.pathname === '/stock-opname-partial' ? 'PARTIAL' : item.description,
               rules: [
                 {
                   required: false
                 }
               ]
-            })(<Input maxLength={255} />)}
+            })(<Input disabled={location.pathname === '/stock-opname-partial'} maxLength={255} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}

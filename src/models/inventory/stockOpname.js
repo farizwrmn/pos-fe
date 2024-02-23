@@ -71,7 +71,9 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/stock-opname') {
+        if (pathname === '/stock-opname'
+          || pathname === '/stock-opname-partial'
+        ) {
           dispatch({
             type: 'updateState',
             payload: {

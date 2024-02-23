@@ -331,23 +331,21 @@ class Detail extends Component {
       <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
-            <Col lg={12}>
-              <h1>Detail Info</h1>
-              <div className={styles.content}>
-                <Row>
-                  <Col span={12}><strong>STORE</strong></Col>
-                  <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
-                </Row>
-                <Row>
-                  <Col span={12}>BATCH NUMBER</Col>
-                  <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
-                </Row>
-                <Row>
-                  <Col span={12}>Status</Col>
-                  <Col span={12}>{getTag(detailData)}</Col>
-                </Row>
-              </div>
-            </Col>
+            <h1>Detail Info</h1>
+            <div className={styles.content}>
+              <Row>
+                <Col span={12}><strong>STORE</strong></Col>
+                <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
+              </Row>
+              <Row>
+                <Col span={12}>BATCH NUMBER</Col>
+                <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
+              </Row>
+              <Row>
+                <Col span={12}>Status</Col>
+                <Col span={12}>{getTag(detailData)}</Col>
+              </Row>
+            </div>
           </div>
         </Col>
         <Col lg={12}>

@@ -1725,6 +1725,15 @@ const Routers = function ({ history, app }) {
             }, 'accounts-journal-entry-detail')
           }
         }, {
+          path: 'stock-opname',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpname'))
+            }, 'stock-opname')
+          }
+        }, {
           path: 'stock-opname/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1733,13 +1742,21 @@ const Routers = function ({ history, app }) {
             }, 'stock-opname-detail')
           }
         }, {
-          path: 'stock-opname',
+          path: 'stock-opname-partial',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/inventory/stockOpname'))
               cb(null, require('./routes/inventory/stockOpname/stockOpname'))
-            }, 'stock-opname')
+            }, 'stock-opname-partial')
+          }
+        }, {
+          path: 'stock-opname-partial/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
+            }, 'stock-opname-partial-detail')
           }
         }, {
           path: 'journal-entry',
