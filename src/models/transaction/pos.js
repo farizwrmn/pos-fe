@@ -1874,7 +1874,6 @@ export default {
             dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
           }
         }
-        console.log('memberInformation', memberInformation)
         // eslint-disable-next-line eqeqeq
         if (memberId == 1) {
           for (let key in dataPos) {
