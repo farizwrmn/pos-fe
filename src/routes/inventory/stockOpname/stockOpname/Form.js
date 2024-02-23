@@ -133,7 +133,7 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
-              initialValue: !item.description && location.pathname === '/stock-opname-partial' ? 'Partial' : item.description,
+              initialValue: !item.description && location.pathname === '/stock-opname-partial' ? 'PARTIAL' : item.description,
               rules: [
                 {
                   required: false
