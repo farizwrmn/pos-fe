@@ -1834,9 +1834,11 @@ export default {
       yield put({ type: 'pos/hideMechanicModal' })
     },
 
-    * chooseMember ({ payload = {} }, { put }) {
+    * chooseMember ({ payload = {} }, { select, put }) {
       const { item } = payload
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
       let newItem = reArrangeMember(item)
+
       localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
         type: 'pos/syncCustomerCashback',
@@ -1853,6 +1855,46 @@ export default {
       yield put({
         type: 'pos/hideMemberModal'
       })
+
+      try {
+        let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+        const { sellPrice, memberId } = selectedPaymentShortcut
+        const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
+        let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        if (sellPrice
+          // eslint-disable-next-line eqeqeq
+          && memberId == 0) {
+          for (let key in dataPos) {
+            const item = dataPos[key]
+            if (!item.bundleId) {
+              dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+            }
+            dataPos[key].sellPrice = item[sellPrice] ? item[sellPrice] : item.price
+            dataPos[key].price = item[sellPrice] ? item[sellPrice] : item.price
+            dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
+          }
+        }
+        // eslint-disable-next-line eqeqeq
+        if (memberId == 1) {
+          for (let key in dataPos) {
+            const item = dataPos[key]
+            if (memberInformation.memberSellPrice === 'sellPrice') {
+              memberInformation.memberSellPrice = 'retailPrice'
+            }
+            if (!item.bundleId) {
+              dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+            }
+            dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+            dataPos[key].price = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+            dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
+          }
+        }
+
+        setCashierTrans(JSON.stringify(dataPos))
+      } catch (error) {
+        console.log('Choose Member', error)
+      }
+
       yield put({
         type: 'pos/updateState',
         payload: {
