@@ -49,7 +49,6 @@ const FormCounter = ({
     resetFields
   }
 }) => {
-  console.log('location', location)
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
