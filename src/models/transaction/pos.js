@@ -1836,8 +1836,8 @@ export default {
 
     * chooseMember ({ payload = {} }, { select, put }) {
       const { item } = payload
-      const memberInformation = yield select(({ pos }) => pos.memberInformation)
       let newItem = reArrangeMember(item)
+      const memberInformation = newItem
 
       localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
@@ -1858,9 +1858,9 @@ export default {
 
       try {
         let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
-        const { sellPrice, memberId } = selectedPaymentShortcut
         const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
         let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const { sellPrice, memberId } = selectedPaymentShortcut
         if (sellPrice
           // eslint-disable-next-line eqeqeq
           && memberId == 0) {
@@ -1874,6 +1874,7 @@ export default {
             dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
           }
         }
+        console.log('memberInformation', memberInformation)
         // eslint-disable-next-line eqeqeq
         if (memberId == 1) {
           for (let key in dataPos) {
@@ -2447,12 +2448,22 @@ export default {
               item.item.distPrice09 = currentReward.distPrice09
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
-            if (selectedPaymentShortcut
-              && selectedPaymentShortcut.sellPrice
+            const { sellPrice, memberId } = selectedPaymentShortcut
+            if (sellPrice
               // eslint-disable-next-line eqeqeq
-              && selectedPaymentShortcut.memberId == 0) {
-              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              && memberId == 0) {
+              if (selectedPaymentShortcut
+                && selectedPaymentShortcut.sellPrice
+                // eslint-disable-next-line eqeqeq
+                && selectedPaymentShortcut.memberId == 0) {
+                selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              }
             }
+            // eslint-disable-next-line eqeqeq
+            if (memberId == 1) {
+              selectedPrice = item.item[memberInformation.memberSellPrice.toString()] ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
+            }
+
             const dataProduct = {
               no: arrayProd.length + 1,
               categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
@@ -2633,11 +2644,20 @@ export default {
             item.item.distPrice09 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item.item[memberInformation.memberSellPrice.toString()] ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
           }
 
           const dataService = {
@@ -2973,11 +2993,20 @@ export default {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item[memberInformation.memberSellPrice.toString()] ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           }
           if (!((currentBuildComponent || {}).no)
             && !((currentReward || {}).categoryCode)
@@ -3042,11 +3071,20 @@ export default {
           ((checkExists || []).length === 0)
           || ((checkExists || []).length > 0 && type === 'barcode')) {
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item[memberInformation.memberSellPrice.toString()] ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           }
           if (
             !((currentBuildComponent || {}).no)
