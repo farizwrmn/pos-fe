@@ -257,6 +257,14 @@ const Routers = function ({ history, app }) {
             }, 'planogram-stock')
           }
         }, {
+          path: 'picking-line',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pickingLine/pickingLine'))
+              cb(null, require('./models/pickingLine/pickingLine'))
+            }, 'picking-line')
+          }
+        }, {
           path: 'stock-source',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
