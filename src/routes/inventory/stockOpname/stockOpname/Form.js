@@ -154,9 +154,15 @@ const FormCounter = ({
                 key={index}
                 className={styles.card}
                 onClick={() => {
-                  dispatch(routerRedux.push({
-                    pathname: `/stock-opname/${item.id}`
-                  }))
+                  if (location.pathname === '/stock-opname-partial') {
+                    dispatch(routerRedux.push({
+                      pathname: `/stock-opname-partial/${item.id}`
+                    }))
+                  } else {
+                    dispatch(routerRedux.push({
+                      pathname: `/stock-opname/${item.id}`
+                    }))
+                  }
                 }}
               >
                 <div>
