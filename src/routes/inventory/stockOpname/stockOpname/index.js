@@ -92,6 +92,7 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
     storeInfo,
     listActive,
     dispatch,
+    location,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
