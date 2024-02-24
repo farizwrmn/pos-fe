@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs, Row, Col, Icon, Menu, Dropdown, Modal } from 'antd'
+import { lstorage } from 'utils'
 import AdvancedForm from './AdvancedForm'
 import List from './List'
 import Filter from './Filter'
@@ -65,7 +66,9 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
     modalGrabmartCampaignVisible,
     modalGrabmartItem,
     modalStorePriceVisible,
-    modalStorePriceItem
+    modalStorePriceItem,
+    listStockPickingLine,
+    listPickingLine
   } = productstock
   const { listSpecification } = specification
   const { listSpecificationCode } = specificationStock
@@ -191,6 +194,18 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
           productId: item.id,
           categoryId: item.categoryId
         }
+      })
+
+      dispatch({
+        type: 'productstock/queryStockPickingLine',
+        payload: {
+          productId: item.id,
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+
+      dispatch({
+        type: 'productstock/queryPickingLine'
       })
 
       dispatch({
@@ -334,6 +349,8 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
     listVariantStock,
     listCategory,
     listBrand,
+    listStockPickingLine,
+    listPickingLine,
     listVariant,
     supplierInformation,
     listProductCountry,
@@ -372,7 +389,28 @@ const ProductStock = ({ productSource, productDivision, productDepartment, produ
         }
       })
     },
+    openPickingLineModal () {
+      dispatch({
+        type: 'productstock/openModalPickingLine'
+      })
+    },
+    deleteStockPickingLine (id, productId) {
+      Modal.confirm({
+        title: 'Delete Picking Line',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'productstock/deleteStockPickingLine',
+            payload: {
+              id,
+              productId
+            }
+          })
+        }
+      })
+    },
     onSubmit (id, data, reset) {
+      console.log('id, data', id, data)
       dispatch({
         type: `productstock/${modalType}`,
         payload: {

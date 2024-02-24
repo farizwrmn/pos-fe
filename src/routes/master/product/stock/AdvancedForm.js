@@ -58,6 +58,10 @@ class AdvancedForm extends Component {
 
   render () {
     const {
+      listStockPickingLine,
+      listPickingLine,
+      openPickingLineModal,
+      deleteStockPickingLine,
       lastTrans,
       listK3ExpressCategory,
       listK3ExpressBrand,
@@ -289,6 +293,7 @@ class AdvancedForm extends Component {
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
     const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
+    const productStockPickingLine = (listPickingLine || []).length > 0 ? listPickingLine.map(b => <Option value={b.id} key={b.id}>{b.lineCode} {b.lineName}</Option>) : []
     // const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
     const changeProductCode = (e) => {
@@ -1106,6 +1111,28 @@ class AdvancedForm extends Component {
                 })(<Input maxLength={25} />)}
               </FormItem>
             </Card>
+
+            <Card {...cardProps} title={<h3>Picking Line</h3>}>
+              {listStockPickingLine && listStockPickingLine.length > 0 ? listStockPickingLine.map(pickingLine => (
+                <div>
+                  <span>Line: {pickingLine.lineCode} {pickingLine.lineName} <span style={{ color: 'red', cursor: 'pointer' }} onClick={() => deleteStockPickingLine(pickingLine.id, item.id)}>X</span></span>
+                </div>
+              )) : null}
+              <FormItem label={(<Link target="_blank" to="/picking-line">Picking Line</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('pickingLineId', {
+                  initialValue: listStockPickingLine && listStockPickingLine.length > 0 ? listStockPickingLine[0].pickingLineId : undefined,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  showSearch
+                >{productStockPickingLine}
+                </Select>)}
+              </FormItem>
+            </Card>
           </Col>
           <Col {...parentThreeDivision}>
             <Card {...cardProps} title={<h3>K3Express</h3>}>
@@ -1207,28 +1234,30 @@ class AdvancedForm extends Component {
             </Card>
           </Col>
         </Row>
-        {modalSupplierVisible && (
-          <ModalSupplier {...modalSupplierProps}>
-            <Table
-              bordered
-              pagination={paginationSupplier}
-              scroll={{ x: 500 }}
-              columns={columns}
-              simple
-              loading={loadingButton.effects['purchase/querySupplier']}
-              dataSource={listSupplier}
-              size="small"
-              pageSize={10}
-              onChange={hdlSearchPagination}
-              onRowClick={_record => handleMenuClick(_record)}
-            />
-          </ModalSupplier>
-        )}
+        {
+          modalSupplierVisible && (
+            <ModalSupplier {...modalSupplierProps}>
+              <Table
+                bordered
+                pagination={paginationSupplier}
+                scroll={{ x: 500 }}
+                columns={columns}
+                simple
+                loading={loadingButton.effects['purchase/querySupplier']}
+                dataSource={listSupplier}
+                size="small"
+                pageSize={10}
+                onChange={hdlSearchPagination}
+                onRowClick={_record => handleMenuClick(_record)}
+              />
+            </ModalSupplier>
+          )
+        }
         {modalVariantVisible && <Variant {...modalVariantProps} />}
         {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
         {modalProductVisible && <Stock {...modalProductProps} />}
         {modalGrabmartCampaignProps.visible && <ModalGrabmartCampaign {...modalGrabmartCampaignProps} />}
-      </Form>
+      </Form >
     )
   }
 }
