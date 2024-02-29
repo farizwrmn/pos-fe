@@ -20,6 +20,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     list: [],
+    listAutoReplenish: [],
     listImported: [],
     pagination: {
       showSizeChanger: true,
@@ -59,7 +60,20 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * downloadData ({ payload = {} }, { call, put }) {
+      const response = yield call(query, { storeId: payload.storeId, type: 'all' })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAutoReplenish: response.data
+          }
+        })
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
+      payload.order = '-id'
       const data = yield call(query, payload)
       if (data.success) {
         yield put({

@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { lstorage } from 'utils'
 import List from './List'
 import PrintXLS from './PrintXLS'
+import PrintXLSDownloadData from './PrintXLSDownloadData'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -28,6 +29,7 @@ const formItemLayout = {
 }
 
 const ImportAutoReplenishBuffer = ({
+  location,
   loading,
   dispatch,
   importAutoReplenishBuffer,
@@ -46,7 +48,7 @@ const ImportAutoReplenishBuffer = ({
   const { listStore } = transferOut
   const { listBrand } = productbrand
   const { listCategory } = productcategory
-  const { list, pagination } = importAutoReplenishBuffer
+  const { list, listAutoReplenish, pagination } = importAutoReplenishBuffer
   const { user, storeInfo } = app
   const {
     changed,
@@ -174,6 +176,42 @@ const ImportAutoReplenishBuffer = ({
     childrenStoreReceived.push(groupStore)
   }
 
+  const getDownloadData = (storeId) => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      if (!storeId) {
+        message.error('Pick store')
+        return
+      }
+      dispatch({
+        type: 'importAutoReplenishBuffer/downloadData',
+        payload: {
+          storeId
+        }
+      })
+    })
+  }
+
+  const onChooseStore = (storeId) => {
+    dispatch({
+      type: 'importAutoReplenishBuffer/updateState',
+      payload: {
+        listAutoReplenish: []
+      }
+    })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        page: 1,
+        storeId
+      }
+    }))
+  }
+
   return (
     <div className="content-inner">
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
@@ -190,6 +228,7 @@ const ImportAutoReplenishBuffer = ({
                 ]
               })(<Select
                 showSearch
+                onSelect={event => onChooseStore(event)}
                 filterOption={filterOption}
               >
                 {childrenStoreReceived}
@@ -220,7 +259,22 @@ const ImportAutoReplenishBuffer = ({
           />
         </span>
       </div>
+
       <List {...listProps} />
+
+      <div>
+        <Button
+          type="default"
+          disabled={loading.effects['importAutoReplenishBuffer/downloadData']}
+          size="large"
+          onClick={() => getDownloadData(location.query.storeId)}
+          loading={loading.effects['importAutoReplenishBuffer/downloadData']}
+        >
+          <Icon type="download" />Download Data
+        </Button>
+        {listAutoReplenish && listAutoReplenish.length > 0 ? <PrintXLSDownloadData listAutoReplenish={listAutoReplenish} /> : null}
+      </div>
+      <br />
     </div>
   )
 }

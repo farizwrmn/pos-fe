@@ -412,6 +412,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
