@@ -21,6 +21,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
     const headers = [
       [
         { fontSize: 10, text: 'NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 10, text: '@', style: 'tableHeader', alignment: 'center' },
         { fontSize: 10, text: 'CODE', style: 'tableHeader', alignment: 'center' },
         { fontSize: 10, text: 'NAME', style: 'tableHeader', alignment: 'center' },
         { fontSize: 10, text: 'BARCODE', style: 'tableHeader', alignment: 'center' },
@@ -36,6 +37,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
         let data = rows[key]
         let row = [
           { text: counter, alignment: 'center', fontSize: 10 },
+          { text: (data.locationName || '').toString(), alignment: 'left', fontSize: 10 },
           { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 10 },
           { text: (data.productName || '').toString(), alignment: 'left', fontSize: 10 },
           { text: (data.barCode01 || '').toString(), alignment: 'left', fontSize: 10 },
@@ -49,14 +51,15 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
     const totalQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
 
     let totalRow = [
-      { text: 'Total', colSpan: 4, alignment: 'center', fontSize: 10 },
+      { text: 'Total', colSpan: 5, alignment: 'center', fontSize: 10 },
+      {},
       {},
       {},
       {},
       { text: totalQty, alignment: 'right', fontSize: 10 }
     ]
     body.push(totalRow)
-    width.push(['6%', '20%', '38%', '20%', '16%'])
+    width.push(['6%', '7%', '20%', '38%', '20%', '9%'])
     return body
   }
 

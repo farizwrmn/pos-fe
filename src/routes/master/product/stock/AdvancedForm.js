@@ -1032,21 +1032,6 @@ class AdvancedForm extends Component {
                 >{productCountry}
                 </Select>)}
               </FormItem>
-              <FormItem label={(<Link target="_blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
-                {getFieldDecorator('locationId', {
-                  initialValue: modalType === 'add' ? undefined : item.locationId,
-                  rules: [
-                    {
-                      required: false
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productLocation}
-                </Select>)}
-              </FormItem>
               <FormItem label="Status" {...formItemLayout}>
                 {getFieldDecorator('active', {
                   valuePropName: 'checked',
@@ -1130,6 +1115,21 @@ class AdvancedForm extends Component {
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   showSearch
                 >{productStockPickingLine}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
+                {getFieldDecorator('locationId', {
+                  initialValue: modalType === 'add' ? undefined : item.locationId,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productLocation}
                 </Select>)}
               </FormItem>
             </Card>
