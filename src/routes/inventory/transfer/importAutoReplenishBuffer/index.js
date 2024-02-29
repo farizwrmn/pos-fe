@@ -28,6 +28,7 @@ const formItemLayout = {
 }
 
 const ImportAutoReplenishBuffer = ({
+  location,
   loading,
   dispatch,
   importAutoReplenishBuffer,
@@ -174,6 +175,18 @@ const ImportAutoReplenishBuffer = ({
     childrenStoreReceived.push(groupStore)
   }
 
+  const onChooseStore = (storeId) => {
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        page: 1,
+        storeId
+      }
+    }))
+  }
+
   return (
     <div className="content-inner">
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
@@ -190,6 +203,7 @@ const ImportAutoReplenishBuffer = ({
                 ]
               })(<Select
                 showSearch
+                onSelect={event => onChooseStore(event)}
                 filterOption={filterOption}
               >
                 {childrenStoreReceived}
