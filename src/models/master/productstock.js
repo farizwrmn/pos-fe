@@ -102,6 +102,9 @@ export default modelExtend(pageModel, {
               listStockPickingLine: []
             }
           })
+          dispatch({
+            type: 'productstock/queryPickingLine'
+          })
           if (activeKey === '1') {
             if (mode === 'inventory') {
               dispatch({
