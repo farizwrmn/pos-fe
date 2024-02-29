@@ -49,14 +49,14 @@ const List = ({ editList, ...tableProps }) => {
         )
       }
     },
-    {
-      title: 'Stock Live',
-      dataIndex: 'qtyLive',
-      key: 'qtyLive',
-      className: styles.alignCenter,
-      width: '100px',
-      render: text => numberFormatter(text || 0)
-    },
+    // {
+    //   title: 'Stock Live',
+    //   dataIndex: 'qtyLive',
+    //   key: 'qtyLive',
+    //   className: styles.alignCenter,
+    //   width: '100px',
+    //   render: text => numberFormatter(text || 0)
+    // },
     {
       title: 'Input',
       dataIndex: 'qty',
@@ -64,23 +64,23 @@ const List = ({ editList, ...tableProps }) => {
       className: styles.alignCenter,
       width: '100px',
       render: text => numberFormatter(text || 0)
-    },
-    {
-      title: 'Selisih',
-      dataIndex: 'qtyDiff',
-      key: 'qtyDiff',
-      className: styles.alignCenter,
-      width: '100px',
-      render: text => numberFormatter(text || 0)
-    },
-    {
-      title: 'Biaya',
-      dataIndex: 'value',
-      key: 'value',
-      className: styles.alignCenter,
-      width: '100px',
-      render: (text, record) => numberFormatter(record.qtyDiff * record.product.costPrice)
     }
+    // {
+    //   title: 'Selisih',
+    //   dataIndex: 'qtyDiff',
+    //   key: 'qtyDiff',
+    //   className: styles.alignCenter,
+    //   width: '100px',
+    //   render: text => numberFormatter(text || 0)
+    // },
+    // {
+    //   title: 'Biaya',
+    //   dataIndex: 'value',
+    //   key: 'value',
+    //   className: styles.alignCenter,
+    //   width: '100px',
+    //   render: (text, record) => numberFormatter(record.qtyDiff * record.product.costPrice)
+    // }
   ]
 
   return (
