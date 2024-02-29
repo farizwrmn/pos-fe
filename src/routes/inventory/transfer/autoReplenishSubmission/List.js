@@ -27,6 +27,15 @@ const List = (tableProps) => {
     }
     if (status === 3) {
       Modal.confirm({
+        title: 'Update Status to Done',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 4)
+        }
+      })
+    }
+    if (status === 4) {
+      Modal.confirm({
         title: 'Update Status to Picking',
         content: 'Are you sure ?',
         onOk () {
@@ -90,6 +99,13 @@ const List = (tableProps) => {
           return (
             <Tag color="green">
               Delivery
+            </Tag>
+          )
+        }
+        if (text === 4) {
+          return (
+            <Tag color="green">
+              Done
             </Tag>
           )
         }
