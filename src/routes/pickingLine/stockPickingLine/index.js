@@ -9,13 +9,13 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
-  const { list, listActive, pagination, modalType, currentItem, activeKey } = stockOpname
+const Counter = ({ stockPickingLine, loading, dispatch, location, app }) => {
+  const { list, pagination, modalType, currentItem, activeKey } = stockPickingLine
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'stockOpname/query',
+        type: 'stockPickingLine/query',
         payload: {
           ...value
         }
@@ -28,7 +28,7 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['stockOpname/query'],
+    loading: loading.effects['stockPickingLine/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -50,13 +50,13 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'stockOpname/editItem',
+        type: 'stockPickingLine/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'stockOpname/delete',
+        type: 'stockPickingLine/delete',
         payload: id
       })
     }
@@ -64,7 +64,7 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
 
   const changeTab = (key) => {
     dispatch({
-      type: 'stockOpname/changeTab',
+      type: 'stockPickingLine/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -75,12 +75,12 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
         activeKey: key
       }
     }))
-    dispatch({ type: 'stockOpname/updateState', payload: { list: [] } })
+    dispatch({ type: 'stockPickingLine/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'stockOpname/updateState',
+      type: 'stockPickingLine/updateState',
       payload: {
         activeKey: '1'
       }
@@ -89,15 +89,11 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
 
   const formProps = {
     modalType,
-    storeInfo,
-    listActive,
-    dispatch,
-    location,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
-        type: `stockOpname/${modalType}`,
+        type: `stockPickingLine/${modalType}`,
         payload: {
           data,
           reset
@@ -113,7 +109,7 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
         }
       }))
       dispatch({
-        type: 'stockOpname/updateState',
+        type: 'stockPickingLine/updateState',
         payload: {
           currentItem: {}
         }
@@ -132,25 +128,25 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
-        {location.pathname === '/stock-opname-partial' && (<TabPane tab="Browse" key="1" >
+        <TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
               <Filter {...filterProps} />
               <List {...listProps} />
             </div>
           }
-        </TabPane>)}
+        </TabPane>
       </Tabs>
     </div>
   )
 }
 
 Counter.propTypes = {
-  stockOpname: PropTypes.object,
+  stockPickingLine: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ stockOpname, loading, app }) => ({ stockOpname, loading, app }))(Counter)
+export default connect(({ stockPickingLine, loading, app }) => ({ stockPickingLine, loading, app }))(Counter)

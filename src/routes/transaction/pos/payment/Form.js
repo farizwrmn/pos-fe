@@ -396,6 +396,13 @@ class FormPayment extends React.Component {
       }
     }
 
+    const defaultTypeCode = currentBundlePayment && currentBundlePayment.paymentOption ?
+      currentBundlePayment.paymentOption
+      : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+        typeCode : (item.typeCode ? item.typeCode : 'C'))
+
+    console.log('typeCode', getFieldValue('typeCode'), defaultTypeCode)
+
     return (
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
@@ -410,6 +417,8 @@ class FormPayment extends React.Component {
             ]
           })(
             <InputNumber
+              disabled={getFieldValue('typeCode') === undefined ? defaultTypeCode !== 'C'
+                : getFieldValue('typeCode') !== 'C'}
               style={{ width: '100%', fontSize: '30px', height: 'auto', textAlign: 'center', padding: '10px 0 10px 0' }}
               formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={value => value.replace(/\$\s?|(,*)/g, '')}
