@@ -1767,6 +1767,14 @@ const Routers = function ({ history, app }) {
             }, 'stock-opname-partial-detail')
           }
         }, {
+          path: 'return-to-dc',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/returnToDc'))
+              cb(null, require('./routes/transfer/returnToDc'))
+            }, 'return-to-dc')
+          }
+        }, {
           path: 'journal-entry',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
