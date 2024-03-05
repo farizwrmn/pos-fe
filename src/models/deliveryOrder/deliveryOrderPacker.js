@@ -87,7 +87,12 @@ export default modelExtend(pageModel, {
         type: 'saveDeliveryOrderCart',
         payload: {
           transNo: deliveryOrder.transNo,
-          listItem: result
+          listItem: result.map((item) => {
+            if (item.orderQty >= item.qty) {
+              return ({ ...item, checklist: true })
+            }
+            return item
+          })
         }
       })
       message.success('Grouping is success')
