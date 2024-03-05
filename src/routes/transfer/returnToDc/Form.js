@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import ListItem from './ListItem'
 
 const FormItem = Form.Item
 
@@ -26,10 +27,9 @@ const column = {
 
 const FormCounter = ({
   selectedTransfer,
-  item = {},
   onSubmit,
-  onCancel,
-  modalType,
+  onShowProduct,
+  listItemProps,
   button,
   onSearchTransfer,
   form: {
@@ -43,16 +43,16 @@ const FormCounter = ({
     wrapperCol: {
       span: 24,
       xs: {
-        offset: modalType === 'edit' ? 10 : 19
+        offset: 19
       },
       sm: {
-        offset: modalType === 'edit' ? 15 : 20
+        offset: 20
       },
       md: {
-        offset: modalType === 'edit' ? 15 : 19
+        offset: 19
       },
       lg: {
-        offset: modalType === 'edit' ? 13 : 18
+        offset: 18
       }
     }
   }
@@ -92,27 +92,38 @@ const FormCounter = ({
       <Row>
         <Col {...column}>
           <FormItem label="Trans No" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
+            {getFieldDecorator('transNo', {
+              initialValue: selectedTransfer.transNo,
               rules: [
                 {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
+                  required: true
                 }
               ]
-            })(<Input disabled={selectedTransfer && selectedTransfer.id} maxLength={50} autoFocus />)}
+            })(<Input
+              disabled={selectedTransfer && selectedTransfer.id}
+              maxLength={50}
+              autoFocus
+            />)}
           </FormItem>
-          {selectedTransfer && selectedTransfer.id ? (
-            <FormItem {...tailFormItemLayout}>
-              <Button type="primary" onClick={handleSubmit}>{button}</Button>
-            </FormItem>
-          ) : (
+
+        </Col>
+      </Row>
+      {selectedTransfer && selectedTransfer.id && <Button type="primary" style={{ marginBottom: '10px' }} onClick={onShowProduct}>Product</Button>}
+      {selectedTransfer && selectedTransfer.id ? (
+        <ListItem {...listItemProps} />
+      ) : null}
+
+      {selectedTransfer && selectedTransfer.id ? (
+        <Button type="primary" style={{ float: 'right', marginTop: '10px' }} onClick={handleSubmit}>{button}</Button>
+      ) : (
+        <Row>
+          <Col {...column}>
             <FormItem {...tailFormItemLayout}>
               <Button type="default" onClick={handleSearchTransfer}>Search</Button>
             </FormItem>
-          )}
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      )}
     </Form>
   )
 }

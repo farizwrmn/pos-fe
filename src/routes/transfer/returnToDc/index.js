@@ -3,16 +3,29 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import Form from './Form'
+import ModalProduct from './ModalProduct'
 
 const Counter = ({ returnToDc, dispatch, location }) => {
-  const { selectedTransfer, currentItem } = returnToDc
+  const { selectedTransfer, listItem, listProduct, modalProductVisible } = returnToDc
+  const listItemProps = {
+    dataSource: listItem
+  }
+
   const formProps = {
     selectedTransfer,
-    item: currentItem,
+    listItemProps,
     button: 'Submit',
+    onShowProduct () {
+      dispatch({
+        type: 'returnToDc/updateState',
+        payload: {
+          modalProductVisible: true
+        }
+      })
+    },
     onSearchTransfer (transNo) {
       dispatch({
-        type: 'returnToDc/searchTransferOut',
+        type: 'returnToDc/queryTransferOut',
         payload: {
           transNo
         }
@@ -44,9 +57,44 @@ const Counter = ({ returnToDc, dispatch, location }) => {
     }
   }
 
+  const listProductProps = {
+    dataSource: listProduct,
+    onRowClick (item) {
+      dispatch({
+        type: 'returnToDc/addItem',
+        payload: {
+          item
+        }
+      })
+    }
+  }
+
+  const modalProductProps = {
+    listProductProps,
+    visible: modalProductVisible,
+    listProduct,
+    onSearchProduct (text) {
+      dispatch({
+        type: 'returnToDc/searchTransferOutDetail',
+        payload: {
+          searchText: text
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'returnToDc/updateState',
+        payload: {
+          modalProductVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       <Form {...formProps} />
+      {modalProductVisible && <ModalProduct {...modalProductProps} />}
     </div>
   )
 }
