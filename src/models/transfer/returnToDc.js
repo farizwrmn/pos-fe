@@ -199,6 +199,9 @@ export default modelExtend(pageModel, {
         detail: payload.detail
       })
       if (response.success) {
+        if (response.data && response.data.transNo && (payload.data && !payload.data.deliveryOrder)) {
+          window.open(`/inventory/transfer/out/${encodeURIComponent(response.data.transNo)}`, '_blank')
+        }
         success()
         yield put({
           type: 'updateState',
