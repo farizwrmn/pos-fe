@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal } from 'antd'
 import ListProduct from './ListProduct'
@@ -10,73 +10,85 @@ const formItemLayout = {
   wrapperCol: { span: 14 }
 }
 
-const ModalCancel = ({
-  onOk,
-  item = {},
-  data,
-  onSearchProduct,
-  disableConfirm,
-  listProductProps,
-  form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
-  ...modalProps
-}) => {
-  const handleOk = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
+class ModalProduct extends Component {
+  componentDidMount () {
+    setTimeout(() => {
+      const selector = document.getElementById('searchText')
+      if (selector) {
+        selector.focus()
       }
-      const record = {
-        id: item ? item.id : '',
-        transNo: data.length > 0 ? data[0].transNo : '',
-        storeId: data.length > 0 ? data[0].storeId : '',
-        ...getFieldsValue()
-      }
-      onOk(record)
-      resetFields()
-    })
+    }, 300)
   }
-  const modalOpts = {
-    ...modalProps,
-    onOk: handleOk
-  }
-  return (
-    <Modal
-      width={700}
-      {...modalOpts}
-      footer={null}
-    >
-      <Form>
-        <FormItem label="Search" {...formItemLayout}>
-          {getFieldDecorator('searchText', {
-            rules: [
-              {
-                required: true,
-                pattern: /^[a-z0-9/\n _-]{2,100}$/i,
-                message: 'At least 2 character'
-              }
-            ]
-          })(<Input
-            maxLength={200}
-            onKeyDown={
-              (e) => {
-                if (e.keyCode === 13) {
-                  onSearchProduct(e.target.value)
+
+  render () {
+    const {
+      onOk,
+      item = {},
+      data,
+      onSearchProduct,
+      disableConfirm,
+      listProductProps,
+      form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+      ...modalProps
+    } = this.props
+    const handleOk = () => {
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const record = {
+          id: item ? item.id : '',
+          transNo: data.length > 0 ? data[0].transNo : '',
+          storeId: data.length > 0 ? data[0].storeId : '',
+          ...getFieldsValue()
+        }
+        onOk(record)
+        resetFields()
+      })
+    }
+    const modalOpts = {
+      ...modalProps,
+      onOk: handleOk
+    }
+    return (
+      <Modal
+        width={700}
+        {...modalOpts}
+        footer={null}
+      >
+        <Form>
+          <FormItem label="Search" {...formItemLayout}>
+            {getFieldDecorator('searchText', {
+              rules: [
+                {
+                  required: true,
+                  pattern: /^[a-z0-9/\n _-]{2,100}$/i,
+                  message: 'At least 2 character'
+                }
+              ]
+            })(<Input
+              maxLength={200}
+              onKeyDown={
+                (e) => {
+                  if (e.keyCode === 13) {
+                    onSearchProduct(e.target.value)
+                  }
                 }
               }
-            }
-          />)}
-        </FormItem>
-      </Form>
-      <ListProduct {...listProductProps} />
-    </Modal>
-  )
+            />)}
+          </FormItem>
+        </Form>
+        <ListProduct {...listProductProps} />
+      </Modal>
+    )
+  }
 }
 
-ModalCancel.propTypes = {
+ModalProduct.propTypes = {
   form: PropTypes.object.isRequired,
   location: PropTypes.object,
   onOk: PropTypes.func,
   invoiceCancel: PropTypes.object
 }
 
-export default Form.create()(ModalCancel)
+export default Form.create()(ModalProduct)

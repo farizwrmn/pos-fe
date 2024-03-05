@@ -26,6 +26,7 @@ export default modelExtend(pageModel, {
     listTransferOutDetail: [],
     listProduct: [],
     modalProductVisible: false,
+    modalEditProductVisible: false,
     pagination: {
       current: 1
     }
@@ -64,6 +65,7 @@ export default modelExtend(pageModel, {
         productId: payload.item.productId,
         productCode: payload.item.productCode,
         productName: payload.item.productName,
+        transferQty: payload.item.qty,
         qty: payload.item.qty
       })
       yield put({
@@ -75,6 +77,61 @@ export default modelExtend(pageModel, {
         }
       })
     },
+
+    * deleteItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnToDc }) => returnToDc.listItem)
+      if (!payload.item) {
+        message.error('Require item in payload')
+        return
+      }
+      const exists = checkExists(payload.item.productId, listItem)
+      if (exists) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditProductVisible: false,
+            currentItem: {},
+            listItem: listItem
+              .filter(filtered => filtered.no !== payload.item.no)
+              .map((item, index) => ({ ...item, no: index + 1 }))
+          }
+        })
+        message.success('Success delete item')
+        return
+      }
+      throw new Error('Item not found')
+    },
+
+    * editItem ({ payload }, { select, put }) {
+      const listItem = yield select(({ returnToDc }) => returnToDc.listItem)
+      if (!payload.item) {
+        message.error('Require item in payload')
+        return
+      }
+      const exists = checkExists(payload.item.productId, listItem)
+      if (exists) {
+        if (payload.item.qty > exists.transferQty) {
+          message.error('Qty is more than requested')
+          return
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            listItem: listItem.map((item) => {
+              if (item.no === payload.item.no) {
+                return payload.item
+              }
+              return item
+            }),
+            modalEditProductVisible: false
+          }
+        })
+        message.success('Success edit item')
+        return
+      }
+      throw new Error('Item not found')
+    },
+
     * searchTransferOutDetail ({ payload = {} }, { select, put }) {
       const listTransferOutDetail = yield select(({ returnToDc }) => returnToDc.listTransferOutDetail)
       const { searchText } = payload
@@ -134,7 +191,13 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const response = yield call(add, payload.data)
+      const response = yield call(add, {
+        data: {
+          ...payload.data,
+          storeId: lstorage.getCurrentUserStore()
+        },
+        detail: payload.detail
+      })
       if (response.success) {
         success()
         yield put({
@@ -145,6 +208,9 @@ export default modelExtend(pageModel, {
             listTransferOutDetail: []
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         throw response
       }

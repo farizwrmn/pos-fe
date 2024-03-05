@@ -26,6 +26,7 @@ const column = {
 }
 
 const FormCounter = ({
+  loading,
   selectedTransfer,
   onSubmit,
   onShowProduct,
@@ -100,6 +101,13 @@ const FormCounter = ({
                 }
               ]
             })(<Input
+              onKeyDown={
+                (e) => {
+                  if (e.keyCode === 13) {
+                    handleSearchTransfer()
+                  }
+                }
+              }
               disabled={selectedTransfer && selectedTransfer.id}
               maxLength={50}
               autoFocus
@@ -114,12 +122,12 @@ const FormCounter = ({
       ) : null}
 
       {selectedTransfer && selectedTransfer.id ? (
-        <Button type="primary" style={{ float: 'right', marginTop: '10px' }} onClick={handleSubmit}>{button}</Button>
+        <Button disabled={loading.effects['returnToDc/add']} type="primary" style={{ float: 'right', marginTop: '10px' }} onClick={handleSubmit}>{button}</Button>
       ) : (
         <Row>
           <Col {...column}>
             <FormItem {...tailFormItemLayout}>
-              <Button type="default" onClick={handleSearchTransfer}>Search</Button>
+              <Button type="default" disabled={loading.effects['returnToDc/queryTransferOut'] || loading.effects['returnToDc/queryTransferOutDetail']} onClick={handleSearchTransfer}>Search</Button>
             </FormItem>
           </Col>
         </Row>

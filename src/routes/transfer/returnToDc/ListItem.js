@@ -8,12 +8,14 @@ const ListItem = ({ ...tableProps }) => {
     {
       title: 'No',
       dataIndex: 'no',
-      key: 'no'
+      key: 'no',
+      width: '18px'
     },
     {
       title: 'Product',
       dataIndex: 'productCode',
       key: 'productCode',
+      width: '200px',
       render (text, record) {
         return (
           <div>
@@ -23,9 +25,16 @@ const ListItem = ({ ...tableProps }) => {
       }
     },
     {
+      title: 'Desc',
+      dataIndex: 'description',
+      key: 'description',
+      width: '200px'
+    },
+    {
       title: (<strong>Qty</strong>),
       dataIndex: 'qty',
       key: 'qty',
+      width: '50px',
       className: styles.alignRight
     }
   ]

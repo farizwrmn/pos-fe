@@ -2,16 +2,78 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { Modal } from 'antd'
 import Form from './Form'
 import ModalProduct from './ModalProduct'
+import ModalEditProduct from './ModalEditProduct'
 
-const Counter = ({ returnToDc, dispatch, location }) => {
-  const { selectedTransfer, listItem, listProduct, modalProductVisible } = returnToDc
+const Counter = ({ loading, returnToDc, dispatch, location }) => {
+  const {
+    selectedTransfer,
+    listItem,
+    listProduct,
+    modalProductVisible,
+    currentItem,
+    modalEditProductVisible
+  } = returnToDc
+
+  const modalEditProductProps = {
+    visible: modalEditProductVisible,
+    item: currentItem,
+    onOk (item) {
+      if (currentItem && currentItem.productId) {
+        dispatch({
+          type: 'returnToDc/editItem',
+          payload: {
+            item: {
+              ...currentItem,
+              description: item.description || 0,
+              qty: item.qty || 0
+            }
+          }
+        })
+      }
+    },
+    onDeleteItem () {
+      Modal.confirm({
+        title: 'Delete this item',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'returnToDc/deleteItem',
+            payload: {
+              item: currentItem
+            }
+          })
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'returnToDc/updateState',
+        payload: {
+          modalEditProductVisible: false,
+          currentItem: {}
+        }
+      })
+    }
+  }
+
   const listItemProps = {
-    dataSource: listItem
+    dataSource: listItem,
+    onRowClick (item) {
+      dispatch({
+        type: 'returnToDc/updateState',
+        payload: {
+          modalEditProductVisible: true,
+          currentItem: item
+        }
+      })
+    }
   }
 
   const formProps = {
+    loading,
     selectedTransfer,
     listItemProps,
     button: 'Submit',
@@ -36,6 +98,7 @@ const Counter = ({ returnToDc, dispatch, location }) => {
         type: 'returnToDc/add',
         payload: {
           data,
+          detail: listItem,
           reset
         }
       })
@@ -95,6 +158,7 @@ const Counter = ({ returnToDc, dispatch, location }) => {
     <div className="content-inner">
       <Form {...formProps} />
       {modalProductVisible && <ModalProduct {...modalProductProps} />}
+      {modalEditProductVisible && <ModalEditProduct {...modalEditProductProps} />}
     </div>
   )
 }
