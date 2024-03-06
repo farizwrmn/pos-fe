@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input, message, InputNumber, Button, Row, Col, Checkbox, Select } from 'antd'
 import { Link } from 'dva/router'
+import { lstorage } from 'utils'
 import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
@@ -152,6 +153,8 @@ const FormAdd = ({
     })
   }
 
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+
   return (
     <div>
       <Form layout="horizontal">
@@ -279,9 +282,9 @@ const FormAdd = ({
         </Row>
 
         <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
-        <FormItem>
+        {defaultRole !== 'CSH' && defaultRole !== 'HKS' && <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
-        </FormItem>
+        </FormItem>}
         {modalProductDemandProps.visible && (
           <ModalDemand
             onGetAll={() => {

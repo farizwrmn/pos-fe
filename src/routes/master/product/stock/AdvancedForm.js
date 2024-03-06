@@ -293,7 +293,7 @@ class AdvancedForm extends Component {
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
     const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
-    const productStockPickingLine = (listPickingLine || []).length > 0 ? listPickingLine.map(b => <Option value={b.id} key={b.id}>{b.lineCode} {b.lineName}</Option>) : []
+    const productStockPickingLine = (listPickingLine || []).length > 0 ? listPickingLine.map(b => <Option value={b.id} key={b.id}>{b.lineName}</Option>) : []
     // const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
     const changeProductCode = (e) => {
@@ -1100,7 +1100,7 @@ class AdvancedForm extends Component {
             <Card {...cardProps} title={<h3>Picking Line</h3>}>
               {listStockPickingLine && listStockPickingLine.length > 0 ? listStockPickingLine.map(pickingLine => (
                 <div>
-                  <span>Line: {pickingLine.lineCode} {pickingLine.lineName} <span style={{ color: 'red', cursor: 'pointer' }} onClick={() => deleteStockPickingLine(pickingLine.id, item.id)}>X</span></span>
+                  <span>Line: {pickingLine.lineName} <span style={{ color: 'red', cursor: 'pointer' }} onClick={() => deleteStockPickingLine(pickingLine.id, item.id)}>X</span></span>
                 </div>
               )) : null}
               <FormItem label={(<Link target="_blank" to="/picking-line">Picking Line</Link>)} hasFeedback {...formItemLayout}>

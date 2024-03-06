@@ -124,6 +124,25 @@ class TransferModal extends Component {
               />
             )}
           </FormItem>
+          <FormItem label="Description" {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: currentItemList.description,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Input
+              maxLength={200}
+              onKeyDown={
+                (e) => {
+                  if (e.keyCode === 13) {
+                    handleOk()
+                  }
+                }
+              }
+            />)}
+          </FormItem>
         </Form>
       </Modal>
     )
