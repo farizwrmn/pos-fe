@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Select, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, InputNumber, Select, Button, Row, Col, Modal } from 'antd'
 
 
 const Option = Select.Option
@@ -105,6 +105,16 @@ const FormCounter = ({
                 }
               ]
             })(<Input placeholder="@Rp10.000" />)}
+          </FormItem>
+          <FormItem label="Value" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('value', {
+              initialValue: item.value || 10000,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={0} placeholder="10000" />)}
           </FormItem>
           <FormItem label="Type" {...formItemLayout}>
             {getFieldDecorator('type', {
