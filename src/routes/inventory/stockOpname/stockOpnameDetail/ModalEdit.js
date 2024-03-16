@@ -34,7 +34,7 @@ class ModalEntry extends Component {
       validateFields((errors) => {
         if (errors) return
         const record = {
-          userId: 1,
+          userId: item && item.userId ? item.userId : 1,
           id: item ? item.id : '',
           transId: detailData ? detailData.id : '',
           batchId: detailData && detailData.activeBatch ? detailData.activeBatch.id : '',
