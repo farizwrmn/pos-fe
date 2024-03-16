@@ -76,8 +76,9 @@ const List = ({
   listOpts = [],
   listShift,
   listUser,
+  dispatch,
   button,
-  onSubmit,
+  // onSubmit,
   form: {
     getFieldDecorator,
     validateFields,
@@ -97,7 +98,11 @@ const List = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data)
+          if (list && list.length > 0) {
+            data.detail = list
+          }
+          console.log('data', data)
+          // onSubmit(data)
           resetFields()
         },
         onCancel () { }
@@ -114,8 +119,9 @@ const List = ({
     }
   }
   const advanceFormProps = {
+    dispatch,
     list,
-    listPhysicalMoneyDeposit
+    listDeposit: listPhysicalMoneyDeposit
   }
 
   return (

@@ -10,7 +10,6 @@ const Container = ({ loading, physicalMoney, physicalMoneyDeposit, balance, shif
   const { listShift } = shift
   const { listOpts } = paymentOpts
   const { data } = userDetail
-
   const listProps = {
     list,
     listPhysicalMoneyDeposit,

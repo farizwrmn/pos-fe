@@ -29,7 +29,10 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, modalType, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/balance/master/physical-money' || pathname === '/balance/closing') {
+        if (pathname === '/balance/closing') {
+          dispatch({ type: 'query', payload: other })
+        }
+        if (pathname === '/balance/master/physical-money') {
           dispatch({
             type: 'updateState',
             payload: {
