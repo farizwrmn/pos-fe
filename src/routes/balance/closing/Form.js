@@ -59,6 +59,7 @@ const FormComponent = ({
             ]
           })(
             <Select
+              placeholder="Pejabat Toko"
               showSearch
               allowClear
               optionFilterProp="children"
