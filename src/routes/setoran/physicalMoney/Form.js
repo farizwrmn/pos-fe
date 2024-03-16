@@ -91,7 +91,7 @@ const FormCounter = ({
     }
   ]
 
-  const physicalMoneyOption = listPhysicalMoney && listPhysicalMoney.length > 0 ? listPhysicalMoney.map(c => <Option value={c.name} key={c.id} title={c.name}>{`${c.name}`}</Option>) : []
+  const physicalMoneyOption = listPhysicalMoney && listPhysicalMoney.length > 0 ? listPhysicalMoney.map(c => <Option value={c.name} key={c.name} title={c.name}>{`${c.name}`}</Option>) : []
   return (
     <Form layout="horizontal">
       <Row>
