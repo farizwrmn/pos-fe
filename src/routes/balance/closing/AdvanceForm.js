@@ -3,19 +3,6 @@ import { Form, InputNumber, Row, Col } from 'antd'
 
 const FormItem = Form.Item
 
-// const formItemLayout = {
-//   labelCol: {
-//     xs: { span: 9 },
-//     sm: { span: 8 },
-//     md: { span: 7 }
-//   },
-//   wrapperCol: {
-//     xs: { span: 15 },
-//     sm: { span: 14 },
-//     md: { span: 14 }
-//   }
-// }
-
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
@@ -26,39 +13,12 @@ const column = {
 const FormComponent = ({
   dispatch,
   list = [],
-  listDeposit = [],
   form: {
     // getFieldsValue,
     getFieldDecorator
   }
 }) => {
-  // const substringPrice = (text) => {
-  //   if (text.includes('@')) {
-  //     const start_index = text.indexOf('@') + 1
-  //     return text.substring(start_index).trim()
-  //   }
-  //   return text
-  // }
-
-  // const fieldsValue = [
-  //   ...getFieldsValue()
-  // ]
-  // let amountPrice = Object.keys(fieldsValue).reduce((prev, key) => {
-  //   const value = parseFloat(fieldsValue[key])
-  //   return prev + (isNaN(value) ? 0 : value)
-  // }, 0)
-
-  // let amountPrice = Object.keys(fieldsValue).reduce((prev, key) => {
-  //   const value = parseFloat(substringPrice(fieldsValue[key]))
-  //   return prev + (isNaN(value) ? 0 : value)
-  // }, 0)
-  // const removeRpAndDot = (inputString) => {
-  //   return inputString.replace(/[@Rp.]/g, '');
-  // }
-
   const onChangeInput = (itemSelection, value) => {
-    console.log('listDeposit', listDeposit)
-    console.log('onChangeInput', { itemSelection, value })
     let currentList = list && list.length > 0 && list.map((item) => {
       if (item.name === itemSelection.name && item.type === itemSelection.type) {
         return {
@@ -69,7 +29,7 @@ const FormComponent = ({
       }
       return item
     })
-    console.log('currentList', currentList)
+
     dispatch({
       type: 'physicalMoney/updateState',
       payload: {
@@ -93,7 +53,9 @@ const FormComponent = ({
                 return (
                   <div>
                     <FormItem hasFeedback>
-                      {getFieldDecorator(`${column.name}-${column.type}`, { initialValue: 1 })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+                      {getFieldDecorator(`${column.name}-${column.type}`, {
+                        initialValue: 0
+                      })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
                     </FormItem>
                   </div>
                 )

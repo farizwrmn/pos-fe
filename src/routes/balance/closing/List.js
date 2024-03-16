@@ -78,7 +78,7 @@ const List = ({
   listUser,
   dispatch,
   button,
-  // onSubmit,
+  onSubmit,
   form: {
     getFieldDecorator,
     validateFields,
@@ -101,8 +101,7 @@ const List = ({
           if (list && list.length > 0) {
             data.detail = list
           }
-          console.log('data', data)
-          // onSubmit(data)
+          onSubmit(data)
           resetFields()
         },
         onCancel () { }

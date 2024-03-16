@@ -21,6 +21,9 @@ const Container = ({ loading, physicalMoney, physicalMoneyDeposit, balance, shif
     dispatch,
     button: 'Close',
     onSubmit (data) {
+      data.total = data.detail.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+      data.fingerEmployeeId = data.approveUserId
+      data.cashierUserId = data.approveUserId
       if (data && currentItem && currentItem.id) {
         const params = {
           balanceId: currentItem.id,
@@ -44,6 +47,12 @@ const Container = ({ loading, physicalMoney, physicalMoneyDeposit, balance, shif
               })
             })
         }
+        dispatch({
+          type: 'physicalMoneyDeposit/add',
+          payload: {
+            data
+          }
+        })
         dispatch({
           type: 'balance/closed',
           payload: {
