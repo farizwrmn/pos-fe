@@ -98,15 +98,15 @@ const FormCounter = ({
         <Col {...column}>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
-              initialValue: item.name,
+              initialValue: item.name || '@Rp10.000',
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input />)}
+            })(<Input placeholder="@Rp10.000" />)}
           </FormItem>
-          <FormItem label="Type">
+          <FormItem label="Type" {...formItemLayout}>
             {getFieldDecorator('type', {
               initialValue: item.type || undefined,
               rules: [
@@ -116,7 +116,10 @@ const FormCounter = ({
                 }
               ]
             })(
-              <Select placeholder="Select Type Money Lembar/Keping">
+              <Select
+                allowClear
+                placeholder="Select Lembar/Keping"
+              >
                 {physicalMoneyOption}
               </Select>
             )}

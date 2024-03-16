@@ -6,6 +6,7 @@ import {
   BALANCE_TYPE_TRANSACTION
 } from 'utils/variable'
 import FormHeader from './Form'
+import AdvanceForm from './AdvanceForm'
 
 const FormItem = Form.Item
 
@@ -69,6 +70,8 @@ const FormComponent = ({
 
 const List = ({
   item,
+  list,
+  listPhysicalMoneyDeposit,
   loading,
   listOpts = [],
   listShift,
@@ -110,27 +113,34 @@ const List = ({
       getFieldDecorator
     }
   }
+  const advanceFormProps = {
+    list,
+    listPhysicalMoneyDeposit
+  }
 
   return (
-    <Form layout="horizontal">
-      <FormHeader {...formComponentProps} />
-      <FormLabel />
-      {listOpts && listOpts.map((detail) => {
-        const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
-        if (filteredValue && filteredValue[0]) {
-          return (
-            <FormComponent
-              defaultValue={filteredValue}
-              getFieldDecorator={getFieldDecorator}
-              label={detail.typeName}
-              name={detail.typeCode}
-            />
-          )
-        }
-        return null
-      })}
-      <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
-    </Form>
+    <div>
+      <Form layout="horizontal">
+        <FormHeader {...formComponentProps} />
+        <FormLabel />
+        <AdvanceForm {...advanceFormProps} />
+        {listOpts && listOpts.map((detail) => {
+          const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
+          if (filteredValue && filteredValue[0]) {
+            return (
+              <FormComponent
+                defaultValue={filteredValue}
+                getFieldDecorator={getFieldDecorator}
+                label={detail.typeName}
+                name={detail.typeCode}
+              />
+            )
+          }
+          return null
+        })}
+        <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
+      </Form>
+    </div>
   )
 }
 

@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const Counter = ({ physicalMoney, loading, dispatch, location, app }) => {
-  const { listSequence, pagination, modalType, currentItem, activeKey } = physicalMoney
+  const { list, pagination, modalType, currentItem, activeKey } = physicalMoney
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -24,7 +24,7 @@ const Counter = ({ physicalMoney, loading, dispatch, location, app }) => {
   }
 
   const listProps = {
-    dataSource: listSequence,
+    dataSource: list,
     user,
     storeInfo,
     pagination,

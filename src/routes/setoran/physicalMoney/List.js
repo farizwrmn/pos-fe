@@ -6,6 +6,7 @@ import { DropOption } from 'components'
 const confirm = Modal.confirm
 
 const List = ({ editItem, deleteItem, ...tableProps }) => {
+  console.log('tableProps', tableProps)
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -21,59 +22,14 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id'
+      title: 'name',
+      dataIndex: 'name',
+      key: 'name'
     },
     {
-      title: 'Store Id',
-      dataIndex: 'storeId',
-      key: 'storeId'
-    },
-    {
-      title: 'Code',
-      dataIndex: 'seqCode',
-      key: 'seqCode'
-    },
-    {
-      title: 'Type Seq',
-      dataIndex: 'typeSeq',
-      key: 'typeSeq'
-    },
-    {
-      title: 'Sequence',
-      dataIndex: 'seqName',
-      key: 'seqName'
-    },
-    {
-      title: 'Value',
-      dataIndex: 'seqValue',
-      key: 'seqValue'
-    },
-    {
-      title: 'Initial Char',
-      dataIndex: 'initialChar',
-      key: 'initialChar'
-    },
-    {
-      title: 'Max Number',
-      dataIndex: 'maxNumber',
-      key: 'maxNumber'
-    },
-    {
-      title: 'Reset Type',
-      dataIndex: 'resetType',
-      key: 'resetType'
-    },
-    {
-      title: 'Reset Date',
-      dataIndex: 'resetDate',
-      key: 'resetDate'
-    },
-    {
-      title: 'Old Value',
-      dataIndex: 'oldValue',
-      key: 'oldValue'
+      title: 'type',
+      dataIndex: 'type',
+      key: 'type'
     },
     {
       title: 'Operation',
@@ -81,7 +37,7 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete', disabled: false }]} />
       }
     }
   ]

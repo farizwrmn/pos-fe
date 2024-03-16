@@ -578,6 +578,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/detail/user'))
               registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
+              registerModel(app, require('./models/setoran/physicalMoney'))
               cb(null, require('./routes/balance/closing'))
             }, 'balance-closing')
           }
