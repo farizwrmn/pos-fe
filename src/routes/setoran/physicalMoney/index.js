@@ -94,7 +94,9 @@ const Counter = ({ physicalMoney, loading, dispatch, location, app }) => {
     onSubmit (data) {
       dispatch({
         type: `physicalMoney/${modalType}`,
-        payload: data
+        payload: {
+          data
+        }
       })
     },
     onCancel () {
