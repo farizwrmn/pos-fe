@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form, InputNumber, Row, Col } from 'antd'
+import { currencyFormatter } from 'utils/string'
 
 const FormItem = Form.Item
 
@@ -44,9 +45,10 @@ const FormComponent = ({
   return (
     <Row>
       <Col {...column}>
-        <table style={{ 'border-collapse': 'collapse', width: '50%', marginLeft: '12em' }}>
+        <table style={{ 'border-collapse': 'collapse', width: '100%', marginLeft: '10em' }}>
           <tr>
             <th>JUMLAH LEMBAR</th>
+            <th>Lembar</th>
             <th>PECAHAN</th>
             <th>TOTAL</th>
           </tr>
@@ -67,6 +69,15 @@ const FormComponent = ({
             <td>
               {list && list.length > 0 && list.map((column) => {
                 return (
+                  <div style={{ margin: '2em', alignItems: 'center' }}>
+                    <p>{column.type}</p>
+                  </div>
+                )
+              })}
+            </td>
+            <td>
+              {list && list.length > 0 && list.map((column) => {
+                return (
                   <div style={{ margin: '2em 2em 2em 0', alignItems: 'center' }}>
                     <p>{column.name}</p>
                   </div>
@@ -77,15 +88,15 @@ const FormComponent = ({
               {list && list.length > 0 && list.map((column) => {
                 return (
                   <div style={{ margin: '2em', alignItems: 'center' }}>
-                    <p>{column.amount || 0}</p>
+                    <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
                   </div>
                 )
               })}
             </td>
           </tr>
           <tr>
-            <td colSpan={2}>Subtotal</td>
-            <td>{list && list.length > 0 && list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0).toLocaleString()}</td>
+            <td colSpan={3}>Subtotal</td>
+            <td>{list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}</td>
           </tr>
         </table>
       </Col>

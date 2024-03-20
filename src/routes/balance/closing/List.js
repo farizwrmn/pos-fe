@@ -23,18 +23,18 @@ const formItemLayout = {
   }
 }
 
-const FormLabel = () => {
-  return (
-    <Row label={(<div />)} hasFeedback {...formItemLayout}>
-      <Col {...formItemLayout.labelCol} />
-      <Col {...formItemLayout.wrapperCol}>
-        <Row>
-          <Col span={8}><div>Sales</div></Col>
-        </Row>
-      </Col>
-    </Row>
-  )
-}
+// const FormLabel = () => {
+//   return (
+//     <Row label={(<div />)} hasFeedback {...formItemLayout}>
+//       <Col {...formItemLayout.labelCol} />
+//       <Col {...formItemLayout.wrapperCol}>
+//         <Row>
+//           <Col span={8}><div>Sales</div></Col>
+//         </Row>
+//       </Col>
+//     </Row>
+//   )
+// }
 
 const FormComponent = ({
   label,
@@ -136,7 +136,7 @@ const List = ({
     <div>
       <Form layout="horizontal">
         <FormHeader {...formComponentProps} />
-        <FormLabel />
+        {/* <FormLabel /> */}
         <AdvanceForm {...advanceFormProps} />
         {listOpts && listOpts.map((detail) => {
           const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
