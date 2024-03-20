@@ -13,6 +13,7 @@ const column = {
 const FormComponent = ({
   dispatch,
   list = [],
+  setCashValue,
   form: {
     // getFieldsValue,
     getFieldDecorator
@@ -36,6 +37,8 @@ const FormComponent = ({
         list: currentList
       }
     })
+    let amount = currentList && currentList.length > 0 && currentList.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+    setCashValue(amount)
   }
 
   return (

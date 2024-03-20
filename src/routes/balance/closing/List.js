@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Modal, InputNumber, Row, Col } from 'antd'
+import { Form, Button, Modal, InputNumber, Row, Col, message } from 'antd'
 import { lstorage } from 'utils'
 import {
   BALANCE_TYPE_TRANSACTION
@@ -83,7 +83,8 @@ const List = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
   const handleSubmit = () => {
@@ -98,8 +99,11 @@ const List = ({
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          if (list && list.length > 0) {
-            data.detail = list
+          data.detail = list
+          let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+          if (listAmount <= 0) {
+            message.error('Enter a valid cash amount')
+            return
           }
           onSubmit(data)
           resetFields()
@@ -120,7 +124,12 @@ const List = ({
   const advanceFormProps = {
     dispatch,
     list,
-    listDeposit: listPhysicalMoneyDeposit
+    listDeposit: listPhysicalMoneyDeposit,
+    setCashValue (amount) {
+      setFieldsValue({
+        'detail[C][balanceIn]': amount
+      })
+    }
   }
 
   return (
