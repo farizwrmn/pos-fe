@@ -177,35 +177,39 @@ const List = ({
         width={800}
         okText="Ok"
         cancelText="Cancel"
-        title="Confirmation Closing"
+        title="Konfirmasi penutupan setoran"
         visible={visible}
         onOk={() => handleSubmit()}
         onCancel={() => closeVisible()}
       >
         {/* Shift */}
-        <p style={{ fontWeight: 'bold' }}>Shift: {itemShift ? itemShift.shiftName : 'N/A'}</p>
+        <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Shift: {itemShift ? itemShift.shiftName : 'N/A'}</p>
         {/* Cahsier Name */}
-        <p style={{ fontWeight: 'bold', marginBottom: '1em' }}>Nama Cashier: {itemCashier ? itemCashier.username : 'N/A'}</p>
+        <p style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '1em' }}>Nama Cashier: {itemCashier ? itemCashier.username : 'N/A'}</p>
         <ConfirmationDialog {...confirmationDialogProps} />
       </Modal>
       <Form layout="horizontal">
         <FormHeader {...formComponentProps} />
         {/* <FormLabel /> */}
         <AdvanceForm {...advanceFormProps} />
-        {listOpts && listOpts.map((detail) => {
-          const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
-          if (filteredValue && filteredValue[0]) {
-            return (
-              <FormComponent
-                defaultValue={filteredValue}
-                getFieldDecorator={getFieldDecorator}
-                label={detail.typeName}
-                name={detail.typeCode}
-              />
-            )
-          }
-          return null
-        })}
+        <div style={{ marginTop: '1em', marginLeft: '11em' }}>
+          {listOpts && listOpts.map((detail) => {
+            const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
+            if (filteredValue && filteredValue[0]) {
+              return (
+                <FormComponent
+                  defaultValue={filteredValue}
+                  getFieldDecorator={getFieldDecorator}
+                  // label={detail.typeName}
+                  // previous value Cash
+                  label="Subtotal"
+                  name={detail.typeCode}
+                />
+              )
+            }
+            return null
+          })}
+        </div>
         <Button type="primary" disabled={loading.effects['balance/closed']} onClick={() => handleOpenVisible()}>{button}</Button>
       </Form>
     </div>

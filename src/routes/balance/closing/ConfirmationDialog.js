@@ -1,15 +1,9 @@
 import React from 'react'
-import { Form, InputNumber, Row, Col } from 'antd'
+import { Table, Form, InputNumber, Row, Col } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const FormItem = Form.Item
-
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
-}
+const Column = Table.Column
 
 const ConfirmationDialog = ({
   dispatch,
@@ -43,10 +37,71 @@ const ConfirmationDialog = ({
     setCashValue(amount)
   }
 
+  const tableProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    dataSource: list
+  }
+
   return (
-    <Row>
-      <Col {...column}>
-        <table style={{ 'border-collapse': 'collapse', width: '100%' }}>
+    <div style={{ margin: '0 12em' }}>
+      <Table {...tableProps}>
+        <Column
+          title="JUMLAH LEMBAR"
+          dataIndex="JUMLAH_LEMBAR"
+          key="JUMLAH_LEMBAR"
+          render={(text, column) => (
+            <div>
+              <FormItem hasFeedback>
+                {getFieldDecorator(`${column.name}-${column.type}`, {
+                  initialValue: column && column.qty ? column.qty : 0
+                })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+              </FormItem>
+            </div>
+          )}
+        />
+        <Column
+          title="LEMBAR"
+          dataIndex="LEMBAR"
+          key="LEMBAR"
+          render={(text, column) => (
+            <div>
+              <p>{column.type}</p>
+            </div>
+          )}
+        />
+        <Column
+          title="PECAHAN"
+          dataIndex="name"
+          key="name"
+          render={(text, column) => (
+            <div>
+              <p>{column.name}</p>
+            </div>
+          )}
+        />
+        <Column
+          title="TOTAL"
+          dataIndex="amount"
+          key="amount"
+          render={(text, column) => (
+            <div>
+              <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
+            </div>
+          )}
+        />
+      </Table>
+      <Row style={{ padding: '1em' }}>
+        <Col span={20}>
+          <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+        </Col>
+        <Col span={4}>
+          <p style={{ fontWeight: 'bold' }}>
+            {list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+          </p>
+        </Col>
+      </Row>
+      {/* <table style={{ 'border-collapse': 'collapse', width: '100%' }}>
           <tr>
             <th>JUMLAH LEMBAR</th>
             <th>Lembar</th>
@@ -99,9 +154,8 @@ const ConfirmationDialog = ({
             <td colSpan={3}>Subtotal</td>
             <td>{list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}</td>
           </tr>
-        </table>
-      </Col>
-    </Row>
+        </table> */}
+    </div>
   )
 }
 

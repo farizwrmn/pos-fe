@@ -1,8 +1,9 @@
 import React from 'react'
-import { Form, InputNumber, Row, Col } from 'antd'
+import { Form, Table, InputNumber, Row, Col } from 'antd'
 import { currencyFormatter } from 'utils/string'
 
 const FormItem = Form.Item
+const Column = Table.Column
 
 const column = {
   sm: { span: 24 },
@@ -43,13 +44,65 @@ const FormComponent = ({
     setCashValue(amount)
   }
 
+  const tableProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    dataSource: list
+  }
+
   return (
     <Row>
       <Col {...column}>
-        <table style={{ 'border-collapse': 'collapse', width: '100%', marginLeft: '10em' }}>
+        <Table {...tableProps}>
+          <Column
+            title="JUMLAH LEMBAR"
+            dataIndex="JUMLAH_LEMBAR"
+            key="JUMLAH_LEMBAR"
+            render={(text, column) => (
+              <div>
+                <FormItem hasFeedback>
+                  {getFieldDecorator(`${column.name}-${column.type}`, {
+                    initialValue: column && column.qty ? column.qty : 0
+                  })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+                </FormItem>
+              </div>
+            )}
+          />
+          <Column
+            title="LEMBAR"
+            dataIndex="LEMBAR"
+            key="LEMBAR"
+            render={(text, column) => (
+              <div>
+                <p>{column.type}</p>
+              </div>
+            )}
+          />
+          <Column
+            title="PECAHAN"
+            dataIndex="name"
+            key="name"
+            render={(text, column) => (
+              <div>
+                <p>{column.name}</p>
+              </div>
+            )}
+          />
+          <Column
+            title="TOTAL"
+            dataIndex="amount"
+            key="amount"
+            render={(text, column) => (
+              <div>
+                <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
+              </div>
+            )}
+          />
+        </Table>
+        {/* <table style={{ 'border-collapse': 'collapse', width: '100%', marginLeft: '10em' }}>
           <tr>
             <th>JUMLAH LEMBAR</th>
-            <th>Lembar</th>
+            <th>LEMBAR</th>
             <th>PECAHAN</th>
             <th>TOTAL</th>
           </tr>
@@ -103,7 +156,7 @@ const FormComponent = ({
               </p>
             </td>
           </tr>
-        </table>
+        </table> */}
       </Col>
     </Row>
   )
