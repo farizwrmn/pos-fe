@@ -11,7 +11,7 @@ const column = {
   xl: { span: 12 }
 }
 
-const FormComponent = ({
+const ConfirmationDialog = ({
   dispatch,
   list = [],
   setCashValue,
@@ -60,8 +60,8 @@ const FormComponent = ({
                   <div>
                     <FormItem hasFeedback>
                       {getFieldDecorator(`${column.name}-${column.type}`, {
-                        initialValue: 0
-                      })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+                        initialValue: column && column.qty ? column.qty : 0
+                      })(<InputNumber disabled min={0} onChange={value => onChangeInput(column, value)} />)}
                     </FormItem>
                   </div>
                 )
@@ -106,4 +106,4 @@ const FormComponent = ({
 }
 
 
-export default Form.create()(FormComponent)
+export default Form.create()(ConfirmationDialog)

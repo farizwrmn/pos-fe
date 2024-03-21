@@ -5,7 +5,7 @@ import List from './List'
 
 const Container = ({ loading, physicalMoney, physicalMoneyDeposit, balance, shift, userDetail, dispatch, paymentOpts }) => {
   const { list } = physicalMoney
-  const { list: listPhysicalMoneyDeposit } = physicalMoneyDeposit
+  const { list: listPhysicalMoneyDeposit, visible } = physicalMoneyDeposit
   const { currentItem } = balance
   const { listShift } = shift
   const { listOpts } = paymentOpts
@@ -20,6 +20,23 @@ const Container = ({ loading, physicalMoney, physicalMoneyDeposit, balance, shif
     listUser: data && data.data,
     dispatch,
     button: 'Close',
+    visible,
+    onVisible () {
+      dispatch({
+        type: 'physicalMoneyDeposit/updateState',
+        payload: {
+          visible: true
+        }
+      })
+    },
+    closeVisible () {
+      dispatch({
+        type: 'physicalMoneyDeposit/updateState',
+        payload: {
+          visible: false
+        }
+      })
+    },
     onSubmit (data) {
       data.total = data.detail.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       data.fingerEmployeeId = data.approveUserId

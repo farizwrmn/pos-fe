@@ -7,6 +7,7 @@ import {
 } from 'utils/variable'
 import FormHeader from './Form'
 import AdvanceForm from './AdvanceForm'
+import ConfirmationDialog from './ConfirmationDialog'
 
 const FormItem = Form.Item
 
@@ -69,6 +70,7 @@ const FormComponent = ({
 }
 
 const List = ({
+  visible,
   item,
   list,
   listPhysicalMoneyDeposit,
@@ -79,6 +81,8 @@ const List = ({
   dispatch,
   button,
   onSubmit,
+  onVisible,
+  closeVisible,
   form: {
     getFieldDecorator,
     validateFields,
@@ -87,6 +91,25 @@ const List = ({
     setFieldsValue
   }
 }) => {
+  const handleOpenVisible = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        storeId: lstorage.getCurrentUserStore(),
+        ...getFieldsValue()
+      }
+      data.detail = list
+      let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+      if (listAmount <= 0) {
+        message.error('Enter a valid cash amount')
+        return
+      }
+      onVisible()
+    })
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -96,20 +119,15 @@ const List = ({
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          data.detail = list
-          let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
-          if (listAmount <= 0) {
-            message.error('Enter a valid cash amount')
-            return
-          }
-          onSubmit(data)
-          resetFields()
-        },
-        onCancel () { }
-      })
+      data.detail = list
+      let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+      if (listAmount <= 0) {
+        message.error('Enter a valid cash amount')
+        return
+      }
+      onSubmit(data)
+      resetFields()
+      closeVisible()
     })
   }
 
@@ -131,9 +149,41 @@ const List = ({
       })
     }
   }
+  const confirmationDialogProps = {
+    dispatch,
+    list,
+    listDeposit: listPhysicalMoneyDeposit,
+    setCashValue (amount) {
+      setFieldsValue({
+        'detail[C][balanceIn]': amount
+      })
+    }
+  }
+
+  const formData = {
+    ...getFieldsValue()
+  }
+  const filterShift = listShift && listShift.length >= 0 && listShift.filter(item => item.id === formData.shiftId)
+  const filterCashier = listUser && listUser.length >= 0 && listUser.filter(item => item.id === formData.approveUserId)
+  const itemShift = filterShift && filterShift[0] ? filterShift[0] : null
+  const itemCashier = filterCashier && filterCashier[0] ? filterCashier[0] : null
 
   return (
     <div>
+      <Modal
+        okText="Ok"
+        cancelText="Cancel"
+        title="Confirmation Closing"
+        visible={visible}
+        onOk={() => handleSubmit()}
+        onCancel={() => closeVisible()}
+      >
+        {/* Shift */}
+        <p style={{ fontWeight: 'bold' }}>Shift: {itemShift ? itemShift.shiftName : 'N/A'}</p>
+        {/* Cahsier Name */}
+        <p style={{ fontWeight: 'bold' }}>Nama Cashier: {itemCashier ? itemCashier.userName : 'N/A'}</p>
+        <ConfirmationDialog {...confirmationDialogProps} />
+      </Modal>
       <Form layout="horizontal">
         <FormHeader {...formComponentProps} />
         {/* <FormLabel /> */}
@@ -152,7 +202,7 @@ const List = ({
           }
           return null
         })}
-        <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
+        <Button type="primary" disabled={loading.effects['balance/closed']} onClick={() => handleOpenVisible()}>{button}</Button>
       </Form>
     </div>
   )

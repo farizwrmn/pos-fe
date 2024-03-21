@@ -12,6 +12,7 @@ export default modelExtend(pageModel, {
   namespace: 'physicalMoneyDeposit',
 
   state: {
+    visible: false,
     currentItem: {},
     newTransNo: '',
     modalType: 'add',
