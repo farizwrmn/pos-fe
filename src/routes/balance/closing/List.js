@@ -78,6 +78,7 @@ const List = ({
   listOpts = [],
   listShift,
   listUser,
+  user,
   dispatch,
   button,
   onSubmit,
@@ -153,6 +154,7 @@ const List = ({
     dispatch,
     list,
     listDeposit: listPhysicalMoneyDeposit,
+    width: '800px',
     setCashValue (amount) {
       setFieldsValue({
         'detail[C][balanceIn]': amount
@@ -164,9 +166,10 @@ const List = ({
     ...getFieldsValue()
   }
   const filterShift = listShift && listShift.length >= 0 && listShift.filter(item => item.id === formData.shiftId)
-  const filterCashier = listUser && listUser.length >= 0 && listUser.filter(item => item.id === formData.approveUserId)
   const itemShift = filterShift && filterShift[0] ? filterShift[0] : null
-  const itemCashier = filterCashier && filterCashier[0] ? filterCashier[0] : null
+  // const filterCashier = listUser && listUser.length >= 0 && listUser.filter(item => item.id === formData.approveUserId)
+  // const itemCashier = filterCashier && filterCashier[0] ? filterCashier[0] : null
+  const itemCashier = user
 
   return (
     <div>
@@ -181,7 +184,7 @@ const List = ({
         {/* Shift */}
         <p style={{ fontWeight: 'bold' }}>Shift: {itemShift ? itemShift.shiftName : 'N/A'}</p>
         {/* Cahsier Name */}
-        <p style={{ fontWeight: 'bold' }}>Nama Cashier: {itemCashier ? itemCashier.userName : 'N/A'}</p>
+        <p style={{ fontWeight: 'bold' }}>Nama Cashier: {itemCashier ? itemCashier.username : 'N/A'}</p>
         <ConfirmationDialog {...confirmationDialogProps} />
       </Modal>
       <Form layout="horizontal">
