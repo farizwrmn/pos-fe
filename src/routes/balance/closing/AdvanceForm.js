@@ -60,7 +60,7 @@ const FormComponent = ({
                   <div>
                     <FormItem hasFeedback>
                       {getFieldDecorator(`${column.name}-${column.type}`, {
-                        initialValue: 0
+                        initialValue: column && column.qty ? column.qty : 0
                       })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
                     </FormItem>
                   </div>

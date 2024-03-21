@@ -56,6 +56,7 @@ const FormComponent = ({
               ]
             })(
               <InputNumber
+                disabled
                 min={0}
                 style={{ width: '60%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
