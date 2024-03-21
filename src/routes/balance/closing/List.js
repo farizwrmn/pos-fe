@@ -155,7 +155,6 @@ const List = ({
     dispatch,
     list,
     listDeposit: listPhysicalMoneyDeposit,
-    width: '800px',
     setCashValue (amount) {
       setFieldsValue({
         'detail[C][balanceIn]': amount
@@ -175,6 +174,7 @@ const List = ({
   return (
     <div>
       <Modal
+        width={800}
         okText="Ok"
         cancelText="Cancel"
         title="Confirmation Closing"
