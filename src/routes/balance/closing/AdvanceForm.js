@@ -96,8 +96,12 @@ const FormComponent = ({
             </td>
           </tr>
           <tr>
-            <td colSpan={3}>Subtotal</td>
-            <td>{list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}</td>
+            <td colSpan={3}><p style={{ fontWeight: 'bold' }}>Subtotal</p></td>
+            <td>
+              <p style={{ fontWeight: 'bold' }}>
+                {list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+              </p>
+            </td>
           </tr>
         </table>
       </Col>

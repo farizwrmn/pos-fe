@@ -46,7 +46,7 @@ const ConfirmationDialog = ({
   return (
     <Row>
       <Col {...column}>
-        <table style={{ 'border-collapse': 'collapse', width: '100%', marginLeft: '10em' }}>
+        <table style={{ 'border-collapse': 'collapse', width: '100%' }}>
           <tr>
             <th>JUMLAH LEMBAR</th>
             <th>Lembar</th>

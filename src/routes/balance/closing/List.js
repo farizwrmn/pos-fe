@@ -184,7 +184,7 @@ const List = ({
         {/* Shift */}
         <p style={{ fontWeight: 'bold' }}>Shift: {itemShift ? itemShift.shiftName : 'N/A'}</p>
         {/* Cahsier Name */}
-        <p style={{ fontWeight: 'bold' }}>Nama Cashier: {itemCashier ? itemCashier.username : 'N/A'}</p>
+        <p style={{ fontWeight: 'bold', marginBottom: '1em' }}>Nama Cashier: {itemCashier ? itemCashier.username : 'N/A'}</p>
         <ConfirmationDialog {...confirmationDialogProps} />
       </Modal>
       <Form layout="horizontal">
