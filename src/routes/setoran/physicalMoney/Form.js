@@ -134,6 +134,16 @@ const FormCounter = ({
               </Select>
             )}
           </FormItem>
+          <FormItem label="sequenceNumber" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('sequenceNumber', {
+              initialValue: item.sequenceNumber || null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={0} placeholder="enter sequence number" />)}
+          </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>

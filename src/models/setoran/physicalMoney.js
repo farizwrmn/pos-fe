@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/setoran/physicalMoney'
+import { query, queryAll, add, edit, remove } from 'services/setoran/physicalMoney'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -30,7 +30,7 @@ export default modelExtend(pageModel, {
         const { activeKey, modalType, ...other } = location.query
         const { pathname } = location
         if (pathname === '/balance/closing') {
-          dispatch({ type: 'query', payload: { ...other } })
+          dispatch({ type: 'queryAll', payload: { ...other } })
         }
         if (pathname === '/balance/master/physical-money') {
           dispatch({
@@ -50,6 +50,23 @@ export default modelExtend(pageModel, {
   effects: {
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+
+    * queryAll ({ payload = {} }, { call, put }) {
+      const data = yield call(queryAll, payload)
       if (data.success) {
         yield put({
           type: 'querySuccess',

@@ -28,7 +28,14 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
     {
       title: 'type',
       dataIndex: 'type',
-      key: 'type'
+      key: 'type',
+      width: 200
+    },
+    {
+      title: 'sequenceNumber',
+      dataIndex: 'sequenceNumber',
+      key: 'sequenceNumber',
+      width: 200
     },
     {
       title: 'Operation',
