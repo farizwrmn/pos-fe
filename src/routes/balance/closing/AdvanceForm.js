@@ -59,7 +59,7 @@ const FormComponent = ({
             dataIndex="JUMLAH_LEMBAR"
             key="JUMLAH_LEMBAR"
             render={(text, column) => (
-              <div>
+              <div style={{ textAlign: 'right' }}>
                 <FormItem hasFeedback>
                   {getFieldDecorator(`${column.name}-${column.type}`, {
                     initialValue: column && column.qty ? column.qty : 0
