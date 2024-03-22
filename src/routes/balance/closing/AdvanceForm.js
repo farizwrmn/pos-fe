@@ -15,6 +15,8 @@ const column = {
 const FormComponent = ({
   dispatch,
   list = [],
+  // listEdc = [],
+  // listVoid = [],
   setCashValue,
   form: {
     // getFieldsValue,
@@ -50,6 +52,108 @@ const FormComponent = ({
     dataSource: list
   }
 
+  // const listEdcProps = {
+  //   pagination: false,
+  //   defaultExpandAllRows: true,
+  //   dataSource: listEdc
+  // }
+
+  // const listVoidProps = {
+  //   pagination: false,
+  //   defaultExpandAllRows: true,
+  //   dataSource: listVoid
+  // }
+
+  // const ListEdc = () => {
+  //   return (
+  //     <div>
+  //       <p style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</p>
+  //       <Table {...listEdcProps}>
+  //         <Column
+  //           title="JUMLAH LEMBAR"
+  //           dataIndex="JUMLAH_LEMBAR"
+  //           key="JUMLAH_LEMBAR"
+  //           render={(text, column) => (
+  //             <div style={{ textAlign: 'right' }}>
+  //               <FormItem hasFeedback>
+  //                 {getFieldDecorator(`${column.name}-${column.type}`, {
+  //                   initialValue: column && column.qty ? column.qty : 0
+  //                 })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+  //               </FormItem>
+  //             </div>
+  //           )}
+  //         />
+  //         <Column
+  //           title="LEMBAR"
+  //           dataIndex="LEMBAR"
+  //           key="LEMBAR"
+  //           render={(text, column) => (
+  //             <div>
+  //               <p>{column.type}</p>
+  //             </div>
+  //           )}
+  //         />
+  //       </Table>
+
+  //       <Row style={{ padding: '1em' }}>
+  //         <Col span={20}>
+  //           <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+  //         </Col>
+  //         <Col span={4}>
+  //           <p style={{ fontWeight: 'bold' }}>
+  //             {listEdc && listEdc.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+  //           </p>
+  //         </Col>
+  //       </Row>
+  //     </div>
+  //   )
+  // }
+
+  // const ListVoid = () => {
+  //   return (
+  //     <div>
+  //       <p style={{ fontWeight: 'bold' }}>Struk Void / Cancel</p>
+  //       <Table {...listVoidProps}>
+  //         <Column
+  //           title="JUMLAH LEMBAR"
+  //           dataIndex="JUMLAH_LEMBAR"
+  //           key="JUMLAH_LEMBAR"
+  //           render={(text, column) => (
+  //             <div style={{ textAlign: 'right' }}>
+  //               <FormItem hasFeedback>
+  //                 {getFieldDecorator(`${column.name}-${column.type}`, {
+  //                   initialValue: column && column.qty ? column.qty : 0
+  //                 })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+  //               </FormItem>
+  //             </div>
+  //           )}
+  //         />
+  //         <Column
+  //           title="LEMBAR"
+  //           dataIndex="LEMBAR"
+  //           key="LEMBAR"
+  //           render={(text, column) => (
+  //             <div>
+  //               <p>{column.amount}</p>
+  //             </div>
+  //           )}
+  //         />
+  //       </Table>
+
+  //       <Row style={{ padding: '1em' }}>
+  //         <Col span={20}>
+  //           <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+  //         </Col>
+  //         <Col span={4}>
+  //           <p style={{ fontWeight: 'bold' }}>
+  //             {listVoid && listVoid.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+  //           </p>
+  //         </Col>
+  //       </Row>
+  //     </div>
+  //   )
+  // }
+
   return (
     <Row>
       <Col {...column}>
@@ -59,7 +163,7 @@ const FormComponent = ({
             dataIndex="JUMLAH_LEMBAR"
             key="JUMLAH_LEMBAR"
             render={(text, column) => (
-              <div style={{ textAlign: 'right' }}>
+              <div style={{ textAlign: 'center' }}>
                 <FormItem hasFeedback>
                   {getFieldDecorator(`${column.name}-${column.type}`, {
                     initialValue: column && column.qty ? column.qty : 0
@@ -158,6 +262,16 @@ const FormComponent = ({
           </tr>
         </table> */}
       </Col>
+      {/* <Col {...column}>
+        <Row>
+          <Col>
+            <ListEdc />
+          </Col>
+          <Col>
+            <ListVoid />
+          </Col>
+        </Row>
+      </Col> */}
     </Row>
   )
 }

@@ -52,7 +52,7 @@ const ConfirmationDialog = ({
           dataIndex="JUMLAH_LEMBAR"
           key="JUMLAH_LEMBAR"
           render={(text, column) => (
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ textAlign: 'center' }}>
               {column && column.qty ? (
                 <FormItem hasFeedback>
                   {getFieldDecorator(`${column.name}-${column.type}`, {
