@@ -61,7 +61,6 @@ export default modelExtend(pageModel, {
     * queryByBalanceId ({ payload = {} }, { call, put }) {
       const data = yield call(queryByBalanceId, payload)
       if (data.success) {
-        console.log('data', data)
         yield put({
           type: 'updateState',
           payload: {
