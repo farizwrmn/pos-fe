@@ -40,6 +40,9 @@ const Container = ({ loading, physicalMoney, physicalMoneyDeposit, balance, shif
       })
     },
     onSubmit (data) {
+      if (currentItem && currentItem.id) {
+        data.balanceId = currentItem ? currentItem.id : null
+      }
       data.total = data.detail.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       data.fingerEmployeeId = data.approveUserId
       data.cashierUserId = data.approveUserId

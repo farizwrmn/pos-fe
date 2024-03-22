@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
+import { query, queryById, queryByBalanceId, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
+import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -13,6 +14,7 @@ export default modelExtend(pageModel, {
 
   state: {
     visible: false,
+    itemBalance: null,
     currentItem: {},
     newTransNo: '',
     modalType: 'add',
@@ -30,6 +32,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, modalType, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/balance/invoice/:id').exec(pathname)
+        const balanceId = match && match[1]
+        if (match) {
+          dispatch({
+            type: 'queryByBalanceId',
+            payload: {
+              id: balanceId
+            }
+          })
+        }
         if (pathname === '/balance/closing') {
           dispatch({
             type: 'updateState',
@@ -46,6 +58,31 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryByBalanceId, payload)
+      if (data.success) {
+        console.log('data', data)
+        yield put({
+          type: 'updateState',
+          payload: {
+            itemBalance: data.data
+          }
+        })
+      }
+    },
+
+    * queryById ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            item: data.data
+          }
+        })
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data.success) {

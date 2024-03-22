@@ -9,8 +9,9 @@ import Header from './Header'
 import Body from './Body'
 // import Footer from './Footer'
 
-const Invoice = ({ balanceDetail, paymentOpts }) => {
+const Invoice = ({ balanceDetail, paymentOpts, physicalMoneyDeposit }) => {
   let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+  const { itemBalance } = physicalMoneyDeposit
   const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
 
@@ -26,6 +27,7 @@ const Invoice = ({ balanceDetail, paymentOpts }) => {
     openDate: moment(currentItem.open).format('DD-MMM-YYYY HH:mm'),
     closeDate: moment(currentItem.closed).format('DD-MMM-YYYY HH:mm')
   }
+
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
@@ -38,6 +40,7 @@ const Invoice = ({ balanceDetail, paymentOpts }) => {
               <Body
                 dataPos={invoiceInfo.dataPos || []}
                 listOpts={listOpts || []}
+                itemBalance={itemBalance}
               />
             </div>
           ) : 'Invalid Role to see the detail'
@@ -48,7 +51,7 @@ const Invoice = ({ balanceDetail, paymentOpts }) => {
 }
 
 export default connect(({
-  balance, balanceDetail, shift, paymentOpts, loading, app
+  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }) => ({
-  balance, balanceDetail, shift, paymentOpts, loading, app
+  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }))(Invoice)

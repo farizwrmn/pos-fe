@@ -1,5 +1,15 @@
 import { request, crypt } from 'utils'
 
+export async function queryByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/physical-money-deposit-balance/${params.id}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
