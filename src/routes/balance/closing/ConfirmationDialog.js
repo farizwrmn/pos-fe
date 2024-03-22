@@ -37,10 +37,11 @@ const ConfirmationDialog = ({
     setCashValue(amount)
   }
 
+  const filterList = list.filter(fitlered => !!fitlered.amount)
   const tableProps = {
     pagination: false,
     defaultExpandAllRows: true,
-    dataSource: list
+    dataSource: filterList
   }
 
   return (
@@ -52,11 +53,13 @@ const ConfirmationDialog = ({
           key="JUMLAH_LEMBAR"
           render={(text, column) => (
             <div>
-              <FormItem hasFeedback>
-                {getFieldDecorator(`${column.name}-${column.type}`, {
-                  initialValue: column && column.qty ? column.qty : 0
-                })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
-              </FormItem>
+              {column && column.qty ? (
+                <FormItem hasFeedback>
+                  {getFieldDecorator(`${column.name}-${column.type}`, {
+                    initialValue: column && column.qty ? column.qty : 0
+                  })(<InputNumber disabled min={0} onChange={value => onChangeInput(column, value)} />)}
+                </FormItem>
+              ) : null}
             </div>
           )}
         />
@@ -66,7 +69,9 @@ const ConfirmationDialog = ({
           key="LEMBAR"
           render={(text, column) => (
             <div>
-              <p>{column.type}</p>
+              {column.type ? (
+                <p>{column.type}</p>
+              ) : null}
             </div>
           )}
         />
@@ -76,7 +81,9 @@ const ConfirmationDialog = ({
           key="name"
           render={(text, column) => (
             <div>
-              <p>{column.name}</p>
+              {column.name ? (
+                <p>{column.name}</p>
+              ) : null}
             </div>
           )}
         />
@@ -86,7 +93,9 @@ const ConfirmationDialog = ({
           key="amount"
           render={(text, column) => (
             <div>
-              <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
+              {column.amount ? (
+                <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
+              ) : null}
             </div>
           )}
         />
