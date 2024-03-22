@@ -26,19 +26,22 @@ const Invoice = ({ balanceDetail, paymentOpts }) => {
     openDate: moment(currentItem.open).format('DD-MMM-YYYY HH:mm'),
     closeDate: moment(currentItem.closed).format('DD-MMM-YYYY HH:mm')
   }
-
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
         <Header invoiceInfo={invoiceInfo} />
-        {currentItem && currentItem.closed && moment(moment(currentItem.closed).format('YYYY-MM-DD'), 'YYYY-MM-DD').isBefore(moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')) ? (defaultRole === 'HKS' || defaultRole === 'ADF' || defaultRole === 'SFC' || defaultRole === 'HFC') ? (
-          <div>
-            <Body
-              dataPos={invoiceInfo.dataPos || []}
-              listOpts={listOpts || []}
-            />
-          </div>
-        ) : 'Invalid Role to see the detail' : 'Wait until tommorrow to see the detail'}
+        {currentItem && currentItem.closed
+          // && moment(moment(currentItem.closed).format('YYYY-MM-DD'), 'YYYY-MM-DD').isBefore(moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD'))
+          && moment(moment(currentItem.closed).format('YYYY-MM-DD'), 'YYYY-MM-DD').isSame(moment(), 'day')
+          ? (defaultRole === 'HKS' || defaultRole === 'ADF' || defaultRole === 'SFC' || defaultRole === 'HFC') ? (
+            <div>
+              <Body
+                dataPos={invoiceInfo.dataPos || []}
+                listOpts={listOpts || []}
+              />
+            </div>
+          ) : 'Invalid Role to see the detail'
+          : 'Wait until tommorrow to see the detail'}
       </div>
     </LocaleProvider>
   )

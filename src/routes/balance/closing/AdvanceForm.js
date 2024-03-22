@@ -1,6 +1,6 @@
 import React from 'react'
 import { Form, Table, InputNumber, Row, Col } from 'antd'
-import { currencyFormatter } from 'utils/string'
+import { currencyFormatterSetoran } from 'utils/string'
 
 const FormItem = Form.Item
 const Column = Table.Column
@@ -101,7 +101,7 @@ const FormComponent = ({
   //         </Col>
   //         <Col span={4}>
   //           <p style={{ fontWeight: 'bold' }}>
-  //             {listEdc && listEdc.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+  //             {listEdc && listEdc.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
   //           </p>
   //         </Col>
   //       </Row>
@@ -146,7 +146,7 @@ const FormComponent = ({
   //         </Col>
   //         <Col span={4}>
   //           <p style={{ fontWeight: 'bold' }}>
-  //             {listVoid && listVoid.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+  //             {listVoid && listVoid.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
   //           </p>
   //         </Col>
   //       </Row>
@@ -157,6 +157,7 @@ const FormComponent = ({
   return (
     <Row>
       <Col {...column}>
+        <h3>SETORAN UANG TUNAI</h3>
         <Table {...tableProps}>
           <Column
             title="JUMLAH LEMBAR"
@@ -198,7 +199,7 @@ const FormComponent = ({
             key="amount"
             render={(text, column) => (
               <div style={{ textAlign: 'center' }}>
-                <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
+                <p>{column.amount ? currencyFormatterSetoran(column.amount) : 0}</p>
               </div>
             )}
           />
@@ -210,7 +211,7 @@ const FormComponent = ({
           </Col>
           <Col span={4}>
             <p style={{ fontWeight: 'bold' }}>
-              {list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+              {list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
             </p>
           </Col>
         </Row>
@@ -257,7 +258,7 @@ const FormComponent = ({
               {list && list.length > 0 && list.map((column) => {
                 return (
                   <div style={{ margin: '2em', alignItems: 'center' }}>
-                    <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
+                    <p>{column.amount ? currencyFormatterSetoran(column.amount) : 0}</p>
                   </div>
                 )
               })}
@@ -267,7 +268,7 @@ const FormComponent = ({
             <td colSpan={3}><p style={{ fontWeight: 'bold' }}>Subtotal</p></td>
             <td>
               <p style={{ fontWeight: 'bold' }}>
-                {list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+                {list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
               </p>
             </td>
           </tr>

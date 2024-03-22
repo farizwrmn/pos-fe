@@ -168,7 +168,6 @@ const List = ({
   const filterShift = listShift && listShift.length >= 0 && listShift.filter(item => item.id === formData.shiftId)
   const itemShift = filterShift && filterShift[0] ? filterShift[0] : null
   const itemCashier = user
-  console.log('listOpts', listOpts)
   return (
     <div>
       <Modal
