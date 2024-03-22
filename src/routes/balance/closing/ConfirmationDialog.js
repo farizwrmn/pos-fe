@@ -80,7 +80,7 @@ const ConfirmationDialog = ({
           dataIndex="name"
           key="name"
           render={(text, column) => (
-            <div>
+            <div style={{ textAlign: 'center' }}>
               {column.name ? (
                 <p>{column.name}</p>
               ) : null}
@@ -92,7 +92,7 @@ const ConfirmationDialog = ({
           dataIndex="amount"
           key="amount"
           render={(text, column) => (
-            <div>
+            <div style={{ textAlign: 'center' }}>
               {column.amount ? (
                 <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
               ) : null}

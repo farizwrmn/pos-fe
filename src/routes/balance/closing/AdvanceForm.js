@@ -187,7 +187,7 @@ const FormComponent = ({
             dataIndex="name"
             key="name"
             render={(text, column) => (
-              <div>
+              <div style={{ textAlign: 'center' }}>
                 <p>{column.name}</p>
               </div>
             )}
@@ -197,12 +197,23 @@ const FormComponent = ({
             dataIndex="amount"
             key="amount"
             render={(text, column) => (
-              <div>
+              <div style={{ textAlign: 'center' }}>
                 <p>{column.amount ? currencyFormatter(column.amount) : 0}</p>
               </div>
             )}
           />
         </Table>
+        <Row style={{ padding: '1em' }}>
+          <Col span={4} />
+          <Col span={16}>
+            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+          </Col>
+          <Col span={4}>
+            <p style={{ fontWeight: 'bold' }}>
+              {list && list.length > 0 && currencyFormatter(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+            </p>
+          </Col>
+        </Row>
         {/* <table style={{ 'border-collapse': 'collapse', width: '100%', marginLeft: '10em' }}>
           <tr>
             <th>JUMLAH LEMBAR</th>

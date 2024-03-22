@@ -30,7 +30,7 @@ export default modelExtend(pageModel, {
         const { activeKey, modalType, ...other } = location.query
         const { pathname } = location
         if (pathname === '/balance/closing') {
-          dispatch({ type: 'query', payload: { ...other, type: 'all' } })
+          dispatch({ type: 'query', payload: { ...other, type: 'all', order: 'sequenceNumber' } })
         }
         if (pathname === '/balance/master/physical-money') {
           dispatch({

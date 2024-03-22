@@ -124,7 +124,7 @@ const List = ({
       data.detail = list
       let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       if (listAmount <= 0) {
-        message.error('Enter a valid cash amount')
+        message.error('Masukkan jumlah lembar uang tunai yang valid')
         return
       }
       onSubmit(data)
@@ -167,10 +167,8 @@ const List = ({
   }
   const filterShift = listShift && listShift.length >= 0 && listShift.filter(item => item.id === formData.shiftId)
   const itemShift = filterShift && filterShift[0] ? filterShift[0] : null
-  // const filterCashier = listUser && listUser.length >= 0 && listUser.filter(item => item.id === formData.approveUserId)
-  // const itemCashier = filterCashier && filterCashier[0] ? filterCashier[0] : null
   const itemCashier = user
-
+  console.log('listOpts', listOpts)
   return (
     <div>
       <Modal
@@ -200,10 +198,10 @@ const List = ({
                 <FormComponent
                   defaultValue={filteredValue}
                   getFieldDecorator={getFieldDecorator}
-                  // label={detail.typeName}
-                  // previous value Cash
-                  label="Subtotal"
+                  label={detail.typeName}
                   name={detail.typeCode}
+                // previous value Cash
+                // label="Subtotal"
                 />
               )
             }
