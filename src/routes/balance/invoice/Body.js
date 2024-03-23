@@ -1,4 +1,8 @@
 import React from 'react'
+// import { BALANCE_TYPE_TRANSACTION } from 'utils/variable'
+import { BALANCE_TYPE_AWAL } from 'utils/variable'
+import { Row, Col } from 'antd'
+import { currencyFormatter } from 'utils/string'
 import BodyItem from './BodyItem'
 import styles from './index.less'
 
@@ -6,28 +10,30 @@ const Body = ({
   dataPos = [],
   itemBalance
 }) => {
+  let totalAmountSetoran = itemBalance.total
   return (
     <div>
       <div className={styles.borderedSection}>
-        {dataPos && dataPos
+        {dataPos && dataPos.slice(0, 1)
           .map((item, index) => {
-            const filteredBalance = dataPos.filter(filteredItem => filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
+            const filteredBalance = dataPos.filter(filteredItem => item.balanceType === BALANCE_TYPE_AWAL && filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
             let itemTransaction = {}
             if (filteredBalance && filteredBalance[0]) {
               itemTransaction = filteredBalance[0]
             }
-            if (itemTransaction.balanceIn !== 0) {
-              return (
-                <BodyItem
-                  key={index}
-                  item={item}
-                  itemTransaction={itemTransaction}
-                  itemBalance={itemBalance}
-                />
-              )
-            }
-            return null
+            return (
+              <BodyItem
+                key={index}
+                item={item}
+                itemTransaction={itemTransaction}
+                itemBalance={itemBalance}
+              />
+            )
           })}
+        <Row>
+          <Col>Total Uang Tunai Yang Mau Disetor</Col>
+          <Col>{currencyFormatter(totalAmountSetoran)}</Col>
+        </Row>
       </div>
     </div>
   )

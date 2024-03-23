@@ -14,7 +14,6 @@ const Invoice = ({ balanceDetail, paymentOpts, physicalMoneyDeposit }) => {
   const { itemBalance } = physicalMoneyDeposit
   const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
-
   if (!currentItem.id) return null
 
   const invoiceInfo = {
