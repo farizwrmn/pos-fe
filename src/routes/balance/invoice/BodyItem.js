@@ -4,7 +4,7 @@ import { Row, Col } from 'antd'
 import { currencyFormatter } from 'utils/string'
 import styles from './index.less'
 
-const BodyItem = ({ item, itemTransaction, itemBalance }) => {
+const BodyItem = ({ item, itemTransaction }) => {
   if (itemTransaction.balanceType === BALANCE_TYPE_CLOSING) {
     return (
       <div className={styles.item}>
@@ -18,16 +18,7 @@ const BodyItem = ({ item, itemTransaction, itemBalance }) => {
               {/* <p>{}<span>Lembar</span></p> */}
             </div>
           </Col>
-          {/* <Col span={12} className={styles.right}>
-            <p>INPUT: {currencyFormatter(itemBalance.total)}</p>
-            <p>{`(${currencyFormatter(amount)})`}</p>
-          </Col> */}
-          <Col span={12} className={styles.right}>
-            <p>INPUT: {currencyFormatter(item.balanceIn)}</p>
-            {itemTransaction.balanceIn !== item.balanceIn && (
-              <p>({currencyFormatter((itemTransaction.balanceIn - item.balanceIn) * -1)})</p>
-            )}
-          </Col>
+          <Col span={12} className={styles.right}>INPUT: {currencyFormatter(item.balanceIn)} {(itemTransaction.balanceIn || 0) - (item.balanceIn || 0) ? (<div>({currencyFormatter(((itemTransaction.balanceIn || 0) - (item.balanceIn || 0)) * -1)})</div>) : null}</Col>
         </Row>
       </div>
     )
