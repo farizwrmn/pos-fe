@@ -1,6 +1,5 @@
 import React from 'react'
-// import { BALANCE_TYPE_TRANSACTION } from 'utils/variable'
-import { BALANCE_TYPE_AWAL } from 'utils/variable'
+import { BALANCE_TYPE_TRANSACTION } from 'utils/variable'
 import { Row, Col } from 'antd'
 import { currencyFormatter } from 'utils/string'
 import BodyItem from './BodyItem'
@@ -14,9 +13,9 @@ const Body = ({
   return (
     <div>
       <div className={styles.borderedSection}>
-        {dataPos && dataPos.slice(0, 1)
+        {dataPos && dataPos
           .map((item, index) => {
-            const filteredBalance = dataPos.filter(filteredItem => item.balanceType === BALANCE_TYPE_AWAL && filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
+            const filteredBalance = dataPos.filter(filteredItem => filteredItem.balanceType === BALANCE_TYPE_TRANSACTION && filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
             let itemTransaction = {}
             if (filteredBalance && filteredBalance[0]) {
               itemTransaction = filteredBalance[0]
