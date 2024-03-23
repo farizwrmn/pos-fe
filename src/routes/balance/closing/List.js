@@ -94,22 +94,7 @@ const List = ({
   }
 }) => {
   const handleOpenVisible = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        storeId: lstorage.getCurrentUserStore(),
-        ...getFieldsValue()
-      }
-      data.detail = list
-      let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
-      if (listAmount <= 0) {
-        message.error('Enter a valid cash amount')
-        return
-      }
-      onVisible()
-    })
+    onVisible()
   }
 
   const handleSubmit = () => {
@@ -121,7 +106,8 @@ const List = ({
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
-      data.detail = list
+      // data.detail = list
+      data.setoranDetail = list
       let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       if (listAmount <= 0) {
         message.error('Masukkan jumlah lembar uang tunai yang valid')
