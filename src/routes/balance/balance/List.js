@@ -23,6 +23,7 @@ const FormLabel = () => {
       <Col {...formItemLayout.labelCol} />
       <Col {...formItemLayout.wrapperCol}>
         <Row>
+          <Col span={12}><div>Sales</div></Col>
           <Col span={12}><div>Petty-Cash</div></Col>
         </Row>
       </Col>
