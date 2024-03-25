@@ -94,7 +94,15 @@ const List = ({
   }
 }) => {
   const handleOpenVisible = () => {
-    onVisible()
+    validateFields((errors) => {
+      if (errors) {
+        if (errors.approveUserId) {
+          message.error(errors.approveUserId.errors[0].message)
+        }
+        return
+      }
+      onVisible()
+    })
   }
 
   const handleSubmit = () => {

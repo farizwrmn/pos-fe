@@ -1,4 +1,5 @@
 import reduce from 'lodash/reduce'
+import { BALANCE_TYPE_TRANSACTION, BALANCE_TYPE_CLOSING } from 'utils/variable'
 
 const chooseOnePaymentType = (type = 'C', list = []) => {
   if (!type) return 'Cash'
@@ -35,7 +36,29 @@ const groupProduct = (list, dataBundle = []) => {
   return newList
 }
 
+const compareArrays = (data) => {
+  let pos = null
+  let input = null
+  // Iterate through the array of objects using Array.prototype.find
+  data.forEach((obj) => {
+    if (obj.balanceType === BALANCE_TYPE_TRANSACTION) {
+      pos += obj.balanceIn
+    } else if (obj.balanceType === BALANCE_TYPE_CLOSING) {
+      input += obj.balanceIn
+    }
+  })
+
+  // Check if either pos or input is null using short-circuit evaluation
+  if (pos === null || input === null) {
+    return 'Error: Amount cannot be 0. Cannot submit.'
+  }
+
+  // Return the maximum of input and pos using Math.max directly
+  return Math.max(input, pos)
+}
+
 export {
+  compareArrays,
   chooseOnePaymentType,
   groupProduct
 }

@@ -1,12 +1,19 @@
 import React from 'react'
+
+import { Row, Col } from 'antd'
 import { BALANCE_TYPE_TRANSACTION } from 'utils/variable'
+import { currencyFormatter } from 'utils/string'
+import { compareArrays } from './utils'
 import BodyItem from './BodyItem'
 import styles from './index.less'
 
 const Body = ({
   dataPos = []
 }) => {
-  // let totalAmountSetoran = itemBalance.total
+  const totalAmountSetoran = compareArrays(dataPos)
+  // const totalAmountSetoran = dataPos.filter(filteredItem => filteredItem.balanceType === BALANCE_TYPE_TRANSACTION)
+  //   .reduce((cnt, o) => cnt + o.balanceIn, 0)
+
   return (
     <div>
       <div className={styles.borderedSection}>
@@ -22,10 +29,10 @@ const Body = ({
               <BodyItem key={index} item={item} itemTransaction={itemTransaction} />
             )
           })}
-        {/* <Row>
-          <Col>Total Uang Tunai Yang Mau Disetor</Col>
-          <Col>{currencyFormatter(totalAmountSetoran)}</Col>
-        </Row> */}
+        <Row>
+          <Col style={{ textAlign: 'left', fontWeight: 500 }}>Total Uang Tunai Yang Mau Disetor</Col>
+          <Col style={{ textAlign: 'left', fontWeight: 500 }}>{currencyFormatter(totalAmountSetoran)}</Col>
+        </Row>
       </div>
     </div>
   )
