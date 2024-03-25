@@ -11,8 +11,6 @@ const Body = ({
   dataPos = []
 }) => {
   const totalAmountSetoran = calculateBalance(dataPos)
-  // const totalAmountSetoran = dataPos.filter(filteredItem => filteredItem.balanceType === BALANCE_TYPE_TRANSACTION)
-  //   .reduce((cnt, o) => cnt + o.balanceIn, 0)
 
   return (
     <div>
