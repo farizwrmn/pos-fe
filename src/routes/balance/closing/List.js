@@ -79,6 +79,7 @@ const List = ({
   listOpts = [],
   listShift,
   listUser,
+  // listSetoran,
   user,
   dispatch,
   button,
@@ -137,6 +138,7 @@ const List = ({
   }
   const advanceFormProps = {
     dispatch,
+    // listSetoran,
     list,
     listDeposit: listPhysicalMoneyDeposit,
     setCashValue (amount) {

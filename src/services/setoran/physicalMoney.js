@@ -1,5 +1,20 @@
 import { request, crypt } from 'utils'
 
+/*
+params:
+  storeName
+  transDate
+*/
+export async function queryListVoidEdcDeposit (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

@@ -15,8 +15,7 @@ const column = {
 const FormComponent = ({
   dispatch,
   list = [],
-  // listEdc = [],
-  // listVoid = [],
+  // listSetoran = [],
   setCashValue,
   form: {
     // getFieldsValue,
@@ -55,22 +54,24 @@ const FormComponent = ({
   // const listEdcProps = {
   //   pagination: false,
   //   defaultExpandAllRows: true,
-  //   dataSource: listEdc
+  //   dataSource: listSetoran
   // }
 
   // const listVoidProps = {
   //   pagination: false,
   //   defaultExpandAllRows: true,
-  //   dataSource: listVoid
+  //   dataSource: listSetoran
   // }
 
   // const ListEdc = () => {
+  //   let amountEDC = listSetoran.filter(filtered => filtered.status === 'A')
+  //     .reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
   //   return (
   //     <div>
   //       <p style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</p>
   //       <Table {...listEdcProps}>
   //         <Column
-  //           title="JUMLAH LEMBAR"
+  //           title="JUMLAH TOTAL"
   //           dataIndex="JUMLAH_LEMBAR"
   //           key="JUMLAH_LEMBAR"
   //           render={(text, column) => (
@@ -84,12 +85,12 @@ const FormComponent = ({
   //           )}
   //         />
   //         <Column
-  //           title="LEMBAR"
-  //           dataIndex="LEMBAR"
-  //           key="LEMBAR"
+  //           title="TOTAL"
+  //           dataIndex="TOTAL"
+  //           key="TOTAL"
   //           render={(text, column) => (
   //             <div>
-  //               <p>{column.type}</p>
+  //               <p>{column.total}</p>
   //             </div>
   //           )}
   //         />
@@ -101,7 +102,7 @@ const FormComponent = ({
   //         </Col>
   //         <Col span={4}>
   //           <p style={{ fontWeight: 'bold' }}>
-  //             {listEdc && listEdc.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+  //             {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountEDC)}
   //           </p>
   //         </Col>
   //       </Row>
@@ -110,12 +111,14 @@ const FormComponent = ({
   // }
 
   // const ListVoid = () => {
+  //   let amountVoid = listSetoran.filter(filtered => filtered.status === 'C')
+  //     .reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
   //   return (
   //     <div>
   //       <p style={{ fontWeight: 'bold' }}>Struk Void / Cancel</p>
   //       <Table {...listVoidProps}>
   //         <Column
-  //           title="JUMLAH LEMBAR"
+  //           title="JUMLAH TOTAL"
   //           dataIndex="JUMLAH_LEMBAR"
   //           key="JUMLAH_LEMBAR"
   //           render={(text, column) => (
@@ -129,12 +132,12 @@ const FormComponent = ({
   //           )}
   //         />
   //         <Column
-  //           title="LEMBAR"
-  //           dataIndex="LEMBAR"
-  //           key="LEMBAR"
+  //           title="TOTAL"
+  //           dataIndex="TOTAL"
+  //           key="TOTAL"
   //           render={(text, column) => (
   //             <div>
-  //               <p>{column.amount}</p>
+  //               <p>{column.total}</p>
   //             </div>
   //           )}
   //         />
@@ -146,7 +149,7 @@ const FormComponent = ({
   //         </Col>
   //         <Col span={4}>
   //           <p style={{ fontWeight: 'bold' }}>
-  //             {listVoid && listVoid.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+  //             {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountVoid)}
   //           </p>
   //         </Col>
   //       </Row>
@@ -160,7 +163,7 @@ const FormComponent = ({
         <h3>SETORAN UANG TUNAI</h3>
         <Table {...tableProps}>
           <Column
-            title="JUMLAH LEMBAR"
+            title="JUMLAH TOTAL"
             dataIndex="JUMLAH_LEMBAR"
             key="JUMLAH_LEMBAR"
             render={(text, column) => (
@@ -174,9 +177,9 @@ const FormComponent = ({
             )}
           />
           <Column
-            title="LEMBAR"
-            dataIndex="LEMBAR"
-            key="LEMBAR"
+            title="TOTAL"
+            dataIndex="TOTAL"
+            key="TOTAL"
             render={(text, column) => (
               <div>
                 <p>{column.type}</p>
@@ -215,64 +218,6 @@ const FormComponent = ({
             </p>
           </Col>
         </Row>
-        {/* <table style={{ 'border-collapse': 'collapse', width: '100%', marginLeft: '10em' }}>
-          <tr>
-            <th>JUMLAH LEMBAR</th>
-            <th>LEMBAR</th>
-            <th>PECAHAN</th>
-            <th>TOTAL</th>
-          </tr>
-          <tr>
-            <td style={{ alignItems: 'center' }}>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div>
-                    <FormItem hasFeedback>
-                      {getFieldDecorator(`${column.name}-${column.type}`, {
-                        initialValue: column && column.qty ? column.qty : 0
-                      })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
-                    </FormItem>
-                  </div>
-                )
-              })}
-            </td>
-            <td>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div style={{ margin: '2em', alignItems: 'center' }}>
-                    <p>{column.type}</p>
-                  </div>
-                )
-              })}
-            </td>
-            <td>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div style={{ margin: '2em 2em 2em 0', alignItems: 'center' }}>
-                    <p>{column.name}</p>
-                  </div>
-                )
-              })}
-            </td>
-            <td>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div style={{ margin: '2em', alignItems: 'center' }}>
-                    <p>{column.amount ? currencyFormatterSetoran(column.amount) : 0}</p>
-                  </div>
-                )
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={3}><p style={{ fontWeight: 'bold' }}>Subtotal</p></td>
-            <td>
-              <p style={{ fontWeight: 'bold' }}>
-                {list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
-              </p>
-            </td>
-          </tr>
-        </table> */}
       </Col>
       {/* <Col {...column}>
         <Row>

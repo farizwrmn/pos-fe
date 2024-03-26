@@ -1,0 +1,93 @@
+import modelExtend from 'dva-model-extend'
+import { queryListVoidEdcDeposit } from 'services/setoran/physicalMoney'
+import moment from 'moment'
+import { lstorage } from 'utils'
+import { pageModel } from '../common'
+
+export default modelExtend(pageModel, {
+  namespace: 'posSetoran',
+
+  state: {
+    currentItem: {},
+    newTransNo: '',
+    modalType: 'add',
+    activeKey: '0',
+    list: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    }
+  },
+
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen((location) => {
+        const { activeKey, modalType, ...other } = location.query
+        const { pathname } = location
+        if (pathname === '/balance/closing') {
+          const transDate = moment().format('YYYY-MM-DD')
+          const storeName = lstorage.getCurrentUserStoreName().trim().slice(2)
+          dispatch({ type: 'queryListVoidEdcDeposit', payload: { ...other, storeName, transDate } })
+        }
+      })
+    }
+  },
+
+  effects: {
+    * queryListVoidEdcDeposit ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListVoidEdcDeposit, payload)
+      if (data.success) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    }
+  },
+
+  reducers: {
+    querySuccess (state, action) {
+      const { list, pagination } = action.payload
+      return {
+        ...state,
+        list,
+        pagination: {
+          ...state.pagination,
+          ...pagination
+        }
+      }
+    },
+
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
+    },
+
+    changeTab (state, { payload }) {
+      const { key } = payload
+      return {
+        ...state,
+        activeKey: key,
+        modalType: 'add',
+        currentItem: {}
+      }
+    },
+
+    editItem (state, { payload }) {
+      const { item } = payload
+      return {
+        ...state,
+        modalType: 'edit',
+        activeKey: '0',
+        currentItem: item
+      }
+    }
+  }
+})
