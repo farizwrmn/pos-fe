@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryById, queryByBalanceId, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
+import { query, queryById, queryByBalanceId, queryPejabatToko, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
 import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
@@ -58,9 +58,22 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryPejabatToko ({ payload = {} }, { put, call }) {
+      const data = yield call(queryPejabatToko, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data.data
+          }
+        })
+      }
+    },
+
     * queryByBalanceId ({ payload = {} }, { call, put }) {
       const data = yield call(queryByBalanceId, payload)
       if (data.success) {
+        yield put({ type: 'queryPejabatToko', payload: { userId: data.data.cashierUserId } })
         yield put({
           type: 'updateState',
           payload: {

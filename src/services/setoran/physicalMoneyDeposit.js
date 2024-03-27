@@ -1,5 +1,15 @@
 import { request, crypt } from 'utils'
 
+export async function queryPejabatToko (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/physical-money-deposit-user/${params.userId}`,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryByBalanceId (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

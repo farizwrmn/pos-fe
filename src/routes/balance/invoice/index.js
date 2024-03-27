@@ -9,13 +9,14 @@ import Header from './Header'
 import Body from './Body'
 // import Footer from './Footer'
 
-const Invoice = ({ balanceDetail, paymentOpts }) => {
+const Invoice = ({ physicalMoneyDeposit, balanceDetail, paymentOpts }) => {
   // let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+  const { currentItem: pejabatTokoItem } = physicalMoneyDeposit
   const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
   if (!currentItem.id) return null
-
   const invoiceInfo = {
+    pejabatTokoName: pejabatTokoItem.userName,
     employeeName: currentItem.user.userName,
     dataPos: listBalanceDetail,
     id: currentItem.id,
@@ -48,7 +49,7 @@ const Invoice = ({ balanceDetail, paymentOpts }) => {
 }
 
 export default connect(({
-  balance, balanceDetail, shift, paymentOpts, loading, app
+  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }) => ({
-  balance, balanceDetail, shift, paymentOpts, loading, app
+  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }))(Invoice)
