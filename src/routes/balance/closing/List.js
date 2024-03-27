@@ -118,7 +118,7 @@ const List = ({
       // data.detail = list
       data.setoranDetail = list
       let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
-      if (listAmount <= 0) {
+      if (listAmount < 0) {
         message.error('Masukkan jumlah lembar uang tunai yang valid')
         return
       }
