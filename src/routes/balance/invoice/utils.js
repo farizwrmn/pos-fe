@@ -36,14 +36,14 @@ const groupProduct = (list, dataBundle = []) => {
   return newList
 }
 
-const calculateBalance = (data) => {
+const calculateBalance = (data, paymentOptionCashId) => {
   let pos = null
   let input = null
   // Iterate through the array of objects using Array.prototype.find
+  // const PAYMENT_OPTION_CASH = 1
   data.forEach((obj) => {
     // validate only Cash payment option
-    const PAYMENT_OPTION_CASH = 1
-    if (obj.paymentOptionId === PAYMENT_OPTION_CASH) {
+    if (obj.paymentOptionId === paymentOptionCashId) {
       if (obj.balanceType === BALANCE_TYPE_TRANSACTION) {
         pos += obj.balanceIn
       } else if (obj.balanceType === BALANCE_TYPE_CLOSING) {

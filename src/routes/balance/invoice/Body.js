@@ -8,9 +8,10 @@ import BodyItem from './BodyItem'
 import styles from './index.less'
 
 const Body = ({
-  dataPos = []
+  dataPos = [],
+  paymentOptionCashId = 1
 }) => {
-  const totalAmountSetoran = calculateBalance(dataPos)
+  const totalAmountSetoran = calculateBalance(dataPos, paymentOptionCashId)
 
   return (
     <div>

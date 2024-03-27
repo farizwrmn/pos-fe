@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryById, queryByBalanceId, queryPejabatToko, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
+import { query, queryById, queryByBalanceId, getDataPaymentIdOnlyCash, queryPejabatToko, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
 import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     visible: false,
     itemBalance: null,
     currentItem: {},
+    paymentOptionCashItem: {},
     newTransNo: '',
     modalType: 'add',
     activeKey: '0',
@@ -70,9 +71,23 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * getDataPaymentIdOnlyCash ({ payload = {} }, { put, call }) {
+      payload.update = 0
+      const data = yield call(getDataPaymentIdOnlyCash, { typeCode: 'C', typeName: 'Cash' })
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentOptionCashItem: data.data
+          }
+        })
+      }
+    },
+
     * queryByBalanceId ({ payload = {} }, { call, put }) {
       const data = yield call(queryByBalanceId, payload)
       if (data.success) {
+        yield put({ type: 'getDataPaymentIdOnlyCash', payload: {} })
         yield put({ type: 'queryPejabatToko', payload: { userId: data.data.cashierUserId } })
         yield put({
           type: 'updateState',

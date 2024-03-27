@@ -11,7 +11,7 @@ import Body from './Body'
 
 const Invoice = ({ physicalMoneyDeposit, balanceDetail, paymentOpts }) => {
   // let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
-  const { currentItem: pejabatTokoItem } = physicalMoneyDeposit
+  const { currentItem: pejabatTokoItem, paymentOptionCashItem } = physicalMoneyDeposit
   const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
   if (!currentItem.id) return null
@@ -32,6 +32,7 @@ const Invoice = ({ physicalMoneyDeposit, balanceDetail, paymentOpts }) => {
       <div className={styles.invoiceMini}>
         <Header invoiceInfo={invoiceInfo} />
         <Body
+          paymentOptionCashId={paymentOptionCashItem.id || 1}
           dataPos={invoiceInfo.dataPos || []}
           listOpts={listOpts || []}
         />
