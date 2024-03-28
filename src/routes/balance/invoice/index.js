@@ -15,6 +15,7 @@ const Invoice = ({ physicalMoneyDeposit, balanceDetail, paymentOpts }) => {
   const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
   if (!currentItem.id) return null
+  if (!pejabatTokoItem.userName) return null
   const invoiceInfo = {
     pejabatTokoName: pejabatTokoItem.userName,
     employeeName: currentItem.user.userName,
