@@ -103,7 +103,7 @@ class DeliveryOrderPacker extends Component {
         let barcode = value
         if (value && value.includes('*') && value.split('*').length === 2) {
           const splittedValue = value.split('*')
-          if (splittedValue[0] && splittedValue[0].length < 4) {
+          if (splittedValue[0] && splittedValue[0].length < 8) {
             orderQty = parseFloat(splittedValue[0])
             if (!orderQty) {
               orderQty = 1
