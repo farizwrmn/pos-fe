@@ -59,7 +59,7 @@ const FormComponent = ({
             )}
           </div>
         </Col>
-        {name === 'C' && (
+        {/* {name === 'C' && (
           <Col span={12}>
             <div>
               {getFieldDecorator(`cash[${name}][balanceIn]`, {
@@ -80,7 +80,7 @@ const FormComponent = ({
               )}
             </div>
           </Col>
-        )}
+        )} */}
       </Row>
     </FormItem>
   )

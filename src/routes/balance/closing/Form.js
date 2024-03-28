@@ -1,29 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Select, Row, Col } from 'antd'
+// import styles from './styles.less'
 
 const Option = Select.Option
 const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 9 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    xs: { span: 6 },
+    sm: { span: 12 },
+    md: { span: 2 }
   },
   wrapperCol: {
-    xs: { span: 15 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    xs: { span: 18 },
+    sm: { span: 12 },
+    md: { span: 8 }
   }
 }
 
-const column = {
-  sm: { span: 24 },
-  md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
-}
+// const column = {
+//   sm: { span: 24 },
+//   md: { span: 24 },
+//   lg: { span: 12 },
+//   xl: { span: 12 }
+// }
 
 const FormComponent = ({
   item = {},
@@ -35,7 +36,7 @@ const FormComponent = ({
 }) => {
   return (
     <Row>
-      <Col {...column}>
+      <Col>
         <FormItem label="Shift" hasFeedback {...formItemLayout}>
           {getFieldDecorator('shiftId', {
             initialValue: item && item.shiftId ? item.shiftId : undefined,
@@ -59,6 +60,7 @@ const FormComponent = ({
             ]
           })(
             <Select
+              placeholder="Pejabat Toko"
               showSearch
               allowClear
               optionFilterProp="children"

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import moment from 'moment'
-import { lstorage } from 'utils'
+// import { lstorage } from 'utils'
 import { LocaleProvider } from 'antd'
 import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
@@ -9,14 +9,14 @@ import Header from './Header'
 import Body from './Body'
 // import Footer from './Footer'
 
-const Invoice = ({ balanceDetail, paymentOpts }) => {
-  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+const Invoice = ({ physicalMoneyDeposit, balanceDetail, paymentOpts }) => {
+  // let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+  const { currentItem: pejabatTokoItem, paymentOptionCashItem } = physicalMoneyDeposit
   const { currentItem, listBalanceDetail } = balanceDetail
   const { listOpts } = paymentOpts
-
   if (!currentItem.id) return null
-
   const invoiceInfo = {
+    pejabatTokoName: pejabatTokoItem.userName,
     employeeName: currentItem.user.userName,
     dataPos: listBalanceDetail,
     id: currentItem.id,
@@ -31,21 +31,26 @@ const Invoice = ({ balanceDetail, paymentOpts }) => {
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
         <Header invoiceInfo={invoiceInfo} />
-        {currentItem && currentItem.closed && moment(moment(currentItem.closed).format('YYYY-MM-DD'), 'YYYY-MM-DD').isBefore(moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')) ? (defaultRole === 'HKS' || defaultRole === 'ADF' || defaultRole === 'SFC' || defaultRole === 'HFC') ? (
+        <Body
+          paymentOptionCashId={paymentOptionCashItem.id || 1}
+          dataPos={invoiceInfo.dataPos || []}
+          listOpts={listOpts || []}
+        />
+        {/* {currentItem && currentItem.closed && moment(moment(currentItem.closed).format('YYYY-MM-DD'), 'YYYY-MM-DD').isBefore(moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')) ? (defaultRole === 'HKS' || defaultRole === 'ADF' || defaultRole === 'SFC' || defaultRole === 'HFC') ? (
           <div>
             <Body
               dataPos={invoiceInfo.dataPos || []}
               listOpts={listOpts || []}
             />
           </div>
-        ) : 'Invalid Role to see the detail' : 'Wait until tommorrow to see the detail'}
+        ) : 'Invalid Role to see the detail' : 'Wait until tommorrow to see the detail'} */}
       </div>
     </LocaleProvider>
   )
 }
 
 export default connect(({
-  balance, balanceDetail, shift, paymentOpts, loading, app
+  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }) => ({
-  balance, balanceDetail, shift, paymentOpts, loading, app
+  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }))(Invoice)

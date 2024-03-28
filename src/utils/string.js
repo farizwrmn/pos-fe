@@ -28,6 +28,13 @@ const showOnlyLastWord = (words, digitToShow) => {
   return result
 }
 
+const currencyFormatterSetoran = (currency) => {
+  if (typeof currency === 'string' || typeof currency === 'number') {
+    return `Rp${(currency || '-').toLocaleString()}`
+  }
+  return 'Rp0'
+}
+
 const currencyFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
     return `Rp ${(currency || '-').toLocaleString()}`
@@ -123,6 +130,7 @@ function withoutFormat (file) {
 export {
   showOnlyLastWord,
   currencyFormatter,
+  currencyFormatterSetoran,
   numberFormatter,
   discountFormatter,
   composeData,

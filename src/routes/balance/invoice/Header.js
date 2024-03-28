@@ -16,6 +16,7 @@ const Header = ({ invoiceInfo }) => {
       <div className={styles.separator} />
       <div className={styles.left}>
         <div>Printed By : {invoiceInfo.employeeName}</div>
+        <div>Pejabat Toko By : {invoiceInfo.pejabatTokoName}</div>
         <Row>
           <Col span={12}>
             <strong>Closing Setoran</strong>
