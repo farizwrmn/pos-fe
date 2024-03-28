@@ -88,9 +88,10 @@ export default modelExtend(pageModel, {
       const data = yield call(queryByBalanceId, payload)
       if (data.success) {
         yield put({ type: 'getDataPaymentIdOnlyCash', payload: {} })
-        if (data && data.data && data.data.cashierUserId) {
-          yield put({ type: 'queryPejabatToko', payload: { userId: data.data.cashierUserId } })
-        }
+        // if (data && data.data && data.data.cashierUserId) {
+        //   yield put({ type: 'queryPejabatToko', payload: { userId: data.data.cashierUserId } })
+        // }
+
         yield put({
           type: 'updateState',
           payload: {

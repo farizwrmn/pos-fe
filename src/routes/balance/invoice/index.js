@@ -9,15 +9,18 @@ import Header from './Header'
 import Body from './Body'
 // import Footer from './Footer'
 
-const Invoice = ({ physicalMoneyDeposit, balanceDetail, paymentOpts }) => {
+const Invoice = ({ physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) => {
   // let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
-  const { currentItem: pejabatTokoItem, paymentOptionCashItem } = physicalMoneyDeposit
+  const { /* currentItem: pejabatTokoItem, */ paymentOptionCashItem } = physicalMoneyDeposit
   const { currentItem, listBalanceDetail } = balanceDetail
+  const { currentItem: balanceItem } = balance
   const { listOpts } = paymentOpts
   if (!currentItem.id) return null
-  if (!pejabatTokoItem.userName) return null
+  if (!balanceItem && !balanceItem.approveUser && !balanceItem.approveUser.userName) return null
+  // if (!pejabatTokoItem.userName) return null
+
   const invoiceInfo = {
-    pejabatTokoName: pejabatTokoItem.userName,
+    pejabatTokoName: balanceItem.approveUser.userName,
     employeeName: currentItem.user.userName,
     dataPos: listBalanceDetail,
     id: currentItem.id,
