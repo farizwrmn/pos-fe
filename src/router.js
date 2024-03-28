@@ -579,6 +579,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/detail/user'))
               registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
               registerModel(app, require('./models/setoran/physicalMoney'))
+              registerModel(app, require('./models/setoran/posSetoran'))
               cb(null, require('./routes/balance/closing'))
             }, 'balance-closing')
           }
@@ -596,6 +597,7 @@ const Routers = function ({ history, app }) {
           path: 'balance/invoice/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/detail/user'))
               registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/balance/balanceDetail'))
