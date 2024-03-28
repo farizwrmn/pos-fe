@@ -12,12 +12,10 @@ const Body = ({
   paymentOptionCashId = 1
 }) => {
   const totalAmountSetoran = calculateBalance(dataPos, paymentOptionCashId)
-  const TYPE_CASH = 'C'
   return (
     <div>
       <div className={styles.borderedSection}>
         {dataPos && dataPos
-          .filter(item => item.paymentOption.typeCode === TYPE_CASH)
           .map((item, index) => {
             const filteredBalance = dataPos.filter(filteredItem => filteredItem.balanceType === BALANCE_TYPE_TRANSACTION
               && filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
