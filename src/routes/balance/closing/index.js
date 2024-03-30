@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
 
-const Container = ({ loading, /* posSetoran, */ physicalMoney, physicalMoneyDeposit, balance, shift, userDetail, dispatch, paymentOpts, app }) => {
+const Container = ({ loading, posSetoran, physicalMoney, physicalMoneyDeposit, balance, shift, userDetail, dispatch, paymentOpts, app }) => {
   const { user } = app
-  // const { list: listSetoran } = posSetoran
+  const { list: listSetoran } = posSetoran
   const { list } = physicalMoney
   const { list: listPhysicalMoneyDeposit, visible } = physicalMoneyDeposit
   const { currentItem } = balance
@@ -14,7 +14,7 @@ const Container = ({ loading, /* posSetoran, */ physicalMoney, physicalMoneyDepo
   const { data } = userDetail
   const listProps = {
     list,
-    // listSetoran,
+    listSetoran,
     listPhysicalMoneyDeposit,
     item: currentItem,
     loading,

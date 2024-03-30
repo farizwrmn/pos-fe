@@ -79,7 +79,7 @@ const List = ({
   listOpts = [],
   listShift,
   listUser,
-  // listSetoran,
+  listSetoran,
   user,
   dispatch,
   button,
@@ -117,6 +117,7 @@ const List = ({
       }
       // data.detail = list
       data.setoranDetail = list
+      data.listSetoran = listSetoran
       let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       if (listAmount < 0) {
         message.error('Masukkan jumlah lembar uang tunai yang valid')
@@ -138,7 +139,7 @@ const List = ({
   }
   const advanceFormProps = {
     dispatch,
-    // listSetoran,
+    listSetoran,
     list,
     listDeposit: listPhysicalMoneyDeposit,
     setCashValue (amount) {
@@ -149,6 +150,7 @@ const List = ({
   }
   const confirmationDialogProps = {
     dispatch,
+    listSetoran,
     list,
     listDeposit: listPhysicalMoneyDeposit,
     setCashValue (amount) {
@@ -167,7 +169,7 @@ const List = ({
   return (
     <div>
       <Modal
-        width={800}
+        width={1200}
         okText="Ok"
         cancelText="Cancel"
         title="Konfirmasi penutupan setoran"

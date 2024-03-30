@@ -15,7 +15,7 @@ const column = {
 const FormComponent = ({
   dispatch,
   list = [],
-  // listSetoran = [],
+  listSetoran = [],
   setCashValue,
   form: {
     // getFieldsValue,
@@ -45,126 +45,149 @@ const FormComponent = ({
     setCashValue(amount)
   }
 
-  // const onSecondInputChange = (value) => {
-  //   console.log('test', value)
-  // }
   const tableProps = {
     pagination: false,
     defaultExpandAllRows: true,
     dataSource: list
   }
 
-  // const defaultList = [{ total: 0 }]
-  // const filterListEdc = listSetoran.filter(filtered => filtered.status === 'A')
-  // const filterListVoid = listSetoran.filter(filtered => filtered.status === 'C')
-  // const listEdc = filterListEdc && filterListEdc.length > 0 ? filterListEdc : defaultList
-  // const listVoid = filterListVoid && filterListVoid.length > 0 ? filterListVoid : defaultList
+  const defaultList = [{ total: 0, qty: 0 }]
+  const filterListEdc = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'A')
+  const filterListVoid = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'C')
+  const listEdc = filterListEdc && filterListEdc.length > 0 ? filterListEdc : defaultList
+  const listVoid = filterListVoid && filterListVoid.length > 0 ? filterListVoid : defaultList
 
-  // console.log({ listEdc, listVoid })
-  // const listEdcProps = {
-  //   pagination: false,
-  //   defaultExpandAllRows: true,
-  //   dataSource: defaultList
-  // }
+  const onEDCVoidInputChange = (itemSelection, value) => {
+    const updatedItem = listSetoran.find(item => item.type === itemSelection.type)
 
-  // const listVoidProps = {
-  //   pagination: false,
-  //   defaultExpandAllRows: true,
-  //   dataSource: [{}]
-  // }
-  // const ListEdc = () => {
-  //   let amountEDC = listSetoran.filter(filtered => filtered.status === 'A')
-  //     .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
-  //   return (
-  //     <div>
-  //       <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
-  //       <Table {...listEdcProps}>
-  //         <Column
-  //           title="JUMLAH TOTAL"
-  //           dataIndex="edcAmount"
-  //           key="edcAmount"
-  //           render={() => (
-  //             <div style={{ textAlign: 'center' }}>
-  //               <FormItem hasFeedback>
-  //                 {getFieldDecorator('edcAmount', {
-  //                   initialValue: 0
-  //                 })(<InputNumber min={0} onChange={onSecondInputChange} />)}
-  //               </FormItem>
-  //             </div>
-  //           )}
-  //         />
-  //         <Column
-  //           title="TOTAL"
-  //           dataIndex="edcTOTAL"
-  //           key="edcTOTAL"
-  //           render={(text, column) => (
-  //             <div style={{ textAlign: 'center' }}>
-  //               <p>{currencyFormatterSetoran(column.total)}</p>
-  //             </div>
-  //           )}
-  //         />
-  //       </Table>
+    const newItem = {
+      type: itemSelection.type,
+      status: itemSelection.type === 'EDC' ? 'A' : 'C',
+      amount: value
+    }
 
-  //       <Row style={{ padding: '1em' }}>
-  //         <Col span={18} style={{ textAlign: 'center' }}>
-  //           <p style={{ fontWeight: 'bold' }}>Subtotal</p>
-  //         </Col>
-  //         <Col span={6}>
-  //           <p style={{ fontWeight: 'bold' }}>
-  //             {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountEDC)}
-  //           </p>
-  //         </Col>
-  //       </Row>
-  //     </div>
-  //   )
-  // }
+    const updatedList = updatedItem ?
+      listSetoran.map(item => (item.type === updatedItem.type ? newItem : item)) :
+      [...listSetoran, newItem]
 
-  // const ListVoid = () => {
-  //   let amountVoid = listSetoran.filter(filtered => filtered.status === 'C')
-  //     .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
-  //   return (
-  //     <div>
-  //       <h3 style={{ fontWeight: 'bold' }}>Struk Void / Cancel</h3>
-  //       <Table {...listVoidProps}>
-  //         <Column
-  //           title="JUMLAH TOTAL"
-  //           dataIndex="voidAmount"
-  //           key="voidAmount"
-  //           render={() => (
-  //             <div style={{ textAlign: 'center' }}>
-  //               <FormItem hasFeedback>
-  //                 {getFieldDecorator('voidAmount', {
-  //                   initialValue: 0
-  //                 })(<InputNumber min={0} onChange={onSecondInputChange} />)}
-  //               </FormItem>
-  //             </div>
-  //           )}
-  //         />
-  //         <Column
-  //           title="TOTAL"
-  //           dataIndex="voidTOTAL"
-  //           key="voidTOTAL"
-  //           render={(text, column) => (
-  //             <div style={{ textAlign: 'center' }}>
-  //               <p>{currencyFormatterSetoran(column.total)}</p>
-  //             </div>
-  //           )}
-  //         />
-  //       </Table>
+    dispatch({
+      type: 'posSetoran/updateState',
+      payload: {
+        list: updatedList
+      }
+    })
+  }
 
-  //       <Row style={{ padding: '1em' }}>
-  //         <Col span={18} style={{ textAlign: 'center' }}>
-  //           <p style={{ fontWeight: 'bold' }}>Subtotal</p>
-  //         </Col>
-  //         <Col span={6}>
-  //           <p style={{ fontWeight: 'bold' }}>
-  //             {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountVoid)}
-  //           </p>
-  //         </Col>
-  //       </Row>
-  //     </div>
-  //   )
-  // }
+  const listEdcProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    dataSource: listEdc
+  }
+
+  const listVoidProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    dataSource: listVoid
+  }
+  const ListEdc = () => {
+    let amountEDC = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'A')
+      .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
+    let item = listSetoran && listSetoran.find(item => item.status === 'A')
+    let value = item && item.amount ? item.amount : 0
+    return (
+      <div>
+        <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
+        <Table {...listEdcProps}>
+          <Column
+            title="JUMLAH LEMBAR"
+            dataIndex="qty"
+            key="qty"
+            render={() => (
+              <div style={{ textAlign: 'center' }}>
+                <FormItem hasFeedback>
+                  {getFieldDecorator('edcAmount', {
+                    initialValue: value
+                  })(<InputNumber min={0} onChange={value => onEDCVoidInputChange({ type: 'EDC' }, value)} />)}
+                </FormItem>
+              </div>
+            )}
+          />
+          <Column
+            title="TOTAL"
+            dataIndex="total"
+            key="total"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                <p>{currencyFormatterSetoran(column.total)}</p>
+              </div>
+            )}
+          />
+        </Table>
+
+        <Row style={{ padding: '1em' }}>
+          <Col span={18} style={{ textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+          </Col>
+          <Col span={6}>
+            <p style={{ fontWeight: 'bold' }}>
+              {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountEDC)}
+            </p>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
+
+  const ListVoid = () => {
+    let amountVoid = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'C')
+      .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
+    let item = listSetoran && listSetoran.find(item => item.status === 'C')
+    let value = item && item.amount ? item.amount : 0
+
+    return (
+      <div>
+        <h3 style={{ fontWeight: 'bold' }}>Struk Void / Cancel</h3>
+
+        <Table {...listVoidProps}>
+          <Column
+            title="JUMLAH LEMBAR"
+            dataIndex="qty"
+            key="qty"
+            render={() => (
+              <div style={{ textAlign: 'center' }}>
+                <FormItem hasFeedback>
+                  {getFieldDecorator('voidAmount', {
+                    initialValue: value
+                  })(<InputNumber min={0} onChange={value => onEDCVoidInputChange({ type: 'VOID' }, value)} />)}
+                </FormItem>
+              </div>
+            )}
+          />
+          <Column
+            title="TOTAL"
+            dataIndex="total"
+            key="total"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                <p>{currencyFormatterSetoran(column.total)}</p>
+              </div>
+            )}
+          />
+        </Table>
+
+        <Row style={{ padding: '1em' }}>
+          <Col span={18} style={{ textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+          </Col>
+          <Col span={6}>
+            <p style={{ fontWeight: 'bold' }}>
+              {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountVoid)}
+            </p>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
 
   return (
     <Row>
@@ -172,7 +195,7 @@ const FormComponent = ({
         <h3 style={{ fontWeight: 'bold' }}>SETORAN UANG TUNAI</h3>
         <Table {...tableProps}>
           <Column
-            title="JUMLAH TOTAL"
+            title="JUMLAH LEMBAR"
             dataIndex="JUMLAH_LEMBAR"
             key="JUMLAH_LEMBAR"
             render={(text, column) => (
@@ -186,9 +209,9 @@ const FormComponent = ({
             )}
           />
           <Column
-            title="TOTAL"
-            dataIndex="TOTAL"
-            key="TOTAL"
+            title="LEMBAR"
+            dataIndex="LEMBAR"
+            key="LEMBAR"
             render={(text, column) => (
               <div>
                 <p>{column.type}</p>
@@ -228,7 +251,7 @@ const FormComponent = ({
           </Col>
         </Row>
       </Col>
-      {/* <Col {...column}>
+      <Col {...column}>
         <Row>
           <Col>
             <ListEdc />
@@ -237,7 +260,7 @@ const FormComponent = ({
             <ListVoid />
           </Col>
         </Row>
-      </Col> */}
+      </Col>
     </Row>
   )
 }

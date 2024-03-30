@@ -1,13 +1,21 @@
 import React from 'react'
-import { Table, Form, InputNumber, Row, Col } from 'antd'
+import { Form, Table, InputNumber, Row, Col } from 'antd'
 import { currencyFormatterSetoran } from 'utils/string'
 
 const FormItem = Form.Item
 const Column = Table.Column
 
+const column = {
+  sm: { span: 24 },
+  md: { span: 24 },
+  lg: { span: 12 },
+  xl: { span: 12 }
+}
+
 const ConfirmationDialog = ({
   dispatch,
   list = [],
+  listSetoran = [],
   setCashValue,
   form: {
     // getFieldsValue,
@@ -44,127 +52,225 @@ const ConfirmationDialog = ({
     dataSource: filterList
   }
 
-  return (
-    <div style={{ margin: '0 12em' }}>
-      <Table {...tableProps}>
-        <Column
-          title="JUMLAH LEMBAR"
-          dataIndex="JUMLAH_LEMBAR"
-          key="JUMLAH_LEMBAR"
-          render={(text, column) => (
-            <div style={{ textAlign: 'center' }}>
-              {column && column.qty ? (
+  const defaultList = [{ total: 0, qty: 0 }]
+  const filterListEdc = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'A')
+  const filterListVoid = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'C')
+  const listEdc = filterListEdc && filterListEdc.length > 0 ? filterListEdc : defaultList
+  const listVoid = filterListVoid && filterListVoid.length > 0 ? filterListVoid : defaultList
+
+  const onEDCVoidInputChange = (itemSelection, value) => {
+    const updatedItem = listSetoran.find(item => item.type === itemSelection.type)
+
+    const newItem = {
+      type: itemSelection.type,
+      status: itemSelection.type === 'EDC' ? 'A' : 'C',
+      amount: value
+    }
+
+    const updatedList = updatedItem ?
+      listSetoran.map(item => (item.type === updatedItem.type ? newItem : item)) :
+      [...listSetoran, newItem]
+
+    dispatch({
+      type: 'posSetoran/updateState',
+      payload: {
+        list: updatedList
+      }
+    })
+  }
+
+  const listEdcProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    dataSource: listEdc
+  }
+
+  const listVoidProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    dataSource: listVoid
+  }
+  const ListEdc = () => {
+    let amountEDC = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'A')
+      .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
+    let item = listSetoran && listSetoran.find(item => item.status === 'A')
+    let value = item && item.amount ? item.amount : 0
+    return (
+      <div>
+        <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
+        <Table {...listEdcProps}>
+          <Column
+            title="JUMLAH LEMBAR"
+            dataIndex="qty"
+            key="qty"
+            render={() => (
+              <div style={{ textAlign: 'center' }}>
                 <FormItem hasFeedback>
-                  {getFieldDecorator(`${column.name}-${column.type}`, {
-                    initialValue: column && column.qty ? column.qty : 0
-                  })(<InputNumber disabled min={0} onChange={value => onChangeInput(column, value)} />)}
+                  {getFieldDecorator('edcAmount', {
+                    initialValue: value
+                  })(<InputNumber disabled min={0} onChange={value => onEDCVoidInputChange({ type: 'EDC' }, value)} />)}
                 </FormItem>
-              ) : null}
-            </div>
-          )}
-        />
-        <Column
-          title="LEMBAR"
-          dataIndex="LEMBAR"
-          key="LEMBAR"
-          render={(text, column) => (
-            <div>
-              {column.type ? (
-                <p>{column.type}</p>
-              ) : null}
-            </div>
-          )}
-        />
-        <Column
-          title="PECAHAN"
-          dataIndex="name"
-          key="name"
-          render={(text, column) => (
-            <div style={{ textAlign: 'center' }}>
-              {column.name ? (
-                <p>{column.name}</p>
-              ) : null}
-            </div>
-          )}
-        />
-        <Column
-          title="TOTAL"
-          dataIndex="amount"
-          key="amount"
-          render={(text, column) => (
-            <div style={{ textAlign: 'center' }}>
-              {column.amount ? (
-                <p>{column.amount ? currencyFormatterSetoran(column.amount) : 0}</p>
-              ) : null}
-            </div>
-          )}
-        />
-      </Table>
-      <Row style={{ padding: '1em' }}>
-        <Col span={20}>
-          <p style={{ fontWeight: 'bold' }}>Subtotal</p>
-        </Col>
-        <Col span={4}>
-          <p style={{ fontWeight: 'bold' }}>
-            {list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
-          </p>
-        </Col>
-      </Row>
-      {/* <table style={{ 'border-collapse': 'collapse', width: '100%' }}>
-          <tr>
-            <th>JUMLAH LEMBAR</th>
-            <th>Lembar</th>
-            <th>PECAHAN</th>
-            <th>TOTAL</th>
-          </tr>
-          <tr>
-            <td style={{ alignItems: 'center' }}>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div>
-                    <FormItem hasFeedback>
-                      {getFieldDecorator(`${column.name}-${column.type}`, {
-                        initialValue: column && column.qty ? column.qty : 0
-                      })(<InputNumber disabled min={0} onChange={value => onChangeInput(column, value)} />)}
-                    </FormItem>
-                  </div>
-                )
-              })}
-            </td>
-            <td>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div style={{ margin: '2em', alignItems: 'center' }}>
-                    <p>{column.type}</p>
-                  </div>
-                )
-              })}
-            </td>
-            <td>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div style={{ margin: '2em 2em 2em 0', alignItems: 'center' }}>
-                    <p>{column.name}</p>
-                  </div>
-                )
-              })}
-            </td>
-            <td>
-              {list && list.length > 0 && list.map((column) => {
-                return (
-                  <div style={{ margin: '2em', alignItems: 'center' }}>
-                    <p>{column.amount ? currencyFormatterSetoran(column.amount) : 0}</p>
-                  </div>
-                )
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={3}>Subtotal</td>
-            <td>{list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}</td>
-          </tr>
-        </table> */}
-    </div>
+              </div>
+            )}
+          />
+          <Column
+            title="TOTAL"
+            dataIndex="total"
+            key="total"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                <p>{currencyFormatterSetoran(column.total)}</p>
+              </div>
+            )}
+          />
+        </Table>
+
+        <Row style={{ padding: '1em' }}>
+          <Col span={18} style={{ textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+          </Col>
+          <Col span={6}>
+            <p style={{ fontWeight: 'bold' }}>
+              {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountEDC)}
+            </p>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
+
+  const ListVoid = () => {
+    let amountVoid = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'C')
+      .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
+    let item = listSetoran && listSetoran.find(item => item.status === 'C')
+    let value = item && item.amount ? item.amount : 0
+
+    return (
+      <div>
+        <h3 style={{ fontWeight: 'bold' }}>Struk Void / Cancel</h3>
+
+        <Table {...listVoidProps}>
+          <Column
+            title="JUMLAH LEMBAR"
+            dataIndex="qty"
+            key="qty"
+            render={() => (
+              <div style={{ textAlign: 'center' }}>
+                <FormItem hasFeedback>
+                  {getFieldDecorator('voidAmount', {
+                    initialValue: value
+                  })(<InputNumber disabled min={0} onChange={value => onEDCVoidInputChange({ type: 'VOID' }, value)} />)}
+                </FormItem>
+              </div>
+            )}
+          />
+          <Column
+            title="TOTAL"
+            dataIndex="total"
+            key="total"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                <p>{currencyFormatterSetoran(column.total)}</p>
+              </div>
+            )}
+          />
+        </Table>
+
+        <Row style={{ padding: '1em' }}>
+          <Col span={18} style={{ textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+          </Col>
+          <Col span={6}>
+            <p style={{ fontWeight: 'bold' }}>
+              {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountVoid)}
+            </p>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
+
+  return (
+    <Row>
+      <Col {...column}>
+        <h3 style={{ fontWeight: 'bold' }}>SETORAN UANG TUNAI</h3>
+        <Table {...tableProps}>
+          <Column
+            title="JUMLAH LEMBAR"
+            dataIndex="JUMLAH_LEMBAR"
+            key="JUMLAH_LEMBAR"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                {column && column.qty ? (
+                  <FormItem hasFeedback>
+                    {getFieldDecorator(`${column.name}-${column.type}`, {
+                      initialValue: column && column.qty ? column.qty : 0
+                    })(<InputNumber disabled min={0} onChange={value => onChangeInput(column, value)} />)}
+                  </FormItem>
+                ) : null}
+              </div>
+            )}
+          />
+          <Column
+            title="LEMBAR"
+            dataIndex="LEMBAR"
+            key="LEMBAR"
+            render={(text, column) => (
+              <div>
+                {column.type ? (
+                  <p>{column.type}</p>
+                ) : null}
+              </div>
+            )}
+          />
+          <Column
+            title="PECAHAN"
+            dataIndex="name"
+            key="name"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                {column.name ? (
+                  <p>{column.name}</p>
+                ) : null}
+              </div>
+            )}
+          />
+          <Column
+            title="TOTAL"
+            dataIndex="amount"
+            key="amount"
+            render={(text, column) => (
+              <div style={{ textAlign: 'center' }}>
+                {column.amount ? (
+                  <p>{column.amount ? currencyFormatterSetoran(column.amount) : 0}</p>
+                ) : null}
+              </div>
+            )}
+          />
+        </Table>
+        <Row style={{ padding: '1em' }}>
+          <Col span={4} />
+          <Col span={16}>
+            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+          </Col>
+          <Col span={4}>
+            <p style={{ fontWeight: 'bold' }}>
+              {list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0))}
+            </p>
+          </Col>
+        </Row>
+      </Col>
+      <Col {...column}>
+        <Row>
+          <Col>
+            <ListEdc />
+          </Col>
+          <Col>
+            <ListVoid />
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   )
 }
 
