@@ -70,10 +70,22 @@ const FormComponent = ({
       listSetoran.map(item => (item.type === updatedItem.type ? newItem : item)) :
       [...listSetoran, newItem]
 
+    const reducedData = Object.values(updatedList.reduce((accumulator, currentValue) => {
+      const { status, amount, ...rest } = currentValue
+
+      if (accumulator[status]) {
+        accumulator[status].amount = (accumulator[status].amount || 0) + (amount || 0)
+      } else {
+        accumulator[status] = { ...rest, status, amount: amount || 0 }
+      }
+
+      return accumulator
+    }, {}))
+
     dispatch({
       type: 'posSetoran/updateState',
       payload: {
-        list: updatedList
+        list: reducedData
       }
     })
   }
