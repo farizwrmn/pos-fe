@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, queryById, queryByBalanceId, getDataPaymentIdOnlyCash, queryPejabatToko, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
+import { query, queryById, queryAll, queryByBalanceId, getDataPaymentIdOnlyCash, queryPejabatToko, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
 import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
@@ -42,6 +42,12 @@ export default modelExtend(pageModel, {
               id: balanceId
             }
           })
+          dispatch({
+            type: 'queryAll',
+            payload: {
+              balanceId
+            }
+          })
         }
         if (pathname === '/balance/closing') {
           dispatch({
@@ -59,6 +65,18 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryAll ({ payload = {} }, { put, call }) {
+      const data = yield call(queryAll, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: data.data
+          }
+        })
+      }
+    },
+
     * queryPejabatToko ({ payload = {} }, { put, call }) {
       const data = yield call(queryPejabatToko, payload)
       if (data.success) {

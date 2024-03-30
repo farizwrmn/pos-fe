@@ -45,62 +45,71 @@ const FormComponent = ({
     setCashValue(amount)
   }
 
+  // const onSecondInputChange = (value) => {
+  //   console.log('test', value)
+  // }
   const tableProps = {
     pagination: false,
     defaultExpandAllRows: true,
     dataSource: list
   }
 
+  // const defaultList = [{ total: 0 }]
+  // const filterListEdc = listSetoran.filter(filtered => filtered.status === 'A')
+  // const filterListVoid = listSetoran.filter(filtered => filtered.status === 'C')
+  // const listEdc = filterListEdc && filterListEdc.length > 0 ? filterListEdc : defaultList
+  // const listVoid = filterListVoid && filterListVoid.length > 0 ? filterListVoid : defaultList
+
+  // console.log({ listEdc, listVoid })
   // const listEdcProps = {
   //   pagination: false,
   //   defaultExpandAllRows: true,
-  //   dataSource: listSetoran
+  //   dataSource: defaultList
   // }
 
   // const listVoidProps = {
   //   pagination: false,
   //   defaultExpandAllRows: true,
-  //   dataSource: listSetoran
+  //   dataSource: [{}]
   // }
-
   // const ListEdc = () => {
   //   let amountEDC = listSetoran.filter(filtered => filtered.status === 'A')
-  //     .reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+  //     .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
   //   return (
   //     <div>
-  //       <p style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</p>
+  //       <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
   //       <Table {...listEdcProps}>
   //         <Column
   //           title="JUMLAH TOTAL"
-  //           dataIndex="JUMLAH_LEMBAR"
-  //           key="JUMLAH_LEMBAR"
-  //           render={(text, column) => (
-  //             <div style={{ textAlign: 'right' }}>
+  //           dataIndex="edcAmount"
+  //           key="edcAmount"
+  //           render={() => (
+  //             <div style={{ textAlign: 'center' }}>
   //               <FormItem hasFeedback>
-  //                 {getFieldDecorator(`${column.name}-${column.type}`, {
-  //                   initialValue: column && column.qty ? column.qty : 0
-  //                 })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+  //                 {getFieldDecorator('edcAmount', {
+  //                   initialValue: 0
+  //                 })(<InputNumber min={0} onChange={onSecondInputChange} />)}
   //               </FormItem>
   //             </div>
   //           )}
   //         />
   //         <Column
   //           title="TOTAL"
-  //           dataIndex="TOTAL"
-  //           key="TOTAL"
+  //           dataIndex="edcTOTAL"
+  //           key="edcTOTAL"
   //           render={(text, column) => (
-  //             <div>
-  //               <p>{column.total}</p>
+  //             <div style={{ textAlign: 'center' }}>
+  //               <p>{currencyFormatterSetoran(column.total)}</p>
   //             </div>
   //           )}
   //         />
   //       </Table>
 
   //       <Row style={{ padding: '1em' }}>
-  //         <Col span={20}>
+  //         <Col span={18} style={{ textAlign: 'center' }}>
   //           <p style={{ fontWeight: 'bold' }}>Subtotal</p>
   //         </Col>
-  //         <Col span={4}>
+  //         <Col span={6}>
   //           <p style={{ fontWeight: 'bold' }}>
   //             {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountEDC)}
   //           </p>
@@ -112,42 +121,42 @@ const FormComponent = ({
 
   // const ListVoid = () => {
   //   let amountVoid = listSetoran.filter(filtered => filtered.status === 'C')
-  //     .reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+  //     .reduce((cnt, o) => cnt + parseFloat(o.total || 0), 0)
   //   return (
   //     <div>
-  //       <p style={{ fontWeight: 'bold' }}>Struk Void / Cancel</p>
+  //       <h3 style={{ fontWeight: 'bold' }}>Struk Void / Cancel</h3>
   //       <Table {...listVoidProps}>
   //         <Column
   //           title="JUMLAH TOTAL"
-  //           dataIndex="JUMLAH_LEMBAR"
-  //           key="JUMLAH_LEMBAR"
-  //           render={(text, column) => (
-  //             <div style={{ textAlign: 'right' }}>
+  //           dataIndex="voidAmount"
+  //           key="voidAmount"
+  //           render={() => (
+  //             <div style={{ textAlign: 'center' }}>
   //               <FormItem hasFeedback>
-  //                 {getFieldDecorator(`${column.name}-${column.type}`, {
-  //                   initialValue: column && column.qty ? column.qty : 0
-  //                 })(<InputNumber min={0} onChange={value => onChangeInput(column, value)} />)}
+  //                 {getFieldDecorator('voidAmount', {
+  //                   initialValue: 0
+  //                 })(<InputNumber min={0} onChange={onSecondInputChange} />)}
   //               </FormItem>
   //             </div>
   //           )}
   //         />
   //         <Column
   //           title="TOTAL"
-  //           dataIndex="TOTAL"
-  //           key="TOTAL"
+  //           dataIndex="voidTOTAL"
+  //           key="voidTOTAL"
   //           render={(text, column) => (
-  //             <div>
-  //               <p>{column.total}</p>
+  //             <div style={{ textAlign: 'center' }}>
+  //               <p>{currencyFormatterSetoran(column.total)}</p>
   //             </div>
   //           )}
   //         />
   //       </Table>
 
   //       <Row style={{ padding: '1em' }}>
-  //         <Col span={20}>
+  //         <Col span={18} style={{ textAlign: 'center' }}>
   //           <p style={{ fontWeight: 'bold' }}>Subtotal</p>
   //         </Col>
-  //         <Col span={4}>
+  //         <Col span={6}>
   //           <p style={{ fontWeight: 'bold' }}>
   //             {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountVoid)}
   //           </p>
@@ -160,7 +169,7 @@ const FormComponent = ({
   return (
     <Row>
       <Col {...column}>
-        <h3>SETORAN UANG TUNAI</h3>
+        <h3 style={{ fontWeight: 'bold' }}>SETORAN UANG TUNAI</h3>
         <Table {...tableProps}>
           <Column
             title="JUMLAH TOTAL"
