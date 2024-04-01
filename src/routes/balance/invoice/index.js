@@ -7,6 +7,7 @@ import enUS from 'antd/lib/locale-provider/en_US'
 import styles from './index.less'
 import Header from './Header'
 import Body from './Body'
+import ListPhysicMoneyDeposit from './ListPhysicMoneyDeposit'
 // import Footer from './Footer'
 
 const Invoice = ({ physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) => {
@@ -31,16 +32,23 @@ const Invoice = ({ physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) 
     closeDate: moment(currentItem.closed).format('DD-MMM-YYYY HH:mm')
   }
 
+  const listPhysicMoneyDepositProps = {
+    pagination: false,
+    defaultExpandAllRows: true,
+    currentItem: listPhysicalMoneyDeposit,
+    dataSource: listPhysicalMoneyDeposit.detail
+  }
+
   return (
     <LocaleProvider locale={enUS}>
       <div className={styles.invoiceMini}>
         <Header invoiceInfo={invoiceInfo} />
         <Body
-          list={listPhysicalMoneyDeposit}
           paymentOptionCashId={paymentOptionCashItem.id || 1}
           dataPos={invoiceInfo.dataPos || []}
           listOpts={listOpts || []}
         />
+        <ListPhysicMoneyDeposit {...listPhysicMoneyDepositProps} />
         {/* {currentItem && currentItem.closed && moment(moment(currentItem.closed).format('YYYY-MM-DD'), 'YYYY-MM-DD').isBefore(moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')) ? (defaultRole === 'HKS' || defaultRole === 'ADF' || defaultRole === 'SFC' || defaultRole === 'HFC') ? (
           <div>
             <Body

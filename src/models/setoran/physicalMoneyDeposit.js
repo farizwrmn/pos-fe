@@ -42,12 +42,14 @@ export default modelExtend(pageModel, {
               id: balanceId
             }
           })
-          dispatch({
-            type: 'queryAll',
-            payload: {
-              balanceId
-            }
-          })
+          setTimeout(() => {
+            dispatch({
+              type: 'queryAll',
+              payload: {
+                balanceId
+              }
+            })
+          }, 2000)
         }
         if (pathname === '/balance/closing') {
           dispatch({

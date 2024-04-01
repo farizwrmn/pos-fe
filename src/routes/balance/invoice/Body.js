@@ -8,7 +8,6 @@ import BodyItem from './BodyItem'
 import styles from './index.less'
 
 const Body = ({
-  list = [],
   dataPos = [],
   paymentOptionCashId = 1
 }) => {
@@ -28,31 +27,6 @@ const Body = ({
               <BodyItem key={index} item={item} itemTransaction={itemTransaction} />
             )
           })}
-        <Row>
-          <h1>Lembaran Uang Fiat</h1>
-          <Col>
-            {list.map((item) => {
-              return (
-                <div>
-                  {item.detail.map((detail) => {
-                    return (
-                      <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <div>
-                          Uang FIAT:
-                          {detail.physicalMoneyName}
-                        </div>
-                        <div>
-                          Jumlah lembar:
-                          {detail.qty}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )
-            })}
-          </Col>
-        </Row>
         <Row>
           <Col style={{ textAlign: 'left', fontWeight: 500 }}>Total Uang Tunai Yang Mau Disetor</Col>
           <Col style={{ textAlign: 'left', fontWeight: 500 }}>{currencyFormatter(totalAmountSetoran)}</Col>
