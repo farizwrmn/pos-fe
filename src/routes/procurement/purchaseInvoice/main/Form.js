@@ -51,6 +51,7 @@ const FormCounter = ({
     getFieldValue,
     getFieldDecorator,
     validateFields,
+    setFieldsValue,
     getFieldsValue,
     resetFields
   }
@@ -116,6 +117,15 @@ const FormCounter = ({
         })
       }
     })
+  }
+
+  const onChangeSupplier = (supplierId) => {
+    const supplier = listSupplier.filter(supplier => supplier.id === supplierId)
+    if (supplier && supplier.length === 1) {
+      setFieldsValue({
+        tempo: supplier[0].paymentTempo
+      })
+    }
   }
 
   const onChangeTotal = () => {
@@ -200,6 +210,7 @@ const FormCounter = ({
               showSearch
               optionFilterProp="children"
               style={{ width: '100%' }}
+              onChange={onChangeSupplier}
               disabled={item.supplierId && item.receiveItem}
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
             >
