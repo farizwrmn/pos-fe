@@ -123,145 +123,13 @@ const FormComponent = ({
     defaultExpandAllRows: true,
     dataSource: listVoid
   }
-  const ListEdc = () => {
-    // let amountEDC = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'A')
-    //   .reduce((cnt, o) => cnt + parseFloat(o.total), 0)
-    let item = listSetoran && listSetoran.find(item => item.status === 'A')
-    let edcAmount = item && item.edcAmount ? item.edcAmount : 0
-    let edcTotal = item && item.edcTotal ? item.edcTotal : 0
-    return (
-      <div>
-        <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
 
-        <Table {...listEdcProps}>
-          <Column
-            title="JUMLAH LEMBAR"
-            dataIndex="edcAmount"
-            key="edcAmount"
-            render={() => (
-              <div style={{ textAlign: 'center' }}>
-                <FormItem hasFeedback>
-                  {getFieldDecorator('edcAmount', {
-                    initialValue: edcAmount
-                  })(<InputNumber min={0} onChange={value => updateSetoran({ key: 'A', type: 'edcAmount' }, value)} />)}
-                </FormItem>
-              </div>
-            )}
-          />
-          <Column
-            title="TOTAL"
-            dataIndex="edcTotal"
-            key="edcTotal"
-            render={() => (
-              <div style={{ textAlign: 'center' }}>
-                <FormItem hasFeedback>
-                  {getFieldDecorator('edcTotal', {
-                    initialValue: edcTotal
-                  })(<InputNumber
-                    size="large"
-                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                    min={0}
-                    onChange={value => updateSetoran({ key: 'A', type: 'edcTotal' }, value)}
-                  />)}
-                </FormItem>
-              </div>
-            )}
-          />
-        </Table>
-        {/* <Column
-            title="TOTAL"
-            dataIndex="total"
-            key="total"
-            render={(text, column) => (
-              <div style={{ textAlign: 'center' }}>
-                <p>{currencyFormatterSetoran(column.total)}</p>
-              </div>
-            )}
-          /> */}
-        {/* <Row style={{ padding: '1em' }}>
-          <Col span={18} style={{ textAlign: 'center' }}>
-            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
-          </Col>
-          <Col span={6}>
-            <p style={{ fontWeight: 'bold' }}>
-              {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountEDC)}
-            </p>
-          </Col>
-        </Row> */}
-      </div >
-    )
-  }
-
-  const ListVoid = () => {
-    // let amountVoid = listSetoran && listSetoran.length > 0 && listSetoran.filter(filtered => filtered.status === 'C')
-    //   .reduce((cnt, o) => cnt + parseFloat(o.total), 0)
-    let item = listSetoran && listSetoran.find(item => item.status === 'C')
-    let voidAmount = item && item.voidAmount ? item.voidAmount : 0
-    let voidTotal = item && item.voidTotal ? item.voidTotal : 0
-
-    return (
-      <div>
-        <h3 style={{ fontWeight: 'bold' }}>Struk Void / Cancel</h3>
-        <Table {...listVoidProps}>
-          <Column
-            title="JUMLAH LEMBAR"
-            dataIndex="voidAmount"
-            key="voidAmount"
-            render={() => (
-              <div style={{ textAlign: 'center' }}>
-                <FormItem hasFeedback>
-                  {getFieldDecorator('voidAmount', {
-                    initialValue: voidAmount
-                  })(<InputNumber min={0} onChange={value => updateSetoran({ key: 'C', type: 'voidAmount' }, value)} />)}
-                </FormItem>
-              </div>
-            )}
-          />
-          <Column
-            title="TOTAL"
-            dataIndex="voidTotal"
-            key="voidTotal"
-            render={() => (
-              <div style={{ textAlign: 'center' }}>
-                <FormItem hasFeedback>
-                  {getFieldDecorator('voidTotal', {
-                    initialValue: voidTotal
-                  })(<InputNumber
-                    size="large"
-                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                    min={0}
-                    onChange={value => updateSetoran({ key: 'C', type: 'voidTotal' }, value)}
-                  />)}
-                </FormItem>
-              </div>
-            )}
-          />
-        </Table>
-        {/* <Column
-            title="TOTAL"
-            dataIndex="total"
-            key="total"
-            render={(text, column) => (
-              <div style={{ textAlign: 'center' }}>
-                <p>{currencyFormatterSetoran(column.total)}</p>
-              </div>
-            )}
-          /> */}
-        {/* <Row style={{ padding: '1em' }}>
-          <Col span={18} style={{ textAlign: 'center' }}>
-            <p style={{ fontWeight: 'bold' }}>Subtotal</p>
-          </Col>
-          <Col span={6}>
-            <p style={{ fontWeight: 'bold' }}>
-              {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(amountVoid)}
-            </p>
-          </Col>
-        </Row> */}
-      </div>
-    )
-  }
+  let itemA = listSetoran && listSetoran.find(item => item.status === 'A')
+  let edcAmount = itemA && itemA.edcAmount ? itemA.edcAmount : 0
+  let edcTotal = itemA && itemA.edcTotal ? itemA.edcTotal : 0
+  let itemB = listSetoran && listSetoran.find(item => item.status === 'C')
+  let voidAmount = itemB && itemB.voidAmount ? itemB.voidAmount : 0
+  let voidTotal = itemB && itemB.voidTotal ? itemB.voidTotal : 0
 
   return (
     <Form layout="horizontal">
@@ -329,10 +197,128 @@ const FormComponent = ({
         <Col {...column}>
           <Row>
             <Col>
-              <ListEdc />
+              {/* <ListEdc {...listEdcProps} /> */}
+              <div>
+                <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
+                <Table {...listEdcProps}>
+                  <Column
+                    title="JUMLAH LEMBAR"
+                    dataIndex="edcAmount"
+                    key="edcAmount"
+                    render={() => (
+                      <div style={{ textAlign: 'center' }}>
+                        <FormItem hasFeedback>
+                          {getFieldDecorator('edcAmount', {
+                            initialValue: edcAmount
+                          })(<InputNumber style={{ width: 200 }} min={0} onChange={value => updateSetoran({ key: 'A', type: 'edcAmount' }, value)} />)}
+                        </FormItem>
+                      </div>
+                    )}
+                  />
+                  <Column
+                    title="TOTAL"
+                    dataIndex="edcTotal"
+                    key="edcTotal"
+                    render={() => (
+                      <div style={{ textAlign: 'center' }}>
+                        <FormItem hasFeedback>
+                          {getFieldDecorator('edcTotal', {
+                            initialValue: edcTotal
+                          })(<InputNumber
+                            style={{ width: 200 }}
+                            formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                            min={0}
+                            onChange={value => updateSetoran({ key: 'A', type: 'edcTotal' }, value)}
+                          />)}
+                        </FormItem>
+                      </div>
+                    )}
+                  />
+                </Table>
+                {/* <Column
+                      title="TOTAL"
+                      dataIndex="total"
+                      key="total"
+                      render={(text, column) => (
+                        <div style={{ textAlign: 'center' }}>
+                          <p>{currencyFormatterSetoran(column.total)}</p>
+                        </div>
+                      )}
+                    /> */}
+                <Row style={{ padding: '1em' }}>
+                  <Col span={18} style={{ textAlign: 'center' }}>
+                    <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+                  </Col>
+                  <Col span={6}>
+                    <p style={{ fontWeight: 'bold' }}>
+                      {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(edcTotal)}
+                    </p>
+                  </Col>
+                </Row>
+              </div>
             </Col>
             <Col>
-              <ListVoid />
+              {/* <ListVoid {...listVoidProps} /> */}
+              <div>
+                <h3 style={{ fontWeight: 'bold' }}>Struk Void / Cancel</h3>
+                <Table {...listVoidProps}>
+                  <Column
+                    title="JUMLAH LEMBAR"
+                    dataIndex="voidAmount"
+                    key="voidAmount"
+                    render={() => (
+                      <div style={{ textAlign: 'center' }}>
+                        <FormItem hasFeedback>
+                          {getFieldDecorator('voidAmount', {
+                            initialValue: voidAmount
+                          })(<InputNumber style={{ width: 200 }} min={0} onChange={value => updateSetoran({ key: 'C', type: 'voidAmount' }, value)} />)}
+                        </FormItem>
+                      </div>
+                    )}
+                  />
+                  <Column
+                    title="TOTAL"
+                    dataIndex="voidTotal"
+                    key="voidTotal"
+                    render={() => (
+                      <div style={{ textAlign: 'center' }}>
+                        <FormItem hasFeedback>
+                          {getFieldDecorator('voidTotal', {
+                            initialValue: voidTotal
+                          })(<InputNumber
+                            style={{ width: 200 }}
+                            formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                            min={0}
+                            onChange={value => updateSetoran({ key: 'C', type: 'voidTotal' }, value)}
+                          />)}
+                        </FormItem>
+                      </div>
+                    )}
+                  />
+                </Table>
+                {/* <Column
+                    title="TOTAL"
+                    dataIndex="total"
+                    key="total"
+                    render={(text, column) => (
+                      <div style={{ textAlign: 'center' }}>
+                        <p>{currencyFormatterSetoran(column.total)}</p>
+                      </div>
+                    )}
+                  /> */}
+                <Row style={{ padding: '1em' }}>
+                  <Col span={18} style={{ textAlign: 'center' }}>
+                    <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+                  </Col>
+                  <Col span={6}>
+                    <p style={{ fontWeight: 'bold' }}>
+                      {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(voidTotal)}
+                    </p>
+                  </Col>
+                </Row>
+              </div>
             </Col>
           </Row>
         </Col>
