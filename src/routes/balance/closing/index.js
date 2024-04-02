@@ -78,6 +78,12 @@ const Container = ({ loading, posSetoran, physicalMoney, physicalMoneyDeposit, b
           }
         })
         dispatch({
+          type: 'posSetoran/insertVoidEdcDeposit',
+          payload: {
+            data
+          }
+        })
+        dispatch({
           type: 'balance/closed',
           payload: {
             data: params

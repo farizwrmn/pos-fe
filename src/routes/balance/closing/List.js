@@ -117,7 +117,14 @@ const List = ({
       }
       // data.detail = list
       data.setoranDetail = list
-      data.listSetoran = listSetoran
+      const readableDataSetoran = listSetoran.map(item => ({
+        type: item.type,
+        amount: item.edcAmount || item.voidAmount,
+        total: item.edcTotal || item.voidTotal,
+        status: item.status
+      }))
+
+      data.listSetoran = readableDataSetoran
       let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       if (listAmount < 0) {
         message.error('Masukkan jumlah lembar uang tunai yang valid')
@@ -142,6 +149,10 @@ const List = ({
     listSetoran,
     list,
     listDeposit: listPhysicalMoneyDeposit,
+    form: {
+      getFieldDecorator,
+      setFieldsValue
+    },
     setCashValue (amount) {
       setFieldsValue({
         'detail[C][balanceIn]': amount

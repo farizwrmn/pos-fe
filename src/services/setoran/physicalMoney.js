@@ -14,6 +14,15 @@ export async function queryListVoidEdcDeposit (params) {
     headers: apiHeaderToken
   })
 }
+export async function insertVoidEdcDeposit (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
 
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()

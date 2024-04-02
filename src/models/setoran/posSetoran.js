@@ -1,8 +1,13 @@
 import modelExtend from 'dva-model-extend'
-import { queryListVoidEdcDeposit } from 'services/setoran/physicalMoney'
+import { queryListVoidEdcDeposit, insertVoidEdcDeposit } from 'services/setoran/physicalMoney'
 import moment from 'moment'
+import { message } from 'antd'
 import { lstorage } from 'utils'
 import { pageModel } from '../common'
+
+const success = () => {
+  message.success('Account Code has been saved')
+}
 
 export default modelExtend(pageModel, {
   namespace: 'posSetoran',
@@ -49,6 +54,22 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    }
+  },
+  * insertVoidEdcDeposit ({ payload = {} }, { call, put }) {
+    const data = yield call(insertVoidEdcDeposit, payload)
+    if (data.success) {
+      success()
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalType: 'add',
+          currentItem: {}
+        }
+      })
+      if (payload.reset) {
+        payload.reset()
       }
     }
   },
