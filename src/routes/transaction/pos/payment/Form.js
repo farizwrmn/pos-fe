@@ -159,12 +159,87 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
+    const listProps = {
+      cashierBalance,
+      // cashierInformation,
+      dataSource: listAmount,
+      editList (data) {
+        editItem(data)
+        resetFields()
+      }
+    }
+
+    // const changeToNumber = (e) => {
+    //   const { value } = e.target
+    //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+    //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+    //     setFieldsValue({
+    //       amount: value
+    //     })
+    //   }
+    // }
+
+    const useNetto = (e) => {
+      setFieldsValue({
+        amount: e
+      })
+    }
+
+    const onCancelEdit = () => {
+      cancelEdit()
+      resetFields()
+    }
+
+    // const changeMethod = () => {
+    //   setFieldsValue({
+    //     cardName: null,
+    //     cardNo: null
+    //   })
+    // }
+    const usageLoyalty = memberInformation.useLoyalty || 0
+    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
+    const totalDiscount = usageLoyalty
+    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
+    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+    const dineIn = curNetto * (dineInTax / 100)
+    let curChange = 0
+    if (listAmount && listAmount.length > 0) {
+      const listCash = listAmount.filter(filtered => filtered.typeCode === 'C')
+      if (listCash && listCash.length > 0) {
+        curChange = (curPayment + curCharge) - (curNetto + dineIn)
+      }
+    }
+    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
+
+    const params = getAvailablePaymentType()
+    const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
+    const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray : ['C', 'D', 'K', 'QR']
+
+    const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
+      || currentBundlePayment.paymentOption === filtered.typeCode
+      || typeCode === filtered.typeCode))
+
+    const getMenus = (menuTreeN) => {
+      return menuTreeN.map((item) => {
+        if (item.children && item.children.length) {
+          return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+        }
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+      })
+    }
+
+    const defaultTypeCode = currentBundlePayment && currentBundlePayment.paymentOption ?
+      currentBundlePayment.paymentOption
+      : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+        typeCode : (item.typeCode ? item.typeCode : 'C'))
+
     const onChangePaymentType = (value) => {
       removeQrisImage()
       setFieldsValue({
         printDate: moment(),
         machine: undefined,
-        bank: undefined
+        bank: undefined,
+        amount: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0
       })
       this.setState({
         typeCode: value
@@ -273,88 +348,17 @@ class FormPayment extends React.Component {
       })
     }
 
-    const listProps = {
-      cashierBalance,
-      // cashierInformation,
-      dataSource: listAmount,
-      editList (data) {
-        editItem(data)
-        resetFields()
+    const onConfirm = () => {
+      const listAmountFiltered = listAmount.filter(filtered => filtered !== 'V')
+
+      if (listAmountFiltered && listAmountFiltered.length === 0) {
+        handleSubmit()
+      } else {
+        const { taxInvoiceNo, taxDate } = this.state
+        confirmPayment({
+          taxInvoiceNo, taxDate
+        })
       }
-    }
-
-    // const changeToNumber = (e) => {
-    //   const { value } = e.target
-    //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-    //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-    //     setFieldsValue({
-    //       amount: value
-    //     })
-    //   }
-    // }
-
-    let isCtrl = false
-    const perfect = () => {
-      handleSubmit()
-    }
-    document.onkeyup = function (e) {
-      if (e.which === 17) isCtrl = false
-    }
-    document.onkeydown = function (e) {
-      if (e.which === 17) isCtrl = true
-      if (e.which === 66 && isCtrl === true && (paymentModalVisible || window.location.pathname === '/transaction/pos/payment')) { // ctrl + b
-        perfect()
-        return false
-      }
-    }
-
-    const useNetto = (e) => {
-      setFieldsValue({
-        amount: e
-      })
-    }
-
-    const onCancelEdit = () => {
-      cancelEdit()
-      resetFields()
-    }
-
-    // const changeMethod = () => {
-    //   setFieldsValue({
-    //     cardName: null,
-    //     cardNo: null
-    //   })
-    // }
-    const usageLoyalty = memberInformation.useLoyalty || 0
-    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
-    const totalDiscount = usageLoyalty
-    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
-    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-    const dineIn = curNetto * (dineInTax / 100)
-    let curChange = 0
-    if (listAmount && listAmount.length > 0) {
-      const listCash = listAmount.filter(filtered => filtered.typeCode === 'C')
-      if (listCash && listCash.length > 0) {
-        curChange = (curPayment + curCharge) - (curNetto + dineIn)
-      }
-    }
-    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
-
-    const params = getAvailablePaymentType()
-    const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
-    const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray : ['C', 'D', 'K', 'QR']
-
-    const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
-      || currentBundlePayment.paymentOption === filtered.typeCode
-      || typeCode === filtered.typeCode))
-
-    const getMenus = (menuTreeN) => {
-      return menuTreeN.map((item) => {
-        if (item.children && item.children.length) {
-          return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
-        }
-        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
-      })
     }
 
     const onChangeMachine = (machineId) => {
@@ -383,25 +387,21 @@ class FormPayment extends React.Component {
       }
     }
 
-    const onConfirm = () => {
-      const listAmountFiltered = listAmount.filter(filtered => filtered !== 'V')
 
-      if (listAmountFiltered && listAmountFiltered.length === 0) {
-        handleSubmit()
-      } else {
-        const { taxInvoiceNo, taxDate } = this.state
-        confirmPayment({
-          taxInvoiceNo, taxDate
-        })
+    let isCtrl = false
+    const perfect = () => {
+      handleSubmit()
+    }
+    document.onkeyup = function (e) {
+      if (e.which === 17) isCtrl = false
+    }
+    document.onkeydown = function (e) {
+      if (e.which === 17) isCtrl = true
+      if (e.which === 66 && isCtrl === true && (paymentModalVisible || window.location.pathname === '/transaction/pos/payment')) { // ctrl + b
+        perfect()
+        return false
       }
     }
-
-    const defaultTypeCode = currentBundlePayment && currentBundlePayment.paymentOption ?
-      currentBundlePayment.paymentOption
-      : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
-        typeCode : (item.typeCode ? item.typeCode : 'C'))
-
-    console.log('typeCode', getFieldValue('typeCode'), defaultTypeCode)
 
     return (
       <Form layout="horizontal">
