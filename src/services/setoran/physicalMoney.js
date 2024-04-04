@@ -1,5 +1,46 @@
 import { request, crypt } from 'utils'
 
+
+export async function queryListEdcInputByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-balance-edc-input',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListVoidInputByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-balance-void-input',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListEdcByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-balance-edc',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListVoidByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-balance-void',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 /*
 params:
   storeName

@@ -1,8 +1,16 @@
 import modelExtend from 'dva-model-extend'
-import { queryListVoidEdcDeposit, insertVoidEdcDeposit } from 'services/setoran/physicalMoney'
+import {
+  queryListVoidEdcDeposit,
+  queryListEdcByBalanceId,
+  queryListVoidByBalanceId,
+  queryListEdcInputByBalanceId,
+  queryListVoidInputByBalanceId,
+  insertVoidEdcDeposit
+} from 'services/setoran/physicalMoney'
 import moment from 'moment'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -18,6 +26,10 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    listEdc: [],
+    listVoid: [],
+    listEdcInput: [],
+    listVoidInput: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -35,6 +47,14 @@ export default modelExtend(pageModel, {
           const storeName = lstorage.getCurrentUserStoreName().trim().slice(2)
           dispatch({ type: 'queryListVoidEdcDeposit', payload: { ...other, storeName, transDate } })
         }
+        const match = pathToRegexp('/balance/invoice/:id').exec(pathname)
+        const balanceId = match && match[1]
+        if (match) {
+          dispatch({ type: 'queryListEdcByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListVoidByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListEdcInputByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListVoidInputByBalanceId', payload: { ...other, balanceId } })
+        }
       })
     }
   },
@@ -47,6 +67,70 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListEdcByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListEdcByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEdc: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListVoidByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListVoidByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listVoid: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListEdcInputByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListEdcInputByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listEdcInput: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListVoidInputByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListVoidInputByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listVoidInput: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,

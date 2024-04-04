@@ -10,9 +10,10 @@ import Body from './Body'
 import ListPhysicMoneyDeposit from './ListPhysicMoneyDeposit'
 // import Footer from './Footer'
 
-const Invoice = ({ physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) => {
+const Invoice = ({ posSetoran, physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) => {
   // let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
   const { /* currentItem: pejabatTokoItem, */ list: listPhysicalMoneyDeposit, paymentOptionCashItem } = physicalMoneyDeposit
+  const { listEdc, listVoid, listEdcInput, listVoidInput } = posSetoran
   const { currentItem, listBalanceDetail } = balanceDetail
   const { currentItem: balanceItem } = balance
   const { listOpts } = paymentOpts
@@ -44,6 +45,10 @@ const Invoice = ({ physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) 
       <div className={styles.invoiceMini}>
         <Header invoiceInfo={invoiceInfo} />
         <Body
+          listEdc={listEdc}
+          listVoid={listVoid}
+          listEdcInput={listEdcInput}
+          listVoidInput={listVoidInput}
           paymentOptionCashId={paymentOptionCashItem.id || 1}
           dataPos={invoiceInfo.dataPos || []}
           listOpts={listOpts || []}
@@ -63,7 +68,7 @@ const Invoice = ({ physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) 
 }
 
 export default connect(({
-  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
+  posSetoran, physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }) => ({
-  physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
+  posSetoran, physicalMoneyDeposit, balance, balanceDetail, shift, paymentOpts, loading, app
 }))(Invoice)
