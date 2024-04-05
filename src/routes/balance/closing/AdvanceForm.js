@@ -42,8 +42,15 @@ const FormComponent = ({
         list: currentList
       }
     })
-    let amount = currentList && currentList.length > 0 && currentList.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-    setCashValue(amount)
+    if (currentList && currentList.length >= 0) {
+      let amount = currentList.reduce((cnt, o) => {
+        if (o && typeof o.amount === 'number') {
+          return cnt + o.amount
+        }
+        return cnt
+      }, 0)
+      setCashValue(amount)
+    }
   }
 
   const tableProps = {
