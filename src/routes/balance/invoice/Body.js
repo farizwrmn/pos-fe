@@ -21,9 +21,9 @@ const Body = ({
   const itemListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.amount, 0)
   const itemListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.total, 0)
   const lembarListEdcAmount = listEdc.reduce((acc, curr) => acc + curr.lembar, 0)
-  const lembarListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.lembar, 0)
+  const lembarListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.amount, 0)
   const lembarListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.lembar, 0)
-  const lembarListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.lembar, 0)
+  const lembarListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.amount, 0)
   const sisaAmountEdc = itemListEdcAmount - itemListEdcInputAmount
   const sisaAmountVoid = itemListVoidAmount - itemListVoidInputAmount
   const sisaLembarEdc = lembarListEdcAmount - lembarListEdcInputAmount
