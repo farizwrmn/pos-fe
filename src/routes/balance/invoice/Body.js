@@ -92,8 +92,12 @@ const Body = ({
         <div style={{ margin: '1em' }} />
         <div className={styles.item} />
         <Row>
-          <Col style={{ textAlign: 'left', fontWeight: 500 }}>Total Uang Tunai Yang Mau Disetor</Col>
-          <Col style={{ textAlign: 'left', fontWeight: 500 }}>{currencyFormatter(totalAmountSetoran)}</Col>
+          <Col style={{ textAlign: 'left' }}>
+            <h3><b>Total Uang Tunai Yang Mau Disetor</b></h3>
+          </Col>
+          <Col style={{ textAlign: 'left' }}>
+            <h3><b>{currencyFormatter(totalAmountSetoran)}</b></h3>
+          </Col>
         </Row>
       </div>
     </div>
