@@ -57,6 +57,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         let row = []
         row.push({ value: start, alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: '.', alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.employee.store.storeName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.employee.employeeId || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.employee.employeeName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.employee.bankName || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
@@ -72,6 +73,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
       [
         { value: 'NO', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: '', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'NAMA STORE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'KODE KARYAWAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA KARYAWAN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'BANK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
