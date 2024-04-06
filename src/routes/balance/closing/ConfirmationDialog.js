@@ -79,7 +79,7 @@ const ConfirmationDialog = ({
 
   return (
     <Row>
-      <Col {...column}>
+      <Col {...column} style={{ paddingRight: '1em' }}>
         <h3 style={{ fontWeight: 'bold' }}>SETORAN UANG TUNAI</h3>
         <Table {...tableProps}>
           <Column
@@ -147,7 +147,7 @@ const ConfirmationDialog = ({
           </Col>
         </Row>
       </Col>
-      <Col {...column}>
+      <Col {...column} style={{ paddingLeft: '1em' }}>
         <Row>
           <Col>
             {/* <ListEdc {...listEdcProps} /> */}
