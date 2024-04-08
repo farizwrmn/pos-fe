@@ -42,14 +42,12 @@ export default modelExtend(pageModel, {
               id: balanceId
             }
           })
-          setTimeout(() => {
-            dispatch({
-              type: 'queryAll',
-              payload: {
-                balanceId
-              }
-            })
-          }, 2000)
+          // dispatch({
+          //   type: 'queryAll',
+          //   payload: {
+          //     balanceId
+          //   }
+          // })
         }
         if (pathname === '/balance/closing') {
           dispatch({
@@ -111,11 +109,11 @@ export default modelExtend(pageModel, {
         // if (data && data.data && data.data.cashierUserId) {
         //   yield put({ type: 'queryPejabatToko', payload: { userId: data.data.cashierUserId } })
         // }
-
         yield put({
           type: 'updateState',
           payload: {
-            itemBalance: data.data
+            list: data.data.dataPhysicMoneyAll,
+            itemBalance: data.data.dataBalance
           }
         })
       }
