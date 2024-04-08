@@ -60,7 +60,7 @@ import styles from './index.less'
 
 
 const ListPhysicMoneyDeposit = ({
-  // currentItem,
+  currentItem,
   dataSource
 }) => {
   // const totalQty = dataSource && dataSource.length > 0 && dataSource.reduce((acc, item) => acc + item.qty, 0)
@@ -70,13 +70,23 @@ const ListPhysicMoneyDeposit = ({
       {dataSource && dataSource.length > 0 && dataSource.map((column, index) => (
         <Row key={index}>
           <Col span={12} className={styles.left}>
-            <p>{`${column.physicalMoneyName}`}</p>
+            <p>{`${column.qty} x ${column.physicalMoneyName}`}</p>
+            {/* <p>{`${column.physicalMoneyType}: ${column.qty}`}</p> */}
           </Col>
           <Col span={12} className={styles.right}>
             <p>{currencyFormatterSetoran(column.amount)}</p>
           </Col>
         </Row>
       ))}
+      <Row>
+        <Col span={12} className={styles.left}>
+          <p style={{ fontWeight: 'bold' }}>Subtotal</p>
+        </Col>
+        <Col span={12} className={styles.right}>
+          <p style={{ fontWeight: 'bold' }}>{currencyFormatterSetoran(currentItem.total)}</p>
+        </Col>
+      </Row>
+
       {/* <TableView
         dataSource={dataSource}
         currentItem={currentItem}
