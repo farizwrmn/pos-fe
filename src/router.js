@@ -597,9 +597,9 @@ const Routers = function ({ history, app }) {
           path: 'balance/invoice/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
               registerModel(app, require('./models/setoran/posSetoran'))
               registerModel(app, require('./models/detail/user'))
-              registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/master/shift'))
