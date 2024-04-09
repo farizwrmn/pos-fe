@@ -64,7 +64,12 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: (data.employee.accountName || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.createdAt).format('YYYY-MM-DD'), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.createdAt).format('HH:mm'), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
-        row.push({ value: (data.employee.store.storeName || '').toString(), alignment: styles.alignmentLeft, font: styles.tableBody, border: styles.tableBorder })
+        row.push({
+          value: (data.employee.store && data.employee.store.storeName ? data.employee.store.storeName.toString() : ''),
+          alignment: styles.alignmentLeft,
+          font: styles.tableBody,
+          border: styles.tableBorder
+        })
         tableBody.push(row)
       }
       start += 1
