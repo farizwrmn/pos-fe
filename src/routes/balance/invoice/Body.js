@@ -40,9 +40,12 @@ const Body = ({
             if (filteredBalance && filteredBalance[0]) {
               itemTransaction = filteredBalance[0]
             }
-            return (
-              <BodyItem key={index} item={item} itemTransaction={itemTransaction} />
-            )
+            if (item.paymentOption.typeCode === 'C') {
+              return (
+                <BodyItem key={index} item={item} itemTransaction={itemTransaction} />
+              )
+            }
+            return null
           })}
         <div>
           <div className={styles.item} />
