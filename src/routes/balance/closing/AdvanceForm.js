@@ -137,6 +137,10 @@ const FormComponent = ({
   let itemB = listSetoran && listSetoran.find(item => item.status === 'C')
   let voidAmount = itemB && itemB.voidAmount ? itemB.voidAmount : 0
   let voidTotal = itemB && itemB.voidTotal ? itemB.voidTotal : 0
+  let subtotalValue = (list || [])
+    .filter(filtered => typeof filtered.amount === 'number' && !isNaN(filtered.amount))
+    .reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+
 
   return (
     <Form layout="horizontal">
@@ -196,7 +200,7 @@ const FormComponent = ({
             </Col>
             <Col span={4}>
               <p style={{ fontWeight: 'bold' }}>
-                {list && list.length > 0 && currencyFormatterSetoran(list.reduce((cnt, o) => cnt + parseFloat(o.amount), 0))}
+                {currencyFormatterSetoran(subtotalValue)}
               </p>
             </Col>
           </Row>

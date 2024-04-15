@@ -59,8 +59,8 @@ const FormComponent = ({
                 disabled
                 min={0}
                 style={{ width: '60%' }}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                formatter={value => (value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : value)}
+                parser={value => (value ? value.replace(/[^0-9]/g, '') : value)}
               />
             )}
           </div>
