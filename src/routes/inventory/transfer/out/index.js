@@ -14,7 +14,7 @@ const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, importTransferOut, stockLocation, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
-  const { modalImportProductVisible, listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+  const { modalImportProductVisible, listReason, listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { listImported } = importTransferOut
   const { query } = location
   const { list: listStockLocation } = stockLocation
@@ -474,6 +474,7 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
 
   const formEditProps = {
     visible: modalVisible,
+    listReason,
     currentItemList,
     modalProductProps,
     onOkList (item) {

@@ -14,10 +14,12 @@ const Counter = ({ loading, returnToDc, dispatch, location }) => {
     listProduct,
     modalProductVisible,
     currentItem,
-    modalEditProductVisible
+    modalEditProductVisible,
+    listReason
   } = returnToDc
 
   const modalEditProductProps = {
+    listReason,
     visible: modalEditProductVisible,
     item: currentItem,
     onOk (item) {

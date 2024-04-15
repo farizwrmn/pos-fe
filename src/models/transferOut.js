@@ -4,6 +4,7 @@ import { Modal, message } from 'antd'
 import { prefix } from 'utils/config.main'
 import { lstorage, color, alertModal } from 'utils'
 import { queryActive } from 'services/transferRequest/transferDemand'
+import { query as queryParameter } from 'services/utils/parameter'
 import { queryPOSproduct } from 'services/master/productstock'
 import { query, queryLov, queryHpokok, queryChangeHpokokTransferOut, updateTransferOutHpokok, add, queryTransferOut, queryDetail, queryByTrans } from '../services/transferStockOut'
 import { queryChangeHpokokTransferIn, updateTransferInHpokok } from '../services/transferStockIn'
@@ -41,6 +42,7 @@ export default modelExtend(pageModel, {
     listChangeTransferOut: [],
     listChangeTransferIn: [],
     listProductDemand: [],
+    listReason: [],
     selectedRowKeys: [],
     currentItem: {},
     currentItemList: {},
@@ -87,6 +89,9 @@ export default modelExtend(pageModel, {
           })
         }
         if (location.pathname === '/inventory/transfer/out') {
+          dispatch({
+            type: 'queryReason'
+          })
           const { activeKey, start, end, page, pageSize } = location.query
           if (activeKey === '1') {
             if (start && end) {
@@ -150,6 +155,24 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryReason (payload, { call, put }) {
+      const response = yield call(queryParameter, {
+        paramCode: 'transferOutReason',
+        type: 'all',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listReason: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
       if (data) {

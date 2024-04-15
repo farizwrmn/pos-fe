@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { lstorage } from 'utils'
+import { query as queryParameter } from 'services/utils/parameter'
 import { queryTransferOut, queryTransferOutDetail, add } from 'services/transfer/returnToDc'
 import { pageModel } from 'models/common'
 
@@ -25,6 +26,7 @@ export default modelExtend(pageModel, {
     listItem: [],
     listTransferOutDetail: [],
     listProduct: [],
+    listReason: [],
     modalProductVisible: false,
     modalEditProductVisible: false,
     pagination: {
@@ -46,14 +48,35 @@ export default modelExtend(pageModel, {
               listTransferOutDetail: []
             }
           })
+          dispatch({
+            type: 'queryReason'
+          })
         }
       })
     }
   },
 
   effects: {
+    * queryReason (payload, { call, put }) {
+      const response = yield call(queryParameter, {
+        paramCode: 'returnToDcReason',
+        type: 'all',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listReason: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
     * addItem ({ payload = {} }, { select, put }) {
       const listItem = yield select(({ returnToDc }) => returnToDc.listItem)
+      const listReason = yield select(({ returnToDc }) => returnToDc.listReason)
       const exists = checkExists(payload.item.productId, listItem)
       if (exists) {
         throw new Error('Item already exists')
@@ -66,7 +89,8 @@ export default modelExtend(pageModel, {
         productCode: payload.item.productCode,
         productName: payload.item.productName,
         transferQty: payload.item.qty,
-        qty: payload.item.qty
+        qty: payload.item.qty,
+        description: listReason && listReason[0] ? listReason[0].paramValue : undefined
       })
       yield put({
         type: 'updateState',
