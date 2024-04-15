@@ -55,6 +55,7 @@ const ListItem = ({ ...tableProps, onModalVisible, handleItemEdit }) => {
               <div>{record.productCode}</div>
               <div>{record.productName}</div>
               <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
+              <div>Note: {record.description}</div>
               <div style={{ fontSize: '10px' }}>click to edit</div>
             </div>
           )

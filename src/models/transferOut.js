@@ -3,6 +3,7 @@ import moment from 'moment'
 import { Modal, message } from 'antd'
 import { prefix } from 'utils/config.main'
 import { lstorage, color, alertModal } from 'utils'
+import { query as queryStore } from 'services/store/store'
 import { queryActive } from 'services/transferRequest/transferDemand'
 import { query as queryParameter } from 'services/utils/parameter'
 import { queryPOSproduct } from 'services/master/productstock'
@@ -446,9 +447,36 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+    * queryStore (payload, { call, put }) {
+      const listStore = lstorage.getListUserStores()
+      if (listStore && listStore.length === 1) {
+        const response = yield call(queryStore, {
+          id: listStore[0].value
+        })
+        if (response.success && response.data && response.data.length > 0 && response.data[0].storeParentId) {
+          const responseParent = yield call(queryStore, {
+            id: response.data[0].storeParentId
+          })
+          if (responseParent.success && responseParent.data && responseParent.data.length > 0) {
+            listStore.push({
+              value: responseParent.data[0].id,
+              label: responseParent.data[0].storeName
+            })
+          }
+        }
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          listStore
+        }
+      })
+    },
+
     * querySequence ({ payload }, { call, put }) {
       yield put({ type: 'resetState' })
       const data = yield call(querySequence, payload)
+      yield put({ type: 'queryStore' })
       if (data.success) {
         yield put({
           type: 'updateState',
@@ -456,8 +484,7 @@ export default modelExtend(pageModel, {
             currentItem: {
               transNo: data.data,
               storeId: lstorage.getCurrentUserStore()
-            },
-            listStore: lstorage.getListUserStores()
+            }
           }
         })
       } else {
