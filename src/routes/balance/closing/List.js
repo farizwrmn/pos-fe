@@ -59,8 +59,8 @@ const FormComponent = ({
                 disabled
                 min={0}
                 style={{ width: '60%' }}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                formatter={value => (value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : value)}
+                parser={value => (value ? value.replace(/[^0-9]/g, '') : value)}
               />
             )}
           </div>
@@ -79,7 +79,7 @@ const List = ({
   listOpts = [],
   listShift,
   listUser,
-  // listSetoran,
+  listSetoran,
   user,
   dispatch,
   button,
@@ -117,6 +117,14 @@ const List = ({
       }
       // data.detail = list
       data.setoranDetail = list
+      const readableDataSetoran = listSetoran.map(item => ({
+        type: item.type,
+        amount: item.edcAmount || item.voidAmount,
+        total: item.edcTotal || item.voidTotal,
+        status: item.status
+      }))
+
+      data.listSetoran = readableDataSetoran
       let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
       if (listAmount < 0) {
         message.error('Masukkan jumlah lembar uang tunai yang valid')
@@ -138,9 +146,13 @@ const List = ({
   }
   const advanceFormProps = {
     dispatch,
-    // listSetoran,
+    listSetoran,
     list,
     listDeposit: listPhysicalMoneyDeposit,
+    form: {
+      getFieldDecorator,
+      setFieldsValue
+    },
     setCashValue (amount) {
       setFieldsValue({
         'detail[C][balanceIn]': amount
@@ -149,6 +161,7 @@ const List = ({
   }
   const confirmationDialogProps = {
     dispatch,
+    listSetoran,
     list,
     listDeposit: listPhysicalMoneyDeposit,
     setCashValue (amount) {
@@ -167,7 +180,7 @@ const List = ({
   return (
     <div>
       <Modal
-        width={800}
+        width={1200}
         okText="Ok"
         cancelText="Cancel"
         title="Konfirmasi penutupan setoran"
