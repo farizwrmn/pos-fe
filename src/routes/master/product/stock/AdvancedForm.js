@@ -987,6 +987,12 @@ class AdvancedForm extends Component {
                     : item.activeShop
                 })(<Checkbox>Publish</Checkbox>)}
               </FormItem>
+              <FormItem label="Stock Opname" {...formItemLayout}>
+                {getFieldDecorator('isStockOpname', {
+                  valuePropName: 'checked',
+                  initialValue: item.isStockOpname == null ? true : item.isStockOpname
+                })(<Checkbox>Enable</Checkbox>)}
+              </FormItem>
               <FormItem label="Halal" {...formItemLayout}>
                 {getFieldDecorator('isHalal', {
                   initialValue: item.isHalal
