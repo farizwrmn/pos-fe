@@ -20,25 +20,13 @@ const PRICE_SIZE_IN_POINT = 12
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const NUMBER_OF_PRODUCT_NAME = 32
 const WIDTH_TABLE_IN_CENTI = 5
-const HEIGHT_TABLE_IN_CENTI = 3.8
+const HEIGHT_TABLE_IN_CENTI = 3.4
 const WIDTH_TABLE = (WIDTH_TABLE_IN_CENTI / 2.54) * 72
 const HEIGHT_TABLE = (HEIGHT_TABLE_IN_CENTI / 2.54) * 72
-const WIDTH_LOGO_IMAGE_IN_CENTI = 2
+const WIDTH_LOGO_IMAGE_IN_CENTI = 1.7
 const HEIGHT_LOGO_IMAGE_IN_CENTI = 0.3
 const WIDTH_LOGO_IMAGE = (WIDTH_LOGO_IMAGE_IN_CENTI / 2.54) * 72
 const HEIGHT_LOGO_IMAGE = (HEIGHT_LOGO_IMAGE_IN_CENTI / 2.54) * 72
-const WIDTH_IMAGE_IN_CENTI = 1
-const HEIGHT_IMAGE_IN_CENTI = 1
-const WIDTH_IMAGE = (WIDTH_IMAGE_IN_CENTI / 2.54) * 72
-const HEIGHT_IMAGE = (HEIGHT_IMAGE_IN_CENTI / 2.54) * 72
-const WIDTH_IMAGE_SCANME_IN_CENTI = 1.4
-const HEIGHT_IMAGE_SCANME_IN_CENTI = 1
-const WIDTH_IMAGE_SCANME = (WIDTH_IMAGE_SCANME_IN_CENTI / 2.54) * 72
-const HEIGHT_IMAGE_SCANME = (HEIGHT_IMAGE_SCANME_IN_CENTI / 2.54) * 72
-const WIDTH_IMAGE_HALAL_IN_CENTI = 0.6
-const HEIGHT_IMAGE_HALAL_IN_CENTI = 0.6
-const WIDTH_IMAGE_HALAL = (WIDTH_IMAGE_HALAL_IN_CENTI / 2.54) * 72
-const HEIGHT_IMAGE_HALAL = (HEIGHT_IMAGE_HALAL_IN_CENTI / 2.54) * 72
 
 const styles = {
   info: {
@@ -122,12 +110,10 @@ const createTableBody = async (tableBody, aliases) => {
   let body = []
   let images
   const storeId = lstorage.getCurrentUserStore()
-  const base = await getBase64FromUrl(`/invoice-logo-${APPNAME}.png`)
-  const scanMe = await getBase64FromUrl('/scan-me-icon.png')
+  const base = await getBase64FromUrl(`/print-shelf-${APPNAME}.png`)
   const pigIcon = await getBase64FromUrl('/pig-icon.png')
   images = {
     AppLogo: base,
-    ScanMe: scanMe,
     PigIcon: pigIcon
   }
   for (let key in tableBody) {
@@ -154,12 +140,6 @@ const createTableBody = async (tableBody, aliases) => {
           background = tableBody[key].info.categoryColor
         }
         let color = '#000000'
-        let isHalal = true
-        if (tableBody[key].info.isHalal === 3) {
-          isHalal = false
-          background = '#F05555'
-          color = '#ffffff'
-        }
         // eslint-disable-next-line no-await-in-loop
         const imageBase = await getQRCode(tableBody[key].info.productCode)
         images[`${item.productCode}`] = imageBase
@@ -184,24 +164,6 @@ const createTableBody = async (tableBody, aliases) => {
                     width: WIDTH_TABLE
                   }
                 ]
-              },
-              {
-                image: 'ScanMe',
-                width: WIDTH_IMAGE_SCANME,
-                alignment: 'left',
-                height: HEIGHT_IMAGE_SCANME,
-                margin: [0, 0],
-                fillColor: background,
-                background
-              },
-              {
-                image: `${item.productCode}`,
-                width: WIDTH_IMAGE,
-                alignment: 'left',
-                height: HEIGHT_IMAGE,
-                margin: [0, 0],
-                fillColor: background,
-                background
               }
             ]
           }
@@ -262,15 +224,6 @@ const createTableBody = async (tableBody, aliases) => {
           alignment: 'left',
           width: '60%'
         })
-        if (!isHalal) {
-          stackProduct.push({
-            text: 'PRODUK INI MENGANDUNG BABI',
-            style: 'halalText',
-            margin: [0, 0],
-            alignment: 'left',
-            width: '60%'
-          })
-        }
         stackProduct.push({
           text: moment().format('YYYY-MM-DD'),
           style: 'productCode',
@@ -284,18 +237,6 @@ const createTableBody = async (tableBody, aliases) => {
         columnProduct.push({
           stack: stackProduct
         })
-
-        if (!isHalal) {
-          columnProduct.push({
-            image: 'PigIcon',
-            width: WIDTH_IMAGE_HALAL,
-            alignment: 'left',
-            height: HEIGHT_IMAGE_HALAL,
-            margin: [0, 0],
-            fillColor: background,
-            background
-          })
-        }
 
         row.push({
           columns: columnProduct
