@@ -179,7 +179,7 @@ class Pos extends Component {
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          <Row gutter={40}  style={{ overflowY: 'scroll' }}>
+          <Row gutter={40} style={{ overflowY: 'scroll' }}>
             <Col span={14}>
               <Row style={{ backgroundColor: '#FFEAF5', padding: 20, marginBottom: 40, borderRadius: 5 }}>
                 <Col md={24} lg={18}>
@@ -189,7 +189,7 @@ class Pos extends Component {
                     type="button"
                     className={styles.row}
                   >
-                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', marginRight: 16, marginLeft: 16, marginTop: 10, marginBottom: 10 }}>
                       <div className={`${styles.textSmall} `} style={{ color: 'rgb(255, 255, 255)', marginRight: 4 }}>You have{' '}</div>
                       <div className={`${styles.textSmallBold}`} style={{ color: 'rgb(255, 255, 255)' }}>
                         {memberInformation.cashback} Coins
