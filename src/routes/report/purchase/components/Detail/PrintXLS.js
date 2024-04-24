@@ -190,6 +190,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
   let tableFilters = [
     [
       { value: 'NO TRANSAKSI', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: 'TAX INVOICE NO', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'KODE PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'NAMA PEMASOK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: 'KODE PRODUK', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
@@ -216,6 +217,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
+      { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader },
       { value: '', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader }
     ]
   ]
@@ -225,6 +227,7 @@ const PrintXLS = ({ listData, storeInfo, fromDate, toDate }) => {
       let item = master.items[key]
       tableFilters.push([
         { value: `${master.transNo}`, alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
+        { value: (master.taxInvoiceNo || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (master.supplierCode || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (master.supplierName || '').toString(), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
         { value: (item.productCode || ''), alignment: { vertical: 'middle', horizontal: 'left' }, font: styles.tableBody },
