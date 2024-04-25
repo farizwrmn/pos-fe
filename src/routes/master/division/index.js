@@ -115,10 +115,13 @@ const Division = ({ employee, division, loading, dispatch, location, app }) => {
     item: currentItem,
     disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (data) {
+    onSubmit (data, reset) {
       dispatch({
         type: `division/${modalType}`,
-        payload: data
+        payload: {
+          data,
+          reset
+        }
       })
     },
     onCancel () {

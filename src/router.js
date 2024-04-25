@@ -91,6 +91,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/division'))
+              registerModel(app, require('./models/master/employee'))
               registerModel(app, require('./models/misc'))
               cb(null, require('./routes/master/division'))
             }, 'master-division')

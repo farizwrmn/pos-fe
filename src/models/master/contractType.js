@@ -74,10 +74,11 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, payload)
+      const data = yield call(add, payload.data)
       if (data.success) {
         // yield put({ type: 'query' })
         success()
+        payload.reset()
         yield put({
           type: 'updateState',
           payload: {

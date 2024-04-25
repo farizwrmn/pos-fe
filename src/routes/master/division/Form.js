@@ -74,34 +74,28 @@ const formDivision = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.cityCode) {
+      if (data.name) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(data)
-            // setTimeout(() => {
-            resetFields()
-            // }, 500)
+            onSubmit(data, resetFields)
           },
           onCancel () { }
         })
       } else {
-        message.warning("City Code can't be null")
+        message.warning("name can't be null")
       }
     })
   }
-  const handleChange = () => {
+  const handleChange = (value) => {
     validateFields((errors) => {
       if (errors) {
         return
       }
-      const data = {
-        ...getFieldsValue()
-      }
-      const filterMangerUserName = listManager.filter(c => c.id === data.managerUserId)
-      if (filterMangerUserName && filterMangerUserName.length > 0) {
+      const filterMangerUserName = listManager.filter(c => c.id === value)
+      if (filterMangerUserName.length) {
         setFieldsValue({
-          managerUserName: filterMangerUserName.name
+          managerUserName: filterMangerUserName[0].accountName
         })
       }
     })
@@ -110,7 +104,7 @@ const formDivision = ({
   // const defaultStore = lstorage.getCurrentUserStore()
   const listStore = lstorage.getListUserStores()
   const listDivisionOption = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
-  const listManagerOption = (listManager || []).length > 0 ? listManager.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
+  const listManagerOption = (listManager || []).length > 0 ? listManager.map(c => <Option value={c.id} key={c.id}>{c.accountName}</Option>) : []
   const listStoreOption = (listStore || []).length > 0 ? listStore.map(c => <Option value={c.value} key={c.value}>{c.label}</Option>) : []
 
   return (
@@ -119,12 +113,7 @@ const formDivision = ({
         <Col {...column}>
           <FormItem label="Parent Division" hasFeedback {...formItemLayout}>
             {getFieldDecorator('parentDivisionId', {
-              initialValue: item.parentDivisionId,
-              rules: [
-                {
-                  required: true
-                }
-              ]
+              initialValue: item.parentDivisionId
             })(<Select style={{ width: '100%' }} min={0} maxLength={10}>
               {listDivisionOption}
             </Select>)}
@@ -149,7 +138,7 @@ const formDivision = ({
           <FormItem label="Manager" hasFeedback {...formItemLayout}>
             {getFieldDecorator('managerUserId', {
               initialValue: item.managerUserId
-            })(<Select style={{ width: '100%' }} min={0} maxLength={10} onChange={e => handleChange(e)}>
+            })(<Select style={{ width: '100%' }} min={0} maxLength={10} onChange={value => handleChange(value)}>
               {listManagerOption}
             </Select>)}
           </FormItem>

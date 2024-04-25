@@ -69,19 +69,16 @@ const formContractType = ({
       const data = {
         ...getFieldsValue()
       }
-      if (data.cityCode) {
+      if (data.code) {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            onSubmit(data)
-            // setTimeout(() => {
-            resetFields()
-            // }, 500)
+            onSubmit(data, resetFields)
           },
           onCancel () { }
         })
       } else {
-        message.warning("City Code can't be null")
+        message.warning("Code can't be null")
       }
     })
   }
@@ -100,7 +97,7 @@ const formContractType = ({
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input disabled={disabled} maxLength={10} autoFocus />)}
+            })(<Input disabled={disabled} placeholder="PKWTT" maxLength={10} autoFocus />)}
           </FormItem>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
@@ -110,7 +107,7 @@ const formContractType = ({
                   required: true
                 }
               ]
-            })(<Input />)}
+            })(<Input placeholder="PKWTT" />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
