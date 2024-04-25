@@ -87,6 +87,24 @@ const Routers = function ({ history, app }) {
             }, 'master-employee')
           }
         }, {
+          path: 'master/division',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/division'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/division'))
+            }, 'master-division')
+          }
+        }, {
+          path: 'master/contract-type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/contractType'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/contractType'))
+            }, 'master-contract-type')
+          }
+        }, {
           path: 'master/customer',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

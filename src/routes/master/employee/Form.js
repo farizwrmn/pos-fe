@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Select, Row, Col, Modal, message, Card, DatePicker, Icon } from 'antd'
+import { Form, Input, InputNumber, Button, Select, Row, Col, Modal, message, Card, DatePicker, Icon } from 'antd'
 import moment from 'moment'
 import FormItemFingerprint from 'components/Form/FormItemFingerprint'
 import styles from './index.less'
@@ -186,18 +186,7 @@ class FormEmployee extends Component {
         value: 2
       }
     ]
-    const listNumberOfDependents = [
-      {
-        label: 'Laki-laki',
-        value: 1
-      },
-      {
-        label: 'Perempuan',
-        value: 2
-      }
-    ]
 
-    const numberOfDependentsOption = listNumberOfDependents.length > 0 ? listNumberOfDependents.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
     const genderOption = listGender.length > 0 ? listGender.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
     const marriedStatusOption = listMarriedStatus.length > 0 ? listMarriedStatus.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
     const bloodTypeOption = listBloodType.length > 0 ? listBloodType.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
@@ -258,13 +247,7 @@ class FormEmployee extends Component {
                       required: true
                     }
                   ]
-                })(<Select
-                  placeholder="Masukan Jumlah Tanggungan"
-                  optionFilterProp="children"
-                  showSearch
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{numberOfDependentsOption}
-                </Select>)}
+                })(<InputNumber autoFocus placeholder="Masukan Jumlah Tanggungan" />)}
               </FormItem>
               <FormItem label="Alamat Domisili" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('residenceAddress', {
