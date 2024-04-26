@@ -18,18 +18,18 @@ const Filter = ({
     setFieldsValue
   }
 }) => {
-  const handleFields = (fields) => {
-    const { createdAt } = fields
-    if (createdAt.length) {
-      fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
-    }
-    return fields
-  }
+  // const handleFields = (fields) => {
+  //   const { createdAt } = fields
+  //   if (createdAt.length) {
+  //     fields.createdAt = [createdAt[0].format('YYYY-MM-DD'), createdAt[1].format('YYYY-MM-DD')]
+  //   }
+  //   return fields
+  // }
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    if (fields.cityName === undefined || fields.cityName === '') delete fields.cityName
-    fields = handleFields(fields)
+    if (fields.employeeName === undefined || fields.employeeName === '') delete fields.employeeName
+    // fields = handleFields(fields)
     onFilterChange(fields)
   }
 
@@ -54,7 +54,7 @@ const Filter = ({
   //   fields = handleFields(fields)
   //   onFilterChange(fields)
   // }
-  const { cityName } = filter
+  const { employeeName } = filter
 
   let initialCreateTime = []
   if (filter.createdAt && filter.createdAt[0]) {
@@ -71,7 +71,7 @@ const Filter = ({
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col xs={{ span: 24 }} sm={{ span: 9 }} md={{ span: 8 }} lg={6} style={{ marginBottom: 8 }}>
-        {getFieldDecorator('cityName', { initialValue: cityName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('employeeName', { initialValue: employeeName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
       {/* <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={9} style={{ marginBottom: 8 }}>
         <FilterItem label="Createtime" >
