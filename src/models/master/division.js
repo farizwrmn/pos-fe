@@ -98,9 +98,9 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ city }) => city.currentItem.cityCode)
-      const newCity = { ...payload, id }
-      const data = yield call(edit, newCity)
+      const id = yield select(({ division }) => division.currentItem.id)
+      const newData = { ...payload, id }
+      const data = yield call(edit, newData)
       if (data.success) {
         success()
         yield put({

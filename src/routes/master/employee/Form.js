@@ -41,6 +41,8 @@ class FormEmployee extends Component {
       showPosition,
       listLovJobPosition,
       registerFingerprint,
+      listContractType,
+      listDvision,
       listCity,
       listStoreLov,
       listIdType,
@@ -89,6 +91,7 @@ class FormEmployee extends Component {
           Modal.confirm({
             title: 'Do you want to save this item?',
             onOk () {
+              // console.log(data)
               onSubmit(data.employeeId, data)
               resetFields()
             },
@@ -105,24 +108,24 @@ class FormEmployee extends Component {
       resetFields()
     }
 
-    const listStatusEmployee = [
-      {
-        label: 'PKWT',
-        value: 1
-      },
-      {
-        label: 'PKWTT',
-        value: 2
-      },
-      {
-        label: 'Freelance',
-        value: 3
-      },
-      {
-        label: 'Part Time',
-        value: 4
-      }
-    ]
+    // const listStatusEmployee = [
+    //   {
+    //     name: 'PKWT',
+    //     id: 1
+    //   },
+    //   {
+    //     name: 'PKWTT',
+    //     id: 2
+    //   },
+    //   {
+    //     name: 'Freelance',
+    //     id: 3
+    //   },
+    //   {
+    //     name: 'Part Time',
+    //     id: 4
+    //   }
+    // ]
 
     const listReligion = [
       {
@@ -191,8 +194,10 @@ class FormEmployee extends Component {
     const marriedStatusOption = listMarriedStatus.length > 0 ? listMarriedStatus.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
     const bloodTypeOption = listBloodType.length > 0 ? listBloodType.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
     const religionOption = listReligion.length > 0 ? listReligion.map(religion => <Option value={religion.value} key={religion.value}>{religion.label}</Option>) : []
-    const statusEmployee = listStatusEmployee.length > 0 ? listStatusEmployee.map(status => <Option value={status.value} key={status.value}>{status.label}</Option>) : []
+    // const statusEmployee = listStatusEmployee.length > 0 ? listStatusEmployee.map(status => <Option value={status.id} key={status.id}>{status.name}</Option>) : []
+    const statusEmployee = listContractType.length > 0 ? listContractType.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
     const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
+    const divisionOption = listDvision.length > 0 ? listDvision.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
     const stores = listStoreLov.length > 0 ? listStoreLov.map(c => <Option value={c.id} key={c.id}>{c.storeName}</Option>) : []
     const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
     const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
@@ -515,8 +520,8 @@ class FormEmployee extends Component {
                 })(<DatePicker placeholder="Pilih tanggal resign" />)}
               </FormItem>
               <FormItem label="Divisi" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('division', {
-                  initialValue: item.division ? { key: item.division } : {},
+                {getFieldDecorator('divisionId', {
+                  initialValue: item.divisionId,
                   rules: [
                     {
                       required: true
@@ -524,18 +529,17 @@ class FormEmployee extends Component {
                   ]
                 })(<Select
                   optionFilterProp="children"
-                  onFocus={() => jobPosition()}
+                  // onFocus={() => jobPosition()}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  placeholder="Pilih Jabatan"
+                  placeholder="Pilih Divisi"
                   showSearch
                   allowClear
-                  labelInValue
-                >{jobposition}
+                >{divisionOption}
                 </Select>)}
               </FormItem>
               <FormItem label="Posisi" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('positionId', {
-                  initialValue: item.positionId ? { key: item.positionId } : {},
+                  initialValue: item.positionId,
                   rules: [
                     {
                       required: true
@@ -548,13 +552,12 @@ class FormEmployee extends Component {
                   placeholder="Pilih Jabatan"
                   showSearch
                   allowClear
-                  labelInValue
                 >{jobposition}
                 </Select>)}
               </FormItem>
               <FormItem label="Status Karyawan" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('statusEmployee', {
-                  initialValue: item.statusEmployee ? { key: item.statusEmployee } : {},
+                  initialValue: item.statusEmployee,
                   rules: [
                     {
                       required: true
@@ -567,7 +570,6 @@ class FormEmployee extends Component {
                   placeholder="Pilih status Kayrawan"
                   showSearch
                   allowClear
-                  labelInValue
                 >{statusEmployee}
                 </Select>)}
               </FormItem>

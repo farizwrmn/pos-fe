@@ -29,6 +29,7 @@ const ContractType = ({ contractType, loading, dispatch, location, app }) => {
     },
     onResetClick () {
       dispatch({ type: 'contractType/resetCityList' })
+      dispatch({ type: 'contractType/query' })
     }
   }
 

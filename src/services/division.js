@@ -13,10 +13,9 @@ export async function query (params) {
 }
 
 export async function add (params) {
-  const url = params.id ? `${division}/${params.id}` : null
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url,
+    url: `${division}`,
     method: 'post',
     data: params,
     body: params,

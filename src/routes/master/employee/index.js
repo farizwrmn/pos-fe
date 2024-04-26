@@ -11,8 +11,10 @@ import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
-const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch, location, app }) => {
+const Employee = ({ contractType, division, employee, store, jobposition, misc, city, loading, dispatch, location, app }) => {
   const { list, display, isChecked, sequence, modalType, currentItem, activeKey, show } = employee
+  const { list: listDvision } = division
+  const { list: listContractType } = contractType
   const { listStoreLov } = store
   const { listLovJobPosition } = jobposition
   const { listLov, code } = misc
@@ -96,6 +98,8 @@ const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch,
 
   const formProps = {
     listLovJobPosition,
+    listContractType,
+    listDvision,
     listCity,
     listStoreLov,
     item: currentItem,
@@ -239,6 +243,8 @@ const Employee = ({ employee, store, jobposition, misc, city, loading, dispatch,
 Employee.propTypes = {
   employee: PropTypes.object,
   misc: PropTypes.object.isRequired,
+  contractType: PropTypes.object,
+  division: PropTypes.object,
   jobposition: PropTypes.object,
   city: PropTypes.object,
   loading: PropTypes.object,
@@ -247,4 +253,4 @@ Employee.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ employee, store, misc, jobposition, city, loading, app }) => ({ employee, store, misc, jobposition, city, loading, app }))(Employee)
+export default connect(({ contractType, division, employee, store, misc, jobposition, city, loading, app }) => ({ contractType, division, employee, store, misc, jobposition, city, loading, app }))(Employee)

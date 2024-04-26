@@ -30,6 +30,7 @@ const Division = ({ employee, division, loading, dispatch, location, app }) => {
     },
     onResetClick () {
       dispatch({ type: 'division/resetCityList' })
+      dispatch({ type: 'division/query' })
     }
   }
 

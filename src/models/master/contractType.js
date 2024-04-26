@@ -74,6 +74,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      console.log('payload', payload)
       const data = yield call(add, payload.data)
       if (data.success) {
         // yield put({ type: 'query' })
@@ -98,9 +99,9 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ contractType }) => contractType.currentItem.cityCode)
-      const newCity = { ...payload, id }
-      const data = yield call(edit, newCity)
+      const id = yield select(({ contractType }) => contractType.currentItem.id)
+      const newData = { ...payload, id }
+      const data = yield call(edit, newData)
       if (data.success) {
         success()
         yield put({
