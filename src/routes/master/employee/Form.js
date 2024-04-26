@@ -91,7 +91,6 @@ class FormEmployee extends Component {
           Modal.confirm({
             title: 'Do you want to save this item?',
             onOk () {
-              // console.log(data)
               onSubmit(data.employeeId, data)
               resetFields()
             },
@@ -539,7 +538,7 @@ class FormEmployee extends Component {
               </FormItem>
               <FormItem label="Posisi" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('positionId', {
-                  initialValue: item.positionId,
+                  initialValue: item.positionId ? { key: item.positionId } : {},
                   rules: [
                     {
                       required: true
@@ -552,6 +551,7 @@ class FormEmployee extends Component {
                   placeholder="Pilih Jabatan"
                   showSearch
                   allowClear
+                  labelInValue
                 >{jobposition}
                 </Select>)}
               </FormItem>
