@@ -107,7 +107,7 @@ const Employee = ({ contractType, division, employee, store, jobposition, misc, 
     disabled: true,
     modalType,
     loading: loading.effects['employee/querySequenceEmployee'],
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    button: `${modalType === 'add' ? 'Simpan' : 'Update'}`,
     listIdType,
     showIdType () {
       dispatch({

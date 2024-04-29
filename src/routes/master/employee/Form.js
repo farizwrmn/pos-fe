@@ -447,7 +447,7 @@ class FormEmployee extends Component {
                   ]
                 })(<Input maxLength={30} placeholder="Masukkan Nama Bank" />)}
               </FormItem>
-              <FormItem label="No Rekening" hasFeedback {...formItemLayout}>
+              <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('accountNo', {
                   initialValue: item.accountNo,
                   rules: [
@@ -586,7 +586,7 @@ class FormEmployee extends Component {
                   optionFilterProp="children"
                   onFocus={() => jobPosition()}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  placeholder="Pilih status Kayrawan"
+                  placeholder="Kayrawan"
                   showSearch
                   allowClear
                 >{statusEmployee}
@@ -600,11 +600,11 @@ class FormEmployee extends Component {
                   rules: [
                     {
                       required: false,
-                      pattern: /^\d{15}$/,
-                      message: 'Input tidak valid. no NPWP is 15 digits'
+                      pattern: /^\d{15,16}$/,
+                      message: 'Input tidak valid. no NPWP is 15-16 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan nomor NPWP" />)}
+                })(<Input autoFocus placeholder="Masukan" />)}
               </FormItem>
             </Card>
             <Card title={<h3>DATA BPJS & BPJSTK</h3>} {...cardProps}>
@@ -615,10 +615,10 @@ class FormEmployee extends Component {
                     {
                       required: false,
                       pattern: /^\d{11,14}$/,
-                      message: 'Input tidak valid. no NPWP is 11 - 14 digits'
+                      message: 'Input tidak valid. no NPWP is 11-14 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan nomor BPJS" />)}
+                })(<Input autoFocus placeholder="Masukan" />)}
               </FormItem>
               <FormItem label="Nomor BPJSTK" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('noBPJSTK', {
@@ -626,11 +626,11 @@ class FormEmployee extends Component {
                   rules: [
                     {
                       required: false,
-                      pattern: /^\d{13}$/,
-                      message: 'Input tidak valid. no NPWP is 13 digits'
+                      pattern: /^\d{11,13}$/,
+                      message: 'Input tidak valid. no NPWP is 11-13 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan nomor BPJSTK" />)}
+                })(<Input autoFocus placeholder="Masukan" />)}
               </FormItem>
             </Card>
           </Col>
