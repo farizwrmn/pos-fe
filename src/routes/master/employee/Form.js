@@ -45,13 +45,13 @@ class FormEmployee extends Component {
       listDvision,
       listCity,
       listStoreLov,
-      listIdType,
-      showIdType,
+      // listIdType,
+      // showIdType,
       form: {
         getFieldDecorator,
         validateFields,
         getFieldsValue,
-        getFieldValue,
+        // getFieldValue,
         resetFields
       }
     } = this.props
@@ -91,6 +91,7 @@ class FormEmployee extends Component {
           Modal.confirm({
             title: 'Do you want to save this item?',
             onOk () {
+              data.idType = 'KTP'
               onSubmit(data.employeeId, data)
               resetFields()
             },
@@ -170,12 +171,24 @@ class FormEmployee extends Component {
 
     const listMarriedStatus = [
       {
-        label: 'Lajang',
+        label: 'Belum Kawin',
         value: 1
       },
       {
         label: 'Menikah',
         value: 2
+      },
+      {
+        label: 'Duda/Janda',
+        value: 3
+      },
+      {
+        label: 'Cerai',
+        value: 4
+      },
+      {
+        label: 'Menikah Lagi',
+        value: 5
       }
     ]
     const listGender = [
@@ -199,7 +212,7 @@ class FormEmployee extends Component {
     const divisionOption = listDvision.length > 0 ? listDvision.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
     const stores = listStoreLov.length > 0 ? listStoreLov.map(c => <Option value={c.id} key={c.id}>{c.storeName}</Option>) : []
     const cities = listCity.length > 0 ? listCity.map(c => <Option value={c.id} key={c.id}>{c.cityName}</Option>) : []
-    const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
+    // const childrenLov = listIdType.length > 0 ? listIdType.map(lov => <Option value={lov.key} key={lov.key}>{lov.title}</Option>) : []
 
     const cardProps = {
       bordered: true,
@@ -219,7 +232,7 @@ class FormEmployee extends Component {
         <Row>
           <Col md={24} lg={12}>
             <Card title={<h3>Data Umum</h3>} {...cardProps}>
-              <FormItem label="Id Karyawan" hasFeedback {...formItemLayout}>
+              <FormItem label="Nomor Induk Karyawan" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('employeeId', {
                   initialValue: item.employeeId || sequence,
                   rules: [
@@ -264,8 +277,35 @@ class FormEmployee extends Component {
                 })(<Input placeholder="Masukan Alamat Domisili" />)}
               </FormItem>
             </Card>
+            <Card title={<h3>Kontak</h3>} {...cardProps}>
+              <FormItem label="Nomor Telepon Rumah" {...formItemLayout}>
+                {getFieldDecorator('telpNumber', {
+                  initialValue: item.telpNumber
+                })(<Input placeholder="Masukkan nomor telepon" />)}
+              </FormItem>
+              <FormItem label="Nomor Handphone" {...formItemLayout}>
+                {getFieldDecorator('phoneNumber', {
+                  initialValue: item.phoneNumber,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Input placeholder="Masukkan nomor handphone" />)}
+              </FormItem>
+              <FormItem label="Email Kerja" {...formItemLayout}>
+                {getFieldDecorator('email', {
+                  initialValue: item.email
+                })(<Input placeholder="Masukkan email kerja" />)}
+              </FormItem>
+              <FormItem label="Email Pribadi" {...formItemLayout}>
+                {getFieldDecorator('emailPrivate', {
+                  initialValue: item.emailPrivate
+                })(<Input placeholder="Masukkan email pribadi" />)}
+              </FormItem>
+            </Card>
             <Card title={<h3>Data KTP</h3>} {...cardProps}>
-              <FormItem label="ID Type" hasFeedback {...formItemLayout}>
+              {/* <FormItem label="ID Type" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('idType', {
                   initialValue: item.idType,
                   rules: [
@@ -281,7 +321,7 @@ class FormEmployee extends Component {
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >{childrenLov}
                 </Select>)}
-              </FormItem>
+              </FormItem> */}
               <FormItem label="Nomor KTP" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('idNo', {
                   initialValue: item.idNo,
@@ -293,6 +333,70 @@ class FormEmployee extends Component {
                     }
                   ]
                 })(<Input placeholder="Masukkan nomor KTP" maxLength={30} />)}
+              </FormItem>
+              <FormItem label="Jenis Kelamin" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('gender', {
+                  initialValue: item.gender,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  placeholder="Pilih Jenis Kelamin"
+                  optionFilterProp="children"
+                  showSearch
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{genderOption}
+                </Select>)}
+              </FormItem>
+              <FormItem label="Agama" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('religion', {
+                  initialValue: item.religion,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  placeholder="Pilih Agama"
+                  optionFilterProp="children"
+                  showSearch
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{religionOption}
+                </Select>)}
+              </FormItem>
+              <FormItem label="Golongan Darah" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('bloodType', {
+                  initialValue: item.bloodType,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  placeholder="Pilih Golongan Darah"
+                  optionFilterProp="children"
+                  showSearch
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{bloodTypeOption}
+                </Select>)}
+              </FormItem>
+              <FormItem label="Status Perkawinan" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('marriedStatus', {
+                  initialValue: item.marriedStatus,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  placeholder="Pilih Status Perkawinan"
+                  optionFilterProp="children"
+                  showSearch
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{marriedStatusOption}
+                </Select>)}
               </FormItem>
               <FormItem label="Tempat Lahir" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cityId', {
@@ -316,70 +420,6 @@ class FormEmployee extends Component {
                   rules: [{ required: true }]
                 })(<DatePicker disabledDate={disabledDate} placeholder="Masukkan Tanggal Lahir" />)}
               </FormItem>
-              <FormItem label="Agama" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('religion', {
-                  initialValue: item.religion,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  placeholder="Pilih Agama"
-                  optionFilterProp="children"
-                  showSearch
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{religionOption}
-                </Select>)}
-              </FormItem>
-              <FormItem label="Jenis Kelamin" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('gender', {
-                  initialValue: item.gender,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  placeholder="Pilih Jenis Kelamin"
-                  optionFilterProp="children"
-                  showSearch
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{genderOption}
-                </Select>)}
-              </FormItem>
-              <FormItem label="Status Perkawinan" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('marriedStatus', {
-                  initialValue: item.marriedStatus,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  placeholder="Pilih Status Perkawinan"
-                  optionFilterProp="children"
-                  showSearch
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{marriedStatusOption}
-                </Select>)}
-              </FormItem>
-              <FormItem label="Golongan Darah" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('bloodType', {
-                  initialValue: item.bloodType,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Select
-                  placeholder="Pilih Golongan Darah"
-                  optionFilterProp="children"
-                  showSearch
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >{bloodTypeOption}
-                </Select>)}
-              </FormItem>
               <FormItem label="Alamat KTP" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('address01', {
                   initialValue: item.address01,
@@ -391,28 +431,7 @@ class FormEmployee extends Component {
                 })(<Input placeholder="Masukan Alamat KTP" />)}
               </FormItem>
             </Card>
-            <Card title={<h3>Kontak</h3>} {...cardProps}>
-              <FormItem label="Nomor Telepon Rumah" {...formItemLayout}>
-                {getFieldDecorator('telpNumber', {
-                  initialValue: item.telpNumber
-                })(<Input placeholder="Masukkan nomor telepon" />)}
-              </FormItem>
-              <FormItem label="Nomor Handphone" {...formItemLayout}>
-                {getFieldDecorator('phoneNumber', {
-                  initialValue: item.phoneNumber,
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Input placeholder="Masukkan nomor handphone" />)}
-              </FormItem>
-              <FormItem label="Email Kerja" {...formItemLayout}>
-                {getFieldDecorator('email', {
-                  initialValue: item.email
-                })(<Input placeholder="Masukkan email kerja" />)}
-              </FormItem>
-            </Card>
+
           </Col>
           <Col md={24} lg={12}>
             <Card title={<h3>Data Bank</h3>} {...cardProps}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Switch, Select, Button, Row, Col, Modal, message } from 'antd'
+import { Form, Input, Select, Button, Row, Col, Modal, message } from 'antd'
 import { lstorage } from 'utils'
 
 const Option = Select.Option
@@ -147,11 +147,11 @@ const formDivision = ({
               initialValue: item.managerUserName
             })(<Input disabled />)}
           </FormItem>
-          <FormItem label="Active" hasFeedback {...formItemLayout}>
+          {/* <FormItem label="Active" hasFeedback {...formItemLayout}>
             {getFieldDecorator('active', {
               initialValue: item.active
             })(<Switch defaultChecked={item.active} />)}
-          </FormItem>
+          </FormItem> */}
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
