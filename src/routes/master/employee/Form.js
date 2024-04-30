@@ -202,10 +202,10 @@ class FormEmployee extends Component {
       }
     ]
 
-    const genderOption = listGender.length > 0 ? listGender.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
-    const marriedStatusOption = listMarriedStatus.length > 0 ? listMarriedStatus.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
-    const bloodTypeOption = listBloodType.length > 0 ? listBloodType.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>) : []
-    const religionOption = listReligion.length > 0 ? listReligion.map(religion => <Option value={religion.value} key={religion.value}>{religion.label}</Option>) : []
+    const genderOption = listGender.length > 0 ? listGender.map(option => <Option value={option.label} key={option.label}>{option.label}</Option>) : []
+    const marriedStatusOption = listMarriedStatus.length > 0 ? listMarriedStatus.map(option => <Option value={option.label} key={option.label}>{option.label}</Option>) : []
+    const bloodTypeOption = listBloodType.length > 0 ? listBloodType.map(option => <Option value={option.label} key={option.label}>{option.label}</Option>) : []
+    const religionOption = listReligion.length > 0 ? listReligion.map(religion => <Option value={religion.label} key={religion.label}>{religion.label}</Option>) : []
     // const statusEmployee = listStatusEmployee.length > 0 ? listStatusEmployee.map(status => <Option value={status.id} key={status.id}>{status.name}</Option>) : []
     const statusEmployee = listContractType.length > 0 ? listContractType.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
     const jobposition = listLovJobPosition.length > 0 ? listLovJobPosition.map(position => <Option value={position.value} key={position.value}>{position.label}</Option>) : []
