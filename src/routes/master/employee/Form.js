@@ -281,7 +281,7 @@ class FormEmployee extends Component {
               <FormItem label="Nomor Telepon Rumah" {...formItemLayout}>
                 {getFieldDecorator('telpNumber', {
                   initialValue: item.telpNumber
-                })(<Input placeholder="Masukkan nomor telepon" />)}
+                })(<Input placeholder="Masukkan Nomor Telepon" />)}
               </FormItem>
               <FormItem label="Nomor Handphone" {...formItemLayout}>
                 {getFieldDecorator('phoneNumber', {
@@ -291,17 +291,17 @@ class FormEmployee extends Component {
                       required: true
                     }
                   ]
-                })(<Input placeholder="Masukkan nomor handphone" />)}
+                })(<Input placeholder="Masukkan Nomor Handphone" />)}
               </FormItem>
               <FormItem label="Email Kerja" {...formItemLayout}>
                 {getFieldDecorator('email', {
                   initialValue: item.email
-                })(<Input placeholder="Masukkan email kerja" />)}
+                })(<Input placeholder="Masukkan Email Kerja" />)}
               </FormItem>
               <FormItem label="Email Pribadi" {...formItemLayout}>
                 {getFieldDecorator('emailPrivate', {
                   initialValue: item.emailPrivate
-                })(<Input placeholder="Masukkan email pribadi" />)}
+                })(<Input placeholder="Masukkan Email Pribadi" />)}
               </FormItem>
             </Card>
             <Card title={<h3>Data KTP</h3>} {...cardProps}>
@@ -332,7 +332,7 @@ class FormEmployee extends Component {
                       message: 'a-Z & 0-9'
                     }
                   ]
-                })(<Input placeholder="Masukkan nomor KTP" maxLength={30} />)}
+                })(<Input placeholder="Masukkan Nomor KTP" maxLength={30} />)}
               </FormItem>
               <FormItem label="Jenis Kelamin" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('gender', {
@@ -501,7 +501,7 @@ class FormEmployee extends Component {
                       message: 'mobile number is not valid'
                     }
                   ]
-                })(<Input placeholder="Masukkan nomor handphone" />)}
+                })(<Input placeholder="Masukkan Nomor Handphone" />)}
               </FormItem>
               <FormItem label="Lokasi Store / Office" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('defaultStore', {
@@ -530,12 +530,12 @@ class FormEmployee extends Component {
                 {getFieldDecorator('joinDate', {
                   initialValue: item.joinDate ? moment(item.joinDate) : null,
                   rules: [{ required: true }]
-                })(<DatePicker placeholder="Pilih tanggal bergabung" />)}
+                })(<DatePicker placeholder="Pilih Tanggal Bergabung" />)}
               </FormItem>
               <FormItem label="Tanggal Resign" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('resignDate', {
                   initialValue: item.resignDate ? moment(item.resignDate) : null
-                })(<DatePicker placeholder="Pilih tanggal resign" />)}
+                })(<DatePicker placeholder="Pilih Tanggal Resign" />)}
               </FormItem>
               <FormItem label="Divisi" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('divisionId', {
@@ -586,7 +586,7 @@ class FormEmployee extends Component {
                   optionFilterProp="children"
                   onFocus={() => jobPosition()}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  placeholder="Kayrawan"
+                  placeholder="Karyawan"
                   showSearch
                   allowClear
                 >{statusEmployee}
@@ -604,7 +604,7 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. no NPWP is 15-16 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan" />)}
+                })(<Input autoFocus placeholder="Masukan Nomor NPWP" />)}
               </FormItem>
             </Card>
             <Card title={<h3>DATA BPJS & BPJSTK</h3>} {...cardProps}>
@@ -618,7 +618,7 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. no NPWP is 11-14 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan" />)}
+                })(<Input autoFocus placeholder="Masukan Nomor BPJS" />)}
               </FormItem>
               <FormItem label="Nomor BPJSTK" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('noBPJSTK', {
@@ -630,14 +630,14 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. no NPWP is 11-13 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan" />)}
+                })(<Input autoFocus placeholder="Masukan Nomor BPJSTK" />)}
               </FormItem>
             </Card>
           </Col>
         </Row>
         <FormItem {...tailFormItemLayout}>
           {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
-          <Button type="primary" onClick={handleSubmit}>{button}</Button>
+          <Button style={{ width: '200px' }} type="primary" onClick={handleSubmit}>{button}</Button>
         </FormItem>
       </Form>
     )
