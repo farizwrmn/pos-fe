@@ -242,7 +242,7 @@ class FormEmployee extends Component {
                       message: 'a-z & 0-9, min: 6 characters'
                     }
                   ]
-                })(<Input disabled={disabled} maxLength={15} placeholder="Masukan Id Karyawan" />)}
+                })(<Input disabled={disabled} maxLength={15} placeholder="Masukkan Nomor Induk Karyawan" />)}
               </FormItem>
               <FormItem label="Nama Karyawan" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('employeeName', {
@@ -254,7 +254,7 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. Nama karyawan hanya boleh mengandung huruf dan spasi'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan Nama Karyawan" />)}
+                })(<Input autoFocus placeholder="Masukkan Nama Karyawan" />)}
               </FormItem>
               <FormItem label="Jumlah Tanggungan" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('numberOfDependents', {
@@ -264,7 +264,7 @@ class FormEmployee extends Component {
                       required: true
                     }
                   ]
-                })(<InputNumber autoFocus placeholder="Masukan Jumlah Tanggungan" />)}
+                })(<InputNumber autoFocus placeholder="Masukkan Jumlah Tanggungan" />)}
               </FormItem>
               <FormItem label="Alamat Domisili" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('residenceAddress', {
@@ -274,7 +274,7 @@ class FormEmployee extends Component {
                       required: true
                     }
                   ]
-                })(<Input placeholder="Masukan Alamat Domisili" />)}
+                })(<Input placeholder="Masukkan Alamat Domisili" />)}
               </FormItem>
             </Card>
             <Card title={<h3>Kontak</h3>} {...cardProps}>
@@ -428,7 +428,7 @@ class FormEmployee extends Component {
                       required: true
                     }
                   ]
-                })(<Input placeholder="Masukan Alamat KTP" />)}
+                })(<Input placeholder="Masukkan Alamat KTP" />)}
               </FormItem>
             </Card>
 
@@ -604,7 +604,7 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. no NPWP is 15-16 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan Nomor NPWP" />)}
+                })(<Input autoFocus placeholder="Masukkan Nomor NPWP" />)}
               </FormItem>
             </Card>
             <Card title={<h3>DATA BPJS & BPJSTK</h3>} {...cardProps}>
@@ -618,7 +618,7 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. no NPWP is 11-14 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan Nomor BPJS" />)}
+                })(<Input autoFocus placeholder="Masukkan Nomor BPJS" />)}
               </FormItem>
               <FormItem label="Nomor BPJSTK" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('noBPJSTK', {
@@ -630,7 +630,7 @@ class FormEmployee extends Component {
                       message: 'Input tidak valid. no NPWP is 11-13 digits'
                     }
                   ]
-                })(<Input autoFocus placeholder="Masukan Nomor BPJSTK" />)}
+                })(<Input autoFocus placeholder="Masukkan Nomor BPJSTK" />)}
               </FormItem>
             </Card>
           </Col>
