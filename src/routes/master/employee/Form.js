@@ -586,7 +586,7 @@ class FormEmployee extends Component {
                   optionFilterProp="children"
                   onFocus={() => jobPosition()}
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  placeholder="Karyawan"
+                  placeholder="Pilih Status Karyawan"
                   showSearch
                   allowClear
                 >{statusEmployee}
