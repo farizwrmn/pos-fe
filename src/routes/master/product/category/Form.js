@@ -30,6 +30,7 @@ const column = {
 }
 
 const formProductCategory = ({
+  loading,
   lastTrans,
   item = {},
   onSubmit,
@@ -117,21 +118,43 @@ const formProductCategory = ({
   }
 
   const menuTree = arrayToTree((listCategoryCurrent || []).filter(filtered => filtered.id !== null), 'id', 'categoryParentId')
-  const levelMap = {}
+
+  console.log('listCategoryCurrent', listCategoryCurrent)
+  console.log('menuTree', menuTree)
+
   const getMenus = (menuTreeN) => {
     return menuTreeN.map((item) => {
       if (item.children) {
-        if (item.categoryParentId) {
-          levelMap[item.id] = item.categoryParentId
-        }
         return (
-          <TreeNode key={item.categoryCode} title={(<div onClick={() => handleClickTree(item.categoryCode, item.id)} value={item.categoryCode}>{item.categoryName} ({item.categoryCode})</div>)}>
+          <TreeNode
+            key={item.id}
+            disabled={loading.effects['productcategory/queryEditItem']}
+            title={(
+              <div
+                onClick={() => handleClickTree(item.categoryCode, item.id)}
+                value={item.id}
+              >
+                {item.categoryCode} - {item.categoryName}
+              </div>
+            )}
+          >
             {getMenus(item.children)}
           </TreeNode>
         )
       }
       return (
-        <TreeNode key={item.categoryCode} title={(<div onClick={() => handleClickTree(item.categoryCode, item.id)} value={item.categoryCode}>{item.categoryName} ({item.categoryCode})</div>)}>
+        <TreeNode
+          key={item.id}
+          disabled={loading.effects['productcategory/queryEditItem']}
+          title={(
+            <div
+              onClick={() => handleClickTree(item.categoryCode, item.id)}
+              value={item.id}
+            >
+              {item.categoryCode} - {item.categoryName}
+            </div>
+          )}
+        >
           {(!menuTree.includes(item)) && item.name}
         </TreeNode>
       )
@@ -257,7 +280,7 @@ const formProductCategory = ({
               </Upload>
             )}
           </FormItem>
-          <FormItem label="Loyalty" hasFeedback {...formItemLayout}>
+          <FormItem label="Member Coin" hasFeedback {...formItemLayout}>
             {getFieldDecorator('loyaltyException', {
               valuePropName: 'checked',
               initialValue: item.loyaltyException === undefined ? true : item.loyaltyException

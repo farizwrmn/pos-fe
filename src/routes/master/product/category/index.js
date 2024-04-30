@@ -4,76 +4,78 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs, Menu, Icon, Dropdown } from 'antd'
 import Form from './Form'
-import List from './List'
-import Filter from './Filter'
+// import List from './List'
+// import Filter from './Filter'
 import PrintPDF from './PrintPDF'
 import PrintXLS from './PrintXLS'
 
 const TabPane = Tabs.TabPane
 
 const ProductCategory = ({ productcategory, loading, dispatch, location, app }) => {
-  const { listCategory, lastTrans, listCategoryCurrent, expandedTree, display, isChecked, modalType, currentItem, activeKey, disable, show } = productcategory
+  const { listCategory, lastTrans, listCategoryCurrent, expandedTree, modalType, currentItem, activeKey, disable, show
+    // display, isChecked
+  } = productcategory
   const { storeInfo, user } = app
-  const filterProps = {
-    display,
-    isChecked,
-    show,
-    filter: {
-      ...location.query
-    },
-    onFilterChange (value) {
-      dispatch({
-        type: 'productcategory/query',
-        payload: {
-          ...value
-        }
-      })
-    },
-    switchIsChecked () {
-      dispatch({
-        type: 'productcategory/switchIsChecked',
-        payload: `${isChecked ? 'none' : 'block'}`
-      })
-    },
-    onResetClick () {
-      dispatch({ type: 'productcategory/resetProductCategoryList' })
-    }
-  }
+  // const filterProps = {
+  //   display,
+  //   isChecked,
+  //   show,
+  //   filter: {
+  //     ...location.query
+  //   },
+  //   onFilterChange (value) {
+  //     dispatch({
+  //       type: 'productcategory/query',
+  //       payload: {
+  //         ...value
+  //       }
+  //     })
+  //   },
+  //   switchIsChecked () {
+  //     dispatch({
+  //       type: 'productcategory/switchIsChecked',
+  //       payload: `${isChecked ? 'none' : 'block'}`
+  //     })
+  //   },
+  //   onResetClick () {
+  //     dispatch({ type: 'productcategory/resetProductCategoryList' })
+  //   }
+  // }
 
-  const listProps = {
-    dataSource: listCategory,
-    loading: loading.effects['productcategory/query'],
-    user,
-    storeInfo,
-    location,
-    editItem (item) {
-      dispatch({
-        type: 'productcategory/updateState',
-        payload: {
-          modalType: 'edit',
-          activeKey: '0',
-          currentItem: item,
-          disable: 'disabled'
-        }
-      })
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
-      dispatch({
-        type: 'productcategory/query'
-      })
-    },
-    deleteItem (id) {
-      dispatch({
-        type: 'productcategory/delete',
-        payload: id
-      })
-    }
-  }
+  // const listProps = {
+  //   dataSource: listCategory,
+  //   loading: loading.effects['productcategory/query'],
+  //   user,
+  //   storeInfo,
+  //   location,
+  //   editItem (item) {
+  //     dispatch({
+  //       type: 'productcategory/updateState',
+  //       payload: {
+  //         modalType: 'edit',
+  //         activeKey: '0',
+  //         currentItem: item,
+  //         disable: 'disabled'
+  //       }
+  //     })
+  //     const { pathname } = location
+  //     dispatch(routerRedux.push({
+  //       pathname,
+  //       query: {
+  //         activeKey: 0
+  //       }
+  //     }))
+  //     dispatch({
+  //       type: 'productcategory/query'
+  //     })
+  //   },
+  //   deleteItem (id) {
+  //     dispatch({
+  //       type: 'productcategory/delete',
+  //       payload: id
+  //     })
+  //   }
+  // }
 
   const changeTab = (key) => {
     dispatch({
@@ -114,6 +116,7 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
 
   const formProps = {
     lastTrans,
+    loading,
     listCategory,
     listCategoryCurrent,
     expandedTree,
@@ -190,10 +193,10 @@ const ProductCategory = ({ productcategory, loading, dispatch, location, app }) 
         <TabPane tab="Form" key="0" >
           <Form {...formProps} />
         </TabPane>
-        <TabPane tab="Browse" key="1" >
+        {/* <TabPane tab="Browse" key="1" >
           <Filter {...filterProps} />
           <List {...listProps} />
-        </TabPane>
+        </TabPane> */}
       </Tabs >
     </div>
   )
