@@ -109,18 +109,18 @@ const formDivision = ({
           <FormItem label="Parent Division" hasFeedback {...formItemLayout}>
             {getFieldDecorator('parentDivisionId', {
               initialValue: item.parentDivisionId
-            })(<Select style={{ width: '100%' }} min={0} maxLength={10}>
+            })(<Select placeholder="Masukkan Parent Divisi" style={{ width: '100%' }} min={0} maxLength={10}>
               {listDivisionOption}
             </Select>)}
           </FormItem>
           <FormItem label="Store Location" hasFeedback {...formItemLayout}>
             {getFieldDecorator('defaultStore', {
               initialValue: item.defaultStore
-            })(<Select style={{ width: '100%' }} min={0} maxLength={10}>
+            })(<Select placeholder="Masukkan Lokasi Store" style={{ width: '100%' }} min={0} maxLength={10}>
               {listStoreOption}
             </Select>)}
           </FormItem>
-          <FormItem label="Name" hasFeedback {...formItemLayout}>
+          <FormItem label="Division Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: item.name,
               rules: [
@@ -128,12 +128,13 @@ const formDivision = ({
                   required: true
                 }
               ]
-            })(<Input />)}
+            })(<Input placeholder="Masukkan Nama Divisi" />)}
           </FormItem>
           <FormItem label="Manager" hasFeedback {...formItemLayout}>
             {getFieldDecorator('managerUserId', {
               initialValue: item.managerUserId
             })(<Select
+              placeholder="Masukkan Nama Manager"
               showSearch
               allowClear
               style={{ width: '100%' }}
