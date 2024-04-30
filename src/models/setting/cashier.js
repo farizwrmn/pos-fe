@@ -1,10 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message, Modal, Row, Col } from 'antd'
-import { lstorage, messageInfo, isEmptyObject } from 'utils'
+import { messageInfo, isEmptyObject } from 'utils'
 import {
   query, add, edit, remove,
-  queryCashRegisterByStore, queryCurrentOpenCashRegister,
+  queryCashRegisterByStore,
   queryCashierTransSource, queryCashierTransSourceDetail,
   queryCloseRegister, getCashRegisterDetails, getClosedCashRegister,
   sendRequestOpenCashRegister, getRequestedCashRegister, approveRequestOpenCashRegister
@@ -59,9 +59,6 @@ export default modelExtend(pageModel, {
           if (activeKey === '1') dispatch({ type: 'query', payload: other })
         } else if (pathname === '/monitor/cashier/periods') {
           dispatch({ type: 'query' })
-        } else if (pathname === '/monitor/cashier/close') {
-          const userId = lstorage.getStorageKey('udi')[1]
-          dispatch({ type: 'getCashierInformation', payload: { cashierId: userId } })
         } else if (pathname === '/monitor/cashier/request') {
           dispatch({ type: 'getClosedCashRegister', payload: { ...other } })
         } else if (pathname === '/monitor/cashier/approve') {
@@ -118,28 +115,6 @@ export default modelExtend(pageModel, {
           }
         })
         if (location.pathname === '/monitor/cashier/periods') message.error('No Data!')
-      }
-    },
-
-    * getCashierInformation ({ payload = {} }, { call, put }) {
-      const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-      const cashierInformation = (Array.isArray(currentRegister.data))
-        ? isEmptyObject(currentRegister.data[0]) ? {} : currentRegister.data[0]
-        : currentRegister.data
-      // const cashierInformation = (results.data || []).length > 0 ? results.data[0] : ''
-      if (currentRegister.success) {
-        if (!currentRegister.data) {
-          messageInfo('There is no cash register open for this store', 'warning', 10)
-        } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              cashierInfo: cashierInformation
-            }
-          })
-        }
-      } else {
-        throw currentRegister
       }
     },
 

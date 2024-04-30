@@ -59,7 +59,6 @@ const ModalEntry = ({
   item = {},
   data,
   listAmount,
-  cashierInformation,
   listAllEdc,
   listAllCost,
   listEdc,

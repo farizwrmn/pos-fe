@@ -141,7 +141,6 @@ class FormPayment extends React.Component {
       confirmPayment,
       cancelPayment,
       loading,
-      // cashierInformation,
       cashierBalance,
       form: {
         getFieldDecorator,
@@ -161,7 +160,6 @@ class FormPayment extends React.Component {
 
     const listProps = {
       cashierBalance,
-      // cashierInformation,
       dataSource: listAmount,
       editList (data) {
         editItem(data)
@@ -294,8 +292,6 @@ class FormPayment extends React.Component {
           return
         }
         const data = {
-          // cashierTransId: cashierInformation.id,
-          // cashierName: cashierInformation.cashierName,
           ...getFieldsValue()
         }
 

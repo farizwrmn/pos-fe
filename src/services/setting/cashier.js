@@ -91,24 +91,24 @@ export async function queryCashRegisterByStore (params) {
   })
 }
 
-export async function queryCashierTransSource (params) {
-  const apiHeaderToken = crypt.apiheader()
-  const url = `${apiCashierUsers}/${params.cashierId}/transactions/?id=${params.id}`
-  return request({
-    url,
-    method: 'get',
-    headers: apiHeaderToken
-  })
-}
-export async function queryCashierTransSourceDetail (params) {
-  const apiHeaderToken = crypt.apiheader()
-  const url = `${apiCashierUsers}/${params.cashierId}/transactions/?id=${params.id}&transType=${params.transType}`
-  return request({
-    url,
-    method: 'get',
-    headers: apiHeaderToken
-  })
-}
+// export async function queryCashierTransSource (params) {
+//   const apiHeaderToken = crypt.apiheader()
+//   const url = `${apiCashierUsers}/${params.cashierId}/transactions/?id=${params.id}`
+//   return request({
+//     url,
+//     method: 'get',
+//     headers: apiHeaderToken
+//   })
+// }
+// export async function queryCashierTransSourceDetail (params) {
+//   const apiHeaderToken = crypt.apiheader()
+//   const url = `${apiCashierUsers}/${params.cashierId}/transactions/?id=${params.id}&transType=${params.transType}`
+//   return request({
+//     url,
+//     method: 'get',
+//     headers: apiHeaderToken
+//   })
+// }
 export async function queryCloseRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashRegister}/${params.id}?status=C`
