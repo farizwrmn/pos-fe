@@ -138,7 +138,7 @@ const formDivision = ({
           <FormItem label="Manager" hasFeedback {...formItemLayout}>
             {getFieldDecorator('managerUserId', {
               initialValue: item.managerUserId
-            })(<Select style={{ width: '100%' }} min={0} maxLength={10} onChange={value => handleChange(value)}>
+            })(<Select showSearch allowClear style={{ width: '100%' }} min={0} maxLength={10} onChange={value => handleChange(value)}>
               {listManagerOption}
             </Select>)}
           </FormItem>
