@@ -74,6 +74,10 @@ const formDivision = ({
       if (errors) {
         return
       }
+      if (!data.managerUserName) {
+        message.warning("Manager Name can't be null")
+        return
+      }
       if (data.name) {
         Modal.confirm({
           title: 'Do you want to save this item?',
@@ -88,10 +92,10 @@ const formDivision = ({
     })
   }
   const handleChange = (value) => {
-    const filterMangerUserName = listManager.filter(c => c.id === value)
-    if (filterMangerUserName.length) {
+    const filterManagerUserName = listManager.filter(c => c.id === value)
+    if (filterManagerUserName.length) {
       setFieldsValue({
-        managerUserName: filterMangerUserName[0].accountName
+        managerUserName: filterManagerUserName[0].employeeName
       })
     }
   }
@@ -116,7 +120,16 @@ const formDivision = ({
           <FormItem label="Store Location" hasFeedback {...formItemLayout}>
             {getFieldDecorator('defaultStore', {
               initialValue: item.defaultStore
-            })(<Select placeholder="Masukkan Lokasi Store" style={{ width: '100%' }} min={0} maxLength={10}>
+            })(<Select
+              placeholder="Masukkan Lokasi Store"
+              showSearch
+              allowClear
+              style={{ width: '100%' }}
+              min={0}
+              maxLength={10}
+              onChange={value => handleChange(value)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
               {listStoreOption}
             </Select>)}
           </FormItem>
