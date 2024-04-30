@@ -264,7 +264,7 @@ class FormEmployee extends Component {
                       required: true
                     }
                   ]
-                })(<InputNumber autoFocus placeholder="Masukkan Jumlah Tanggungan" />)}
+                })(<InputNumber min={0} autoFocus placeholder="Masukkan Jumlah Tanggungan" />)}
               </FormItem>
               <FormItem label="Alamat Domisili" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('residenceAddress', {
