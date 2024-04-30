@@ -104,7 +104,7 @@ const formDivision = ({
   // const defaultStore = lstorage.getCurrentUserStore()
   const listStore = lstorage.getListUserStores()
   const listDivisionOption = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
-  const listManagerOption = (listManager || []).length > 0 ? listManager.map(c => <Option value={c.id} key={c.id}>{c.accountName}</Option>) : []
+  const listManagerOption = listManager && listManager.length > 0 ? listManager.map(c => <Option key={c.employeeName} value={c.id}>{c.employeeName}</Option>) : []
   const listStoreOption = (listStore || []).length > 0 ? listStore.map(c => <Option value={c.value} key={c.value}>{c.label}</Option>) : []
 
   return (
