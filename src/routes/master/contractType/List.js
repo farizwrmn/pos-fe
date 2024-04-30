@@ -27,7 +27,7 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       key: 'name'
     },
     {
-      title: 'code',
+      title: 'Code',
       dataIndex: 'code',
       key: 'code'
     },
