@@ -23,7 +23,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Name',
+      title: 'Division Name',
       dataIndex: 'name',
       key: 'name'
     },
