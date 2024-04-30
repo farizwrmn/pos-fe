@@ -68,11 +68,11 @@ const formDivision = ({
 
   const handleSubmit = () => {
     validateFields((errors) => {
-      if (errors) {
-        return
-      }
       const data = {
         ...getFieldsValue()
+      }
+      if (errors) {
+        return
       }
       if (data.name) {
         Modal.confirm({
@@ -88,23 +88,18 @@ const formDivision = ({
     })
   }
   const handleChange = (value) => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const filterMangerUserName = listManager.filter(c => c.id === value)
-      if (filterMangerUserName.length) {
-        setFieldsValue({
-          managerUserName: filterMangerUserName[0].accountName
-        })
-      }
-    })
+    const filterMangerUserName = listManager.filter(c => c.id === value)
+    if (filterMangerUserName.length) {
+      setFieldsValue({
+        managerUserName: filterMangerUserName[0].accountName
+      })
+    }
   }
 
   // const defaultStore = lstorage.getCurrentUserStore()
   const listStore = lstorage.getListUserStores()
   const listDivisionOption = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.name}</Option>) : []
-  const listManagerOption = listManager && listManager.length > 0 ? listManager.map(c => <Option key={c.employeeName} value={c.id}>{c.employeeName}</Option>) : []
+  const listManagerOption = listManager && listManager.length > 0 ? listManager.map(c => <Option key={c.id} value={c.id}>{c.employeeName}</Option>) : []
   const listStoreOption = (listStore || []).length > 0 ? listStore.map(c => <Option value={c.value} key={c.value}>{c.label}</Option>) : []
 
   return (
@@ -118,7 +113,7 @@ const formDivision = ({
               {listDivisionOption}
             </Select>)}
           </FormItem>
-          <FormItem label="defaultStore" hasFeedback {...formItemLayout}>
+          <FormItem label="Store Location" hasFeedback {...formItemLayout}>
             {getFieldDecorator('defaultStore', {
               initialValue: item.defaultStore
             })(<Select style={{ width: '100%' }} min={0} maxLength={10}>
@@ -138,7 +133,15 @@ const formDivision = ({
           <FormItem label="Manager" hasFeedback {...formItemLayout}>
             {getFieldDecorator('managerUserId', {
               initialValue: item.managerUserId
-            })(<Select showSearch allowClear style={{ width: '100%' }} min={0} maxLength={10} onChange={value => handleChange(value)}>
+            })(<Select
+              showSearch
+              allowClear
+              style={{ width: '100%' }}
+              min={0}
+              maxLength={10}
+              onChange={value => handleChange(value)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
               {listManagerOption}
             </Select>)}
           </FormItem>
