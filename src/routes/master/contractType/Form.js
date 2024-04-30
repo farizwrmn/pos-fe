@@ -29,7 +29,7 @@ const formContractType = ({
   onSubmit,
   onCancel,
   modalType,
-  disabled,
+  // disabled,
   button,
   form: {
     getFieldDecorator,
@@ -97,7 +97,7 @@ const formContractType = ({
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input disabled={disabled} placeholder="PKWTT" maxLength={10} autoFocus />)}
+            })(<Input placeholder="PKWTT" maxLength={10} autoFocus />)}
           </FormItem>
           <FormItem label="Name" hasFeedback {...formItemLayout}>
             {getFieldDecorator('name', {

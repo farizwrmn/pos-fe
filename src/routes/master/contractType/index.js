@@ -12,7 +12,7 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const ContractType = ({ contractType, loading, dispatch, location, app }) => {
-  const { list, modalType, currentItem, activeKey, disable, show } = contractType
+  const { list, modalType, currentItem, activeKey, show } = contractType
   const { user, storeInfo } = app
   const filterProps = {
     show,
@@ -112,7 +112,7 @@ const ContractType = ({ contractType, loading, dispatch, location, app }) => {
     dispatch,
     modalType,
     item: currentItem,
-    disabled: `${modalType === 'edit' ? disable : ''}`,
+    // disabled: `${modalType === 'edit' ? disable : ''}`,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
