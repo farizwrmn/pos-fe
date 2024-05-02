@@ -174,6 +174,8 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
+        window.open(`/balance/invoice/${payload.data.balanceId}`, '_blank')
+        yield put(routerRedux.push('/balance/current'))
       } else {
         yield put({
           type: 'updateState',
