@@ -174,6 +174,7 @@ const ListTransfer = (tableProps) => {
         bordered
         columns={columns}
         simple
+        scroll={{ x: 1000 }}
         pagination={false}
         onChange={handleChange}
       />
