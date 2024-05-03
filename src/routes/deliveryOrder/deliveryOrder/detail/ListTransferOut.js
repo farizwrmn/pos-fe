@@ -44,6 +44,7 @@ const ListTransferOut = ({ toDetail, ...tableProps }) => {
         bordered
         columns={columns}
         simple
+        scroll={{ x: 1000 }}
         pagination={false}
         onRowClick={record => toDetail(record)}
         rowKey={record => record.id}
