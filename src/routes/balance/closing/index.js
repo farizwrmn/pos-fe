@@ -71,6 +71,7 @@ const Container = ({ loading, posSetoran, physicalMoney, physicalMoneyDeposit, b
               })
             })
         }
+        data.params = params
         dispatch({
           type: 'physicalMoneyDeposit/add',
           payload: {
@@ -83,12 +84,12 @@ const Container = ({ loading, posSetoran, physicalMoney, physicalMoneyDeposit, b
         //     data
         //   }
         // })
-        dispatch({
-          type: 'balance/closed',
-          payload: {
-            data: params
-          }
-        })
+        // dispatch({
+        //   type: 'balance/closed',
+        //   payload: {
+        //     data: params
+        //   }
+        // })
       }
     }
   }
