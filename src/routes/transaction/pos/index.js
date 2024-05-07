@@ -54,6 +54,8 @@ import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
+import PromotionGuide from './PromotionGuide'
+import RewardGuide from './RewardGuide'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -1795,6 +1797,48 @@ const Pos = ({
     }
   }
 
+  const modalPromoGuideProps = {
+    isModal: false,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
+  const modalRewardGuideProps = {
+    isModal: false,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
   const modalPromoProps = {
     visible: modalPromoVisible,
     onCancel () {
@@ -3229,6 +3273,9 @@ const Pos = ({
           </Card>
           <BottomButton {...buttomButtonProps} />
           {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
+
+          <PromotionGuide {...modalPromoGuideProps} />
+          <RewardGuide {...modalRewardGuideProps} />
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
