@@ -51,6 +51,608 @@ const Routers = function ({ history, app }) {
             }, 'login')
           }
         }, {
+          path: 'nps/01',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'nps/02',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'nps/03',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/nps'))
+              cb(null, require('./routes/nps/'))
+            }, 'nps')
+          }
+        }, {
+          path: 'master/employee',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/contractType'))
+              registerModel(app, require('./models/master/division'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/employee'))
+              registerModel(app, require('./models/master/jobposition'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/employee'))
+            }, 'master-employee')
+          }
+        }, {
+          path: 'master/division',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/division'))
+              registerModel(app, require('./models/master/employee'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/division'))
+            }, 'master-division')
+          }
+        }, {
+          path: 'master/contract-type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/contractType'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/contractType'))
+            }, 'master-contract-type')
+          }
+        }, {
+          path: 'master/customer',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/master/customergroup'))
+              registerModel(app, require('./models/master/customertype'))
+              registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/master/city'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/marketing/social'))
+              registerModel(app, require('./models/marketing/customerSocial'))
+              registerModel(app, require('./models/setting/customDataTypes'))
+              registerModel(app, require('./models/setting/store'))
+              cb(null, require('./routes/master/customer/customer/'))
+            }, 'master-customer')
+          }
+        }, {
+          path: 'master/customer-migration/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/loyalty/cashbackManagement'))
+              cb(null, require('./routes/loyalty/cashbackManagement'))
+            }, 'integration-revenue-calculator')
+          }
+        }, {
+          path: 'master/customergroup',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/customergroup'))
+              cb(null, require('./routes/master/customer/customergroup/'))
+            }, 'master-customergroup')
+          }
+        }, {
+          path: 'master/customertype',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/customertype'))
+              cb(null, require('./routes/master/customer/customertype/'))
+            }, 'master-customertype')
+          }
+        }, {
+          path: 'master/customerunit',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/customerunit'))
+              registerModel(app, require('./models/master/customer'))
+              cb(null, require('./routes/master/customer/customerunit/'))
+            }, 'master-customerunit')
+          }
+        }, {
+          path: 'marketing/loyalty',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/loyaltySetting'))
+              cb(null, require('./routes/master/customer/loyaltySetting'))
+            }, 'marketing-loyalty-setting')
+          }
+        }, {
+          path: 'marketing/social',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/social'))
+              cb(null, require('./routes/marketing/social'))
+            }, 'marketing-social-media')
+          }
+        }, {
+          path: 'marketing/cms',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/cms'))
+              cb(null, require('./routes/marketing/cms'))
+            }, 'marketing-cms')
+          }
+        }, {
+          path: 'marketing/target',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/target'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/marketing/target'))
+            }, 'marketing-target')
+          }
+        }, {
+          path: 'master/supplier',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/supplier'))
+              registerModel(app, require('./models/master/city'))
+              cb(null, require('./routes/master/supplier/'))
+            }, 'master-supplier')
+          }
+        }, {
+          path: 'master/product/brand',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productbrand'))
+              cb(null, require('./routes/master/product/brand/'))
+            }, 'master-product-brand')
+          }
+        }, {
+          path: 'master/product/category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/master/product/category/'))
+            }, 'master-product-category')
+          }
+        }, {
+          path: 'stock',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
+              registerModel(app, require('./models/grab/grabCategory'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              registerModel(app, require('./models/product/stockLocation'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              registerModel(app, require('./models/master/specification'))
+              registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/product/productcountry'))
+              registerModel(app, require('./models/report/fifo'))
+              registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/master/customer'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/productSource'))
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/stock'))
+            }, 'master-product-stock')
+          }
+        }, {
+          path: 'stock-planogram',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/planogram/planogram'))
+              registerModel(app, require('./models/app'))
+              registerModel(app, require('./models/grab/grabCategory'))
+              registerModel(app, require('./models/purchase'))
+              registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              registerModel(app, require('./models/product/stockLocation'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/specificationStock'))
+              registerModel(app, require('./models/k3express/product/productCategory'))
+              registerModel(app, require('./models/k3express/product/productBrand'))
+              registerModel(app, require('./models/master/specification'))
+              registerModel(app, require('./models/master/variantStock'))
+              registerModel(app, require('./models/product/productcountry'))
+              registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/setting/store'))
+              registerModel(app, require('./models/master/productSource'))
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/planogram'))
+            }, 'planogram-stock')
+          }
+        }, {
+          path: 'picking-line',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pickingLine/pickingLine'))
+              cb(null, require('./routes/pickingLine/pickingLine'))
+            }, 'picking-line')
+          }
+        }, {
+          path: 'stock-source',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productSource'))
+              cb(null, require('./routes/master/product/productSource'))
+            }, 'product-source')
+          }
+        }, {
+          path: 'stock-division',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productDivision'))
+            }, 'product-division')
+          }
+        }, {
+          path: 'stock-department',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productDepartment'))
+            }, 'product-department')
+          }
+        }, {
+          path: 'stock-subdepartment',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productSubdepartment'))
+              registerModel(app, require('./models/master/productDepartment'))
+              registerModel(app, require('./models/master/productDivision'))
+              cb(null, require('./routes/master/product/productSubdepartment'))
+            }, 'product-subdepartment')
+          }
+        }, {
+          path: 'integration/subagro/promo',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/suba/promo'))
+              cb(null, require('./routes/integration/promo'))
+            }, 'suba-promo')
+          }
+        }, {
+          path: 'integration/subagro/target-sales',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/targetSales'))
+              cb(null, require('./routes/integration/targetSales'))
+            }, 'suba-target-sales')
+          }
+        }, {
+          path: 'integration/subagro/sales-receivable',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/salesReceivable'))
+              cb(null, require('./routes/integration/salesReceivable'))
+            }, 'suba-sales-receivable')
+          }
+        }, {
+          path: 'integration/subagro/sales-receivable/import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/suba/importSalesReceivable'))
+              cb(null, require('./routes/integration/importSalesReceivable'))
+            }, 'suba-sales-receivable-import')
+          }
+        }, {
+          path: 'master/store-price',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/setting/userStore'))
+              cb(null, require('./routes/storePrice/stockExtraPriceStore'))
+            }, 'store-price')
+          }
+        }, {
+          path: 'master/store-price-upload',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/storePrice/stockPriceUpload'))
+              cb(null, require('./routes/storePrice/stockPriceUpload'))
+            }, 'store-price-upload')
+          }
+        }, {
+          path: 'master/product/stock/import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importstock'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/master/product/import/'))
+            }, 'master-product-stock-import')
+          }
+        }, {
+          path: 'master/product/sticker',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/master/product/printSticker'))
+            }, 'master-product-sticker')
+          }
+        }, {
+          path: 'master/product/variant',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/variant'))
+              cb(null, require('./routes/master/product/variant/'))
+            }, 'master-product-variant')
+          }
+        }, {
+          path: 'master/product/specification',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/specification'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/master/product/specification/'))
+            }, 'master-product-specification')
+          }
+        }, {
+          path: 'master/product/bookmark',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/product/bookmarkGroup'))
+              cb(null, require('./routes/master/product/bookmark/'))
+            }, 'master-product-bookmark')
+          }
+        }, {
+          path: 'master/product/bookmark/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/pospromo'))
+              registerModel(app, require('./models/marketing/bundlingReward'))
+              registerModel(app, require('./models/marketing/bundlingRules'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/marketing/promo'))
+              registerModel(app, require('./models/marketing/bundling'))
+              registerModel(app, require('./models/detail/productBookmarkDetail'))
+              registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/master/product/bookmark/detail/'))
+            }, 'master-product-bookmark-detail')
+          }
+        }, {
+          path: 'master/service',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/service'))
+              cb(null, require('./routes/master/service/'))
+            }, 'master-service')
+          }
+        }, {
+          path: 'master/city',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/city'))
+              cb(null, require('./routes/master/city/'))
+            }, 'master-city')
+          }
+        }, {
+          path: 'master/counter',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/counter'))
+              cb(null, require('./routes/master/counter/'))
+            }, 'master-counter')
+          }
+        }, {
+          path: 'master/shift',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/shift'))
+              cb(null, require('./routes/master/shift/'))
+            }, 'master-shift')
+          }
+        }, {
+          path: 'stock-uom',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productUom'))
+              cb(null, require('./routes/master/productUom'))
+            }, 'stock-uom')
+          }
+        }, {
+          path: 'master/product/location',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/stockLocation'))
+              cb(null, require('./routes/product/stockLocation'))
+            }, 'master-product-location')
+          }
+        }, {
+          path: 'master/account',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/setting/userRole'))
+              registerModel(app, require('./models/misc'))
+              registerModel(app, require('./models/accounts/accountRule'))
+              registerModel(app, require('./models/master/accountCode'))
+              registerModel(app, require('./models/master/accountCodeDefault'))
+              cb(null, require('./routes/master/accountCode/'))
+            }, 'master-account')
+          }
+        }, {
+          path: 'master/cash-type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/cashEntryType'))
+              cb(null, require('./routes/master/cashEntryType/'))
+            }, 'master-cash-type')
+          }
+        }, {
+          path: 'master/bank',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/bank'))
+              cb(null, require('./routes/master/bank/'))
+            }, 'master-bank')
+          }
+        }, {
+          path: 'master/paymentoption',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/accountRule'))
+              registerModel(app, require('./models/master/paymentOption'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/master/paymentOption/store'))
+              cb(null, require('./routes/master/paymentOption/'))
+            }, 'master-payment-option')
+          }
+        }, {
+          path: 'master/paymentoption/edc/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/accounts/accountRule'))
+              registerModel(app, require('./models/master/paymentOption/edc'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/master/paymentOption/edc/'))
+            }, 'master-payment-option-edc')
+          }
+        }, {
+          path: 'master/paymentoption/cost/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/paymentOption/cost'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/master/bank'))
+              cb(null, require('./routes/master/paymentOption/cost/'))
+            }, 'master-payment-option-cost')
+          }
+        }, {
+          path: 'master/work-order/custom-fields',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/workOrder'))
+              cb(null, require('./routes/master/workOrder/CustomFields/'))
+            }, 'master-category-work-order')
+          }
+        }, {
+          path: 'master/work-order/category',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/workOrder'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/master/workOrder/Category/'))
+            }, 'master-category-work-order')
+          }
+        }, {
+          path: 'balance/master/physical-money',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/physicalMoney'))
+              cb(null, require('./routes/setoran/physicalMoney'))
+            }, 'physical-money')
+          }
+        }, {
+          path: 'balance/dashboard',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/app'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/dashboard/'))
+            }, 'balance-dashboard')
+          }
+        }, {
+          path: 'balance/current',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/balance'))
+            }, 'balance-current')
+          }
+        }, {
+          path: 'balance/closing',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              registerModel(app, require('./models/detail/user'))
+              registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
+              registerModel(app, require('./models/setoran/physicalMoney'))
+              registerModel(app, require('./models/setoran/posSetoran'))
+              cb(null, require('./routes/balance/closing'))
+            }, 'balance-closing')
+          }
+        }, {
+          path: 'balance/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/history/'))
+            }, 'balance-history')
+          }
+        }, {
+          path: 'balance/invoice/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
+              registerModel(app, require('./models/setoran/posSetoran'))
+              registerModel(app, require('./models/detail/user'))
+              registerModel(app, require('./models/balance/balance'))
+              registerModel(app, require('./models/balance/balanceDetail'))
+              registerModel(app, require('./models/master/shift'))
+              registerModel(app, require('./models/payment/paymentOpts'))
+              cb(null, require('./routes/balance/invoice'))
+            }, 'balance-invoice-detail')
+          }
+        }, {
+          path: 'sales-discount',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/salesDiscount'))
+              cb(null, require('./routes/notification/salesDiscount'))
+            }, 'sales-discount')
+          }
+        }, {
+          path: 'request-cancel-pos',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/requestCancelPos'))
+              cb(null, require('./routes/notification/requestCancelPos'))
+            }, 'request-cancel-pos')
+          }
+        }, {
+          path: 'return-request',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/notification/returnSales'))
+              cb(null, require('./routes/notification/returnSales/'))
+            }, 'return-request')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
