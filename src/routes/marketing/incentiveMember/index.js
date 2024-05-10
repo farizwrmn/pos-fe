@@ -10,7 +10,7 @@ import Filter from './Filter'
 const TabPane = Tabs.TabPane
 
 const IncentiveMember = ({ incentiveMember, loading, dispatch, location, app }) => {
-  const { list, pagination, modalType, currentItem, activeKey } = incentiveMember
+  const { list, pagination, listTier, modalType, currentItem, activeKey } = incentiveMember
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -88,6 +88,7 @@ const IncentiveMember = ({ incentiveMember, loading, dispatch, location, app }) 
   }
 
   const formProps = {
+    listTier,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,

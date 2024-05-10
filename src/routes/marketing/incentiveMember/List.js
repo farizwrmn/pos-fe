@@ -7,9 +7,7 @@ const confirm = Modal.confirm
 
 const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
-      editItem(record)
-    } else if (e.key === '2') {
+    if (e.key === '2') {
       confirm({
         title: 'Are you sure to delete this record ?',
         onOk () {
@@ -21,19 +19,24 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'accountCode',
-      key: 'accountCode'
+      title: 'Incentive Name',
+      dataIndex: 'incentiveName',
+      key: 'incentiveName'
     },
     {
-      title: 'Name',
-      dataIndex: 'accountName',
-      key: 'accountName'
+      title: 'Store',
+      dataIndex: 'storeId',
+      key: 'storeId'
     },
     {
-      title: 'Parent',
-      dataIndex: 'accountParentId',
-      key: 'accountParentId'
+      title: 'Start Date',
+      dataIndex: 'startDate',
+      key: 'startDate'
+    },
+    {
+      title: 'End Date',
+      dataIndex: 'endDate',
+      key: 'endDate'
     },
     {
       title: 'Operation',
@@ -41,7 +44,7 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: 'Delete' }]} />
       }
     }
   ]

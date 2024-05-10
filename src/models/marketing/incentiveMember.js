@@ -12,6 +12,7 @@ export default modelExtend(pageModel, {
   namespace: 'incentiveMember',
 
   state: {
+    listTier: [],
     currentItem: {},
     modalType: 'add',
     activeKey: '0',

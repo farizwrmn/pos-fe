@@ -7,9 +7,7 @@ const confirm = Modal.confirm
 
 const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
-      editItem(record)
-    } else if (e.key === '2') {
+    if (e.key === '2') {
       confirm({
         title: 'Are you sure to delete this record ?',
         onOk () {
@@ -41,7 +39,7 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       key: 'endDate'
     },
     {
-      title: 'Start Date',
+      title: 'Reward',
       dataIndex: 'rewardValue',
       key: 'rewardValue'
     },
