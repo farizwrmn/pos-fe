@@ -3,13 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import {
-  Form,
-  Input,
   Row,
   Col,
   Card,
-  Button,
-  Icon
+  Button
 } from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
@@ -31,12 +28,6 @@ const {
   getDynamicQrisImageTTL,
   getQrisPaymentLastTransaction
 } = lstorage
-const FormItem = Form.Item
-
-const formItemLayout1 = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 11 }
-}
 
 function addHandler (ele, trigger, handler) {
   if (window.addEventListener) {

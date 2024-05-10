@@ -129,6 +129,7 @@ const List = (tableProps) => {
         bordered
         columns={columns}
         simple
+        scroll={{ x: 1000 }}
         pagination={false}
         rowKey={record => record.id}
       />

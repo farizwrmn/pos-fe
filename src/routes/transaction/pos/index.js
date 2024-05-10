@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
-import { variables, isEmptyObject, lstorage, color } from 'utils'
+import { variables, lstorage, color } from 'utils'
 // import {
 //   TYPE_PEMBELIAN_UMUM,
 //   TYPE_PEMBELIAN_GRABFOOD,
@@ -236,7 +236,6 @@ const Pos = ({
     showListReminder,
     listServiceReminder,
     modalAddUnit,
-    cashierInformation,
     dineInTax,
     currentItem: currentItemPos,
     // typePembelian,
@@ -300,8 +299,6 @@ const Pos = ({
     status: null,
     cashActive: null
   }
-  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
-
   let product = getCashierTrans()
   let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -2521,6 +2518,7 @@ const Pos = ({
   }
 
   const buttomButtonProps = {
+    loading,
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
         const service = getServiceTrans()

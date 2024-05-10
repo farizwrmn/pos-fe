@@ -715,19 +715,6 @@ const Routers = function ({ history, app }) {
             }, 'transaction-pos-payment')
           }
         }, {
-          path: 'transaction/pos/ModalQrispayment',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/payment'))
-              registerModel(app, require('./models/payment/paymentOpts'))
-              registerModel(app, require('./models/master/paymentOption/cost'))
-              registerModel(app, require('./models/master/paymentOption/edc'))
-              registerModel(app, require('./models/master/productstock'))
-              cb(null, require('./routes/transaction/pos/payment/'))
-            }, 'transaction-pos-payment')
-          }
-        }, {
           path: 'transaction/procurement/price',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2103,6 +2090,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
               cb(null, require('./routes/deliveryOrder/deliveryOrder/detail'))
             }, 'inventory-delivery-order-detail')
+          }
+        }, {
+          path: 'do',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrderList'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrderList'))
+            }, 'inventory-delivery-order-list')
           }
         }, {
           path: 'inventory/transfer/out',

@@ -1,4 +1,3 @@
-import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal, message } from 'antd'
 import moment from 'moment'
@@ -70,7 +69,6 @@ import {
 } from '../../services/master/consignment'
 import { query as queryService, queryById as queryServiceById } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
 import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
@@ -186,7 +184,6 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
-    cashierInformation: {},
     cashierBalance: {},
     pagination: {
       current: 1,
@@ -244,7 +241,6 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({
             type: 'queryDashboard',
@@ -307,27 +303,12 @@ export default {
             type: 'checkPaymentTransactionInvoice'
           })
         }
-        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
-            }
-          })
-        } else if (location.pathname === '/transaction/pos/history') {
+        if (location.pathname === '/transaction/pos/history') {
           dispatch({
             type: 'queryHistory',
             payload: {
               startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
               endPeriod: moment().endOf('month').format('YYYY-MM-DD')
-            }
-          })
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
             }
           })
         } else if (location.pathname === '/monitor/service/history') {
@@ -338,21 +319,6 @@ export default {
             type: 'updateState',
             payload: {
               listUnitUsage: []
-            }
-          })
-        }
-      })
-
-      history.listen(() => {
-        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
-        const userId = lstorage.getStorageKey('udi')[1]
-
-        if (match) {
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
             }
           })
         }
@@ -1221,38 +1187,6 @@ export default {
             }
           }
         })
-      }
-    },
-
-    * loadDataPos ({ payload = {} }, { call, put }) {
-      const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-      if (currentRegister.success) {
-        const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-        if (cashierInformation) {
-          const cashierBalance = yield call(queryCashierTransSource, cashierInformation)
-          if (cashierBalance.success) {
-            yield put({
-              type: 'updateState',
-              payload: {
-                cashierInformation,
-                dataCashierTrans: cashierInformation,
-                cashierBalance: cashierBalance.data.total[0] ? cashierBalance.data.total[0] : {}
-              }
-            })
-          } else {
-            throw cashierBalance
-          }
-        } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              cashierInformation,
-              dataCashierTrans: cashierInformation
-            }
-          })
-        }
-      } else {
-        throw currentRegister
       }
     },
 
@@ -3489,45 +3423,6 @@ export default {
         })
         setTimeout(() => modal.destroy(), 1000)
         // throw data
-      }
-    },
-
-    * cashRegister ({ payload = {} }, { call, put }) {
-      const userId = lstorage.getStorageKey('udi')[1]
-      const data = yield call(cashRegister, payload)
-      if (data.success) {
-        localStorage.setItem('cashierNo', data.cashregisters.cashierId)
-        yield put({
-          type: 'updateState',
-          payload: {
-            cashierInformation: data.cashregisters,
-            dataCashierTrans: data.cashregisters
-          }
-        })
-        yield put({
-          type: 'loadDataPos',
-          payload: {
-            cashierId: userId,
-            status: 'O'
-          }
-        })
-        yield put({
-          type: 'hideShiftModal',
-          payload: {
-            curShift: payload.shift,
-            curCashierNo: payload.cashierNo
-          }
-        })
-      } else if (data.statusCode === 422) {
-        Modal.warning({
-          title: 'Warning',
-          content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
-        })
-      } else if (data.statusCode === 409) {
-        Modal.warning({
-          title: 'Warning',
-          content: (<p>{data.message}</p>)
-        })
       }
     },
 

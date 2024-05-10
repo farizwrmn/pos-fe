@@ -21,7 +21,6 @@ const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
     modalPrintVisible,
     tmpListPayment,
     posData,
-    cashierInformation,
     modalLoginVisible,
     modalLoginType
   } = pos
@@ -177,7 +176,6 @@ const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
     app,
     width: 90,
     dispatch,
-    cashierInformation,
     loading: loading.effects['pos/queryHistory'],
     pagination,
     location,

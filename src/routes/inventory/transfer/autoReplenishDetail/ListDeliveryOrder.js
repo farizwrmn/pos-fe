@@ -169,6 +169,7 @@ const ListDeliveryOrder = ({ dispatch, loading, ...tableProps }) => {
       <Table {...tableProps}
         bordered
         columns={columns}
+        scroll={{ x: 1000 }}
         simple
         pagination={false}
         onChange={handleChange}
