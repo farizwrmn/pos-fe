@@ -18,8 +18,8 @@ const DynamicQrisButton = ({
           type="ghost"
           icon="qrcode"
           onClick={handleDynamicQrisButton}
-          loading={loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
-          disabled={loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
+          loading={loading.effects['pos/checkPaymentTransactionInvoice'] || loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
+          disabled={loading.effects['pos/checkPaymentTransactionInvoice'] || loading.effects['payment/createDynamicQrisPayment'] || loading.effects['payment/cancelDynamicQrisPayment']}
         >
           Dynamic QRIS
         </Button>

@@ -2518,6 +2518,7 @@ const Pos = ({
   }
 
   const buttomButtonProps = {
+    loading,
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
         const service = getServiceTrans()
