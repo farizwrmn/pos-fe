@@ -6,6 +6,7 @@ import styles from '../index.less'
 import PaymentItem from './PaymentItem'
 
 const Total = ({
+  directPrinting = [],
   listAmount = [],
   listOpts = [],
   posData = {},
@@ -67,7 +68,7 @@ const Total = ({
         </Col>
       </Row>
       {listAmount && listAmount.map((item, index) => (
-        <PaymentItem key={index} item={item} listOpts={listOpts} />
+        <PaymentItem directPrinting={directPrinting} key={index} item={item} listOpts={listOpts} />
       ))}
       <Row>
         <Col span={12} className={styles.right}>

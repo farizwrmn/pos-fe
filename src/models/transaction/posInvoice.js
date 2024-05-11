@@ -27,6 +27,7 @@ export default modelExtend(pageModel, {
   namespace: 'posInvoice',
 
   state: {
+    directPrinting: [],
     listOpts: [],
 
     listPaymentDetail: [],
@@ -108,6 +109,12 @@ export default modelExtend(pageModel, {
             id: response.pos.transNo,
             data: response.pos,
             type
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            directPrinting: response.directPrinting
           }
         })
         yield put({

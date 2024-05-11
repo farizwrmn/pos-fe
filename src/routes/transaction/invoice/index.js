@@ -49,6 +49,8 @@ class Invoice extends React.Component {
       modalConfirmVisible,
       standardInvoice,
 
+      directPrinting,
+
       listAmount,
       listAmountInvoice,
 
@@ -229,6 +231,7 @@ class Invoice extends React.Component {
             dataConsignment={listPaymentDetail.dataConsignment || []}
           />
           <Total
+            directPrinting={directPrinting}
             posData={posData}
             listAmount={listAmount}
             listOpts={listOpts}
