@@ -440,7 +440,7 @@ class FormEmployee extends Component {
                   initialValue: item.bankName,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       pattern: /^[a-zA-Z_]{2,30}$/i,
                       message: 'a-z, min: 2 characters'
                     }
@@ -452,7 +452,7 @@ class FormEmployee extends Component {
                   initialValue: item.accountNo,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       pattern: /^[0-9_]{2,30}$/i,
                       message: '0-9, min: 2 characters'
                     }
@@ -464,7 +464,7 @@ class FormEmployee extends Component {
                   initialValue: item.accountName,
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       pattern: /^[a-zA-Z\s_]{2,30}$/i,
                       message: 'a-z, min: 2 characters'
                     }
