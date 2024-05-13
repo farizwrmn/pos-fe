@@ -437,14 +437,14 @@ class FormEmployee extends Component {
             <Card title={<h3>Data Bank</h3>} {...cardProps}>
               <FormItem label="Nama Bank" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('bankName', {
-                  initialValue: item.bankName
-                  // rules: [
-                  //   {
-                  //     required: true,
-                  //     pattern: /^[a-zA-Z_]{2,30}$/i,
-                  //     message: 'a-z, min: 2 characters'
-                  //   }
-                  // ]
+                  initialValue: item.bankName,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[a-zA-Z_]{2,30}$/i,
+                      message: 'a-z, min: 2 characters'
+                    }
+                  ]
                 })(<Input maxLength={30} placeholder="Masukkan Nama Bank" />)}
               </FormItem>
               <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
