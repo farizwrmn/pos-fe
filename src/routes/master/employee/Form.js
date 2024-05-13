@@ -449,26 +449,26 @@ class FormEmployee extends Component {
               </FormItem>
               <FormItem label="Nomor Rekening" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('accountNo', {
-                  initialValue: item.accountNo
-                  // rules: [
-                  //   {
-                  //     required: true,
-                  //     pattern: /^[0-9_]{2,30}$/i,
-                  //     message: '0-9, min: 2 characters'
-                  //   }
-                  // ]
+                  initialValue: item.accountNo,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[0-9_]{2,30}$/i,
+                      message: '0-9, min: 2 characters'
+                    }
+                  ]
                 })(<Input maxLength={30} placeholder="Masukkan Nomor Rekening" />)}
               </FormItem>
               <FormItem label="Nama Pemilik Rekening" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('accountName', {
-                  initialValue: item.accountName
-                  // rules: [
-                  //   {
-                  //     required: true,
-                  //     pattern: /^[a-zA-Z\s_]{2,30}$/i,
-                  //     message: 'a-z, min: 2 characters'
-                  //   }
-                  // ]
+                  initialValue: item.accountName,
+                  rules: [
+                    {
+                      required: false,
+                      pattern: /^[a-zA-Z\s_]{2,30}$/i,
+                      message: 'a-z, min: 2 characters'
+                    }
+                  ]
                 })(<Input maxLength={30} placeholder="Masukkan Nama Pemilik Rekening" />)}
               </FormItem>
             </Card>
