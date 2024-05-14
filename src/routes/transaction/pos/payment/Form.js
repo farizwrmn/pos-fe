@@ -555,7 +555,7 @@ class FormPayment extends React.Component {
               </FormItem>
             }
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
+              <FormItem label="Approval Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('batchNumber', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.batchNumber,
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
