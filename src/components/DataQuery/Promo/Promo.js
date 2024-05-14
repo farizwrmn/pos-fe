@@ -91,6 +91,7 @@ const Promo = ({
   ],
   isModal = true,
   enableFilter = true,
+  dataSource,
   onRowClick,
   promo,
   ...tableProps
@@ -189,7 +190,7 @@ const Promo = ({
         <Table
           {...tableProps}
           pagination={showPagination ? pagination : false}
-          dataSource={list}
+          dataSource={dataSource && dataSource.length > 0 ? dataSource : list}
           loading={loading.effects['promo/query']}
           bordered
           scroll={{ x: 1000, y: 388 }}
@@ -224,7 +225,7 @@ const Promo = ({
           <Table
             {...tableProps}
             pagination={showPagination ? pagination : false}
-            dataSource={list}
+            dataSource={dataSource && dataSource.length > 0 ? dataSource : list}
             loading={loading.effects['promo/query']}
             bordered
             scroll={{ x: 1000, y: 388 }}

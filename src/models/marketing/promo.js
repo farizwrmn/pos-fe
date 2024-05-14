@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     searchText: null,
     typeModal: null,
     list: [],
+    listHighlight: [],
     listMinimumPayment: [],
     modalPromoVisible: false,
     pagination: {
@@ -56,7 +57,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            list: response.data
+            listHighlight: response.data
           }
         })
       } else {

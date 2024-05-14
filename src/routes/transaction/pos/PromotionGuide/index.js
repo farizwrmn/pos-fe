@@ -9,7 +9,7 @@ const { dayByNumber } = calendar
 const { Promo } = DataQuery
 
 const PromotionGuide = ({ ...otherProps }) => {
-  const width = 1000
+  const width = 700
   const columns = [
     {
       title: 'Nama Promo',

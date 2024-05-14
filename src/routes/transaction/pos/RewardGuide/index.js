@@ -1,11 +1,8 @@
 import React from 'react'
-import { DataQuery } from 'components'
 import moment from 'moment'
-import { Card } from 'antd'
+import { Card, Table } from 'antd'
 
-const { Promo } = DataQuery
-
-const PromotionGuide = ({ ...otherProps }) => {
+const RewardGuide = ({ ...otherProps }) => {
   const width = 1000
   const columns = [
     {
@@ -41,10 +38,20 @@ const PromotionGuide = ({ ...otherProps }) => {
         <div>
           <h2>Reward</h2>
         </div>
-        <Promo {...modalPromoGuideProps} />
+        <div>
+          <Table
+            {...modalPromoGuideProps}
+            pagination={false}
+            bordered
+            scroll={{ x: 1000, y: 388 }}
+            columns={columns}
+            simple
+            rowKey={record => record.id}
+          />
+        </div>
       </Card>
     </div>
   )
 }
 
-export default PromotionGuide
+export default RewardGuide

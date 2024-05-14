@@ -263,11 +263,12 @@ const Pos = ({
     curCashierNo,
     enableDineIn,
     enableDineInLastUpdatedBy,
-    enableDineInLastUpdatedAt
+    enableDineInLastUpdatedAt,
+    listRewardGuide
   } = pos
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
-  const { modalPromoVisible, listMinimumPayment } = promo
+  const { modalPromoVisible, listHighlight, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -1799,6 +1800,7 @@ const Pos = ({
 
   const modalPromoGuideProps = {
     isModal: false,
+    dataSource: listHighlight,
     enableFilter: false,
     onCancel () {
       dispatch({
@@ -1820,6 +1822,7 @@ const Pos = ({
 
   const modalRewardGuideProps = {
     isModal: false,
+    dataSource: listRewardGuide,
     enableFilter: false,
     onCancel () {
       dispatch({
