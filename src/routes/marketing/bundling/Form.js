@@ -701,7 +701,14 @@ class FormCounter extends Component {
               <FormItem label="Apply Multiple" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('applyMultiple', {
                   valuePropName: 'checked',
-                  initialValue: item.applyMultiple ? (item.applyMultiple === '0' ? 0 : 1) : item.applyMultiple
+                  // eslint-disable-next-line eqeqeq
+                  initialValue: item.applyMultiple ? (item.applyMultiple == 0 ? 0 : 1) : item.applyMultiple
+                })(<Checkbox />)}
+              </FormItem>
+              <FormItem label="POS Highlight" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('isPosHighlight', {
+                  valuePropName: 'checked',
+                  initialValue: item.isPosHighlight ? (item.isPosHighlight === '0' ? 0 : 1) : item.isPosHighlight
                 })(<Checkbox />)}
               </FormItem>
             </Card>
