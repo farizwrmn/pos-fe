@@ -331,26 +331,6 @@ const FormComponent = ({
                 </Row>
               </div>
             </Col>
-            <FormItem label="QR AGI" hasFeedback>
-              {getFieldDecorator('qrAGI', {
-                initialValue: column.xqris
-              })(<InputNumber disabled />)}
-            </FormItem>
-            <FormItem label="XQRIS" hasFeedback>
-              {getFieldDecorator('xqris', {
-                initialValue: column.xqris
-              })(<InputNumber disabled />)}
-            </FormItem>
-            <FormItem label="GRABMART" hasFeedback>
-              {getFieldDecorator('grabMart', {
-                initialValue: column.grabMart
-              })(<InputNumber disabled />)}
-            </FormItem>
-            <FormItem label="Voucher" hasFeedback>
-              {getFieldDecorator('voucher', {
-                initialValue: column.voucher
-              })(<InputNumber disabled />)}
-            </FormItem>
           </Row>
         </Col>
       </Row>

@@ -8,6 +8,8 @@ import BodyItem from './BodyItem'
 import styles from './index.less'
 
 const Body = ({
+  listTransaction,
+  listVoidTransaction,
   listEdc,
   listVoid,
   listEdcInput,
@@ -28,6 +30,13 @@ const Body = ({
   const sisaAmountVoid = itemListVoidAmount - itemListVoidInputAmount
   const sisaLembarEdc = lembarListEdcAmount - lembarListEdcInputAmount
   const sisaLembarVoid = lembarListVoidAmount - lembarListVoidInputAmount
+
+
+  // list transaction
+  let itemXq = listTransaction.map(item => item.typeCode === 'XQ')
+  let itemAGI = listTransaction.map(item => item.typeCode === 'AGI')
+  let itemGM = listTransaction.map(item => item.typeCode === 'GM')
+  let itemVourcher = listTransaction.map(item => item.typeCode === 'V')
 
   return (
     <div>
@@ -100,6 +109,40 @@ const Body = ({
           </Col>
           <Col style={{ textAlign: 'left' }}>
             <h3><b>{currencyFormatter(totalAmountSetoran)}</b></h3>
+          </Col>
+        </Row>
+        <div style={{ margin: '1em' }} />
+        <div className={styles.item} />
+        <Row>
+          <Col style={{ textAlign: 'left' }}>
+            <h3><b>List Transaksi</b></h3>
+          </Col>
+          <Col style={{ textAlign: 'left' }}>
+            <p>QR AGI: {itemXq.balanceIn}</p>
+            <p>XQRIS: {itemAGI.balanceIn}</p>
+            <p>GRABMART: {itemGM.balanceIn}</p>
+            <p>Voucher: {itemVourcher.balanceIn}</p>
+          </Col>
+        </Row>
+        <div style={{ margin: '1em' }} />
+        <div className={styles.item} />
+        <Row>
+          <Col style={{ textAlign: 'left' }}>
+            <h3><b>List Void History</b></h3>
+          </Col>
+          <Col style={{ textAlign: 'left' }}>
+            {(listVoidTransaction || []).map((item) => {
+              return (
+                <div styles={{ display: 'flex' }}>
+                  <p>
+                    {item.transNo}
+                  </p>
+                  <p>
+                    {item.total}
+                  </p>
+                </div>
+              )
+            })}
           </Col>
         </Row>
       </div>

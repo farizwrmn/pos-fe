@@ -5,7 +5,9 @@ import {
   queryListVoidByBalanceId,
   queryListEdcInputByBalanceId,
   queryListVoidInputByBalanceId,
-  insertVoidEdcDeposit
+  insertVoidEdcDeposit,
+  queryListTransaction,
+  queryListVoidTransaction
 } from 'services/setoran/physicalMoney'
 import moment from 'moment'
 import { message } from 'antd'
@@ -30,6 +32,8 @@ export default modelExtend(pageModel, {
     listVoid: [],
     listEdcInput: [],
     listVoidInput: [],
+    listTransaction: [],
+    listVoidTransaction: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -54,6 +58,8 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'queryListVoidByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListEdcInputByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListVoidInputByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListTransaction', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListVoidTransaction', payload: { ...other, balanceId } })
         }
       })
     }
@@ -67,6 +73,38 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListTransaction ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListTransaction, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransaction: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListVoidTransaction ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListVoidTransaction, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listVoidTransaction: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,

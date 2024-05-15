@@ -85,6 +85,26 @@ export async function query (params) {
   })
 }
 
+export async function queryListVoidTransaction (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-history-void',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListTransaction (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-payment-list',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
