@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/marketing/incentiveItem'
 import { pageModel } from 'models/common'
 
@@ -26,7 +27,10 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/marketing/incentive-member') {
+        if (pathname === '/marketing/incentive-item') {
+          dispatch({
+            type: 'querySequence'
+          })
           dispatch({
             type: 'updateState',
             payload: {
@@ -40,6 +44,24 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * querySequence (payload, { select, call, put }) {
+      const invoice = {
+        seqCode: 'ICI',
+        type: 1
+      }
+      const data = yield call(querySequence, invoice)
+      const currentItem = yield select(({ incentiveItem }) => incentiveItem.currentItem)
+      const incentiveCode = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {
+            ...currentItem,
+            incentiveCode
+          }
+        }
+      })
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)

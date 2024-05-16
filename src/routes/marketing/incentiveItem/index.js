@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const IncentiveItem = ({ incentiveItem, loading, dispatch, location, app }) => {
+const IncentiveItem = ({ incentiveItem, userStore, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = incentiveItem
+  const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -88,6 +89,7 @@ const IncentiveItem = ({ incentiveItem, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    listAllStores,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -149,4 +151,4 @@ IncentiveItem.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ incentiveItem, loading, app }) => ({ incentiveItem, loading, app }))(IncentiveItem)
+export default connect(({ incentiveItem, userStore, loading, app }) => ({ incentiveItem, userStore, loading, app }))(IncentiveItem)

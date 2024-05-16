@@ -35,6 +35,7 @@ export default modelExtend(pageModel, {
           || location.pathname === '/report/purchase/summary'
           || location.pathname === '/report/accounts/payment'
           || location.pathname === '/balance/finance/history'
+          || location.pathname === '/marketing/incentive-item'
           || location.pathname === '/balance/finance/petty-expense'
           || location.pathname === '/balance/finance/petty-cash'
           || location.pathname === '/accounts/payable-form'
