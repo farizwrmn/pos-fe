@@ -205,7 +205,7 @@ class FormPayment extends React.Component {
       }
 
       setTimeout(() => {
-        const selector = document.getElementById('batchNumber')
+        const selector = document.getElementById('approvalCode')
         if (selector) {
           selector.focus()
           selector.select()
@@ -556,8 +556,8 @@ class FormPayment extends React.Component {
             }
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Approval Code" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('batchNumber', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.batchNumber,
+                {getFieldDecorator('approvalCode', {
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.approvalCode,
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {

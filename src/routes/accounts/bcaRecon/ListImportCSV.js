@@ -34,9 +34,9 @@ const ListImportCSV = ({ ...tableProps }) => {
       }
     },
     {
-      title: 'Batch No',
-      dataIndex: 'edcBatchNumber',
-      key: 'edcBatchNumber',
+      title: 'Approval Code',
+      dataIndex: 'approvalCode',
+      key: 'approvalCode',
       className: styles.alignRight
     },
     {
