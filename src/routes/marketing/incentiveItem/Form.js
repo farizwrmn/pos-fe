@@ -133,7 +133,7 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem label="Reward each item" hasFeedback {...formItemLayout}>
               {getFieldDecorator('rewardValue', {
-                initialValue: item.rewardValue || 0,
+                initialValue: item.rewardValue || 1,
                 rules: [
                   {
                     required: true

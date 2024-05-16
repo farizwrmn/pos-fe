@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const IncentiveMember = ({ incentiveMember, loading, dispatch, location, app }) => {
-  const { list, pagination, listTier, modalType, currentItem, activeKey } = incentiveMember
+const IncentiveMember = ({ incentiveMember, userStore, loading, dispatch, location, app }) => {
+  const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, listTier, modalType, currentItem, activeKey } = incentiveMember
+  const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -87,8 +88,48 @@ const IncentiveMember = ({ incentiveMember, loading, dispatch, location, app }) 
     })
   }
 
+  const modalMemberTierProps = {
+    title: `${modalMemberTierType === 'add' ? 'Add' : 'Update'} Tier`,
+    okText: `${modalMemberTierType === 'add' ? 'Add' : 'Update'}`,
+    modalType: modalMemberTierType,
+    visible: modalMemberTierVisible,
+    item: modalMemberTierItem,
+    onAdd (item) {
+      dispatch({
+        type: 'incentiveMember/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          listTier: listTier.concat({
+            tierNumber: item.tierNumber,
+            tierReward: item.tierReward,
+            minNewMember: item.minNewMember,
+            maxNewMember: item.maxNewMember
+          }).sort((a, b) => a.tierNumber - b.tierNumber)
+        }
+      })
+    },
+    onEdit (item) {
+      dispatch({
+        type: 'incentiveMember/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          listTier: listTier
+            .filter(filtered => filtered.tierNumber !== item.tierNumber)
+            .concat({
+              tierNumber: item.tierNumber,
+              tierReward: item.tierReward,
+              minNewMember: item.minNewMember,
+              maxNewMember: item.maxNewMember
+            }).sort((a, b) => a.tierNumber - b.tierNumber)
+        }
+      })
+    }
+  }
+
   const formProps = {
+    modalMemberTierProps,
     listTier,
+    listAllStores,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -98,6 +139,23 @@ const IncentiveMember = ({ incentiveMember, loading, dispatch, location, app }) 
         payload: {
           data,
           reset
+        }
+      })
+    },
+    onOpenModalTier (modalMemberTierType, item) {
+      if (modalMemberTierType !== 'add') {
+        dispatch({
+          type: 'incentiveMember/updateState',
+          payload: {
+            modalMemberTierItem: item
+          }
+        })
+      }
+      dispatch({
+        type: 'incentiveMember/updateState',
+        payload: {
+          modalMemberTierVisible: true,
+          modalMemberTierType
         }
       })
     },
@@ -150,4 +208,4 @@ IncentiveMember.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ incentiveMember, loading, app }) => ({ incentiveMember, loading, app }))(IncentiveMember)
+export default connect(({ incentiveMember, userStore, loading, app }) => ({ incentiveMember, userStore, loading, app }))(IncentiveMember)

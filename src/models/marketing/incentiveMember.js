@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import { query as querySequence } from 'services/sequence'
 import { query, add, edit, remove } from 'services/marketing/incentiveMember'
 import { pageModel } from 'models/common'
 
@@ -16,6 +17,9 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    modalMemberTierVisible: false,
+    modalMemberTierItem: {},
+    modalMemberTierType: 'add',
     list: [],
     pagination: {
       current: 1
@@ -29,6 +33,9 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/marketing/incentive-member') {
           dispatch({
+            type: 'querySequence'
+          })
+          dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
@@ -41,6 +48,24 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * querySequence (payload, { select, call, put }) {
+      const invoice = {
+        seqCode: 'ICM',
+        type: 1
+      }
+      const data = yield call(querySequence, invoice)
+      const currentItem = yield select(({ incentiveMember }) => incentiveMember.currentItem)
+      const incentiveCode = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {
+            ...currentItem,
+            incentiveCode
+          }
+        }
+      })
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
@@ -76,11 +101,15 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            listTier: []
           }
         })
         yield put({
           type: 'query'
+        })
+        yield put({
+          type: 'querySequence'
         })
         if (payload.reset) {
           payload.reset()
