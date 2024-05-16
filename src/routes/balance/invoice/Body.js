@@ -118,10 +118,10 @@ const Body = ({
             <h3><b>List Transaksi</b></h3>
           </Col>
           <Col style={{ textAlign: 'left' }}>
-            <p>QR AGI: {itemXq.balanceIn}</p>
-            <p>XQRIS: {itemAGI.balanceIn}</p>
-            <p>GRABMART: {itemGM.balanceIn}</p>
-            <p>Voucher: {itemVourcher.balanceIn}</p>
+            <p>QR AGI: {currencyFormatter(itemXq.balanceIn)}</p>
+            <p>XQRIS: {currencyFormatter(itemAGI.balanceIn)}</p>
+            <p>GRABMART: {currencyFormatter(itemGM.balanceIn)}</p>
+            <p>Voucher: {currencyFormatter(itemVourcher.balanceIn)}</p>
           </Col>
         </Row>
         <div style={{ margin: '1em' }} />
@@ -135,10 +135,7 @@ const Body = ({
               return (
                 <div styles={{ display: 'flex' }}>
                   <p>
-                    {item.transNo}
-                  </p>
-                  <p>
-                    {item.total}
+                    {`${item.transNo}: ${currencyFormatter(item.total)}`}
                   </p>
                 </div>
               )
