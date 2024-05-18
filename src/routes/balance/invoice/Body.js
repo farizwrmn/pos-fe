@@ -33,10 +33,10 @@ const Body = ({
 
 
   // list transaction
-  let itemXq = listTransaction.map(item => item.typeCode === 'XQ')
-  let itemAGI = listTransaction.map(item => item.typeCode === 'AGI')
-  let itemGM = listTransaction.map(item => item.typeCode === 'GM')
-  let itemVourcher = listTransaction.map(item => item.typeCode === 'V')
+  let itemXq = (listTransaction || []).filter(item => item.typeCode === 'XQ')
+  let itemAGI = (listTransaction || []).filter(item => item.typeCode === 'AGI')
+  let itemGM = (listTransaction || []).filter(item => item.typeCode === 'GM')
+  let itemVourcher = (listTransaction || []).filter(item => item.typeCode === 'V')
 
   return (
     <div>
@@ -118,10 +118,10 @@ const Body = ({
             <h3><b>List Transaksi</b></h3>
           </Col>
           <Col style={{ textAlign: 'left' }}>
-            <p>QR AGI: {currencyFormatter(itemXq.balanceIn)}</p>
-            <p>XQRIS: {currencyFormatter(itemAGI.balanceIn)}</p>
-            <p>GRABMART: {currencyFormatter(itemGM.balanceIn)}</p>
-            <p>Voucher: {currencyFormatter(itemVourcher.balanceIn)}</p>
+            <p>QR AGI: {currencyFormatter(itemAGI && itemAGI.length > 0 && itemAGI[0].balanceIn)}</p>
+            <p>XQRIS: {currencyFormatter(itemXq && itemXq.length > 0 && itemXq[0].balanceIn)}</p>
+            <p>GRABMART: {currencyFormatter(itemGM && itemGM.length > 0 && itemGM[0].balanceIn)}</p>
+            <p>Voucher: {currencyFormatter(itemVourcher && itemVourcher.length > 0 && itemVourcher[0].balanceIn)}</p>
           </Col>
         </Row>
         <div style={{ margin: '1em' }} />
