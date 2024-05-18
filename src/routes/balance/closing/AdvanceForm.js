@@ -226,7 +226,8 @@ const FormComponent = ({
                       </div>
                     )}
                   />
-                  <Column
+                  {/* REQUEST UPDATE 18 MAY 2024 TO NOT INPUT VALUE */}
+                  {/* <Column
                     title="TOTAL"
                     dataIndex="edcTotal"
                     key="edcTotal"
@@ -245,7 +246,8 @@ const FormComponent = ({
                         </FormItem>
                       </div>
                     )}
-                  />
+                  /> */}
+                  {/* REQUEST UPDATE 18 MAY 2024 TO NOT INPUT VALUE */}
                 </Table>
                 {/* <Column
                       title="TOTAL"
