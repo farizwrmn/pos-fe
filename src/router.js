@@ -249,6 +249,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-stock')
           }
         }, {
+          path: 'stock-opname-store-account',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname/stockOpnameStoreAccount'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameStoreAccount'))
+            }, 'stock-opname-store-account')
+          }
+        }, {
           path: 'stock-planogram',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
