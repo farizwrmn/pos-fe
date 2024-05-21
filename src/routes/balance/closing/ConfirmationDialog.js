@@ -72,7 +72,7 @@ const ConfirmationDialog = ({
 
   let itemA = listSetoran && listSetoran.find(item => item.status === 'A')
   let edcAmount = itemA && itemA.edcAmount ? itemA.edcAmount : 0
-  let edcTotal = itemA && itemA.edcTotal ? itemA.edcTotal : 0
+  // let edcTotal = itemA && itemA.edcTotal ? itemA.edcTotal : 0
   let itemB = listSetoran && listSetoran.find(item => item.status === 'C')
   let voidAmount = itemB && itemB.voidAmount ? itemB.voidAmount : 0
   let voidTotal = itemB && itemB.voidTotal ? itemB.voidTotal : 0
@@ -171,7 +171,8 @@ const ConfirmationDialog = ({
                     </div>
                   )}
                 />
-                <Column
+                {/* 21MAY2024 */}
+                {/* <Column
                   title="TOTAL"
                   dataIndex="edcTotal"
                   key="edcTotal"
@@ -191,7 +192,8 @@ const ConfirmationDialog = ({
                       </FormItem>
                     </div>
                   )}
-                />
+                /> */}
+                {/* 21MAY2024 */}
               </Table>
               {/* <Column
                       title="TOTAL"
@@ -203,7 +205,8 @@ const ConfirmationDialog = ({
                         </div>
                       )}
                     /> */}
-              <Row style={{ padding: '1em' }}>
+              {/* 21MAY2024 */}
+              {/* <Row style={{ padding: '1em' }}>
                 <Col span={18} style={{ textAlign: 'center' }}>
                   <p style={{ fontWeight: 'bold' }}>Subtotal</p>
                 </Col>
@@ -212,7 +215,8 @@ const ConfirmationDialog = ({
                     {listSetoran && listSetoran.length > 0 && currencyFormatterSetoran(edcTotal)}
                   </p>
                 </Col>
-              </Row>
+              </Row> */}
+              {/* 21MAY2024 */}
             </div>
           </Col>
           <Col>
