@@ -101,6 +101,9 @@ export default modelExtend(pageModel, {
           }
         })
         yield put({
+          type: 'querySequence'
+        })
+        yield put({
           type: 'query'
         })
         if (payload.reset) {
