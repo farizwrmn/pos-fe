@@ -154,6 +154,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -263,9 +264,9 @@ const Pos = ({
     curCashierNo,
     enableDineIn,
     enableDineInLastUpdatedBy,
-    enableDineInLastUpdatedAt,
-    listRewardGuide
+    enableDineInLastUpdatedAt
   } = pos
+  const { list: listAchievement } = incentiveAchievement
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
   const { modalPromoVisible, listHighlight, listMinimumPayment } = promo
@@ -1822,7 +1823,7 @@ const Pos = ({
 
   const modalRewardGuideProps = {
     isModal: false,
-    dataSource: listRewardGuide,
+    dataSource: listAchievement,
     enableFilter: false,
     onCancel () {
       dispatch({
@@ -3334,6 +3335,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -3355,6 +3357,7 @@ export default connect(({
   customerunit,
   payment
 }) => ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,

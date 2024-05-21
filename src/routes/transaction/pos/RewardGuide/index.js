@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Card, Table } from 'antd'
 
 const RewardGuide = ({ ...otherProps }) => {
-  const width = 1000
+  const width = 700
   const columns = [
     {
       title: 'Nama Incentive',
@@ -21,7 +21,7 @@ const RewardGuide = ({ ...otherProps }) => {
       }
     },
     {
-      title: 'Pencapaian Item',
+      title: 'Pencapaian Item (Qty)',
       dataIndex: 'calculatedReward',
       key: 'calculatedReward',
       width: `${width * 0.1}px`
@@ -43,7 +43,7 @@ const RewardGuide = ({ ...otherProps }) => {
             {...modalPromoGuideProps}
             pagination={false}
             bordered
-            scroll={{ x: 1000, y: 388 }}
+            scroll={{ x: 700, y: 388 }}
             columns={columns}
             simple
             rowKey={record => record.id}
