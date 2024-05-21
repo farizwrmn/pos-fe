@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
 import { lstorage } from 'utils'
-import { queryActive } from '../../services/marketing/promo'
+import { queryActive, queryHighlight } from '../../services/marketing/promo'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
 import { getDateTime } from '../../services/setting/time'
@@ -16,6 +16,7 @@ export default modelExtend(pageModel, {
     searchText: null,
     typeModal: null,
     list: [],
+    listHighlight: [],
     listMinimumPayment: [],
     modalPromoVisible: false,
     pagination: {
@@ -31,12 +32,38 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/transaction/pos') {
           dispatch({ type: 'queryMinimumPayment', payload: { storeId: lstorage.getCurrentUserStore() } })
+          dispatch({
+            type: 'promo/queryHighlight',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
         }
       })
     }
   },
 
   effects: {
+    * queryHighlight ({ payload = {} }, { call, put }) {
+      const date = yield call(getDateTime, {
+        id: 'date'
+      })
+      if (!date.success) {
+        throw date
+      }
+      payload.day = moment(date.data, 'YYYY-MM-DD').isoWeekday()
+      const response = yield call(queryHighlight, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listHighlight: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
     * query ({ payload = {} }, { call, put }) {
       const date = yield call(getDateTime, {
         id: 'date'
