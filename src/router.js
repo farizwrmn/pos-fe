@@ -661,9 +661,28 @@ const Routers = function ({ history, app }) {
             }, 'return-request')
           }
         }, {
+          path: 'marketing/incentive-item',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/marketing/incentiveItem'))
+              cb(null, require('./routes/marketing/incentiveItem'))
+            }, 'marketing-incentive-item')
+          }
+        },
+        {
+          path: 'marketing/incentive-member',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/incentiveMember'))
+              cb(null, require('./routes/marketing/incentiveMember'))
+            }, 'marketing-incentive-member')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/incentiveAchievement'))
               registerModel(app, require('./models/planogram/planogram'))
               registerModel(app, require('./models/transaction/fingerEmployee'))
               registerModel(app, require('./models/notification/salesDiscount'))

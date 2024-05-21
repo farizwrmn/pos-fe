@@ -113,6 +113,7 @@ export default {
     currentReplaceBundle: {},
     currentBuildComponent: {},
     list: [],
+    listRewardGuide: [],
     dataReward: [],
     currentCategory: [],
     tmpList: [],

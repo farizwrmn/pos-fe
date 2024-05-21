@@ -54,6 +54,8 @@ import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
+import PromotionGuide from './PromotionGuide'
+import RewardGuide from './RewardGuide'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -152,6 +154,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -263,9 +266,10 @@ const Pos = ({
     enableDineInLastUpdatedBy,
     enableDineInLastUpdatedAt
   } = pos
+  const { list: listAchievement } = incentiveAchievement
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
-  const { modalPromoVisible, listMinimumPayment } = promo
+  const { modalPromoVisible, listHighlight, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -1795,6 +1799,50 @@ const Pos = ({
     }
   }
 
+  const modalPromoGuideProps = {
+    isModal: false,
+    dataSource: listHighlight,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
+  const modalRewardGuideProps = {
+    isModal: false,
+    dataSource: listAchievement,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
   const modalPromoProps = {
     visible: modalPromoVisible,
     onCancel () {
@@ -3230,6 +3278,9 @@ const Pos = ({
           </Card>
           <BottomButton {...buttomButtonProps} />
           {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
+
+          <PromotionGuide {...modalPromoGuideProps} />
+          <RewardGuide {...modalRewardGuideProps} />
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
@@ -3285,6 +3336,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -3306,6 +3358,7 @@ export default connect(({
   customerunit,
   payment
 }) => ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
