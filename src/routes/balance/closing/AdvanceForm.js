@@ -133,7 +133,7 @@ const FormComponent = ({
 
   let itemA = listSetoran && listSetoran.find(item => item.status === 'A')
   let edcAmount = itemA && itemA.edcAmount ? itemA.edcAmount : 0
-  // let edcTotal = itemA && itemA.edcTotal ? itemA.edcTotal : 0
+  let edcTotal = itemA && itemA.edcTotal ? itemA.edcTotal : 0
   let itemB = listSetoran && listSetoran.find(item => item.status === 'C')
   let voidAmount = itemB && itemB.voidAmount ? itemB.voidAmount : 0
   let voidTotal = itemB && itemB.voidTotal ? itemB.voidTotal : 0
@@ -227,7 +227,7 @@ const FormComponent = ({
                     )}
                   />
                   {/* REQUEST UPDATE 18 MAY 2024 TO NOT INPUT VALUE */}
-                  {/* <Column
+                  <Column
                     title="TOTAL"
                     dataIndex="edcTotal"
                     key="edcTotal"
@@ -246,7 +246,7 @@ const FormComponent = ({
                         </FormItem>
                       </div>
                     )}
-                  /> */}
+                  />
                   {/* REQUEST UPDATE 18 MAY 2024 TO NOT INPUT VALUE */}
                 </Table>
                 {/* <Column
