@@ -37,6 +37,7 @@ const Body = ({
   let itemAGI = (listTransaction || []).filter(item => item.typeCode === 'AGI')
   let itemGM = (listTransaction || []).filter(item => item.typeCode === 'GM')
   let itemVourcher = (listTransaction || []).filter(item => item.typeCode === 'V')
+  let itemK3express = (listTransaction || []).filter(item => item.typeCode === 'KX')
 
   return (
     <div>
@@ -122,6 +123,7 @@ const Body = ({
             <p>XQRIS: {currencyFormatter(itemXq && itemXq.length > 0 && itemXq[0].balanceIn)}</p>
             <p>GRABMART: {currencyFormatter(itemGM && itemGM.length > 0 && itemGM[0].balanceIn)}</p>
             <p>Voucher: {currencyFormatter(itemVourcher && itemVourcher.length > 0 && itemVourcher[0].balanceIn)}</p>
+            <p>K3 EXPRESS: {currencyFormatter(itemK3express && itemK3express.length > 0 && itemK3express[0].balanceIn)}</p>
           </Col>
         </Row>
         <div style={{ margin: '1em' }} />
