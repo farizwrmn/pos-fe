@@ -569,7 +569,8 @@ class FormPayment extends React.Component {
                     [
                       {
                         required: false,
-                        pattern: /^[0-9]+$/i,
+                        // pattern: /^[0-9]+$/i,
+                        pattern: /^[a-zA-Z0-9]*$/,
                         message: 'please insert the value'
                       }
                     ]
