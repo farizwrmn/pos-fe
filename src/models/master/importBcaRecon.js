@@ -163,7 +163,7 @@ export default modelExtend(pageModel, {
         for (let key in posPaymentData.data) {
           let tablePayment = posPaymentData.data[key]
           const filteredPaymentImportBcaData = paymentImportBcaData.data
-            .filter(filtered => Number(filtered.edcBatchNumber) === Number(tablePayment.batchNumber)
+            .filter(filtered => Number(filtered.approvalCode) === Number(tablePayment.batchNumber)
               && filtered.grossAmount === tablePayment.amount)
           if (filteredPaymentImportBcaData && filteredPaymentImportBcaData.length > 0) {
             paymentImportBcaData.data = paymentImportBcaData.data.map((item) => {

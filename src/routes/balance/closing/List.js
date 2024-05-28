@@ -119,8 +119,8 @@ const List = ({
       data.setoranDetail = list
       const readableDataSetoran = listSetoran.map(item => ({
         type: item.type,
-        amount: item.edcAmount || item.voidAmount,
-        total: item.edcTotal || item.voidTotal,
+        amount: item.edcAmount || item.voidAmount || item.grabAmount,
+        total: item.edcTotal || item.voidTotal || item.grabTotal,
         status: item.status
       }))
 

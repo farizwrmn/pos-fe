@@ -5,7 +5,11 @@ import {
   queryListVoidByBalanceId,
   queryListEdcInputByBalanceId,
   queryListVoidInputByBalanceId,
-  insertVoidEdcDeposit
+  queryListGrabInputByBalanceId,
+  queryListGrabByBalanceId,
+  insertVoidEdcDeposit,
+  queryListTransaction,
+  queryListVoidTransaction
 } from 'services/setoran/physicalMoney'
 import moment from 'moment'
 import { message } from 'antd'
@@ -27,9 +31,13 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listEdc: [],
+    listGrab: [],
     listVoid: [],
     listEdcInput: [],
     listVoidInput: [],
+    listGrabInput: [],
+    listTransaction: [],
+    listVoidTransaction: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -54,6 +62,10 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'queryListVoidByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListEdcInputByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListVoidInputByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListTransaction', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListVoidTransaction', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListGrabByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListGrabInputByBalanceId', payload: { ...other, balanceId } })
         }
       })
     }
@@ -67,6 +79,38 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListTransaction ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListTransaction, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransaction: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListVoidTransaction ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListVoidTransaction, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listVoidTransaction: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
@@ -139,21 +183,53 @@ export default modelExtend(pageModel, {
           }
         })
       }
-    }
-  },
-  * insertVoidEdcDeposit ({ payload = {} }, { call, put }) {
-    const data = yield call(insertVoidEdcDeposit, payload)
-    if (data.success) {
-      success()
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
+    },
+    * queryListGrabByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListGrabByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listGrab: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListGrabInputByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListGrabInputByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listGrabInput: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * insertVoidEdcDeposit ({ payload = {} }, { call, put }) {
+      const data = yield call(insertVoidEdcDeposit, payload)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
+        if (payload.reset) {
+          payload.reset()
         }
-      })
-      if (payload.reset) {
-        payload.reset()
       }
     }
   },

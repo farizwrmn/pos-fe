@@ -278,7 +278,7 @@ class FormPayment extends React.Component {
       }
 
       setTimeout(() => {
-        const selector = document.getElementById('batchNumber')
+        const selector = document.getElementById('approvalCode')
         if (selector) {
           selector.focus()
           selector.select()
@@ -551,21 +551,25 @@ class FormPayment extends React.Component {
               </FormItem>
             }
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('batchNumber', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.batchNumber,
+              <FormItem label="Approval Code" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('approvalCode', {
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.approvalCode,
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {
                         required: true,
-                        pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
+                        // pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
+                        // pattern: /^[a-zA-Z0-9]{1,6}$/,
+                        pattern: /^[a-zA-Z0-9-}{';]{1,6}$/,
                         message: '0-9 please insert the value (max. 6 digits)'
                       }
                     ] :
                     [
                       {
                         required: false,
-                        pattern: /^[0-9]+$/i,
+                        // pattern: /^[0-9]+$/i,
+                        // pattern: /^[a-zA-Z0-9]*$/,
+                        pattern: /^[a-zA-Z0-9-}{';]*$/,
                         message: 'please insert the value'
                       }
                     ]
