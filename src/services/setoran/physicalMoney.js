@@ -21,6 +21,26 @@ export async function queryListVoidInputByBalanceId (params) {
   })
 }
 
+export async function queryListGrabInputByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-balance-grab-input',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListGrabByBalanceId (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-balance-grab',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryListEdcByBalanceId (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -79,6 +99,26 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/physical-money',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListVoidTransaction (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-history-void',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListTransaction (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-payment-list',
     method: 'get',
     data: params,
     headers: apiHeaderToken

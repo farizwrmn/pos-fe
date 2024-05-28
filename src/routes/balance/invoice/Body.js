@@ -8,10 +8,14 @@ import BodyItem from './BodyItem'
 import styles from './index.less'
 
 const Body = ({
+  listTransaction,
+  listVoidTransaction,
   listEdc,
+  listGrab,
   listVoid,
   listEdcInput,
   listVoidInput,
+  listGrabInput,
   dataPos = [],
   paymentOptionCashId = 1
 }) => {
@@ -20,6 +24,12 @@ const Body = ({
   const itemListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.total, 0)
   const itemListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.amount, 0)
   const itemListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.total, 0)
+
+  const itemListGrabAmount = listGrab.reduce((acc, curr) => acc + curr.amount, 0)
+  const itemListGrabInputAmount = listGrabInput.reduce((acc, curr) => acc + curr.total, 0)
+  const lembarListGrabAmount = listGrab.reduce((acc, curr) => acc + curr.lembar, 0)
+  const lembarListGrabInputAmount = listGrabInput.reduce((acc, curr) => acc + curr.amount, 0)
+
   const lembarListEdcAmount = listEdc.reduce((acc, curr) => acc + curr.lembar, 0)
   const lembarListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.amount, 0)
   const lembarListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.lembar, 0)
@@ -28,6 +38,16 @@ const Body = ({
   const sisaAmountVoid = itemListVoidAmount - itemListVoidInputAmount
   const sisaLembarEdc = lembarListEdcAmount - lembarListEdcInputAmount
   const sisaLembarVoid = lembarListVoidAmount - lembarListVoidInputAmount
+  const sisaLembarGrab = lembarListGrabAmount - lembarListGrabInputAmount
+  const sisaAmountGrab = itemListGrabAmount - itemListGrabInputAmount
+
+
+  // list transaction
+  let itemXq = (listTransaction || []).filter(item => item.typeCode === 'XQ')
+  let itemAGI = (listTransaction || []).filter(item => item.typeCode === 'AGI')
+  let itemGM = (listTransaction || []).filter(item => item.typeCode === 'GM')
+  let itemVourcher = (listTransaction || []).filter(item => item.typeCode === 'V')
+  let itemK3express = (listTransaction || []).filter(item => item.typeCode === 'KX')
 
   return (
     <div>
@@ -50,7 +70,7 @@ const Body = ({
         <div>
           <div className={styles.item} />
           <Row>
-            <Col span={24} className={styles.left}><p>Sales - EDC(DEBIT,CREDIT, QRIS APOS, QRIS DYNAMIC)</p></Col>
+            <Col span={24} className={styles.left}><p>Sales - EDC(DEBIT,CREDIT, QRIS APOS)</p></Col>
           </Row>
           <Row>
             <Col span={12} className={styles.left}>
@@ -91,6 +111,25 @@ const Body = ({
               <p>{`(${currencyFormatter(sisaAmountVoid)})`}</p>
             </Col>
           </Row>
+          <div style={{ margin: '1em' }} />
+          <div className={styles.item} />
+          <Row>
+            <Col span={24} className={styles.left}><p>Grabmart Transaction</p></Col>
+          </Row>
+          <Row>
+            <Col span={12} className={styles.left}>
+              <div>
+                <p>POS:</p>
+                <p>{`(${lembarListGrabAmount} Lembar)`}</p>
+                <p>{currencyFormatter(itemListGrabAmount)}</p>
+              </div>
+            </Col>
+            <Col span={12} className={styles.right}>
+              <p>INPUT:</p>
+              <p>{`(${sisaLembarGrab} Lembar)`}</p>
+              <p>{`(${currencyFormatter(sisaAmountGrab)})`}</p>
+            </Col>
+          </Row>
         </div>
         <div style={{ margin: '1em' }} />
         <div className={styles.item} />
@@ -100,6 +139,38 @@ const Body = ({
           </Col>
           <Col style={{ textAlign: 'left' }}>
             <h3><b>{currencyFormatter(totalAmountSetoran)}</b></h3>
+          </Col>
+        </Row>
+        <div style={{ margin: '1em' }} />
+        <div className={styles.item} />
+        <Row>
+          <Col style={{ textAlign: 'left' }}>
+            <h3><b>List Transaksi</b></h3>
+          </Col>
+          <Col style={{ textAlign: 'left' }}>
+            <p>QR AGI: {currencyFormatter(itemAGI && itemAGI.length > 0 && itemAGI[0].balanceIn)}</p>
+            <p>XQRIS: {currencyFormatter(itemXq && itemXq.length > 0 && itemXq[0].balanceIn)}</p>
+            <p>GRABMART: {currencyFormatter(itemGM && itemGM.length > 0 && itemGM[0].balanceIn)}</p>
+            <p>VOUCHER: {currencyFormatter(itemVourcher && itemVourcher.length > 0 && itemVourcher[0].balanceIn)}</p>
+            <p>K3 EXPRESS: {currencyFormatter(itemK3express && itemK3express.length > 0 && itemK3express[0].balanceIn)}</p>
+          </Col>
+        </Row>
+        <div style={{ margin: '1em' }} />
+        <div className={styles.item} />
+        <Row>
+          <Col style={{ textAlign: 'left' }}>
+            <h3><b>List Void History</b></h3>
+          </Col>
+          <Col style={{ textAlign: 'left' }}>
+            {(listVoidTransaction || []).map((item) => {
+              return (
+                <div styles={{ display: 'flex' }}>
+                  <p>
+                    {`${item.transNo}: ${currencyFormatter(item.total)}`}
+                  </p>
+                </div>
+              )
+            })}
           </Col>
         </Row>
       </div>
