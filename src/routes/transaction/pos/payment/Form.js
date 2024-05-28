@@ -563,7 +563,8 @@ class FormPayment extends React.Component {
                       {
                         required: true,
                         // pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
-                        pattern: /^[a-zA-Z0-9]{1,6}$/,
+                        // pattern: /^[a-zA-Z0-9]{1,6}$/,
+                        pattern: /^[a-zA-Z0-9-}{';]{1,6}$/,
                         message: '0-9 please insert the value (max. 6 digits)'
                       }
                     ] :
@@ -571,7 +572,8 @@ class FormPayment extends React.Component {
                       {
                         required: false,
                         // pattern: /^[0-9]+$/i,
-                        pattern: /^[a-zA-Z0-9]*$/,
+                        // pattern: /^[a-zA-Z0-9]*$/,
+                        pattern: /^[a-zA-Z0-9-}{';]*$/,
                         message: 'please insert the value'
                       }
                     ]
