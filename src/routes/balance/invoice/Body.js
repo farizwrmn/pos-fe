@@ -11,9 +11,11 @@ const Body = ({
   listTransaction,
   listVoidTransaction,
   listEdc,
+  listGrab,
   listVoid,
   listEdcInput,
   listVoidInput,
+  listGrabInput,
   dataPos = [],
   paymentOptionCashId = 1
 }) => {
@@ -22,6 +24,12 @@ const Body = ({
   const itemListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.total, 0)
   const itemListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.amount, 0)
   const itemListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.total, 0)
+
+  const itemListGrabAmount = listGrab.reduce((acc, curr) => acc + curr.amount, 0)
+  const itemListGrabInputAmount = listGrabInput.reduce((acc, curr) => acc + curr.total, 0)
+  const lembarListGrabAmount = listGrab.reduce((acc, curr) => acc + curr.lembar, 0)
+  const lembarListGrabInputAmount = listGrabInput.reduce((acc, curr) => acc + curr.amount, 0)
+
   const lembarListEdcAmount = listEdc.reduce((acc, curr) => acc + curr.lembar, 0)
   const lembarListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.amount, 0)
   const lembarListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.lembar, 0)
@@ -30,6 +38,8 @@ const Body = ({
   const sisaAmountVoid = itemListVoidAmount - itemListVoidInputAmount
   const sisaLembarEdc = lembarListEdcAmount - lembarListEdcInputAmount
   const sisaLembarVoid = lembarListVoidAmount - lembarListVoidInputAmount
+  const sisaLembarGrab = lembarListGrabAmount - lembarListGrabInputAmount
+  const sisaAmountGrab = itemListGrabAmount - itemListGrabInputAmount
 
 
   // list transaction
@@ -99,6 +109,25 @@ const Body = ({
               <p>{currencyFormatter(itemListVoidInputAmount)}</p>
               <p>{`(${sisaLembarVoid} Lembar)`}</p>
               <p>{`(${currencyFormatter(sisaAmountVoid)})`}</p>
+            </Col>
+          </Row>
+          <div style={{ margin: '1em' }} />
+          <div className={styles.item} />
+          <Row>
+            <Col span={24} className={styles.left}><p>Void Transaction</p></Col>
+          </Row>
+          <Row>
+            <Col span={12} className={styles.left}>
+              <div>
+                <p>POS:</p>
+                <p>{`(${lembarListGrabAmount} Lembar)`}</p>
+                <p>{currencyFormatter(itemListGrabAmount)}</p>
+              </div>
+            </Col>
+            <Col span={12} className={styles.right}>
+              <p>INPUT:</p>
+              <p>{`(${sisaLembarGrab} Lembar)`}</p>
+              <p>{`(${currencyFormatter(sisaAmountGrab)})`}</p>
             </Col>
           </Row>
         </div>

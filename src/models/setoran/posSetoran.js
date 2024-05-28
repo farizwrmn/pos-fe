@@ -5,6 +5,8 @@ import {
   queryListVoidByBalanceId,
   queryListEdcInputByBalanceId,
   queryListVoidInputByBalanceId,
+  queryListGrabInputByBalanceId,
+  queryListGrabByBalanceId,
   insertVoidEdcDeposit,
   queryListTransaction,
   queryListVoidTransaction
@@ -29,9 +31,11 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listEdc: [],
+    listGrab: [],
     listVoid: [],
     listEdcInput: [],
     listVoidInput: [],
+    listGrabInput: [],
     listTransaction: [],
     listVoidTransaction: [],
     pagination: {
@@ -177,21 +181,53 @@ export default modelExtend(pageModel, {
           }
         })
       }
-    }
-  },
-  * insertVoidEdcDeposit ({ payload = {} }, { call, put }) {
-    const data = yield call(insertVoidEdcDeposit, payload)
-    if (data.success) {
-      success()
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalType: 'add',
-          currentItem: {}
+    },
+    * queryListGrabByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListGrabByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listGrab: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListGrabInputByBalanceId ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListGrabInputByBalanceId, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listGrabInput: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * insertVoidEdcDeposit ({ payload = {} }, { call, put }) {
+      const data = yield call(insertVoidEdcDeposit, payload)
+      if (data.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
+        if (payload.reset) {
+          payload.reset()
         }
-      })
-      if (payload.reset) {
-        payload.reset()
       }
     }
   },

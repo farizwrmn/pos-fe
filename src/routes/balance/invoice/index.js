@@ -13,7 +13,7 @@ import ListPhysicMoneyDeposit from './ListPhysicMoneyDeposit'
 const Invoice = ({ posSetoran, physicalMoneyDeposit, balance, balanceDetail, paymentOpts }) => {
   // let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
   const { /* currentItem: pejabatTokoItem, */ list: listPhysicalMoneyDeposit, paymentOptionCashItem } = physicalMoneyDeposit
-  const { listEdc, listVoid, listEdcInput, listVoidInput, listTransaction, listVoidTransaction } = posSetoran
+  const { listEdc, listVoid, listEdcInput, listVoidInput, listGrab, listGrabInput, listTransaction, listVoidTransaction } = posSetoran
   const { currentItem, listBalanceDetail } = balanceDetail
   const { currentItem: balanceItem } = balance
   const { listOpts } = paymentOpts
@@ -49,8 +49,10 @@ const Invoice = ({ posSetoran, physicalMoneyDeposit, balance, balanceDetail, pay
           listVoidTransaction={listVoidTransaction}
           listEdc={listEdc}
           listVoid={listVoid}
+          listGrab={listGrab}
           listEdcInput={listEdcInput}
           listVoidInput={listVoidInput}
+          listGrabInput={listGrabInput}
           paymentOptionCashId={paymentOptionCashItem.id || 1}
           dataPos={invoiceInfo.dataPos || []}
           listOpts={listOpts || []}
