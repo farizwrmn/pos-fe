@@ -64,6 +64,8 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'queryListVoidInputByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListTransaction', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListVoidTransaction', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListGrabByBalanceId', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListGrabInputByBalanceId', payload: { ...other, balanceId } })
         }
       })
     }
