@@ -114,7 +114,7 @@ const Body = ({
           <div style={{ margin: '1em' }} />
           <div className={styles.item} />
           <Row>
-            <Col span={24} className={styles.left}><p>Void Transaction</p></Col>
+            <Col span={24} className={styles.left}><p>Grabmart Transaction</p></Col>
           </Row>
           <Row>
             <Col span={12} className={styles.left}>
