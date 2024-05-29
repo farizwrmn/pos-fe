@@ -399,6 +399,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-sticker')
           }
         }, {
+          path: 'stock-tag',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productTag'))
+              cb(null, require('./routes/product/productTag'))
+            }, 'product-tag')
+          }
+        }, {
           path: 'master/product/variant',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
