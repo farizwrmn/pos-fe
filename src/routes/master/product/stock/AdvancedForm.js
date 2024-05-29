@@ -735,8 +735,8 @@ class AdvancedForm extends Component {
           <Col {...parentThreeDivision}>
             <Card {...cardProps} title={<h3>Category & Brand</h3>}>
               <FormItem label={(<Link target="_blank" to="/stock-tag">Tag</Link>)} hasFeedback {...formItemLayout}>
-                {getFieldDecorator('productBaseTag', {
-                  initialValue: item.productBaseTag,
+                {getFieldDecorator('productTag', {
+                  initialValue: item.productTag,
                   rules: [
                     {
                       required: true
