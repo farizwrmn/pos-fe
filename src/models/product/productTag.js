@@ -26,6 +26,16 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        if (pathname === '/stock') {
+          if (activeKey !== '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                type: 'all'
+              }
+            })
+          }
+        }
         if (pathname === '/stock-tag') {
           dispatch({
             type: 'updateState',
