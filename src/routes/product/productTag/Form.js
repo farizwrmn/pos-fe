@@ -91,7 +91,7 @@ const FormCounter = ({
                   pattern: /^[A-Z0-9-/]{1}$/i
                 }
               ]
-            })(<Input maxLength={1} autoFocus />)}
+            })(<Input maxLength={1} autoFocus disabled={modalType === 'edit'} />)}
           </FormItem>
           <FormItem label="Tag Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tagDescription', {
