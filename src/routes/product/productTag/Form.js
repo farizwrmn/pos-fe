@@ -82,7 +82,7 @@ const FormCounter = ({
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Tag Code" hasFeedback {...formItemLayout}>
+          <FormItem label="Tag" hasFeedback {...formItemLayout}>
             {getFieldDecorator('tagCode', {
               initialValue: item.tagCode,
               rules: [
