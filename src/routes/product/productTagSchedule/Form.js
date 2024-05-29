@@ -76,8 +76,8 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
-      data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
-      data.endDate = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
+      data.scheduleExecuteStart = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
+      data.scheduleExecuteEnd = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -91,7 +91,7 @@ const FormCounter = ({
   const productTag = (listTag || []).length > 0 ? listTag.map(c => <Option value={c.tagCode} key={c.tagCode} title={c.tagDescription}>{c.tagCode} ({c.tagDescription})</Option>) : []
   const disabledDate = (current) => {
     // Can not select days before today and today
-    return current && current <= moment().startOf('day')
+    return current < moment().add(1, 'day').startOf('day')
   }
 
   return (
