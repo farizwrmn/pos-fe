@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Checkbox, Row, Col, Modal } from 'antd'
-import { Link } from 'dva/router'
+import moment from 'moment'
+import { Form, Button, Select, DatePicker, Row, Col, Spin, Modal } from 'antd'
 
+const { RangePicker } = DatePicker
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -27,9 +29,14 @@ const column = {
 
 const FormCounter = ({
   item = {},
+  listTag,
   onSubmit,
   onCancel,
   modalType,
+  fetching,
+  listProduct,
+  childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option key={x.id}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
+  showLov,
   button,
   form: {
     getFieldDecorator,
@@ -69,6 +76,8 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
+      data.endDate = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -77,6 +86,12 @@ const FormCounter = ({
         onCancel () { }
       })
     })
+  }
+
+  const productTag = (listTag || []).length > 0 ? listTag.map(c => <Option value={c.tagCode} key={c.tagCode} title={c.tagDescription}>{c.tagCode} ({c.tagDescription})</Option>) : []
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current <= moment().startOf('day')
   }
 
   return (
@@ -88,54 +103,50 @@ const FormCounter = ({
               initialValue: item.tagCode,
               rules: [
                 {
-                  required: true,
-                  pattern: /^[A-Z0-9-/]{1}$/i
+                  required: true
                 }
               ]
-            })(<Input maxLength={1} autoFocus disabled={modalType === 'edit'} />)}
+            })(<Select
+              showSearch
+              optionFilterProp="children"
+              placeholder="Choose Tag"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+            >{productTag}
+            </Select>)}
           </FormItem>
-          <FormItem label="Tag Description" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('tagDescription', {
-              initialValue: item.tagDescription,
+          <FormItem label="Product" hasFeedback {...formItemLayout} >
+            {getFieldDecorator('productId', {
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={200} />)}
+            })(
+              <Select
+                onSearch={value => showLov('productstock', { q: value })}
+                allowClear
+                showSearch
+                size="large"
+                style={{ width: '100%' }}
+                notFoundContent={fetching ? <Spin size="small" /> : null}
+                placeholder="Choose Product"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenProduct}
+              </Select>
+            )}
           </FormItem>
-          <FormItem label="Allow Sales" {...formItemLayout}>
-            {getFieldDecorator('allowSales', {
-              valuePropName: 'checked',
-              initialValue: item.allowSales == null ? true : item.allowSales
-            })(<Checkbox>Enable</Checkbox>)}
-          </FormItem>
-          <FormItem label="PO To Supplier" {...formItemLayout}>
-            {getFieldDecorator('allowPurchaseOrderToSupplier', {
-              valuePropName: 'checked',
-              initialValue: item.allowPurchaseOrderToSupplier == null ? true : item.allowPurchaseOrderToSupplier
-            })(<Checkbox>Enable</Checkbox>)}
-          </FormItem>
-          <FormItem label="PO To DC" {...formItemLayout}>
-            {getFieldDecorator('allowPurchaseOrderToDC', {
-              valuePropName: 'checked',
-              initialValue: item.allowPurchaseOrderToDC == null ? true : item.allowPurchaseOrderToDC
-            })(<Checkbox>Enable</Checkbox>)}
-          </FormItem>
-          <FormItem label="Return To Supplier" {...formItemLayout}>
-            {getFieldDecorator('allowReturnToSupplier', {
-              valuePropName: 'checked',
-              initialValue: item.allowReturnToSupplier == null ? true : item.allowReturnToSupplier
-            })(<Checkbox>Enable</Checkbox>)}
-          </FormItem>
-          <FormItem label="Return To DC" {...formItemLayout}>
-            {getFieldDecorator('allowReturnToDc', {
-              valuePropName: 'checked',
-              initialValue: item.allowReturnToDc == null ? true : item.allowReturnToDc
-            })(<Checkbox>Enable</Checkbox>)}
+          <FormItem label="Available Period" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('Date', {
+              initialValue: null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<RangePicker disabledDate={disabledDate} allowClear />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
-            <Link to="/stock-tag-schedule"><Button type="default" style={{ marginRight: '10px' }}>Update Schedule</Button></Link>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
             <Button type="primary" onClick={handleSubmit}>{button}</Button>
           </FormItem>

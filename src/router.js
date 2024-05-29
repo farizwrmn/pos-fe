@@ -408,6 +408,16 @@ const Routers = function ({ history, app }) {
             }, 'product-tag')
           }
         }, {
+          path: 'stock-tag-schedule',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productTag'))
+              registerModel(app, require('./models/product/productTagSchedule'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/product/productTagSchedule'))
+            }, 'product-tag-schedule')
+          }
+        }, {
           path: 'master/product/variant',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

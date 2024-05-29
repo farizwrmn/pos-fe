@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/product/productTag'
+import { query, add, remove } from 'services/product/productTagSchedule'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -9,7 +8,7 @@ const success = () => {
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'productTag',
+  namespace: 'productTagSchedule',
 
   state: {
     currentItem: {},
@@ -26,18 +25,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/stock'
-          || pathname === '/stock-tag-schedule') {
-          if (activeKey !== '1') {
-            dispatch({
-              type: 'query',
-              payload: {
-                type: 'all'
-              }
-            })
-          }
-        }
-        if (pathname === '/stock-tag') {
+        if (pathname === '/stock-tag-schedule') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -92,42 +80,6 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
-        if (payload.reset) {
-          payload.reset()
-        }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
-        throw response
-      }
-    },
-
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ productTag }) => productTag.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const response = yield call(edit, newCounter)
-      if (response.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
         if (payload.reset) {
           payload.reset()
         }
