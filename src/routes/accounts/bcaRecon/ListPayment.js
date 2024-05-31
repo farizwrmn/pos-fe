@@ -33,7 +33,7 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       render: (text, record) => moment(record.transDate).format('HH:mm')
     },
     {
-      title: 'Batch No',
+      title: 'Approval Code',
       dataIndex: 'batchNumber',
       key: 'batchNumber',
       className: styles.alignRight
