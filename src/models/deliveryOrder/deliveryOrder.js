@@ -274,11 +274,11 @@ export default {
       }
     },
 
-    * updateAsFinished ({ payload = {} }, { call, put }) {
+    * updateAsFinished ({ payload = {} }, { call }) {
       const response = yield call(finish, payload)
       if (response && response.success) {
         message.success('Success update as Finished')
-        const listSubmission = yield call(queryHeader, {
+        yield call(queryHeader, {
           storeIdReceiver: payload.storeIdReceiver,
           storeId: payload.storeId
         })

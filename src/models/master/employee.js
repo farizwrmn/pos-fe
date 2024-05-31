@@ -96,6 +96,11 @@ export default modelExtend(pageModel, {
               type: 'query'
             })
             break
+          case '/master/division':
+            dispatch({
+              type: 'query'
+            })
+            break
           default:
         }
       })

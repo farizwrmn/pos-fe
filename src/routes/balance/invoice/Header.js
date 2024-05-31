@@ -31,6 +31,7 @@ const Header = ({ invoiceInfo }) => {
         <div><strong>Close: </strong>{invoiceInfo.closeDate}</div>
         <div><strong>Shift: </strong>{invoiceInfo.shift}</div>
         <div><strong>Cashier: </strong>{invoiceInfo.userName}</div>
+        <div><strong>Pejabat Toko:</strong> {invoiceInfo.pejabatTokoName}</div>
         <div><strong>Store: </strong>{invoiceInfo.storeName}</div>
       </div>
     </div>

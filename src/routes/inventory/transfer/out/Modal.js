@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Modal, Button } from 'antd'
+import { Form, Input, InputNumber, Select, Modal, Button } from 'antd'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -26,10 +27,16 @@ class TransferModal extends Component {
       onOkList,
       onCancelList,
       onDeleteItem,
+      listReason,
       form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
       ...formEditProps
     } = this.props
     // const { handleProductBrowse } = formEditProps.modalProductProps
+
+    const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+
+    const reasonData = listReason && listReason.map(item => (<Option value={item.paramValue}>{item.paramValue}</Option>))
+
     const handleOk = () => {
       validateFields((errors) => {
         if (errors) {
@@ -123,6 +130,22 @@ class TransferModal extends Component {
                 }}
               />
             )}
+          </FormItem>
+          <FormItem label="Description" {...formItemLayout}>
+            {getFieldDecorator('description', {
+              initialValue: currentItemList.description,
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Select
+              style={{ width: '100%' }}
+              showSearch
+              filterOption={filterOption}
+            >
+              {reasonData}
+            </Select>)}
           </FormItem>
         </Form>
       </Modal>

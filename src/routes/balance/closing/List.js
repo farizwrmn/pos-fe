@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Modal, InputNumber, Row, Col } from 'antd'
+import { Form, Button, Modal, InputNumber, Row, Col, message } from 'antd'
 import { lstorage } from 'utils'
 import {
   BALANCE_TYPE_TRANSACTION
 } from 'utils/variable'
 import FormHeader from './Form'
+import AdvanceForm from './AdvanceForm'
+import ConfirmationDialog from './ConfirmationDialog'
 
 const FormItem = Form.Item
 
@@ -22,18 +24,18 @@ const formItemLayout = {
   }
 }
 
-const FormLabel = () => {
-  return (
-    <Row label={(<div />)} hasFeedback {...formItemLayout}>
-      <Col {...formItemLayout.labelCol} />
-      <Col {...formItemLayout.wrapperCol}>
-        <Row>
-          <Col span={8}><div>Sales</div></Col>
-        </Row>
-      </Col>
-    </Row>
-  )
-}
+// const FormLabel = () => {
+//   return (
+//     <Row label={(<div />)} hasFeedback {...formItemLayout}>
+//       <Col {...formItemLayout.labelCol} />
+//       <Col {...formItemLayout.wrapperCol}>
+//         <Row>
+//           <Col span={8}><div>Sales</div></Col>
+//         </Row>
+//       </Col>
+//     </Row>
+//   )
+// }
 
 const FormComponent = ({
   label,
@@ -54,10 +56,11 @@ const FormComponent = ({
               ]
             })(
               <InputNumber
+                disabled
                 min={0}
                 style={{ width: '60%' }}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                formatter={value => (value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : value)}
+                parser={value => (value ? value.replace(/[^0-9]/g, '') : value)}
               />
             )}
           </div>
@@ -68,20 +71,41 @@ const FormComponent = ({
 }
 
 const List = ({
+  visible,
   item,
+  list,
+  listPhysicalMoneyDeposit,
   loading,
   listOpts = [],
   listShift,
   listUser,
+  listSetoran,
+  user,
+  dispatch,
   button,
   onSubmit,
+  onVisible,
+  closeVisible,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
-    resetFields
+    resetFields,
+    setFieldsValue
   }
 }) => {
+  const handleOpenVisible = () => {
+    validateFields((errors) => {
+      if (errors) {
+        if (errors.approveUserId) {
+          message.error(errors.approveUserId.errors[0].message)
+        }
+        return
+      }
+      onVisible()
+    })
+  }
+
   const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
@@ -91,14 +115,24 @@ const List = ({
         storeId: lstorage.getCurrentUserStore(),
         ...getFieldsValue()
       }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit(data)
-          resetFields()
-        },
-        onCancel () { }
-      })
+      // data.detail = list
+      data.setoranDetail = list
+      const readableDataSetoran = listSetoran.map(item => ({
+        type: item.type,
+        amount: item.edcAmount || item.voidAmount,
+        total: item.edcTotal || item.voidTotal,
+        status: item.status
+      }))
+
+      data.listSetoran = readableDataSetoran
+      let listAmount = list.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+      if (listAmount < 0) {
+        message.error('Masukkan jumlah lembar uang tunai yang valid')
+        return
+      }
+      onSubmit(data)
+      resetFields()
+      closeVisible()
     })
   }
 
@@ -110,27 +144,81 @@ const List = ({
       getFieldDecorator
     }
   }
+  const advanceFormProps = {
+    dispatch,
+    listSetoran,
+    list,
+    listDeposit: listPhysicalMoneyDeposit,
+    form: {
+      getFieldDecorator,
+      setFieldsValue
+    },
+    setCashValue (amount) {
+      setFieldsValue({
+        'detail[C][balanceIn]': amount
+      })
+    }
+  }
+  const confirmationDialogProps = {
+    dispatch,
+    listSetoran,
+    list,
+    listDeposit: listPhysicalMoneyDeposit,
+    setCashValue (amount) {
+      setFieldsValue({
+        'detail[C][balanceIn]': amount
+      })
+    }
+  }
 
+  const formData = {
+    ...getFieldsValue()
+  }
+  const filterShift = listShift && listShift.length >= 0 && listShift.filter(item => item.id === formData.shiftId)
+  const itemShift = filterShift && filterShift[0] ? filterShift[0] : null
+  const itemCashier = user
   return (
-    <Form layout="horizontal">
-      <FormHeader {...formComponentProps} />
-      <FormLabel />
-      {listOpts && listOpts.map((detail) => {
-        const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
-        if (filteredValue && filteredValue[0]) {
-          return (
-            <FormComponent
-              defaultValue={filteredValue}
-              getFieldDecorator={getFieldDecorator}
-              label={detail.typeName}
-              name={detail.typeCode}
-            />
-          )
-        }
-        return null
-      })}
-      <Button type="primary" disabled={loading.effects['balance/closed']} onClick={handleSubmit}>{button}</Button>
-    </Form>
+    <div>
+      <Modal
+        width={1200}
+        okText="Ok"
+        cancelText="Cancel"
+        title="Konfirmasi penutupan setoran"
+        visible={visible}
+        onOk={() => handleSubmit()}
+        onCancel={() => closeVisible()}
+      >
+        {/* Shift */}
+        <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Shift: {itemShift ? itemShift.shiftName : 'N/A'}</p>
+        {/* Cahsier Name */}
+        <p style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '1em' }}>Nama Cashier: {itemCashier ? itemCashier.username : 'N/A'}</p>
+        <ConfirmationDialog {...confirmationDialogProps} />
+      </Modal>
+      <Form layout="horizontal">
+        <FormHeader {...formComponentProps} />
+        {/* <FormLabel /> */}
+        <AdvanceForm {...advanceFormProps} />
+        <div style={{ marginTop: '1em', marginLeft: '11em' }}>
+          {listOpts && listOpts.map((detail) => {
+            const filteredValue = item && item.transaction ? item.transaction.filter(filtered => filtered.balanceType === BALANCE_TYPE_TRANSACTION && filtered.paymentOptionId === detail.id) : []
+            if (filteredValue && filteredValue[0]) {
+              return (
+                <FormComponent
+                  defaultValue={filteredValue}
+                  getFieldDecorator={getFieldDecorator}
+                  label={detail.typeName}
+                  name={detail.typeCode}
+                // previous value Cash
+                // label="Subtotal"
+                />
+              )
+            }
+            return null
+          })}
+        </div>
+        <Button type="primary" disabled={loading.effects['balance/closed']} onClick={() => handleOpenVisible()}>{button}</Button>
+      </Form>
+    </div>
   )
 }
 

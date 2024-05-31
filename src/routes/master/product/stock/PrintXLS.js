@@ -46,6 +46,7 @@ const PrintXLS = ({ data, storeInfo, name }) => {
         row.push({ value: (list[key].count || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (`${Math.round(((parseFloat(list[key].sellPrice) - parseFloat(list[key].costPrice)) / parseFloat(list[key].sellPrice)) * 100)} %` || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].costPrice || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (list[key].isStockOpname || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].sellPrice || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].distPrice01 || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (list[key].distPrice02 || 0), alignment: { vertical: 'middle', horizontal: 'right' }, font: styles.tableBody, border: styles.tableBorder })
@@ -78,6 +79,7 @@ const PrintXLS = ({ data, storeInfo, name }) => {
       { value: 'QTY', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'MARGIN', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: 'MODAL', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
+      { value: 'STOCKOPNAME', alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: getDistPriceName('sellPrice'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: getDistPriceName('distPrice01'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },
       { value: getDistPriceName('distPrice02'), alignment: { vertical: 'middle', horizontal: 'center' }, font: styles.tableHeader, border: styles.tableBorder },

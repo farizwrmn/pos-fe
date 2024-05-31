@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import FormCustomer from './FormCustomer'
 
 const Member = ({
+  loading,
   item,
   customer,
   store,
@@ -33,6 +34,7 @@ const Member = ({
     listType,
     listCity,
     listIdType,
+    loading,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data, modalType) {
       dispatch({

@@ -1,4 +1,5 @@
 import reduce from 'lodash/reduce'
+import { BALANCE_TYPE_TRANSACTION, BALANCE_TYPE_CLOSING } from 'utils/variable'
 
 const chooseOnePaymentType = (type = 'C', list = []) => {
   if (!type) return 'Cash'
@@ -35,7 +36,35 @@ const groupProduct = (list, dataBundle = []) => {
   return newList
 }
 
+const calculateBalance = (data, paymentOptionCashId) => {
+  let pos = null
+  let input = null
+  // Iterate through the array of objects using Array.prototype.find
+  // const PAYMENT_OPTION_CASH = 1
+  data.forEach((obj) => {
+    // validate only Cash payment option
+    if (obj.paymentOptionId === paymentOptionCashId) {
+      if (obj.balanceType === BALANCE_TYPE_TRANSACTION) {
+        pos += obj.balanceIn
+      } else if (obj.balanceType === BALANCE_TYPE_CLOSING) {
+        input += obj.balanceIn
+      }
+    } else {
+      return 'Error: Only Cash payment option available to count..'
+    }
+  })
+
+  // Check if either pos or input is null using short-circuit evaluation
+  if (pos === null || input === null) {
+    return 'Error: Amount cannot be 0. Can not submit.'
+  }
+
+  // Return the maximum of input and pos using Math.max directly
+  return Math.max(input, pos)
+}
+
 export {
+  calculateBalance,
   chooseOnePaymentType,
   groupProduct
 }

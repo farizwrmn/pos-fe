@@ -87,8 +87,7 @@ const List = ({ ...tableProps }) => {
 
 List.propTypes = {
   editList: PropTypes.func,
-  cancelPayment: PropTypes.func.isRequired,
-  cashierInformation: PropTypes.object.isRequired
+  cancelPayment: PropTypes.func.isRequired
 }
 
 export default List

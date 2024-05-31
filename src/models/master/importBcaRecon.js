@@ -87,32 +87,34 @@ export default modelExtend(pageModel, {
       let transDate = yield select(({ importBcaRecon }) => importBcaRecon.transDate)
       const { query, pathname } = payload.location
       const { ...other } = query
-      const loginTimeDiff = lstorage.getLoginTimeDiff()
-      const localId = lstorage.getStorageKey('udi')
-      const listUserStores = lstorage.getListUserStores()
-      const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
-      const dataUdi = [
-        localId[1],
-        localId[2],
-        [storeId],
-        localId[4],
-        moment(new Date(serverTime)),
-        localId[6],
-        listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
-      ]
-      lstorage.putStorageKey('udi', dataUdi, localId[0])
-      localStorage.setItem('newItem', JSON.stringify({ store: false }))
-      localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('queue')
-      localStorage.removeItem('member')
-      localStorage.removeItem('workorder')
-      localStorage.removeItem('memberUnit')
-      localStorage.removeItem('mechanic')
-      localStorage.removeItem('service_detail')
-      localStorage.removeItem('consignment')
-      localStorage.removeItem('bundle_promo')
-      localStorage.removeItem('cashierNo')
-      yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
+      if (storeId !== lstorage.getCurrentUserStore()) {
+        const loginTimeDiff = lstorage.getLoginTimeDiff()
+        const localId = lstorage.getStorageKey('udi')
+        const listUserStores = lstorage.getListUserStores()
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          [storeId],
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('cashierNo')
+        yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
+      }
 
       yield put({ type: 'closeModalStore' })
       yield put({
@@ -144,7 +146,7 @@ export default modelExtend(pageModel, {
       const dataMappingStore = yield call(queryMappingStore)
       const listReconLog = yield call(queryReconLog, {
         ...payload.other,
-        order: '-transDate'
+        order: 'storeId'
       })
       // update list Total Transfer
       yield put({
@@ -197,6 +199,31 @@ export default modelExtend(pageModel, {
             })
           }
         }
+        for (let key in sortDataPayment) {
+          const tablePayment = sortDataPayment[key]
+          if (!tablePayment.match) {
+            const filteredPaymentImportBcaData = paymentImportBcaData.data
+              .filter(filtered => !filtered.match
+                && filtered.grossAmount === tablePayment.amount)
+
+            if (filteredPaymentImportBcaData && filteredPaymentImportBcaData.length === 1) {
+              paymentImportBcaData.data = paymentImportBcaData.data.map((item) => {
+                if (item.id === filteredPaymentImportBcaData[0].id) {
+                  return { ...item, match: true }
+                }
+                return item
+              })
+
+              sortDataPayment[key] = {
+                ...sortDataPayment[key],
+                csvId: filteredPaymentImportBcaData[0].id,
+                matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
+                match: true,
+                editState: true
+              }
+            }
+          }
+        }
         // console.log('dataBalance', dataBalance)
         if (listReconLog.success) {
           yield put({
@@ -213,6 +240,7 @@ export default modelExtend(pageModel, {
         const MappingStore = dataMappingStore.data.length > 0
         const isDataValid = Balance || Transaction
         if (isDataValid) {
+          yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.payment.transDate).format('YYYY-MM-DD') } })
           message.error('Already Recon')
           return
         }
@@ -271,6 +299,8 @@ export default modelExtend(pageModel, {
                 id: payload.id,
                 csvId: payload.csvId,
                 matchMdr: payload.mdrAmount,
+                transNo: payload.transNo,
+                typeCode: payload.typeCode,
                 match: true,
                 amount: item.amount,
                 transDate: item.transDate,
@@ -356,24 +386,6 @@ export default modelExtend(pageModel, {
           listReconNotMatch: filterList
         }
       })
-    },
-    * openModalStore ({ payload = {} }, { put }) {
-      payload.updated = 0
-      const listUserStores = lstorage.getListUserStores()
-      const filterStore = listUserStores.filter(filtered => filtered.value === payload.storeId)
-      if (filterStore && filterStore.length > 0) {
-        const store = filterStore[0]
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalStoreVisible: true,
-            storeName: store.label,
-            storeId: store.value,
-            transDate: payload.transDate,
-            reconLogId: payload.id
-          }
-        })
-      }
     },
     * closeModalStore ({ payload = {} }, { put }) {
       payload.updated = 0
@@ -469,7 +481,7 @@ export default modelExtend(pageModel, {
       const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
       const data = yield call(queryReconLog, {
         ...payload,
-        order: '-transDate'
+        order: '-storeId'
       })
       if (data.success) {
         yield put({

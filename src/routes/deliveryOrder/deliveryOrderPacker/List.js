@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Icon, Modal } from 'antd'
 import styles from '../../../themes/index.less'
 
 const List = ({ dispatch, ...tableProps }) => {
@@ -11,6 +11,19 @@ const List = ({ dispatch, ...tableProps }) => {
       key: 'no',
       width: '80px',
       className: styles.productPos
+    },
+    {
+      title: 'Finish',
+      dataIndex: 'checklist',
+      key: 'checklist',
+      width: '80px',
+      className: styles.productPos,
+      render: (text) => {
+        if (text) {
+          return <Icon type="check" />
+        }
+        return null
+      }
     },
     {
       title: 'Product',
@@ -73,7 +86,7 @@ const List = ({ dispatch, ...tableProps }) => {
         })}
         style={{ height: '400px' }}
         size="small"
-        scroll={{ y: '370px' }}
+        scroll={{ x: 1000, y: '370px' }}
         rowKey={record => record.time}
       />
     </div>

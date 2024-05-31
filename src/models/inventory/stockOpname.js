@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname)
+        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname) || pathToRegexp('/stock-opname-partial/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -71,7 +71,9 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/stock-opname') {
+        if (pathname === '/stock-opname'
+          || pathname === '/stock-opname-partial'
+        ) {
           dispatch({
             type: 'updateState',
             payload: {
@@ -410,6 +412,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
       const data = yield call(query, payload)
       if (data.success) {
         yield put({

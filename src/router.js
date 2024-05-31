@@ -78,6 +78,8 @@ const Routers = function ({ history, app }) {
           path: 'master/employee',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/master/contractType'))
+              registerModel(app, require('./models/master/division'))
               registerModel(app, require('./models/setting/store'))
               registerModel(app, require('./models/master/employee'))
               registerModel(app, require('./models/master/jobposition'))
@@ -85,6 +87,25 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/misc'))
               cb(null, require('./routes/master/employee'))
             }, 'master-employee')
+          }
+        }, {
+          path: 'master/division',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/division'))
+              registerModel(app, require('./models/master/employee'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/division'))
+            }, 'master-division')
+          }
+        }, {
+          path: 'master/contract-type',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/contractType'))
+              registerModel(app, require('./models/misc'))
+              cb(null, require('./routes/master/contractType'))
+            }, 'master-contract-type')
           }
         }, {
           path: 'master/customer',
@@ -205,6 +226,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
               registerModel(app, require('./models/product/stockLocation'))
+              registerModel(app, require('./models/product/productTag'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
@@ -226,6 +248,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productDivision'))
               cb(null, require('./routes/master/product/stock'))
             }, 'master-product-stock')
+          }
+        }, {
+          path: 'stock-opname-store-account',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname/stockOpnameStoreAccount'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameStoreAccount'))
+            }, 'stock-opname-store-account')
           }
         }, {
           path: 'stock-planogram',
@@ -255,6 +285,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productDivision'))
               cb(null, require('./routes/master/product/planogram'))
             }, 'planogram-stock')
+          }
+        }, {
+          path: 'picking-line',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pickingLine/pickingLine'))
+              cb(null, require('./routes/pickingLine/pickingLine'))
+            }, 'picking-line')
           }
         }, {
           path: 'stock-source',
@@ -360,6 +398,24 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/master/product/printSticker'))
             }, 'master-product-sticker')
+          }
+        }, {
+          path: 'stock-tag',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productTag'))
+              cb(null, require('./routes/product/productTag'))
+            }, 'product-tag')
+          }
+        }, {
+          path: 'stock-tag-schedule',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productTag'))
+              registerModel(app, require('./models/product/productTagSchedule'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/product/productTagSchedule'))
+            }, 'product-tag-schedule')
           }
         }, {
           path: 'master/product/variant',
@@ -530,6 +586,14 @@ const Routers = function ({ history, app }) {
             }, 'master-category-work-order')
           }
         }, {
+          path: 'balance/master/physical-money',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/physicalMoney'))
+              cb(null, require('./routes/setoran/physicalMoney'))
+            }, 'physical-money')
+          }
+        }, {
           path: 'balance/dashboard',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -561,6 +625,9 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/master/shift'))
               registerModel(app, require('./models/payment/paymentOpts'))
               registerModel(app, require('./models/detail/user'))
+              registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
+              registerModel(app, require('./models/setoran/physicalMoney'))
+              registerModel(app, require('./models/setoran/posSetoran'))
               cb(null, require('./routes/balance/closing'))
             }, 'balance-closing')
           }
@@ -578,6 +645,9 @@ const Routers = function ({ history, app }) {
           path: 'balance/invoice/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setoran/physicalMoneyDeposit'))
+              registerModel(app, require('./models/setoran/posSetoran'))
+              registerModel(app, require('./models/detail/user'))
               registerModel(app, require('./models/balance/balance'))
               registerModel(app, require('./models/balance/balanceDetail'))
               registerModel(app, require('./models/master/shift'))
@@ -610,9 +680,28 @@ const Routers = function ({ history, app }) {
             }, 'return-request')
           }
         }, {
+          path: 'marketing/incentive-item',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/marketing/incentiveItem'))
+              cb(null, require('./routes/marketing/incentiveItem'))
+            }, 'marketing-incentive-item')
+          }
+        },
+        {
+          path: 'marketing/incentive-member',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/incentiveMember'))
+              cb(null, require('./routes/marketing/incentiveMember'))
+            }, 'marketing-incentive-member')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/incentiveAchievement'))
               registerModel(app, require('./models/planogram/planogram'))
               registerModel(app, require('./models/transaction/fingerEmployee'))
               registerModel(app, require('./models/notification/salesDiscount'))
@@ -660,19 +749,6 @@ const Routers = function ({ history, app }) {
           }
         }, {
           path: 'transaction/pos/payment',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/transaction/pos'))
-              registerModel(app, require('./models/payment'))
-              registerModel(app, require('./models/payment/paymentOpts'))
-              registerModel(app, require('./models/master/paymentOption/cost'))
-              registerModel(app, require('./models/master/paymentOption/edc'))
-              registerModel(app, require('./models/master/productstock'))
-              cb(null, require('./routes/transaction/pos/payment/'))
-            }, 'transaction-pos-payment')
-          }
-        }, {
-          path: 'transaction/pos/ModalQrispayment',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transaction/pos'))
@@ -936,7 +1012,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/pos'))
-              // registerModel(app, require('./models/report/woReport'))
+              registerModel(app, require('./models/report/woReport'))
               registerModel(app, require('./models/dashboard'))
               registerModel(app, require('./models/setting/cashier'))
               registerModel(app, require('./models/master/productcategory'))
@@ -958,7 +1034,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/report/pos'))
-              // registerModel(app, require('./models/report/woReport'))
+              registerModel(app, require('./models/report/woReport'))
               registerModel(app, require('./models/dashboard'))
               registerModel(app, require('./models/setting/cashier'))
               cb(null, require('./routes/chart/pos/summary'))
@@ -1065,18 +1141,18 @@ const Routers = function ({ history, app }) {
             }, 'transaction-purchase-history')
           }
         },
-        // {
-        //   path: 'transaction/history',
-        //   getComponent (nextState, cb) {
-        //     require.ensure([], (require) => {
-        //       registerModel(app, require('./models/transaction/history'))
-        //       registerModel(app, require('./models/transaction/pos'))
-        //       registerModel(app, require('./models/payment'))
-        //       registerModel(app, require('./models/purchase'))
-        //       cb(null, require('./routes/transaction/history/'))
-        //     }, 'transaction-history')
-        //   }
-        // },
+        {
+          path: 'transaction/history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transaction/history'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/payment'))
+              registerModel(app, require('./models/purchase'))
+              cb(null, require('./routes/transaction/history/'))
+            }, 'transaction-history')
+          }
+        },
         {
           path: 'report/service/history',
           getComponent (nextState, cb) {
@@ -1725,6 +1801,15 @@ const Routers = function ({ history, app }) {
             }, 'accounts-journal-entry-detail')
           }
         }, {
+          path: 'stock-opname',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpname'))
+            }, 'stock-opname')
+          }
+        }, {
           path: 'stock-opname/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1733,13 +1818,29 @@ const Routers = function ({ history, app }) {
             }, 'stock-opname-detail')
           }
         }, {
-          path: 'stock-opname',
+          path: 'stock-opname-partial',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/inventory/stockOpname'))
               cb(null, require('./routes/inventory/stockOpname/stockOpname'))
-            }, 'stock-opname')
+            }, 'stock-opname-partial')
+          }
+        }, {
+          path: 'stock-opname-partial/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
+            }, 'stock-opname-partial-detail')
+          }
+        }, {
+          path: 'return-to-dc',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/transfer/returnToDc'))
+              cb(null, require('./routes/transfer/returnToDc'))
+            }, 'return-to-dc')
           }
         }, {
           path: 'journal-entry',
@@ -1914,16 +2015,16 @@ const Routers = function ({ history, app }) {
             }, 'tools-maintenance-customerunit')
           }
         }, {
-          //   path: 'tools/maintenance/beginning',
-          //   getComponent (nextState, cb) {
-          //     require.ensure([], (require) => {
-          //       registerModel(app, require('./models/tools/maintenance'))
-          //       registerModel(app, require('./models/transaction/pos'))
-          //       registerModel(app, require('./models/transferOut'))
-          //       cb(null, require('./routes/tools/maintenance/'))
-          //     }, 'tools-maintenance')
-          //   }
-          // }, {
+          path: 'tools/maintenance/beginning',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/tools/maintenance'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/transferOut'))
+              cb(null, require('./routes/tools/maintenance/'))
+            }, 'tools-maintenance')
+          }
+        }, {
           path: 'tools/sellprice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2035,6 +2136,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
               cb(null, require('./routes/deliveryOrder/deliveryOrder/detail'))
             }, 'inventory-delivery-order-detail')
+          }
+        }, {
+          path: 'do',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/deliveryOrder/deliveryOrderList'))
+              cb(null, require('./routes/deliveryOrder/deliveryOrderList'))
+            }, 'inventory-delivery-order-list')
           }
         }, {
           path: 'inventory/transfer/out',

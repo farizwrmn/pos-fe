@@ -10,6 +10,31 @@ import {
 } from 'utils/variable'
 import lstorage from './lstorage'
 
+const showOnlyLastWord = (words, digitToShow) => {
+  let result = ''
+  if (!words) return words
+
+  const splitWord = words.split('')
+  for (let key in splitWord) {
+    let word = splitWord[key]
+    const lastDigit = words.length - digitToShow
+    const isLastDigit = key >= lastDigit
+    if (isLastDigit) {
+      result += word
+    } else {
+      result += 'X'
+    }
+  }
+  return result
+}
+
+const currencyFormatterSetoran = (currency) => {
+  if (typeof currency === 'string' || typeof currency === 'number') {
+    return `Rp${(currency || '-').toLocaleString()}`
+  }
+  return 'Rp0'
+}
+
 const currencyFormatter = (currency) => {
   if (typeof currency === 'string' || typeof currency === 'number') {
     return `Rp ${(currency || '-').toLocaleString()}`
@@ -103,7 +128,9 @@ function withoutFormat (file) {
 }
 
 export {
+  showOnlyLastWord,
   currencyFormatter,
+  currencyFormatterSetoran,
   numberFormatter,
   discountFormatter,
   composeData,

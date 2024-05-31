@@ -9,6 +9,11 @@ import moment from 'moment'
 const Browse = ({ ...browseProps }) => {
   const columns = [
     {
+      title: 'Store Name',
+      dataIndex: 'employee.store.storeName',
+      key: 'employee.store.storeName'
+    },
+    {
       title: 'Employee Name',
       dataIndex: 'employee.employeeName',
       key: 'employee.employeeName'

@@ -37,6 +37,7 @@ const FormCounter = ({
   dispatch,
   onSubmit,
   onCancel,
+  location,
   modalType,
   button,
   storeInfo,
@@ -122,6 +123,7 @@ const FormCounter = ({
                 }
               ]
             })(<DatePicker
+              disabled={location.pathname === '/stock-opname-partial'}
               disabledDate={(current) => {
                 return current <= moment().add(1, 'd').startOf('day')
               }}
@@ -130,13 +132,13 @@ const FormCounter = ({
           </FormItem>
           <FormItem label="Description" hasFeedback {...formItemLayout}>
             {getFieldDecorator('description', {
-              initialValue: item.description,
+              initialValue: !item.description && location.pathname === '/stock-opname-partial' ? 'PARTIAL' : item.description,
               rules: [
                 {
                   required: false
                 }
               ]
-            })(<Input maxLength={255} />)}
+            })(<Input disabled={location.pathname === '/stock-opname-partial'} maxLength={255} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
@@ -152,9 +154,15 @@ const FormCounter = ({
                 key={index}
                 className={styles.card}
                 onClick={() => {
-                  dispatch(routerRedux.push({
-                    pathname: `/stock-opname/${item.id}`
-                  }))
+                  if (location.pathname === '/stock-opname-partial') {
+                    dispatch(routerRedux.push({
+                      pathname: `/stock-opname-partial/${item.id}`
+                    }))
+                  } else {
+                    dispatch(routerRedux.push({
+                      pathname: `/stock-opname/${item.id}`
+                    }))
+                  }
                 }}
               >
                 <div>

@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { arrayToTree, lstorage } from 'utils'
+import { lstorage } from 'utils'
 import {
   Form,
-  TreeSelect,
   DatePicker,
   Row,
   Col,
+  Radio,
   Button,
   Input,
   Modal,
@@ -14,8 +14,9 @@ import {
 } from 'antd'
 import moment from 'moment'
 
+const { getAvailablePaymentType } = lstorage
+
 const FormItem = Form.Item
-const TreeNode = TreeSelect.TreeNode
 const Option = Select.Option
 
 let printDateVisible = false
@@ -58,7 +59,6 @@ const ModalEntry = ({
   item = {},
   data,
   listAmount,
-  cashierInformation,
   listAllEdc,
   listAllCost,
   listEdc,
@@ -125,38 +125,6 @@ const ModalEntry = ({
     onCancel: handleCancel
   }
 
-  const menuTree = arrayToTree(options.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
-  const getMenus = (menuTreeN) => {
-    return menuTreeN.map((item) => {
-      if (item.children && item.children.length) {
-        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
-      }
-      return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
-    })
-  }
-
-  const changeSelectTypeCode = (value) => {
-    if (value === 'C') {
-      setFieldsValue({
-        bankAccountId: null,
-        cardNo: null,
-        cardName: null,
-        checkNo: null
-      })
-    } else if (value === 'G') {
-      setFieldsValue({
-        cardNo: null,
-        cardName: null,
-        checkNo: null
-      })
-    } else {
-      setFieldsValue({
-        bankAccountId: null,
-        checkNo: null
-      })
-    }
-  }
-
   const onChangePaymentType = (value) => {
     resetFields()
     setFieldsValue({
@@ -186,6 +154,11 @@ const ModalEntry = ({
     })
   }
 
+  const params = getAvailablePaymentType()
+  const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
+  const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray.concat(['XQ']) : ['C', 'D', 'K', 'QR']
+  const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode))
+
   return (
     <Modal
       {...modalOpts}
@@ -208,14 +181,6 @@ const ModalEntry = ({
           })(
             <Input
               style={{ width: '100%', fontSize: '30px', height: '60px' }}
-              // addonBefore={(
-              //   <Button
-              //     size="small"
-              //     onClick={() => useNetto(parseFloat(data[0].nettoTotal - curPayment))}
-              //   >
-              //     Netto
-              //   </Button>
-              // )}
               autoFocus
               maxLength={10}
               size="large"
@@ -238,19 +203,25 @@ const ModalEntry = ({
                   }
                 ]
               })(
-                <TreeSelect
-                  showSearch
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeNodeFilterProp="title"
-                  filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                  treeDefaultExpandAll
+                <Radio.Group
                   onChange={(e) => {
-                    changeSelectTypeCode(e)
-                    onChangePaymentType(e)
+                    if (e && e.target) {
+                      onChangePaymentType(e.target.value)
+                    } else {
+                      onChangePaymentType(e)
+                    }
                   }}
                 >
-                  {getMenus(menuTree)}
-                </TreeSelect>
+                  {filteredOptions.map((item) => {
+                    return (
+                      <Radio.Button
+                        value={item.typeCode}
+                      >
+                        {item.typeName}
+                      </Radio.Button>
+                    )
+                  })}
+                </Radio.Group>
               )}
             </FormItem>
             <FormItem label="EDC" hasFeedback {...formItemLayout}>
@@ -298,31 +269,29 @@ const ModalEntry = ({
               </FormItem>
             )}
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Card Name" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('cardName', {
-                  initialValue: item.cardName,
-                  rules: [
-                    {
-                      required: getFieldValue('typeCode') !== 'C',
-                      pattern: /^[a-z0-9 -.,_]+$/i,
-                      message: 'please insert the value'
-                    }
-                  ]
-                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
-              </FormItem>
-            )}
-            {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
                   initialValue: item.cardNo,
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',
-                      pattern: /^[a-z0-9-/.,_]+$/i,
                       message: 'please insert the value'
                     }
                   ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={30} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Card Name" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('cardName', {
+                  initialValue: item.cardName,
+                  rules: [
+                    {
+                      required: false,
+                      message: 'please insert the value'
+                    }
+                  ]
+                })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
               </FormItem>
             )}
             <FormItem label="Note" hasFeedback {...formItemLayout}>

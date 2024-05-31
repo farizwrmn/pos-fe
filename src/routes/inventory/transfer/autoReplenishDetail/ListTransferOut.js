@@ -6,7 +6,7 @@ import PrintPDF from './PrintPDF'
 import PrintPDFv2 from './PrintPDFv2'
 
 const ListTransfer = (tableProps) => {
-  const { listTransOut, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
+  const { listDeliveryOrder, listTransOut, onClickPrinted, updateFilter, showPrintModal, storeInfo, user, getTrans, listProducts, onClosePrint } = tableProps
   const clickPrint = (record) => {
     const { transNo, storeId } = record
     getTrans(transNo, storeId)
@@ -74,11 +74,16 @@ const ListTransfer = (tableProps) => {
       key: 'storeNameReceiver'
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: 'Transaction Date',
       dataIndex: 'transDate',
       key: 'transDate',
       render: (text) => {
-        return moment(text).format('DD MMM YYYY')
+        return moment(text).format('DD MMM YYYY, HH:mm:ss')
       }
     },
     {
@@ -148,26 +153,28 @@ const ListTransfer = (tableProps) => {
       <Modal {...modalProps} title="Print">
         <PrintPDF {...printProps} />
         <PrintPDFv2 {...printProps} />
-        <Button type="dashed"
-          size="large"
-          className="button-width02 button-extra-large bgcolor-green"
-          loading={tableProps['autoReplenishSubmission/edit']}
-          style={{ marginLeft: '100px' }}
-          onClick={() => {
-            if (listTransOut && listTransOut.id) {
-              onClickPrinted(listTransOut.id)
-            }
-          }}
-        >
-          <Icon type="check" className="icon-large" />
-        </Button>
+        {listDeliveryOrder && listDeliveryOrder.length === 0 ? (
+          <Button type="dashed"
+            size="large"
+            className="button-width02 button-extra-large bgcolor-green"
+            loading={tableProps['autoReplenishSubmission/edit']}
+            style={{ marginLeft: '100px' }}
+            onClick={() => {
+              if (listTransOut && listTransOut.id) {
+                onClickPrinted(listTransOut.id)
+              }
+            }}
+          >
+            <Icon type="check" className="icon-large" />
+          </Button>
+        ) : null}
       </Modal>
       <h3>Transfer Out</h3>
       <Table {...tableProps}
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1000 }}
         pagination={false}
         onChange={handleChange}
       />

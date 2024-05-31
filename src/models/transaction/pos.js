@@ -1,4 +1,3 @@
-import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal, message } from 'antd'
 import moment from 'moment'
@@ -70,7 +69,6 @@ import {
 } from '../../services/master/consignment'
 import { query as queryService, queryById as queryServiceById } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
 import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
@@ -115,6 +113,7 @@ export default {
     currentReplaceBundle: {},
     currentBuildComponent: {},
     list: [],
+    listRewardGuide: [],
     dataReward: [],
     currentCategory: [],
     tmpList: [],
@@ -186,7 +185,6 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
-    cashierInformation: {},
     cashierBalance: {},
     pagination: {
       current: 1,
@@ -244,7 +242,6 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({
             type: 'queryDashboard',
@@ -307,27 +304,12 @@ export default {
             type: 'checkPaymentTransactionInvoice'
           })
         }
-        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
-            }
-          })
-        } else if (location.pathname === '/transaction/pos/history') {
+        if (location.pathname === '/transaction/pos/history') {
           dispatch({
             type: 'queryHistory',
             payload: {
               startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
               endPeriod: moment().endOf('month').format('YYYY-MM-DD')
-            }
-          })
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
             }
           })
         } else if (location.pathname === '/monitor/service/history') {
@@ -338,21 +320,6 @@ export default {
             type: 'updateState',
             payload: {
               listUnitUsage: []
-            }
-          })
-        }
-      })
-
-      history.listen(() => {
-        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
-        const userId = lstorage.getStorageKey('udi')[1]
-
-        if (match) {
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
             }
           })
         }
@@ -1224,38 +1191,6 @@ export default {
       }
     },
 
-    * loadDataPos ({ payload = {} }, { call, put }) {
-      const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-      if (currentRegister.success) {
-        const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-        if (cashierInformation) {
-          const cashierBalance = yield call(queryCashierTransSource, cashierInformation)
-          if (cashierBalance.success) {
-            yield put({
-              type: 'updateState',
-              payload: {
-                cashierInformation,
-                dataCashierTrans: cashierInformation,
-                cashierBalance: cashierBalance.data.total[0] ? cashierBalance.data.total[0] : {}
-              }
-            })
-          } else {
-            throw cashierBalance
-          }
-        } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              cashierInformation,
-              dataCashierTrans: cashierInformation
-            }
-          })
-        }
-      } else {
-        throw currentRegister
-      }
-    },
-
     * getMember ({ payload }, { call, put }) {
       const data = yield call(queryMemberCode, payload)
       let newData = payload ? data.data : data.member
@@ -1637,10 +1572,10 @@ export default {
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
-          Modal.warning({
-            title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
-          })
+          // Modal.warning({
+          //   title: 'Waning Out of stock option',
+          //   content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // })
           yield put({
             type: 'paymentEdit',
             payload: data
@@ -1739,10 +1674,10 @@ export default {
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
-          Modal.warning({
-            title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
-          })
+          // Modal.warning({
+          //   title: 'Waning Out of stock option',
+          //   content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // })
           insertCashierTrans(data)
           yield put({
             type: 'pos/setUtil',
@@ -1834,9 +1769,11 @@ export default {
       yield put({ type: 'pos/hideMechanicModal' })
     },
 
-    * chooseMember ({ payload = {} }, { put }) {
+    * chooseMember ({ payload = {} }, { select, put }) {
       const { item } = payload
       let newItem = reArrangeMember(item)
+      const memberInformation = newItem
+
       localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
         type: 'pos/syncCustomerCashback',
@@ -1853,6 +1790,46 @@ export default {
       yield put({
         type: 'pos/hideMemberModal'
       })
+
+      try {
+        let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+        const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
+        let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const { sellPrice, memberId } = selectedPaymentShortcut
+        if (sellPrice
+          // eslint-disable-next-line eqeqeq
+          && memberId == 0) {
+          for (let key in dataPos) {
+            const item = dataPos[key]
+            if (!item.bundleId) {
+              dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+            }
+            dataPos[key].sellPrice = item[sellPrice] ? item[sellPrice] : item.price
+            dataPos[key].price = item[sellPrice] ? item[sellPrice] : item.price
+            dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
+          }
+        }
+        // eslint-disable-next-line eqeqeq
+        if (memberId == 1) {
+          for (let key in dataPos) {
+            const item = dataPos[key]
+            if (memberInformation.memberSellPrice === 'sellPrice') {
+              memberInformation.memberSellPrice = 'retailPrice'
+            }
+            if (!item.bundleId) {
+              dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+            }
+            dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+            dataPos[key].price = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+            dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
+          }
+        }
+
+        setCashierTrans(JSON.stringify(dataPos))
+      } catch (error) {
+        console.log('Choose Member', error)
+      }
+
       yield put({
         type: 'pos/updateState',
         payload: {
@@ -2405,12 +2382,22 @@ export default {
               item.item.distPrice09 = currentReward.distPrice09
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
-            if (selectedPaymentShortcut
-              && selectedPaymentShortcut.sellPrice
+            const { sellPrice, memberId } = selectedPaymentShortcut
+            if (sellPrice
               // eslint-disable-next-line eqeqeq
-              && selectedPaymentShortcut.memberId == 0) {
-              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              && memberId == 0) {
+              if (selectedPaymentShortcut
+                && selectedPaymentShortcut.sellPrice
+                // eslint-disable-next-line eqeqeq
+                && selectedPaymentShortcut.memberId == 0) {
+                selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              }
             }
+            // eslint-disable-next-line eqeqeq
+            if (memberId == 1) {
+              selectedPrice = item.item[memberInformation.memberSellPrice.toString()] ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
+            }
+
             const dataProduct = {
               no: arrayProd.length + 1,
               categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
@@ -2591,11 +2578,20 @@ export default {
             item.item.distPrice09 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item.item[memberInformation.memberSellPrice.toString()] ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
           }
 
           const dataService = {
@@ -2931,11 +2927,20 @@ export default {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item[memberInformation.memberSellPrice.toString()] ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           }
           if (!((currentBuildComponent || {}).no)
             && !((currentReward || {}).categoryCode)
@@ -3000,11 +3005,20 @@ export default {
           ((checkExists || []).length === 0)
           || ((checkExists || []).length > 0 && type === 'barcode')) {
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item[memberInformation.memberSellPrice.toString()] ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           }
           if (
             !((currentBuildComponent || {}).no)
@@ -3410,45 +3424,6 @@ export default {
         })
         setTimeout(() => modal.destroy(), 1000)
         // throw data
-      }
-    },
-
-    * cashRegister ({ payload = {} }, { call, put }) {
-      const userId = lstorage.getStorageKey('udi')[1]
-      const data = yield call(cashRegister, payload)
-      if (data.success) {
-        localStorage.setItem('cashierNo', data.cashregisters.cashierId)
-        yield put({
-          type: 'updateState',
-          payload: {
-            cashierInformation: data.cashregisters,
-            dataCashierTrans: data.cashregisters
-          }
-        })
-        yield put({
-          type: 'loadDataPos',
-          payload: {
-            cashierId: userId,
-            status: 'O'
-          }
-        })
-        yield put({
-          type: 'hideShiftModal',
-          payload: {
-            curShift: payload.shift,
-            curCashierNo: payload.cashierNo
-          }
-        })
-      } else if (data.statusCode === 422) {
-        Modal.warning({
-          title: 'Warning',
-          content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
-        })
-      } else if (data.statusCode === 409) {
-        Modal.warning({
-          title: 'Warning',
-          content: (<p>{data.message}</p>)
-        })
       }
     },
 

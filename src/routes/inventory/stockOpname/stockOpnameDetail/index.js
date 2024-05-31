@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import numberFormat from 'utils/numberFormat'
 import {
@@ -115,7 +114,7 @@ class Detail extends Component {
     }
 
     const BackToList = () => {
-      dispatch(routerRedux.push('/stock-opname?activeKey=0'))
+      window.history.back()
     }
 
     const formDetailProps = {
@@ -324,30 +323,36 @@ class Detail extends Component {
             : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 1 && !detailData.activeBatch.status
               ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onBatch2()}>{'Start Delegate Checking (Phase 2)'}</Button>
               : detailData && detailData.batch && detailData.activeBatch && detailData.activeBatch.batchNumber === 2 && !detailData.activeBatch.status
-                ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Finish (Phase 2)'}</Button> : null}
+                ? <Button style={{ marginRight: '10px' }} disabled={loading.effects['stockOpname/insertBatchTwo'] || loading.effects['stockOpname/updateFinishBatch2']} type="primary" icon="save" onClick={() => onShowAdjustDialog()}>{'Finish (Phase 2)'}</Button> : null}
           <PrintXLS {...printProps} />
         </div>
       </Row>
       <Row>
         <Col lg={12}>
           <div className="content-inner-zero-min-height">
-            <Col lg={12}>
-              <h1>Detail Info</h1>
-              <div className={styles.content}>
-                <Row>
-                  <Col span={12}><strong>STORE</strong></Col>
-                  <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
-                </Row>
-                <Row>
-                  <Col span={12}>BATCH NUMBER</Col>
-                  <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
-                </Row>
-                <Row>
-                  <Col span={12}>Status</Col>
-                  <Col span={12}>{getTag(detailData)}</Col>
-                </Row>
-              </div>
-            </Col>
+            <h1>Detail Info</h1>
+            <div className={styles.content}>
+              <Row>
+                <Col span={12}><strong>STORE</strong></Col>
+                <Col span={12}><strong>{detailData && detailData.store ? detailData.store.storeName : ''}</strong></Col>
+              </Row>
+              <Row>
+                <Col span={12}>BATCH NUMBER</Col>
+                <Col span={12}>{`Phase ${detailData && detailData.activeBatch ? detailData.activeBatch.batchNumber : ''}`}</Col>
+              </Row>
+              <Row>
+                <Col span={12}>Status</Col>
+                <Col span={12}>{getTag(detailData)}</Col>
+              </Row>
+              {detailData && detailData.adjustInId ? <Row>
+                <Col span={12}>Adjust In</Col>
+                <Col span={12}><a target="_blank" href={`/transaction/adjust/${detailData.adjustInId}`}>{detailData.adjustInId}</a></Col>
+              </Row> : null}
+              {detailData && detailData.adjustOutId ? <Row>
+                <Col span={12}>Adjust Out</Col>
+                <Col span={12}><a target="_blank" href={`/transaction/adjust/${detailData.adjustOutId}`}>{detailData.adjustOutId}</a></Col>
+              </Row> : null}
+            </div>
           </div>
         </Col>
         <Col lg={12}>

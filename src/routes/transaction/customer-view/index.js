@@ -3,11 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import {
-  Form,
-  Input,
   Row,
   Col,
-  Card
+  Card,
+  Button
 } from 'antd'
 import { IMAGEURL } from 'utils/config.company'
 import TransactionDetail from './TransactionDetail'
@@ -15,6 +14,7 @@ import { groupProduct } from './utils'
 import Advertising from '../pos/Advertising'
 import DynamicQrisTemplate from './DynamicQrisTemplate'
 import LatestTransaction from './LatestTransaction'
+import styles from './index.less'
 
 const {
   getQrisImage,
@@ -28,12 +28,6 @@ const {
   getDynamicQrisImageTTL,
   getQrisPaymentLastTransaction
 } = lstorage
-const FormItem = Form.Item
-
-const formItemLayout1 = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 11 }
-}
 
 function addHandler (ele, trigger, handler) {
   if (window.addEventListener) {
@@ -170,25 +164,42 @@ class Pos extends Component {
       }
     }
 
+    const total = (parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()
+    const totalFormatCurrency = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
     return (
       <div className="content-inner" >
         <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-          <Row style={{ overflowY: 'scroll' }}>
+          <Row gutter={40} style={{ overflowY: 'scroll' }}>
             <Col span={14}>
-              <Card bordered={false} bodyStyle={{ padding: 0, margin: 0 }} noHovering>
-                <Form>
-                  <div style={{ float: 'right' }}>
-                    <Row>
-                      <FormItem label="Total Qty" {...formItemLayout1}>
-                        <Input value={totalQty.toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                      <FormItem label="Netto" {...formItemLayout1}>
-                        <Input value={(parseFloat(curNetto) + parseFloat(dineIn)).toLocaleString()} style={{ fontSize: 20 }} />
-                      </FormItem>
-                    </Row>
+              <Row style={{ backgroundColor: '#FFEAF5', padding: 20, marginBottom: 40, borderRadius: 5 }}>
+                <Col md={24} lg={18}>
+                  <div className={styles.textSmall}>안녕 하세요 | Anyeonghaseo</div>
+                  <div className={styles.textMemberName}>{memberInformation.memberName}</div>
+                  <Button
+                    type="button"
+                    className={styles.row}
+                  >
+                    <div style={{ display: 'flex', flexWrap: 'wrap', marginRight: 16, marginLeft: 16, marginTop: 10, marginBottom: 10 }}>
+                      <div className={`${styles.textSmall} `} style={{ color: 'rgb(255, 255, 255)', marginRight: 4 }}>You have{' '}</div>
+                      <div className={`${styles.textSmallBold}`} style={{ color: 'rgb(255, 255, 255)' }}>
+                        {memberInformation.cashback} Coins
+                      </div>
+                    </div>
+                  </Button>
+                </Col>
+
+                <Col md={24} lg={6} style={{ textAlign: 'center' }}>
+                  <div className={styles.rowSpaceBetween}>
+                    <div className={styles.textMedium}>Quantity: </div>
+                    <div className={styles.textMediumBold}>{totalQty.toLocaleString()}</div>
                   </div>
-                </Form>
-              </Card>
+                  <div className={styles.rowSpaceBetween}>
+                    <div className={styles.textMedium}>Price: </div>
+                    <div className={styles.textMediumBold}>Rp {totalFormatCurrency}</div>
+                  </div>
+                </Col>
+              </Row>
               <TransactionDetail
                 qty={totalQty || 0}
                 netto={parseFloat(curNetto) + parseFloat(dineIn)}

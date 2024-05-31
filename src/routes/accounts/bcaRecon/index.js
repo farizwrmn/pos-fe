@@ -3,7 +3,8 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Row, Col } from 'antd'
+import { Modal, Row, Col } from 'antd'
+import { lstorage } from 'utils'
 import ListImportCSV from './ListImportCSV'
 import ListPayment from './ListPayment'
 import ListSettlementAccumulated from './ListSettlementAccumulated'
@@ -45,7 +46,27 @@ const ImportBcaRecon = ({
     modalStoreVisible,
     loading: loading.effects['importBcaRecon/queryReconLog'] || loading.effects['importBcaRecon/sortNullMdrAmount'],
     openModalStore (params) {
-      dispatch({ type: 'importBcaRecon/openModalStore', payload: { ...params } })
+      const listUserStores = lstorage.getListUserStores()
+      const filterStore = listUserStores.filter(filtered => filtered.value === params.storeId)
+      if (filterStore && filterStore.length > 0) {
+        const store = filterStore[0]
+        dispatch({
+          type: 'importBcaRecon/updateState',
+          payload: {
+            storeName: store.label,
+            storeId: store.value,
+            transDate: params.transDate,
+            reconLogId: params.id
+          }
+        })
+        Modal.confirm({
+          title: 'Pindah Store',
+          content: `Pindah ke Store: ${store.label}`,
+          onOk () {
+            dispatch({ type: 'importBcaRecon/processChangeStore', payload: { location } })
+          }
+        })
+      }
     },
     onOk: () => {
       dispatch({ type: 'importBcaRecon/processChangeStore', payload: { location } })
@@ -87,6 +108,7 @@ const ImportBcaRecon = ({
     loading,
     modalVisible,
     currentItem,
+    listSortPayment,
     listReconNotMatch,
     query: location.query,
     onCancel () {

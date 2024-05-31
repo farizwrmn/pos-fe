@@ -23,6 +23,17 @@ export async function queryActive (params) {
   })
 }
 
+export async function queryHighlight (params) {
+  const apiHeaderToken = crypt.apiheader()
+  params.order = 'endDate,startDate'
+  return request({
+    url: '/promo-highlight',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryComing (params) {
   const apiHeaderToken = crypt.apiheader()
   params.order = '-createdAt,startDate,endDate'
