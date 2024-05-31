@@ -226,6 +226,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
               registerModel(app, require('./models/product/stockLocation'))
+              registerModel(app, require('./models/product/productTag'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
@@ -405,6 +406,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/product/productTag'))
               cb(null, require('./routes/product/productTag'))
             }, 'product-tag')
+          }
+        }, {
+          path: 'stock-tag-schedule',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productTag'))
+              registerModel(app, require('./models/product/productTagSchedule'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/product/productTagSchedule'))
+            }, 'product-tag-schedule')
           }
         }, {
           path: 'master/product/variant',

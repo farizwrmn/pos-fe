@@ -69,6 +69,7 @@ class AdvancedForm extends Component {
       onSubmit,
       onCancel,
       onClickPlanogram,
+      listTag,
       listSource,
       listDivision,
       listDepartment,
@@ -587,10 +588,11 @@ class AdvancedForm extends Component {
       }
     }
 
-    const productSource = (listSource || []).length > 0 ? listSource.map(c => <Option value={c.id} key={c.id}>{c.sourceName}</Option>) : []
-    const productDivision = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.divisionName}</Option>) : []
-    const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.divisionId === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id}>{c.departmentName}</Option>) : []
-    const productSubdepartment = (listSubdepartment || []).length > 0 ? listSubdepartment.filter(filtered => filtered.departmentId === getFieldValue('departmentId')).map(c => <Option value={c.id} key={c.id}>{c.subdepartmentName}</Option>) : []
+    const productTag = (listTag || []).length > 0 ? listTag.map(c => <Option value={c.tagCode} key={c.tagCode} title={c.tagDescription}>{c.tagCode} ({c.tagDescription})</Option>) : []
+    const productSource = (listSource || []).length > 0 ? listSource.map(c => <Option value={c.id} key={c.id} title={c.sourceName}>{c.sourceName}</Option>) : []
+    const productDivision = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id} title={c.divisionName}>{c.divisionName}</Option>) : []
+    const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.divisionId === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id} title={c.departmentName}>{c.departmentName}</Option>) : []
+    const productSubdepartment = (listSubdepartment || []).length > 0 ? listSubdepartment.filter(filtered => filtered.departmentId === getFieldValue('departmentId')).map(c => <Option value={c.id} key={c.id} title={c.subdepartmentName}>{c.subdepartmentName}</Option>) : []
 
     return (
       <Form layout="horizontal">
@@ -732,6 +734,21 @@ class AdvancedForm extends Component {
         <Row>
           <Col {...parentThreeDivision}>
             <Card {...cardProps} title={<h3>Category & Brand</h3>}>
+              <FormItem label={(<Link target="_blank" to="/stock-tag">Tag</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('productTag', {
+                  initialValue: item.productTag,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productTag}
+                </Select>)}
+              </FormItem>
               <FormItem label={(<Link target="_blank" to="/stock-source">Source</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierSource', {
                   initialValue: item.supplierSource,

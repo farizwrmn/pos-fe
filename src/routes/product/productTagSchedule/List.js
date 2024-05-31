@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 
@@ -26,9 +27,27 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       key: 'tagCode'
     },
     {
-      title: 'Description',
-      dataIndex: 'tagDescription',
-      key: 'tagDescription'
+      title: 'Product',
+      dataIndex: 'productName',
+      key: 'productName'
+    },
+    {
+      title: 'Period',
+      dataIndex: 'Date',
+      key: 'Date',
+      render: (text, record) => {
+        return `${moment(record.scheduleExecuteStart, 'YYYY-MM-DD').format('DD-MMM-YYYY')} ~ ${moment(record.scheduleExecuteEnd, 'YYYY-MM-DD').format('DD-MMM-YYYY')}`
+      }
+    },
+    {
+      title: 'Start',
+      dataIndex: 'executedStart',
+      key: 'executedStart'
+    },
+    {
+      title: 'End',
+      dataIndex: 'executedEnd',
+      key: 'executedEnd'
     },
     {
       title: 'Operation',
@@ -36,7 +55,7 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: 'Delete' }]} />
       }
     }
   ]
