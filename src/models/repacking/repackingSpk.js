@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
+import { lstorage } from 'utils'
+import { query as querySequence } from 'services/sequence'
 import { queryById as queryProductById } from 'services/master/productstock'
-import { query, queryListDetail, add, edit, remove } from 'services/repacking/standardRecipe'
+import { query, add, edit, remove } from 'services/repacking/repackingSpk'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -33,6 +35,9 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/standard-recipe') {
           dispatch({
+            type: 'querySequence'
+          })
+          dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
@@ -45,6 +50,25 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * querySequence (payload, { select, call, put }) {
+      const invoice = {
+        seqCode: 'REP',
+        type: lstorage.getCurrentUserStore()
+      }
+      const data = yield call(querySequence, invoice)
+      const currentItem = yield select(({ standardRecipe }) => standardRecipe.currentItem)
+      const transNo = data.data
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentItem: {
+            ...currentItem,
+            transNo
+          }
+        }
+      })
+    },
+
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
       if (response.success) {
@@ -83,20 +107,6 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw new Error('Product Not Found')
-      }
-    },
-
-    * loadList ({ payload }, { call, put }) {
-      const response = yield call(queryListDetail, payload)
-      if (response && response.success && response.data && response.data.length > 0) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            detail: response.data
-          }
-        })
-      } else {
-        throw response
       }
     },
 

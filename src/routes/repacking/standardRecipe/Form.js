@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Table, Button, Row, Col, Modal, Card, Select, Spin } from 'antd'
+import { Form, Table, Button, Row, Col, Modal, Card, Select, Spin } from 'antd'
 import ModalMemberTier from './ModalRecipe'
 
 const FormItem = Form.Item
@@ -27,7 +27,6 @@ const column = {
 }
 
 const FormCounter = ({
-  item = {},
   onSubmit,
   onCancel,
   fetching,
@@ -90,9 +89,10 @@ const FormCounter = ({
         ...getFieldsValue()
       }
       const response = {
-        transNo: data.incentiveCode,
-        header: data.
-          detail
+        header: {
+          productId: data.productId
+        },
+        detail
       }
       Modal.confirm({
         title: 'Do you want to save this item?',
@@ -106,20 +106,9 @@ const FormCounter = ({
 
   return (
     <Form layout="horizontal">
-      <Card title="General Information" style={{ margin: '10px 0' }}>
+      <Card title="Product Recipe" style={{ margin: '10px 0' }}>
         <Row>
           <Col {...column}>
-            <FormItem label="Trans No" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('transNo', {
-                initialValue: item.transNo,
-                rules: [
-                  {
-                    required: true,
-                    pattern: /^[a-z0-9-/]{3,50}$/i
-                  }
-                ]
-              })(<Input maxLength={50} disabled />)}
-            </FormItem>
             <FormItem label="Product" hasFeedback {...formItemLayout} >
               {getFieldDecorator('productId', {
                 rules: [

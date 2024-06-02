@@ -54,6 +54,10 @@ const IncentiveMember = ({ standardRecipe, productstock, loading, dispatch, loca
         type: 'standardRecipe/editItem',
         payload: { item }
       })
+      dispatch({
+        type: 'standardRecipe/loadList',
+        payload: { id: item.id }
+      })
     },
     deleteItem (id) {
       dispatch({
