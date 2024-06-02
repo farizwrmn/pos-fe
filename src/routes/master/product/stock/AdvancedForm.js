@@ -627,7 +627,7 @@ class AdvancedForm extends Component {
                     {
                       required: true,
                       message: 'a-Z & 0-9',
-                      pattern: /^[A-Za-z0-9-.,%'"=><$#@^&*!() _/]{3,85}$/i
+                      pattern: /^[A-Za-z0-9-.,%'"=><$@^&*!() _/]{3,85}$/i
                     }
                   ]
                 })(<Input maxLength={85} onChange={this.changeName} />)}

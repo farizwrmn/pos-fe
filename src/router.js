@@ -699,6 +699,15 @@ const Routers = function ({ history, app }) {
             }, 'marketing-incentive-member')
           }
         }, {
+          path: 'standard-recipe',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/repacking/standardRecipe'))
+              cb(null, require('./routes/repacking/standardRecipe'))
+            }, 'repacking-standard-recipe')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

@@ -9,15 +9,14 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ productTag, productTagSchedule, productstock, loading, dispatch, location, app }) => {
-  const { list: listTag } = productTag
+const IncentiveMember = ({ standardRecipe, productstock, loading, dispatch, location, app }) => {
+  const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = standardRecipe
   const { list: listProduct } = productstock
-  const { list, pagination, modalType, currentItem, activeKey } = productTagSchedule
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'productTagSchedule/query',
+        type: 'standardRecipe/query',
         payload: {
           ...value
         }
@@ -30,7 +29,7 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['productTagSchedule/query'],
+    loading: loading.effects['standardRecipe/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -52,13 +51,13 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
         }
       }))
       dispatch({
-        type: 'productTagSchedule/editItem',
+        type: 'standardRecipe/editItem',
         payload: { item }
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'productTagSchedule/delete',
+        type: 'standardRecipe/delete',
         payload: id
       })
     }
@@ -66,7 +65,7 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
 
   const changeTab = (key) => {
     dispatch({
-      type: 'productTagSchedule/changeTab',
+      type: 'standardRecipe/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -77,22 +76,65 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
         activeKey: key
       }
     }))
-    dispatch({ type: 'productTagSchedule/updateState', payload: { list: [] } })
+    dispatch({ type: 'standardRecipe/updateState', payload: { list: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'productTagSchedule/updateState',
+      type: 'standardRecipe/updateState',
       payload: {
         activeKey: '1'
       }
     })
   }
 
+  const modalMemberTierProps = {
+    title: `${modalMemberTierType === 'add' ? 'Add' : 'Update'} Product`,
+    okText: `${modalMemberTierType === 'add' ? 'Add' : 'Update'}`,
+    modalType: modalMemberTierType,
+    visible: modalMemberTierVisible,
+    item: modalMemberTierItem,
+    onAdd (item) {
+      dispatch({
+        type: 'standardRecipe/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          detail: detail.concat({
+            productCode: item.productCode,
+            qty: item.qty
+          }).sort((a, b) => a.productCode - b.productCode)
+        }
+      })
+    },
+    onEdit (item) {
+      dispatch({
+        type: 'standardRecipe/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          detail: detail
+            .filter(filtered => filtered.productCode !== item.productCode)
+            .concat({
+              productCode: item.productCode,
+              qty: item.qty
+            }).sort((a, b) => a.productCode - b.productCode)
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'standardRecipe/updateState',
+        payload: {
+          modalMemberTierVisible: false
+        }
+      })
+    }
+  }
+
   let timeout
   const formProps = {
+    modalMemberTierProps,
+    detail,
     modalType,
-    listTag,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     listProduct,
@@ -123,10 +165,27 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
     },
     onSubmit (data, reset) {
       dispatch({
-        type: `productTagSchedule/${modalType}`,
+        type: `standardRecipe/${modalType}`,
         payload: {
           data,
           reset
+        }
+      })
+    },
+    onOpenModalTier (modalMemberTierType, item) {
+      if (modalMemberTierType !== 'add') {
+        dispatch({
+          type: 'standardRecipe/updateState',
+          payload: {
+            modalMemberTierItem: item
+          }
+        })
+      }
+      dispatch({
+        type: 'standardRecipe/updateState',
+        payload: {
+          modalMemberTierVisible: true,
+          modalMemberTierType
         }
       })
     },
@@ -139,7 +198,7 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
         }
       }))
       dispatch({
-        type: 'productTagSchedule/updateState',
+        type: 'standardRecipe/updateState',
         payload: {
           currentItem: {}
         }
@@ -171,12 +230,12 @@ const Counter = ({ productTag, productTagSchedule, productstock, loading, dispat
   )
 }
 
-Counter.propTypes = {
-  productTagSchedule: PropTypes.object,
+IncentiveMember.propTypes = {
+  standardRecipe: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ productTagSchedule, productTag, productstock, loading, app }) => ({ productTagSchedule, productTag, productstock, loading, app }))(Counter)
+export default connect(({ standardRecipe, productstock, loading, app }) => ({ standardRecipe, productstock, loading, app }))(IncentiveMember)
