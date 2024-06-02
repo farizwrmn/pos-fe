@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Table, Button, Row, Col, Modal, Card, Select, Spin } from 'antd'
-import ModalMemberTier from './ModalMemberTier'
+import ModalMemberTier from './ModalRecipe'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -91,7 +91,8 @@ const FormCounter = ({
       }
       const response = {
         transNo: data.incentiveCode,
-        detail
+        header: data.
+          detail
       }
       Modal.confirm({
         title: 'Do you want to save this item?',

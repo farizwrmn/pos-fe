@@ -702,6 +702,7 @@ const Routers = function ({ history, app }) {
           path: 'standard-recipe',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/repacking/standardRecipe'))
               cb(null, require('./routes/repacking/standardRecipe'))

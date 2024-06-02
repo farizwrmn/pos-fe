@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
+import { queryById as queryProductById } from 'services/master/productstock'
 import { query, add, edit, remove } from 'services/repacking/standardRecipe'
 import { pageModel } from 'models/common'
 
@@ -82,6 +83,30 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      }
+    },
+
+    * addRecipe ({ payload = {} }, { select, call, put }) {
+      const detail = yield select(({ standardRecipe }) => standardRecipe.detail)
+      const response = yield call(queryProductById, { id: payload.productCode })
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'standardRecipe/updateState',
+          payload: {
+            modalMemberTierVisible: false,
+            modalMemberTierType: 'add',
+            detail: detail
+              .filter(filtered => filtered.productCode !== payload.productCode)
+              .concat({
+                productName: response.data.productName,
+                productCode: response.data.productCode,
+                productId: response.data.id,
+                qty: payload.qty
+              }).sort((a, b) => a.productCode - b.productCode)
+          }
+        })
+      } else {
+        throw new Error('Product Not Found')
       }
     },
 

@@ -30,6 +30,7 @@ class ModalMemberTier extends Component {
   render () {
     const {
       item,
+      modalType,
       form: {
         getFieldDecorator,
         getFieldsValue,
@@ -76,7 +77,7 @@ class ModalMemberTier extends Component {
                   message: 'a-Z & 0-9'
                 }
               ]
-            })(<Input maxLength={30} autoFocus />)}
+            })(<Input disabled={modalType === 'edit'} maxLength={30} autoFocus />)}
           </FormItem>
           <FormItem label="Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('qty', {

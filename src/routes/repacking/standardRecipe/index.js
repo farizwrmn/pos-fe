@@ -96,28 +96,14 @@ const IncentiveMember = ({ standardRecipe, productstock, loading, dispatch, loca
     item: modalMemberTierItem,
     onAdd (item) {
       dispatch({
-        type: 'standardRecipe/updateState',
-        payload: {
-          modalMemberTierVisible: false,
-          detail: detail.concat({
-            productCode: item.productCode,
-            qty: item.qty
-          }).sort((a, b) => a.productCode - b.productCode)
-        }
+        type: 'standardRecipe/addRecipe',
+        payload: item
       })
     },
     onEdit (item) {
       dispatch({
-        type: 'standardRecipe/updateState',
-        payload: {
-          modalMemberTierVisible: false,
-          detail: detail
-            .filter(filtered => filtered.productCode !== item.productCode)
-            .concat({
-              productCode: item.productCode,
-              qty: item.qty
-            }).sort((a, b) => a.productCode - b.productCode)
-        }
+        type: 'standardRecipe/addRecipe',
+        payload: item
       })
     },
     onCancel () {
