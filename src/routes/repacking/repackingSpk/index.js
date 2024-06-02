@@ -9,14 +9,14 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, location, app }) => {
-  const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = standardRecipe
+const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location, app }) => {
+  const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = repackingSpk
   const { list: listProduct } = productstock
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'standardRecipe/query',
+        type: 'repackingSpk/query',
         payload: {
           ...value
         }
@@ -29,7 +29,7 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['standardRecipe/query'],
+    loading: loading.effects['repackingSpk/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -51,17 +51,17 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
         }
       }))
       dispatch({
-        type: 'standardRecipe/editItem',
+        type: 'repackingSpk/editItem',
         payload: { item }
       })
       dispatch({
-        type: 'standardRecipe/loadList',
+        type: 'repackingSpk/loadList',
         payload: item
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'standardRecipe/delete',
+        type: 'repackingSpk/delete',
         payload: id
       })
     }
@@ -69,7 +69,7 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
 
   const changeTab = (key) => {
     dispatch({
-      type: 'standardRecipe/changeTab',
+      type: 'repackingSpk/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -80,12 +80,12 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
         activeKey: key
       }
     }))
-    dispatch({ type: 'standardRecipe/updateState', payload: { list: [], detail: [] } })
+    dispatch({ type: 'repackingSpk/updateState', payload: { list: [], detail: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'standardRecipe/updateState',
+      type: 'repackingSpk/updateState',
       payload: {
         activeKey: '1'
       }
@@ -100,19 +100,19 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
     item: modalMemberTierItem,
     onAdd (item) {
       dispatch({
-        type: 'standardRecipe/addRecipe',
+        type: 'repackingSpk/addRecipe',
         payload: item
       })
     },
     onEdit (item) {
       dispatch({
-        type: 'standardRecipe/addRecipe',
+        type: 'repackingSpk/addRecipe',
         payload: item
       })
     },
     onCancel () {
       dispatch({
-        type: 'standardRecipe/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           modalMemberTierVisible: false
         }
@@ -155,7 +155,7 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
     },
     onSubmit (data, reset) {
       dispatch({
-        type: `standardRecipe/${modalType}`,
+        type: `repackingSpk/${modalType}`,
         payload: {
           data,
           reset
@@ -165,14 +165,14 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
     onOpenModalTier (modalMemberTierType, item) {
       if (modalMemberTierType !== 'add') {
         dispatch({
-          type: 'standardRecipe/updateState',
+          type: 'repackingSpk/updateState',
           payload: {
             modalMemberTierItem: item
           }
         })
       }
       dispatch({
-        type: 'standardRecipe/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           modalMemberTierVisible: true,
           modalMemberTierType
@@ -188,7 +188,7 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
         }
       }))
       dispatch({
-        type: 'standardRecipe/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           currentItem: {}
         }
@@ -220,12 +220,12 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
   )
 }
 
-StandardRecipe.propTypes = {
-  standardRecipe: PropTypes.object,
+RepackingSpk.propTypes = {
+  repackingSpk: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ standardRecipe, productstock, loading, app }) => ({ standardRecipe, productstock, loading, app }))(StandardRecipe)
+export default connect(({ repackingSpk, productstock, loading, app }) => ({ repackingSpk, productstock, loading, app }))(RepackingSpk)

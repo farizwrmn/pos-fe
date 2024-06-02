@@ -8,11 +8,11 @@ import { query, add, edit, remove } from 'services/repacking/repackingSpk'
 import { pageModel } from 'models/common'
 
 const success = () => {
-  message.success('Standard Recipe has been saved')
+  message.success('Repacking Spk has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'standardRecipe',
+  namespace: 'repackingSpk',
 
   state: {
     detail: [],
@@ -33,7 +33,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/standard-recipe') {
+        if (pathname === '/repacking-spk') {
           dispatch({
             type: 'querySequence'
           })
@@ -56,7 +56,7 @@ export default modelExtend(pageModel, {
         type: lstorage.getCurrentUserStore()
       }
       const data = yield call(querySequence, invoice)
-      const currentItem = yield select(({ standardRecipe }) => standardRecipe.currentItem)
+      const currentItem = yield select(({ repackingSpk }) => repackingSpk.currentItem)
       const transNo = data.data
       yield put({
         type: 'updateState',
@@ -87,11 +87,11 @@ export default modelExtend(pageModel, {
     },
 
     * addRecipe ({ payload = {} }, { select, call, put }) {
-      const detail = yield select(({ standardRecipe }) => standardRecipe.detail)
+      const detail = yield select(({ repackingSpk }) => repackingSpk.detail)
       const response = yield call(queryProductById, { id: payload.productCode })
       if (response && response.success && response.data) {
         yield put({
-          type: 'standardRecipe/updateState',
+          type: 'repackingSpk/updateState',
           payload: {
             modalMemberTierVisible: false,
             modalMemberTierType: 'add',
@@ -152,7 +152,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ standardRecipe }) => standardRecipe.currentItem.id)
+      const id = yield select(({ repackingSpk }) => repackingSpk.currentItem.id)
       const newCounter = { ...payload.data, id }
       const response = yield call(edit, newCounter)
       if (response.success) {
