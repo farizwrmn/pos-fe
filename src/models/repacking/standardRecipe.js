@@ -87,7 +87,13 @@ export default modelExtend(pageModel, {
     },
 
     * loadList ({ payload }, { call, put }) {
-      const response = yield call(queryListDetail, payload)
+      const response = yield call(queryListDetail, { transId: payload.id })
+      yield put({
+        type: 'productstock/query',
+        payload: {
+          id: payload.productId
+        }
+      })
       if (response && response.success && response.data && response.data.length > 0) {
         yield put({
           type: 'updateState',

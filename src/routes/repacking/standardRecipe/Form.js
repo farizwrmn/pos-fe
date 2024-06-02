@@ -27,11 +27,12 @@ const column = {
 }
 
 const FormCounter = ({
+  item = {},
   onSubmit,
   onCancel,
   fetching,
   listProduct,
-  childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option key={x.id} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
+  childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option value={x.id} key={x.id} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
   showLov,
   onOpenModalTier,
   modalMemberTierProps,
@@ -111,6 +112,7 @@ const FormCounter = ({
           <Col {...column}>
             <FormItem label="Product" hasFeedback {...formItemLayout} >
               {getFieldDecorator('productId', {
+                initialValue: item.productId,
                 rules: [
                   {
                     required: true
@@ -119,7 +121,6 @@ const FormCounter = ({
               })(
                 <Select
                   onSearch={value => showLov('productstock', { q: value })}
-                  allowClear
                   showSearch
                   size="large"
                   style={{ width: '100%' }}

@@ -56,7 +56,7 @@ const IncentiveMember = ({ standardRecipe, productstock, loading, dispatch, loca
       })
       dispatch({
         type: 'standardRecipe/loadList',
-        payload: { id: item.id }
+        payload: item
       })
     },
     deleteItem (id) {
@@ -80,7 +80,7 @@ const IncentiveMember = ({ standardRecipe, productstock, loading, dispatch, loca
         activeKey: key
       }
     }))
-    dispatch({ type: 'standardRecipe/updateState', payload: { list: [] } })
+    dispatch({ type: 'standardRecipe/updateState', payload: { list: [], detail: [] } })
   }
 
   const clickBrowse = () => {
