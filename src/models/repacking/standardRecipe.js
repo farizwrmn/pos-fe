@@ -116,6 +116,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      if (payload.data && payload.data.detail && payload.data.detail.length === 0) {
+        throw new Error('Detail is empty')
+      }
       const response = yield call(add, payload.data)
       if (response.success) {
         success()

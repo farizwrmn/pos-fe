@@ -90,7 +90,7 @@ const FormCounter = ({
     resetFields()
   }
 
-  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id} value={x.id} title={x.storeName}>{x.storeName}</Option>)) : []
 
   const disabledDate = (current) => {
     // Can not select days before today and today

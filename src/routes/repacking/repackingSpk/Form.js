@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Table, Button, Row, Col, Modal, Card, Select, Spin } from 'antd'
+import { Form, Table, Button, Row, Col, Modal, Card, Input, Select } from 'antd'
 import ModalMemberTier from './ModalRecipe'
 
 const FormItem = Form.Item
@@ -30,10 +30,7 @@ const FormCounter = ({
   item = {},
   onSubmit,
   onCancel,
-  fetching,
-  listProduct,
-  childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option value={x.id} key={x.id} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
-  showLov,
+  listAllStores,
   onOpenModalTier,
   modalMemberTierProps,
   modalType,
@@ -105,14 +102,31 @@ const FormCounter = ({
     })
   }
 
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id} value={x.id} title={x.storeName}>{x.storeName}</Option>)) : []
+
   return (
     <Form layout="horizontal">
-      <Card title="Product Recipe" style={{ margin: '10px 0' }}>
+      <Card title="Header" style={{ margin: '10px 0' }}>
         <Row>
           <Col {...column}>
-            <FormItem label="Product" hasFeedback {...formItemLayout} >
-              {getFieldDecorator('productId', {
-                initialValue: item.productId,
+            <FormItem label="Trans No" hasFeedback {...formItemLayout} >
+              {getFieldDecorator('transNo', {
+                initialValue: item.transNo,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Input disabled />
+              )}
+            </FormItem>
+            <FormItem
+              label="Store Target"
+              hasFeedback
+              {...formItemLayout}
+            >
+              {getFieldDecorator('storeId', {
                 rules: [
                   {
                     required: true
@@ -120,15 +134,15 @@ const FormCounter = ({
                 ]
               })(
                 <Select
-                  onSearch={value => showLov('productstock', { q: value })}
-                  showSearch
+                  mode="default"
+                  allowClear
                   size="large"
+                  showSearch
                   style={{ width: '100%' }}
-                  notFoundContent={fetching ? <Spin size="small" /> : null}
-                  placeholder="Choose Product"
+                  placeholder="Choose Store"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                  {childrenProduct}
+                  {childrenTransNo}
                 </Select>
               )}
             </FormItem>
@@ -138,7 +152,7 @@ const FormCounter = ({
       <Card
         title={(
           <div>
-            <span style={{ marginRight: '10px' }}>Add Material</span>
+            <span style={{ marginRight: '10px' }}>Request</span>
             <Button type="primary" onClick={() => onOpenModalTier('add')}>Add Item +</Button>
           </div>
         )}

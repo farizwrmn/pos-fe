@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Modal, Form, Input, InputNumber } from 'antd'
+import { Modal, Form, Select, Spin, InputNumber } from 'antd'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -31,6 +32,10 @@ class ModalMemberTier extends Component {
     const {
       item,
       modalType,
+      fetching,
+      listProduct,
+      childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option value={x.productCode} key={x.productCode} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
+      showLov,
       form: {
         getFieldDecorator,
         getFieldsValue,
@@ -68,16 +73,27 @@ class ModalMemberTier extends Component {
         onOk={() => handleSubmit()}
       >
         <Form layout="horizontal">
-          <FormItem label="Product Code" hasFeedback {...formItemLayout}>
+          <FormItem label="Product" hasFeedback {...formItemLayout} >
             {getFieldDecorator('productCode', {
               initialValue: item.productCode,
               rules: [
                 {
-                  required: true,
-                  message: 'a-Z & 0-9'
+                  required: true
                 }
               ]
-            })(<Input disabled={modalType === 'edit'} maxLength={30} autoFocus />)}
+            })(
+              <Select
+                onSearch={value => showLov('productstock', { q: value })}
+                showSearch
+                size="large"
+                style={{ width: '100%' }}
+                notFoundContent={fetching ? <Spin size="small" /> : null}
+                placeholder="Choose Product"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenProduct}
+              </Select>
+            )}
           </FormItem>
           <FormItem label="Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('qty', {

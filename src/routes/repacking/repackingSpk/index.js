@@ -9,9 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location, app }) => {
+const RepackingSpk = ({ userStore, repackingSpk, productstock, loading, dispatch, location, app }) => {
   const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = repackingSpk
   const { list: listProduct } = productstock
+  const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -92,41 +93,13 @@ const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location,
     })
   }
 
+  let timeout
   const modalMemberTierProps = {
     title: `${modalMemberTierType === 'add' ? 'Add' : 'Update'} Product`,
     okText: `${modalMemberTierType === 'add' ? 'Add' : 'Update'}`,
     modalType: modalMemberTierType,
     visible: modalMemberTierVisible,
     item: modalMemberTierItem,
-    onAdd (item) {
-      dispatch({
-        type: 'repackingSpk/addRecipe',
-        payload: item
-      })
-    },
-    onEdit (item) {
-      dispatch({
-        type: 'repackingSpk/addRecipe',
-        payload: item
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'repackingSpk/updateState',
-        payload: {
-          modalMemberTierVisible: false
-        }
-      })
-    }
-  }
-
-  let timeout
-  const formProps = {
-    modalMemberTierProps,
-    detail,
-    modalType,
-    item: currentItem,
-    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     listProduct,
     fetching: loading.effects['productstock/query'],
     showLov (models, data) {
@@ -153,6 +126,35 @@ const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location,
         })
       }, 400)
     },
+    onAdd (item) {
+      dispatch({
+        type: 'repackingSpk/addRecipe',
+        payload: item
+      })
+    },
+    onEdit (item) {
+      dispatch({
+        type: 'repackingSpk/addRecipe',
+        payload: item
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'repackingSpk/updateState',
+        payload: {
+          modalMemberTierVisible: false
+        }
+      })
+    }
+  }
+
+  const formProps = {
+    listAllStores,
+    modalMemberTierProps,
+    detail,
+    modalType,
+    item: currentItem,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
       dispatch({
         type: `repackingSpk/${modalType}`,
@@ -228,4 +230,4 @@ RepackingSpk.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ repackingSpk, productstock, loading, app }) => ({ repackingSpk, productstock, loading, app }))(RepackingSpk)
+export default connect(({ userStore, repackingSpk, productstock, loading, app }) => ({ userStore, repackingSpk, productstock, loading, app }))(RepackingSpk)

@@ -5,6 +5,7 @@ import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
 import { queryById as queryProductById } from 'services/master/productstock'
 import { query, add, edit, remove } from 'services/repacking/repackingSpk'
+import { query as queryStandardRecipe, queryListDetail as queryStandardRecipeDetail } from 'services/repacking/standardRecipe'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -90,6 +91,16 @@ export default modelExtend(pageModel, {
       const detail = yield select(({ repackingSpk }) => repackingSpk.detail)
       const response = yield call(queryProductById, { id: payload.productCode })
       if (response && response.success && response.data) {
+        const responseStandardRecipe = yield call(queryStandardRecipe, { productId: response.data.id })
+        if (!responseStandardRecipe.success || (responseStandardRecipe && responseStandardRecipe.data && responseStandardRecipe.data.length === 0)) {
+          throw new Error('Standard Recipe Not Found')
+        }
+        const standardRecipe = responseStandardRecipe.data[0]
+        const responseStandardRecipeDetail = yield call(queryStandardRecipeDetail, { transId: standardRecipe.id })
+        if (!responseStandardRecipeDetail.success || (responseStandardRecipeDetail && responseStandardRecipeDetail.data && responseStandardRecipe.data.length === 0)) {
+          throw new Error('Standard Recipe Material Not Found')
+        }
+        const standardRecipeDetail = responseStandardRecipeDetail.data
         yield put({
           type: 'repackingSpk/updateState',
           payload: {
@@ -101,7 +112,15 @@ export default modelExtend(pageModel, {
                 productName: response.data.productName,
                 productCode: response.data.productCode,
                 productId: response.data.id,
-                qty: payload.qty
+                qty: payload.qty,
+                standardRecipeId: standardRecipe.id,
+                material: standardRecipeDetail.map(item => ({
+                  productName: item.productName,
+                  productCode: item.productCode,
+                  productId: item.id,
+                  qty: item.qty * payload.qty,
+                  standardRecipeId: standardRecipe.id
+                }))
               }).sort((a, b) => a.productCode - b.productCode)
           }
         })
@@ -120,6 +139,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      if (payload.data && payload.data.detail && payload.data.detail.length === 0) {
+        throw new Error('Detail is empty')
+      }
       const response = yield call(add, payload.data)
       if (response.success) {
         success()
