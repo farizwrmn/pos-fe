@@ -235,7 +235,7 @@ class FormPayment extends React.Component {
             }
           }
         }
-
+        data.batchNumber = data.approvalCode
         data.amount = parseFloat(data.amount)
         const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
 
