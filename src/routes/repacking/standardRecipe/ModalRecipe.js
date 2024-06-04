@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Modal, Form, Input, InputNumber } from 'antd'
+import { Modal, Form, Select, Button, InputNumber, Spin } from 'antd'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -31,6 +32,12 @@ class ModalMemberTier extends Component {
     const {
       item,
       modalType,
+      onDelete,
+      loading,
+      fetching,
+      listProduct,
+      childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option value={x.productCode} key={x.productCode} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
+      showLov,
       form: {
         getFieldDecorator,
         getFieldsValue,
@@ -62,22 +69,47 @@ class ModalMemberTier extends Component {
       })
     }
 
+    const handleDelete = () => {
+      Modal.confirm({
+        title: 'Delete this item',
+        content: 'Are you sure ?',
+        onOk () {
+          onDelete(item.productCode)
+        }
+      })
+    }
+
     return (
       <Modal
         {...modalProps}
-        onOk={() => handleSubmit()}
+        footer={[
+          <span>{modalType === 'edit' && <Button disabled={loading} size="large" key="delete" type="danger" style={{ margin: '0 10px' }} onClick={handleDelete}>Delete</Button>}</span>,
+          <Button disabled={loading} size="large" key="back" onClick={modalProps.onCancel}>Cancel</Button>,
+          <Button disabled={loading} size="large" key="submit" type="primary" onClick={() => handleSubmit()}>Ok</Button>
+        ]}
       >
         <Form layout="horizontal">
-          <FormItem label="Product Code" hasFeedback {...formItemLayout}>
+          <FormItem label="Product" hasFeedback {...formItemLayout} >
             {getFieldDecorator('productCode', {
               initialValue: item.productCode,
               rules: [
                 {
-                  required: true,
-                  message: 'a-Z & 0-9'
+                  required: true
                 }
               ]
-            })(<Input disabled={modalType === 'edit'} maxLength={30} autoFocus />)}
+            })(
+              <Select
+                onSearch={value => showLov('productstock', { q: value })}
+                showSearch
+                size="large"
+                style={{ width: '100%' }}
+                notFoundContent={fetching ? <Spin size="small" /> : null}
+                placeholder="Choose Product"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenProduct}
+              </Select>
+            )}
           </FormItem>
           <FormItem label="Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('qty', {
@@ -87,7 +119,7 @@ class ModalMemberTier extends Component {
                   required: true
                 }
               ]
-            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+            })(<InputNumber min={0.01} max={999999999} style={{ width: '100%' }} />)}
           </FormItem>
         </Form>
       </Modal>

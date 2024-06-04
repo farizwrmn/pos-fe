@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import { Table, Modal } from 'antd'
 import { DropOption } from 'components'
 
@@ -23,7 +24,18 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
     {
       title: 'Trans No',
       dataIndex: 'transNo',
-      key: 'transNo'
+      width: '200px',
+      key: 'transNo',
+      render: (text, record) => {
+        return (
+          <Link to={`/repacking-spk/${record.id}`}>{text}</Link>
+        )
+      }
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
     },
     {
       title: 'Operation',

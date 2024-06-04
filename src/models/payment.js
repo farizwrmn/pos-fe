@@ -1,4 +1,4 @@
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'services/master/paymentOption/paymentCostService'
@@ -503,7 +503,11 @@ export default {
                   paymentTransactionInvoiceWindow: invoiceWindow
                 }
               })
-              invoiceWindow.focus()
+              if (invoiceWindow) {
+                invoiceWindow.focus()
+              } else {
+                message.error('Please allow pop-up in your browser')
+              }
               // }
             } else {
               if (data_create && data_create.message && typeof data_create.message === 'string') {

@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Table, Button, Row, Col, Modal, Card, Input, Select } from 'antd'
+import { lstorage } from 'utils'
 import ModalMemberTier from './ModalRecipe'
 
+const { TextArea } = Input
 const FormItem = Form.Item
 const { Option } = Select
 
@@ -45,9 +47,26 @@ const FormCounter = ({
 }) => {
   const columnTier = [
     {
+      title: 'No',
+      dataIndex: 'no',
+      key: 'no'
+    },
+    {
       title: 'Product',
       dataIndex: 'productName',
-      key: 'productName'
+      key: 'productName',
+      render: (text, record) => {
+        return (
+          <div>
+            <div><strong>{record.productName}</strong></div>
+            {record && record.material && record.material.map(item => (
+              <div>
+                <div style={{ marginLeft: '10px' }}>{item.qty} x {item.productName}</div>
+              </div>
+            ))}
+          </div>
+        )
+      }
     },
     {
       title: 'Qty',
@@ -86,9 +105,12 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      console.log('item', item)
       const response = {
         header: {
-          productId: data.productId
+          transNo: item.transNo,
+          storeIdReceiver: data.storeIdReceiver,
+          ...data
         },
         detail
       }
@@ -102,7 +124,7 @@ const FormCounter = ({
     })
   }
 
-  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id} value={x.id} title={x.storeName}>{x.storeName}</Option>)) : []
+  let childrenTransNo = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.value} value={x.value} title={x.label}>{x.label}</Option>)) : []
 
   return (
     <Form layout="horizontal">
@@ -126,7 +148,8 @@ const FormCounter = ({
               hasFeedback
               {...formItemLayout}
             >
-              {getFieldDecorator('storeId', {
+              {getFieldDecorator('storeIdReceiver', {
+                initialValue: lstorage.getCurrentUserStore(),
                 rules: [
                   {
                     required: true
@@ -146,6 +169,16 @@ const FormCounter = ({
                 </Select>
               )}
             </FormItem>
+            <FormItem label="Description" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: item.description,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<TextArea maxLength={255} autosize={{ minRows: 2, maxRows: 3 }} />)}
+            </FormItem>
           </Col>
         </Row>
       </Card>
@@ -159,7 +192,7 @@ const FormCounter = ({
         style={{ margin: '10px 0' }}
       >
         <Table
-          dataSource={detail}
+          dataSource={detail && detail.map((item, index) => ({ no: index + 1, ...item }))}
           pagination={false}
           bordered
           onRowClick={record => onOpenModalTier('edit', record)}

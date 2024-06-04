@@ -3,16 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Tabs } from 'antd'
+import { lstorage } from 'utils'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const RepackingSpk = ({ userStore, repackingSpk, productstock, loading, dispatch, location, app }) => {
+const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location, app }) => {
   const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = repackingSpk
   const { list: listProduct } = productstock
-  const { listAllStores } = userStore
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -149,13 +149,14 @@ const RepackingSpk = ({ userStore, repackingSpk, productstock, loading, dispatch
   }
 
   const formProps = {
-    listAllStores,
+    listAllStores: lstorage.getListUserStores(),
     modalMemberTierProps,
     detail,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
+      data.header.storeId = lstorage.getCurrentUserStore()
       dispatch({
         type: `repackingSpk/${modalType}`,
         payload: {

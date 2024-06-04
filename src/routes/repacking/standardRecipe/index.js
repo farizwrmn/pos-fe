@@ -92,12 +92,40 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
     })
   }
 
+  let timeoutModal
   const modalMemberTierProps = {
     title: `${modalMemberTierType === 'add' ? 'Add' : 'Update'} Product`,
     okText: `${modalMemberTierType === 'add' ? 'Add' : 'Update'}`,
     modalType: modalMemberTierType,
     visible: modalMemberTierVisible,
     item: modalMemberTierItem,
+    listProduct,
+    loading: loading.effects['standardRecipe/addRecipe'],
+    fetching: loading.effects['productstock/query'],
+    showLov (models, data) {
+      if (!data) {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5
+          }
+        })
+      }
+      if (timeoutModal) {
+        clearTimeout(timeoutModal)
+        timeoutModal = null
+      }
+
+      timeoutModal = setTimeout(() => {
+        dispatch({
+          type: `${models}/query`,
+          payload: {
+            pageSize: 5,
+            ...data
+          }
+        })
+      }, 400)
+    },
     onAdd (item) {
       dispatch({
         type: 'standardRecipe/addRecipe',
@@ -115,6 +143,17 @@ const StandardRecipe = ({ standardRecipe, productstock, loading, dispatch, locat
         type: 'standardRecipe/updateState',
         payload: {
           modalMemberTierVisible: false
+        }
+      })
+    },
+    onDelete (productCode) {
+      dispatch({
+        type: 'standardRecipe/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          modalMemberTierType: 'add',
+          detail: detail
+            .filter(filtered => filtered.productCode !== productCode)
         }
       })
     }

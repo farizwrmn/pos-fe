@@ -71,6 +71,8 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      payload.order = '-id'
       const response = yield call(query, payload)
       if (response.success) {
         yield put({
@@ -153,6 +155,14 @@ export default modelExtend(pageModel, {
             detail: []
           }
         })
+        if (response.data) {
+          const invoiceWindow = window.open(`/repacking-spk/${response.data.id}`)
+          if (invoiceWindow) {
+            invoiceWindow.focus()
+          } else {
+            message.error('Please allow pop-up in your browser')
+          }
+        }
         yield put({
           type: 'query'
         })
@@ -163,12 +173,6 @@ export default modelExtend(pageModel, {
           payload.reset()
         }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw response
       }
     },
