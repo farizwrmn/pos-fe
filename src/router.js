@@ -711,11 +711,19 @@ const Routers = function ({ history, app }) {
           path: 'repacking-spk',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/repacking/repackingSpk'))
               cb(null, require('./routes/repacking/repackingSpk'))
             }, 'repacking-spk')
+          }
+        }, {
+          path: 'repacking-spk/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/repacking/repackingSpk'))
+              cb(null, require('./routes/repacking/repackingSpk/detail'))
+            }, 'repacking-spk-detail')
           }
         }, {
           path: 'transaction/pos',
