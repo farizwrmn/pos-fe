@@ -3,8 +3,15 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
+// import { queryEntryList } from 'services/payment/bankentry'
+// import {
+//   AJIN,
+//   AJOUT,
+//   MUOUT
+// } from 'utils/variable'
+import pathToRegexp from 'path-to-regexp'
 import { queryById as queryProductById } from 'services/master/productstock'
-import { query, add, edit, remove } from 'services/repacking/repackingSpk'
+import { query, queryById, add, edit, remove } from 'services/repacking/repackingSpk'
 import { query as queryStandardRecipe, queryListDetail as queryStandardRecipeDetail } from 'services/repacking/standardRecipe'
 import { pageModel } from 'models/common'
 
@@ -16,7 +23,12 @@ export default modelExtend(pageModel, {
   namespace: 'repackingSpk',
 
   state: {
+    listDetail: [],
+    listAccounting: [],
+    data: {},
+
     detail: [],
+    materialRequest: [],
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
@@ -34,6 +46,17 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
+        const match = pathToRegexp('/repacking-spk/:id').exec(location.pathname)
+        if (match) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore(),
+              match
+            }
+          })
+        }
         if (pathname === '/repacking-spk') {
           dispatch({
             type: 'querySequence'
@@ -51,6 +74,36 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryById, payload)
+      if (response.success && response.data) {
+        // let listAccounting = []
+        // if (payload && payload.match && response.data && response.data.id) {
+        //   const reconData = yield call(queryEntryList, {
+        //     transactionId: response.data.id,
+        //     transactionType: AJIN,
+        //     type: 'all'
+        //   })
+        //   if (reconData && reconData.data) {
+        //     listAccounting = listAccounting.concat(reconData.data)
+        //   }
+        // }
+
+        console.log('test', response.materialRequest)
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: response.data,
+            listDetail: response.detailRequest,
+            materialRequest: response.materialRequest
+            // listAccounting
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * querySequence (payload, { select, call, put }) {
       const invoice = {
         seqCode: 'REP',
@@ -119,7 +172,7 @@ export default modelExtend(pageModel, {
                 material: standardRecipeDetail.map(item => ({
                   productName: item.productName,
                   productCode: item.productCode,
-                  productId: item.id,
+                  productId: item.productId,
                   qty: item.qty * payload.qty,
                   standardRecipeId: standardRecipe.id
                 }))
