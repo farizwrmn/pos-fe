@@ -82,11 +82,36 @@ const RepackingSpk = ({ repackingTaskList, loading, dispatch, location, app }) =
     modalType: 'edit',
     visible: modalMemberTierVisible,
     item: modalMemberTierItem,
+    material: modalFinishRepackingItem && modalFinishRepackingItem.material && modalFinishRepackingItem.material.length > 0
+      ? modalFinishRepackingItem.material : [],
     loading: loading.effects['repackingTaskList/addRecipe'],
-    onEdit (item) {
+    onEdit (request) {
       dispatch({
-        type: 'repackingTaskList/addRecipe',
-        payload: item
+        type: 'repackingTaskList/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          modalFinishRepackingItem: {
+            ...modalFinishRepackingItem,
+            detail: modalFinishRepackingItem.detail && modalFinishRepackingItem.detail.length > 0 ?
+              modalFinishRepackingItem.detail.map((item) => {
+                if (Number(item.id) === Number(request.id)) {
+                  return { ...item, qty: request.qty }
+                }
+                return item
+              }) : [],
+            material: modalFinishRepackingItem.material && modalFinishRepackingItem.material.length > 0 ?
+              modalFinishRepackingItem.material.map((item) => {
+                const filteredMaterial = request.material.filter(filtered => Number(filtered.id) === Number(item.id))
+                if (filteredMaterial && filteredMaterial[0]) {
+                  return {
+                    ...item,
+                    qty: filteredMaterial[0].qty
+                  }
+                }
+                return item
+              }) : []
+          }
+        }
       })
     },
     onCancel () {
@@ -100,11 +125,11 @@ const RepackingSpk = ({ repackingTaskList, loading, dispatch, location, app }) =
   }
 
   const formProps = {
-    item: modalFinishRepackingItem,
     visible: modalFinishRepackingVisible,
     width: '80%',
     listAllStores: lstorage.getListUserStores(),
     modalMemberTierProps,
+    item: modalFinishRepackingItem,
     detail: modalFinishRepackingItem && modalFinishRepackingItem.detail && modalFinishRepackingItem.detail.length > 0
       ? modalFinishRepackingItem.detail : [],
     material: modalFinishRepackingItem && modalFinishRepackingItem.material && modalFinishRepackingItem.material.length > 0
@@ -113,17 +138,17 @@ const RepackingSpk = ({ repackingTaskList, loading, dispatch, location, app }) =
     button: 'Update',
     footer: null,
     onCancel () {
-      console.log('onCancel')
       dispatch({
         type: 'repackingTaskList/updateState',
         payload: {
+          modalMemberTierItem: {},
+          modalMemberTierVisible: false,
           modalFinishRepackingItem: {},
           modalFinishRepackingVisible: false
         }
       })
     },
     onSubmit (data, reset) {
-      data.header.storeId = lstorage.getCurrentUserStore()
       dispatch({
         type: 'repackingTaskList/add',
         payload: {

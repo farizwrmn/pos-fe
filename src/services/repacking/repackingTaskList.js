@@ -23,7 +23,7 @@ export async function queryById (params) {
 export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/repacking-spk',
+    url: '/repacking-spk-result',
     method: 'post',
     data: params,
     headers: apiHeaderToken

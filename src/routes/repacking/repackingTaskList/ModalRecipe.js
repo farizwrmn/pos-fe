@@ -1,18 +1,15 @@
 import React, { Component } from 'react'
-import { Modal, Form, Select, Spin, Button, InputNumber } from 'antd'
+import { Modal, Form, Input, Button, Row, Col, InputNumber } from 'antd'
 
 const FormItem = Form.Item
-const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 8 },
-    sm: { span: 8 },
-    md: { span: 7 }
+    md: { span: 10 }
   },
   wrapperCol: {
     xs: { span: 16 },
-    sm: { span: 14 },
     md: { span: 14 }
   }
 }
@@ -20,7 +17,7 @@ const formItemLayout = {
 class ModalMemberTier extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('productCode')
+      const selector = document.getElementById('qty')
       if (selector) {
         selector.focus()
         selector.select()
@@ -32,11 +29,8 @@ class ModalMemberTier extends Component {
     const {
       item,
       modalType,
-      fetching,
-      listProduct,
-      childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option value={x.productCode} key={x.productCode} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
-      showLov,
       loading,
+      material,
       onDelete,
       form: {
         getFieldDecorator,
@@ -53,75 +47,92 @@ class ModalMemberTier extends Component {
           return
         }
         const data = {
+          ...item,
           ...getFieldsValue()
         }
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
-            if (modalProps.modalType === 'add') {
-              modalProps.onAdd(data, resetFields)
-            } else {
-              modalProps.onEdit(data, resetFields)
+            let material = []
+            for (let key in data.material) {
+              if (data.material[key]) {
+                material.push({
+                  id: key,
+                  qty: data.material[key]
+                })
+              }
             }
+            const request = {
+              id: item.id,
+              qty: data.qty,
+              material
+            }
+            modalProps.onEdit(request, resetFields)
           },
           onCancel () { }
         })
       })
     }
 
-    const handleDelete = () => {
-      Modal.confirm({
-        title: 'Delete this item',
-        content: 'Are you sure ?',
-        onOk () {
-          onDelete(item.productCode)
-        }
-      })
-    }
+    const listMaterial = material ? material.filter(filtered => filtered.detailRequestId === item.id) : []
 
     return (
       <Modal
         {...modalProps}
+        width={700}
         onOk={() => handleSubmit()}
         footer={[
-          <span>{modalType === 'edit' && <Button disabled={loading} size="large" key="delete" type="danger" style={{ margin: '0 10px' }} onClick={handleDelete}>Delete</Button>}</span>,
           <Button disabled={loading} size="large" key="back" onClick={modalProps.onCancel}>Cancel</Button>,
           <Button disabled={loading} size="large" key="submit" type="primary" onClick={() => handleSubmit()}>Ok</Button>
         ]}
       >
         <Form layout="horizontal">
           <FormItem label="Product" hasFeedback {...formItemLayout} >
-            {getFieldDecorator('productCode', {
-              initialValue: item.productCode,
+            {getFieldDecorator('productName', {
+              initialValue: item.productName,
               rules: [
                 {
                   required: true
                 }
               ]
             })(
-              <Select
-                onSearch={value => showLov('productstock', { q: value })}
-                showSearch
-                size="large"
-                style={{ width: '100%' }}
-                notFoundContent={fetching ? <Spin size="small" /> : null}
-                placeholder="Choose Product"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {childrenProduct}
-              </Select>
+              <Input disabled />
             )}
           </FormItem>
-          <FormItem label="Qty" hasFeedback {...formItemLayout}>
+          <FormItem label="Qty Hasil" hasFeedback {...formItemLayout} >
             {getFieldDecorator('qty', {
-              initialValue: item.qty || 1,
+              initialValue: item.qty,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+            })(
+              <InputNumber min={0} />
+            )}
           </FormItem>
+          <br />
+          <Row>
+            <Col span={10} />
+            <Col span={14}>
+              <h4>Penggunaan Bahan</h4>
+            </Col>
+          </Row>
+          <br />
+          {listMaterial && listMaterial.map(item => (
+            <FormItem label={`${item.qty} x ${item.productName}`} hasFeedback {...formItemLayout} >
+              {getFieldDecorator(`material["${item.id}"]`, {
+                initialValue: item.qty,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <InputNumber min={0} />
+              )}
+            </FormItem>
+          ))}
         </Form>
       </Modal>
     )

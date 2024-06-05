@@ -230,7 +230,7 @@ export default modelExtend(pageModel, {
           }
         })
         if (response.data) {
-          const invoiceWindow = window.open(`/repacking-spk/${response.data.id}`)
+          const invoiceWindow = window.open(`/repacking-task-list/${response.data.id}`)
           if (invoiceWindow) {
             invoiceWindow.focus()
           } else {
