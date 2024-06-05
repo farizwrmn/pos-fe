@@ -57,7 +57,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
             alignment: 'right'
           },
           {
-            text: 'REPACKING REQUEST',
+            text: 'MATERIAL',
             style: 'header',
             fontSize: 18,
             alignment: 'center'

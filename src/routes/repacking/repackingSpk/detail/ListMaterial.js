@@ -19,22 +19,7 @@ const List = ({ materialRequest, editList, ...tableProps }) => {
       title: 'Product',
       dataIndex: 'productName',
       key: 'productName',
-      width: 100,
-      render: (text, record) => {
-        if (record) {
-          record.material = materialRequest ? materialRequest.filter(filtered => filtered.detailRequestId === record.id) : []
-          return (
-            <div>
-              <div><strong>{record.productName}</strong></div>
-              {record && record.material && record.material.map(item => (
-                <div>
-                  <div style={{ marginLeft: '10px' }}>{item.qty} x {item.productName}</div>
-                </div>
-              ))}
-            </div>
-          )
-        }
-      }
+      width: 100
     },
     {
       title: 'Qty',

@@ -102,6 +102,18 @@ const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location,
     item: modalMemberTierItem,
     listProduct,
     fetching: loading.effects['productstock/query'],
+    loading: loading.effects['repackingSpk/addRecipe'],
+    onDelete (productCode) {
+      dispatch({
+        type: 'repackingSpk/updateState',
+        payload: {
+          modalMemberTierVisible: false,
+          modalMemberTierType: 'add',
+          detail: detail
+            .filter(filtered => filtered.productCode !== productCode)
+        }
+      })
+    },
     showLov (models, data) {
       if (!data) {
         dispatch({

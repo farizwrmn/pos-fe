@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Form, Select, Spin, InputNumber } from 'antd'
+import { Modal, Form, Select, Spin, Button, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -36,6 +36,8 @@ class ModalMemberTier extends Component {
       listProduct,
       childrenProduct = listProduct && listProduct.length > 0 ? listProduct.map(x => (<Option value={x.productCode} key={x.productCode} title={`${x.productName} (${x.productCode})`}>{`${x.productName} (${x.productCode})`}</Option>)) : [],
       showLov,
+      loading,
+      onDelete,
       form: {
         getFieldDecorator,
         getFieldsValue,
@@ -67,10 +69,25 @@ class ModalMemberTier extends Component {
       })
     }
 
+    const handleDelete = () => {
+      Modal.confirm({
+        title: 'Delete this item',
+        content: 'Are you sure ?',
+        onOk () {
+          onDelete(item.productCode)
+        }
+      })
+    }
+
     return (
       <Modal
         {...modalProps}
         onOk={() => handleSubmit()}
+        footer={[
+          <span>{modalType === 'edit' && <Button disabled={loading} size="large" key="delete" type="danger" style={{ margin: '0 10px' }} onClick={handleDelete}>Delete</Button>}</span>,
+          <Button disabled={loading} size="large" key="back" onClick={modalProps.onCancel}>Cancel</Button>,
+          <Button disabled={loading} size="large" key="submit" type="primary" onClick={() => handleSubmit()}>Ok</Button>
+        ]}
       >
         <Form layout="horizontal">
           <FormItem label="Product" hasFeedback {...formItemLayout} >

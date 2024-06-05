@@ -5,18 +5,18 @@ import { routerRedux } from 'dva/router'
 import {
   Row,
   Col,
-  // Tag,
   Button
 } from 'antd'
 import TransDetail from './TransDetail'
-import FormAccounting from './FormAccounting'
+import TransMaterial from './TransMaterial'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
+import PrintPDFMaterial from './PrintPDFMaterial'
 
 
 const Detail = ({ app, repackingSpk, dispatch }) => {
   const { user, storeInfo } = app
-  const { listDetail, listAccounting, data, materialRequest } = repackingSpk
+  const { listDetail, data, materialRequest } = repackingSpk
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -40,11 +40,21 @@ const Detail = ({ app, repackingSpk, dispatch }) => {
     dataSource: listDetail && listDetail.map((item, index) => ({ no: index + 1, ...item }))
   }
 
+  const formMaterialProps = {
+    dataSource: materialRequest && materialRequest.map((item, index) => ({ no: index + 1, ...item }))
+  }
+
   const printProps = {
-    // listItem: listProducts,
-    // itemPrint: transHeader,
-    // itemHeader: transHeader,
     listItem: listDetail,
+    itemPrint: data,
+    itemHeader: data,
+    storeInfo,
+    user,
+    printNo: 1
+  }
+
+  const printMaterialProps = {
+    listItem: materialRequest,
     itemPrint: data,
     itemHeader: data,
     storeInfo,
@@ -65,24 +75,20 @@ const Detail = ({ app, repackingSpk, dispatch }) => {
       </Col>
       <Col lg={18}>
         <div className="content-inner-zero-min-height">
-          <h1>Items</h1>
-          {listDetail && listDetail.length && <PrintPDFInvoice {...printProps} />}
+          <h1>Request</h1>
+          {listDetail && listDetail.length ? <PrintPDFInvoice {...printProps} /> : null}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>
         </div>
 
-        {(user.permissions.role === 'OWN'
-          || user.permissions.role === 'SPR'
-          || user.permissions.role === 'HFC'
-          || user.permissions.role === 'SFC') && (
-            <div className="content-inner-zero-min-height">
-              <h1>Accounting Journal</h1>
-              <Row style={{ padding: '10px', margin: '4px' }}>
-                <FormAccounting listAccounting={listAccounting} />
-              </Row>
-            </div>
-          )}
+        <div className="content-inner-zero-min-height" style={{ marginTop: '10px' }}>
+          <h1>Material</h1>
+          {materialRequest && materialRequest.length ? <PrintPDFMaterial {...printMaterialProps} /> : null}
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <TransMaterial {...formMaterialProps} />
+          </Row>
+        </div>
       </Col>
     </Row>
   </div>)
