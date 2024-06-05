@@ -1,20 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
-import { Table, Modal } from 'antd'
+import { Table } from 'antd'
 import { DropOption } from 'components'
 
-const confirm = Modal.confirm
-
-const List = ({ deleteItem, ...tableProps }) => {
+const List = ({ onOpenModalFinish, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '2') {
-      confirm({
-        title: 'Are you sure to delete this record ?',
-        onOk () {
-          deleteItem(record.id)
-        }
-      })
+    if (e.key === '1') {
+      onOpenModalFinish(record)
     }
   }
 
@@ -26,9 +19,19 @@ const List = ({ deleteItem, ...tableProps }) => {
       key: 'transNo',
       render: (text, record) => {
         return (
-          <Link to={`/repacking-spk/${record.id}`}>{text}</Link>
+          <Link to={`/repacking-task-list/${record.id}`}>{text}</Link>
         )
       }
+    },
+    {
+      title: 'Store',
+      dataIndex: 'storeName',
+      key: 'storeName'
+    },
+    {
+      title: 'Target',
+      dataIndex: 'storeReceiverName',
+      key: 'storeReceiverName'
     },
     {
       title: 'Description',
@@ -41,7 +44,7 @@ const List = ({ deleteItem, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Finish' }]} />
       }
     }
   ]

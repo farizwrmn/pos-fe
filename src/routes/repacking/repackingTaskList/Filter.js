@@ -1,9 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Input } from 'antd'
+import { Form, Row, Col, Input, Select } from 'antd'
 
 const Search = Input.Search
 const FormItem = Form.Item
+const { Option } = Select
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 8 },
+    sm: { span: 8 },
+    md: { span: 7 }
+  },
+  wrapperCol: {
+    xs: { span: 16 },
+    sm: { span: 14 },
+    md: { span: 14 }
+  }
+}
 
 const searchBarLayout = {
   sm: { span: 24 },
@@ -14,22 +28,32 @@ const searchBarLayout = {
 
 const Filter = ({
   onFilterChange,
+  listStore,
   form: {
     getFieldDecorator,
     getFieldsValue
   }
 }) => {
+  const childrenStore = listStore && listStore.length > 0 ? listStore.map(x => (<Option value={x.value} key={x.value} title={x.label}>{x.label}</Option>)) : []
+
   const handleSubmit = () => {
     let field = getFieldsValue()
-    if (field.counterName === undefined || field.counterName === '') delete field.counterName
+    if (field.q === undefined || field.q === '') delete field.q
+    onFilterChange(field)
+  }
+
+  const onSelectStore = (storeIdReceiver) => {
+    let field = {
+      ...getFieldsValue()
+    }
+    field.storeIdReceiver = storeIdReceiver
     onFilterChange(field)
   }
 
   return (
     <Row>
-      <Col span={12} />
       <Col {...searchBarLayout} >
-        <FormItem >
+        <FormItem label="Search" hasFeedback {...formItemLayout} >
           {getFieldDecorator('q')(
             <Search
               placeholder="Search"
@@ -37,7 +61,32 @@ const Filter = ({
             />
           )}
         </FormItem>
+        <FormItem>
+          {getFieldDecorator('storeIdReceiver')(
+            <FormItem label="Store Target" hasFeedback {...formItemLayout} >
+              {getFieldDecorator('storeIdReceiver', {
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Select
+                  showSearch
+                  size="large"
+                  style={{ width: '100%' }}
+                  placeholder="Choose Store Target"
+                  onSelect={onSelectStore}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {childrenStore}
+                </Select>
+              )}
+            </FormItem>
+          )}
+        </FormItem>
       </Col>
+      <Col span={12} />
     </Row>
   )
 }

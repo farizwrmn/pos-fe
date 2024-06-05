@@ -32,6 +32,8 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    modalFinishRepackingVisible: false,
+    modalFinishRepackingItem: {},
     modalMemberTierVisible: false,
     modalMemberTierItem: {},
     modalMemberTierType: 'add',
@@ -46,7 +48,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/repacking-spk/:id').exec(location.pathname)
+        const match = pathToRegexp('/repacking-task-list/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -59,22 +61,19 @@ export default modelExtend(pageModel, {
         }
         if (pathname === '/repacking-task-list') {
           dispatch({
-            type: 'querySequence'
-          })
-          dispatch({
             type: 'updateState',
             payload: {
               activeKey: activeKey || '0'
             }
           })
-          if (activeKey === '1') dispatch({ type: 'query', payload: other })
+          dispatch({ type: 'query', payload: other })
         }
       })
     }
   },
 
   effects: {
-    * queryDetail ({ payload = {} }, { call, put }) {
+    * openModalFinish ({ payload = {} }, { call, put }) {
       const response = yield call(queryById, payload)
       if (response.success && response.data) {
         // let listAccounting = []
@@ -89,13 +88,15 @@ export default modelExtend(pageModel, {
         //   }
         // }
 
-        console.log('test', response.materialRequest)
         yield put({
           type: 'updateState',
           payload: {
-            data: response.data,
-            listDetail: response.detailRequest,
-            materialRequest: response.materialRequest
+            modalFinishRepackingVisible: true,
+            modalFinishRepackingItem: {
+              ...response.data,
+              detail: response.detailRequest,
+              material: response.materialRequest
+            }
             // listAccounting
           }
         })
@@ -125,6 +126,8 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       payload.storeId = lstorage.getCurrentUserStore()
+      payload.status = 0
+      payload.active = 1
       payload.order = '-id'
       const response = yield call(query, payload)
       if (response.success) {

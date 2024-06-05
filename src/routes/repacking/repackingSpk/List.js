@@ -31,6 +31,16 @@ const List = ({ deleteItem, ...tableProps }) => {
       }
     },
     {
+      title: 'Store',
+      dataIndex: 'storeName',
+      key: 'storeName'
+    },
+    {
+      title: 'Target',
+      dataIndex: 'storeReceiverName',
+      key: 'storeReceiverName'
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       key: 'description'

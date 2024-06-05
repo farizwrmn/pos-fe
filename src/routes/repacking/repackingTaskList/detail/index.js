@@ -14,9 +14,9 @@ import PrintPDFInvoice from './PrintPDFInvoice'
 import PrintPDFMaterial from './PrintPDFMaterial'
 
 
-const Detail = ({ app, repackingSpk, dispatch }) => {
+const Detail = ({ app, repackingTaskList, dispatch }) => {
   const { user, storeInfo } = app
-  const { listDetail, data, materialRequest } = repackingSpk
+  const { listDetail, data, materialRequest } = repackingTaskList
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -32,7 +32,7 @@ const Detail = ({ app, repackingSpk, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/repacking-spk?activeKey=1'))
+    dispatch(routerRedux.push('/repacking-task-list'))
   }
 
   const formDetailProps = {
@@ -96,7 +96,7 @@ const Detail = ({ app, repackingSpk, dispatch }) => {
 
 Detail.propTypes = {
   app: PropTypes.object,
-  repackingSpk: PropTypes.object
+  repackingTaskList: PropTypes.object
 }
 
-export default connect(({ app, repackingSpk }) => ({ app, repackingSpk }))(Detail)
+export default connect(({ app, repackingTaskList }) => ({ app, repackingTaskList }))(Detail)
