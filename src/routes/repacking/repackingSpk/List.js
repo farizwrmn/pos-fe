@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
-import { Table, Modal } from 'antd'
+import { Table, Tag, Modal } from 'antd'
 import { DropOption } from 'components'
 
 const confirm = Modal.confirm
@@ -43,7 +43,33 @@ const List = ({ deleteItem, ...tableProps }) => {
     {
       title: 'Description',
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      width: '200px'
+    },
+    {
+      title: 'Status',
+      dataIndex: 'statusText',
+      key: 'statusText'
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'active',
+      render: (text, record) => {
+        const active = record.active
+        if (active) {
+          return (
+            <Tag color="green">
+              Active
+            </Tag>
+          )
+        }
+        return (
+          <Tag color="red">
+            Canceled
+          </Tag>
+        )
+      }
     },
     {
       title: 'Operation',

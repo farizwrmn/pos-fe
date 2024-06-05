@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
 import { query as querySequence } from 'services/sequence'
+import { query as queryParameter } from 'services/utils/parameter'
 // import { queryEntryList } from 'services/payment/bankentry'
 // import {
 //   AJIN,
@@ -73,6 +74,23 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryReason (payload, { call, put }) {
+      const response = yield call(queryParameter, {
+        paramCode: 'repackingTaskListStatus',
+        type: 'all',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listReason: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
     * openModalFinish ({ payload = {} }, { call, put }) {
       const response = yield call(queryById, payload)
       if (response.success && response.data) {

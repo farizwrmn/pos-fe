@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
 
 const List = ({ onOpenModalFinish, ...tableProps }) => {
@@ -36,7 +36,20 @@ const List = ({ onOpenModalFinish, ...tableProps }) => {
     {
       title: 'Description',
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      width: '200px'
+    },
+    {
+      title: 'Status',
+      dataIndex: 'statusText',
+      key: 'statusText',
+      render: (text) => {
+        return (
+          <Tag color="green">
+            {text}
+          </Tag>
+        )
+      }
     },
     {
       title: 'Operation',
