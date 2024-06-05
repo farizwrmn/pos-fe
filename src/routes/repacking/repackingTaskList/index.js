@@ -10,14 +10,14 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, location, app }) => {
-  const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = repackingTaskList
+const RepackingSpk = ({ repackingSpk, productstock, loading, dispatch, location, app }) => {
+  const { list, pagination, modalMemberTierVisible, modalMemberTierItem, modalMemberTierType, detail, modalType, currentItem, activeKey } = repackingSpk
   const { list: listProduct } = productstock
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
       dispatch({
-        type: 'repackingTaskList/query',
+        type: 'repackingSpk/query',
         payload: {
           ...value
         }
@@ -30,7 +30,7 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['repackingTaskList/query'],
+    loading: loading.effects['repackingSpk/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -52,17 +52,17 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
         }
       }))
       dispatch({
-        type: 'repackingTaskList/editItem',
+        type: 'repackingSpk/editItem',
         payload: { item }
       })
       dispatch({
-        type: 'repackingTaskList/loadList',
+        type: 'repackingSpk/loadList',
         payload: item
       })
     },
     deleteItem (id) {
       dispatch({
-        type: 'repackingTaskList/delete',
+        type: 'repackingSpk/delete',
         payload: id
       })
     }
@@ -70,7 +70,7 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
 
   const changeTab = (key) => {
     dispatch({
-      type: 'repackingTaskList/changeTab',
+      type: 'repackingSpk/changeTab',
       payload: { key }
     })
     const { query, pathname } = location
@@ -81,12 +81,12 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
         activeKey: key
       }
     }))
-    dispatch({ type: 'repackingTaskList/updateState', payload: { list: [], detail: [] } })
+    dispatch({ type: 'repackingSpk/updateState', payload: { list: [], detail: [] } })
   }
 
   const clickBrowse = () => {
     dispatch({
-      type: 'repackingTaskList/updateState',
+      type: 'repackingSpk/updateState',
       payload: {
         activeKey: '1'
       }
@@ -102,10 +102,10 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
     item: modalMemberTierItem,
     listProduct,
     fetching: loading.effects['productstock/query'],
-    loading: loading.effects['repackingTaskList/addRecipe'],
+    loading: loading.effects['repackingSpk/addRecipe'],
     onDelete (productCode) {
       dispatch({
-        type: 'repackingTaskList/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           modalMemberTierVisible: false,
           modalMemberTierType: 'add',
@@ -140,19 +140,19 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
     },
     onAdd (item) {
       dispatch({
-        type: 'repackingTaskList/addRecipe',
+        type: 'repackingSpk/addRecipe',
         payload: item
       })
     },
     onEdit (item) {
       dispatch({
-        type: 'repackingTaskList/addRecipe',
+        type: 'repackingSpk/addRecipe',
         payload: item
       })
     },
     onCancel () {
       dispatch({
-        type: 'repackingTaskList/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           modalMemberTierVisible: false
         }
@@ -170,7 +170,7 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
     onSubmit (data, reset) {
       data.header.storeId = lstorage.getCurrentUserStore()
       dispatch({
-        type: `repackingTaskList/${modalType}`,
+        type: `repackingSpk/${modalType}`,
         payload: {
           data,
           reset
@@ -180,14 +180,14 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
     onOpenModalTier (modalMemberTierType, item) {
       if (modalMemberTierType !== 'add') {
         dispatch({
-          type: 'repackingTaskList/updateState',
+          type: 'repackingSpk/updateState',
           payload: {
             modalMemberTierItem: item
           }
         })
       }
       dispatch({
-        type: 'repackingTaskList/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           modalMemberTierVisible: true,
           modalMemberTierType
@@ -203,7 +203,7 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
         }
       }))
       dispatch({
-        type: 'repackingTaskList/updateState',
+        type: 'repackingSpk/updateState',
         payload: {
           currentItem: {}
         }
@@ -236,11 +236,11 @@ const RepackingSpk = ({ repackingTaskList, productstock, loading, dispatch, loca
 }
 
 RepackingSpk.propTypes = {
-  repackingTaskList: PropTypes.object,
+  repackingSpk: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
   dispatch: PropTypes.func
 }
 
-export default connect(({ userStore, repackingTaskList, productstock, loading, app }) => ({ userStore, repackingTaskList, productstock, loading, app }))(RepackingSpk)
+export default connect(({ userStore, repackingSpk, productstock, loading, app }) => ({ userStore, repackingSpk, productstock, loading, app }))(RepackingSpk)

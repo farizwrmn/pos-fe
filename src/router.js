@@ -726,6 +726,22 @@ const Routers = function ({ history, app }) {
             }, 'repacking-spk-detail')
           }
         }, {
+          path: 'repacking-task-list',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/repacking/repackingTaskList'))
+              cb(null, require('./routes/repacking/repackingTaskList'))
+            }, 'repacking-task-list')
+          }
+        }, {
+          path: 'repacking-task-list/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/repacking/repackingTaskList'))
+              cb(null, require('./routes/repacking/repackingTaskList/detail'))
+            }, 'repacking-task-list-detail')
+          }
+        }, {
           path: 'transaction/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
