@@ -125,6 +125,7 @@ const RepackingSpk = ({ repackingTaskList, loading, dispatch, location, app }) =
   }
 
   const formProps = {
+    loading: loading.effects['repackingTaskList/add'],
     visible: modalFinishRepackingVisible,
     width: '80%',
     listAllStores: lstorage.getListUserStores(),

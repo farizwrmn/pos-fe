@@ -46,6 +46,7 @@ class ModalRepackingFinish extends Component {
       modalType,
       button,
       material,
+      loading,
       detail,
       form: {
         getFieldDecorator,
@@ -94,7 +95,10 @@ class ModalRepackingFinish extends Component {
           return
         }
         const response = {
-          id: item.id,
+          header: {
+            id: item.id,
+            transNo: item.transNo
+          },
           detail,
           material
         }
@@ -175,7 +179,7 @@ class ModalRepackingFinish extends Component {
           </Card>
           {modalMemberTierProps.visible && <ModalMemberTier {...modalMemberTierProps} />}
           <FormItem>
-            <Button type="primary" onClick={handleSubmit}>{button}</Button>
+            <Button type="primary" onClick={handleSubmit} loading={loading} disabled={loading}>{button}</Button>
           </FormItem>
         </Form>
       </Modal>

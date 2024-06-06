@@ -74,6 +74,36 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryDetail ({ payload = {} }, { call, put }) {
+      const response = yield call(queryById, payload)
+      if (response.success && response.data) {
+        // let listAccounting = []
+        // if (payload && payload.match && response.data && response.data.id) {
+        //   const reconData = yield call(queryEntryList, {
+        //     transactionId: response.data.id,
+        //     transactionType: AJIN,
+        //     type: 'all'
+        //   })
+        //   if (reconData && reconData.data) {
+        //     listAccounting = listAccounting.concat(reconData.data)
+        //   }
+        // }
+
+        console.log('test', response.materialRequest)
+        yield put({
+          type: 'updateState',
+          payload: {
+            data: response.data,
+            listDetail: response.detailRequest,
+            materialRequest: response.materialRequest
+            // listAccounting
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * queryReason (payload, { call, put }) {
       const response = yield call(queryParameter, {
         paramCode: 'repackingTaskListStatus',
@@ -237,6 +267,16 @@ export default modelExtend(pageModel, {
             message.error('Please allow pop-up in your browser')
           }
         }
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalMemberTierVisible: false,
+            modalMemberTierItem: {},
+            modalMemberTierType: 'edit',
+            modalFinishRepackingVisible: false,
+            modalFinishRepackingItem: {}
+          }
+        })
         yield put({
           type: 'query'
         })
