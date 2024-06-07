@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { BasicInvoice } from 'components'
 
-const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint }) => {
+const PrintPDF = ({ user, listItem, materialRequest, itemHeader, storeInfo, printNo, itemPrint }) => {
   // Declare Function
   const createTableBody = (tabledata) => {
     let body = []
@@ -181,13 +181,22 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
   const tableHeader = [
     [
       { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'PRODUK', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'PRODUK JADI', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' }
+    ]
+  ]
+  const tableHeaderSecondary = [
+    [
+      { fontSize: 12, text: 'NO', style: 'tableHeader', alignment: 'center' },
+      { fontSize: 12, text: 'MATERIAL', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'QTY', style: 'tableHeader', alignment: 'right' }
     ]
   ]
   let tableBody = []
+  let tableBodySecondary = []
   try {
     tableBody = createTableBody(listItem)
+    tableBodySecondary = createTableBody(materialRequest)
   } catch (e) {
     console.log('error', e)
   }
@@ -212,13 +221,16 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo, itemPrint })
     className: 'button-width02 button-extra-large bgcolor-blue',
     width: ['10%', '75%', '15%'],
     pageMargins: [40, 160, 40, 150],
-    pageSize: { width: 813, height: 530 },
-    pageOrientation: 'landscape',
+    pageSize: 'A4',
+    pageOrientation: 'horizontal',
     tableStyle: styles,
     layout: tableLayout,
     tableHeader,
+    tableHeaderSecondary,
     tableBody,
+    tableBodySecondary,
     tableFooter,
+    tableFooterSecondary: [],
     data: listItem,
     header,
     footer,

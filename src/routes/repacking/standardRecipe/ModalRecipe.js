@@ -119,7 +119,7 @@ class ModalMemberTier extends Component {
                   required: true
                 }
               ]
-            })(<InputNumber min={0.01} max={999999999} style={{ width: '100%' }} />)}
+            })(<InputNumber min={0.0001} max={999999999} style={{ width: '100%' }} />)}
           </FormItem>
         </Form>
       </Modal>

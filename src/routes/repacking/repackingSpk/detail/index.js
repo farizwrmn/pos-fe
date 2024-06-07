@@ -46,6 +46,7 @@ const Detail = ({ app, repackingSpk, dispatch }) => {
 
   const printProps = {
     listItem: listDetail,
+    materialRequest,
     itemPrint: data,
     itemHeader: data,
     storeInfo,

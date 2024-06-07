@@ -17,7 +17,7 @@
     "moment": "2.18.1",
     "nprogress": "^0.2.0",
     "path-to-regexp": "^1.7.0",
-    "pdfmake": "0.1.68",
+    "pdfmake": "0.2.10",
     "pouchdb": "^7.3.1",
     "pouchdb-find": "^7.3.1",
     "prop-types": "^15.6.0",

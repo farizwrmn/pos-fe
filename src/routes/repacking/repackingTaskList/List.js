@@ -19,7 +19,7 @@ const List = ({ onOpenModalFinish, ...tableProps }) => {
       key: 'transNo',
       render: (text, record) => {
         return (
-          <Link to={`/repacking-task-list/${record.id}`}>{text}</Link>
+          <Link to={`/repacking-spk/${record.id}`}>{text}</Link>
         )
       }
     },
