@@ -14,36 +14,42 @@ const BasicInvoice = ({
   width = 'auto',
   pageMargins = [0, 0, 0, 0],
   pageSize = 'A4',
+  layout = '',
   pageOrientation = 'portrait',
   tableStyle,
-  layout = '',
   tableHeader = [],
+  tableHeaderSecondary = [],
   tableBody = [],
+  tableBodySecondary = [],
   tableFooter = [],
-  data,
+  tableFooterSecondary = [],
   header = {},
   footer = {}
 }) => {
-  const createPdfLineItems = () => {
+  const createPdfLineItems = ({
+    tableHeader,
+    tableBody,
+    tableFooter
+  }) => {
     let body = []
     if (tableHeader.length > 0) {
-      for (let c = 0; c < tableHeader.length; c += 1) {
-        body.push(tableHeader[c])
+      for (let key in tableHeader) {
+        body.push(tableHeader[key])
       }
     }
     if (tableBody.length > 0) {
-      for (let c = 0; c < tableBody.length; c += 1) {
-        body.push(tableBody[c])
+      for (let key in tableBody) {
+        body.push(tableBody[key])
       }
     }
     if (tableFooter.length > 0) {
-      for (let c = 0; c < tableFooter.length; c += 1) {
-        body.push(tableFooter[c])
+      for (let key in tableFooter) {
+        body.push(tableFooter[key])
       }
     }
     return body
   }
-  const printPdf = (data) => {
+  const printPdf = () => {
     if (tableHeader.length === 0 && tableFooter.length === 0) {
       console.log('header', tableHeader.length)
       console.log('footer', tableFooter.length)
@@ -57,7 +63,17 @@ const BasicInvoice = ({
         content: 'No Data in Storage'
       })
     } else {
-      const content = createPdfLineItems(data)
+      const content = createPdfLineItems({
+        tableHeader,
+        tableBody,
+        tableFooter
+      })
+      const contentTest = createPdfLineItems({
+        tableHeader: tableHeaderSecondary,
+        tableBody: tableBodySecondary,
+        tableFooter: tableFooterSecondary
+      })
+
       let docDefinition = {
         defaultStyle: {
           font: 'OpenSans'
@@ -66,12 +82,28 @@ const BasicInvoice = ({
         pageOrientation,
         pageMargins,
         header,
-        content: [
+        content: tableBodySecondary && tableBodySecondary.length > 0 ? ([
           {
-            writable: true,
+            style: 'tableExample',
             table: {
               widths: width,
-              headerRows: tableHeader.length,
+              body: content
+            },
+            layout
+          }
+        ]).concat([
+          {
+            style: 'tableExample',
+            table: {
+              widths: width,
+              body: contentTest
+            },
+            layout
+          }
+        ]) : [
+          {
+            table: {
+              widths: width,
               body: content
             },
             layout
@@ -91,7 +123,7 @@ const BasicInvoice = ({
     <Button type="dashed"
       size="large"
       className={className}
-      onClick={() => printPdf(data)}
+      onClick={() => printPdf()}
     >
       <Icon type="printer" className="icon-large" />
       {name}

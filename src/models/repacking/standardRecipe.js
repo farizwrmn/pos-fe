@@ -1,20 +1,25 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/product/productTag'
+import { queryById as queryProductById } from 'services/master/productstock'
+import { query, queryListDetail, add, edit, remove } from 'services/repacking/standardRecipe'
 import { pageModel } from 'models/common'
 
 const success = () => {
-  message.success('Product Tag has been saved')
+  message.success('Standard Recipe has been saved')
 }
 
 export default modelExtend(pageModel, {
-  namespace: 'productTag',
+  namespace: 'standardRecipe',
 
   state: {
+    detail: [],
     currentItem: {},
     modalType: 'add',
     activeKey: '0',
+    modalMemberTierVisible: false,
+    modalMemberTierItem: {},
+    modalMemberTierType: 'add',
     list: [],
     pagination: {
       current: 1
@@ -26,18 +31,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/stock'
-          || pathname === '/stock-tag-schedule') {
-          if (activeKey !== '1') {
-            dispatch({
-              type: 'query',
-              payload: {
-                type: 'all'
-              }
-            })
-          }
-        }
-        if (pathname === '/stock-tag') {
+        if (pathname === '/standard-recipe') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -51,7 +45,6 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
       if (response.success) {
@@ -69,6 +62,50 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * addRecipe ({ payload = {} }, { select, call, put }) {
+      const detail = yield select(({ standardRecipe }) => standardRecipe.detail)
+      const response = yield call(queryProductById, { id: payload.productCode })
+      if (response && response.success && response.data) {
+        yield put({
+          type: 'standardRecipe/updateState',
+          payload: {
+            modalMemberTierVisible: false,
+            modalMemberTierType: 'add',
+            detail: detail
+              .filter(filtered => filtered.productCode !== payload.productCode)
+              .concat({
+                productName: response.data.productName,
+                productCode: response.data.productCode,
+                productId: response.data.id,
+                qty: payload.qty
+              }).sort((a, b) => a.productCode - b.productCode)
+          }
+        })
+      } else {
+        throw new Error('Product Not Found')
+      }
+    },
+
+    * loadList ({ payload }, { call, put }) {
+      const response = yield call(queryListDetail, { transId: payload.id })
+      yield put({
+        type: 'productstock/query',
+        payload: {
+          id: payload.productId
+        }
+      })
+      if (response && response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            detail: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * delete ({ payload }, { call, put }) {
       const response = yield call(remove, payload)
       if (response.success) {
@@ -79,6 +116,9 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      if (payload.data && payload.data.detail && payload.data.detail.length === 0) {
+        throw new Error('Detail is empty')
+      }
       const response = yield call(add, payload.data)
       if (response.success) {
         success()
@@ -86,11 +126,15 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
-            currentItem: {}
+            currentItem: {},
+            detail: []
           }
         })
         yield put({
           type: 'query'
+        })
+        yield put({
+          type: 'querySequence'
         })
         if (payload.reset) {
           payload.reset()
@@ -107,7 +151,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ productTag }) => productTag.currentItem.id)
+      const id = yield select(({ standardRecipe }) => standardRecipe.currentItem.id)
       const newCounter = { ...payload.data, id }
       const response = yield call(edit, newCounter)
       if (response.success) {

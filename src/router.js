@@ -226,6 +226,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/purchase'))
               registerModel(app, require('./models/storePrice/stockExtraPriceStore'))
               registerModel(app, require('./models/product/stockLocation'))
+              registerModel(app, require('./models/product/productTag'))
               registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/master/productcategory'))
               registerModel(app, require('./models/master/productbrand'))
@@ -405,6 +406,16 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/product/productTag'))
               cb(null, require('./routes/product/productTag'))
             }, 'product-tag')
+          }
+        }, {
+          path: 'stock-tag-schedule',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productTag'))
+              registerModel(app, require('./models/product/productTagSchedule'))
+              registerModel(app, require('./models/master/productstock'))
+              cb(null, require('./routes/product/productTagSchedule'))
+            }, 'product-tag-schedule')
           }
         }, {
           path: 'master/product/variant',
@@ -682,9 +693,53 @@ const Routers = function ({ history, app }) {
           path: 'marketing/incentive-member',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/marketing/incentiveMember'))
               cb(null, require('./routes/marketing/incentiveMember'))
             }, 'marketing-incentive-member')
+          }
+        }, {
+          path: 'standard-recipe',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/repacking/standardRecipe'))
+              cb(null, require('./routes/repacking/standardRecipe'))
+            }, 'repacking-standard-recipe')
+          }
+        }, {
+          path: 'repacking-spk',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/repacking/repackingSpk'))
+              cb(null, require('./routes/repacking/repackingSpk'))
+            }, 'repacking-spk')
+          }
+        }, {
+          path: 'repacking-spk/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/repacking/repackingSpk'))
+              cb(null, require('./routes/repacking/repackingSpk/detail'))
+            }, 'repacking-spk-detail')
+          }
+        }, {
+          path: 'repacking-task-list',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/repacking/repackingTaskList'))
+              cb(null, require('./routes/repacking/repackingTaskList'))
+            }, 'repacking-task-list')
+          }
+        }, {
+          path: 'repacking-task-list/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/repacking/repackingTaskList'))
+              cb(null, require('./routes/repacking/repackingTaskList/detail'))
+            }, 'repacking-task-list-detail')
           }
         }, {
           path: 'transaction/pos',

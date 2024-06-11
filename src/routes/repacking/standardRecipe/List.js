@@ -21,14 +21,9 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
 
   const columns = [
     {
-      title: 'Tag',
-      dataIndex: 'tagCode',
-      key: 'tagCode'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'tagDescription',
-      key: 'tagDescription'
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
     },
     {
       title: 'Operation',
