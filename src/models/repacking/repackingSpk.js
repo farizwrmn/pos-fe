@@ -15,6 +15,10 @@ import { query, queryById, add, edit, remove } from 'services/repacking/repackin
 import { query as queryStandardRecipe, queryListDetail as queryStandardRecipeDetail } from 'services/repacking/standardRecipe'
 import { pageModel } from 'models/common'
 
+const isInt = (n) => {
+  return Number(n) === n && n % 1 === 0
+}
+
 const success = () => {
   message.success('Repacking Spk has been saved')
 }
@@ -169,13 +173,18 @@ export default modelExtend(pageModel, {
                 productId: response.data.id,
                 qty: payload.qty,
                 standardRecipeId: standardRecipe.id,
-                material: standardRecipeDetail.map(item => ({
-                  productName: item.productName,
-                  productCode: item.productCode,
-                  productId: item.productId,
-                  qty: item.qty * payload.qty,
-                  standardRecipeId: standardRecipe.id
-                }))
+                material: standardRecipeDetail.map((item) => {
+                  if (!isInt(item.qty * payload.qty)) {
+                    throw new Error(`Nilai material tidak genap, material: ${item.qty}`)
+                  }
+                  return ({
+                    productName: item.productName,
+                    productCode: item.productCode,
+                    productId: item.productId,
+                    qty: item.qty * payload.qty,
+                    standardRecipeId: standardRecipe.id
+                  })
+                })
               }).sort((a, b) => a.productCode - b.productCode)
           }
         })
