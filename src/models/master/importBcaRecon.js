@@ -545,16 +545,10 @@ export default modelExtend(pageModel, {
         })
         success()
         yield put({
-          type: 'query',
-          payload
+          type: 'query'
+          // payload
         })
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw data
       }
     },
