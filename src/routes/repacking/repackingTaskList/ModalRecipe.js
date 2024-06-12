@@ -108,7 +108,7 @@ class ModalMemberTier extends Component {
                 }
               ]
             })(
-              <InputNumber min={0} disabled />
+              <InputNumber min={0} />
             )}
           </FormItem>
           <br />
