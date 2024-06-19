@@ -43,6 +43,36 @@ const DynamicQrisTemplate = ({
         <div style={{ textAlign: 'center', fontSize: '14px' }}>
           Buka Aplikasi e-wallet atau m-Banking anda dan scan QR-Code untuk membayar pesanan
         </div>
+
+        <div style={{
+          height: 'auto',
+          width: '100%',
+          backgroundColor: color.white,
+          marginTop: '20px'
+        }}
+        >
+          <div style={{ backgroundColor: color.termConditionQris, width: '100%', height: 'auto', paddingTop: 10, paddingBottom: 10 }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: color.charcoal }}>Ketentuan Pembayaran QRIS</div>
+          </div>
+          <div style={{ paddingTop: 8, textAlign: 'left', fontSize: '18px', color: color.black }}>
+            <p>
+            Jika pembayaran belum terkonfirmasi, mohon lakukan pembayaran tunai<br />
+            Transaksi di rekening Anda bukan bukti pembayaran berhasil<br />
+            Jika terjadi keberhasilan dalam proses pembayaran, dana akan dikembalikan dalam waktu 3 hari kerja<br />
+            Pembayaran melalui EDC atau QRIS dianggap telah disetujui oleh pelanggan<br /><br />
+            Terima kasih atas pengertiannya.
+            </p>
+            <div style={{ textAlign: 'left', fontSize: '18px', color: color.black, marginTop: 10 }}>Hubungi CS kami: <span
+              style={{
+                textAlign: 'left',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                color: color.black
+              }}
+            >0822-5450-3201</span></div>
+          </div>
+        </div>
+
       </div>
     </div>
   )
