@@ -7,6 +7,10 @@ import { APPNAME, MAIN_WEBSITE } from 'utils/config.company'
 import QRCode from 'qrcode'
 import ShelfStickerCard from '../../../../components/Pdf/ShelfStickerCard'
 
+const PAGE_MARGIN_LEFT_IN_CENTI = 1.6
+const PAGE_MARGIN_LEFT = (PAGE_MARGIN_LEFT_IN_CENTI / 2.54) * 72
+const PAGE_MARGIN_TOP_IN_CENTI = 1.59
+const PAGE_MARGIN_TOP = (PAGE_MARGIN_TOP_IN_CENTI / 2.54) * 72
 const NUMBER_OF_COLUMN = 5
 const BRAND_NAME_SIZE_IN_POINT = 4
 const BRAND_NAME_SIZE = BRAND_NAME_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
@@ -261,7 +265,7 @@ class PrintShelf extends Component {
       height: HEIGHT_TABLE,
       pageSize: 'A4',
       pageOrientation: 'landscape',
-      pageMargins: [17, 70, 17, 70],
+      pageMargins: [PAGE_MARGIN_LEFT, PAGE_MARGIN_TOP, PAGE_MARGIN_LEFT, PAGE_MARGIN_TOP],
       tableStyle: styles,
       layout: {
         hLineStyle () {
@@ -320,7 +324,7 @@ class PrintShelf extends Component {
           height: HEIGHT_TABLE,
           pageSize: 'A4',
           pageOrientation: 'landscape',
-          pageMargins: [17, 30, 17, 30],
+          pageMargins: [PAGE_MARGIN_LEFT, PAGE_MARGIN_TOP, PAGE_MARGIN_LEFT, PAGE_MARGIN_TOP],
           tableStyle: styles,
           layout: {
             hLineStyle () {
