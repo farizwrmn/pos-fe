@@ -16,10 +16,31 @@ const List = ({ location, ...tableProps }) => {
       }
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
+      title: 'Adjust In',
+      dataIndex: 'adjustInId',
+      key: 'adjustInId',
+      render: (text) => {
+        return <a target="_blank" href={`/transaction/adjust/${text}`}>{text}</a>
+      }
+    },
+    {
       title: 'Adjust In',
       dataIndex: 'adjustInTotal',
       key: 'adjustInTotal',
       render: text => (text || '').toLocaleString()
+    },
+    {
+      title: 'Adjust In',
+      dataIndex: 'adjustInId',
+      key: 'adjustInId',
+      render: (text) => {
+        return <a target="_blank" href={`/transaction/adjust/${text}`}>{text}</a>
+      }
     },
     {
       title: 'Adjust Out',

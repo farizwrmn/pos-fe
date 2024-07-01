@@ -10,12 +10,14 @@ import { routerRedux } from 'dva/router'
 import { Cancel, Trans, Daily, Compare, Hourly, Hour, PosUnit } from '../components'
 
 import Detail from '../components/Detail'
+import EmbeddedSalesByDate from '../components/EmbeddedSalesByDate'
 
 const TabPane = Tabs.TabPane
 
 const Report = ({ posReport, dispatch, location }) => {
   const {
-    activeKey
+    activeKey,
+    iframeUrl
     // permissionValue
   } = posReport
   const callback = (key) => {
@@ -56,18 +58,12 @@ const Report = ({ posReport, dispatch, location }) => {
         <TabPane tab="Hours" key="7">
           {activeKey === '7' && <Hour />}
         </TabPane>
-        {/* {permissionValue === true ?
-          <TabPane tab="Store" key="8">
-            {activeKey === '8' && <PosUnit />}
-          </TabPane>
-          : null} */}
-
         <TabPane tab="Store" key="8">
           {activeKey === '8' && <PosUnit />}
         </TabPane>
-        {/* <TabPane tab="Work Order" key="9">
-          {activeKey === '9' && <Hour />}
-        </TabPane> */}
+        <TabPane tab="Embedded" key="9">
+          {activeKey === '9' && <EmbeddedSalesByDate iframeUrl={iframeUrl} />}
+        </TabPane>
       </Tabs>
     </div>
   )

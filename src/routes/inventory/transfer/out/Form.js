@@ -282,7 +282,7 @@ const FormAdd = ({
         </Row>
 
         <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
-        {defaultRole !== 'CSH' && defaultRole !== 'HKS' && <FormItem>
+        {defaultRole !== 'CSH' && <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
         </FormItem>}
         {modalProductDemandProps.visible && (
