@@ -35,9 +35,9 @@ const List = ({ location, ...tableProps }) => {
       render: text => (text || '').toLocaleString()
     },
     {
-      title: 'Adjust In',
-      dataIndex: 'adjustInId',
-      key: 'adjustInId',
+      title: 'Adjust Out',
+      dataIndex: 'adjustOutId',
+      key: 'adjustOutId',
       render: (text) => {
         return <a target="_blank" href={`/transaction/adjust/${text}`}>{text}</a>
       }
