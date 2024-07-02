@@ -1770,6 +1770,7 @@ export default {
     },
 
     * chooseMember ({ payload = {} }, { select, put }) {
+      const selectedPayment = yield select(({ pos }) => pos.selectedPaymentShortcut)
       const { item } = payload
       let newItem = reArrangeMember(item)
       const memberInformation = newItem
@@ -1793,6 +1794,9 @@ export default {
 
       try {
         let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+        if ((!selectedPaymentShortcut) || (selectedPaymentShortcut && !selectedPaymentShortcut.sellPrice)) {
+          selectedPaymentShortcut = selectedPayment
+        }
         const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
         let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
         const { sellPrice, memberId } = selectedPaymentShortcut
