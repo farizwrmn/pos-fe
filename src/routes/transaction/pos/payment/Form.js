@@ -167,16 +167,6 @@ class FormPayment extends React.Component {
       }
     }
 
-    // const changeToNumber = (e) => {
-    //   const { value } = e.target
-    //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-    //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-    //     setFieldsValue({
-    //       amount: value
-    //     })
-    //   }
-    // }
-
     const useNetto = (e) => {
       setFieldsValue({
         amount: e
@@ -188,12 +178,6 @@ class FormPayment extends React.Component {
       resetFields()
     }
 
-    // const changeMethod = () => {
-    //   setFieldsValue({
-    //     cardName: null,
-    //     cardNo: null
-    //   })
-    // }
     const usageLoyalty = memberInformation.useLoyalty || 0
     const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
     const totalDiscount = usageLoyalty
@@ -236,9 +220,9 @@ class FormPayment extends React.Component {
       setFieldsValue({
         printDate: moment(),
         machine: undefined,
-        bank: undefined,
-        amount: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0
+        bank: undefined
       })
+      useNetto(paymentValue)
       this.setState({
         typeCode: value
       })
