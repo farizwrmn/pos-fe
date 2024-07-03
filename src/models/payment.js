@@ -696,6 +696,7 @@ export default {
     * createDynamicQrisPayment ({ payload }, { call, select, put }) {
       removeDynamicQrisImage()
       const { curTotalPayment, curNetto } = payload
+      const posDescription = yield select(({ pos }) => pos.posDescription)
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
@@ -894,6 +895,7 @@ export default {
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
               reference,
+              description: posDescription,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
