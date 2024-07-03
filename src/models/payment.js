@@ -137,6 +137,7 @@ export default {
     * create ({ payload }, { select, call, put }) {
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const posDescription = yield select(({ pos }) => pos.posDescription)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
         const modal = Modal.warning({
@@ -333,6 +334,7 @@ export default {
           if (currentRegister.success || payload.memberCode !== null) {
             const detailPOS = {
               reference,
+              description: posDescription,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,

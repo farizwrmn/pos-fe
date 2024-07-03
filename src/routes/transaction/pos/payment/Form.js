@@ -150,6 +150,7 @@ class FormPayment extends React.Component {
         resetFields,
         setFieldsValue
       },
+      posDescription,
       selectedPaymentShortcut
     } = this.props
     const {
@@ -617,6 +618,11 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+            </FormItem>
+            <FormItem label="Label/Customer" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('posDescription', {
+                initialValue: posDescription
+              })(<Input maxLength={255} disabled />)}
             </FormItem>
           </Col>
         </Row>
