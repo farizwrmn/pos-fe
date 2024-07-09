@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import moment from 'moment'
-import { query, queryById } from 'services/return/returnPurchaseDetail'
+import { message } from 'antd'
+import { query, queryById, edit } from 'services/return/returnPurchaseDetail'
 import { pageModel } from '../common'
 
 export default modelExtend(pageModel, {
@@ -15,6 +16,8 @@ export default modelExtend(pageModel, {
     selectedRowKeys: [],
     modalApproveVisible: false,
     modalDetailVisible: false,
+    modalEditItem: {},
+    modalEditVisible: false,
     list: [],
     activeKey: '0',
     disable: '',
@@ -91,6 +94,27 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw response
+      }
+    },
+
+    * edit ({ payload }, { call, put }) {
+      const response = yield call(edit, payload)
+      if (response.success) {
+        message.success('Success edit product price')
+        yield put({
+          type: 'returnPurchase/queryReturnPurchaseDetail',
+          payload: {
+            id: response.data.id,
+            storeId: response.data.storeId
+          }
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalEditItem: {},
+            modalEditVisible: false
+          }
+        })
       }
     }
   },
