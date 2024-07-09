@@ -959,6 +959,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/return/returnPurchase'))
+              registerModel(app, require('./models/return/returnPurchaseDetail'))
               cb(null, require('./routes/return/returnPurchase/detail'))
             }, 'transaction-return-purchase-detail')
           }
