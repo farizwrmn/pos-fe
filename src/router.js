@@ -218,6 +218,14 @@ const Routers = function ({ history, app }) {
             }, 'master-product-category')
           }
         }, {
+          path: 'stock-mindis',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productMinDis'))
+              cb(null, require('./routes/product/productMinDis'))
+            }, 'stock-mindis')
+          }
+        }, {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

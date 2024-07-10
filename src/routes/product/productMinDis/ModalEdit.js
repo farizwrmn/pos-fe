@@ -19,7 +19,7 @@ const formItemLayout = {
 class ModalMemberTier extends Component {
   componentDidMount () {
     setTimeout(() => {
-      const selector = document.getElementById('DPP')
+      const selector = document.getElementById('minDisplay')
       if (selector) {
         selector.focus()
         selector.select()
@@ -50,13 +50,7 @@ class ModalMemberTier extends Component {
           id: item.id,
           ...getFieldsValue()
         }
-        Modal.confirm({
-          title: 'Do you want to save this item?',
-          onOk () {
-            onOk(data, resetFields)
-          },
-          onCancel () { }
-        })
+        onOk(data, resetFields)
       })
     }
 
@@ -70,15 +64,24 @@ class ModalMemberTier extends Component {
         ]}
       >
         <Form layout="horizontal">
-          <FormItem label="DPP" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('DPP', {
-              initialValue: item.DPP || 1,
+          <FormItem label="Min Display" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('minDisplay', {
+              initialValue: item.minDisplay || 1,
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+            })(<InputNumber
+              min={0}
+              max={999999999}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleSubmit()
+                }
+              }}
+              style={{ width: '100%' }}
+            />)}
           </FormItem>
         </Form>
       </Modal>
