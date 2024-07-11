@@ -39,6 +39,7 @@ export default modelExtend(pageModel, {
     modalStoreVisible: false,
     modalSettlementVisible: false,
     list: [],
+    tmpListCsv: [], // Untuk filter list
     listRecon: [],
     listReconLog: [],
     listErrorLog: [],
@@ -263,6 +264,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listSortPayment: sortDataPayment,
+            tmpListCsv: paymentImportBcaData.data,
             list: paymentImportBcaData.data
           }
         })
