@@ -34,6 +34,11 @@ const ListImportCSV = ({ ...tableProps }) => {
       }
     },
     {
+      title: 'Report Date',
+      dataIndex: 'reportDate',
+      key: 'reportDate'
+    },
+    {
       title: 'Approval Code',
       dataIndex: 'approvalCode',
       key: 'approvalCode',
