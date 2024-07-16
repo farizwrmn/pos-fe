@@ -180,7 +180,7 @@ const FormCounter = ({
                     required: true
                   }
                 ]
-              })(<InputNumber disabled={modalType === 'edit'} min={1} max={9999} />)}
+              })(<InputNumber onBlur={() => resetFields(['memberLastPurchaseDate'])} disabled={modalType === 'edit'} min={1} max={9999} />)}
             </FormItem>
             <FormItem label="Last Redeem Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('memberLastPurchaseDate', {
@@ -244,7 +244,7 @@ const FormCounter = ({
                 valuePropName: 'file',
                 rules: [
                   {
-                    required: false
+                    required: true
                   }
                 ]
               })(

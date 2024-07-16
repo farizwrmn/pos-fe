@@ -94,22 +94,26 @@ export default modelExtend(pageModel, {
 
     * add ({ payload }, { call, put }) {
       const formData = new FormData()
+      console.log('payload.data', payload.data)
       if (
         payload
         && payload.data
         && payload.data.voucherImage
-        && typeof payload.voucherImage === 'object'
+        && typeof payload.data.voucherImage === 'object'
         && payload.data.voucherImage.file
       ) {
-        formData.append('file', payload.voucherImage.file.originFileObj)
+        formData.append('file', payload.data.voucherImage.file.originFileObj)
         const imageUpload = yield call(uploadVoucherImage, formData)
+        console.log('imageUpload', imageUpload)
         if (imageUpload && imageUpload.success) {
+          console.log('filename', imageUpload.data.filename)
           payload.data.voucherImage = imageUpload.data.filename
         } else {
           throw imageUpload
         }
       }
 
+      console.log('voucher data', payload.data)
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
@@ -153,7 +157,7 @@ export default modelExtend(pageModel, {
         && typeof payload.data.voucherImage === 'object'
         && payload.data.voucherImage.file
       ) {
-        formData.append('file', payload.voucherImage.file.originFileObj)
+        formData.append('file', payload.data.voucherImage.file.originFileObj)
         const imageUpload = yield call(uploadVoucherImage, formData)
         if (imageUpload && imageUpload.success) {
           newCounter.voucherImage = imageUpload.data.filename
@@ -187,12 +191,6 @@ export default modelExtend(pageModel, {
             payload.reset()
           }
         } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              currentItem: payload
-            }
-          })
           throw data
         }
       }
