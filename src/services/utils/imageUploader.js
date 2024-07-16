@@ -16,6 +16,21 @@ export async function uploadProductImage (params) {
   })
 }
 
+export async function uploadVoucherImage (params) {
+  const apiHeaderToken = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/x-www-form-urlencoded',
+    ...crypt.apiheader()
+  }
+  return request({
+    fullUrl: `${APIIMAGEURL}/image/upload/vouchers?compress=1`,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken,
+    usage: 'form'
+  })
+}
+
 export async function uploadBookmarkImage (params) {
   const apiHeaderToken = {
     'Content-Type': 'application/x-www-form-urlencoded',

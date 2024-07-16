@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
+import FormData from 'form-data'
 import { message } from 'antd'
+import { uploadVoucherImage } from 'services/utils/imageUploader'
 import { query, add, edit, remove } from 'services/marketing/voucher'
 import { query as querySequence } from 'services/sequence'
 import { pageModel } from '../common'
@@ -91,6 +93,24 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      const formData = new FormData()
+      let imagePass = true
+      if (
+        payload
+        && payload.bookmarkImage
+        && typeof payload.bookmarkImage === 'object'
+        && payload.bookmarkImage.file
+      ) {
+        formData.append('file', payload.bookmarkImage.file.originFileObj)
+        const imageUpload = yield call(uploadVoucher, formData)
+        if (imageUpload && imageUpload.success) {
+          payload.data.bookmarkImage = imageUpload.data.filename
+        } else {
+          imagePass = false
+          throw imageUpload
+        }
+      }
+
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
