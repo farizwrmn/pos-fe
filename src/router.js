@@ -226,6 +226,22 @@ const Routers = function ({ history, app }) {
             }, 'stock-mindis')
           }
         }, {
+          path: 'stock-pkm',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pkm/pkmFormula'))
+              cb(null, require('./routes/pkm/pkmFormula'))
+            }, 'stock-pkm')
+          }
+        }, {
+          path: 'setting-store',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pkm/settingStore'))
+              cb(null, require('./routes/pkm/settingStore'))
+            }, 'pkm-setting-store')
+          }
+        }, {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
