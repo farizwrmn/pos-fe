@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, InputNumber, Button, Row, Col, Modal, Select } from 'antd'
+import { lstorage } from 'utils'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -78,30 +80,64 @@ const FormCounter = ({
     })
   }
 
+  const listStore = lstorage.getListUserStores()
+  const childrenStore = listStore && listStore.length > 0 ? listStore.map(x => (<Option value={x.value} key={x.value} title={x.label}>{x.label}</Option>)) : []
+
   return (
     <Form layout="horizontal">
       <Row>
         <Col {...column}>
-          <FormItem label="Account Code" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountCode', {
-              initialValue: item.accountCode,
-              rules: [
-                {
-                  required: true,
-                  pattern: /^[a-z0-9-/]{3,9}$/i
-                }
-              ]
-            })(<Input maxLength={50} autoFocus />)}
-          </FormItem>
-          <FormItem label="Account Name" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('accountName', {
-              initialValue: item.accountName,
+          <FormItem label="Distribution Center" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('storeId', {
+              initialValue: lstorage.getCurrentUserStore(),
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<Input maxLength={50} />)}
+            })(<Select
+              showSearch
+              disabled
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenStore}
+            </Select>)}
+          </FormItem>
+          <FormItem label="Store" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('sellingStoreId', {
+              initialValue: item.sellingStoreId,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<Select
+              showSearch
+              disabled={modalType === 'edit'}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {childrenStore}
+            </Select>)}
+          </FormItem>
+          <FormItem label="leadTime" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('leadTime', {
+              initialValue: item.leadTime || 3,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={1} max={100} />)}
+          </FormItem>
+          <FormItem label="safetyStock" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('safetyStock', {
+              initialValue: item.safetyStock || 2,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={1} max={100} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
