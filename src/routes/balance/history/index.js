@@ -87,6 +87,7 @@ class Container extends React.Component {
             || user.permissions.role === 'SPC'
             || user.permissions.role === 'HFC'
             || user.permissions.role === 'SFC'
+            || user.permissions.role === 'CAP'
           )
           && <Checkbox onChange={() => this.onChange()} checked={allStore}>All Store</Checkbox>}
         <List {...listProps} />
@@ -110,11 +111,11 @@ export default connect(
     loading,
     app
   }) =>
-    ({
-      balance,
-      balanceDetail,
-      paymentOpts,
-      loading,
-      app
-    })
+  ({
+    balance,
+    balanceDetail,
+    paymentOpts,
+    loading,
+    app
+  })
 )(Container)

@@ -10,6 +10,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { lstorage } from 'utils'
 import List from './List'
 import PrintXLS from './PrintXLS'
+import Filter from './Filter'
 import PrintXLSDownloadData from './PrintXLSDownloadData'
 
 const FormItem = Form.Item
@@ -69,6 +70,16 @@ const ImportAutoReplenishBuffer = ({
           pageSize: page.pageSize
         }
       }))
+    },
+    onDelete (data) {
+      const { query } = location
+      dispatch({
+        type: 'importAutoReplenishBuffer/remove',
+        payload: {
+          data,
+          otherQuery: query
+        }
+      })
     }
   }
 
@@ -212,6 +223,19 @@ const ImportAutoReplenishBuffer = ({
     }))
   }
 
+  const filterProps = {
+    onFilterChange (value) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          q: value.q
+        }
+      }))
+    }
+  }
+
   return (
     <div className="content-inner">
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
@@ -260,6 +284,7 @@ const ImportAutoReplenishBuffer = ({
         </span>
       </div>
 
+      <Filter {...filterProps} />
       <List {...listProps} />
 
       <div>
