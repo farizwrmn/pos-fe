@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Button, Tag } from 'antd'
 
-const List = ({ onPayment, onSelectAll, ...tableProps, editList }) => {
+const List = ({ item, onPayment, onSelectAll, ...tableProps, editList }) => {
   const handleMenuClick = (record) => {
     editList(record)
   }
@@ -57,7 +57,7 @@ const List = ({ onPayment, onSelectAll, ...tableProps, editList }) => {
         {selectedRowKeysLen > 0 && `${selectedRowKeysLen} items were selected`}
         {tableProps.dataSource.filter(filtered => !filtered.voucherPayment).length > 0 ? <Button style={{ float: 'right' }} type="default" onClick={() => onSelectAll()}>Select all</Button>
           : <Tag style={{ float: 'right' }} color="red">Sold Out</Tag>}
-        {selectedRowKeysLen > 0 && <Button style={{ float: 'right', marginRight: '10px' }} type="primary" onClick={() => onPayment()}>Payment</Button>}
+        {selectedRowKeysLen > 0 && !item.onlyMember && <Button style={{ float: 'right', marginRight: '10px' }} type="primary" onClick={() => onPayment()}>Payment</Button>}
       </span>
       <Table {...tableProps}
         bordered
