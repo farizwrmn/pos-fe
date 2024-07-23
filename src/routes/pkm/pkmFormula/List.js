@@ -53,6 +53,81 @@ const List = (tableProps) => {
           key: 'salesThreeMonth'
         }
       ]
+    },
+    {
+      title: 'Avg Sales / Day',
+      dataIndex: 'avgSales',
+      key: 'avgSales'
+    },
+    {
+      title: 'MPKM',
+      dataIndex: 'mpkm',
+      key: 'mpkm'
+    },
+    {
+      title: 'PKM',
+      dataIndex: 'pkm',
+      key: 'pkm'
+    },
+    {
+      title: 'N+',
+      dataIndex: 'nPlus',
+      key: 'nPlus'
+    },
+    {
+      title: 'Nx',
+      dataIndex: 'nCross',
+      key: 'nCross'
+    },
+    {
+      title: 'PKM EXISTS',
+      dataIndex: 'pkmExists',
+      key: 'pkmExists'
+    },
+    {
+      title: 'Stock',
+      dataIndex: 'stockQty',
+      key: 'stockQty'
+    },
+    {
+      title: 'OOS Day',
+      children: [
+        {
+          title: 'ini',
+          dataIndex: 'oosCurrentMonth',
+          key: 'oosCurrentMonth'
+        },
+        {
+          title: '-1',
+          dataIndex: 'oosTwoMonth',
+          key: 'oosTwoMonth'
+        },
+        {
+          title: '-2',
+          dataIndex: 'oosThreeMonth',
+          key: 'oosThreeMonth'
+        }
+      ]
+    },
+    {
+      title: 'DSI PKM',
+      dataIndex: 'dsiPkm',
+      key: 'dsiPkm'
+    },
+    {
+      title: 'DSI OH',
+      dataIndex: 'dsiOnHand',
+      key: 'dsiOnHand'
+    },
+    {
+      title: 'Turnover',
+      dataIndex: 'turnover',
+      key: 'turnover'
+    },
+    {
+      title: 'Effective Stock',
+      dataIndex: 'effectiveStock',
+      key: 'effectiveStock'
     }
   ]
 
