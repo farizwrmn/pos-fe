@@ -26,24 +26,8 @@ const Counter = ({ pkmFormula, loading, dispatch, location, app }) => {
         }
       })
     },
-    editItem (item) {
-      const { pathname } = location
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          activeKey: 0
-        }
-      }))
-      dispatch({
-        type: 'pkmFormula/editItem',
-        payload: { item }
-      })
-    },
-    deleteItem (id) {
-      dispatch({
-        type: 'pkmFormula/delete',
-        payload: id
-      })
+    onOpenModalPkm (record) {
+
     }
   }
 
