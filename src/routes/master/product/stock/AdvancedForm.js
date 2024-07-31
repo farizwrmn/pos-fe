@@ -745,7 +745,7 @@ class AdvancedForm extends Component {
                 })(<Select
                   showSearch
                   optionFilterProp="children"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >{productTag}
                 </Select>)}
               </FormItem>
