@@ -453,6 +453,7 @@ export default modelExtend(pageModel, {
         const response = yield call(queryStore, {
           id: listStore[0].value
         })
+        console.log('response', response)
         if (response.success && response.data && response.data.length > 0 && response.data[0].storeParentId) {
           const responseParent = yield call(queryStore, {
             id: response.data[0].storeParentId
@@ -462,6 +463,17 @@ export default modelExtend(pageModel, {
               value: responseParent.data[0].id,
               label: responseParent.data[0].storeName
             })
+          }
+          if (response.data[0].centralKitchenParent) {
+            const responseCentral = yield call(queryStore, {
+              id: response.data[0].centralKitchenParent
+            })
+            if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
+              listStore.push({
+                value: responseCentral.data[0].id,
+                label: responseCentral.data[0].storeName
+              })
+            }
           }
         }
       }
