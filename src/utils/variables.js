@@ -99,6 +99,12 @@ const insertCashierTrans = (dataObject) => {
       categoryCode: dataObject.categoryCode,
       code: dataObject.code,
       name: dataObject.name,
+      probBundleId: dataObject.probBundleId,
+      probBundleCode: dataObject.probBundleCode,
+      probBundleName: dataObject.probBundleName,
+      probBundleTargetQty: dataObject.probBundleTargetQty,
+      probFinalPrice: dataObject.probFinalPrice,
+      probBundle: dataObject.probBundle,
       qty: dataObject.qty,
       typeCode: dataObject.typeCode,
       sellPrice: dataObject.sellPrice,
@@ -128,7 +134,7 @@ const insertCashierTrans = (dataObject) => {
 
   setCashierTrans(JSON.stringify(newData))
 
-  return previousData
+  return newData
 }
 
 const insertConsignment = (dataObject) => {

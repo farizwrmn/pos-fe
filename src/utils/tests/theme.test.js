@@ -11,6 +11,7 @@ it('Should return color', () => {
     saffron: '#F8C82E',
     laserlemon: '#FFFF66',
     teagreen: '#D6FBB5',
+    termConditionQris: '#FAB414',
     pastelgreen: '#64EA91',
     pattensblue: '#C1E0FC',
     lightskyblue: '#8FC9FB',
