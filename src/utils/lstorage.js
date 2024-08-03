@@ -57,6 +57,7 @@ const getStorageKey = (key) => {
     pair[5] = decrypt(localIds[5], rdmText) || ''
     pair[6] = localIds[6] || ''
     pair[7] = decrypt(localIds[7], rdmText) || ''
+    pair[8] = decrypt(localIds[8], rdmText) || ''
   } else {
     pair[1] = decrypt(localStorage.getItem(`${prefix}${key}`)) || ''
     pair[2] = '---'
