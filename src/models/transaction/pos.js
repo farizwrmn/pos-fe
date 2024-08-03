@@ -723,6 +723,7 @@ export default {
     * bundleDelete ({ payload }, { put }) {
       let dataBundle = getBundleTrans()
       let dataPos = getCashierTrans()
+      let dataService = getServiceTrans()
       let checkExists = dataBundle
         .filter(filtered => filtered.code === payload.Record)
       if (checkExists && checkExists[0]) {
@@ -732,8 +733,12 @@ export default {
         let newPos = dataPos
           .filter(filtered => filtered.bundleId !== checkExists[0].bundleId)
           .map((item, index) => ({ ...item, no: index + 1 }))
+        let newService = dataService
+          .filter(filtered => filtered.bundleId !== checkExists[0].bundleId)
+          .map((item, index) => ({ ...item, no: index + 1 }))
         setBundleTrans(JSON.stringify(newBundle))
         setCashierTrans(JSON.stringify(newPos))
+        setServiceTrans(JSON.stringify(newService))
         yield put({
           type: 'setCurTotal'
         })
