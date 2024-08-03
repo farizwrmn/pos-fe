@@ -248,7 +248,8 @@ export default {
         data.profile.usercompany,
         data.profile.userlogintime,
         data.profile.sessionid,
-        data.profile.consignmentId ? data.profile.consignmentId.toString() : null
+        data.profile.consignmentId ? data.profile.consignmentId.toString() : null,
+        `${data.profile.id}`
       ]
       lstorage.putStorageKey('udi', dataUdi)
       yield put({ type: 'app/query', payload: data.profile })
