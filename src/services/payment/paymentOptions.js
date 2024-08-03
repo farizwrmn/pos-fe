@@ -7,6 +7,7 @@ export async function query (params) {
   return request({
     url: `${paymentOpts}/option`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

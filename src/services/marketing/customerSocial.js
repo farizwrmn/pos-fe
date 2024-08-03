@@ -16,6 +16,7 @@ export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: apiMemberSocial,
+    alt: true,
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -26,6 +27,7 @@ export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${apiMemberSocial}/${id}`,
+    alt: true,
     method: 'delete',
     headers: apiHeaderToken
   })

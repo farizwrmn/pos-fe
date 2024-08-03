@@ -5,6 +5,7 @@ const { misc } = config.api
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
+    alt: true,
     url: misc,
     method: 'get',
     data: params,
@@ -18,6 +19,7 @@ export async function queryMode (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     data: fields,
     headers: apiHeaderToken
@@ -29,6 +31,7 @@ export async function queryModeName (params) {
   let url = `${misc}/code/${encodeURIComponent(code)}/name/${encodeURIComponent(name)}`
   const apiHeaderToken = crypt.apiheader()
   return request({
+    alt: true,
     url,
     method: 'get',
     data: fields,
@@ -43,6 +46,7 @@ export async function add (params) {
   return request({
     url,
     method: 'post',
+    alt: true,
     data: params.data,
     body: params.data,
     headers: apiHeaderToken
@@ -55,6 +59,7 @@ export async function edit (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'put',
     data: params.data,
     body: params.data,
@@ -68,6 +73,7 @@ export async function remove (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'delete',
     data: params,
     headers: apiHeaderToken

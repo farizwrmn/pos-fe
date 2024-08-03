@@ -7,6 +7,7 @@ export async function query (params) {
   return request({
     url: employees,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -17,6 +18,7 @@ export async function queryDefault (params) {
   return request({
     url: `${employees}/default/value`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -27,6 +29,7 @@ export async function add (params) {
   const url = params.id ? `${employees}/${params.id}` : employees
   return request({
     url,
+    alt: true,
     method: 'post',
     data: params.data,
     headers: apiHeaderToken
@@ -38,6 +41,7 @@ export async function remove (params) {
   const url = params.id ? `${employees}/:id` : employees
   return request({
     url,
+    alt: true,
     method: 'delete',
     data: params,
     headers: apiHeaderToken
@@ -49,6 +53,7 @@ export async function edit (params) {
   const url = params.id ? `${employees}/${params.id}` : employees
   return request({
     url,
+    alt: true,
     method: 'put',
     data: params.data,
     headers: apiHeaderToken
@@ -72,6 +77,7 @@ export async function queryField (params) {
     url: employees,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -81,6 +87,7 @@ export async function queryMechanics () {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -90,6 +97,7 @@ export const getReportCheckin = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/checkin/employee',
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -101,6 +109,7 @@ export async function queryMechanicByCode (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

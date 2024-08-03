@@ -6,6 +6,7 @@ export async function query () {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: menus,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

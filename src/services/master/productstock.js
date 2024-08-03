@@ -8,6 +8,7 @@ export async function query (params) {
     url: stock,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -18,6 +19,7 @@ export async function queryById (params) {
     url: `${stock}/${params.id}`,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -28,6 +30,7 @@ export async function queryByBarcode (params) {
     url: `${stock}/barcode/${params.id}`,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -49,6 +52,7 @@ export async function queryPOSstock (params) {
   return request({
     url: `${fiforeport}/stock`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -65,6 +69,7 @@ export async function queryPOSproduct (params) {
     if (product && product.length === 1) {
       return request({
         url: `${fiforeport}/new-saldo-stock`,
+        alt: true,
         method: 'get',
         data: params,
         headers: apiHeaderToken
@@ -74,6 +79,7 @@ export async function queryPOSproduct (params) {
   return request({
     url: `${fiforeport}/stock`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -91,6 +97,7 @@ export async function queryPOSProductSales (params) {
       return request({
         url: `${fiforeport}/new-saldo-stock-sales`,
         method: 'get',
+        alt: true,
         data: params,
         headers: apiHeaderToken
       })
@@ -98,6 +105,7 @@ export async function queryPOSProductSales (params) {
   }
   return request({
     url: `${fiforeport}/stock-sales`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -109,6 +117,7 @@ export async function queryPOSproductStore (params) {
   return request({
     url: `${fiforeport}/store-stock`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -119,6 +128,7 @@ export async function queryProductByCode (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

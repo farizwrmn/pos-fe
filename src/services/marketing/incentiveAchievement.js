@@ -5,6 +5,7 @@ export async function query (params) {
   return request({
     url: '/incentive-achievement',
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

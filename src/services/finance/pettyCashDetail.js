@@ -14,6 +14,7 @@ export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `/petty-cash/${params.id}`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -34,6 +35,7 @@ export async function queryEmployee (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/petty-cash-employee',
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -45,6 +47,7 @@ export async function add (params) {
   return request({
     url: '/petty-cash-detail',
     method: 'post',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

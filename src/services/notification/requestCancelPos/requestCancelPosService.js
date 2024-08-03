@@ -8,6 +8,7 @@ export async function queryAdd (params) {
   return request({
     url: requestCancelPos,
     data: params,
+    alt: true,
     method: 'post',
     headers: apiHeaderToken
   })
@@ -18,6 +19,7 @@ export async function queryPending (params) {
   return request({
     url: `${requestCancelPos}/pending`,
     data: params,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -33,6 +35,7 @@ export async function queryVerify (params) {
   return request({
     url: `${requestCancelPos}/verify/${id}`,
     data: other,
+    alt: true,
     method: 'put',
     headers: apiHeaderToken
   })

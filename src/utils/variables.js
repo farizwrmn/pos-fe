@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
+import { getCashierTrans, getStorageKey, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -22,7 +22,7 @@ const getAPIURL = () => {
   const BEURL = getDomainBE()
   const BEPORT = getPortBE()
   let APIHOST
-  if (!BEURL.match(/^[0-9a-z.]+$/)) {
+  if (!BEURL.match(/^[0-9a-z.-]+$/)) {
     removeItemKey('cdi')
     APIHOST = 'localhost'
   } else {
@@ -36,6 +36,29 @@ const getAPIURL = () => {
   }
   let APICOMPANYPROTOCOL = getProtocolBE()
   const APIURL = `${APICOMPANYPROTOCOL}://${APIHOST}:${APIPORT}`
+  return APIURL
+}
+
+const getAPIURLAlt = () => {
+  const BEURL = getDomainBEAlt()
+  const BEPORT = getPortBE()
+  let APIHOST
+  if (!BEURL.match(/^[0-9a-z.-]+$/)) {
+    removeItemKey('cdi')
+    APIHOST = 'localhost'
+  } else {
+    APIHOST = BEURL
+  }
+  let APIPORT
+  if (!BEPORT.match(/^[0-9a-z]+$/)) {
+    APIPORT = 5557
+  } else {
+    APIPORT = BEPORT
+  }
+  let APICOMPANYPROTOCOL = getProtocolBE()
+  const APIURL = `${APICOMPANYPROTOCOL}://${APIHOST}:${APIPORT}`
+  console.log('BEURL', getStorageKey('cdi'), BEURL)
+  console.log('APIURL', APIURL)
   return APIURL
 }
 
@@ -177,5 +200,6 @@ module.exports = {
   insertConsignment,
   getSetting,
   getPermission,
-  getAPIURL
+  getAPIURL,
+  getAPIURLAlt
 }

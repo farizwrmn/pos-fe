@@ -7,6 +7,7 @@ export async function query (params) {
   return request({
     url: city,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -19,6 +20,7 @@ export async function add (params) {
     url,
     method: 'post',
     data: params,
+    alt: true,
     body: params,
     headers: apiHeaderToken
   })
@@ -31,6 +33,7 @@ export async function edit (params) {
     url,
     method: 'put',
     data: params,
+    alt: true,
     body: params,
     headers: apiHeaderToken
   })
@@ -42,6 +45,7 @@ export async function remove (params) {
   return request({
     url,
     method: 'delete',
+    alt: true,
     data: params.data,
     headers: apiHeaderToken
   })
