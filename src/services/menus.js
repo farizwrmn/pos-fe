@@ -9,6 +9,7 @@ export async function query (params) {
     url: menus,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }

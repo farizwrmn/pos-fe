@@ -6,6 +6,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentOpts}/master/option`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -45,6 +46,7 @@ export const queryAvailablePaymentType = () => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentOpts}-option/available-params`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

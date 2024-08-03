@@ -491,6 +491,12 @@ const getIdBE = () => { return getStorageKey('cdi')[1] }
 const getDomainBE = () => { return getStorageKey('cdi')[2] }
 const getPortBE = () => { return getStorageKey('cdi')[3] }
 const getProtocolBE = () => { return getStorageKey('cdi')[4] }
+const getDomainBEAlt = () => {
+  if (!getStorageKey('cdi')[5]) {
+    return getStorageKey('cdi')[2]
+  }
+  return getStorageKey('cdi')[5]
+}
 
 module.exports = {
   putStorageKey,
@@ -513,6 +519,7 @@ module.exports = {
   getDomainBE,
   getPortBE,
   getProtocolBE,
+  getDomainBEAlt,
   getIdBE,
   getCashierTrans,
   getConsignment,

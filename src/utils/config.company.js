@@ -1,9 +1,10 @@
 /* eslint-disable no-constant-condition */
 const production = process.env.NODE_ENV === 'production'
-const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart' // 'localhost'
-const APICOMPANYPROTOCOL = production ? 'https' : 'http' // 'localhost'
+const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart'
+const APICOMPANYPROTOCOL = production ? 'https' : 'http'
 const MAIN_WEBSITE = production ? (process.env.MAIN_WEBSITE || 'k3mart.id') : 'k3mart.id'
 const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'localhost'
+const APICOMPANYHOSTALT = production ? (process.env.API_ENDPOINT_ALT || 'api-pos.k3mart.id') : 'localhost'
 const APICOMPANYPORT = production ? 443 : 6402
 const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
@@ -40,6 +41,7 @@ module.exports = {
   APPNAME,
   rest: {
     apiCompanyProtocol: APICOMPANYPROTOCOL,
+    apiCompanyHostAlt: APICOMPANYHOSTALT,
     apiCompanyHost: APICOMPANYHOST,
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,

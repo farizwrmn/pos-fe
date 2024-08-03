@@ -12,6 +12,7 @@ export async function login (data) {
     url: apiUserLogin,
     method: 'post',
     data,
+    alt: true,
     headers: { 'x-api-key': '1497e7eb-0ba8-403e-a5c4-f2904837b3cf' }
   })
 }
@@ -22,6 +23,7 @@ export async function getUserRole (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -33,6 +35,7 @@ export async function getUserStore (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

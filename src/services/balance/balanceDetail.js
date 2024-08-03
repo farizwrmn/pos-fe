@@ -6,6 +6,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: balanceDetail,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
