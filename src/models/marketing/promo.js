@@ -18,6 +18,8 @@ export default modelExtend(pageModel, {
     list: [],
     listHighlight: [],
     listMinimumPayment: [],
+    listBuyBundle: [],
+    listBuyBundleDetail: [],
     modalPromoVisible: false,
     pagination: {
       showSizeChanger: true,
@@ -32,6 +34,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         if (pathname === '/transaction/pos') {
           dispatch({ type: 'queryMinimumPayment', payload: { storeId: lstorage.getCurrentUserStore() } })
+          dispatch({ type: 'queryBuyBundleDiscount', payload: { storeId: lstorage.getCurrentUserStore() } })
           dispatch({
             type: 'promo/queryHighlight',
             payload: {
@@ -89,6 +92,46 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+
+    * queryBuyBundleDiscount ({ payload = {} }, { call, put }) {
+      const date = yield call(getDateTime, {
+        id: 'date'
+      })
+      if (!date.success) {
+        throw date
+      }
+      payload.day = moment(date.data, 'YYYY-MM-DD').isoWeekday()
+      payload.type = 'all'
+      payload.typeBundle = '2'
+      payload.order = '-id'
+      const data = yield call(queryActive, payload)
+      if (data.success && data.data && data.data.length > 0) {
+        const responseDetail = yield call(queryReward, {
+          bundleId: data.data.map(item => item.id),
+          order: '-bundleId',
+          type: 'all'
+        })
+
+        if (responseDetail && responseDetail.data && responseDetail.data.length > 0) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              listBuyBundleDetail: responseDetail.data.sort((a, b) => b.bundleId - a.bundleId)
+            }
+          })
+        }
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listBuyBundle: data.data.sort((a, b) => b.id - a.id)
+          }
+        })
+      } else {
+        throw data
+      }
+    },
+
     * queryMinimumPayment ({ payload = {} }, { call, put }) {
       const date = yield call(getDateTime, {
         id: 'date'

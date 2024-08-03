@@ -146,7 +146,7 @@ export default {
         setTimeout(() => modal.destroy(), 1000)
         return
       }
-      if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
+      if ((memberInformation.memberPendingPayment === '1' ? false : parseInt(curTotalPayment, 0) < parseInt(curNetto, 0))) {
         Modal.error({
           title: 'Payment pending restricted',
           content: 'This member type cannot allow to pending'
@@ -704,7 +704,7 @@ export default {
         setTimeout(() => modal.destroy(), 1000)
         return
       }
-      if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
+      if ((memberInformation.memberPendingPayment === '1' ? false : parseInt(curTotalPayment, 0) < parseInt(curNetto, 0))) {
         Modal.error({
           title: 'Payment pending restricted',
           content: 'This member type cannot allow to pending'

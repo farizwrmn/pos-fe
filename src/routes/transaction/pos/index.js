@@ -1210,7 +1210,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -1309,7 +1308,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -2623,7 +2621,6 @@ const Pos = ({
       })
     },
     handleCancel () {
-      console.log('bundle', bundle)
       Modal.confirm({
         title: 'Reset unsaved process',
         content: 'this action will reset your current process',
@@ -2648,7 +2645,6 @@ const Pos = ({
               singleDeletion: record.singleDeletion || 0
             }))
             : []
-          console.log('listTrans', listTrans)
           dispatch({
             type: 'pos/showModalLogin',
             payload: {
@@ -2979,7 +2975,6 @@ const Pos = ({
     visible: modalBundleDetailVisible,
     item: currentBundle,
     DeleteItem (data) {
-      console.log('bundle', bundle, data)
       const cashierTrans = product
         .filter(filtered => !filtered.bundleId)
         .map(item => ({ ...item, type: 'Product' }))
@@ -3005,7 +3000,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {

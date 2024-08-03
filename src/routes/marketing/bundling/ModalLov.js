@@ -4,7 +4,7 @@ import { DataQuery } from 'components'
 const { ProductFilter, ProductCategory, Service, ServiceCategory } = DataQuery
 const TabPane = Tabs.TabPane
 
-const Products = ({ modalProductVisible, getProduct, getService, ...modalProductProps }) => {
+const Products = ({ type, modalProductVisible, getProduct, getService, ...modalProductProps }) => {
   const changeKey = (key) => {
     if (key === '0') {
       getProduct()
@@ -23,23 +23,23 @@ const Products = ({ modalProductVisible, getProduct, getService, ...modalProduct
         <TabPane tab="Product" key="0">
           <ProductFilter {...modalProductProps} />
         </TabPane>
-        <TabPane tab="Service" key="1">
+        {type === '1' && <TabPane tab="Service" key="1">
           <Service {...modalProductProps} />
-        </TabPane>
-        <TabPane tab="P.Category" key="2">
+        </TabPane>}
+        {type === '1' && <TabPane tab="P.Category" key="2">
           <ProductCategory
             {...modalProductProps}
             enableFilter={false}
             showPagination={false}
           />
-        </TabPane>
-        <TabPane tab="S.Category" key="3">
+        </TabPane>}
+        {type === '1' && <TabPane tab="S.Category" key="3">
           <ServiceCategory
             {...modalProductProps}
             enableFilter={false}
             showPagination={false}
           />
-        </TabPane>
+        </TabPane>}
       </Tabs>
     </Modal>
   )
