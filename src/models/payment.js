@@ -10,7 +10,6 @@ import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
-import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
@@ -328,9 +327,8 @@ export default {
             }
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
-          const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
-          if (currentRegister.success || payload.memberCode !== null) {
+          if (payload.memberCode !== null) {
             const detailPOS = {
               reference,
               dataPos: newArrayProd,
@@ -885,8 +883,7 @@ export default {
             }
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
-          const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-          if (currentRegister.success || payload.memberCode !== null) {
+          if (payload.memberCode !== null) {
             const paymentTransactionParams = payload.params
             const goodsInfo = product.map(item => `${item.productId}:${item.qty}:${item.total}`).join(';')
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
