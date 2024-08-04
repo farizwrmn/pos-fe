@@ -1,9 +1,9 @@
 import React from 'react'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import { Button, Card, Col, Row, Modal } from 'antd'
 import { connect } from 'dva'
 import { CANCEL_INPUT, CANCEL_INVOICE } from 'utils/variable'
-import { APISOCKET } from 'utils/config.company'
+// import { APISOCKET } from 'utils/config.company'
 import ModalDetail from './ModalDetail'
 
 const columnProps = {
@@ -14,14 +14,14 @@ const columnProps = {
   xl: 6
 }
 
-const options = {
-  upgrade: true,
-  transports: ['websocket'],
-  pingTimeout: 100,
-  pingInterval: 100
-}
+// const options = {
+//   upgrade: true,
+//   transports: ['websocket'],
+//   pingTimeout: 100,
+//   pingInterval: 100
+// }
 
-const socket = io(APISOCKET, options)
+// const socket = io(APISOCKET, options)
 
 class RequestCancelPos extends React.Component {
   state = {
@@ -29,20 +29,20 @@ class RequestCancelPos extends React.Component {
     currentItem: {}
   }
 
-  componentDidMount () {
-    socket.on('requestCancelPos', e => this.handleData(e))
-  }
+  // componentDidMount () {
+  //   socket.on('requestCancelPos', e => this.handleData(e))
+  // }
 
-  componentWillUnmount () {
-    socket.off('requestCancelPos')
-  }
+  // componentWillUnmount () {
+  //   socket.off('requestCancelPos')
+  // }
 
-  handleData () {
-    const { dispatch } = this.props
-    dispatch({
-      type: 'requestCancelPos/queryPending'
-    })
-  }
+  // handleData () {
+  //   const { dispatch } = this.props
+  //   dispatch({
+  //     type: 'requestCancelPos/queryPending'
+  //   })
+  // }
 
   render () {
     const {
