@@ -15,7 +15,7 @@ import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
 import TransDetail from './TransDetail'
 import styles from './index.less'
-import ModalEdit from './ModalEdit'
+// import ModalEdit from './ModalEdit'
 import ModalEmployee from './ModalEmployee'
 import ModalPhaseTwo from './ModalPhaseTwo'
 import ListEmployee from './ListEmployee'
@@ -74,7 +74,9 @@ class Detail extends Component {
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
+    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination
+      // modalEditVisible, modalEditItem,
+    } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {
@@ -183,30 +185,30 @@ class Detail extends Component {
       })
     }
 
-    const modalEditProps = {
-      visible: modalEditVisible,
-      item: modalEditItem,
-      detailData,
-      loading: loading.effects['pos/queryPosDetail'],
-      maskClosable: false,
-      title: modalEditItem ? modalEditItem.productCode : 'Update as finish?',
-      confirmLoading: loading.effects['stockOpname/finishLine'] || loading.effects['stockOpname/editQty'],
-      wrapClassName: 'vertical-center-modal',
-      onOk (data) {
-        dispatch({
-          type: 'stockOpname/finishLine',
-          payload: data
-        })
-      },
-      onCancel () {
-        dispatch({
-          type: 'stockOpname/updateState',
-          payload: {
-            modalEditVisible: false
-          }
-        })
-      }
-    }
+    // const modalEditProps = {
+    //   visible: modalEditVisible,
+    //   item: modalEditItem,
+    //   detailData,
+    //   loading: loading.effects['pos/queryPosDetail'],
+    //   maskClosable: false,
+    //   title: modalEditItem ? modalEditItem.productCode : 'Update as finish?',
+    //   confirmLoading: loading.effects['stockOpname/finishLine'] || loading.effects['stockOpname/editQty'],
+    //   wrapClassName: 'vertical-center-modal',
+    //   onOk (data) {
+    //     dispatch({
+    //       type: 'stockOpname/finishLine',
+    //       payload: data
+    //     })
+    //   },
+    //   onCancel () {
+    //     dispatch({
+    //       type: 'stockOpname/updateState',
+    //       payload: {
+    //         modalEditVisible: false
+    //       }
+    //     })
+    //   }
+    // }
 
     const modalAddEmployeeProps = {
       listEmployee,
@@ -406,7 +408,7 @@ class Detail extends Component {
               <br />
               {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Checked ({finishPagination ? finishPagination.total : 0})</h1> : null}
               {listDetailFinish && listDetailFinish.length > 0 ? <TransDetail {...formDetailFinishProps} /> : null}
-              {modalEditVisible && <ModalEdit {...modalEditProps} />}
+              {/* {modalEditVisible && <ModalEdit {...modalEditProps} />} */}
             </Row>
           </div>
         </Col>
