@@ -34,6 +34,7 @@ const FormCounter = ({
   onSubmit,
   modalType,
   listStore,
+  listPickingLine,
   loading,
   form: {
     getFieldDecorator,
@@ -74,6 +75,7 @@ const FormCounter = ({
         onOk () {
           onSubmit({
             header: {
+              pickingLineId: data.pickingLineId,
               storeIdReceiver: data.storeIdReceiver,
               storeId: lstorage.getCurrentUserStore(),
               salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
@@ -100,6 +102,7 @@ const FormCounter = ({
   }
 
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const productStockPickingLine = (listPickingLine || []).length > 0 ? ([{ id: 0, lineName: 'All' }]).concat(listPickingLine).map(b => <Option value={b.id} key={b.id}>{b.lineName}</Option>) : ([{ id: 0, lineName: 'All' }]).map(b => <Option value={b.id} key={b.id}>{b.lineName}</Option>)
 
   return (
     <div>
@@ -130,6 +133,21 @@ const FormCounter = ({
                 filterOption={filterOption}
               >
                 {childrenStoreReceived}
+              </Select>)}
+            </FormItem>
+            <FormItem label={(<Link target="_blank" to="/picking-line">Picking Line</Link>)} hasFeedback {...formItemLayout}>
+              {getFieldDecorator('pickingLineId', {
+                initialValue: [0],
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<Select
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showSearch
+                multiple
+              >{productStockPickingLine}
               </Select>)}
             </FormItem>
             <FormItem label="Sales Date" hasFeedback {...formItemLayout}>

@@ -57,8 +57,6 @@ const getAPIURLAlt = () => {
   }
   let APICOMPANYPROTOCOL = getProtocolBE()
   const APIURL = `${APICOMPANYPROTOCOL}://${APIHOST}:${APIPORT}`
-  console.log('BEURL', getStorageKey('cdi'), BEURL)
-  console.log('APIURL', APIURL)
   return APIURL
 }
 

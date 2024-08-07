@@ -688,14 +688,6 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
-          path: 'request-cancel-pos',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/notification/requestCancelPos'))
-              cb(null, require('./routes/notification/requestCancelPos'))
-            }, 'request-cancel-pos')
-          }
-        }, {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2281,6 +2273,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/autoReplenish'))
+              registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/autoReplenish'))
             }, 'inventory-transfer-out-auto-replenish')
