@@ -82,34 +82,13 @@ const convertCSVtoArray = (string) => {
   })
 
 
-  reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
-    || String(filtered.recordSource).trim() === 'TF'
-    || String(filtered.recordSource).trim() === 'TQ'
-    || String(filtered.recordSource).trim() === 'PQ'
-    || String(filtered.recordSource).trim() === 'PC'
-    || String(filtered.recordSource).trim() === 'TC'
-    || String(filtered.recordSource).trim() === 'DEBIT-BNI'
+  reformatArray = reformatArray.filter(filtered =>
+    String(filtered.recordSource).trim() === 'DEBIT-BNI'
     || String(filtered.recordSource).trim() === 'KREDIT-BNI'
   )
 
   currentArray = reformatArray.map((record) => {
     let type
-
-    if (String(record.recordSource).trim() === 'TD'
-      || String(record.recordSource).trim() === 'PD'
-      || String(record.recordSource).trim() === 'TF') {
-      type = 'D'
-    }
-
-    if (String(record.recordSource).trim() === 'TQ'
-      || String(record.recordSource).trim() === 'PQ') {
-      type = 'QR'
-    }
-
-    if (String(record.recordSource).trim() === 'TC'
-      || String(record.recordSource).trim() === 'PC') {
-      type = 'K'
-    }
 
     if (String(record.recordSource).trim() === 'DEBIT-BNI'
       || String(record.recordSource).trim() === 'KREDIT-BNI') {
@@ -128,7 +107,7 @@ const convertCSVtoArray = (string) => {
       transDate: record.transDate,
       transTime: record.transactionTime,
       type,
-      bank: 'BCA'
+      bank: 'BNI'
     })
   })
 }
