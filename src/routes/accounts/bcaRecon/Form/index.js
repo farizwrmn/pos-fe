@@ -47,6 +47,7 @@ const FormAutoCounter = ({
       onSortNullMdrAmount({
         payment: { storeId, transDate: moment(value).format('YYYY-MM-DD') },
         paymentImportBca: {
+          bankName: 'BCA',
           transactionDate: moment(value).format('YYYY-MM-DD'),
           recordSource: ['TC', 'TD', 'TQ', 'PC', 'PD', 'PQ'],
           storeId,

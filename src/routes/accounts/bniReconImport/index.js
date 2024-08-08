@@ -50,8 +50,8 @@ const ImportBcaRecon = ({
     'transactionCode', // TID
     'recordSource', // JENIS TRX
     'traceNumber', // PTR
-    'traceNumber', // RATE
-    'mdr', // DISC AMOUNT
+    'mdr', // RATE
+    'mdrAmount', // DISC AMOUNT
     'traceNumber', // AIR FARE
     'traceNumber', // PLAN
     'traceNumber', // SS AMOUNT
@@ -109,6 +109,11 @@ const ImportBcaRecon = ({
               merchantId: item.merchantId,
               merchantName: item.merchantName,
               nettAmount: item.nettAmount,
+              redeemAmount: 0,
+              rewardAmount: 0,
+              originalAmount: 0,
+              mdrAmount: item.mdrAmount,
+              reportDate: moment(item.processEffectiveDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
               processEffectiveDate: moment(item.processEffectiveDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
               recordSource,
               traceNumber: item.traceNumber,
