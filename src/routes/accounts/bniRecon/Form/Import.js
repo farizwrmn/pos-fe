@@ -83,12 +83,13 @@ const convertCSVtoArray = (string) => {
 
 
   reformatArray = reformatArray.filter(filtered => String(filtered.recordSource).trim() === 'TD'
+    || String(filtered.recordSource).trim() === 'TF'
     || String(filtered.recordSource).trim() === 'TQ'
     || String(filtered.recordSource).trim() === 'PQ'
-    || String(filtered.recordSource).trim() === 'TF'
-    || String(filtered.recordSource).trim() === 'TC'
     || String(filtered.recordSource).trim() === 'PC'
-    || String(filtered.recordSource).trim() === 'PD'
+    || String(filtered.recordSource).trim() === 'TC'
+    || String(filtered.recordSource).trim() === 'DEBIT-BNI'
+    || String(filtered.recordSource).trim() === 'KREDIT-BNI'
   )
 
   currentArray = reformatArray.map((record) => {

@@ -2001,6 +2001,14 @@ const Routers = function ({ history, app }) {
             }, 'bni-recon-import')
           }
         }, {
+          path: 'accounting/bni-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bniRecon'))
+            }, 'bni-recon')
+          }
+        }, {
           path: 'accounting/xendit-recon',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

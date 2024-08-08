@@ -6,6 +6,17 @@ import styles from '../../../themes/index.less'
 const ListFilenameImportCSV = ({ ...tableProps }) => {
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id'
+    },
+    {
+      title: 'Bank Name',
+      dataIndex: 'bankName',
+      key: 'bankName',
+      className: styles.alignRight
+    },
+    {
       title: 'filename',
       dataIndex: 'filename',
       key: 'filename',
