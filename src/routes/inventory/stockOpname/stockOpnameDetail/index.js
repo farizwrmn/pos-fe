@@ -74,7 +74,9 @@ class Detail extends Component {
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, modalEditVisible, modalEditItem, detailData, finishPagination, detailPagination } = stockOpname
+    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination,
+      modalEditVisible, modalEditItem
+    } = stockOpname
     const content = []
     for (let key in detailData) {
       if ({}.hasOwnProperty.call(detailData, key)) {

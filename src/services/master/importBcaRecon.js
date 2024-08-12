@@ -120,15 +120,6 @@ export async function queryById (params) {
   })
 }
 
-export async function queryMerchantByStoreId (storeId) {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${importbcarecon}/merchant/${storeId}`,
-    method: 'get',
-    headers: apiHeaderToken
-  })
-}
-
 export async function queryByBarcode (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

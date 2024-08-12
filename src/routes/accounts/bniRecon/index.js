@@ -173,7 +173,7 @@ const ImportBcaRecon = ({
         type: 'importBcaRecon/queryPosPayment',
         payload: {
           ...params,
-          bankName: 'BCA'
+          bankName: 'BNI'
         }
       })
     },

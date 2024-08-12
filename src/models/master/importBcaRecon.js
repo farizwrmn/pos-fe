@@ -71,10 +71,40 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'queryReconLog', payload: other })
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'BCA',
+              ...other
+            }
+          })
+        }
+        if (pathname === '/accounting/bni-recon') {
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'BNI',
+              ...other
+            }
+          })
         }
         if (pathname === '/accounting/bca-recon-import') {
-          dispatch({ type: 'queryImportLog', payload: other })
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'BCA'
+            }
+          })
+        }
+        if (pathname === '/accounting/bni-recon-import') {
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'BNI'
+            }
+          })
         }
       })
     }
@@ -534,6 +564,7 @@ export default modelExtend(pageModel, {
     },
     * bulkInsert ({ payload }, { call, put }) {
       let dataExist = yield call(queryImportLog, {
+        bankName: payload.bankName,
         filename: payload.filename
       })
       if (dataExist && dataExist.data && dataExist.data.length > 0) {
@@ -543,13 +574,12 @@ export default modelExtend(pageModel, {
       const data = yield call(bulkInsert, payload)
       if (data.success) {
         yield put({
-          type: 'queryImportLog'
+          type: 'queryImportLog',
+          payload: {
+            bankName: payload.bankName
+          }
         })
         success()
-        yield put({
-          type: 'query'
-          // payload
-        })
       } else {
         throw data
       }
