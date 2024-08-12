@@ -2344,16 +2344,19 @@ export default {
             content: message
           })
         } else {
-          const currentBundle = getBundleTrans()
+          // const currentBundle = getBundleTrans()
           // const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
           const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-          const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+          // const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
+          // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
           if (payload.reset) {
             payload.reset()
           }
           if (!payload.hasService) {
             if (bundleData.mode !== 'edit') {
+              const currentBundle = getBundleTrans()
+              const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(bundleData.item.id))
+              const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
               if (exists) {
                 yield put({
                   type: 'pospromo/setBundleAlreadyExists',
@@ -2532,14 +2535,17 @@ export default {
       if (listProductQty && listProductQty.length > 0) {
         const dataService = getServiceTrans()
 
-        const currentBundle = getBundleTrans()
+        // const currentBundle = getBundleTrans()
         const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-        const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-        const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+        // const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
+        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         if (payload.reset) {
           payload.reset()
         }
         if (bundleData.mode !== 'edit') {
+          const currentBundle = getBundleTrans()
+          const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(bundleData.item.id))
+          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
           if (exists) {
             yield put({
               type: 'pospromo/setBundleAlreadyExists',
