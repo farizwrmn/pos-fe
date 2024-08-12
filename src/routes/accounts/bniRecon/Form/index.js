@@ -45,7 +45,7 @@ const FormAutoCounter = ({
       }
       let storeId = lstorage.getCurrentUserStore()
       onSortNullMdrAmount({
-        payment: { storeId, transDate: moment(value).format('YYYY-MM-DD') },
+        payment: { bankName: 'BNI', storeId, transDate: moment(value).format('YYYY-MM-DD') },
         paymentImportBca: {
           bankName: 'BNI',
           transactionDate: moment(value).format('YYYY-MM-DD'),

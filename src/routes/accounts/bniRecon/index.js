@@ -172,7 +172,8 @@ const ImportBcaRecon = ({
       dispatch({
         type: 'importBcaRecon/queryPosPayment',
         payload: {
-          ...params
+          ...params,
+          bankName: 'BNI'
         }
       })
     },
