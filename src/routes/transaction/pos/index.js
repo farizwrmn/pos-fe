@@ -2804,13 +2804,19 @@ const Pos = ({
       message.error('Already choose offering, please cancel this transaction.')
       return
     }
-    dispatch({
-      type: 'pospromo/addPosPromo',
-      payload: {
-        bundleId: item.id,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+    Modal.confirm({
+      title: 'Chose Offering',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'pospromo/addPosPromo',
+          payload: {
+            bundleId: item.id,
+            currentBundle: getBundleTrans(),
+            currentProduct: getCashierTrans(),
+            currentService: getServiceTrans()
+          }
+        })
       }
     })
   }

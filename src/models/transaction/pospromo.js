@@ -213,10 +213,13 @@ export default modelExtend(pageModel, {
           })
           return
         }
-        const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
         if (!categoryExists) {
+          const currentBundle = getBundleTrans()
+          const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(item.id))
+          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
           if (exists) {
             yield put({
               type: 'setBundleAlreadyExists',
