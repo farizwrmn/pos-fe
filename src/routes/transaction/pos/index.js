@@ -3199,7 +3199,7 @@ const Pos = ({
                     .map((item) => {
                       return (
                         <Button
-                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
+                          disabled={(selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
                           onClick={() => {
@@ -3210,7 +3210,7 @@ const Pos = ({
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {selectedPaymentShortcut
-                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && (selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'KX')
                             && selectedPaymentShortcut.typeCode === item.typeCode
                             && currentGrabOrder
                             && currentGrabOrder.shortOrderNumber
@@ -3228,7 +3228,7 @@ const Pos = ({
                     .map((item) => {
                       return (
                         <Button
-                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
+                          disabled={(selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
                           onClick={() => {
@@ -3239,7 +3239,7 @@ const Pos = ({
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {selectedPaymentShortcut
-                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && (selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'KX')
                             && selectedPaymentShortcut.typeCode === item.typeCode
                             && currentGrabOrder
                             && currentGrabOrder.shortOrderNumber

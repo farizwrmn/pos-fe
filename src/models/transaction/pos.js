@@ -3175,7 +3175,9 @@ export default {
       }
     },
 
-    * calculateAutoBundle ({ payload }, { put }) {
+    * calculateAutoBundle ({ payload }, { select, put }) {
+      const selectedPaymentShortcut = yield select(({ pos }) => pos.selectedPaymentShortcut)
+      if (selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') return
       const { listProduct } = payload
       let listBundle = getBundleTrans()
       let { cashier, bundle } = getListProductAfterBundling(listProduct, listBundle)
@@ -3729,7 +3731,6 @@ export default {
         })
         yield put({ type: 'pos/setDefaultMember' })
         yield put({ type: 'pos/setDefaultEmployee' })
-
         yield put({ type: 'pos/setDefaultPaymentShortcut' })
       } else {
         throw response
