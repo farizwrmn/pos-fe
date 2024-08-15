@@ -85,13 +85,15 @@ const convertCSVtoArray = (string) => {
   reformatArray = reformatArray.filter(filtered =>
     String(filtered.recordSource).trim() === 'DEBIT-BNI'
     || String(filtered.recordSource).trim() === 'KREDIT-BNI'
+    || String(filtered.recordSource).trim() === 'QRIS-BNI'
   )
 
   currentArray = reformatArray.map((record) => {
     let type
 
     if (String(record.recordSource).trim() === 'DEBIT-BNI'
-      || String(record.recordSource).trim() === 'KREDIT-BNI') {
+      || String(record.recordSource).trim() === 'KREDIT-BNI'
+      || String(record.recordSource).trim() === 'QRIS-BNI') {
       type = 'NID'
     }
 

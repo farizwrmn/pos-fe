@@ -49,7 +49,7 @@ const FormAutoCounter = ({
         paymentImportBca: {
           bankName: 'BNI',
           transactionDate: moment(value).format('YYYY-MM-DD'),
-          recordSource: ['DEBIT-BNI', 'KREDIT-BNI'],
+          recordSource: ['DEBIT-BNI', 'KREDIT-BNI', 'QRIS-BNI'],
           storeId,
           type: 'all'
         }

@@ -111,7 +111,8 @@ const convertCSVtoArray = (string) => {
     }
 
     if (String(record.recordSource).trim() === 'DEBIT-BNI'
-      || String(record.recordSource).trim() === 'KREDIT-BNI') {
+      || String(record.recordSource).trim() === 'KREDIT-BNI'
+      || String(record.recordSource).trim() === 'QRIS-BNI') {
       type = 'NID'
     }
 
