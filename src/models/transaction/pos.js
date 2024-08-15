@@ -3723,6 +3723,14 @@ export default {
           type: 'getGrabmartOrder',
           payload: {}
         })
+
+        yield put({
+          type: 'pos/removeTrans'
+        })
+        yield put({ type: 'pos/setDefaultMember' })
+        yield put({ type: 'pos/setDefaultEmployee' })
+
+        yield put({ type: 'pos/setDefaultPaymentShortcut' })
       } else {
         throw response
       }

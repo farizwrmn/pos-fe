@@ -100,6 +100,9 @@ const ImportBcaRecon = ({
             if (item.recordSource === 'KREDIT') {
               recordSource = 'KREDIT-BNI'
             }
+            if (item.recordSource === 'QRIS') {
+              recordSource = 'QRIS-BNI'
+            }
 
             return ({
               approvalCode: item.approvalCode,
