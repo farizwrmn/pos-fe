@@ -3686,6 +3686,12 @@ export default {
       const item = yield select(({ pos }) => pos.modalGrabmartCodeItem)
       const response = yield call(queryGrabmartCode, payload)
       if (response && response.success) {
+        yield put({
+          type: 'pos/removeTrans'
+        })
+        yield put({ type: 'pos/setDefaultMember' })
+        yield put({ type: 'pos/setDefaultEmployee' })
+        yield put({ type: 'pos/setDefaultPaymentShortcut' })
         const event = item.dineInTax
         const type = item.consignmentPaymentType
         setGrabmartOrder(response.data)
@@ -3725,13 +3731,6 @@ export default {
           type: 'getGrabmartOrder',
           payload: {}
         })
-
-        yield put({
-          type: 'pos/removeTrans'
-        })
-        yield put({ type: 'pos/setDefaultMember' })
-        yield put({ type: 'pos/setDefaultEmployee' })
-        yield put({ type: 'pos/setDefaultPaymentShortcut' })
       } else {
         throw response
       }
