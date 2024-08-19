@@ -2925,6 +2925,15 @@ const Pos = ({
       || loading.effects['pos/checkQuantityEditProduct']
       || loading.effects['pos/checkQuantityNewProduct']
       || loading.effects['pospromo/addPosPromo']
+      || loading.effects['pospromo/setBundleAlreadyExists']
+      || loading.effects['pospromo/setBundleNeverExists']
+      || loading.effects['pospromo/updateState']
+      || loading.effects['pospromo/addPosPromoItem']
+      || loading.effects['pos/setCurrentBuildComponent']
+      || loading.effects['pospromo/setProductPos']
+      || loading.effects['pospromo/setCategoryPos']
+      || loading.effects['pospromo/setServicePos']
+      || loading.effects['pos/openBundleCategory']
       || loading.effects['pos/getProductByBarcode']),
     productBookmarkGroup,
     productBookmark,
