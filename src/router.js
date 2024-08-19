@@ -2009,6 +2009,22 @@ const Routers = function ({ history, app }) {
             }, 'bni-recon')
           }
         }, {
+          path: 'accounting/mandiri-recon-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/mandiriReconImport'))
+            }, 'mandiri-recon-import')
+          }
+        }, {
+          path: 'accounting/mandiri-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/mandiriRecon'))
+            }, 'mandiri-recon')
+          }
+        }, {
           path: 'accounting/xendit-recon',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
