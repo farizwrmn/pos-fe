@@ -88,6 +88,15 @@ export default modelExtend(pageModel, {
             }
           })
         }
+        if (pathname === '/accounting/mandiri-recon') {
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'MANDIRI',
+              ...other
+            }
+          })
+        }
         if (pathname === '/accounting/bca-recon-import') {
           dispatch({
             type: 'queryImportLog',
@@ -103,6 +112,15 @@ export default modelExtend(pageModel, {
             payload: {
               ...other,
               bankName: 'BNI'
+            }
+          })
+        }
+        if (pathname === '/accounting/mandiri-recon-import') {
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'MANDIRI'
             }
           })
         }
