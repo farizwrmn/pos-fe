@@ -3,7 +3,6 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Excel from 'exceljs/dist/exceljs.min.js'
 import { message } from 'antd'
 import moment from 'moment'
 import ListFilenameImportCSV from './ListFilenameImportCSV'
@@ -37,169 +36,137 @@ const ImportBcaRecon = ({
   }
 
   const csvHeader = [
-    'processEffectiveDate', // PROC DATE
     'merchantId', // MID
-    'traceNumber', // OB
-    'traceNumber', // GB
-    'traceNumber', // SEQ
-    'traceNumber', // TYPE
-    'transactionDate', // TRX DATE
-    'approvalCode', // AUTH
-    'cardNumber', // CARD NO
-    'grossAmount', // AMOUNT
+    'merchantName', // Merchant Official
+    'notdefine', // Trading Name
+    'notdefine', // Bank Account
+    'notdefine', // Bank Account Name
+    'transactionDate', // TRXDATE
+    'transactionTime', // TRXTIME
+    'bank', // Issuer Name
     'transactionCode', // TID
-    'recordSource', // JENIS TRX
-    'traceNumber', // PTR
-    'mdr', // RATE
-    'mdrAmount', // DISC AMOUNT
-    'traceNumber', // AIR FARE
-    'traceNumber', // PLAN
-    'traceNumber', // SS AMOUNT
-    'traceNumber', // SS FEE TYPE
-    'traceNumber', // FLAG
-    'nettAmount', // NETT AMOUNT
-    'merchantName', // MERCHANT ACCOUNT
-    'merchantName' // MERCHANT NAME
+    'edcBatchNumber', // Reference Number
+    'approvalCode', // Reff ID/Invoice No
+    'grossAmount', // AMOUNT
+    'mdrAmount', // MDR Amount
+    'nettAmount' // NET AMOUNT
   ]
+
+  function splitCSV (csvString) {
+    // Regular expression to match CSV values
+    const pattern = /(".*?"|[^",]+)(?=\s*,|\s*$)/g
+
+    // Array to hold the results
+    let result = []
+    let match
+
+    // Find all matches using the pattern
+    while (match = pattern.exec(csvString)) {
+      // Get the matched value
+      let value = match[1].trim()
+
+      // Remove enclosing double quotes if present
+      if (value.startsWith('"') && value.endsWith('"')) {
+        value = value.slice(1, -1)
+      }
+
+      // Remove single quote if it starts with one
+      if (value.startsWith("'")) {
+        value = value.slice(1).trim()
+      }
+
+      // Convert numeric strings to numbers, ignoring commas
+      const numericValue = value.replace(/,/g, '')
+      if (!isNaN(numericValue)) {
+        value = Number(numericValue)
+      }
+
+      result.push(value)
+    }
+
+    return result
+  }
+
 
   const handleChangeFile = (event) => {
     const file = event.target.files[0]
-    const workbook = new Excel.Workbook()
     const reader = new FileReader()
-    console.log('file', file)
-    reader.readAsArrayBuffer(file)
 
-    reader.onload = () => {
-      const buffer = reader.result
-      workbook.xlsx.load(buffer)
-        .then(async (workbook) => {
-          console.log('workbook', workbook)
-          const sheet = workbook.getWorksheet('Report')
-          let finalRequest = []
-          await sheet
-            .eachRow({ includeEmpty: false }, (obj, rowIndex) => {
-              if (rowIndex > 1) {
-                let startPoint = 0
+    reader.onload = (event) => {
+      const data = event.target.result
+      const csvReplaced = String(data)
+        .replace(/(?:\\[r]|[\r]+)+/g, '')
+      const csvRows = csvReplaced
+        .trim()
+        .split('\n')
+      if (csvRows && csvRows[0] && csvRows[0].trim() !== 'MERCHANT STATEMENT') {
+        message.error(`File format error "${csvRows[0]}"`)
+        return
+      }
+      const array = csvRows.map((record) => {
+        const values = splitCSV(record)
+        const obj = csvHeader.reduce((object, header, index) => {
+          object[header] = values[index] ? `${values[index]}`.trim() : values[index]
+          return object
+        }, {})
+        return obj
+      })
+      let processEffectiveDate = ''
+      const reformatArray = array.map((item) => {
+        if (item.merchantId === 'Report Date') {
+          processEffectiveDate = item.merchantName
+        }
+        let recordSource = 'DEBIT-MANDIRI'
+        if (!item.bank) {
+          return null
+        }
+        if (item.bank === 'TOTAL AMOUNT') {
+          return null
+        }
+        if (item.bank === 'TRXTIME') {
+          return null
+        }
+        if (item.grossAmount == null) {
+          return null
+        }
+        return ({
+          bank: item.bank,
+          approvalCode: item.approvalCode.slice(-6),
+          edcBatchNumber: item.edcBatchNumber.slice(-6),
+          cardNumber: item.cardNumber,
+          grossAmount: item.grossAmount,
+          mdr: item.mdr,
+          merchantId: item.merchantId,
+          merchantName: item.merchantName,
+          nettAmount: item.nettAmount,
+          redeemAmount: 0,
+          rewardAmount: 0,
+          originalAmount: 0,
+          mdrAmount: item.mdrAmount,
+          reportDate: moment(processEffectiveDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+          processEffectiveDate: moment(processEffectiveDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+          recordSource,
+          traceNumber: item.traceNumber,
+          transactionCode: item.transactionCode,
+          transactionDate: moment(item.transactionDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
+        })
+      }).filter(filtered => filtered)
 
-                const request = {}
-                for (let key in csvHeader) {
-                  request[csvHeader[key]] = obj.values[++startPoint]
-                }
-                console.log('request', request)
-                finalRequest.push(request)
-              }
-            })
-
-          console.log('finalRequest', finalRequest)
-
-          finalRequest = finalRequest.map((item) => {
-            let recordSource = item.recordSource
-            if (item.recordSource === 'DEBIT') {
-              recordSource = 'DEBIT-MANDIRI'
-            }
-            if (item.recordSource === 'KREDIT') {
-              recordSource = 'KREDIT-MANDIRI'
-            }
-            if (item.recordSource === 'QRIS') {
-              recordSource = 'QRIS-MANDIRI'
-            }
-
-            return ({
-              approvalCode: item.approvalCode,
-              cardNumber: item.cardNumber,
-              grossAmount: item.grossAmount,
-              mdr: item.mdr,
-              merchantId: item.merchantId,
-              merchantName: item.merchantName,
-              nettAmount: item.nettAmount,
-              redeemAmount: 0,
-              rewardAmount: 0,
-              originalAmount: 0,
-              mdrAmount: item.mdrAmount,
-              reportDate: moment(item.processEffectiveDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-              processEffectiveDate: moment(item.processEffectiveDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-              recordSource,
-              traceNumber: item.traceNumber,
-              transactionCode: item.transactionCode,
-              transactionDate: moment(item.transactionDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
-            })
-          })
-          if (finalRequest && finalRequest.length > 0) {
-            dispatch({
-              type: 'importBcaRecon/bulkInsert',
-              payload: {
-                bankName: 'BNI',
-                filename: file.name,
-                data: finalRequest
-              }
-            })
-          } else {
-            message.error('No Data to Upload')
+      console.log('reformatArray', reformatArray)
+      if (reformatArray && reformatArray.length > 0) {
+        dispatch({
+          type: 'importBcaRecon/bulkInsert',
+          payload: {
+            bankName: 'MANDIRI',
+            filename: file.name,
+            data: reformatArray
           }
         })
+      } else {
+        message.error('No Data to Upload')
+      }
     }
-
-    // reader.onload = (event) => {
-    //   const data = event.target.result
-    //   const csvRows = String(data).trim().split('\n')
-    //   const excelConvertedData = csvRows.map((record) => {
-    //     const values = record.split(';')
-    //     const obj = csvHeader.reduce((object, header, index) => {
-    //       if (values[index]) {
-    //         object[header] = values[index].trim()
-    //       } else {
-    //         object[header] = null
-    //       }
-    //       return object
-    //     }, {})
-    //     return obj
-    //   })
-    //   console.log('excelConvertedData', excelConvertedData)
-    //   const reformatArray = excelConvertedData.map((item) => {
-    //     return ({
-    //       edcBatchNumber: Number(item.edcBatchNumber) || 0,
-    //       mdr: Number(item.mdr) || 0,
-    //       mdrAmount: Number((item.mdrAmount || '').replace(',', '')) || 0,
-    //       approvalCode: item.approvalCode,
-    //       cardNumber: item.cardNumber,
-    //       cardType: item.cardType,
-    //       grossAmount: Number((item.grossAmount || '').replace(',', '')) || 0,
-    //       groupId: item.groupId,
-    //       dbCrIndicator: item.dbCrIndicator,
-    //       merchantId: Number(item.merchantId) || 0,
-    //       merchantName: String(item.merchantName).trim(),
-    //       merchantPaymentDate: String(item.merchantPaymentDate).trim() && moment(item.merchantPaymentDate, 'YYYYMMDD').isValid() ? moment(item.merchantPaymentDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-    //       merchantPaymentStatus: item.merchantPaymentStatus,
-    //       merchantSettleDate: String(item.merchantSettleDate).trim() && moment(item.merchantSettleDate, 'YYYYMMDD').isValid() ? moment(item.merchantSettleDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-    //       merchantSettleTime: item.merchantSettleTime,
-    //       nettAmount: Number((item.nettAmount || '').replace(',', '')) || 0,
-    //       originalAmount: Number(item.originalAmount) || 0,
-    //       processEffectiveDate: String(item.processEffectiveDate).trim() && moment(item.processEffectiveDate, 'YYYYMMDD').isValid() ? moment(item.processEffectiveDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-    //       recordSource: item.recordSource,
-    //       redeemAmount: Number((item.redeemAmount || '').replace(',', '')) || 0,
-    //       rewardAmount: Number((item.rewardAmount || '').replace(',', '')) || 0,
-    //       reportDate: String(item.reportDate).trim() && moment(item.reportDate, 'YYYYMMDD').isValid() ? moment(item.reportDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-    //       terminalId: Number(item.terminalId) || 0,
-    //       sequenceNumber: Number(item.sequenceNumber) || 0,
-    //       traceNumber: Number(item.traceNumber),
-    //       transactionDate: String(item.transactionDate).trim() && moment(item.transactionDate, 'YYYYMMDD').isValid() ? moment(item.transactionDate, 'YYYYMMDD').format('YYYY-MM-DD') : null,
-    //       transactionTime: String(item.transactionTime),
-    //       transactionCode: item.transactionCode
-    //     })
-    //   })
-    //   if (reformatArray && reformatArray.length > 0) {
-    //     // dispatch({
-    //     //   type: 'importBcaRecon/bulkInsert',
-    //     //   payload: {
-    //     //     filename: file.name,
-    //     //     data: reformatArray
-    //     //   }
-    //     // })
-    //   } else {
-    //     message.error('No Data to Upload')
-    //   }
-    // }
-    // reader.readAsText(file, { header: false })
+    reader.readAsText(file, { header: false })
   }
 
   return (
@@ -211,7 +178,7 @@ const ImportBcaRecon = ({
           <input
             id="importCsv"
             type="file"
-            accept=".xlsx"
+            accept=".csv"
             className="ant-btn ant-btn-default ant-btn-lg"
             style={{ visibility: 'hidden' }}
             {...uploadProps}
