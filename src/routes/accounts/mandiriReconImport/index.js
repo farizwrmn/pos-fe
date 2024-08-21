@@ -35,7 +35,7 @@ const ImportBcaRecon = ({
     processData: false
   }
 
-  const csvHeader = [
+  const csvQrisHeader = [
     'merchantId', // MID
     'merchantName', // Merchant Official
     'notdefine', // Trading Name
@@ -50,6 +50,36 @@ const ImportBcaRecon = ({
     'grossAmount', // AMOUNT
     'mdrAmount', // MDR Amount
     'nettAmount' // NET AMOUNT
+  ]
+
+  const csvDebitHeader = [
+    'merchantId', // MID
+    'merchantName', // Merchant Official
+    'notdefine', // Trading Name
+    'notdefine', // Bank Account
+    'notdefine', // Bank Account Name
+    'transactionDate', // TRXDATE
+    'merchantSettleDate', // SETTLEDATE
+    'processEffectiveDate', // PAYMENT DATE
+    'notdefine', // TRXCODE
+    'notdefine', // DESCRIPTION
+    'notdefine', // TENOR
+    'cardNumber', // CARD
+    'bank', // Issuer Name
+    'notdefine', // Country Name
+    'notdefine', // Principat
+    'notdefine', // On Off Type
+    'cardType', // Card Type
+    'transactionCode', // TID
+    'approvalCode', // AUTHCODE
+    'edcBatchNumber', // PAYMENTBATCH
+    'notdefine', // TIDBATCH
+    'notdefine', // BATCHSEQ
+    'grossAmount', // AMOUNT
+    'notdefine', // NonMdrAMOUNT
+    'mdrAmount', // MDR Amount
+    'nettAmount', // NET AMOUNT
+    'notdefine' // Bill Reff Num
   ]
 
   function splitCSV (csvString) {
@@ -103,12 +133,33 @@ const ImportBcaRecon = ({
         message.error(`File format error "${csvRows[0]}"`)
         return
       }
+      let fileType = null // DEBIT OR QRIS
+      if (csvRows && csvRows[5]) {
+        if (csvRows[5].substring(0, 4) === 'NMID') {
+          fileType = 'QRIS'
+        } else if (csvRows[5].substring(0, 3) === 'MID') {
+          fileType = 'DEBIT'
+        }
+        console.log('csvRows', csvRows[5].substring(0, 4))
+      }
+      if (!fileType) {
+        message.error('File format is unknown')
+        return
+      }
       const array = csvRows.map((record) => {
         const values = splitCSV(record)
-        const obj = csvHeader.reduce((object, header, index) => {
-          object[header] = values[index] ? `${values[index]}`.trim() : values[index]
-          return object
-        }, {})
+        let obj
+        if (fileType === 'DEBIT') {
+          obj = csvDebitHeader.reduce((object, header, index) => {
+            object[header] = values[index] ? `${values[index]}`.trim() : values[index]
+            return object
+          }, {})
+        } else if (fileType === 'QRIS') {
+          obj = csvQrisHeader.reduce((object, header, index) => {
+            object[header] = values[index] ? `${values[index]}`.trim() : values[index]
+            return object
+          }, {})
+        }
         return obj
       })
       let processEffectiveDate = ''
@@ -116,17 +167,33 @@ const ImportBcaRecon = ({
         if (item.merchantId === 'Report Date') {
           processEffectiveDate = item.merchantName
         }
-        let recordSource = 'DEBIT-MANDIRI'
+        let recordSource = 'QRIS-MANDIRI'
+        if (fileType === 'DEBIT') {
+          if (item.cardType === 'Debit') {
+            recordSource = 'DEBIT-MANDIRI'
+          } else if (item.cardType === 'Kredit') {
+            recordSource = 'KREDIT-MANDIRI'
+          }
+          if (item.merchantName === 'Merchant Official') {
+            return null
+          }
+        } else if (fileType === 'QRIS') {
+          recordSource = 'QRIS-MANDIRI'
+          if (item.bank === 'TOTAL AMOUNT') {
+            return null
+          }
+          if (item.bank === 'TRXTIME') {
+            return null
+          }
+        }
         if (!item.bank) {
           return null
         }
-        if (item.bank === 'TOTAL AMOUNT') {
-          return null
-        }
-        if (item.bank === 'TRXTIME') {
-          return null
-        }
+
         if (item.grossAmount == null) {
+          return null
+        }
+        if (!item.approvalCode) {
           return null
         }
         return ({
