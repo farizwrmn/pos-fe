@@ -298,15 +298,20 @@ export default modelExtend(pageModel, {
       const currentBundle = payload.currentBundle
       payload.item.inputTime = new Date().valueOf()
       const item = payload.item
-      let arrayProd = currentBundle.map((data) => {
-        if (data.bundleId === item.id) {
-          return ({
-            ...data,
-            qty: parseFloat(data.qty) + 1
-          })
-        }
-        return data
-      })
+      const filteredBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
+      let arrayProd = currentBundle
+      if (filteredBundle && filteredBundle[0]) {
+        arrayProd = currentBundle.map((data) => {
+          if (data.no === filteredBundle[0].no) {
+            return ({
+              ...data,
+              qty: parseFloat(data.qty) + 1
+            })
+          }
+          return data
+        })
+      }
+
       setBundleTrans(JSON.stringify(arrayProd))
       yield put({ type: 'pos/setCurrentBuildComponent' })
       yield put({
