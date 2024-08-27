@@ -241,7 +241,7 @@ const ImportAutoReplenishBuffer = ({
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
 
       <Row>
-        <Col sm={24} md={12} lg={8}>
+        <Col sm={24} md={12} lg={12}>
           <Form layout="horizontal">
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
@@ -266,7 +266,24 @@ const ImportAutoReplenishBuffer = ({
         {'Stock: '}
         {buttonClickXLS}
         <span>
-          <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+          <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Replace</label>
+          <input
+            id="opname"
+            type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            style={{ visibility: 'hidden' }}
+            {...uploadProps}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleChangeFile(event)
+            }}
+          />
+        </span>
+        <span>
+          <label htmlFor="opname" className="ant-btn ant-btn-default ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Insert New</label>
           <input
             id="opname"
             type="file"
