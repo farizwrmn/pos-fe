@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getStorageKey, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
+import { getCashierTrans, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
