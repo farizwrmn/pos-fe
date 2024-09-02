@@ -688,14 +688,6 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
-          path: 'request-cancel-pos',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/notification/requestCancelPos'))
-              cb(null, require('./routes/notification/requestCancelPos'))
-            }, 'request-cancel-pos')
-          }
-        }, {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2001,6 +1993,38 @@ const Routers = function ({ history, app }) {
             }, 'bca-recon-import')
           }
         }, {
+          path: 'accounting/bni-recon-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bniReconImport'))
+            }, 'bni-recon-import')
+          }
+        }, {
+          path: 'accounting/bni-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bniRecon'))
+            }, 'bni-recon')
+          }
+        }, {
+          path: 'accounting/mandiri-recon-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/mandiriReconImport'))
+            }, 'mandiri-recon-import')
+          }
+        }, {
+          path: 'accounting/mandiri-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/mandiriRecon'))
+            }, 'mandiri-recon')
+          }
+        }, {
           path: 'accounting/xendit-recon',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2281,6 +2305,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/autoReplenish'))
+              registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/autoReplenish'))
             }, 'inventory-transfer-out-auto-replenish')

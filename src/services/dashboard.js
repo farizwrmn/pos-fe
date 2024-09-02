@@ -59,6 +59,7 @@ export async function getNotifications () {
   return request({
     url: `${dashboards}/header`,
     method: 'post',
+    alt: true,
     data: { store: lstorage.getCurrentUserStore() },
     headers: apiHeaderToken
   })
@@ -69,6 +70,7 @@ export async function getListNotifications () {
   return request({
     url: `${dashboards}/notification`,
     method: 'post',
+    alt: true,
     data: { store: lstorage.getCurrentUserStore() },
     headers: apiHeaderToken
   })
@@ -79,6 +81,7 @@ export async function refreshNotifications () {
   return request({
     url: `${dashboards}/notification/refresh`,
     method: 'post',
+    alt: true,
     data: { store: lstorage.getCurrentUserStore() },
     headers: apiHeaderToken
   })

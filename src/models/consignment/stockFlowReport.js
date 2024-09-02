@@ -78,7 +78,7 @@ export default modelExtend(pageModel, {
         const response = yield call(query, params)
         let data = response.data.list
         let stock = response.data.stock
-        if (data.length > 1) {
+        if (data.length > 0) {
           data.push(stock)
         }
         yield put({

@@ -164,11 +164,7 @@ export default {
         }
         storeInfo.stackHeader02 = storeInfo.stackHeader03
 
-        if (storeInfo !== []) {
-          localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
-        } else {
-          console.log('unexpected error misc')
-        }
+        localStorage.setItem(`${prefix}store`, JSON.stringify(storeInfo))
 
         yield put({
           type: 'setSetting'

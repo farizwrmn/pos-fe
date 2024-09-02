@@ -117,6 +117,7 @@ const ImportBcaRecon = ({
         dispatch({
           type: 'importBcaRecon/bulkInsert',
           payload: {
+            bankName: 'BCA',
             filename: file.name,
             data: reformatArray
           }

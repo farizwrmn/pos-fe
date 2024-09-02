@@ -17,7 +17,7 @@ const Total = ({
 }) => {
   const merge = dataPos.concat(dataService).concat(dataGroup).concat(dataConsignment)
   let TotalQty = merge.reduce((cnt, o) => cnt + o.qty, 0)
-  let Total = merge.reduce((cnt, o) => cnt + o.total, 0)
+  let Total = Math.round(merge.reduce((cnt, o) => cnt + o.total, 0))
   const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal), 0)
 
   return (
@@ -63,7 +63,7 @@ const Total = ({
         </Col>
         <Col span={12} className={styles.right}>
           <strong className={styles.total}>
-            {numberFormatter(parseFloat(Total || 0) + parseFloat(posData.dineInTax || 0) + parseFloat(curCharge || 0))}
+            {numberFormatter(parseInt(Total, 0) + parseFloat(posData.dineInTax || 0) + parseFloat(curCharge || 0))}
           </strong>
         </Col>
       </Row>

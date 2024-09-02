@@ -38,6 +38,7 @@ const Detail = ({ app, loading, voucherdetail, accountRule, dispatch }) => {
   }
 
   const formDetailProps = {
+    item: data,
     dataSource: listDetail,
     rowSelection: {
       selectedRowKeys,

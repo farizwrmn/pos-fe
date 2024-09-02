@@ -70,7 +70,7 @@ const Body = ({
         <div>
           <div className={styles.item} />
           <Row>
-            <Col span={24} className={styles.left}><p>Sales - EDC(DEBIT,CREDIT, QRIS APOS)</p></Col>
+            <Col span={24} className={styles.left}><p>Sales - EDC(DEBIT,CREDIT, QRIS APOS, BNI)</p></Col>
           </Row>
           <Row>
             <Col span={12} className={styles.left}>

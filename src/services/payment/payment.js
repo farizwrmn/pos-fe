@@ -48,6 +48,7 @@ export async function queryPaymentInvoice (params) {
   return request({
     url: `${paymentOpts}/invoice`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

@@ -37,12 +37,14 @@ export async function query (params) {
       return request({
         url: apiUserRole.replace('/:id', `/${url[1]}`).replace('/:role', `/${url[2]}`),
         method: 'get',
+        alt: true,
         headers: apiHeaderToken
       })
     }
     return request({
       url: apiUser.replace('/:id', ''),
       method: 'get',
+      alt: true,
       data: params
     })
   }

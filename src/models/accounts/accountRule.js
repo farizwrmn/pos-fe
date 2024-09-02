@@ -151,6 +151,13 @@ export default modelExtend(pageModel, {
               cacheType: CACHE_TYPE_VOUCHER
             }
           })
+          dispatch({
+            type: 'queryLov',
+            payload: {
+              accountType: ACCOUNT_TYPE_VOUCHER_PAYMENT,
+              cacheType: CACHE_TYPE_MARKETING_VOUCHER_DETAIL
+            }
+          })
         }
         if (pathname === '/accounts/payable-form') {
           dispatch({

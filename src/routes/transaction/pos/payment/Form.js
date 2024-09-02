@@ -387,7 +387,7 @@ class FormPayment extends React.Component {
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
           {getFieldDecorator('amount', {
-            initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+            initialValue: parseInt(item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0, 0),
             rules: [
               {
                 required: true,

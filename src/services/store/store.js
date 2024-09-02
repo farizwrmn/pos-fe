@@ -14,6 +14,7 @@ export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `/list-store/${params.id}`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

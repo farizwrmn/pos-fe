@@ -7,6 +7,7 @@ export async function query (params) {
     return request({
       url: '/consignment-api/stock',
       method: 'get',
+      alt: true,
       data: params,
       headers: apiHeaderToken
     })

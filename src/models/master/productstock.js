@@ -92,6 +92,11 @@ export default modelExtend(pageModel, {
             break
           default:
         }
+        if (pathname === '/inventory/transfer/auto-replenish') {
+          dispatch({
+            type: 'productstock/queryPickingLine'
+          })
+        }
         if (pathname === '/stock') {
           dispatch({ type: 'queryLastAdjust' })
           dispatch({ type: 'loadDataValue' })

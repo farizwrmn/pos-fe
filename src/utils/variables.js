@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getConsignment, getItem, getDomainBE, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
+import { getCashierTrans, getStorageKey, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -22,7 +22,28 @@ const getAPIURL = () => {
   const BEURL = getDomainBE()
   const BEPORT = getPortBE()
   let APIHOST
-  if (!BEURL.match(/^[0-9a-z.]+$/)) {
+  if (!BEURL.match(/^[0-9a-z.-]+$/)) {
+    removeItemKey('cdi')
+    APIHOST = 'localhost'
+  } else {
+    APIHOST = BEURL
+  }
+  let APIPORT
+  if (!BEPORT.match(/^[0-9a-z]+$/)) {
+    APIPORT = 5557
+  } else {
+    APIPORT = BEPORT
+  }
+  let APICOMPANYPROTOCOL = getProtocolBE()
+  const APIURL = `${APICOMPANYPROTOCOL}://${APIHOST}:${APIPORT}`
+  return APIURL
+}
+
+const getAPIURLAlt = () => {
+  const BEURL = getDomainBEAlt()
+  const BEPORT = getPortBE()
+  let APIHOST
+  if (!BEURL.match(/^[0-9a-z.-]+$/)) {
     removeItemKey('cdi')
     APIHOST = 'localhost'
   } else {
@@ -99,6 +120,12 @@ const insertCashierTrans = (dataObject) => {
       categoryCode: dataObject.categoryCode,
       code: dataObject.code,
       name: dataObject.name,
+      probBundleId: dataObject.probBundleId,
+      probBundleCode: dataObject.probBundleCode,
+      probBundleName: dataObject.probBundleName,
+      probBundleTargetQty: dataObject.probBundleTargetQty,
+      probFinalPrice: dataObject.probFinalPrice,
+      probBundle: dataObject.probBundle,
       qty: dataObject.qty,
       typeCode: dataObject.typeCode,
       sellPrice: dataObject.sellPrice,
@@ -128,7 +155,7 @@ const insertCashierTrans = (dataObject) => {
 
   setCashierTrans(JSON.stringify(newData))
 
-  return previousData
+  return newData
 }
 
 const insertConsignment = (dataObject) => {
@@ -171,5 +198,6 @@ module.exports = {
   insertConsignment,
   getSetting,
   getPermission,
-  getAPIURL
+  getAPIURL,
+  getAPIURLAlt
 }

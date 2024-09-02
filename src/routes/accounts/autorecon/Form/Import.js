@@ -110,6 +110,12 @@ const convertCSVtoArray = (string) => {
       type = 'K'
     }
 
+    if (String(record.recordSource).trim() === 'DEBIT-BNI'
+      || String(record.recordSource).trim() === 'KREDIT-BNI'
+      || String(record.recordSource).trim() === 'QRIS-BNI') {
+      type = 'NID'
+    }
+
     return ({
       approvalCode: record.approvalCode,
       edcBatchNumber: record.EDCBatchNumber,
