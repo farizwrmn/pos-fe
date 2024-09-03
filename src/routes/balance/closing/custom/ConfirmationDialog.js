@@ -261,7 +261,7 @@ class ConfirmationDialog extends Component {
             <Row>
               <Col>
                 <div>
-                  <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA, BNI)</h3>
+                  <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA, BNI, MANDIRI)</h3>
                   {/* {renderTable(filterList, [
                     {
                       title: 'JUMLAH LEMBAR',

@@ -15,7 +15,7 @@ import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'servi
 import { queryPaymentInvoice } from 'services/payment/payment'
 import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
-import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
+import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
@@ -80,6 +80,7 @@ const {
   setCashierTrans, setBundleTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
+  getExpressOrder, setExpressOrder,
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
@@ -108,9 +109,12 @@ export default {
     currentBundlePayment: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
+    modalExpressCodeVisible: false,
     modalGrabmartCodeVisible: false,
     modalGrabmartCodeItem: {},
+    modalExpressCodeItem: {},
     currentGrabOrder: {},
+    currentExpressOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
     list: [],
@@ -846,6 +850,16 @@ export default {
         type: 'updateState',
         payload: {
           currentGrabOrder
+        }
+      })
+    },
+
+    * getExpressOrder (payload, { put }) {
+      const currentExpressOrder = getExpressOrder()
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentGrabOrder: currentExpressOrder
         }
       })
     },
@@ -3731,6 +3745,67 @@ export default {
           type: 'getGrabmartOrder',
           payload: {}
         })
+      } else {
+        throw response
+      }
+    },
+
+    * submitExpressCode ({ payload = {} }, { select, call, put }) {
+      const item = yield select(({ pos }) => pos.modalGrabmartCodeItem)
+      const response = yield call(queryExpressCode, payload)
+      if (response && response.success) {
+        const event = item.dineInTax
+        const type = item.consignmentPaymentType
+        setExpressOrder({
+          orderTag: response.data.orderTag,
+          firstName: response.data.firstName,
+          phoneNumber: response.data.phoneNumber,
+          orderShortNumber: response.data.orderShortNumber,
+          id: response.data.id
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalExpressCodeVisible: false
+          }
+        })
+        localStorage.setItem('dineInTax', 0)
+        localStorage.setItem('typePembelian', type)
+
+        yield put({
+          type: 'pos/changeDineIn',
+          payload: {
+            dineInTax: event,
+            typePembelian: type,
+            selectedPaymentShortcut: item
+          }
+        })
+
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            dineInTax: event,
+            typePembelian: type
+          }
+        })
+
+        yield put({
+          type: 'pos/setPaymentShortcut',
+          payload: {
+            item
+          }
+        })
+        yield put({
+          type: 'getGrabmartOrder',
+          payload: {}
+        })
+
+        yield put({
+          type: 'pos/removeTrans'
+        })
+        yield put({ type: 'pos/setDefaultMember' })
+        yield put({ type: 'pos/setDefaultEmployee' })
+        yield put({ type: 'pos/setDefaultPaymentShortcut' })
       } else {
         throw response
       }

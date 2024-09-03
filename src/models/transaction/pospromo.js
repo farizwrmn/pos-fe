@@ -159,7 +159,12 @@ export default modelExtend(pageModel, {
         return
       }
 
-      const { bundleId, currentBundle, currentProduct, currentService } = payload
+      const {
+        bundleId,
+        currentBundle
+        // currentProduct,
+        // currentService
+      } = payload
       const data = yield call(query, { id: bundleId })
       const dataReward = yield call(queryReward, { bundleId, type: 'all' })
       if (data.success && dataReward.success && dataReward.data && dataReward.data.length > 0) {
@@ -254,9 +259,9 @@ export default modelExtend(pageModel, {
               currentBundle,
               item
             },
-            currentProduct,
+            currentProduct: getCashierTrans(),
             itemRewardProduct,
-            currentService,
+            currentService: getServiceTrans(),
             itemRewardService,
             itemRewardCategory
           }

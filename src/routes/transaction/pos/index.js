@@ -46,6 +46,7 @@ import ModalCashRegister from './ModalCashRegister'
 import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
+import ModalExpressCode from './ModalExpressCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
 import ModalExpressDineIn from './Dinein'
 import ModalPlanogramCashier from './PlanogramCashier'
@@ -250,6 +251,7 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
+    modalExpressCodeVisible,
     currentGrabOrder,
     dynamicQrisPaymentAvailability,
     qrisLatestTransaction,
@@ -2144,6 +2146,32 @@ const Pos = ({
     }
   }
 
+  const modalExpressCodeProps = {
+    visible: modalExpressCodeVisible,
+    loading: loading.effects['pos/submitExpressCode'],
+    maskClosable: false,
+    title: 'Input your Express Invoice Code',
+    confirmLoading: loading.effects['pos/submitExpressCode'],
+    wrapClassName: 'vertical-center-modal',
+    onSubmit (data) {
+      dispatch({
+        type: 'pos/submitExpressCode',
+        payload: {
+          ...data,
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalExpressCodeVisible: false
+        }
+      })
+    }
+  }
+
   const handleChangeDineIn = (dineInTax, consignmentPaymentType, item) => {
     if (item.typeCode === 'GM') {
       dispatch({
@@ -3325,6 +3353,7 @@ const Pos = ({
       }
       {/* {modalShiftVisible && <ModalShift {...modalShiftProps} />} */}
       {modalGrabmartCodeVisible && <ModalGrabmartCode {...modalGrabmartCodeProps} />}
+      {modalExpressCodeVisible && <ModalExpressCode {...modalExpressCodeProps} />}
     </div >
   )
 }

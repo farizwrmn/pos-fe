@@ -27,7 +27,7 @@ const Member = ({
           <Col span={12} className={styles.right}>
             <span>
               <strong>
-                Point
+                Coin
               </strong>
             </span>
           </Col>

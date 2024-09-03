@@ -93,7 +93,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      payload.header = { storeId: payload.storeId }
+      payload.header = { storeId: payload.storeId, fileType: payload.fileType }
       const data = yield call(add, payload)
       if (data.success) {
         success()
