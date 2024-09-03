@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/pkm/pkmFormula'
+import { query, add, addImport, edit, remove } from 'services/pkm/pkmFormula'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -93,38 +92,36 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * addImport ({ payload }, { call, put }) {
+      payload.header = { storeId: payload.storeId }
+      const data = yield call(addImport, payload)
+      if (data.success) {
+        success()
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      const id = yield select(({ pkmFormula }) => pkmFormula.modalEditPkmItem.id)
       const newCounter = { ...payload.data, id }
       const response = yield call(edit, newCounter)
       if (response.success) {
         success()
+        yield put({ type: 'query' })
         yield put({
           type: 'updateState',
           payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
+            modalEditPkmItem: {},
+            modalEditPkmVisible: false
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
+
         if (payload.reset) {
           payload.reset()
         }
       } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
-          }
-        })
         throw response
       }
     }

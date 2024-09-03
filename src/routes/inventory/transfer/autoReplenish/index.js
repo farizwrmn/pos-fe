@@ -26,6 +26,15 @@ const Counter = ({ autoReplenish, productstock, transferOut, loading, dispatch, 
         }
       })
     },
+    onSubmitPkm (data, reset) {
+      dispatch({
+        type: 'autoReplenish/addPkm',
+        payload: {
+          data,
+          reset
+        }
+      })
+    },
     onCancel () {
       const { pathname } = location
       dispatch(routerRedux.push({
