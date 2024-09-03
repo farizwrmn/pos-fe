@@ -8,11 +8,6 @@ import { BasicExcelReport } from 'components'
 
 const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
   const styles = {
-    merchant: {
-      name: 'Courier New',
-      family: 4,
-      size: 12
-    },
     title: {
       name: 'Courier New',
       family: 4,
@@ -43,6 +38,11 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     },
     alignmentRight: {
       vertical: 'middle', horizontal: 'right'
+    },
+    merchant: {
+      name: 'Courier New',
+      family: 4,
+      size: 12
     }
   }
 
@@ -64,6 +64,12 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: (data.employee.accountName || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.createdAt).format('YYYY-MM-DD'), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.createdAt).format('HH:mm'), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({
+          value: (data.employee && data.employee.store && data.employee.store.storeName ? data.employee.store.storeName.toString() : ''),
+          alignment: styles.alignmentLeft,
+          font: styles.tableBody,
+          border: styles.tableBorder
+        })
         tableBody.push(row)
       }
       start += 1
@@ -78,7 +84,8 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: 'NO AKUN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA AKUN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'LOGIN DATE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
-        { value: 'LOGIN TIME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
+        { value: 'LOGIN TIME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'NAMA STORE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }
       ]
     )
 

@@ -185,14 +185,6 @@ export default modelExtend(pageModel, {
             listItem: []
           }
         })
-        const userId = lstorage.getStorageKey('udi')[1]
-        yield put({
-          type: 'pos/loadDataPos',
-          payload: {
-            cashierId: userId,
-            status: 'O'
-          }
-        })
         yield put({ type: 'querySequence' })
         Modal.success({
           title: 'Transaction success',

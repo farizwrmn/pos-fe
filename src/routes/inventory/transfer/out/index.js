@@ -14,7 +14,7 @@ const { getCashierTrans } = lstorage
 const TabPane = Tabs.TabPane
 
 const Transfer = ({ location, importTransferOut, stockLocation, transferOut, productcategory, productbrand, pos, employee, app, dispatch, loading }) => {
-  const { modalImportProductVisible, listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
+  const { modalImportProductVisible, listReason, listTransferOut, listProductDemand, selectedRowKeys, modalProductDemandVisible, modalInvoiceVisible, listInvoice, tmpInvoiceList, isChecked, listProducts, listTransOut, period, listTrans, listItem, listStore, currentItem, currentItemPrint, currentItemList, modalVisible, modalConfirmVisible, formType, display, activeKey, pagination, disable, filter, sort, showPrintModal } = transferOut
   const { listImported } = importTransferOut
   const { query } = location
   const { list: listStockLocation } = stockLocation
@@ -23,7 +23,7 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
   let listEmployee = list
   const { listCategory } = productcategory
   const { listBrand } = productbrand
-  const { user, storeInfo } = app
+  const { user, storeInfo, setting } = app
   const filterProps = {
     display,
     filter: {
@@ -80,7 +80,14 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
     const listProduct = listProductData
     const tempListProduct = listProduct.filter(el => el.productId === data.productId)
     const totalListProduct = tempListProduct.reduce((cnt, o) => cnt + o.count, 0)
-    if (totalQty > totalListProduct) {
+    function getSetting (setting) {
+      let json = setting.Inventory
+      let jsondata = JSON.stringify(eval(`(${json})`))
+      const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
+      return outOfStock
+    }
+    const outOfStock = getSetting(setting)
+    if (totalQty > totalListProduct && outOfStock === 0) {
       Modal.warning({
         title: 'No available stock',
         content: `Your input: ${totalData}, Local : ${totalLocal} Available: ${totalListProduct}`
@@ -467,6 +474,7 @@ const Transfer = ({ location, importTransferOut, stockLocation, transferOut, pro
 
   const formEditProps = {
     visible: modalVisible,
+    listReason,
     currentItemList,
     modalProductProps,
     onOkList (item) {

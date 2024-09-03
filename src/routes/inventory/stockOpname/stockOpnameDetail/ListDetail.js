@@ -49,14 +49,14 @@ const List = ({ editList, ...tableProps }) => {
         )
       }
     },
-    {
-      title: 'Stock Live',
-      dataIndex: 'qtyLive',
-      key: 'qtyLive',
-      className: styles.alignCenter,
-      width: '100px',
-      render: text => numberFormatter(text || 0)
-    },
+    // {
+    //   title: 'Stock Live',
+    //   dataIndex: 'qtyLive',
+    //   key: 'qtyLive',
+    //   className: styles.alignCenter,
+    //   width: '100px',
+    //   render: text => numberFormatter(text || 0)
+    // },
     {
       title: 'Input',
       dataIndex: 'qty',

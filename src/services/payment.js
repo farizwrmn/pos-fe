@@ -21,6 +21,7 @@ export async function queryReference (params) {
   return request({
     url: '/sequence-refpos',
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -31,6 +32,7 @@ export async function queryList (params) {
   return request({
     url: '/pos-detail',
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -44,6 +46,7 @@ export async function query (params) {
   return request({
     url,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -67,6 +70,7 @@ export async function queryPos (params) {
   const url = `${pos}/code/${encodeURIComponent(params.id)}`
   return request({
     url,
+    alt: true,
     method: 'get',
     data: params.data,
     headers: apiHeaderToken
@@ -80,6 +84,7 @@ export async function queryById (params) {
   return request({
     url,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -109,6 +114,7 @@ export async function queryDetail (params) {
   const url = `${posdetail}/${encodeURIComponent(params.id)}`
   return request({
     url,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -121,6 +127,7 @@ export async function queryDetailConsignment (params) {
   const url = `/posconsignment/${encodeURIComponent(params.id)}`
   return request({
     url,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -132,6 +139,7 @@ export async function create (params) {
   const url = `${pos}/code/${encodeURIComponent(params.transNo)}?uuid=${uuidv4()}`
   return request({
     url,
+    alt: true,
     method: 'post',
     data: JSON.stringify(params),
     body: JSON.stringify(params),
@@ -157,6 +165,7 @@ export async function updatePos (params) {
   return request({
     url,
     method: 'put',
+    alt: true,
     data: params,
     body: params,
     headers: apiHeaderToken

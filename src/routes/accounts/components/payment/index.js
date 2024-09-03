@@ -151,7 +151,7 @@ const Pos = ({ location, dispatch, accountPayment, loading, pos, app }) => {
     tmpDataSource: tmpListPayment,
     width: 90,
     size: 'small',
-    loading: loading.effects['pos/queryHistoryPayment'],
+    loading: loading.effects['accountPayment/queryHistoryPayment'],
     location,
     onChange (page, filters) {
       const { pathname, query } = location

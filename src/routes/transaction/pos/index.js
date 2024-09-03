@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
-import { variables, isEmptyObject, lstorage, color } from 'utils'
+import { variables, lstorage, color } from 'utils'
 // import {
 //   TYPE_PEMBELIAN_UMUM,
 //   TYPE_PEMBELIAN_GRABFOOD,
@@ -54,6 +54,8 @@ import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
+import PromotionGuide from './PromotionGuide'
+import RewardGuide from './RewardGuide'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -152,6 +154,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -236,7 +239,6 @@ const Pos = ({
     showListReminder,
     listServiceReminder,
     modalAddUnit,
-    cashierInformation,
     dineInTax,
     currentItem: currentItemPos,
     // typePembelian,
@@ -259,11 +261,15 @@ const Pos = ({
     curTotalDiscount,
     curRounding,
     curShift,
-    curCashierNo
+    curCashierNo,
+    enableDineIn,
+    enableDineInLastUpdatedBy,
+    enableDineInLastUpdatedAt
   } = pos
+  const { list: listAchievement } = incentiveAchievement
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
-  const { modalPromoVisible, listMinimumPayment } = promo
+  const { modalPromoVisible, listHighlight, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -297,8 +303,6 @@ const Pos = ({
     status: null,
     cashActive: null
   }
-  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
-
   let product = getCashierTrans()
   let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -592,6 +596,7 @@ const Pos = ({
 
   const modaladdMemberProps = {
     item: currentItem,
+    loading,
     modalAddMember,
     cancelMember () {
       dispatch({
@@ -1205,7 +1210,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -1304,7 +1308,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -1790,6 +1793,50 @@ const Pos = ({
     onCancel () {
       dispatch({
         type: 'pos/hideQueueModal'
+      })
+    }
+  }
+
+  const modalPromoGuideProps = {
+    isModal: false,
+    dataSource: listHighlight,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
+  const modalRewardGuideProps = {
+    isModal: false,
+    dataSource: listAchievement,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
       })
     }
   }
@@ -2517,6 +2564,7 @@ const Pos = ({
   }
 
   const buttomButtonProps = {
+    loading,
     handlePayment () {
       if (currentBuildComponent && currentBuildComponent.no) {
         const service = getServiceTrans()
@@ -2573,7 +2621,6 @@ const Pos = ({
       })
     },
     handleCancel () {
-      console.log('bundle', bundle)
       Modal.confirm({
         title: 'Reset unsaved process',
         content: 'this action will reset your current process',
@@ -2598,7 +2645,6 @@ const Pos = ({
               singleDeletion: record.singleDeletion || 0
             }))
             : []
-          console.log('listTrans', listTrans)
           dispatch({
             type: 'pos/showModalLogin',
             payload: {
@@ -2758,13 +2804,19 @@ const Pos = ({
       message.error('Already choose offering, please cancel this transaction.')
       return
     }
-    dispatch({
-      type: 'pospromo/addPosPromo',
-      payload: {
-        bundleId: item.id,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+    Modal.confirm({
+      title: 'Chose Offering',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'pospromo/addPosPromo',
+          payload: {
+            bundleId: item.id,
+            currentBundle: getBundleTrans(),
+            currentProduct: getCashierTrans(),
+            currentService: getServiceTrans()
+          }
+        })
       }
     })
   }
@@ -2805,9 +2857,27 @@ const Pos = ({
   const modalExpressProps = {
     visible: modalExpressVisible,
     editVisible: modalEditExpressVisible,
+    enableDineIn,
+    enableDineInLastUpdatedBy,
+    enableDineInLastUpdatedAt,
     list: listExpress,
     item: currentItemPos,
     loading,
+    updateEnableDineIn (enableDineIn) {
+      Modal.confirm({
+        title: 'Update Dine In Status',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'pos/updateEnableDineIn',
+            payload: {
+              storeId: lstorage.getCurrentUserStore(),
+              enableDineIn
+            }
+          })
+        }
+      })
+    },
     onClose () {
       dispatch({
         type: 'pos/updateState',
@@ -2855,6 +2925,15 @@ const Pos = ({
       || loading.effects['pos/checkQuantityEditProduct']
       || loading.effects['pos/checkQuantityNewProduct']
       || loading.effects['pospromo/addPosPromo']
+      || loading.effects['pospromo/setBundleAlreadyExists']
+      || loading.effects['pospromo/setBundleNeverExists']
+      || loading.effects['pospromo/updateState']
+      || loading.effects['pospromo/addPosPromoItem']
+      || loading.effects['pos/setCurrentBuildComponent']
+      || loading.effects['pospromo/setProductPos']
+      || loading.effects['pospromo/setCategoryPos']
+      || loading.effects['pospromo/setServicePos']
+      || loading.effects['pos/openBundleCategory']
       || loading.effects['pos/getProductByBarcode']),
     productBookmarkGroup,
     productBookmark,
@@ -2911,7 +2990,6 @@ const Pos = ({
     visible: modalBundleDetailVisible,
     item: currentBundle,
     DeleteItem (data) {
-      console.log('bundle', bundle, data)
       const cashierTrans = product
         .filter(filtered => !filtered.bundleId)
         .map(item => ({ ...item, type: 'Product' }))
@@ -2937,7 +3015,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -3131,7 +3208,7 @@ const Pos = ({
                     .map((item) => {
                       return (
                         <Button
-                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
+                          disabled={(selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
                           onClick={() => {
@@ -3142,7 +3219,7 @@ const Pos = ({
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {selectedPaymentShortcut
-                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && (selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'KX')
                             && selectedPaymentShortcut.typeCode === item.typeCode
                             && currentGrabOrder
                             && currentGrabOrder.shortOrderNumber
@@ -3160,7 +3237,7 @@ const Pos = ({
                     .map((item) => {
                       return (
                         <Button
-                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
+                          disabled={(selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
                           onClick={() => {
@@ -3171,7 +3248,7 @@ const Pos = ({
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {selectedPaymentShortcut
-                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && (selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'KX')
                             && selectedPaymentShortcut.typeCode === item.typeCode
                             && currentGrabOrder
                             && currentGrabOrder.shortOrderNumber
@@ -3210,6 +3287,9 @@ const Pos = ({
           </Card>
           <BottomButton {...buttomButtonProps} />
           {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
+
+          <PromotionGuide {...modalPromoGuideProps} />
+          <RewardGuide {...modalRewardGuideProps} />
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
@@ -3265,6 +3345,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -3286,6 +3367,7 @@ export default connect(({
   customerunit,
   payment
 }) => ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,

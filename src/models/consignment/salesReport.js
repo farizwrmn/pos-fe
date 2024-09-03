@@ -72,13 +72,18 @@ export default modelExtend(pageModel, {
           to: payload.to
         }
         const response = yield call(query, params)
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: response.data.data,
-            summary: response.data.summary
-          }
-        })
+        console.log('response', response)
+        if (response.success) {
+          yield put({
+            type: 'querySuccess',
+            payload: {
+              list: response.data.data,
+              summary: response.data.summary
+            }
+          })
+        } else {
+          throw response
+        }
       } else {
         yield put({
           type: 'querySuccess',

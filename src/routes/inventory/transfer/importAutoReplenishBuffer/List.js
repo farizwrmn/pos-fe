@@ -1,14 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Modal } from 'antd'
+import moment from 'moment'
 import styles from '../../../../themes/index.less'
 
-const List = ({ ...tableProps }) => {
+const List = ({ ...tableProps, onDelete }) => {
   const columns = [
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: text => moment(text).format('lll')
+    },
     {
       title: 'ID',
       dataIndex: 'productId',
       key: 'productId'
+    },
+    {
+      title: 'Store',
+      dataIndex: 'store.storeName',
+      key: 'store.storeName'
     },
     {
       title: 'Code',
@@ -61,8 +73,17 @@ const List = ({ ...tableProps }) => {
         bordered
         columns={columns}
         simple
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1500 }}
         rowKey={record => record.id}
+        onRowClick={(item) => {
+          Modal.confirm({
+            title: 'Delete this item',
+            content: 'Are you sure ?',
+            onOk () {
+              onDelete(item)
+            }
+          })
+        }}
       />
     </div>
   )

@@ -68,6 +68,7 @@ export async function queryEntryList (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/accounting/ledger-entry',
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken

@@ -10,7 +10,7 @@ import FormAccounting from './FormAccounting'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 
-const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentOpts, pos, dispatch }) => {
+const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentOpts, dispatch }) => {
   const { user } = app
   const { listDetail, listAccounting, itemCancel, modalCancelVisible, modalVisible, listAmount, data } = paymentDetail
   const {
@@ -22,7 +22,6 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
     paymentLovFiltered: listCost
   } = paymentCost
   const { listOpts } = paymentOpts
-  const { cashierInformation } = pos
   const content = []
   for (let key in data[0]) {
     if ({}.hasOwnProperty.call(data[0], key)) {
@@ -46,7 +45,6 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
     listEdc,
     listCost,
     listAmount,
-    cashierInformation,
     options: listOpts,
     visible: modalVisible,
     loading,
@@ -103,7 +101,6 @@ const Detail = ({ app, loading, paymentDetail, paymentEdc, paymentCost, paymentO
     listAccounting,
     listAmount,
     loading,
-    cashierInformation,
     openModal (e) {
       dispatch({
         type: 'paymentDetail/updateState',

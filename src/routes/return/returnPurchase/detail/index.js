@@ -8,13 +8,15 @@ import {
   // Tag,
   Button
 } from 'antd'
+import ModalEdit from './ModalEdit'
 import TransDetail from './TransDetail'
 import styles from './index.less'
 import PrintPDFInvoice from './PrintPDFInvoice'
 
 
-const Detail = ({ app, returnPurchase, dispatch }) => {
+const Detail = ({ app, returnPurchase, returnPurchaseDetail, dispatch }) => {
   const { listDetail, data } = returnPurchase
+  const { modalEditVisible, modalEditItem } = returnPurchaseDetail
   const {
     storeInfo,
     user
@@ -46,7 +48,16 @@ const Detail = ({ app, returnPurchase, dispatch }) => {
   }
 
   const formDetailProps = {
-    dataSource: listDetail
+    dataSource: listDetail,
+    editList (item) {
+      dispatch({
+        type: 'returnPurchaseDetail/updateState',
+        payload: {
+          modalEditVisible: true,
+          modalEditItem: item
+        }
+      })
+    }
   }
 
   const printProps = {
@@ -61,7 +72,28 @@ const Detail = ({ app, returnPurchase, dispatch }) => {
     printNo: 1
   }
 
+  const modalEditProps = {
+    visible: modalEditVisible,
+    item: modalEditItem,
+    onOk (item) {
+      dispatch({
+        type: 'returnPurchaseDetail/edit',
+        payload: item
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'returnPurchaseDetail/updateState',
+        payload: {
+          modalEditItem: {},
+          modalEditVisible: false
+        }
+      })
+    }
+  }
+
   return (<div className="wrapper">
+    {modalEditVisible && <ModalEdit {...modalEditProps} />}
     <Row>
       <Col lg={6}>
         <div className="content-inner-zero-min-height">
@@ -87,7 +119,8 @@ const Detail = ({ app, returnPurchase, dispatch }) => {
 
 Detail.propTypes = {
   app: PropTypes.object,
-  returnPurchase: PropTypes.object
+  returnPurchase: PropTypes.object,
+  returnPurchaseDetail: PropTypes.object
 }
 
-export default connect(({ app, returnPurchase }) => ({ app, returnPurchase }))(Detail)
+export default connect(({ app, returnPurchase, returnPurchaseDetail }) => ({ app, returnPurchase, returnPurchaseDetail }))(Detail)

@@ -8,6 +8,7 @@ export async function query (params) {
   if (params && params.storeId) {
     return request({
       url: dineinUrl,
+      alt: true,
       method: 'get',
       data: params,
       headers: apiHeaderToken
@@ -25,6 +26,7 @@ export async function edit (params) {
   return request({
     url,
     method: 'put',
+    alt: true,
     data: params,
     body: params,
     headers: apiHeaderToken

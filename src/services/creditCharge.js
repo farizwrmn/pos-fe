@@ -9,6 +9,7 @@ export async function listCreditCharge (params) {
   return request({
     url: apiURL + apiPrefix + creditCharge,
     method: 'get',
+    alt: true,
     data: params,
     headers: {
       Accept: 'application/json',
@@ -22,6 +23,7 @@ export async function getCreditCharge (params) {
   return request({
     url: `${apiURL + apiPrefix + creditCharge}/${params}`,
     method: 'get',
+    alt: true,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

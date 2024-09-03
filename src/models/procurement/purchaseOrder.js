@@ -241,10 +241,10 @@ export default modelExtend(pageModel, {
     * changeTotalData ({ payload = {} }, { put }) {
       const { listItem, header } = payload
       let ppnType = header.taxType
-      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - ((next.discPercent / 100))) * (1 - ((next.discPercent02 / 100))) * (1 - ((next.discPercent03 / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
+      const totalPrice = listItem.reduce((prev, next) => prev + ((((next.qty * next.purchasePrice) * (1 - (((next.discPercent || 0) / 100))) * (1 - (((next.discPercent02 || 0) / 100))) * (1 - (((next.discPercent03 || 0) / 100)))) - next.discNominal) * (1 - (header.discInvoicePercent / 100))), 0)
       const dataProduct = listItem
       for (let key = 0; key < dataProduct.length; key += 1) {
-        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - ((dataProduct[key].discPercent / 100))) * (1 - ((dataProduct[key].discPercent02 / 100))) * (1 - ((dataProduct[key].discPercent03 / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
+        const discItem = ((((dataProduct[key].qty * dataProduct[key].purchasePrice) * (1 - (((dataProduct[key].discPercent || 0) / 100))) * (1 - (((dataProduct[key].discPercent02 || 0) / 100))) * (1 - (((dataProduct[key].discPercent03 || 0) / 100)))) - dataProduct[key].discNominal) * (1 - (header.discInvoicePercent / 100)))
         dataProduct[key].portion = totalPrice > 0 ? discItem / totalPrice : 0
         const totalDpp = parseFloat(discItem - (header.discInvoiceNominal * dataProduct[key].portion))
         if (header.deliveryFee && header.deliveryFee !== '' && header.deliveryFee > 0) {
@@ -287,6 +287,8 @@ export default modelExtend(pageModel, {
           qty: 1,
           purchasePrice: 0,
           discPercent: 0,
+          discPercent02: 0,
+          discPercent03: 0,
           discNominal: 0,
           deliveryFee: 0,
           portion: 0,
@@ -346,10 +348,30 @@ export default modelExtend(pageModel, {
         productId: payload.id,
         storeId: lstorage.getCurrentUserStore()
       })
+      let hasPPN = false
       if (productCost && productCost.success && productCost.data && productCost.data[0]) {
         const item = productCost.data[0]
-        payload.costPrice = item.costPrice
+        if (payload.PPN > 0) {
+          hasPPN = true
+        }
+        if (item.costPrice) {
+          payload.costPrice = item.costPrice
+          if (hasPPN) {
+            const PPN = (payload.costPrice || 0) * (11 / 100)
+            payload.costPrice += PPN
+          }
+        }
+      } else {
+        if (payload.PPN > 0) {
+          hasPPN = true
+        }
+
+        if (hasPPN) {
+          const PPN = (payload.costPrice || 0) * (11 / 100)
+          payload.costPrice += PPN
+        }
       }
+
       newListItem.push({
         no: newListItem.length + 1,
         productId: payload.id,
@@ -361,6 +383,8 @@ export default modelExtend(pageModel, {
         qty: 1,
         purchasePrice: payload.costPrice,
         discPercent: 0,
+        discPercent02: 0,
+        discPercent03: 0,
         discNominal: 0,
         deliveryFee: 0,
         portion: 0,

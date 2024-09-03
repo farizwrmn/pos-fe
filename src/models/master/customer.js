@@ -311,7 +311,7 @@ export default modelExtend(pageModel, {
           localStorage.setItem('member', JSON.stringify([newItem]))
           yield put({
             type: 'pos/queryGetMemberSuccess',
-            payload: { memberInformation: payload.data }
+            payload: { memberInformation: newItem }
           })
           yield put({ type: 'pos/setUtil', payload: { kodeUtil: 'employee', infoUtil: 'Employee' } })
           yield put({ type: 'unit/lov', payload: { id: payload.data.memberCode } })

@@ -139,6 +139,8 @@ export default {
             chargeNominal: payment.data[n].chargeNominal,
             chargePercent: payment.data[n].chargePercent,
             chargeTotal: payment.data[n].chargeTotal,
+            validPayment: payment.data[n].validPayment,
+            recon: payment.data[n].recon,
             description: payment.data[n].description,
             paid: payment.data[n].paid || 0
           })
@@ -183,6 +185,8 @@ export default {
             chargeNominal: payment.invoice[n].chargeNominal,
             chargePercent: payment.invoice[n].chargePercent,
             chargeTotal: payment.invoice[n].chargeTotal,
+            validPayment: payment.data[n].validPayment,
+            recon: payment.data[n].recon,
             description: payment.invoice[n].description,
             paid: payment.invoice[n].paid || 0
           })

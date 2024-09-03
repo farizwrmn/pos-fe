@@ -6,7 +6,6 @@ import moment from 'moment'
 import pathToRegexp from 'path-to-regexp'
 import { query as querySequence } from '../../services/sequence'
 import { queryById, query, queryId, add, edit, remove, transfer, queryBankRecon, updateBankRecon } from '../../services/payment/bankentry'
-import { queryCurrentOpenCashRegister } from '../../services/setting/cashier'
 import { queryById as queryPaymentById } from '../../services/payment/payment'
 import { queryById as queryPayableById } from '../../services/payment/payable'
 import { pageModel } from './../common'
@@ -359,48 +358,32 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * add ({ payload }, { call, put, select }) {
+    * add ({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
           currentItem: payload.oldValue
         }
       })
-      const cashier = yield select(({ app }) => app.user)
-      const currentRegister = yield call(queryCurrentOpenCashRegister, { cashierId: cashier.userid })
-      if (currentRegister.success) {
-        if (currentRegister.data) {
-          const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-          payload.data.cashierTransId = cashierInformation ? cashierInformation.id : undefined
-          payload.data.transDate = cashierInformation ? cashierInformation.period : payload.data.transDate ? payload.data.transDate : undefined
-          const data = yield call(add, payload)
-          if (data.success) {
-            success()
-            payload.reset()
-            yield put({
-              type: 'updateState',
-              payload: {
-                modalType: 'add',
-                currentItem: {},
-                listItem: []
-              }
-            })
-            yield put({ type: 'querySequence' })
-            Modal.success({
-              title: 'Transaction success',
-              content: 'Transaction has been saved'
-            })
-          } else {
-            throw data
+      const data = yield call(add, payload)
+      if (data.success) {
+        success()
+        payload.reset()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {},
+            listItem: []
           }
-        } else {
-          Modal.warning({
-            title: 'No cashierInformation',
-            content: `No cashier information for ${cashier.userid}`
-          })
-        }
+        })
+        yield put({ type: 'querySequence' })
+        Modal.success({
+          title: 'Transaction success',
+          content: 'Transaction has been saved'
+        })
       } else {
-        throw currentRegister
+        throw data
       }
     },
 

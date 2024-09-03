@@ -78,7 +78,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 11 }, {}, { text: 'PIC', fontSize: 11 }, ':', { text: (itemHeader.employeeName ? (itemHeader.employeeName || '') : '').toString(), fontSize: 11 }],
+            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 11 }, {}, { text: 'BOX', fontSize: 11 }, ':', { text: (itemHeader.boxNumber || '').toString(), fontSize: 11 }],
             [{
               text: 'TANGGAL', fontSize: 11
             }, ':',

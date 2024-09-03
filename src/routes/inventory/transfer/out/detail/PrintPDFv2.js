@@ -21,7 +21,7 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
         let row = []
         row.push({ text: count, alignment: 'center', fontSize: 9 })
         row.push({ text: (data.productCode || '').toString(), alignment: 'left', fontSize: 9 })
-        row.push({ text: (data.productName || '').toString(), alignment: 'left', fontSize: 9 })
+        row.push({ text: (`${data.productName}${data.description ? `\nNote: ${data.description}` : ''}` || '').toString(), alignment: 'left', fontSize: 9 })
         row.push({ text: (data.qty || 0).toString(), alignment: 'right', fontSize: 9 })
         body.push(row)
       }
@@ -82,9 +82,9 @@ const PrintPDF = ({ user, listItem, itemPrint, printNo }) => {
               ':',
               { text: (itemPrint.transNo || '').toString(), fontSize: 9 },
               {},
-              { text: 'PIC', fontSize: 9 },
+              { text: 'BOX', fontSize: 9 },
               ':',
-              { text: (itemPrint.employeeName || '').toString(), fontSize: 9 }
+              { text: (itemPrint.boxNumber || '').toString(), fontSize: 9 }
             ],
             [
               { text: 'TANGGAL', fontSize: 9 },

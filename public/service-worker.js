@@ -2,7 +2,7 @@ const filesToCache = [
   '.',
   'index.html'
 ]
-const CACHE_NAME = 'smiPOS1'
+const CACHE_NAME = 'smiPOS2'
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(

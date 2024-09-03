@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Input, Tag, Form, Row, Col, DatePicker, Button } from 'antd'
+import { Table, Input, Tag, Form, Row, Col, Icon, DatePicker, Button } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import { numberFormat, formatDate } from 'utils'
@@ -60,10 +60,16 @@ const BrowseGroup = ({
       width: 120,
       render: (text, record) => {
         if (record && record.taxInvoiceNo && record.taxInvoiceNo.length > 0) {
-          return text
+          return <div onClick={() => openModalTax(record)} style={{ color: 'green' }}>{text}<Icon type="edit" /></div>
         }
         return <Button type="primary" onClick={() => openModalTax(record)}>Add Tax</Button>
       }
+    },
+    {
+      title: 'Tax Date',
+      dataIndex: 'taxDate',
+      key: 'taxDate',
+      width: 120
     },
     {
       title: 'Supplier',

@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
+import FormData from 'form-data'
 import { message } from 'antd'
+import { uploadVoucherImage } from 'services/utils/imageUploader'
 import { query, add, edit, remove } from 'services/marketing/voucher'
 import { query as querySequence } from 'services/sequence'
 import { pageModel } from '../common'
@@ -91,6 +93,27 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
+      const formData = new FormData()
+      console.log('payload.data', payload.data)
+      if (
+        payload
+        && payload.data
+        && payload.data.voucherImage
+        && typeof payload.data.voucherImage === 'object'
+        && payload.data.voucherImage.file
+      ) {
+        formData.append('file', payload.data.voucherImage.file.originFileObj)
+        const imageUpload = yield call(uploadVoucherImage, formData)
+        console.log('imageUpload', imageUpload)
+        if (imageUpload && imageUpload.success) {
+          console.log('filename', imageUpload.data.filename)
+          payload.data.voucherImage = imageUpload.data.filename
+        } else {
+          throw imageUpload
+        }
+      }
+
+      console.log('voucher data', payload.data)
       const data = yield call(add, payload.data)
       if (data.success) {
         success()
@@ -120,37 +143,56 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ marketingVoucher }) => marketingVoucher.currentItem.id)
-      const newCounter = { ...payload.data, id }
-      const data = yield call(edit, newCounter)
-      if (data.success) {
-        success()
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
-          }
-        })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
-        if (payload.reset) {
-          payload.reset()
+
+      const voucherImage = yield select(({ marketingVoucher }) => {
+        return marketingVoucher.currentItem.voucherImage
+      })
+      const newCounter = { ...payload.data, voucherImage, id }
+      const formData = new FormData()
+      let imagePass = true
+      if (
+        payload
+        && payload.data
+        && payload.data.voucherImage
+        && typeof payload.data.voucherImage === 'object'
+        && payload.data.voucherImage.file
+      ) {
+        formData.append('file', payload.data.voucherImage.file.originFileObj)
+        const imageUpload = yield call(uploadVoucherImage, formData)
+        if (imageUpload && imageUpload.success) {
+          newCounter.voucherImage = imageUpload.data.filename
+        } else {
+          imagePass = false
+          throw imageUpload
         }
-      } else {
-        yield put({
-          type: 'updateState',
-          payload: {
-            currentItem: payload
+      }
+
+      if (imagePass) {
+        const data = yield call(edit, newCounter)
+        if (data.success) {
+          success()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalType: 'add',
+              currentItem: {},
+              activeKey: '1'
+            }
+          })
+          const { pathname } = location
+          yield put(routerRedux.push({
+            pathname,
+            query: {
+              activeKey: '1'
+            }
+          }))
+          yield put({ type: 'query' })
+          if (payload.reset) {
+            payload.reset()
           }
-        })
-        throw data
+        } else {
+          throw data
+        }
       }
     }
   },

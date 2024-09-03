@@ -43,13 +43,22 @@ a {
   color: blue;
 }
 
+.productPos {
+  font-size: 15px;
+}
+
+.qtyPos {
+  text-align: right;
+  font-size: 18px;
+}
+
 :global {
   .ant-radio-button-wrapper-checked {
     background: @primary-color;
     color: white;
   }
 
-   .ant-radio-button-wrapper-checked:hover {
+  .ant-radio-button-wrapper-checked:hover {
     background: fade(@primary-color, 15%);
     color: @primary-color;
   }
@@ -72,7 +81,7 @@ a {
     color: #ffffff;
 
     &:hover {
-      background-color: @primary-color  !important;
+      background-color: @primary-color !important;
       color: @text-color;
     }
   }
@@ -551,6 +560,11 @@ a {
 
   .icon-large {
     font-size: 24px;
+    margin-left: -4px
+  }
+
+  .icon-medium {
+    font-size: 18px;
     margin-left: -4px
   }
 

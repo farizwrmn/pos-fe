@@ -1,11 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Tag, Modal } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 
 
 const List = (tableProps) => {
+  const updateStatus = (id, status) => {
+    if (status === 1) {
+      Modal.confirm({
+        title: 'Update Status to Packing',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 2)
+        }
+      })
+    }
+    if (status === 2) {
+      Modal.confirm({
+        title: 'Update Status to Delivery',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 3)
+        }
+      })
+    }
+    if (status === 3) {
+      Modal.confirm({
+        title: 'Update Status to Done',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 4)
+        }
+      })
+    }
+    if (status === 4) {
+      Modal.confirm({
+        title: 'Update Status to Picking',
+        content: 'Are you sure ?',
+        onOk () {
+          tableProps.updateStatus(id, 1)
+        }
+      })
+    }
+  }
   const columns = [
     {
       title: 'Store Name',
@@ -29,6 +67,49 @@ const List = (tableProps) => {
       title: 'Sales To',
       dataIndex: 'salesDateTo',
       key: 'salesDateTo'
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      onCellClick: record => updateStatus(record.id, record.status),
+      render: (text) => {
+        if (text === 0) {
+          return (
+            <Tag color="red">
+              Canceled
+            </Tag>
+          )
+        }
+        if (text === 1) {
+          return (
+            <Tag color="yellow">
+              Picking
+            </Tag>
+          )
+        }
+        if (text === 2) {
+          return (
+            <Tag color="blue">
+              Packing
+            </Tag>
+          )
+        }
+        if (text === 3) {
+          return (
+            <Tag color="green">
+              Delivery
+            </Tag>
+          )
+        }
+        if (text === 4) {
+          return (
+            <Tag color="green">
+              Done
+            </Tag>
+          )
+        }
+      }
     }
   ]
 

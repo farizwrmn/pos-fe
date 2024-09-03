@@ -15,6 +15,7 @@ export async function queryProduct (params) {
   return request({
     url: '/grab-consignment-find',
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

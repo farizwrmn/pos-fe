@@ -1,7 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import pathToRegexp from 'path-to-regexp'
-import { query, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
+import { query, queryDeliveryOrder, queryHeader, add, edit, remove } from 'services/transfer/autoReplenishSubmission'
+import { edit as editHeader } from 'services/transfer/autoReplenish'
+import { queryLov } from 'services/transferStockOut'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -18,6 +20,7 @@ export default modelExtend(pageModel, {
     activeKey: '0',
     list: [],
     listTransferOut: [],
+    listDeliveryOrder: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -39,6 +42,13 @@ export default modelExtend(pageModel, {
               storeId: location.query.storeId
             }
           })
+          dispatch({
+            type: 'queryDeliveryOrder',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: location.query.storeId
+            }
+          })
         } else if (pathname === '/inventory/transfer/auto-replenish-submission') {
           dispatch({ type: 'queryHeader' })
         }
@@ -47,6 +57,54 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+
+    * queryDeliveryOrder ({ payload = {} }, { call, put }) {
+      const response = yield call(queryDeliveryOrder, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDeliveryOrder: response.data
+          }
+        })
+        if (response.data && response.data.length > 0 && payload.storeId) {
+          yield put({
+            type: 'queryTransferOutPrint',
+            payload: {
+              deliveryOrderNo: response.data.map(item => item.transNo)
+            }
+          })
+        }
+      } else {
+        throw response
+      }
+    },
+
+    * editHeader ({ payload }, { call, put }) {
+      const response = yield call(editHeader, payload)
+      if (response.success) {
+        success()
+        yield put({ type: 'queryHeader' })
+      } else {
+        yield put({ type: 'queryHeader' })
+        throw response
+      }
+    },
+
+    * queryTransferOutPrint ({ payload = {} }, { call, put }) {
+      const request = {}
+      request.active = '1'
+      request.deliveryOrderNo = payload.deliveryOrderNo
+      const response = yield call(queryLov, request)
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listTransferOut: response.data
+          }
+        })
+      }
+    },
 
     * query ({ payload = {} }, { call, put }) {
       const response = yield call(query, payload)
@@ -124,6 +182,13 @@ export default modelExtend(pageModel, {
         if (match) {
           yield put({
             type: 'query',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: payload.query.storeId
+            }
+          })
+          yield put({
+            type: 'queryDeliveryOrder',
             payload: {
               transId: decodeURIComponent(match[1]),
               storeId: payload.query.storeId

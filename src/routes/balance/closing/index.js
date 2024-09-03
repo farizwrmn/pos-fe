@@ -3,21 +3,51 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
 
-const Container = ({ loading, balance, shift, userDetail, dispatch, paymentOpts }) => {
+const Container = ({ loading, posSetoran, physicalMoney, physicalMoneyDeposit, balance, shift, userDetail, dispatch, paymentOpts, app }) => {
+  const { user } = app
+  const { list: listSetoran } = posSetoran
+  const { list } = physicalMoney
+  const { list: listPhysicalMoneyDeposit, visible } = physicalMoneyDeposit
   const { currentItem } = balance
   const { listShift } = shift
   const { listOpts } = paymentOpts
   const { data } = userDetail
-
   const listProps = {
+    list,
+    listSetoran,
+    listPhysicalMoneyDeposit,
     item: currentItem,
     loading,
     listOpts,
     listShift,
     listUser: data && data.data,
+    user,
     dispatch,
     button: 'Close',
+    visible,
+    onVisible () {
+      dispatch({
+        type: 'physicalMoneyDeposit/updateState',
+        payload: {
+          visible: true
+        }
+      })
+    },
+    closeVisible () {
+      dispatch({
+        type: 'physicalMoneyDeposit/updateState',
+        payload: {
+          visible: false
+        }
+      })
+    },
     onSubmit (data) {
+      if (currentItem && currentItem.id) {
+        data.balanceId = currentItem ? currentItem.id : null
+      }
+      data.total = data.setoranDetail.reduce((cnt, o) => cnt + parseFloat(o.amount || 0), 0)
+      data.fingerEmployeeId = data.approveUserId
+      data.cashierUserId = data.approveUserId
       if (data && currentItem && currentItem.id) {
         const params = {
           balanceId: currentItem.id,
@@ -41,12 +71,25 @@ const Container = ({ loading, balance, shift, userDetail, dispatch, paymentOpts 
               })
             })
         }
+        data.params = params
         dispatch({
-          type: 'balance/closed',
+          type: 'physicalMoneyDeposit/add',
           payload: {
-            data: params
+            data
           }
         })
+        // dispatch({
+        //   type: 'posSetoran/insertVoidEdcDeposit',
+        //   payload: {
+        //     data
+        //   }
+        // })
+        // dispatch({
+        //   type: 'balance/closed',
+        //   payload: {
+        //     data: params
+        //   }
+        // })
       }
     }
   }
@@ -67,6 +110,8 @@ const Container = ({ loading, balance, shift, userDetail, dispatch, paymentOpts 
 }
 
 Container.propTypes = {
+  physicalMoney: PropTypes.object,
+  physicalMoneyDeposit: PropTypes.object,
   balance: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
@@ -76,19 +121,24 @@ Container.propTypes = {
 
 export default connect(
   ({
+    posSetoran,
+    physicalMoney,
+    physicalMoneyDeposit,
     loading,
     balance,
     shift,
     userDetail,
     app,
     paymentOpts
-  }) =>
-    ({
-      loading,
-      balance,
-      shift,
-      userDetail,
-      app,
-      paymentOpts
-    })
+  }) => ({
+    posSetoran,
+    physicalMoney,
+    physicalMoneyDeposit,
+    loading,
+    balance,
+    shift,
+    userDetail,
+    app,
+    paymentOpts
+  })
 )(Container)

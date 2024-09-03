@@ -15,6 +15,7 @@ module.exports = {
     lavenderrose: '#F797D6',
     wewak: '#F69899',
     wisteria: '#D897EB',
+    termConditionQris: '#FAB414',
 
     mui1: '#ffcdd2',
     mui2: '#F8BBD0',

@@ -37,15 +37,14 @@ const FormPayment = ({
   loading,
   cancelPayment,
   editItem,
-  cashierInformation,
   openModal,
   form: {
     resetFields
   }
 }) => {
   const listProps = {
+    loading: loading && loading.effects && loading.effects['paymentDetail/queryPosDetail'],
     dataSource: listAmount,
-    cashierInformation,
     cancelPayment,
     editList (data) {
       editItem(data)
@@ -61,7 +60,12 @@ const FormPayment = ({
     <Form layout="horizontal">
       <Row>
         <FormItem style={{ margin: '5px 10px', float: 'right' }} {...formItemLayout}>
-          <Button onClick={() => showModal('modalVisible')} disabled={(curPayment >= (data.length > 0 ? data[0].nettoTotal : 0)) || loading.effects['paymentDetail/add']}>Add</Button>
+          <Button
+            onClick={() => showModal('modalVisible')}
+            disabled={(curPayment >= (data.length > 0 ? data[0].nettoTotal : 0)) || loading.effects['paymentDetail/add']}
+          >
+            Add
+          </Button>
         </FormItem>
       </Row>
       <List {...listProps} />

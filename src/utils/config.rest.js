@@ -57,6 +57,7 @@ module.exports = {
     suppliers: '/suppliers',
     fingerprint: '/fingerprint',
     fingerprintVerification: '/fingerprint-verification',
+    deliveryOrder: '/delivery-order',
     planogram: '/planogram',
     balance: '/balance',
     balanceDetail: '/balance-detail',

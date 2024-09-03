@@ -1,5 +1,15 @@
 import { request, crypt } from 'utils'
 
+export async function queryDeliveryOrder (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/auto-replenish-delivery-order',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({

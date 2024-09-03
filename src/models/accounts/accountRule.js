@@ -9,6 +9,8 @@ import {
   ACCOUNT_TYPE_ADJUST,
   ACCOUNT_TYPE_PETTY_CASH,
   ACCOUNT_TYPE_PETTY_CASH_EXPENSE,
+  ACCOUNT_TYPE_VOUCHER,
+  ACCOUNT_TYPE_VOUCHER_PAYMENT,
 
   CACHE_TYPE_ALL,
   CACHE_TYPE_BANK,
@@ -145,8 +147,15 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              accountType: ['REVE', 'OINC'],
+              accountType: ACCOUNT_TYPE_VOUCHER,
               cacheType: CACHE_TYPE_VOUCHER
+            }
+          })
+          dispatch({
+            type: 'queryLov',
+            payload: {
+              accountType: ACCOUNT_TYPE_VOUCHER_PAYMENT,
+              cacheType: CACHE_TYPE_MARKETING_VOUCHER_DETAIL
             }
           })
         }
@@ -171,7 +180,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'queryLov',
             payload: {
-              accountType: ACCOUNT_TYPE_BANK,
+              accountType: ACCOUNT_TYPE_VOUCHER_PAYMENT,
               cacheType: CACHE_TYPE_MARKETING_VOUCHER_DETAIL
             }
           })

@@ -61,6 +61,10 @@ const column = {
 }
 
 class FormCounter extends Component {
+  state = {
+    isDisableType: false
+  }
+
   render () {
     const {
       showRules = false,
@@ -104,6 +108,7 @@ class FormCounter extends Component {
     } = this.props
 
     const modalProductProps = {
+      type: getFieldValue('type'),
       isModal: false,
       visible: modalProductVisible,
       loading: loading.effects['productstock/query'] || loading.effects['service/query'],
@@ -261,6 +266,7 @@ class FormCounter extends Component {
     }
 
     const modalRewardProps = {
+      type: getFieldValue('type'),
       item: itemEditListReward,
       visible: modalEditRewardVisible,
       onOkList (data) {
@@ -337,7 +343,6 @@ class FormCounter extends Component {
         const data = {
           ...getFieldsValue()
         }
-        data.type = '1'
         data.grabCategoryName = data.grabCategoryId ? data.grabCategoryId.label : null
         data.grabCategoryId = data.grabCategoryId ? data.grabCategoryId.key : null
         data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
@@ -463,6 +468,43 @@ class FormCounter extends Component {
         width: '75'
       }
     ]
+
+    const columnsRewardGetDiscount = [
+      {
+        title: 'No',
+        dataIndex: 'no',
+        key: 'no',
+        width: '100'
+      },
+      {
+        title: 'Type',
+        dataIndex: 'type',
+        key: 'type',
+        width: '100',
+        render: (text) => {
+          return (
+            <span>
+              <Tag color={text === 'P' ? 'green' : 'blue'}>
+                {text === 'P' ? 'Product' : 'Service'}
+              </Tag>
+            </span>
+          )
+        }
+      },
+      {
+        title: 'Code',
+        dataIndex: 'productCode',
+        key: 'productCode',
+        width: '175'
+      },
+      {
+        title: 'Name',
+        dataIndex: 'productName',
+        key: 'productName',
+        width: '175'
+      }
+    ]
+
     const listRulesProps = {
       dataSource: listRules,
       columns,
@@ -475,7 +517,8 @@ class FormCounter extends Component {
 
     const listRewardProps = {
       dataSource: listReward,
-      columns: columnsReward,
+      type: getFieldValue('type'),
+      columns: getFieldValue('type') === '2' ? columnsRewardGetDiscount : columnsReward,
       onRowClick (item) {
         // if (modalType === 'add') {
         showModalEdit(item, 1)
@@ -530,10 +573,30 @@ class FormCounter extends Component {
         <FooterToolbar>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button size="large" type="danger" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleCancel}>Cancel</Button>}
-            <Button size="large" disabled={item.status === '0'} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>
+            <Button size="large" disabled={item.status === '0' || loading.effects['bundling/add'] || loading.effects['bundling/edit']} type="primary" className="button-add-items-right" style={{ margin: '0px 5px' }} onClick={handleSubmit}>{button}</Button>
           </FormItem>
         </FooterToolbar>
         <Row>
+          <Col {...column}>
+            <Card {...cardProps} title={<h3>Bundle Info</h3>}>
+              <FormItem label="Type" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('type', {
+                  initialValue: item.type || '0',
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select onChange={() => this.setState({ isDisableType: true })} disabled={this.state.isDisableType || modalType === 'edit'}>
+                  <Option value="0">Choose Type</Option>
+                  <Option value="1">Bundling</Option>
+                  <Option value="2">Buy X Get Discount</Option>
+                </Select>)}
+              </FormItem>
+            </Card>
+          </Col>
+        </Row>
+        {getFieldValue('type') !== '0' && <Row>
           <Col {...column}>
             <Card {...cardProps} title={<h3>Bundle Info</h3>}>
               <FormItem label="Code" hasFeedback {...formItemLayout}>
@@ -581,14 +644,14 @@ class FormCounter extends Component {
                 >{categoryBundle}
                 </Select>)}
               </FormItem>
-              <FormItem label="Publish on e-commerce" {...formItemLayout}>
+              {getFieldValue('type') === '1' && <FormItem label="Publish on e-commerce" {...formItemLayout}>
                 {getFieldDecorator('activeShop', {
                   valuePropName: 'checked',
                   initialValue: item.activeShop === undefined
                     ? getFieldValue('productImage') && getFieldValue('productImage').fileList && getFieldValue('productImage').fileList.length > 0
                     : item.activeShop
                 })(<Checkbox disabled={modalType === 'edit' && Number(item.activeShop)} >Publish</Checkbox>)}
-              </FormItem>
+              </FormItem>}
             </Card>
           </Col>
           <Col {...column}>
@@ -613,8 +676,8 @@ class FormCounter extends Component {
                 </div>
               </Card>)}
           </Col>
-        </Row>
-        <Row>
+        </Row>}
+        {getFieldValue('type') !== '0' && <Row>
           <Col {...column}>
             <Card {...cardProps} title={<h3>Availability</h3>}>
               <FormItem label="Available Period" hasFeedback {...formItemLayout}>
@@ -701,72 +764,122 @@ class FormCounter extends Component {
               <FormItem label="Apply Multiple" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('applyMultiple', {
                   valuePropName: 'checked',
-                  initialValue: item.applyMultiple ? (item.applyMultiple === '0' ? 0 : 1) : item.applyMultiple
+                  // eslint-disable-next-line eqeqeq
+                  initialValue: item.applyMultiple ? (item.applyMultiple == 0 ? 0 : 1) : item.applyMultiple
                 })(<Checkbox />)}
               </FormItem>
+              {getFieldValue('type') === '1' && <FormItem label="POS Highlight" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('isPosHighlight', {
+                  valuePropName: 'checked',
+                  initialValue: item.isPosHighlight ? (item.isPosHighlight === '0' ? 0 : 1) : item.isPosHighlight
+                })(<Checkbox />)}
+              </FormItem>}
             </Card>
           </Col>
           <Col {...column}>
-            <Card {...cardProps} title={<h3>Advance Bundle Utility</h3>}>
-              <FormItem {...formItemLayout} label="Minimum Payment" help="Usage in before payment Offering (ex. Promo DBS Kartu Kredit jika lebih dari 200 ribu maka mendapatkan 1 minuman gratis)">
-                {getFieldDecorator('minimumPayment', {
-                  initialValue: modalType === 'add' ? 0 : item.minimumPayment,
-                  rules: [{
-                    required: true,
-                    message: 'Required',
-                    pattern: /^([0-9.]{0,11})$/i
-                  }]
-                })(
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    min={0}
-                  />
-                )}
-              </FormItem>
-              {getFieldValue('minimumPayment') > 0 && <FormItem label="Payment Option" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('paymentOption', {
-                  initialValue: item.paymentOption,
-                  rules: [
-                    {
-                      required: false
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  allowClear
-                  optionFilterProp="children"
-                  filterOption={filterOption}
-                >{paymentOptionList}
-                </Select>)}
-              </FormItem>}
-              {getFieldValue('minimumPayment') > 0 && <FormItem label="Payment Bank" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('paymentBankId', {
-                  initialValue: item.paymentBankId,
-                  rules: [
-                    {
-                      required: !!getFieldValue('paymentOption')
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  allowClear
-                  optionFilterProp="children"
-                  filterOption={filterOption}
-                >{paymentBankList}
-                </Select>)}
-              </FormItem>}
-              <FormItem label="Always On" {...formItemLayout}>
-                {getFieldDecorator('alwaysOn', {
-                  valuePropName: 'checked',
-                  initialValue: item.alwaysOn === undefined
-                    ? false
-                    : item.alwaysOn
-                })(<Checkbox>Always On</Checkbox>)}
-              </FormItem>
-            </Card>
+            {getFieldValue('type') === '1' && (
+              <Card {...cardProps} title={<h3>Advance Bundle Utility</h3>}>
+                <FormItem {...formItemLayout} label="Minimum Payment" help="Usage in before payment Offering (ex. Promo DBS Kartu Kredit jika lebih dari 200 ribu maka mendapatkan 1 minuman gratis)">
+                  {getFieldDecorator('minimumPayment', {
+                    initialValue: modalType === 'add' ? 0 : item.minimumPayment,
+                    rules: [{
+                      required: true,
+                      message: 'Required',
+                      pattern: /^([0-9.]{0,11})$/i
+                    }]
+                  })(
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      min={0}
+                    />
+                  )}
+                </FormItem>
+                {getFieldValue('minimumPayment') > 0 && <FormItem label="Payment Option" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('paymentOption', {
+                    initialValue: item.paymentOption,
+                    rules: [
+                      {
+                        required: false
+                      }
+                    ]
+                  })(<Select
+                    showSearch
+                    allowClear
+                    optionFilterProp="children"
+                    filterOption={filterOption}
+                  >{paymentOptionList}
+                  </Select>)}
+                </FormItem>}
+                {getFieldValue('minimumPayment') > 0 && <FormItem label="Payment Bank" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('paymentBankId', {
+                    initialValue: item.paymentBankId,
+                    rules: [
+                      {
+                        required: !!getFieldValue('paymentOption')
+                      }
+                    ]
+                  })(<Select
+                    showSearch
+                    allowClear
+                    optionFilterProp="children"
+                    filterOption={filterOption}
+                  >{paymentBankList}
+                  </Select>)}
+                </FormItem>}
+                <FormItem label="Always On" {...formItemLayout}>
+                  {getFieldDecorator('alwaysOn', {
+                    valuePropName: 'checked',
+                    initialValue: item.alwaysOn === undefined
+                      ? false
+                      : item.alwaysOn
+                  })(<Checkbox>Always On</Checkbox>)}
+                </FormItem>
+              </Card>
+            )}
+
+            {getFieldValue('type') === '2' && (
+              <Card {...cardProps} title={<h3>Bundle Price</h3>}>
+                <FormItem {...formItemLayout} label="Qty Required" help="Usage in selling 3 item but get discount, the price will be set pro rate">
+                  {getFieldDecorator('targetCostPrice', {
+                    initialValue: modalType === 'add' ? 0 : item.targetCostPrice,
+                    rules: [{
+                      required: true,
+                      message: 'Required',
+                      pattern: /^([0-9.]{0,11})$/i
+                    }]
+                  })(
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      min={0}
+                    />
+                  )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="Final Price Per Bundle" help="Usage in selling 3 item but get discount, the price will be set pro rate">
+                  {getFieldDecorator('targetRetailPrice', {
+                    initialValue: modalType === 'add' ? 0 : item.targetRetailPrice,
+                    rules: [{
+                      required: true,
+                      message: 'Required',
+                      pattern: /^([0-9.]{0,11})$/i
+                    }]
+                  })(
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      min={0}
+                    />
+                  )}
+                </FormItem>
+                <FormItem label="Always On" {...formItemLayout}>
+                  {getFieldDecorator('alwaysOn', {
+                    valuePropName: 'checked',
+                    initialValue: true
+                  })(<Checkbox disabled>Always On</Checkbox>)}
+                </FormItem>
+              </Card>
+            )}
           </Col>
-        </Row>
-        <Row>
+        </Row>}
+        {getFieldValue('type') !== '0' && getFieldValue('type') === '1' && <Row>
           <Col {...column}>
             <Card {...cardProps} title={<h3>Grabmart</h3>}>
               <FormItem label="Grab Category" hasFeedback {...formItemLayout}>
@@ -877,8 +990,8 @@ class FormCounter extends Component {
               </FormItem>
             </Card>
           </Col>
-        </Row>
-        <Row>
+        </Row>}
+        {getFieldValue('type') !== '0' && getFieldValue('type') === '1' && (<Row>
           <Col {...column}>
             <Card {...cardProps} title={<h3>Build Component</h3>}>
               <FormItem label="Build your own component" help="You don't need to define the list, build it in transaction form" {...formItemLayout}>
@@ -930,7 +1043,7 @@ class FormCounter extends Component {
             </Card>
           </Col>
           <Col {...column} />
-        </Row>
+        </Row>)}
         {modalEditRulesVisible && <ModalRules {...modalRulesProps} />}
         {modalEditRewardVisible && <ModalReward {...modalRewardProps} />}
         {modalProductVisible && <ModalLov {...modalProductProps} />}

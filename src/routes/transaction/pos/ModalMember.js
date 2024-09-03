@@ -4,6 +4,7 @@ import { FormCustomer } from '../../master/customer/components'
 
 const Member = ({
   item,
+  loading,
   modalAddMember,
   cancelMember
 }) => {
@@ -18,12 +19,13 @@ const Member = ({
 
   const formCustomerProps = {
     item,
+    loading,
     modalType: 'addMember',
     cancelMember
   }
 
   return (
-    <Modal width="75%" className="modal-browse" {...modalProps}>
+    <Modal className="modal-browse" {...modalProps}>
       <FormCustomer {...formCustomerProps} />
     </Modal>
   )

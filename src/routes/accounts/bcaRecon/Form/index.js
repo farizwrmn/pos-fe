@@ -24,6 +24,7 @@ const formItemLayout = {
 
 const FormAutoCounter = ({
   onSortNullMdrAmount,
+  onFilterReportDate,
   onClearListImportCSVAndPayment,
   query,
   location,
@@ -44,8 +45,9 @@ const FormAutoCounter = ({
       }
       let storeId = lstorage.getCurrentUserStore()
       onSortNullMdrAmount({
-        payment: { storeId, transDate: moment(value).format('YYYY-MM-DD') },
+        payment: { bankName: 'BCA', storeId, transDate: moment(value).format('YYYY-MM-DD') },
         paymentImportBca: {
+          bankName: 'BCA',
           transactionDate: moment(value).format('YYYY-MM-DD'),
           recordSource: ['TC', 'TD', 'TQ', 'PC', 'PD', 'PQ'],
           storeId,
@@ -84,12 +86,17 @@ const FormAutoCounter = ({
     })
   }
 
+  const handeReportDate = (reportDate) => {
+    console.log('reportDate', reportDate)
+    onFilterReportDate(reportDate)
+  }
+
   return (
     <div>
       <Form layout="horizontal">
         <Row>
           <Col span={4}>
-            <FormItem label="Date" hasFeedback {...formItemLayout}>
+            <FormItem label="Trans Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('rangePicker', {
                 initialValue: query && query.transDate ? moment.utc(query.transDate, 'YYYY-MM-DD') : null
               })(
@@ -98,6 +105,15 @@ const FormAutoCounter = ({
                   onChange={(value, dateString) => handleSubmit(dateString)}
                   size="large"
                   format="DD-MMM-YYYY"
+                />
+              )}
+            </FormItem>
+            <FormItem label="Report Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('reportDate')(
+                <DatePicker
+                  onChange={(value, dateString) => handeReportDate(dateString)}
+                  size="large"
+                  format="YYYY-MM-DD"
                 />
               )}
             </FormItem>

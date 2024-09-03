@@ -173,34 +173,34 @@ export default modelExtend(pageModel, {
           return
         }
         const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
-        for (let index in itemRewardProduct) {
-          const currentDataReward = itemRewardProduct[index]
-          const currentDataRewardQty = (itemRewardProduct || [])
-            .filter(filtered => filtered.productCode === currentDataReward.productCode)
-            .reduce((prev, curr) => { return prev + curr.qty }, 0)
-          const currentProduct = (product || []).filter(filtered => filtered.code === currentDataReward.productCode)
-          const currentProductQty = (currentProduct || []).reduce((prev, curr) => { return prev + curr.qty }, 0)
-          const checkQty = currentDataRewardQty + currentProductQty
-          if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
-            Modal.error({
-              title: 'Failed to add bundle item',
-              content: (
-                <div>
-                  <div>
-                    Bundle item out of stock!
-                  </div>
-                  <div>
-                    Product: {currentDataReward.productCode} - {currentDataReward.productName}
-                  </div>
-                  <div>
-                    Stock: {currentDataReward.stock}
-                  </div>
-                </div>
-              )
-            })
-            return
-          }
-        }
+        // for (let index in itemRewardProduct) {
+        // const currentDataReward = itemRewardProduct[index]
+        // const currentDataRewardQty = (itemRewardProduct || [])
+        // .filter(filtered => filtered.productCode === currentDataReward.productCode)
+        // .reduce((prev, curr) => { return prev + curr.qty }, 0)
+        // const currentProduct = (product || []).filter(filtered => filtered.code === currentDataReward.productCode)
+        // const currentProductQty = (currentProduct || []).reduce((prev, curr) => { return prev + curr.qty }, 0)
+        // const checkQty = currentDataRewardQty + currentProductQty
+        // if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
+        //   Modal.error({
+        //     title: 'Failed to add bundle item',
+        //     content: (
+        //       <div>
+        //         <div>
+        //           Bundle item out of stock!
+        //         </div>
+        //         <div>
+        //           Product: {currentDataReward.productCode} - {currentDataReward.productName}
+        //         </div>
+        //         <div>
+        //           Stock: {currentDataReward.stock}
+        //         </div>
+        //       </div>
+        //     )
+        //   })
+        //   return
+        // }
+        // }
 
         const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
         const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
@@ -213,10 +213,13 @@ export default modelExtend(pageModel, {
           })
           return
         }
-        const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
         if (!categoryExists) {
+          const currentBundle = getBundleTrans()
+          const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(item.id))
+          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
           if (exists) {
             yield put({
               type: 'setBundleAlreadyExists',
@@ -295,15 +298,20 @@ export default modelExtend(pageModel, {
       const currentBundle = payload.currentBundle
       payload.item.inputTime = new Date().valueOf()
       const item = payload.item
-      let arrayProd = currentBundle.map((data) => {
-        if (data.bundleId === item.id) {
-          return ({
-            ...data,
-            qty: parseFloat(data.qty) + 1
-          })
-        }
-        return data
-      })
+      const filteredBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
+      let arrayProd = currentBundle
+      if (filteredBundle && filteredBundle[0]) {
+        arrayProd = currentBundle.map((data) => {
+          if (data.no === filteredBundle[0].no) {
+            return ({
+              ...data,
+              qty: parseFloat(data.qty) + 1
+            })
+          }
+          return data
+        })
+      }
+
       setBundleTrans(JSON.stringify(arrayProd))
       yield put({ type: 'pos/setCurrentBuildComponent' })
       yield put({
