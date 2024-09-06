@@ -8,6 +8,7 @@ import { IMAGEURL, rest } from 'utils/config.company'
 import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
 import ModalGrabmartCampaign from 'components/ModalGrabmartCampaign'
 import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
+import lstorage from 'utils/lstorage'
 import { formatWeight, formatBox, formatPack, formatDimension } from 'utils/dimension'
 import ModalSupplier from './ModalSupplier'
 
@@ -1121,14 +1122,14 @@ class AdvancedForm extends Component {
             </Card>
 
             <Card {...cardProps} title={<h3>Picking Line</h3>}>
-              {listStockPickingLine && listStockPickingLine.length > 0 ? listStockPickingLine.map(pickingLine => (
+              {listStockPickingLine && listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore()).length > 0 ? listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore()).map(pickingLine => (
                 <div>
                   <span>Line: {pickingLine.lineName} <span style={{ color: 'red', cursor: 'pointer' }} onClick={() => deleteStockPickingLine(pickingLine.id, item.id)}>X</span></span>
                 </div>
               )) : null}
               <FormItem label={(<Link target="_blank" to="/picking-line">Picking Line</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('pickingLineId', {
-                  initialValue: listStockPickingLine && listStockPickingLine.length > 0 ? listStockPickingLine[0].pickingLineId : undefined,
+                  initialValue: listStockPickingLine && listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore()).length > 0 ? listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())[0].pickingLineId : undefined,
                   rules: [
                     {
                       required: false
