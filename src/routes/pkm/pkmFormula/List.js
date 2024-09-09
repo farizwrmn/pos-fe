@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 
-const List = (tableProps) => {
+const List = ({ onOpenModalPkm, ...tableProps }) => {
   const columns = [
     {
       title: 'ID',
@@ -67,7 +67,10 @@ const List = (tableProps) => {
     {
       title: 'PKM',
       dataIndex: 'pkm',
-      key: 'pkm'
+      key: 'pkm',
+      render: (text, record) => {
+        return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
+      }
     },
     {
       title: 'N+',

@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/transfer/autoReplenish'
+import { query, add, addPkm, edit, remove } from 'services/transfer/autoReplenish'
 import { pageModel } from 'models/common'
 
 const success = () => {
@@ -93,6 +93,28 @@ export default modelExtend(pageModel, {
             currentItem: payload
           }
         })
+        throw response
+      }
+    },
+
+    * addPkm ({ payload }, { call, put }) {
+      const response = yield call(addPkm, payload.data)
+      if (response.success) {
+        success()
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalType: 'add',
+            currentItem: {}
+          }
+        })
+        yield put({
+          type: 'query'
+        })
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
         throw response
       }
     },
