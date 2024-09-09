@@ -227,6 +227,7 @@ export default modelExtend(pageModel, {
               amount: tablePayment.amount,
               csvId: filteredPaymentImportBcaData[0].id,
               matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
+              userName: tablePayment.userName,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
               typeCode: tablePayment.typeCode,
@@ -239,6 +240,7 @@ export default modelExtend(pageModel, {
               id: tablePayment.id,
               amount: tablePayment.amount,
               matchMdr: null,
+              userName: tablePayment.userName,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
               typeCode: tablePayment.typeCode,
@@ -348,6 +350,7 @@ export default modelExtend(pageModel, {
               return {
                 id: payload.id,
                 csvId: payload.csvId,
+                userName: item.userName,
                 matchMdr: payload.mdrAmount,
                 transNo: payload.transNo,
                 typeCode: payload.typeCode,
