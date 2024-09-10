@@ -40,7 +40,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
       key: 'productTag',
       filters: listProductTag,
       onFilter: (value, record) => record.productTag.indexOf(value) === 0,
-      sorter: (a, b) => a.productTag - b.productTag
+      sorter: (a, b) => a.productTag.length - b.productTag.length
     },
     {
       title: 'Minor',
