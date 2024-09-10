@@ -51,24 +51,24 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
     },
     {
       title: 'Sales',
-      width: 90,
+      width: 150,
       children: [
         {
           title: 'ini',
           dataIndex: 'salesCurrentMonth',
-          width: 30,
+          width: 50,
           key: 'salesCurrentMonth'
         },
         {
           title: '-1',
           dataIndex: 'salesTwoMonth',
-          width: 30,
+          width: 50,
           key: 'salesTwoMonth'
         },
         {
           title: '-2',
           dataIndex: 'salesThreeMonth',
-          width: 30,
+          width: 50,
           key: 'salesThreeMonth'
         }
       ]
@@ -125,24 +125,24 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
     },
     {
       title: 'OOS Day',
-      width: 90,
+      width: 150,
       children: [
         {
           title: 'ini',
           dataIndex: 'oosCurrentMonth',
-          width: 30,
+          width: 50,
           key: 'oosCurrentMonth'
         },
         {
           title: '-1',
           dataIndex: 'oosTwoMonth',
-          width: 30,
+          width: 50,
           key: 'oosTwoMonth'
         },
         {
           title: '-2',
           dataIndex: 'oosThreeMonth',
-          width: 30,
+          width: 50,
           key: 'oosThreeMonth'
         }
       ]
