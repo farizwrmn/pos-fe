@@ -8,6 +8,7 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { Button, Icon, Form, Input, Row, Col, message } from 'antd'
 import List from './List'
 import PrintXLS from './PrintXLS'
+import ModalEditMinor from './ModalEditMinor'
 import ModalEditPkm from './ModalEditPkm'
 
 const formItemLayout = {
@@ -30,7 +31,7 @@ const Counter = ({
   },
   app
 }) => {
-  const { list, tmpListProduct, pagination, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
+  const { list, tmpListProduct, pagination, modalEditMinorVisible, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
   const { user, storeInfo } = app
   const { listBrand } = productbrand
   const { listCategory } = productcategory
@@ -60,6 +61,15 @@ const Counter = ({
         type: 'pkmFormula/updateState',
         payload: {
           modalEditPkmVisible: true,
+          modalEditPkmItem: record
+        }
+      })
+    },
+    onOpenModalMinor (record) {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditMinorVisible: true,
           modalEditPkmItem: record
         }
       })
@@ -185,6 +195,33 @@ const Counter = ({
     }
   }
 
+  const modalEditMinorProps = {
+    visible: modalEditMinorVisible,
+    item: modalEditPkmItem,
+    onOk (item) {
+      dispatch({
+        type: 'pkmFormula/edit',
+        payload: {
+          data: {
+            ...modalEditPkmItem,
+            pkm: item.pkm || 0,
+            mpkm: item.mpkm || 0,
+            minor: item.minor || 0
+          }
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditPkmItem: {},
+          modalEditMinorVisible: false
+        }
+      })
+    }
+  }
+
   const onSearchProduct = (searchText) => {
     dispatch({
       type: 'pkmFormula/searchProduct',
@@ -196,6 +233,7 @@ const Counter = ({
 
   return (
     <div className="content-inner">
+      {modalEditMinorVisible && <ModalEditMinor {...modalEditMinorProps} />}
       {modalEditPkmVisible && <ModalEditPkm {...modalEditPkmProps} />}
       {'Stock: '}
       {buttonClickXLS}

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 
-const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
+const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps }) => {
   const listProductTag = tmpListProduct && tmpListProduct.length > 0
     ? [...new Set(tmpListProduct.map(item => item.productTag))]
       .map(item => ({ text: item, value: item }))
@@ -48,7 +48,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
       key: 'minor',
       sorter: (a, b) => a.minor - b.minor,
       render: (text, record) => {
-        return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
+        return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMinor(record)}>{text}</div>
       }
     },
     {

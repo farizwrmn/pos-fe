@@ -16,6 +16,9 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    modalEditMinorVisible: false,
+    modalEditPkmItem: {},
+    modalEditPkmVisible: false,
     tmpListProduct: [],
     searchText: '',
     pagination: {
@@ -106,7 +109,6 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
-      console.log('edit')
       const id = yield select(({ pkmFormula }) => pkmFormula.modalEditPkmItem.id)
       const list = yield select(({ pkmFormula }) => pkmFormula.list)
       const tmpListProduct = yield select(({ pkmFormula }) => pkmFormula.tmpListProduct)
@@ -120,16 +122,20 @@ export default modelExtend(pageModel, {
           payload: {
             list: list.map((item) => {
               if (id === item.id) {
+                item.minor = data.minor
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }
               return item
             }),
             tmpListProduct: tmpListProduct.map((item) => {
               if (id === item.id) {
+                item.minor = data.minor
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }
               return item
             }),
+            modalEditMinorItem: {},
+            modalEditMinorVisible: false,
             modalEditPkmItem: {},
             modalEditPkmVisible: false
           }
