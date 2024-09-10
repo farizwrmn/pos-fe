@@ -231,29 +231,37 @@ const Counter = ({
     })
   }
 
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+
   return (
     <div className="content-inner">
       {modalEditMinorVisible && <ModalEditMinor {...modalEditMinorProps} />}
       {modalEditPkmVisible && <ModalEditPkm {...modalEditPkmProps} />}
-      {'Stock: '}
-      {buttonClickXLS}
-      <span>
-        <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
-        <input
-          id="opname"
-          type="file"
-          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          className="ant-btn ant-btn-default ant-btn-lg"
-          style={{ visibility: 'hidden' }}
-          {...uploadProps}
-          onClick={(event) => {
-            event.target.value = null
-          }}
-          onInput={(event) => {
-            handleChangeFile(event)
-          }}
-        />
-      </span>
+      {(defaultRole === 'HPC'
+        || defaultRole === 'SPC'
+        || defaultRole === 'PCS'
+        || defaultRole === 'OWN') && <div>
+          {'Stock: '}
+          {buttonClickXLS}
+          <span>
+            <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+            <input
+              id="opname"
+              type="file"
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              className="ant-btn ant-btn-default ant-btn-lg"
+              style={{ visibility: 'hidden' }}
+              {...uploadProps}
+              onClick={(event) => {
+                event.target.value = null
+              }}
+              onInput={(event) => {
+                handleChangeFile(event)
+              }}
+            />
+          </span>
+        </div>}
+
       <Row>
         <Col span={16} />
         <Col span={8}>

@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
+import { lstorage } from 'utils'
 
 const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps }) => {
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+
   const listProductTag = tmpListProduct && tmpListProduct.length > 0
     ? [...new Set(tmpListProduct.map(item => item.productTag))]
       .map(item => ({ text: item, value: item }))
@@ -48,7 +51,16 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       key: 'minor',
       sorter: (a, b) => a.minor - b.minor,
       render: (text, record) => {
-        return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMinor(record)}>{text}</div>
+        if (defaultRole === 'AWR'
+          || defaultRole === 'HWR'
+          || defaultRole === 'OWN'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMinor(record)}>{text}</div>
+        }
+        return text
       }
     },
     {
@@ -96,7 +108,13 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       key: 'pkm',
       sorter: (a, b) => a.pkm - b.pkm,
       render: (text, record) => {
-        return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
+        if (defaultRole === 'CSH'
+          || defaultRole === 'HKS'
+          || defaultRole === 'OWN'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
+        }
+        return text
       }
     },
     {
