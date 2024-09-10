@@ -111,6 +111,7 @@ const Counter = ({
               const pkm = row.values[7]
               const nPlus = row.values[8]
               const nCross = row.values[9]
+              const deleted = row.values[10]
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
                 && typeof minor !== 'undefined'
@@ -118,6 +119,7 @@ const Counter = ({
                 && typeof pkm !== 'undefined'
                 && typeof nPlus !== 'undefined'
                 && typeof nCross !== 'undefined'
+                && deleted !== 'X'
               ) {
                 const data = {
                   storeId: lstorage.getCurrentUserStore(),
@@ -126,7 +128,17 @@ const Counter = ({
                   mpkm,
                   pkm,
                   nPlus,
-                  nCross
+                  nCross,
+                  deleted
+                }
+                uploadData.push(data)
+              } else if (rowIndex >= 6
+                && deleted === 'X'
+              ) {
+                const data = {
+                  storeId: lstorage.getCurrentUserStore(),
+                  productId: Number(productId),
+                  deleted
                 }
                 uploadData.push(data)
               }
