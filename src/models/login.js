@@ -73,6 +73,7 @@ export default {
       const setting = yield select(({ app }) => app.setting)
       const { data } = payload
       if (data.profile.role === 'OWN'
+        || data.profile.role === 'ITS'
         || data.profile.role === 'SPR'
         || data.profile.role === 'HFC'
         || data.profile.role === 'SFC'
