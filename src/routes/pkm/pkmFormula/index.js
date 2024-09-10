@@ -5,10 +5,17 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
-import { Button, Icon, Form, message } from 'antd'
+import { Button, Icon, Form, Input, Row, Col, message } from 'antd'
 import List from './List'
 import PrintXLS from './PrintXLS'
 import ModalEditPkm from './ModalEditPkm'
+
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14 }
+}
+
+const FormItem = Form.Item
 
 const Counter = ({
   pkmFormula,
@@ -18,9 +25,12 @@ const Counter = ({
   loading,
   dispatch,
   location,
+  form: {
+    getFieldDecorator
+  },
   app
 }) => {
-  const { list, pagination, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
+  const { list, tmpListProduct, pagination, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
   const { user, storeInfo } = app
   const { listBrand } = productbrand
   const { listCategory } = productcategory
@@ -28,10 +38,11 @@ const Counter = ({
 
   const listProps = {
     dataSource: list,
+    tmpListProduct,
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['pkmFormula/query'],
+    loading: loading.effects['pkmFormula/query'] || loading.effects['pkmFormula/addImport'],
     location,
     onChange (page) {
       dispatch({
@@ -45,7 +56,6 @@ const Counter = ({
       })
     },
     onOpenModalPkm (record) {
-      console.log('record', record)
       dispatch({
         type: 'pkmFormula/updateState',
         payload: {
@@ -96,15 +106,13 @@ const Counter = ({
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
-              const minDisp = row.values[5]
-              const minor = row.values[6]
-              const mpkm = row.values[7]
-              const pkm = row.values[8]
-              const nPlus = row.values[9]
-              const nCross = row.values[10]
+              const minor = row.values[5]
+              const mpkm = row.values[6]
+              const pkm = row.values[7]
+              const nPlus = row.values[8]
+              const nCross = row.values[9]
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
-                && typeof minDisp !== 'undefined'
                 && typeof minor !== 'undefined'
                 && typeof mpkm !== 'undefined'
                 && typeof pkm !== 'undefined'
@@ -114,7 +122,6 @@ const Counter = ({
                 const data = {
                   storeId: lstorage.getCurrentUserStore(),
                   productId: Number(productId),
-                  minDisp,
                   minor,
                   mpkm,
                   pkm,
@@ -166,6 +173,15 @@ const Counter = ({
     }
   }
 
+  const onSearchProduct = (searchText) => {
+    dispatch({
+      type: 'pkmFormula/searchProduct',
+      payload: {
+        searchText
+      }
+    })
+  }
+
   return (
     <div className="content-inner">
       {modalEditPkmVisible && <ModalEditPkm {...modalEditPkmProps} />}
@@ -188,6 +204,23 @@ const Counter = ({
           }}
         />
       </span>
+      <Row>
+        <Col span={16} />
+        <Col span={8}>
+          <FormItem label="Search" {...formItemLayout}>
+            {getFieldDecorator('searchText')(<Input
+              maxLength={200}
+              onKeyDown={
+                (e) => {
+                  if (e.keyCode === 13) {
+                    onSearchProduct(e.target.value)
+                  }
+                }
+              }
+            />)}
+          </FormItem>
+        </Col>
+      </Row>
       <List {...listProps} />
     </div>
   )
