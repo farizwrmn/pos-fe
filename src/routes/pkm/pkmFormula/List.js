@@ -108,8 +108,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       key: 'pkm',
       sorter: (a, b) => a.pkm - b.pkm,
       render: (text, record) => {
-        if (defaultRole === 'CSH'
-          || defaultRole === 'HKS'
+        if (defaultRole === 'CAP'
           || defaultRole === 'OWN'
         ) {
           return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
