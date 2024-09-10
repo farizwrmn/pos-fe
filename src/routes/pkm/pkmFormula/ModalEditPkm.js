@@ -33,7 +33,9 @@ class ModalEditPkm extends Component {
           return
         }
         const record = {
-          ...getFieldsValue()
+          ...getFieldsValue(),
+          minor: item.minor,
+          mpkm: item.mpkm
         }
         onOk(record)
       })
