@@ -40,7 +40,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
       key: 'productTag',
       filters: listProductTag,
       onFilter: (value, record) => record.productTag.indexOf(value) === 0,
-      sorter: (a, b) => a.productTag.length - b.productTag.length
+      sorter: (a, b) => a.productTag - b.productTag
     },
     {
       title: 'Minor',
@@ -92,7 +92,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
       dataIndex: 'pkm',
       width: 80,
       key: 'pkm',
-      sorter: (a, b) => a.mpkm - b.mpkm,
+      sorter: (a, b) => a.pkm - b.pkm,
       render: (text, record) => {
         return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
       }
@@ -152,7 +152,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
       dataIndex: 'dsiPkm',
       width: 100,
       key: 'dsiPkm',
-      sorter: (a, b) => a.dsiOnHand - b.dsiOnHand
+      sorter: (a, b) => a.dsiPkm - b.dsiPkm
     },
     {
       title: 'DSI OH',
