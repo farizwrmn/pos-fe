@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 
 const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
-  console.log('List', [...new Set(tmpListProduct.map(item => item.productTag))])
   const listProductTag = tmpListProduct && tmpListProduct.length > 0
     ? [...new Set(tmpListProduct.map(item => item.productTag))]
       .map(item => ({ text: item, value: item }))
@@ -47,7 +46,10 @@ const List = ({ tmpListProduct, onOpenModalPkm, ...tableProps }) => {
       dataIndex: 'minor',
       width: 70,
       key: 'minor',
-      sorter: (a, b) => a.minor.length - b.minor.length
+      sorter: (a, b) => a.minor - b.minor,
+      render: (text, record) => {
+        return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
+      }
     },
     {
       title: 'Sales',
