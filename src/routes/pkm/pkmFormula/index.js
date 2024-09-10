@@ -240,6 +240,7 @@ const Counter = ({
       {(defaultRole === 'HPC'
         || defaultRole === 'SPC'
         || defaultRole === 'PCS'
+        || defaultRole === 'ITS'
         || defaultRole === 'OWN') && <div>
           {'Stock: '}
           {buttonClickXLS}

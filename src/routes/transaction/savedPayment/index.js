@@ -206,7 +206,7 @@ const Pos = ({ location, dispatch, loading, login, pos, payment, app }) => {
       // const { transNo } = e
       if (record.paymentVia === 'PQ' || record.paymentVia === 'XQ') {
         const listUserRole = lstorage.getListUserRoles()
-        const checkRole = listUserRole.find(item => item.value === 'OWN')
+        const checkRole = listUserRole.find(item => item.value === 'OWN' || item.value === 'ITS')
         if (checkRole) {
           const invoiceWindow = window.open(`/transaction/pos/invoice/${record.id}`)
           invoiceWindow.focus()

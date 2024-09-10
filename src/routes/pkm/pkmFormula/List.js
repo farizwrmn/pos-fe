@@ -54,6 +54,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
         if (defaultRole === 'AWR'
           || defaultRole === 'HWR'
           || defaultRole === 'OWN'
+          || defaultRole === 'ITS'
           || defaultRole === 'HPC'
           || defaultRole === 'SPC'
           || defaultRole === 'PCS'
@@ -110,6 +111,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       render: (text, record) => {
         if (defaultRole === 'CAP'
           || defaultRole === 'OWN'
+          || defaultRole === 'ITS'
         ) {
           return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
         }

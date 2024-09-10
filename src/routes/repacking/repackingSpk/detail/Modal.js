@@ -289,6 +289,7 @@ const ModalEntry = ({
                   disabled={!(
                     user.permissions.role === 'SPR'
                     || user.permissions.role === 'OWN'
+                    || user.permissions.role === 'ITS'
                     || user.permissions.role === 'HFC'
                     || user.permissions.role === 'SFC')}
                   style={{ width: '100%', fontSize: '14pt' }}
