@@ -57,7 +57,7 @@ const BrowseGroup = ({
       }
 
       const currentRole = lstorage.getCurrentUserRole()
-      if (currentRole !== 'OWN' || currentRole !== 'ITS') {
+      if (currentRole !== 'OWN' && currentRole !== 'ITS') {
         const checkPermissionDayBefore = checkPermissionDayBeforeTransaction(transDate)
         if (checkPermissionDayBefore) {
           return
