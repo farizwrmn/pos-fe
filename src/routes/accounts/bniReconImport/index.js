@@ -134,6 +134,7 @@ const ImportBcaRecon = ({
               recordSource = 'QRIS-BNI'
               dateFormat = 'YYYY-MM-DD HH:mm:ss'
               item.approvalCode = item.approvalCode.slice(-6)
+              return null
             }
             if (item.recordSource === 'MPM') {
               recordSource = 'QRIS-BNI'
@@ -165,7 +166,7 @@ const ImportBcaRecon = ({
               transactionCode: item.transactionCode,
               transactionDate: moment(item.transactionDate, dateFormat).format('YYYY-MM-DD')
             })
-          })
+          }).filter(filtered => filtered)
 
           if (finalRequest && finalRequest.length > 0) {
             dispatch({
