@@ -164,31 +164,35 @@ const PromoProductReward = ({
     dispatch({
       type: 'promo/updateState',
       payload: {
+        visiblePopover: false,
         modalPromoVisible: false
       }
     })
   }
-  const titlePopover = () => {
-    return (
-      <Row>
-        <Col span={8}>
-          <h2>Promo Detail</h2>
-        </Col>
-        <Col span={1} offset={12}>
-          {enableChoosePromoDetail && <Button
-            type="primary"
-            onClick={() => choosePromo()}
-          >
-            Choose
-          </Button>}
-        </Col>
-      </Row>
-    )
-  }
 
   return (
     <div>
-      <Popover placement="leftTop" content={content} title={titlePopover()} trigger="click">
+      <Popover
+        placement="leftTop"
+        content={content}
+        title={(
+          <Row>
+            <Col span={8}>
+              <h2>Promo Detail</h2>
+            </Col>
+            <Col span={1} offset={12}>
+              {enableChoosePromoDetail && <Button
+                type="primary"
+                disabled={loading.effects['pospromo/addPosPromo']}
+                onClick={() => choosePromo()}
+              >
+                Choose
+              </Button>}
+            </Col>
+          </Row>
+        )}
+        trigger="click"
+      >
         <Button onClick={queryView}>View</Button>
       </Popover>
     </div>
