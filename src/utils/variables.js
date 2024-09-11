@@ -1,5 +1,5 @@
 import { posTotal } from './total'
-import { getCashierTrans, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, setConsignment } from './lstorage'
+import { getCashierTrans, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, getBundleTrans, setBundleTrans, setConsignment } from './lstorage'
 
 const reArrangeMember = (item) => {
   return {
@@ -83,6 +83,58 @@ const reArrangeMemberId = (item) => {
     gender: item.gender,
     phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
   }
+}
+
+const insertBundleTrans = async ({
+  qty,
+  item
+}) => {
+  item.inputTime = new Date().valueOf()
+  const currentBundle = await getBundleTrans()
+  let arrayProd = currentBundle
+  const filteredBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
+  if (filteredBundle && filteredBundle[0]) {
+    arrayProd = currentBundle.map((data) => {
+      if (data.no === filteredBundle[0].no) {
+        return ({
+          ...data,
+          qty: parseFloat(data.qty) + qty
+        })
+      }
+      return data
+    })
+  } else {
+    arrayProd.push({
+      no: (arrayProd || []).length + 1,
+      rewardCategory: item.rewardCategory || [],
+      applyMultiple: item.applyMultiple,
+      bundleId: item.id,
+      categoryCode: item.categoryCode,
+      type: item.type,
+      code: item.code,
+      name: item.name,
+      inputTime: new Date().valueOf(),
+      minimumPayment: item.minimumPayment,
+      paymentOption: item.paymentOption,
+      paymentBankId: item.paymentBankId,
+      alwaysOn: item.alwaysOn,
+      haveTargetPrice: item.haveTargetPrice,
+      targetRetailPrice: item.targetRetailPrice,
+      targetCostPrice: item.targetCostPrice,
+      startDate: item.startDate,
+      endDate: item.endDate,
+      startHour: item.startHour,
+      endHour: item.endHour,
+      buildComponent: item.buildComponent,
+      availableDate: item.availableDate,
+      qty
+    })
+  }
+
+  console.log('arrayProd', currentBundle, arrayProd)
+
+  await setBundleTrans(JSON.stringify(arrayProd))
+  return arrayProd
 }
 
 const insertCashierTrans = (dataObject) => {
@@ -194,6 +246,7 @@ const insertConsignment = (dataObject) => {
 module.exports = {
   reArrangeMember,
   reArrangeMemberId,
+  insertBundleTrans,
   insertCashierTrans,
   insertConsignment,
   getSetting,

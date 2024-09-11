@@ -2250,10 +2250,7 @@ const Pos = ({
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
-        bundleId: item.id,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+        bundleId: item.id
       }
     })
   }
@@ -2839,10 +2836,7 @@ const Pos = ({
         dispatch({
           type: 'pospromo/addPosPromo',
           payload: {
-            bundleId: item.id,
-            currentBundle: getBundleTrans(),
-            currentProduct: getCashierTrans(),
-            currentService: getServiceTrans()
+            bundleId: item.id
           }
         })
       }

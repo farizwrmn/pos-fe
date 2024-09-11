@@ -1277,10 +1277,7 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              bundleId: response.data.bundle.id,
-              currentBundle: getBundleTrans(),
-              currentProduct: getCashierTrans(),
-              currentService: getServiceTrans()
+              bundleId: response.data.bundle.id
             }
           })
         }
@@ -2549,10 +2546,7 @@ export default {
       if (listProductQty && listProductQty.length > 0) {
         const dataService = getServiceTrans()
 
-        // const currentBundle = getBundleTrans()
         const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-        // const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         if (payload.reset) {
           payload.reset()
         }
@@ -3360,10 +3354,7 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              bundleId: response.data.id,
-              currentBundle: getBundleTrans(),
-              currentProduct: getCashierTrans(),
-              currentService: getServiceTrans()
+              bundleId: response.data.id
             }
           })
         }

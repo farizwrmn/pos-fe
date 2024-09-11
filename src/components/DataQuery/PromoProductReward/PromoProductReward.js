@@ -1,11 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { lstorage } from 'utils'
 import { Popover, Tag, Row, Col, Button, Table } from 'antd'
 import styles from '../../../themes/index.less'
-
-const { getCashierTrans, getBundleTrans, getServiceTrans } = lstorage
 
 const width = 500
 const PromoProductReward = ({
@@ -161,10 +158,7 @@ const PromoProductReward = ({
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
-        bundleId: currentId,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+        bundleId: currentId
       }
     })
     dispatch({
