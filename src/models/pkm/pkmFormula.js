@@ -16,6 +16,11 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    modalEditMinorVisible: false,
+    modalEditPkmItem: {},
+    modalEditPkmVisible: false,
+    tmpListProduct: [],
+    searchText: '',
     pagination: {
       pageSizeOptions: ['50', '100', '500', '1000'],
       showSizeChanger: true,
@@ -105,14 +110,32 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ pkmFormula }) => pkmFormula.modalEditPkmItem.id)
+      const list = yield select(({ pkmFormula }) => pkmFormula.list)
+      const tmpListProduct = yield select(({ pkmFormula }) => pkmFormula.tmpListProduct)
       const newCounter = { ...payload.data, id }
       const response = yield call(edit, newCounter)
       if (response.success) {
         success()
-        yield put({ type: 'query' })
+        const { data } = payload
         yield put({
           type: 'updateState',
           payload: {
+            list: list.map((item) => {
+              if (id === item.id) {
+                item.minor = data.minor
+                item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
+              }
+              return item
+            }),
+            tmpListProduct: tmpListProduct.map((item) => {
+              if (id === item.id) {
+                item.minor = data.minor
+                item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
+              }
+              return item
+            }),
+            modalEditMinorItem: {},
+            modalEditMinorVisible: false,
             modalEditPkmItem: {},
             modalEditPkmVisible: false
           }
@@ -133,11 +156,35 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         list,
+        tmpListProduct: list,
         pagination: {
           ...state.pagination,
           ...pagination
         }
       }
+    },
+
+    searchProduct (state, action) {
+      const { searchText } = action.payload
+      const { tmpListProduct } = state
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+      newData = tmpListProduct.map((record) => {
+        const match = record.productCode.match(reg)
+          || record.productName.match(reg)
+          || (record.categoryName || '').match(reg)
+          || (record.departmentName || '').match(reg)
+          || (record.subdepartmentName || '').match(reg)
+          || (record.brandName || '').match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record
+        }
+      }).filter(record => !!record)
+
+      return { ...state, list: newData }
     },
 
     updateState (state, { payload }) {

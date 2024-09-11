@@ -5,10 +5,18 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
 import * as Excel from 'exceljs/dist/exceljs.min.js'
-import { Button, Icon, Form, message } from 'antd'
+import { Button, Icon, Form, Input, Row, Col, message } from 'antd'
 import List from './List'
 import PrintXLS from './PrintXLS'
+import ModalEditMinor from './ModalEditMinor'
 import ModalEditPkm from './ModalEditPkm'
+
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14 }
+}
+
+const FormItem = Form.Item
 
 const Counter = ({
   pkmFormula,
@@ -18,9 +26,12 @@ const Counter = ({
   loading,
   dispatch,
   location,
+  form: {
+    getFieldDecorator
+  },
   app
 }) => {
-  const { list, pagination, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
+  const { list, tmpListProduct, pagination, modalEditMinorVisible, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
   const { user, storeInfo } = app
   const { listBrand } = productbrand
   const { listCategory } = productcategory
@@ -28,10 +39,11 @@ const Counter = ({
 
   const listProps = {
     dataSource: list,
+    tmpListProduct,
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['pkmFormula/query'],
+    loading: loading.effects['pkmFormula/query'] || loading.effects['pkmFormula/addImport'],
     location,
     onChange (page) {
       dispatch({
@@ -45,11 +57,19 @@ const Counter = ({
       })
     },
     onOpenModalPkm (record) {
-      console.log('record', record)
       dispatch({
         type: 'pkmFormula/updateState',
         payload: {
           modalEditPkmVisible: true,
+          modalEditPkmItem: record
+        }
+      })
+    },
+    onOpenModalMinor (record) {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditMinorVisible: true,
           modalEditPkmItem: record
         }
       })
@@ -96,30 +116,39 @@ const Counter = ({
           await sheet
             .eachRow({ includeEmpty: false }, (row, rowIndex) => {
               const productId = row.values[2]
-              const minDisp = row.values[5]
-              const minor = row.values[6]
-              const mpkm = row.values[7]
-              const pkm = row.values[8]
-              const nPlus = row.values[9]
-              const nCross = row.values[10]
+              const minor = row.values[5]
+              const mpkm = row.values[6]
+              const pkm = row.values[7]
+              const nPlus = row.values[8]
+              const nCross = row.values[9]
+              const deleted = row.values[10]
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
-                && typeof minDisp !== 'undefined'
                 && typeof minor !== 'undefined'
                 && typeof mpkm !== 'undefined'
                 && typeof pkm !== 'undefined'
                 && typeof nPlus !== 'undefined'
                 && typeof nCross !== 'undefined'
+                && deleted !== 'X'
               ) {
                 const data = {
                   storeId: lstorage.getCurrentUserStore(),
                   productId: Number(productId),
-                  minDisp,
                   minor,
                   mpkm,
                   pkm,
                   nPlus,
-                  nCross
+                  nCross,
+                  deleted
+                }
+                uploadData.push(data)
+              } else if (rowIndex >= 6
+                && deleted === 'X'
+              ) {
+                const data = {
+                  storeId: lstorage.getCurrentUserStore(),
+                  productId: Number(productId),
+                  deleted
                 }
                 uploadData.push(data)
               }
@@ -166,28 +195,91 @@ const Counter = ({
     }
   }
 
+  const modalEditMinorProps = {
+    visible: modalEditMinorVisible,
+    item: modalEditPkmItem,
+    onOk (item) {
+      dispatch({
+        type: 'pkmFormula/edit',
+        payload: {
+          data: {
+            ...modalEditPkmItem,
+            pkm: item.pkm || 0,
+            mpkm: item.mpkm || 0,
+            minor: item.minor || 0
+          }
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditPkmItem: {},
+          modalEditMinorVisible: false
+        }
+      })
+    }
+  }
+
+  const onSearchProduct = (searchText) => {
+    dispatch({
+      type: 'pkmFormula/searchProduct',
+      payload: {
+        searchText
+      }
+    })
+  }
+
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+
   return (
     <div className="content-inner">
+      {modalEditMinorVisible && <ModalEditMinor {...modalEditMinorProps} />}
       {modalEditPkmVisible && <ModalEditPkm {...modalEditPkmProps} />}
-      {'Stock: '}
-      {buttonClickXLS}
-      <span>
-        <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
-        <input
-          id="opname"
-          type="file"
-          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          className="ant-btn ant-btn-default ant-btn-lg"
-          style={{ visibility: 'hidden' }}
-          {...uploadProps}
-          onClick={(event) => {
-            event.target.value = null
-          }}
-          onInput={(event) => {
-            handleChangeFile(event)
-          }}
-        />
-      </span>
+      {(defaultRole === 'HPC'
+        || defaultRole === 'SPC'
+        || defaultRole === 'PCS'
+        || defaultRole === 'ITS'
+        || defaultRole === 'OWN') && <div>
+          {'Stock: '}
+          {buttonClickXLS}
+          <span>
+            <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+            <input
+              id="opname"
+              type="file"
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              className="ant-btn ant-btn-default ant-btn-lg"
+              style={{ visibility: 'hidden' }}
+              {...uploadProps}
+              onClick={(event) => {
+                event.target.value = null
+              }}
+              onInput={(event) => {
+                handleChangeFile(event)
+              }}
+            />
+          </span>
+        </div>}
+
+      <Row>
+        <Col span={16} />
+        <Col span={8}>
+          <FormItem label="Search" {...formItemLayout}>
+            {getFieldDecorator('searchText')(<Input
+              maxLength={200}
+              onKeyDown={
+                (e) => {
+                  if (e.keyCode === 13) {
+                    onSearchProduct(e.target.value)
+                  }
+                }
+              }
+            />)}
+          </FormItem>
+        </Col>
+      </Row>
       <List {...listProps} />
     </div>
   )

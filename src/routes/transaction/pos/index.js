@@ -2288,7 +2288,7 @@ const Pos = ({
         title: 'Unit Validation',
         content: 'Member Unit is not Defined '
       })
-      if (defaultRole !== 'OWN') {
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
         return
       }
     }
@@ -2302,7 +2302,7 @@ const Pos = ({
         title: 'Unit Validation',
         content: 'You are Work Order without Member Unit'
       })
-      if (defaultRole !== 'OWN') {
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
         return
       }
     }
@@ -2400,7 +2400,7 @@ const Pos = ({
         title: 'Unit Validation',
         content: 'Member Unit is not Defined '
       })
-      if (defaultRole !== 'OWN') {
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
         return
       }
     }
@@ -2414,7 +2414,7 @@ const Pos = ({
         title: 'Unit Validation',
         content: 'You are Work Order without Member Unit'
       })
-      if (defaultRole !== 'OWN') {
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
         return
       }
     }

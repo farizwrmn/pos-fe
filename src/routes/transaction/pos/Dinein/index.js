@@ -52,7 +52,7 @@ const Express = ({
           {...tableProps}
         >
           <div style={{ marginBottom: '10px' }}>
-            <div>{enableDineIn ? <Button type="danger" onClick={() => updateEnableDineIn(0)}>Disable</Button> : <Button type="primary" disabled={userRole !== 'OWN'} onClick={() => updateEnableDineIn(1)}>Enable</Button>}</div>
+            <div>{enableDineIn ? <Button type="danger" onClick={() => updateEnableDineIn(0)}>Disable</Button> : <Button type="primary" disabled={userRole !== 'OWN' || userRole !== 'ITS'} onClick={() => updateEnableDineIn(1)}>Enable</Button>}</div>
             {enableDineInLastUpdatedAt ? <div>Updated At: {moment(enableDineInLastUpdatedAt).format('DD-MMM-YYYY HH:mm')}</div> : null}
             {enableDineInLastUpdatedBy ? <div>By: {enableDineInLastUpdatedBy}</div> : null}
           </div>

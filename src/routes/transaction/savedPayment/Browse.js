@@ -57,7 +57,7 @@ const BrowseGroup = ({
       }
 
       const currentRole = lstorage.getCurrentUserRole()
-      if (currentRole !== 'OWN') {
+      if (currentRole !== 'OWN' && currentRole !== 'ITS') {
         const checkPermissionDayBefore = checkPermissionDayBeforeTransaction(transDate)
         if (checkPermissionDayBefore) {
           return
@@ -66,7 +66,7 @@ const BrowseGroup = ({
 
       if (record && record.paymentVia && (record.paymentVia === 'PQ' || record.paymentVia === 'XQ')) {
         const listUserRole = lstorage.getListUserRoles()
-        const checkRole = listUserRole.find(item => item.value === 'OWN' || item.value === 'CAP')
+        const checkRole = listUserRole.find(item => item.value === 'OWN' || item.value === 'ITS' || item.value === 'CAP')
         if (!checkRole) {
           Modal.error({
             title: 'Can`t Void this Invoice',
@@ -192,6 +192,7 @@ const BrowseGroup = ({
           type="primary"
           menuOptions={(
             user.permissions.role === 'OWN'
+            || user.permissions.role === 'ITS'
             || user.permissions.role === 'SPR'
             || user.permissions.role === 'ADF'
             || user.permissions.role === 'HPC'
@@ -242,6 +243,7 @@ const BrowseGroup = ({
         bordered
         columns={columns}
         dataSource={user.permissions.role === 'OWN'
+          || user.permissions.role === 'ITS'
           || user.permissions.role === 'SPR'
           || user.permissions.role === 'ADF'
           || user.permissions.role === 'HPC'
@@ -251,6 +253,7 @@ const BrowseGroup = ({
           ? dataSource.sort((a, b) => b.id - a.id) : dataSource.sort((a, b) => b.id - a.id)}
         loading={loading}
         pagination={user.permissions.role === 'OWN'
+          || user.permissions.role === 'ITS'
           || user.permissions.role === 'SPR'
           || user.permissions.role === 'ADF'
           || user.permissions.role === 'HPC'

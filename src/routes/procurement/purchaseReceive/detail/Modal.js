@@ -287,6 +287,7 @@ const ModalEntry = ({
                   format="YYYY-MM-DD"
                   placeholder="Select Date"
                   disabled={!(user.permissions.role === 'SPR'
+                    || user.permissions.role === 'ITS'
                     || user.permissions.role === 'OWN'
                     || user.permissions.role === 'PCS'
                     || user.permissions.role === 'HPC'
