@@ -902,7 +902,7 @@ export default {
 
     * cancelInvoice ({ payload }, { select, call, put }) {
       const userRole = lstorage.getCurrentUserRole()
-      if (userRole !== 'OWN') {
+      if (userRole !== 'OWN' && userRole !== 'ITS') {
         const listPayment = yield select(({ pos }) => pos.listPayment)
         const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
         const responseRestrictDateTimeStamp = yield call(getDateTime, { id: 'timestamp' })
