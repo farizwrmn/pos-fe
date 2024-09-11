@@ -75,8 +75,10 @@ const ImportBcaRecon = ({
             'merchantName' // MERCHANT NAME
           ]
 
+          console.log('sheet', sheet)
           if (!sheet) {
             sheet = workbook.getWorksheet('Sheet1')
+            console.log('sheet workbook', sheet)
             csvHeader = [
               'traceNumber', // NO
               'merchantName', // Nama Merchant
