@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { lstorage } from 'utils'
 
-const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps }) => {
+const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag, onOpenModalMinor, ...tableProps }) => {
   let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
 
   const listProductTag = tmpListProduct && tmpListProduct.length > 0
@@ -48,7 +48,18 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       key: 'productTag',
       filters: listProductTag,
       onFilter: (value, record) => record.productTag.indexOf(value) === 0,
-      sorter: (a, b) => a.productTag.length - b.productTag.length
+      sorter: (a, b) => a.productTag.length - b.productTag.length,
+      render: (text, record) => {
+        if (defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalTag(record)}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'Minor',
@@ -106,7 +117,18 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       dataIndex: 'mpkm',
       width: 80,
       key: 'mpkm',
-      sorter: (a, b) => a.mpkm - b.mpkm
+      sorter: (a, b) => a.mpkm - b.mpkm,
+      render: (text, record) => {
+        if (defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'PKM',
@@ -129,14 +151,36 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
       dataIndex: 'nPlus',
       width: 60,
       key: 'nPlus',
-      sorter: (a, b) => a.nPlus - b.nPlus
+      sorter: (a, b) => a.nPlus - b.nPlus,
+      render: (text, record) => {
+        if (defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'Nx',
       dataIndex: 'nCross',
       width: 60,
       key: 'nCross',
-      sorter: (a, b) => a.nCross - b.nCross
+      sorter: (a, b) => a.nCross - b.nCross,
+      render: (text, record) => {
+        if (defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
+        }
+        return text
+      }
     },
     {
       title: 'PKM EXISTS',

@@ -20,6 +20,16 @@ export async function edit (params) {
   })
 }
 
+export async function editTag (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/product-active-tag/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function addImport (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
