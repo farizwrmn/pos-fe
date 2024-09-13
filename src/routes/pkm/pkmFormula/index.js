@@ -10,6 +10,9 @@ import List from './List'
 import PrintXLS from './PrintXLS'
 import ModalEditMinor from './ModalEditMinor'
 import ModalEditPkm from './ModalEditPkm'
+import PrintXLSDownloadData from './PrintXLSDownloadData'
+import ModalEditMpkm from './ModalEditMpkm'
+import ModalEditTag from './ModalEditTag'
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -20,6 +23,7 @@ const FormItem = Form.Item
 
 const Counter = ({
   pkmFormula,
+  productTag,
   productstock,
   productbrand,
   productcategory,
@@ -31,7 +35,20 @@ const Counter = ({
   },
   app
 }) => {
-  const { list, tmpListProduct, pagination, modalEditMinorVisible, modalEditPkmItem, modalEditPkmVisible } = pkmFormula
+  const {
+    list,
+    tmpListProduct,
+    pagination,
+    modalEditMinorVisible,
+    modalEditPkmItem,
+    modalEditMpkmVisible,
+    modalEditPkmVisible,
+    modalEditTagVisible,
+    modalEditTagItem
+  } = pkmFormula
+  const {
+    list: listTag
+  } = productTag
   const { user, storeInfo } = app
   const { listBrand } = productbrand
   const { listCategory } = productcategory
@@ -62,6 +79,24 @@ const Counter = ({
         payload: {
           modalEditPkmVisible: true,
           modalEditPkmItem: record
+        }
+      })
+    },
+    onOpenModalMPKM (record) {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditMpkmVisible: true,
+          modalEditPkmItem: record
+        }
+      })
+    },
+    onOpenModalTag (record) {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditTagVisible: true,
+          modalEditTagItem: record
         }
       })
     },
@@ -233,10 +268,64 @@ const Counter = ({
 
   let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
 
+  const modalEditMpkmProps = {
+    visible: modalEditMpkmVisible,
+    item: modalEditPkmItem,
+    onOk (item) {
+      dispatch({
+        type: 'pkmFormula/edit',
+        payload: {
+          data: {
+            ...modalEditPkmItem,
+            mpkm: item.mpkm || 0,
+            nPlus: item.nPlus || 0,
+            nCross: item.nCross || 0
+          }
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditPkmItem: {},
+          modalEditMpkmVisible: false
+        }
+      })
+    }
+  }
+
+  const modalEditTagProps = {
+    visible: modalEditTagVisible,
+    item: modalEditTagItem,
+    listTag,
+    onOk (item) {
+      dispatch({
+        type: 'pkmFormula/editTag',
+        payload: {
+          data: {
+            productTag: item.productTag
+          }
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pkmFormula/updateState',
+        payload: {
+          modalEditTagItem: {},
+          modalEditTagVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner">
       {modalEditMinorVisible && <ModalEditMinor {...modalEditMinorProps} />}
       {modalEditPkmVisible && <ModalEditPkm {...modalEditPkmProps} />}
+      {modalEditMpkmVisible && <ModalEditMpkm {...modalEditMpkmProps} />}
+      {modalEditTagVisible && <ModalEditTag {...modalEditTagProps} />}
       {(defaultRole === 'HPC'
         || defaultRole === 'SPC'
         || defaultRole === 'PCS'
@@ -264,7 +353,9 @@ const Counter = ({
         </div>}
 
       <Row>
-        <Col span={16} />
+        <Col span={16}>
+          {list && list.length > 0 ? <PrintXLSDownloadData listAutoReplenish={list} /> : null}
+        </Col>
         <Col span={8}>
           <FormItem label="Search" {...formItemLayout}>
             {getFieldDecorator('searchText')(<Input
@@ -286,6 +377,7 @@ const Counter = ({
 }
 
 Counter.propTypes = {
+  productTag: PropTypes.object,
   pkmFormula: PropTypes.object,
   productstock: PropTypes.object,
   loading: PropTypes.object,
@@ -294,4 +386,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ pkmFormula, productstock, productbrand, productcategory, loading, app }) => ({ pkmFormula, productstock, productbrand, productcategory, loading, app }))(Form.create()(Counter))
+export default connect(({ productTag, pkmFormula, productstock, productbrand, productcategory, loading, app }) => ({ productTag, pkmFormula, productstock, productbrand, productcategory, loading, app }))(Form.create()(Counter))

@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
-import { query, add, addImport, edit, remove } from 'services/pkm/pkmFormula'
+import { query, add, addImport, editTag, edit, remove } from 'services/pkm/pkmFormula'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -19,6 +19,11 @@ export default modelExtend(pageModel, {
     modalEditMinorVisible: false,
     modalEditPkmItem: {},
     modalEditPkmVisible: false,
+
+    modalEditMpkmVisible: false,
+    modalEditTagVisible: false,
+    modalEditTagItem: {},
+
     tmpListProduct: [],
     searchText: '',
     pagination: {
@@ -49,7 +54,10 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: response.data,
+            list: response.data.map((item, index) => {
+              item.no = index + 1
+              return item
+            }),
             pagination: {
               current: Number(response.page) || 1,
               pageSize: Number(response.pageSize) || 10,
@@ -109,6 +117,7 @@ export default modelExtend(pageModel, {
     },
 
     * edit ({ payload }, { select, call, put }) {
+      console.log('edit', payload)
       const id = yield select(({ pkmFormula }) => pkmFormula.modalEditPkmItem.id)
       const list = yield select(({ pkmFormula }) => pkmFormula.list)
       const tmpListProduct = yield select(({ pkmFormula }) => pkmFormula.tmpListProduct)
@@ -120,24 +129,70 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            list: list.map((item) => {
+            list: list.map((item, index) => {
+              item.no = index + 1
               if (id === item.id) {
                 item.minor = data.minor
+                item.nPlus = data.nPlus
+                item.nCross = data.nCross
+                item.mpkm = data.mpkm
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }
               return item
             }),
-            tmpListProduct: tmpListProduct.map((item) => {
+            tmpListProduct: tmpListProduct.map((item, index) => {
+              item.no = index + 1
               if (id === item.id) {
                 item.minor = data.minor
+                item.nPlus = data.nPlus
+                item.nCross = data.nCross
+                item.mpkm = data.mpkm
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }
               return item
             }),
-            modalEditMinorItem: {},
             modalEditMinorVisible: false,
+            modalEditMpkmVisible: false,
             modalEditPkmItem: {},
             modalEditPkmVisible: false
+          }
+        })
+
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
+        throw response
+      }
+    },
+    * editTag ({ payload }, { select, call, put }) {
+      const id = yield select(({ pkmFormula }) => pkmFormula.modalEditTagItem.productId)
+      const list = yield select(({ pkmFormula }) => pkmFormula.list)
+      const tmpListProduct = yield select(({ pkmFormula }) => pkmFormula.tmpListProduct)
+      const newCounter = { ...payload.data, id }
+      const response = yield call(editTag, newCounter)
+      if (response.success) {
+        success()
+        const { data } = payload
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: list.map((item, index) => {
+              item.no = index + 1
+              if (id === item.productId) {
+                item.productTag = data.productTag
+              }
+              return item
+            }),
+            tmpListProduct: tmpListProduct.map((item, index) => {
+              item.no = index + 1
+              if (id === item.productId) {
+                item.productTag = data.productTag
+              }
+              return item
+            }),
+            modalEditTagItem: {},
+            modalEditTagVisible: false
           }
         })
 
@@ -156,7 +211,10 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         list,
-        tmpListProduct: list,
+        tmpListProduct: list.map((item, index) => {
+          item.no = index + 1
+          return item
+        }),
         pagination: {
           ...state.pagination,
           ...pagination

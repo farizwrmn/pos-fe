@@ -108,6 +108,14 @@ const setGrabmartOrder = (grabOrder) => {
   return localStorage.setItem('grabmartOrder', JSON.stringify(grabOrder || '{}'))
 }
 
+const getExpressOrder = () => {
+  return localStorage.getItem('expressOrder') ? JSON.parse(localStorage.getItem('expressOrder')) : {}
+}
+
+const setExpressOrder = (grabOrder) => {
+  return localStorage.setItem('expressOrder', JSON.stringify(grabOrder || '{}'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -584,5 +592,7 @@ module.exports = {
   getDynamicQrisImageTTL,
   getAvailablePaymentType,
   setAvailablePaymentType,
-  removeAvailablePaymentType
+  removeAvailablePaymentType,
+  getExpressOrder,
+  setExpressOrder
 }

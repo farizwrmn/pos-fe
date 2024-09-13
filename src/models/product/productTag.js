@@ -27,7 +27,8 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/stock'
-          || pathname === '/stock-tag-schedule') {
+          || pathname === '/stock-tag-schedule'
+          || pathname === '/stock-pkm') {
           if (activeKey !== '1') {
             dispatch({
               type: 'query',

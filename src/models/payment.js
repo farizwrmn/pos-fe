@@ -328,10 +328,24 @@ export default {
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
           let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+          let expressOrderId = null
+          let orderShortNumber = null
           if (payload.memberCode !== null) {
+            if (payload.listAmount && payload.listAmount.length > 0) {
+              const filterExpress = payload.listAmount.filter(filtered => filtered.typeCode === 'KX' && filtered.cardNo)
+              if (filterExpress && filterExpress[0]) {
+                const currentExpressOrder = lstorage.getExpressOrder()
+                if (currentExpressOrder) {
+                  expressOrderId = currentExpressOrder.id
+                  orderShortNumber = currentExpressOrder.orderShortNumber
+                }
+              }
+            }
             const detailPOS = {
               reference,
               dataPos: newArrayProd,
+              expressOrderId,
+              orderShortNumber,
               dataConsignment: consignment,
               dataBundle,
               orderType: selectedPaymentShortcut && selectedPaymentShortcut.shortcutName ? selectedPaymentShortcut.shortcutName : 'Take Away',
@@ -375,6 +389,7 @@ export default {
                 localStorage.removeItem('consignment')
                 localStorage.removeItem('payShortcutSelected')
                 localStorage.removeItem('grabmartOrder')
+                localStorage.removeItem('expressOrder')
                 yield localStorage.removeItem('member')
                 yield localStorage.removeItem('memberUnit')
                 yield localStorage.removeItem('mechanic')

@@ -200,9 +200,7 @@ export default modelExtend(pageModel, {
                 type: 'pospromo/addPosPromo',
                 payload: {
                   bundleId: responseBundle.data.id,
-                  currentBundle: lstorage.getBundleTrans(),
-                  currentProduct: lstorage.getCashierTrans(),
-                  currentService: lstorage.getServiceTrans()
+                  qty: product.qty
                 }
               })
             }

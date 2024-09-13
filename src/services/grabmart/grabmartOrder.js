@@ -10,3 +10,14 @@ export async function queryGrabmartCode (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryExpressCode (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/express-code',
+    alt: true,
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
