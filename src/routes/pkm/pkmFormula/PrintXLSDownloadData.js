@@ -166,7 +166,7 @@ const PrintXLS = ({ listAutoReplenish }) => {
     orientation: 'portrait',
     formatStyle: styles,
     data: listAutoReplenish,
-    name: 'Excel',
+    name: 'Download Data',
     buttonType: 'default',
     iconSize: 'icon-medium',
     title,
