@@ -10,6 +10,7 @@ import List from './List'
 import PrintXLS from './PrintXLS'
 import ModalEditMinor from './ModalEditMinor'
 import ModalEditPkm from './ModalEditPkm'
+import PrintXLSDownloadData from './PrintXLSDownloadData'
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -264,7 +265,9 @@ const Counter = ({
         </div>}
 
       <Row>
-        <Col span={16} />
+        <Col span={16}>
+          {list && list.length > 0 ? <PrintXLSDownloadData listAutoReplenish={list} /> : null}
+        </Col>
         <Col span={8}>
           <FormItem label="Search" {...formItemLayout}>
             {getFieldDecorator('searchText')(<Input

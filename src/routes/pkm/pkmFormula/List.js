@@ -18,6 +18,12 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMinor, ...tableProps 
     }]
   const columns = [
     {
+      title: 'No',
+      dataIndex: 'no',
+      width: 70,
+      key: 'no'
+    },
+    {
       title: 'ID',
       dataIndex: 'productId',
       width: 70,

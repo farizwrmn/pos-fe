@@ -49,7 +49,10 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: response.data,
+            list: response.data.map((item, index) => {
+              item.no = index + 1
+              return item
+            }),
             pagination: {
               current: Number(response.page) || 1,
               pageSize: Number(response.pageSize) || 10,
@@ -120,14 +123,16 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            list: list.map((item) => {
+            list: list.map((item, index) => {
+              item.no = index + 1
               if (id === item.id) {
                 item.minor = data.minor
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }
               return item
             }),
-            tmpListProduct: tmpListProduct.map((item) => {
+            tmpListProduct: tmpListProduct.map((item, index) => {
+              item.no = index + 1
               if (id === item.id) {
                 item.minor = data.minor
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
@@ -156,7 +161,10 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         list,
-        tmpListProduct: list,
+        tmpListProduct: list.map((item, index) => {
+          item.no = index + 1
+          return item
+        }),
         pagination: {
           ...state.pagination,
           ...pagination
