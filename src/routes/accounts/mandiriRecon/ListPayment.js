@@ -20,6 +20,12 @@ const ListPayment = ({ openModalInputMdrAmount, ...tableProps }) => {
       }
     },
     {
+      title: 'User',
+      dataIndex: 'userName',
+      key: 'userName',
+      width: '90px'
+    },
+    {
       title: 'Date',
       dataIndex: 'transDate',
       key: 'transDate',
