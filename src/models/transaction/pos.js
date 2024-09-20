@@ -3907,7 +3907,18 @@ export default {
           const secondDiff = moment().diff(moment(paymentTransaction.createdAt), 'seconds')
           const currentPaymentTransactionLimitTimeInSecond = (Number(paymentTransactionLimitTime || 15) * 60) - secondDiff
           const currentPaymentTransactionLimitTimeInMinute = currentPaymentTransactionLimitTimeInSecond / 60
-          if (removeStorage) {
+
+          const listCashier = getCashierTrans()
+          const listBundle = getBundleTrans()
+          const listService = getServiceTrans()
+          const listConsignment = getConsignment()
+          // Change this
+          if (removeStorage
+            && listCashier.length === 0
+            && listBundle.length === 0
+            && listService.length === 0
+            && listConsignment.length === 0
+          ) {
             removeCurrentPaymentTransactionId()
           } else {
             yield put({
