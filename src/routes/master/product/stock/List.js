@@ -96,7 +96,8 @@ const List = ({
         dispatch({
           type: 'stockExtraPriceStore/query',
           payload: {
-            productId: record.id
+            productId: record.id,
+            type: 'all'
           }
         })
       },

@@ -1095,6 +1095,14 @@ const Routers = function ({ history, app }) {
             }, 'report-pos-daily')
           }
         }, {
+          path: 'report/pos/integration',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/posIntegration'))
+              cb(null, require('./routes/report/posIntegration'))
+            }, 'report-pos-integration')
+          }
+        }, {
           path: 'chart/pos',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

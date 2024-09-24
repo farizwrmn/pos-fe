@@ -274,7 +274,7 @@ export default {
       }
     },
 
-    * updateAsFinished ({ payload = {} }, { call }) {
+    * updateAsFinished ({ payload = {} }, { call, put }) {
       const response = yield call(finish, payload)
       if (response && response.success) {
         message.success('Success update as Finished')
@@ -282,7 +282,8 @@ export default {
           storeIdReceiver: payload.storeIdReceiver,
           storeId: payload.storeId
         })
-        window.close()
+        // window.close()
+        yield put(routerRedux.push('/delivery-order'))
       } else {
         throw response
       }
