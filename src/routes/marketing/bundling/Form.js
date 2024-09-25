@@ -634,7 +634,7 @@ class FormCounter extends Component {
                   initialValue: modalType === 'add' ? undefined : item.bundlingCategoryId,
                   rules: [
                     {
-                      required: false
+                      required: true
                     }
                   ]
                 })(<Select
