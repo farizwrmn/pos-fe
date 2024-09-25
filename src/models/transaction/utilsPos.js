@@ -305,7 +305,7 @@ export const getListProductAfterBundling = (listProduct = [], bundle = []) => {
     }
   }
   return ({
-    cashier: listNewCashier,
+    cashier: listNewCashier.map((item, index) => ({ ...item, no: index + 1 })),
     bundle: listNewBundle
   })
 }
