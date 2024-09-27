@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { lstorage } from 'utils'
 // import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import {
@@ -101,6 +102,9 @@ const Payment = ({
 
     return `${h}:${m}:${s}`
   }
+
+  const currentExpressOrder = lstorage.getExpressOrder()
+
   const confirmPayment = (taxInfo) => {
     dispatch({
       type: 'payment/updateState',
@@ -138,6 +142,7 @@ const Payment = ({
 
   const formPaymentProps = {
     posDescription,
+    currentExpressOrder,
     currentGrabOrder,
     currentBundlePayment,
     selectedPaymentShortcut,

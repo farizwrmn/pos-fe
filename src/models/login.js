@@ -12,7 +12,7 @@ const {
   setCustomerViewLastTransactionTimeLimit,
   setQrisPaymentTimeLimit
 } = lstorage
-const { apiCompanyProtocol, apiCompanyHost, apiCompanyPort } = configCompany.rest
+const { apiCompanyProtocol, apiCompanyHost, apiCompanyHostAlt, apiCompanyPort } = configCompany.rest
 
 
 export default {
@@ -44,7 +44,7 @@ export default {
     * getCompany ({ payload }, { put }) {
       // const userCompany = yield call(getUserCompany, payload)
       // use below if network error
-      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, domainProtocol: apiCompanyProtocol } }
+      const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, domainProtocol: apiCompanyProtocol, altDomainName: apiCompanyHostAlt } }
       if (userCompany.success) {
         yield put({ type: 'getCompanySuccess', payload: { cid: payload.cid || configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
@@ -73,6 +73,7 @@ export default {
       const setting = yield select(({ app }) => app.setting)
       const { data } = payload
       if (data.profile.role === 'OWN'
+        || data.profile.role === 'ITS'
         || data.profile.role === 'SPR'
         || data.profile.role === 'HFC'
         || data.profile.role === 'SFC'
@@ -248,7 +249,8 @@ export default {
         data.profile.usercompany,
         data.profile.userlogintime,
         data.profile.sessionid,
-        data.profile.consignmentId ? data.profile.consignmentId.toString() : null
+        data.profile.consignmentId ? data.profile.consignmentId.toString() : null,
+        `${data.profile.id}`
       ]
       lstorage.putStorageKey('udi', dataUdi)
       yield put({ type: 'app/query', payload: data.profile })

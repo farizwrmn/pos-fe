@@ -4,7 +4,7 @@ import { connect } from 'dva'
 import { Table, Modal, Form, Input, Button, Select } from 'antd'
 import { numberFormat } from 'utils'
 import { getDistPriceName } from 'utils/string'
-import Spec from './Spec'
+// import Spec from './Spec'
 
 const formatNumberIndonesia = numberFormat.formatNumberIndonesia
 const Option = Select.Option
@@ -130,7 +130,7 @@ const ProductFilter = ({
   ]
 
   const { listVariant } = variant
-  const { modalShowSpecificationLovModalVisible, currentItem } = specification
+  // const { modalShowSpecificationLovModalVisible, currentItem } = specification
   const productVariant = (listVariant || []).length > 0 ? listVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
   // const { pagination } = tableProps
@@ -193,21 +193,21 @@ const ProductFilter = ({
       }
     })
   }
-  const modalSpecificationSpecProps = {
-    item: currentItem,
-    specification,
-    productcategory,
-    dispatch,
-    visible: modalShowSpecificationLovModalVisible,
-    onCancel () {
-      dispatch({
-        type: 'specification/updateState',
-        payload: {
-          modalShowSpecificationLovModalVisible: false
-        }
-      })
-    }
-  }
+  // const modalSpecificationSpecProps = {
+  //   item: currentItem,
+  //   specification,
+  //   productcategory,
+  //   dispatch,
+  //   visible: modalShowSpecificationLovModalVisible,
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'specification/updateState',
+  //       payload: {
+  //         modalShowSpecificationLovModalVisible: false
+  //       }
+  //     })
+  //   }
+  // }
 
   const showStockSpecificationFilter = () => {
     dispatch({
@@ -350,7 +350,7 @@ const ProductFilter = ({
           />
         </div>)
       }
-      {modalShowSpecificationLovModalVisible && <Spec {...modalSpecificationSpecProps} />}
+      {/* {modalShowSpecificationLovModalVisible && <Spec {...modalSpecificationSpecProps} />} */}
     </div>
   )
 }
@@ -374,12 +374,12 @@ export default connect(
     variant,
     specification
   }) =>
-    ({
-      productstock,
-      bundling,
-      productcategory,
-      productbrand,
-      variant,
-      specification
-    })
+  ({
+    productstock,
+    bundling,
+    productcategory,
+    productbrand,
+    variant,
+    specification
+  })
 )(Form.create()(ProductFilter))

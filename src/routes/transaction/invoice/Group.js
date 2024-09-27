@@ -16,8 +16,8 @@ const Group = ({ item }) => {
         )
       })} */}
       <Row>
-        <Col span={12} className={styles.left}>{`${numberFormatter(item.qty)} x @${numberFormatter(item.total / item.qty)}`}</Col>
-        <Col span={12} className={styles.right}>{numberFormatter(item.total)}</Col>
+        <Col span={12} className={styles.left}>{`${numberFormatter(item.qty)} x @${numberFormatter(parseInt(Math.round(item.total, 0) / parseInt(item.qty, 0), 0))}`}</Col>
+        <Col span={12} className={styles.right}>{numberFormatter(Math.round(item.total, 0))}</Col>
       </Row>
     </div>
   )

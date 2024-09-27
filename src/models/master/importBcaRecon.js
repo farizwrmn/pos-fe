@@ -39,6 +39,7 @@ export default modelExtend(pageModel, {
     modalStoreVisible: false,
     modalSettlementVisible: false,
     list: [],
+    tmpListCsv: [], // Untuk filter list
     listRecon: [],
     listReconLog: [],
     listErrorLog: [],
@@ -70,10 +71,58 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'queryReconLog', payload: other })
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'BCA',
+              ...other
+            }
+          })
+        }
+        if (pathname === '/accounting/bni-recon') {
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'BNI',
+              ...other
+            }
+          })
+        }
+        if (pathname === '/accounting/mandiri-recon') {
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'MANDIRI',
+              ...other
+            }
+          })
         }
         if (pathname === '/accounting/bca-recon-import') {
-          dispatch({ type: 'queryImportLog', payload: other })
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'BCA'
+            }
+          })
+        }
+        if (pathname === '/accounting/bni-recon-import') {
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'BNI'
+            }
+          })
+        }
+        if (pathname === '/accounting/mandiri-recon-import') {
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'MANDIRI'
+            }
+          })
         }
       })
     }
@@ -178,6 +227,7 @@ export default modelExtend(pageModel, {
               amount: tablePayment.amount,
               csvId: filteredPaymentImportBcaData[0].id,
               matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
+              userName: tablePayment.userName,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
               typeCode: tablePayment.typeCode,
@@ -190,6 +240,7 @@ export default modelExtend(pageModel, {
               id: tablePayment.id,
               amount: tablePayment.amount,
               matchMdr: null,
+              userName: tablePayment.userName,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
               typeCode: tablePayment.typeCode,
@@ -263,6 +314,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listSortPayment: sortDataPayment,
+            tmpListCsv: paymentImportBcaData.data,
             list: paymentImportBcaData.data
           }
         })
@@ -298,6 +350,7 @@ export default modelExtend(pageModel, {
               return {
                 id: payload.id,
                 csvId: payload.csvId,
+                userName: item.userName,
                 matchMdr: payload.mdrAmount,
                 transNo: payload.transNo,
                 typeCode: payload.typeCode,
@@ -532,6 +585,7 @@ export default modelExtend(pageModel, {
     },
     * bulkInsert ({ payload }, { call, put }) {
       let dataExist = yield call(queryImportLog, {
+        bankName: payload.bankName,
         filename: payload.filename
       })
       if (dataExist && dataExist.data && dataExist.data.length > 0) {
@@ -541,13 +595,12 @@ export default modelExtend(pageModel, {
       const data = yield call(bulkInsert, payload)
       if (data.success) {
         yield put({
-          type: 'queryImportLog'
+          type: 'queryImportLog',
+          payload: {
+            bankName: payload.bankName
+          }
         })
         success()
-        yield put({
-          type: 'query'
-          // payload
-        })
       } else {
         throw data
       }

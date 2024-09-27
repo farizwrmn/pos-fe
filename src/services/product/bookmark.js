@@ -6,6 +6,7 @@ export async function queryShortcut (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/stock/bookmark-shortcut',
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -17,6 +18,7 @@ export async function queryShortcutGroup (params) {
   return request({
     url: '/stock/bookmark-group-shortcut',
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -27,6 +29,7 @@ export async function query (params) {
   return request({
     url: bookmark,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -38,6 +41,7 @@ export async function add (params) {
     url: bookmark,
     method: 'post',
     data: params.data,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -49,6 +53,7 @@ export async function remove (params) {
     url,
     method: 'delete',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -59,6 +64,7 @@ export async function edit (params) {
   return request({
     url,
     method: 'put',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

@@ -218,6 +218,34 @@ const Routers = function ({ history, app }) {
             }, 'master-product-category')
           }
         }, {
+          path: 'stock-mindis',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productMinDis'))
+              cb(null, require('./routes/product/productMinDis'))
+            }, 'stock-mindis')
+          }
+        }, {
+          path: 'stock-pkm',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pkm/pkmFormula'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/product/productTag'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
+              cb(null, require('./routes/pkm/pkmFormula'))
+            }, 'stock-pkm')
+          }
+        }, {
+          path: 'setting-store',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/pkm/settingStore'))
+              cb(null, require('./routes/pkm/settingStore'))
+            }, 'pkm-setting-store')
+          }
+        }, {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -664,14 +692,6 @@ const Routers = function ({ history, app }) {
             }, 'sales-discount')
           }
         }, {
-          path: 'request-cancel-pos',
-          getComponent (nextState, cb) {
-            require.ensure([], (require) => {
-              registerModel(app, require('./models/notification/requestCancelPos'))
-              cb(null, require('./routes/notification/requestCancelPos'))
-            }, 'request-cancel-pos')
-          }
-        }, {
           path: 'return-request',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -959,6 +979,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/return/returnPurchase'))
+              registerModel(app, require('./models/return/returnPurchaseDetail'))
               cb(null, require('./routes/return/returnPurchase/detail'))
             }, 'transaction-return-purchase-detail')
           }
@@ -1072,6 +1093,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/pos'))
               cb(null, require('./routes/report/pos/daily/'))
             }, 'report-pos-daily')
+          }
+        }, {
+          path: 'report/pos/integration',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/posIntegration'))
+              cb(null, require('./routes/report/posIntegration'))
+            }, 'report-pos-integration')
           }
         }, {
           path: 'chart/pos',
@@ -1976,6 +2005,38 @@ const Routers = function ({ history, app }) {
             }, 'bca-recon-import')
           }
         }, {
+          path: 'accounting/bni-recon-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bniReconImport'))
+            }, 'bni-recon-import')
+          }
+        }, {
+          path: 'accounting/bni-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/bniRecon'))
+            }, 'bni-recon')
+          }
+        }, {
+          path: 'accounting/mandiri-recon-import',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/mandiriReconImport'))
+            }, 'mandiri-recon-import')
+          }
+        }, {
+          path: 'accounting/mandiri-recon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/importBcaRecon'))
+              cb(null, require('./routes/accounts/mandiriRecon'))
+            }, 'mandiri-recon')
+          }
+        }, {
           path: 'accounting/xendit-recon',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -2256,6 +2317,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/autoReplenish'))
+              registerModel(app, require('./models/master/productstock'))
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/autoReplenish'))
             }, 'inventory-transfer-out-auto-replenish')

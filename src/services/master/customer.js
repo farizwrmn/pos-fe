@@ -17,6 +17,7 @@ export async function queryDefault (params) {
   return request({
     url: `${customers}/default/value`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -26,6 +27,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: customers,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -37,6 +39,7 @@ export async function queryByPhone (params) {
   return request({
     url: `${customers}/phone/${params.id}`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -48,6 +51,7 @@ export async function queryByCode (params) {
   return request({
     url,
     method: 'get',
+    alt: true,
     body: params,
     headers: apiHeaderToken
   })
@@ -58,6 +62,7 @@ export async function queryCashbackById (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url,
+    alt: true,
     method: 'get',
     body: params,
     headers: apiHeaderToken
@@ -81,6 +86,7 @@ export async function add (params) {
   return request({
     url,
     method: 'post',
+    alt: true,
     data: params.data,
     headers: apiHeaderToken
   })
@@ -102,6 +108,7 @@ export async function remove (params) {
   const url = params.id ? `${customers}/${encodeURIComponent(params.id)}` : customers
   return request({
     url,
+    alt: true,
     method: 'delete',
     data: params,
     headers: apiHeaderToken
@@ -124,6 +131,7 @@ export async function edit (params) {
   const url = params.id ? `${customers}/${params.id}` : customers
   return request({
     url,
+    alt: true,
     method: 'put',
     data: params.data,
     headers: apiHeaderToken
@@ -176,6 +184,7 @@ export async function querySearchByPlat (params) {
   return request({
     url: `${customers}/units/search`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

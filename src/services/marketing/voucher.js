@@ -24,6 +24,7 @@ export async function validateVoucher (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `/marketing-voucher-validate/${params.code}`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })

@@ -20,7 +20,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
         message.error('Already Recon')
         return
       }
-      if (currentRole !== 'OWN') {
+      if (currentRole !== 'OWN' && currentRole !== 'ITS') {
         const transDate = moment(record.transDate).format('YYYY-MM-DD')
         const checkDayBefore = checkPermissionDayBeforeTransaction(transDate)
         if (checkDayBefore) {

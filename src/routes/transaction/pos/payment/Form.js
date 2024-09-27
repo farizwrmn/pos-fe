@@ -118,6 +118,7 @@ class FormPayment extends React.Component {
   render () {
     const {
       currentGrabOrder,
+      currentExpressOrder,
       currentBundlePayment,
       item = {},
       paymentModalVisible,
@@ -388,7 +389,7 @@ class FormPayment extends React.Component {
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
           {getFieldDecorator('amount', {
-            initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+            initialValue: parseInt(item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0, 0),
             rules: [
               {
                 required: true,
@@ -538,7 +539,8 @@ class FormPayment extends React.Component {
             {getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Approval Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('approvalCode', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.approvalCode,
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
+                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber : item.approvalCode),
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {
@@ -564,7 +566,8 @@ class FormPayment extends React.Component {
             {cardVisible && getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
+                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber : item.cardName),
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',

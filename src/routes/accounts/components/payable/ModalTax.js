@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Button } from 'antd'
+import { Form, Input, Modal, Button, DatePicker } from 'antd'
 
 const FormItem = Form.Item
 
@@ -65,6 +65,13 @@ const ModalTax = ({
               required: true
             }]
           })(<Input />)}
+        </FormItem>
+        <FormItem label="taxDate" {...formItemLayout}>
+          {getFieldDecorator('taxDate', {
+            rules: [{
+              required: true
+            }]
+          })(<DatePicker />)}
         </FormItem>
       </Form>
     </Modal>

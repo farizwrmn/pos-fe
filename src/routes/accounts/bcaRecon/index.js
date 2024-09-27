@@ -20,7 +20,7 @@ const ImportBcaRecon = ({
   location,
   importBcaRecon
 }) => {
-  const { list, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, modalStoreVisible,
+  const { list, tmpListCsv, listSortPayment, listReconNotMatch, listPaymentMachine, modalVisible, modalStoreVisible,
     currentItem, pagination, paginationListReconLog, listReconLog, storeName } = importBcaRecon
   const listImportCSV = {
     dataSource: list,
@@ -152,6 +152,14 @@ const ImportBcaRecon = ({
     onClearListImportCSVAndPayment (params) {
       dispatch({ type: 'importBcaRecon/resetListImportCSVAndPayment', payload: { ...params, location } })
     },
+    onFilterReportDate (reportDate) {
+      dispatch({
+        type: 'importBcaRecon/updateState',
+        payload: {
+          list: tmpListCsv.filter(filtered => filtered.reportDate === reportDate)
+        }
+      })
+    },
     onSortNullMdrAmount (params) {
       dispatch({
         type: 'importBcaRecon/sortNullMdrAmount',
@@ -164,7 +172,8 @@ const ImportBcaRecon = ({
       dispatch({
         type: 'importBcaRecon/queryPosPayment',
         payload: {
-          ...params
+          ...params,
+          bankName: 'BCA'
         }
       })
     },
@@ -197,15 +206,13 @@ const ImportBcaRecon = ({
           <ListSettlementAccumulated {...listSettlementAccumulatedProps} />
         </Col>
       </Row>
-      <Row type="flex" justify="space-between">
-        <Col span={12} className={styles.alignCenter}><h3>Transaksi POS</h3></Col>
-        <Col span={12} className={styles.alignCenter}><h3>Data Dari Bank</h3></Col>
-      </Row>
       <Row>
         <Col span={12} style={{ padding: '1em' }}>
+          <div className={styles.alignCenter}><h3>Transaksi POS</h3></div>
           <ListPayment {...listPaymentProps} />
         </Col>
         <Col span={12} style={{ padding: '1em' }}>
+          <div className={styles.alignCenter}><h3>Data Dari Bank</h3></div>
           <ListImportCSV {...listImportCSV} />
         </Col>
       </Row>

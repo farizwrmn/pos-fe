@@ -32,8 +32,10 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
+  onSubmitPkm,
   modalType,
   listStore,
+  listPickingLine,
   loading,
   form: {
     getFieldDecorator,
@@ -74,6 +76,33 @@ const FormCounter = ({
         onOk () {
           onSubmit({
             header: {
+              pickingLineId: data.pickingLineId,
+              storeIdReceiver: data.storeIdReceiver,
+              storeId: lstorage.getCurrentUserStore(),
+              salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
+              salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
+            }
+          }, resetFields)
+        },
+        onCancel () { }
+      })
+    })
+  }
+
+  const handleSubmitPkm = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue()
+      }
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk () {
+          onSubmitPkm({
+            header: {
+              pickingLineId: data.pickingLineId,
               storeIdReceiver: data.storeIdReceiver,
               storeId: lstorage.getCurrentUserStore(),
               salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
@@ -100,6 +129,7 @@ const FormCounter = ({
   }
 
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
+  const productStockPickingLine = (listPickingLine || []).length > 0 ? ([{ id: 0, lineName: 'All' }]).concat(listPickingLine).map(b => <Option value={b.id} key={b.id}>{b.lineName}</Option>) : ([{ id: 0, lineName: 'All' }]).map(b => <Option value={b.id} key={b.id}>{b.lineName}</Option>)
 
   return (
     <div>
@@ -132,6 +162,21 @@ const FormCounter = ({
                 {childrenStoreReceived}
               </Select>)}
             </FormItem>
+            <FormItem label={(<Link target="_blank" to="/picking-line">Picking Line</Link>)} hasFeedback {...formItemLayout}>
+              {getFieldDecorator('pickingLineId', {
+                initialValue: [0],
+                rules: [
+                  {
+                    required: false
+                  }
+                ]
+              })(<Select
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showSearch
+                multiple
+              >{productStockPickingLine}
+              </Select>)}
+            </FormItem>
             <FormItem label="Sales Date" hasFeedback {...formItemLayout}>
               {getFieldDecorator('salesDate', {
                 initialValue: [moment().subtract(30, 'days'), moment()],
@@ -143,7 +188,10 @@ const FormCounter = ({
               })(<RangePicker />)}
             </FormItem>
             <FormItem {...tailFormItemLayout}>
-              <Button type="primary" onClick={handleSubmit} disabled={loading.effects['autoReplenish/add']}>Add</Button>
+              <Button type="primary" onClick={handleSubmit} disabled={loading.effects['autoReplenish/add']}>Generate Mindis</Button>
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              <Button type="default" onClick={handleSubmitPkm} disabled={loading.effects['autoReplenish/addPkm']}>Generate PKM</Button>
             </FormItem>
           </Col>
         </Row>

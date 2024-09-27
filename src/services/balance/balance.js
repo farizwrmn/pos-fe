@@ -7,6 +7,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: balance,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -29,6 +30,7 @@ export async function queryById (id) {
   return request({
     url: `${balance}/${id}`,
     method: 'get',
+    alt: true,
     data: {
       relationship: 1
     },
@@ -41,6 +43,7 @@ export async function add (params) {
   const url = balance
   return request({
     url,
+    alt: true,
     method: 'post',
     data: params.data,
     headers: apiHeaderToken
@@ -53,6 +56,7 @@ export async function remove (params) {
   return request({
     url,
     method: 'delete',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -64,6 +68,7 @@ export async function approve (params) {
   const url = `/approve/balance/${params.id}`
   return request({
     url,
+    alt: true,
     method: 'post',
     data: params,
     headers: apiHeaderToken
@@ -76,6 +81,7 @@ export async function edit (params) {
   return request({
     url,
     method: 'put',
+    alt: true,
     data: params.data,
     headers: apiHeaderToken
   })

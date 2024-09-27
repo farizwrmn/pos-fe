@@ -20,3 +20,14 @@ export async function queryById (id, params) {
     headers: apiHeaderToken
   })
 }
+
+export async function edit (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `/return-purchase-detail/${params.id}`,
+    method: 'put',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+

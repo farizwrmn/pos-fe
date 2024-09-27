@@ -47,6 +47,7 @@ export async function queryCurrentOpenCashRegister (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiCashierUsers}/${params.cashierId}/periods/store/${lstorage.getCurrentUserStore()}/status/O`
   return request({
+    alt: true,
     url,
     method: 'get',
     headers: apiHeaderToken

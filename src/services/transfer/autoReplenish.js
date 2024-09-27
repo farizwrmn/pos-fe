@@ -20,6 +20,16 @@ export async function add (params) {
   })
 }
 
+export async function addPkm (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/auto-replenish-pkm',
+    method: 'post',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (id) {
   const apiHeaderToken = crypt.apiheader()
   return request({

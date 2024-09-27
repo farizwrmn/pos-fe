@@ -463,6 +463,17 @@ export default modelExtend(pageModel, {
               label: responseParent.data[0].storeName
             })
           }
+          if (response.data[0].centralKitchenParent) {
+            const responseCentral = yield call(queryStore, {
+              id: response.data[0].centralKitchenParent
+            })
+            if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
+              listStore.push({
+                value: responseCentral.data[0].id,
+                label: responseCentral.data[0].storeName
+              })
+            }
+          }
         }
       }
       yield put({

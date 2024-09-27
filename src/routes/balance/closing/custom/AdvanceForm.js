@@ -250,7 +250,7 @@ class AdvanceForm extends Component {
                 <Col>
                   {/* <ListEdc {...listEdcProps} /> */}
                   <div>
-                    <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA)</h3>
+                    <h3 style={{ fontWeight: 'bold' }}>Struk EDC (Kartu Kredit, Kartu Debit, QRIS APOS BCA, BNI, MANDIRI)</h3>
                     <Table {...listEdcProps}>
                       <Column
                         title="JUMLAH LEMBAR"
