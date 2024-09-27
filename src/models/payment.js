@@ -5,6 +5,7 @@ import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'serv
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
+import { APPVERSION } from 'utils/config.company'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -134,9 +135,7 @@ export default {
       }
     },
     * create ({ payload }, { select, call, put }) {
-      const path = require('path')
-      const appVersion = path.basename(__filename)
-      console.log('appVersion', appVersion)
+      const appVersion = APPVERSION
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
@@ -709,9 +708,7 @@ export default {
       }
     },
     * createDynamicQrisPayment ({ payload }, { call, select, put }) {
-      const path = require('path')
-      const appVersion = path.basename(__filename)
-      console.log('appVersion', appVersion)
+      const appVersion = APPVERSION
       removeDynamicQrisImage()
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
