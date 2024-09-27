@@ -134,6 +134,9 @@ export default {
       }
     },
     * create ({ payload }, { select, call, put }) {
+      const path = require('path')
+      const appVersion = path.basename(__filename)
+      console.log('appVersion', appVersion)
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
@@ -348,6 +351,7 @@ export default {
               orderShortNumber,
               dataConsignment: consignment,
               dataBundle,
+              appVersion,
               orderType: selectedPaymentShortcut && selectedPaymentShortcut.shortcutName ? selectedPaymentShortcut.shortcutName : 'Take Away',
               grabOrder: lstorage.getGrabmartOrder(),
               transNo: trans,
@@ -705,6 +709,9 @@ export default {
       }
     },
     * createDynamicQrisPayment ({ payload }, { call, select, put }) {
+      const path = require('path')
+      const appVersion = path.basename(__filename)
+      console.log('appVersion', appVersion)
       removeDynamicQrisImage()
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -904,6 +911,7 @@ export default {
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
               reference,
+              appVersion,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
