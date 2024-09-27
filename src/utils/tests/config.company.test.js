@@ -23,6 +23,7 @@ it('Should render API companyName', () =>
 it('Should render API companyName', () =>
   expect(rest).toEqual({
     apiCompanyProtocol: APICOMPANYPROTOCOL,
+    apiCompanyHostAlt: 'localhost',
     apiCompanyHost: APICOMPANYHOST,
     apiCompanyPort: APICOMPANYPORT,
     apiCompanyURL: APICOMPANYURL,

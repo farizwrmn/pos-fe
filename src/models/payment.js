@@ -5,6 +5,7 @@ import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'serv
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
+import { APPVERSION } from 'utils/config.company'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -134,6 +135,7 @@ export default {
       }
     },
     * create ({ payload }, { select, call, put }) {
+      const appVersion = APPVERSION
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
@@ -348,6 +350,7 @@ export default {
               orderShortNumber,
               dataConsignment: consignment,
               dataBundle,
+              appVersion,
               orderType: selectedPaymentShortcut && selectedPaymentShortcut.shortcutName ? selectedPaymentShortcut.shortcutName : 'Take Away',
               grabOrder: lstorage.getGrabmartOrder(),
               transNo: trans,
@@ -705,6 +708,7 @@ export default {
       }
     },
     * createDynamicQrisPayment ({ payload }, { call, select, put }) {
+      const appVersion = APPVERSION
       removeDynamicQrisImage()
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -904,6 +908,7 @@ export default {
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
               reference,
+              appVersion,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,

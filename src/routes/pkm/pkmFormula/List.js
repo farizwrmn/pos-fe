@@ -140,6 +140,9 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
         if (defaultRole === 'CAP'
           || defaultRole === 'OWN'
           || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
         ) {
           return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
         }
