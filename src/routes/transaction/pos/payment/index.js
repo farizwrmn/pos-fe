@@ -51,6 +51,7 @@ const Payment = ({
     curRounding,
     curShift,
     curCashierNo,
+    posDescription,
     selectedPaymentShortcut,
     currentBundlePayment,
     currentGrabOrder,
@@ -140,6 +141,7 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    posDescription,
     currentExpressOrder,
     currentGrabOrder,
     currentBundlePayment,

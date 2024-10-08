@@ -81,6 +81,11 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
       style: 'title',
       alignment: 'center',
       text: pos.orderShortNumber || ''
+    },
+    {
+      style: 'title',
+      alignment: 'center',
+      text: pos.description || '' // posDescription
     }
   ]
   const resultData = headerPrint.concat(footerPrint)
