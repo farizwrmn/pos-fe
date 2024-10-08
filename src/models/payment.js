@@ -138,6 +138,7 @@ export default {
       const appVersion = APPVERSION
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const posDescription = yield select(({ pos }) => pos.posDescription)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
         const modal = Modal.warning({
@@ -345,6 +346,7 @@ export default {
             }
             const detailPOS = {
               reference,
+              description: posDescription,
               dataPos: newArrayProd,
               expressOrderId,
               orderShortNumber,
@@ -711,6 +713,7 @@ export default {
       const appVersion = APPVERSION
       removeDynamicQrisImage()
       const { curTotalPayment, curNetto } = payload
+      const posDescription = yield select(({ pos }) => pos.posDescription)
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
@@ -908,6 +911,7 @@ export default {
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
               reference,
+              description: posDescription,
               appVersion,
               dataPos: newArrayProd,
               dataConsignment: consignment,

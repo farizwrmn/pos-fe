@@ -103,6 +103,9 @@ export default {
   namespace: 'pos',
 
   state: {
+    modalPosDescriptionVisible: false,
+    modalPosDescriptionDynamicQrisVisible: false,
+    posDescription: null,
     enableDineIn: 1,
     enableDineInLastUpdatedAt: null,
     enableDineInLastUpdatedBy: null,
@@ -3640,6 +3643,7 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          posDescription: null,
           currentBundlePayment: {},
           currentBuildComponent: {},
           currentReplaceBundle: {},
@@ -4400,6 +4404,7 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        posDescription: null,
         listVoucher: [],
         currentBundlePayment: {},
         currentReplaceBundle: {},
