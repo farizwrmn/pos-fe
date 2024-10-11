@@ -82,37 +82,51 @@ const ImportBcaRecon = ({
     'notdefine' // Bill Reff Num
   ]
 
-  function splitCSV (csvString) {
-    // Regular expression to match CSV values
-    const pattern = /(".*?"|[^",]+)(?=\s*,|\s*$)/g
+  function processValue (value) {
+    // Trim spaces around the value
+    value = value.trim()
 
-    // Array to hold the results
-    let result = []
-    let match
-
-    // Find all matches using the pattern
-    while (match = pattern.exec(csvString)) {
-      // Get the matched value
-      let value = match[1].trim()
-
-      // Remove enclosing double quotes if present
-      if (value.startsWith('"') && value.endsWith('"')) {
-        value = value.slice(1, -1)
-      }
-
-      // Remove single quote if it starts with one
-      if (value.startsWith("'")) {
-        value = value.slice(1).trim()
-      }
-
-      // Convert numeric strings to numbers, ignoring commas
-      const numericValue = value.replace(/,/g, '')
-      if (!isNaN(numericValue)) {
-        value = Number(numericValue)
-      }
-
-      result.push(value)
+    // Remove single quote if it starts with one
+    if (value.startsWith("'")) {
+      value = value.slice(1).trim()
     }
+
+    // Convert numeric strings to numbers, ignoring commas
+    const numericValue = value.replace(/,/g, '')
+    if (!isNaN(numericValue) && numericValue !== '') {
+      return Number(numericValue)
+    }
+
+    // Return the value or an empty string if it's empty
+    return value || ''
+  }
+
+  function splitCSV (csvString) {
+    let result = []
+    let currentValue = ''
+    let insideQuotes = false
+
+    for (let i = 0; i < csvString.length; i++) {
+      let char = csvString[i]
+
+      // Handle quotes
+      if (char === '"') {
+        insideQuotes = !insideQuotes
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      // If not inside quotes and a comma is encountered, push the value
+      if (char === ',' && !insideQuotes) {
+        result.push(processValue(currentValue))
+        currentValue = '' // Reset for the next value
+      } else {
+        currentValue += char
+      }
+    }
+
+    // Push the last value (since there may not be a comma at the end)
+    result.push(processValue(currentValue))
 
     return result
   }
@@ -171,7 +185,7 @@ const ImportBcaRecon = ({
         if (fileType === 'DEBIT') {
           if (item.cardType === 'Debit') {
             recordSource = 'DEBIT-MANDIRI'
-          } else if (item.cardType === 'Kredit') {
+          } else if (item.cardType === 'Credit') {
             recordSource = 'KREDIT-MANDIRI'
           }
           if (item.merchantName === 'Merchant Official') {
@@ -187,7 +201,7 @@ const ImportBcaRecon = ({
           }
         }
         if (!item.bank) {
-          return null
+          item.bank = 'N/A'
         }
 
         if (item.grossAmount == null) {
