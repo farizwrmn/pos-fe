@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Modal, Form, Input } from 'antd'
 
 const FormItem = Form.Item
+const { TextArea } = Input
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -54,7 +55,7 @@ class ModalCustomerName extends Component {
               }
             ]
           })(
-            <Input
+            <TextArea
               maxLength={255}
             />
           )}

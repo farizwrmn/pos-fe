@@ -19,6 +19,7 @@ import lstorage from 'utils/lstorage'
 import moment from 'moment'
 import List from './List'
 
+const { TextArea } = Input
 const {
   setQrisImage,
   removeQrisImage,
@@ -625,7 +626,7 @@ class FormPayment extends React.Component {
             <FormItem label="Label/Customer" hasFeedback {...formItemLayout}>
               {getFieldDecorator('posDescription', {
                 initialValue: posDescription
-              })(<Input maxLength={255} disabled />)}
+              })(<TextArea maxLength={255} disabled />)}
             </FormItem>
           </Col>
         </Row>
