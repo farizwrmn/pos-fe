@@ -6,6 +6,7 @@ import { DropOption } from 'components'
 import { calendar } from 'utils'
 import { IMAGEURL } from 'utils/config.company'
 import { withoutFormat } from 'utils/string'
+import moment from 'moment'
 
 const { dayByNumber } = calendar
 
@@ -110,6 +111,28 @@ const List = ({ ...tableProps, editItem, voidItem }) => {
           <Tag color={text === '1' ? 'green' : 'red'}>
             {text === '1' ? 'Active' : 'Cancelled'}
           </Tag>
+        </span>
+      )
+    },
+    {
+      title: 'Created',
+      dataIndex: 'createdBy',
+      key: 'createdBy',
+      width: 100,
+      render: (text, record) => (
+        <span>
+          {record.createdBy} ({moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')})
+        </span>
+      )
+    },
+    {
+      title: 'Updated',
+      dataIndex: 'updatedBy',
+      key: 'updatedBy',
+      width: 100,
+      render: (text, record) => (
+        <span>
+          {record.updatedBy} ({moment(record.updatedAt).format('YYYY-MM-DD HH:mm:ss')})
         </span>
       )
     },
