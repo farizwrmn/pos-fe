@@ -996,6 +996,18 @@ const Routers = function ({ history, app }) {
             }, 'transaction-adjust')
           }
         }, {
+          path: 'transaction/product-waste',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/adjustNew'))
+              registerModel(app, require('./models/inventory/adjust'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/accounts/accountRule'))
+              cb(null, require('./routes/transaction/productWaste'))
+            }, 'transaction-productwaste')
+          }
+        }, {
           path: 'transaction/adjust/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
