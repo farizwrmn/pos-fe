@@ -32,7 +32,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         const matchEdc = pathToRegexp('/master/paymentoption/edc/:id').exec(pathname)
         if (pathname === '/transaction/adjust'
-          || pathname === '/transaction/productWaste'
+          || pathname === '/transaction/product-waste'
         ) {
           dispatch({
             type: 'query',

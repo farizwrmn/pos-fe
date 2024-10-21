@@ -21,7 +21,7 @@ const List = ({ ...tableProps, onEditItem }) => {
       width: '120px',
       render: (text, record) => {
         return (
-          <Link to={`/transaction/productWaste/${record.id}`}>
+          <Link to={`/transaction/product-waste/${record.id}`}>
             {text}
           </Link>
         )

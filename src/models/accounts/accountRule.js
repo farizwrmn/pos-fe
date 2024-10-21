@@ -58,7 +58,7 @@ export default modelExtend(pageModel, {
         const { pathname } = location
         const { activeKey } = location.query
         if (pathname === '/transaction/adjust'
-          || pathname === '/transaction/productWaste'
+          || pathname === '/transaction/product-waste'
         ) {
           dispatch({
             type: 'query',

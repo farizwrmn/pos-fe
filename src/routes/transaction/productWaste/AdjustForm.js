@@ -230,7 +230,7 @@ const AdjustForm = ({
               <Cascader
                 size="large"
                 style={{ width: '100%' }}
-                options={listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ')}
+                options={listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ' && filtered.value !== 'AJIN')}
                 placeholder="Pick a Type"
                 onChange={value => changeCascader(value)}
               />

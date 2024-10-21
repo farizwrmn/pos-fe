@@ -33,7 +33,7 @@ const Detail = ({ adjustDetail, app, dispatch }) => {
   }
 
   const BackToList = () => {
-    dispatch(routerRedux.push('/transaction/productWaste?activeKey=1'))
+    dispatch(routerRedux.push('/transaction/product-waste?activeKey=1'))
   }
 
   const formDetailProps = {

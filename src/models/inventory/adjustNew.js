@@ -24,7 +24,7 @@ export default modelExtend(pageModel, {
         const { activeKey, ...other } = location.query
         const { pathname } = location
         if (pathname === '/transaction/adjust'
-          || pathname === '/transaction/productWaste'
+          || pathname === '/transaction/product-waste'
         ) {
           dispatch({
             type: 'updateState',
