@@ -120,7 +120,7 @@ const convertCSVtoArray = (string) => {
       transDate: record.transDate,
       transTime: record.transactionTime,
       type,
-      bank: 'BCA'
+      bank: 'MANDIRI'
     })
   })
 }

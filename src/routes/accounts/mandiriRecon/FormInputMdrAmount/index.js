@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Button, Select, Input, message } from 'antd'
 import moment from 'moment'
-import { formatTimeBCA } from '../utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -46,7 +45,7 @@ const FormInputMdrAmount = ({
     .filter(filtered => filtered.grossAmount === currentItem.amount)
   const childrenLov = listReconNotMatch && listReconNotMatch.length > 0 ?
     listReconNotMatch
-      .map(recon => <Option value={recon.id} key={recon.id}>{`${recon.grossAmount ? recon.grossAmount.toLocaleString() : 'Undefined Amount'} (Date: ${recon.transactionDate} ${formatTimeBCA(recon.transactionTime)})`}</Option>)
+      .map(recon => <Option value={recon.id} key={recon.id}>{`${recon.grossAmount ? recon.grossAmount.toLocaleString() : 'Undefined Amount'} (Date: ${recon.transactionDate} ${recon.transactionTime})`}</Option>)
     : []
 
   const handleOk = () => {

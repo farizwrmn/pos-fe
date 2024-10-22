@@ -35,219 +35,152 @@ const ImportBcaRecon = ({
     processData: false
   }
 
-  const csvQrisHeader = [
-    'merchantId', // MID
-    'merchantName', // Merchant Official
-    'notdefine', // Trading Name
-    'notdefine', // Bank Account
-    'notdefine', // Bank Account Name
-    'transactionDate', // TRXDATE
-    'transactionTime', // TRXTIME
-    'bank', // Issuer Name
-    'transactionCode', // TID
-    'edcBatchNumber', // Reference Number
-    'approvalCode', // Reff ID/Invoice No
-    'grossAmount', // AMOUNT
-    'mdrAmount', // MDR Amount
-    'nettAmount' // NET AMOUNT
-  ]
-
-  const csvDebitHeader = [
-    'merchantId', // MID
-    'merchantName', // Merchant Official
-    'notdefine', // Trading Name
-    'notdefine', // Bank Account
-    'notdefine', // Bank Account Name
-    'transactionDate', // TRXDATE
-    'merchantSettleDate', // SETTLEDATE
-    'processEffectiveDate', // PAYMENT DATE
-    'notdefine', // TRXCODE
-    'notdefine', // DESCRIPTION
-    'notdefine', // TENOR
-    'cardNumber', // CARD
-    'bank', // Issuer Name
-    'notdefine', // Country Name
-    'notdefine', // Principat
-    'notdefine', // On Off Type
-    'cardType', // Card Type
-    'transactionCode', // TID
-    'approvalCode', // AUTHCODE
-    'edcBatchNumber', // PAYMENTBATCH
-    'notdefine', // TIDBATCH
-    'notdefine', // BATCHSEQ
-    'grossAmount', // AMOUNT
-    'notdefine', // NonMdrAMOUNT
-    'mdrAmount', // MDR Amount
-    'nettAmount', // NET AMOUNT
-    'notdefine' // Bill Reff Num
-  ]
-
-  function processValue (value) {
-    // Trim spaces around the value
-    value = value.trim()
-
-    // Remove single quote if it starts with one
-    if (value.startsWith("'")) {
-      value = value.slice(1).trim()
-    }
-
-    // Convert numeric strings to numbers, ignoring commas
-    const numericValue = value.replace(/,/g, '')
-    if (!isNaN(numericValue) && numericValue !== '') {
-      return Number(numericValue)
-    }
-
-    // Return the value or an empty string if it's empty
-    return value || ''
-  }
-
-  function splitCSV (csvString) {
-    let result = []
-    let currentValue = ''
-    let insideQuotes = false
-
-    for (let i = 0; i < csvString.length; i++) {
-      let char = csvString[i]
-
-      // Handle quotes
-      if (char === '"') {
-        insideQuotes = !insideQuotes
-        // eslint-disable-next-line no-continue
-        continue
-      }
-
-      // If not inside quotes and a comma is encountered, push the value
-      if (char === ',' && !insideQuotes) {
-        result.push(processValue(currentValue))
-        currentValue = '' // Reset for the next value
-      } else {
-        currentValue += char
-      }
-    }
-
-    // Push the last value (since there may not be a comma at the end)
-    result.push(processValue(currentValue))
-
-    return result
-  }
-
-
   const handleChangeFile = (event) => {
     const file = event.target.files[0]
     const reader = new FileReader()
+    reader.readAsText(file)
+    reader.onload = (e) => {
+      const content = e.target.result
 
-    reader.onload = (event) => {
-      const data = event.target.result
-      const csvReplaced = String(data)
-        .replace(/(?:\\[r]|[\r]+)+/g, '')
-      const csvRows = csvReplaced
-        .trim()
-        .split('\n')
-      if (csvRows && csvRows[0] && csvRows[0].trim() !== 'MERCHANT STATEMENT') {
-        message.error(`File format error "${csvRows[0]}"`)
-        return
-      }
-      let fileType = null // DEBIT OR QRIS
-      if (csvRows && csvRows[5]) {
-        if (csvRows[5].substring(0, 4) === 'NMID') {
-          fileType = 'QRIS'
-        } else if (csvRows[5].substring(0, 3) === 'MID') {
-          fileType = 'DEBIT'
-        }
-        console.log('csvRows', csvRows[5].substring(0, 4))
-      }
-      if (!fileType) {
-        message.error('File format is unknown')
-        return
-      }
-      const array = csvRows.map((record) => {
-        const values = splitCSV(record)
-        let obj
-        if (fileType === 'DEBIT') {
-          obj = csvDebitHeader.reduce((object, header, index) => {
-            object[header] = values[index] ? `${values[index]}`.trim() : values[index]
-            return object
-          }, {})
-        } else if (fileType === 'QRIS') {
-          obj = csvQrisHeader.reduce((object, header, index) => {
-            object[header] = values[index] ? `${values[index]}`.trim() : values[index]
-            return object
-          }, {})
-        }
-        return obj
+      // Parse HTML content using DOMParser
+      // eslint-disable-next-line no-undef
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(content, 'text/html')
+
+      console.log('doc', doc)
+      // Extract table rows
+      const table = doc.querySelector('table')
+      const rows = Array.from(table.rows)
+
+      const data = rows.map((row) => {
+        return Array.from(row.cells).map(cell => cell.textContent.trim())
       })
-      let processEffectiveDate = ''
-      const reformatArray = array.map((item) => {
-        if (item.merchantId === 'Report Date') {
-          processEffectiveDate = item.merchantName
+
+      let finalRequest = []
+
+      let csvHeader = [
+        'traceNumber', // Transaction Id
+        'traceNumber', // Reff No
+        'traceNumber', // Acquiring Bank
+        'traceNumber', // Issuing Bank
+        'cardNumber', // Card No
+        'traceNumber', // On Us / Off Us
+        'recordSource', // Card Type
+        'transactionDate', // Authorization Date
+        'transactionTime', // Authorization Time
+        'grossAmount', // Authorization Amount
+        'status', // Transaction Status
+        'traceNumber', // Sales Type
+        'traceNumber', // Response Code
+        'traceNumber', // Response Desc
+        'approvalCode', // Approval Code
+        'merchantId', // MID
+        'traceNumber', // TID
+        'traceNumber', // MID Bank
+        'traceNumber', // TID Bank
+        'traceNumber', // Store Code
+        'traceNumber', // Branch Code
+        'merchantName' // Merchant Name
+      ]
+      if (file && file.name && file.name.includes('Qris')) {
+        csvHeader = [
+          'traceNumber', // Transaction Id
+          'approvalCode', // Reff Id
+          'traceNumber', // Acquiring Bank
+          'traceNumber', // Issuing Bank
+          'traceNumber', // CPAN
+          'traceNumber', // MPAN
+          'traceNumber', // On Us / Off Us
+          'transactionDate', // Authorization Date
+          'transactionTime', // Authorization Time
+          'grossAmount', // Authorization Amount
+          'status', // Transaction Status
+          'recordSource', // Sales Type
+          'traceNumber', // Response Code
+          'traceNumber', // Response Desc
+          'merchantId', // MID
+          'traceNumber', // TID
+          'merchantName' // Merchant Name
+        ]
+      }
+
+      for (let rowIndex in data) {
+        const request = {}
+        for (let key in csvHeader) {
+          if (data && data[rowIndex] && data[rowIndex][key]) {
+            request[csvHeader[key]] = data[rowIndex][key].replace("'", '')
+          } else {
+            request[csvHeader[key]] = ''
+          }
         }
-        let recordSource = 'QRIS-MANDIRI'
-        if (fileType === 'DEBIT') {
-          if (item.cardType === 'Debit') {
-            recordSource = 'DEBIT-MANDIRI'
-          } else if (item.cardType === 'Credit') {
-            recordSource = 'KREDIT-MANDIRI'
-          }
-          if (item.merchantName === 'Merchant Official') {
-            return null
-          }
-        } else if (fileType === 'QRIS') {
+        finalRequest.push(request)
+      }
+
+      // console.log('request', finalRequest)
+
+      finalRequest = finalRequest.map((item) => {
+        let recordSource = item.recordSource
+        let dateFormat = 'DD-MM-YYYY'
+        if (item.recordSource === 'DEBIT') {
+          recordSource = 'DEBIT-MANDIRI'
+        }
+        if (item.status !== 'Approve') return null
+        if (item.approvalCode === '' && item.transactionDate === '') return null
+        if (item.transactionDate === 'Approval Code') return null
+        if (item.recordSource === 'CREDIT') {
+          recordSource = 'KREDIT-MANDIRI'
+        }
+        if (item.recordSource.includes('QRIS')) {
           recordSource = 'QRIS-MANDIRI'
-          if (item.bank === 'TOTAL AMOUNT') {
-            return null
-          }
-          if (item.bank === 'TRXTIME') {
-            return null
-          }
+          dateFormat = 'DD-MM-YYYY'
+          item.approvalCode = item.approvalCode.slice(-6)
         }
-        if (!item.bank) {
-          item.bank = 'N/A'
+        if (item.recordSource === 'MPM') {
+          recordSource = 'QRIS-MANDIRI'
+          dateFormat = 'YYYY-MM-DD HH:mm:ss'
+          item.approvalCode = item.approvalCode.slice(-6)
+        }
+        if (item.recordSource === 'CPM') {
+          recordSource = 'QRIS-MANDIRI'
+          dateFormat = 'YYYY-MM-DD HH:mm:ss'
+          item.approvalCode = item.approvalCode.slice(-6)
         }
 
-        if (item.grossAmount == null) {
-          return null
-        }
-        if (!item.approvalCode) {
-          return null
-        }
         return ({
-          bank: item.bank,
-          approvalCode: item.approvalCode.slice(-6),
-          edcBatchNumber: item.edcBatchNumber.slice(-6),
+          approvalCode: item.approvalCode,
           cardNumber: item.cardNumber,
-          grossAmount: item.grossAmount,
-          mdr: item.mdr,
+          grossAmount: parseInt(item.grossAmount.replace(/,/g, '').split('.')[0], 10),
+          mdr: item.mdr || 0,
           merchantId: item.merchantId,
           merchantName: item.merchantName,
-          nettAmount: item.nettAmount,
+          nettAmount: parseInt(item.grossAmount.replace(/,/g, '').split('.')[0], 10),
           redeemAmount: 0,
           rewardAmount: 0,
           originalAmount: 0,
-          mdrAmount: item.mdrAmount,
-          reportDate: moment(processEffectiveDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-          processEffectiveDate: moment(processEffectiveDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+          mdrAmount: item.mdrAmount || 0,
+          reportDate: moment(item.processEffectiveDate || item.transactionDate, dateFormat).format('YYYY-MM-DD'),
+          processEffectiveDate: moment(item.processEffectiveDate || item.transactionDate, dateFormat).format('YYYY-MM-DD'),
           recordSource,
           traceNumber: item.traceNumber,
           transactionCode: item.transactionCode,
-          transactionDate: moment(item.transactionDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
+          transactionDate: moment(item.transactionDate, dateFormat).format('YYYY-MM-DD'),
+          transactionTime: item.transactionTime
         })
       }).filter(filtered => filtered)
-
-      console.log('reformatArray', reformatArray)
-      if (reformatArray && reformatArray.length > 0) {
+      console.log('finalRequest', finalRequest)
+      if (finalRequest && finalRequest.length > 0) {
         dispatch({
           type: 'importBcaRecon/bulkInsert',
           payload: {
             bankName: 'MANDIRI',
             filename: file.name,
-            data: reformatArray
+            data: finalRequest
           }
         })
       } else {
         message.error('No Data to Upload')
       }
     }
-    reader.readAsText(file, { header: false })
   }
 
   return (
@@ -259,7 +192,7 @@ const ImportBcaRecon = ({
           <input
             id="importCsv"
             type="file"
-            accept=".csv"
+            accept=".xls"
             className="ant-btn ant-btn-default ant-btn-lg"
             style={{ visibility: 'hidden' }}
             {...uploadProps}
