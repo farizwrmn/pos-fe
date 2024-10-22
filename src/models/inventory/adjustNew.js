@@ -23,9 +23,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        if (pathname === '/transaction/adjust'
-          || pathname === '/transaction/product-waste'
-        ) {
+        if (pathname === '/transaction/adjust') {
           dispatch({
             type: 'updateState',
             payload: {
@@ -37,6 +35,24 @@ export default modelExtend(pageModel, {
               type: 'query',
               payload: {
                 ...other,
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          }
+        }
+        if (pathname === '/transaction/product-waste') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
+          })
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                posting: 0,
                 storeId: lstorage.getCurrentUserStore()
               }
             })

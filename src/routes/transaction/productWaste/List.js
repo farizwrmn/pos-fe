@@ -78,7 +78,7 @@ const List = ({ ...tableProps, onEditItem }) => {
         return (<DropOption onMenuClick={e => handleMenuClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Edit', icon: 'edit' }
+            { key: '1', name: 'Approve', icon: 'edit' }
           ]}
         />)
       }

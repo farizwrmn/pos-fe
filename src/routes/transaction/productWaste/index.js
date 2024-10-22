@@ -34,7 +34,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
     loading: loading.effects['adjust/query'],
     visible: modalVisible,
     maskClosable: false,
-    title: 'Edit Adjustment',
+    title: 'Approve Adjustment',
     confirmLoading: loading.effects['adjust/edit'],
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -397,7 +397,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
   return (
     <div className="content-inner">
       <Tabs defaultActiveKey={activeKey} onChange={activeKey => changeTab(activeKey)}>
-        <TabPane tab="Adjustment" key="0">
+        <TabPane tab="Waste Input" key="0">
           {activeKey === '0' && <AdjustForm {...adjustProps} />}
         </TabPane>
         <TabPane tab="Browse" key="1" >

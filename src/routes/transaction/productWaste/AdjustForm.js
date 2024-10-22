@@ -94,7 +94,7 @@ const AdjustForm = ({
         title: 'Save Adjustment',
         content: 'Are you sure ?',
         onOk () {
-          onOk(data, resetFields)
+          // onOk(data, resetFields)
         }
       })
     })
@@ -276,7 +276,7 @@ const AdjustForm = ({
           <FormItem label="Memo" {...formItemLayout1}>
             {getFieldDecorator('memo', {
               rules: [{
-                required: true
+                required: false
               }]
             })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
           </FormItem>
