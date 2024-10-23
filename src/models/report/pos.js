@@ -317,7 +317,7 @@ export default {
       })
     },
 
-    * d ({ payload }, { call, put }) {
+    * queryPosDaily ({ payload }, { call, put }) {
       let data = yield call(queryPosDaily, payload)
       yield put({
         type: 'querySuccessDaily',
