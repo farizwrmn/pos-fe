@@ -24,14 +24,7 @@ const ListImportCSV = ({ ...tableProps }) => {
       title: 'Time',
       dataIndex: 'transactionTime',
       key: 'transactionTime',
-      className: styles.alignRight,
-      render: (text) => {
-        return (
-          <div>
-            {formatTimeBCA(text)}
-          </div>
-        )
-      }
+      className: styles.alignRight
     },
     {
       title: 'Report Date',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Form, Select, Spin, Button, InputNumber } from 'antd'
+import { Modal, Form, Select, Spin, Button, message, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -40,6 +40,7 @@ class ModalMemberTier extends Component {
       onDelete,
       form: {
         getFieldDecorator,
+        getFieldValue,
         getFieldsValue,
         validateFields,
         resetFields
@@ -58,6 +59,14 @@ class ModalMemberTier extends Component {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
+            if (data.minQty > data.qty) {
+              message.error('Min Qty is more than Qty')
+              return
+            }
+            if (data.maxQty < data.qty) {
+              message.error('Max Qty is more than Qty')
+              return
+            }
             if (modalProps.modalType === 'add') {
               modalProps.onAdd(data, resetFields)
             } else {
@@ -115,6 +124,27 @@ class ModalMemberTier extends Component {
           <FormItem label="Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('qty', {
               initialValue: item.qty || 1,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+          </FormItem>
+
+          <FormItem label="Min Qty" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('minQty', {
+              initialValue: ((getFieldValue('qty') || 0)) || 1,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+          </FormItem>
+          <FormItem label="Max Qty" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('maxQty', {
+              initialValue: ((getFieldValue('qty') || 0)) || 1,
               rules: [
                 {
                   required: true

@@ -172,6 +172,8 @@ export default modelExtend(pageModel, {
                 productCode: response.data.productCode,
                 productId: response.data.id,
                 qty: payload.qty,
+                minQty: payload.minQty,
+                maxQty: payload.maxQty,
                 standardRecipeId: standardRecipe.id,
                 material: standardRecipeDetail.map((item) => {
                   if (!isInt(item.qty * payload.qty)) {
@@ -182,6 +184,8 @@ export default modelExtend(pageModel, {
                     productCode: item.productCode,
                     productId: item.productId,
                     qty: item.qty * payload.qty,
+                    minQty: item.qty * payload.minQty,
+                    maxQty: item.qty * payload.maxQty,
                     standardRecipeId: standardRecipe.id
                   })
                 })

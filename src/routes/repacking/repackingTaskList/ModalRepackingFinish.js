@@ -86,6 +86,16 @@ class ModalRepackingFinish extends Component {
         title: 'Qty',
         dataIndex: 'qty',
         key: 'qty'
+      },
+      {
+        title: 'Min Qty',
+        dataIndex: 'minQty',
+        key: 'minQty'
+      },
+      {
+        title: 'Max Qty',
+        dataIndex: 'maxQty',
+        key: 'maxQty'
       }
     ]
 

@@ -33,7 +33,7 @@ const MerchantCopy = ({
             <div className={styles.initialContent}>
               {posData.transNo}
             </div>
-            {currencyFormatter(parseFloat(Total) + parseFloat(posData.dineInTax))}
+            {currencyFormatter(parseInt(parseFloat(Total) + parseFloat(posData.dineInTax), 0))}
           </Col>
           <Col span={12} className={styles.merchant}>
             <div className={styles.bordered}>

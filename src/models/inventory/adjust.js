@@ -59,7 +59,9 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/transaction/adjust') {
+        if (location.pathname === '/transaction/adjust'
+          || location.pathname === '/transaction/product-waste'
+        ) {
           dispatch({
             type: 'loadDataAdjust'
           })

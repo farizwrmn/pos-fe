@@ -134,9 +134,8 @@ const ImportBcaRecon = ({
             }
             if (item.recordSource === 'QRIS') {
               recordSource = 'QRIS-BNI'
-              dateFormat = 'YYYY-MM-DD HH:mm:ss'
+              dateFormat = 'DD/MM/YYYY'
               item.approvalCode = item.approvalCode.slice(-6)
-              return null
             }
             if (item.recordSource === 'MPM') {
               recordSource = 'QRIS-BNI'

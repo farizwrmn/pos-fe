@@ -1,6 +1,7 @@
 import { lstorage } from 'utils'
 
 export const rearrangeDirectPrinting = (pos, directPrinting) => {
+  console.log('rearrangeDirectPrinting')
   const headerPrint = [
     {
       alignment: 'two',
@@ -83,9 +84,8 @@ export const rearrangeDirectPrinting = (pos, directPrinting) => {
       text: pos.orderShortNumber || ''
     },
     {
-      style: 'title',
       alignment: 'center',
-      text: pos.description || '' // posDescription
+      text: pos.description ? `Notes/Customer: ${pos.description}` : '' // posDescription
     }
   ]
   const resultData = headerPrint.concat(footerPrint)

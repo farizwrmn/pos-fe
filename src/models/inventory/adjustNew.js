@@ -40,6 +40,24 @@ export default modelExtend(pageModel, {
             })
           }
         }
+        if (pathname === '/transaction/product-waste') {
+          dispatch({
+            type: 'updateState',
+            payload: {
+              activeKey: activeKey || '0'
+            }
+          })
+          if (activeKey === '1') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                posting: 0,
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          }
+        }
       })
     }
   },
