@@ -40,7 +40,6 @@ class ModalMemberTier extends Component {
       onDelete,
       form: {
         getFieldDecorator,
-        getFieldValue,
         getFieldsValue,
         validateFields,
         resetFields
@@ -132,26 +131,26 @@ class ModalMemberTier extends Component {
             })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
           </FormItem>
 
-          <FormItem label="Min Qty" hasFeedback {...formItemLayout}>
+          {/* <FormItem label="Min Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('minQty', {
-              initialValue: ((getFieldValue('qty') || 0)) || 1,
+              initialValue: this.state.maxQtyFactor * getFieldValue('qty'),
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+            })(<InputNumber disabled style={{ width: '100%' }} />)}
           </FormItem>
           <FormItem label="Max Qty" hasFeedback {...formItemLayout}>
             {getFieldDecorator('maxQty', {
-              initialValue: ((getFieldValue('qty') || 0)) || 1,
+              initialValue: this.state.maxQtyFactor * getFieldValue('qty'),
               rules: [
                 {
                   required: true
                 }
               ]
-            })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
-          </FormItem>
+            })(<InputNumber disabled style={{ width: '100%' }} />)}
+          </FormItem> */}
         </Form>
       </Modal>
     )
