@@ -172,8 +172,8 @@ export default modelExtend(pageModel, {
                 productCode: response.data.productCode,
                 productId: response.data.id,
                 qty: payload.qty,
-                minQty: payload.minQty,
-                maxQty: payload.maxQty,
+                minQty: parseInt(standardRecipe.minQtyFactor * payload.qty, 10),
+                maxQty: parseInt(standardRecipe.maxQtyFactor * payload.qty, 10),
                 standardRecipeId: standardRecipe.id,
                 material: standardRecipeDetail.map((item) => {
                   if (!isInt(item.qty * payload.qty)) {
