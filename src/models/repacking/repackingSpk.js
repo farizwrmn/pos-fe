@@ -28,6 +28,7 @@ export default modelExtend(pageModel, {
 
   state: {
     listDetail: [],
+    listResult: [],
     listAccounting: [],
     data: {},
 
@@ -99,6 +100,7 @@ export default modelExtend(pageModel, {
           payload: {
             data: response.data,
             listDetail: response.detailRequest,
+            listResult: response.detailResult || [],
             materialRequest: response.materialRequest
             // listAccounting
           }

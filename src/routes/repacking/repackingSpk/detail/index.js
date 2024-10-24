@@ -16,7 +16,7 @@ import PrintPDFMaterial from './PrintPDFMaterial'
 
 const Detail = ({ app, repackingSpk, dispatch }) => {
   const { user, storeInfo } = app
-  const { listDetail, data, materialRequest } = repackingSpk
+  const { listDetail, listResult, data, materialRequest } = repackingSpk
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
@@ -80,6 +80,14 @@ const Detail = ({ app, repackingSpk, dispatch }) => {
           {listDetail && listDetail.length ? <PrintPDFInvoice {...printProps} /> : null}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
+          </Row>
+        </div>
+
+        <div className="content-inner-zero-min-height">
+          <h1>Result</h1>
+          {listResult && listResult.length ? <PrintPDFInvoice {...printProps} /> : null}
+          <Row style={{ padding: '10px', margin: '4px' }}>
+            <TransDetail {...formDetailProps} dataSource={listResult} />
           </Row>
         </div>
 
