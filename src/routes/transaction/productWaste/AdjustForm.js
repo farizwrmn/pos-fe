@@ -23,7 +23,7 @@ import Browse from './Browse'
 const { checkPermissionMonthTransaction } = alertModal
 const dateFormat = 'YYYY/MM/DD'
 const FormItem = Form.Item
-const { TextArea } = Input
+// const { TextArea } = Input
 const { Stock } = DataQuery
 // const { Search } = Input
 
@@ -57,6 +57,7 @@ const AdjustForm = ({
   listEmployee,
   item,
   onOk,
+  listReason,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -94,7 +95,7 @@ const AdjustForm = ({
         title: 'Save Adjustment',
         content: 'Are you sure ?',
         onOk () {
-          // onOk(data, resetFields)
+          onOk(data, resetFields)
         }
       })
     })
@@ -189,6 +190,7 @@ const AdjustForm = ({
   const listAccountOpt = (listAccountCode || []).length > 0
     ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>)
     : []
+  const reasonData = listReason && listReason.map(item => (<Option value={item.paramValue}>{item.paramValue}</Option>))
 
   return (
     <Form style={{ padding: 3 }}>
@@ -246,15 +248,6 @@ const AdjustForm = ({
           </FormItem>
         </Col>
         <Col md={24} lg={12}>
-          <FormItem label="Reference" {...formItemLayout1}>
-            {getFieldDecorator('reference', {
-              rules: [{
-                pattern: /^[a-z0-9/_-]{6,40}$/i,
-                required: false,
-                message: 'not a valid pattern'
-              }]
-            })(<Input maxLength={40} />)}
-          </FormItem>
           <FormItem label="Employee" {...formItemLayout}>
             {getFieldDecorator('employeeName', {
               rules: [{
@@ -270,15 +263,21 @@ const AdjustForm = ({
               />
             )}
           </FormItem>
-          <FormItem label="PIC" {...formItemLayout}>
+          {/* <FormItem label="PIC" {...formItemLayout}>
             <Input value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
-          </FormItem>
-          <FormItem label="Memo" {...formItemLayout1}>
+          </FormItem> */}
+          <FormItem label="Reference" {...formItemLayout1}>
             {getFieldDecorator('memo', {
               rules: [{
-                required: false
+                required: true
               }]
-            })(<TextArea maxLength={100} autosize={{ minRows: 2, maxRows: 4 }} />)}
+            })(<Select
+              style={{ width: '100%' }}
+              showSearch
+              filterOption={filterOption}
+            >
+              {reasonData}
+            </Select>)}
           </FormItem>
         </Col>
       </Row>
