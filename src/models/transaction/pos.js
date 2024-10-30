@@ -13,6 +13,7 @@ import {
 } from 'utils/variable'
 import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'services/store/expressStore'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { getSerialPort, postSerialPort } from 'services/edc/serialService'
 import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
@@ -76,6 +77,8 @@ import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLate
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {
+  getCachedSerialPort, setCachedSerialPort,
+
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setBundleTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
@@ -120,6 +123,9 @@ export default {
     currentExpressOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
+    serialPortName: '',
+    cachedSerialPortName: [],
+    listSerialPort: [],
     list: [],
     listRewardGuide: [],
     dataReward: [],
@@ -345,6 +351,61 @@ export default {
       } else {
         throw response
       }
+    },
+
+    * showEdcModal ({ payload = {} }, { select, call, put }) {
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const curTotal = yield select(({ pos }) => pos.curTotal)
+      const listAmount = yield select(({ payment }) => payment.listAmount)
+      let serialPortName = null
+      const listSerialResponse = yield call(getSerialPort, payload)
+      if (listSerialResponse && Array.isArray(listSerialResponse.list) && listSerialResponse.list.length > 0) {
+        const listCachedSerial = getCachedSerialPort()
+        if (listCachedSerial && Array.isArray(listCachedSerial) && listCachedSerial.length > 0) {
+          const filteredCachedSerial = listCachedSerial.filter(filtered => filtered.typeCode === payload.typeCode)
+          if (filteredCachedSerial && filteredCachedSerial[0]) {
+            serialPortName = filteredCachedSerial[0].portName
+          }
+        } else {
+          const filterIngenico = listSerialResponse.list.filter(filtered => filtered.portDescription.includes('Ingenico Card Reader'))
+          if (filterIngenico && filterIngenico[0]) {
+            serialPortName = filterIngenico[0].portName
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            serialPortName,
+            listSerialPort: listSerialResponse.list
+          }
+        })
+        console.log('serialPortName', serialPortName)
+        if (serialPortName != null) {
+          const usageLoyalty = memberInformation.useLoyalty || 0
+          const totalDiscount = usageLoyalty
+          const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+          const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalPosDescriptionVisible: true
+            }
+          })
+          const responseSerial = yield call(postSerialPort, {
+            portName: serialPortName,
+            total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
+          })
+          console.log('responseSerial', responseSerial)
+        }
+      } else {
+        message.error('EDC Not Found')
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          modalPosDescriptionVisible: true
+        }
+      })
     },
 
     * editExpressItem ({ payload }, { put }) {

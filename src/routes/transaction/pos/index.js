@@ -2678,12 +2678,21 @@ const Pos = ({
   const buttomButtonProps = {
     loading,
     handlePayment () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalPosDescriptionVisible: true
-        }
-      })
+      if (selectedPaymentShortcut.typeCode === 'NID' || selectedPaymentShortcut.typeCode === 'MND') {
+        dispatch({
+          type: 'pos/showEdcModal',
+          payload: {
+            typeCode: selectedPaymentShortcut.typeCode
+          }
+        })
+      } else {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalPosDescriptionVisible: true
+          }
+        })
+      }
     },
     handleSuspend () {
       if (document.getElementById('KM')) document.getElementById('KM').value = 0

@@ -136,6 +136,14 @@ const setVoucherList = (data) => {
   return localStorage.setItem('voucher_list', data)
 }
 
+const getCachedSerialPort = () => {
+  return localStorage.getItem('cachedSerialPort') ? JSON.parse(localStorage.getItem('cachedSerialPort')) : []
+}
+
+const setCachedSerialPort = (data) => {
+  return localStorage.setItem('cachedSerialPort', data)
+}
+
 const getQrisImage = () => {
   return localStorage.getItem('qris_image') ? localStorage.getItem('qris_image') : null
 }
@@ -159,6 +167,7 @@ const getDynamicQrisPosTransId = () => {
 const setDynamicQrisPosTransId = (data) => {
   return localStorage.setItem('dynamic_qris_pos_trans_id', data)
 }
+
 
 const getDynamicQrisPosTransNo = () => {
   return localStorage.getItem('dynamic_qris_pos_trans_no') ? localStorage.getItem('dynamic_qris_pos_trans_no') : null
@@ -594,5 +603,7 @@ module.exports = {
   setAvailablePaymentType,
   removeAvailablePaymentType,
   getExpressOrder,
-  setExpressOrder
+  setExpressOrder,
+  getCachedSerialPort,
+  setCachedSerialPort
 }

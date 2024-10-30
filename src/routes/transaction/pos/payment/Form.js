@@ -129,6 +129,8 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
+      serialPortName,
+      listSerialPort,
       dispatch,
       curTotal,
       listEdc,
@@ -386,6 +388,7 @@ class FormPayment extends React.Component {
       }
     }
 
+
     return (
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
@@ -609,6 +612,21 @@ class FormPayment extends React.Component {
                       }
                     ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
+            {getFieldValue('typeCode') !== 'C' && (
+              <FormItem label="Serial Port" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('portName', {
+                  initialValue: serialPortName,
+                  rules: [
+                    {
+                      required: false,
+                      message: 'Required'
+                    }
+                  ]
+                })(<Select style={{ width: '100%' }}>
+                  {listSerialPort.map(item => <Option value={item.portName} key={item.portName} title={item.portDescription}>{`${item.portName} ${item.portDescription}`}</Option>)}
+                </Select>)}
               </FormItem>
             )}
             <FormItem label="Note" hasFeedback {...formItemLayout}>

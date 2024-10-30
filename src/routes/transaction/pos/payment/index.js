@@ -55,6 +55,8 @@ const Payment = ({
     selectedPaymentShortcut,
     currentBundlePayment,
     currentGrabOrder,
+    serialPortName,
+    listSerialPort,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -146,6 +148,8 @@ const Payment = ({
     currentGrabOrder,
     currentBundlePayment,
     selectedPaymentShortcut,
+    serialPortName,
+    listSerialPort,
     confirmPayment,
     cancelPayment,
     loading,
