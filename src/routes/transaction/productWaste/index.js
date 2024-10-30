@@ -20,7 +20,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
   const { user, storeInfo } = app
   const {
     activeKey, lastTrans, templistType, pagination, currentItem, searchText, disabledItemOut, disabledItemIn, item, itemEmployee, modalEditVisible, popoverVisible, dataBrowse, listProduct, listType, listEmployee,
-    modalVisible, modalType
+    modalVisible, modalType, listReason, listAccountWaste
   } = adjust
   const { list, pagination: paginationNew } = adjustNew
   const { listAccountCode } = accountRule
@@ -108,9 +108,12 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
     }
   }
 
+  const filteredWaste = listAccountWaste && listAccountWaste.length > 0 ? listAccountWaste.map(item => Number(item.paramValue)) : []
+
   const adjustProps = {
     ...browseProps,
-    listAccountCode,
+    listAccountCode: filteredWaste && filteredWaste.length > 0 ? listAccountCode.filter(filtered => filteredWaste.includes(filtered.id)) : listAccountCode,
+    listReason,
     item: currentItem,
     dispatch,
     lastTrans,
@@ -130,17 +133,20 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
     visible: modalProductVisible,
     maskClosable: false,
     onOk (data, reset) {
+      data.posting = 0
+      data.productWaste = 1
       dispatch({
         type: 'adjust/add',
         payload: {
           data,
+          routes: '/transaction/product-waste',
           reset
         }
       })
     },
     onEdit (data, reset) {
       dispatch({
-        type: 'adjust/edit',
+        type: 'adjust/posting',
         payload: {
           data,
           reset

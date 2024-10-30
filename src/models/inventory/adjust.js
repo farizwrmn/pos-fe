@@ -4,7 +4,8 @@ import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
-import { query, queryDetail, create, edit, remove } from 'services/adjust'
+import { query, queryDetail, create, edit, posting, remove } from 'services/adjust'
+import { query as queryParameter } from 'services/utils/parameter'
 import { query as queryProducts, queryPOSproduct } from 'services/master/productstock'
 import { query as queryTransType } from 'services/transType'
 import { query as queryEmployee, queryByCode as queryEmployeeId } from 'services/master/employee'
@@ -32,6 +33,8 @@ export default modelExtend(pageModel, {
     dataBrowse: [],
     listType: [],
     lastTrans: '',
+    listAccountWaste: [],
+    listReason: [],
     templistType: [],
     listAdjust: [],
     listEmployee: [],
@@ -64,6 +67,12 @@ export default modelExtend(pageModel, {
         ) {
           dispatch({
             type: 'loadDataAdjust'
+          })
+          dispatch({
+            type: 'queryReason'
+          })
+          dispatch({
+            type: 'queryAccountId'
           })
           // dispatch({
           //   type: 'queryAdjust',
@@ -214,7 +223,11 @@ export default modelExtend(pageModel, {
               title: 'Success',
               content: 'Data has been saved...!'
             })
-            yield put(routerRedux.push('/transaction/adjust'))
+            if (payload.routes) {
+              yield put(routerRedux.push(payload.routes))
+            } else {
+              yield put(routerRedux.push('/transaction/adjust'))
+            }
             yield put({ type: 'SuccessData' })
             yield put({ type: 'hidePopover' })
             yield put({ type: 'modalHide' })
@@ -233,6 +246,26 @@ export default modelExtend(pageModel, {
           title: 'Warning',
           content: 'You cannot let the product Null...!'
         })
+      }
+    },
+
+    * posting ({ payload }, { call, put }) {
+      const response = yield call(posting, {
+        transNo: payload.data.transNo,
+        storeId: payload.data.storeId
+      })
+      if (response.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
+        success()
+        yield put({ type: 'modalHide' })
+        yield put({
+          type: 'loadDataAdjust'
+        })
+      } else {
+        stockMinusAlert(response)
+        throw response
       }
     },
 
@@ -427,6 +460,40 @@ export default modelExtend(pageModel, {
         })
         setTimeout(() => modal.destroy(), 1000)
         // throw data
+      }
+    },
+    * queryReason (payload, { call, put }) {
+      const response = yield call(queryParameter, {
+        paramCode: 'productWasteMemo',
+        type: 'all',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listReason: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+    * queryAccountId (payload, { call, put }) {
+      const response = yield call(queryParameter, {
+        paramCode: 'productWasteAccount',
+        type: 'all',
+        order: 'sort'
+      })
+      if (response && response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAccountWaste: response.data
+          }
+        })
+      } else {
+        throw response
       }
     },
     * loadDataAdjust ({ payload = {} }, { call, put }) {
