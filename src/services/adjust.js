@@ -63,6 +63,17 @@ export async function edit (params) {
   })
 }
 
+export async function posting (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/adjustposting',
+    method: 'put',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (params) {
   let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()

@@ -43,6 +43,7 @@ const AdjustForm = ({ listAccountCode, onChooseItem, onResetAll, disableItem, on
           const data = {
             ...getFieldsValue(),
             id: item.id,
+            storeId: item.storeId,
             transNo: item.transNo,
             transType: item.transType,
             pic: itemEmployee !== null ? itemEmployee.employeeName : '',

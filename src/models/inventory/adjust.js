@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
-import { query, queryDetail, create, edit, remove } from 'services/adjust'
+import { query, queryDetail, create, edit, posting, remove } from 'services/adjust'
 import { query as queryParameter } from 'services/utils/parameter'
 import { query as queryProducts, queryPOSproduct } from 'services/master/productstock'
 import { query as queryTransType } from 'services/transType'
@@ -246,6 +246,26 @@ export default modelExtend(pageModel, {
           title: 'Warning',
           content: 'You cannot let the product Null...!'
         })
+      }
+    },
+
+    * posting ({ payload }, { call, put }) {
+      const response = yield call(posting, {
+        transNo: payload.data.transNo,
+        storeId: payload.data.storeId
+      })
+      if (response.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
+        success()
+        yield put({ type: 'modalHide' })
+        yield put({
+          type: 'loadDataAdjust'
+        })
+      } else {
+        stockMinusAlert(response)
+        throw response
       }
     },
 

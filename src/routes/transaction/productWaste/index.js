@@ -146,7 +146,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
     },
     onEdit (data, reset) {
       dispatch({
-        type: 'adjust/edit',
+        type: 'adjust/posting',
         payload: {
           data,
           reset
