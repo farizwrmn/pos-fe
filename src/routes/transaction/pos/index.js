@@ -1324,9 +1324,19 @@ const Pos = ({
 
     // Untuk tipe page
     // dispatch(routerRedux.push('/transaction/pos/payment'))
-    dispatch({
-      type: 'payment/showPaymentModal'
-    })
+    if (selectedPaymentShortcut.typeCode === 'NID' || selectedPaymentShortcut.typeCode === 'MND') {
+      dispatch({
+        type: 'pos/showEdcModal',
+        payload: {
+          typeCode: selectedPaymentShortcut.typeCode
+        }
+      })
+    } else {
+      dispatch({
+        type: 'payment/showPaymentModal'
+      })
+    }
+
 
     if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
       const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
@@ -2678,21 +2688,12 @@ const Pos = ({
   const buttomButtonProps = {
     loading,
     handlePayment () {
-      if (selectedPaymentShortcut.typeCode === 'NID' || selectedPaymentShortcut.typeCode === 'MND') {
-        dispatch({
-          type: 'pos/showEdcModal',
-          payload: {
-            typeCode: selectedPaymentShortcut.typeCode
-          }
-        })
-      } else {
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            modalPosDescriptionVisible: true
-          }
-        })
-      }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionVisible: true
+        }
+      })
     },
     handleSuspend () {
       if (document.getElementById('KM')) document.getElementById('KM').value = 0

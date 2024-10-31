@@ -56,6 +56,7 @@ const Payment = ({
     currentBundlePayment,
     currentGrabOrder,
     serialPortName,
+    serialApprovalCode,
     listSerialPort,
     cashierBalance } = pos
   const { user, setting } = app
@@ -149,6 +150,7 @@ const Payment = ({
     currentBundlePayment,
     selectedPaymentShortcut,
     serialPortName,
+    serialApprovalCode,
     listSerialPort,
     confirmPayment,
     cancelPayment,
@@ -176,6 +178,14 @@ const Payment = ({
         message.error('Cannot add voucher from this form')
         return
       }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          serialPortName: null,
+          serialPortDescription: null,
+          serialApprovalCode: null
+        }
+      })
       dispatch({
         type: 'payment/addMethod',
         payload: {

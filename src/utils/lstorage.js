@@ -140,8 +140,21 @@ const getCachedSerialPort = () => {
   return localStorage.getItem('cachedSerialPort') ? JSON.parse(localStorage.getItem('cachedSerialPort')) : []
 }
 
-const setCachedSerialPort = (data) => {
-  return localStorage.setItem('cachedSerialPort', data)
+const setCachedSerialPort = (item) => {
+  let data = []
+  const listCache = getCachedSerialPort()
+  const filteredTypeCode = listCache.filter(filtered => filtered.typeCode === item.typeCode)
+  if (filteredTypeCode && filteredTypeCode[0]) {
+    data = listCache.map((cache) => {
+      if (cache.typeCode === item.typeCode) {
+        return item
+      }
+      return cache
+    })
+  } else {
+    data = listCache.concat([item])
+  }
+  return localStorage.setItem('cachedSerialPort', JSON.stringify(data))
 }
 
 const getQrisImage = () => {

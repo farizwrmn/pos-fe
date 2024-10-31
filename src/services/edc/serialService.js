@@ -17,6 +17,7 @@ export const postSerialPort = (params) => {
     fullUrl: 'http://localhost:8080/api/serial',
     method: 'post',
     data: params,
+    timeout: 600000,
     headers: apiHeaderToken
   })
 }

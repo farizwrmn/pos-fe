@@ -123,7 +123,9 @@ export default {
     currentExpressOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
-    serialPortName: '',
+    serialPortName: null,
+    serialPortDescription: null,
+    serialApprovalCode: null,
     cachedSerialPortName: [],
     listSerialPort: [],
     list: [],
@@ -354,58 +356,67 @@ export default {
     },
 
     * showEdcModal ({ payload = {} }, { select, call, put }) {
+      yield put({
+        type: 'payment/showPaymentModal'
+      })
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const curTotal = yield select(({ pos }) => pos.curTotal)
       const listAmount = yield select(({ payment }) => payment.listAmount)
       let serialPortName = null
+      let serialPortDescription = null
       const listSerialResponse = yield call(getSerialPort, payload)
       if (listSerialResponse && Array.isArray(listSerialResponse.list) && listSerialResponse.list.length > 0) {
         const listCachedSerial = getCachedSerialPort()
         if (listCachedSerial && Array.isArray(listCachedSerial) && listCachedSerial.length > 0) {
           const filteredCachedSerial = listCachedSerial.filter(filtered => filtered.typeCode === payload.typeCode)
           if (filteredCachedSerial && filteredCachedSerial[0]) {
-            serialPortName = filteredCachedSerial[0].portName
+            const filterSerialByName = listSerialResponse.list.filter(filtered => filtered.portDescription === filteredCachedSerial[0].portDescription)
+            if (filterSerialByName && filterSerialByName[0]) {
+              serialPortName = filterSerialByName[0].portName
+              serialPortDescription = filterSerialByName[0].portDescription
+            }
           }
         } else {
           const filterIngenico = listSerialResponse.list.filter(filtered => filtered.portDescription.includes('Ingenico Card Reader'))
           if (filterIngenico && filterIngenico[0]) {
             serialPortName = filterIngenico[0].portName
+            serialPortDescription = filterIngenico[0].portDescription
           }
         }
         yield put({
           type: 'updateState',
           payload: {
             serialPortName,
+            serialPortDescription,
             listSerialPort: listSerialResponse.list
           }
         })
-        console.log('serialPortName', serialPortName)
         if (serialPortName != null) {
           const usageLoyalty = memberInformation.useLoyalty || 0
           const totalDiscount = usageLoyalty
           const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
           const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
-          yield put({
-            type: 'updateState',
-            payload: {
-              modalPosDescriptionVisible: true
-            }
-          })
           const responseSerial = yield call(postSerialPort, {
             portName: serialPortName,
             total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
           })
-          console.log('responseSerial', responseSerial)
+          if (payload.typeCode === 'NID' && responseSerial.ecrType === 'BNI' && responseSerial.approvalCode !== '000000') {
+            setCachedSerialPort({
+              typeCode: payload.typeCode,
+              portName: serialPortName,
+              portDescription: serialPortDescription
+            })
+            yield put({
+              type: 'updateState',
+              payload: {
+                serialApprovalCode: responseSerial.approvalCode
+              }
+            })
+          }
         }
       } else {
         message.error('EDC Not Found')
       }
-      yield put({
-        type: 'updateState',
-        payload: {
-          modalPosDescriptionVisible: true
-        }
-      })
     },
 
     * editExpressItem ({ payload }, { put }) {
@@ -4362,7 +4373,7 @@ export default {
     },
 
     hideModalShift (state) {
-      return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
+      return { ...state, modalShiftVisible: false, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null }
     },
 
     showMemberModal (state, action) {
@@ -4387,7 +4398,7 @@ export default {
       return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
-      return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
+      return { ...state, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null, totalItem: 0, itemPayment: [] }
     },
 
     showServiceListModal (state, action) {
@@ -4465,6 +4476,8 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        serialPortName: null,
+        serialApprovalCode: null,
         posDescription: null,
         listVoucher: [],
         currentBundlePayment: {},
