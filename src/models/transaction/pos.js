@@ -11,8 +11,11 @@ import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
+import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
+import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'services/store/expressStore'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { getSerialPort, postSerialPort } from 'services/edc/serialService'
 import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
@@ -76,6 +79,8 @@ import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLate
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {
+  getCachedSerialPort, setCachedSerialPort,
+
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setBundleTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
@@ -120,6 +125,11 @@ export default {
     currentExpressOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
+    serialPortName: null,
+    serialPortDescription: null,
+    serialApprovalCode: null,
+    cachedSerialPortName: [],
+    listSerialPort: [],
     list: [],
     listRewardGuide: [],
     dataReward: [],
@@ -344,6 +354,122 @@ export default {
         setPosReference(response.data)
       } else {
         throw response
+      }
+    },
+
+    * showEdcModal ({ payload = {} }, { select, call, put }) {
+      const { list } = payload
+      const listAmount = yield select(({ payment }) => payment.listAmount)
+      const listVoucher = yield select(({ pos }) => pos.listVoucher)
+      const curTotal = yield select(({ pos }) => pos.curTotal)
+      const data = yield call(queryEdc, {
+        paymentOption: 'V'
+      })
+      let listPayment = []
+      let listCost = []
+      if (data.success) {
+        listPayment = data.data
+        const responseCost = yield call(queryCost, {
+          machineId: listPayment[0].id,
+          relationship: 1
+        })
+        if (responseCost && responseCost.success) {
+          listCost = responseCost.data
+        }
+      }
+      for (let key = 0; key < list.length; key += 1) {
+        const item = list[key]
+        item.id = key + 1
+        if (listAmount && listAmount.filter(filtered => filtered.typeCode === 'V').length !== listVoucher.length) {
+          if (listPayment && listPayment.length === 1) {
+            if (listCost && listCost[0]) {
+              yield put({
+                type: 'payment/addMethod',
+                payload: {
+                  listAmount,
+                  data: {
+                    id: item.id,
+                    amount: item.voucherValue,
+                    bank: listCost[0].id,
+                    chargeNominal: 0,
+                    chargePercent: 0,
+                    chargeTotal: 0,
+                    description: item.voucherName,
+                    voucherCode: item.generatedCode,
+                    voucherId: item.voucherId,
+                    machine: listPayment[0].id,
+                    printDate: null,
+                    typeCode: 'V'
+                  }
+                }
+              })
+            }
+          }
+        }
+      }
+      yield put({ type: 'pos/setCurTotal' })
+
+      yield put({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+      yield put({
+        type: 'payment/showPaymentModal'
+      })
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      let serialPortName = null
+      let serialPortDescription = null
+      const listSerialResponse = yield call(getSerialPort, {
+        typeCode: payload.typeCode
+      })
+      if (listSerialResponse && Array.isArray(listSerialResponse.list) && listSerialResponse.list.length > 0) {
+        const listCachedSerial = getCachedSerialPort()
+        if (listCachedSerial && Array.isArray(listCachedSerial) && listCachedSerial.length > 0) {
+          const filteredCachedSerial = listCachedSerial.filter(filtered => filtered.typeCode === payload.typeCode)
+          if (filteredCachedSerial && filteredCachedSerial[0]) {
+            const filterSerialByName = listSerialResponse.list.filter(filtered => filtered.portDescription === filteredCachedSerial[0].portDescription)
+            if (filterSerialByName && filterSerialByName[0]) {
+              serialPortName = filterSerialByName[0].portName
+              serialPortDescription = filterSerialByName[0].portDescription
+            }
+          }
+        } else {
+          const filterIngenico = listSerialResponse.list.filter(filtered => filtered.portDescription.includes('Ingenico Card Reader'))
+          if (filterIngenico && filterIngenico[0]) {
+            serialPortName = filterIngenico[0].portName
+            serialPortDescription = filterIngenico[0].portDescription
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            serialPortName,
+            serialPortDescription,
+            listSerialPort: listSerialResponse.list
+          }
+        })
+        if (serialPortName != null) {
+          const usageLoyalty = memberInformation.useLoyalty || 0
+          const totalDiscount = usageLoyalty
+          const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+          const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
+          const responseSerial = yield call(postSerialPort, {
+            portName: serialPortName,
+            total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
+          })
+          if (payload.typeCode === 'NID' && responseSerial.ecrType === 'BNI' && responseSerial.approvalCode !== '000000') {
+            setCachedSerialPort({
+              typeCode: payload.typeCode,
+              portName: serialPortName,
+              portDescription: serialPortDescription
+            })
+            yield put({
+              type: 'updateState',
+              payload: {
+                serialApprovalCode: responseSerial.approvalCode
+              }
+            })
+          }
+        }
+      } else {
+        message.error('EDC Not Found')
       }
     },
 
@@ -4301,7 +4427,7 @@ export default {
     },
 
     hideModalShift (state) {
-      return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
+      return { ...state, modalShiftVisible: false, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null }
     },
 
     showMemberModal (state, action) {
@@ -4326,7 +4452,7 @@ export default {
       return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
-      return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
+      return { ...state, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null, totalItem: 0, itemPayment: [] }
     },
 
     showServiceListModal (state, action) {
@@ -4404,6 +4530,8 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        serialPortName: null,
+        serialApprovalCode: null,
         posDescription: null,
         listVoucher: [],
         currentBundlePayment: {},

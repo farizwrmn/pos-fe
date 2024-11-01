@@ -1313,20 +1313,30 @@ const Pos = ({
 
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
-    if (listVoucher && listVoucher.length > 0) {
+    // Untuk tipe page
+    // dispatch(routerRedux.push('/transaction/pos/payment'))
+    if (selectedPaymentShortcut.typeCode === 'NID') {
       dispatch({
-        type: 'payment/addMethodVoucher',
+        type: 'pos/showEdcModal',
         payload: {
-          list: listVoucher
+          list: listVoucher,
+          typeCode: selectedPaymentShortcut.typeCode
         }
+      })
+    } else {
+      if (listVoucher && listVoucher.length > 0) {
+        dispatch({
+          type: 'payment/addMethodVoucher',
+          payload: {
+            list: listVoucher
+          }
+        })
+      }
+      dispatch({
+        type: 'payment/showPaymentModal'
       })
     }
 
-    // Untuk tipe page
-    // dispatch(routerRedux.push('/transaction/pos/payment'))
-    dispatch({
-      type: 'payment/showPaymentModal'
-    })
 
     if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
       const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
