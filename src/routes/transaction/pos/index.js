@@ -1313,25 +1313,25 @@ const Pos = ({
 
     dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
 
-    if (listVoucher && listVoucher.length > 0) {
-      dispatch({
-        type: 'payment/addMethodVoucher',
-        payload: {
-          list: listVoucher
-        }
-      })
-    }
-
     // Untuk tipe page
     // dispatch(routerRedux.push('/transaction/pos/payment'))
-    if (selectedPaymentShortcut.typeCode === 'NID' || selectedPaymentShortcut.typeCode === 'MND') {
+    if (selectedPaymentShortcut.typeCode === 'NID') {
       dispatch({
         type: 'pos/showEdcModal',
         payload: {
+          list: listVoucher,
           typeCode: selectedPaymentShortcut.typeCode
         }
       })
     } else {
+      if (listVoucher && listVoucher.length > 0) {
+        dispatch({
+          type: 'payment/addMethodVoucher',
+          payload: {
+            list: listVoucher
+          }
+        })
+      }
       dispatch({
         type: 'payment/showPaymentModal'
       })

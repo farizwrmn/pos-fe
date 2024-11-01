@@ -11,6 +11,8 @@ import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
+import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
+import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'services/store/expressStore'
 import { queryPaymentInvoice } from 'services/payment/payment'
 import { getSerialPort, postSerialPort } from 'services/edc/serialService'
@@ -356,15 +358,67 @@ export default {
     },
 
     * showEdcModal ({ payload = {} }, { select, call, put }) {
+      const { list } = payload
+      const listAmount = yield select(({ payment }) => payment.listAmount)
+      const listVoucher = yield select(({ pos }) => pos.listVoucher)
+      const curTotal = yield select(({ pos }) => pos.curTotal)
+      const data = yield call(queryEdc, {
+        paymentOption: 'V'
+      })
+      let listPayment = []
+      let listCost = []
+      if (data.success) {
+        listPayment = data.data
+        const responseCost = yield call(queryCost, {
+          machineId: listPayment[0].id,
+          relationship: 1
+        })
+        if (responseCost && responseCost.success) {
+          listCost = responseCost.data
+        }
+      }
+      for (let key = 0; key < list.length; key += 1) {
+        const item = list[key]
+        item.id = key + 1
+        if (listAmount && listAmount.filter(filtered => filtered.typeCode === 'V').length !== listVoucher.length) {
+          if (listPayment && listPayment.length === 1) {
+            if (listCost && listCost[0]) {
+              yield put({
+                type: 'payment/addMethod',
+                payload: {
+                  listAmount,
+                  data: {
+                    id: item.id,
+                    amount: item.voucherValue,
+                    bank: listCost[0].id,
+                    chargeNominal: 0,
+                    chargePercent: 0,
+                    chargeTotal: 0,
+                    description: item.voucherName,
+                    voucherCode: item.generatedCode,
+                    voucherId: item.voucherId,
+                    machine: listPayment[0].id,
+                    printDate: null,
+                    typeCode: 'V'
+                  }
+                }
+              })
+            }
+          }
+        }
+      }
+      yield put({ type: 'pos/setCurTotal' })
+
+      yield put({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
       yield put({
         type: 'payment/showPaymentModal'
       })
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
-      const curTotal = yield select(({ pos }) => pos.curTotal)
-      const listAmount = yield select(({ payment }) => payment.listAmount)
       let serialPortName = null
       let serialPortDescription = null
-      const listSerialResponse = yield call(getSerialPort, payload)
+      const listSerialResponse = yield call(getSerialPort, {
+        typeCode: payload.typeCode
+      })
       if (listSerialResponse && Array.isArray(listSerialResponse.list) && listSerialResponse.list.length > 0) {
         const listCachedSerial = getCachedSerialPort()
         if (listCachedSerial && Array.isArray(listCachedSerial) && listCachedSerial.length > 0) {

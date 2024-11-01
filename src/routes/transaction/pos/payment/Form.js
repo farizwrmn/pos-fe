@@ -560,7 +560,7 @@ class FormPayment extends React.Component {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
                     : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber
                       : serialApprovalCode != null ? serialApprovalCode : item.approvalCode),
-                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'NID' || getFieldValue('typeCode') === 'MND' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {
                         required: true,
