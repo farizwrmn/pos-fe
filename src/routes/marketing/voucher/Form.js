@@ -223,7 +223,7 @@ const FormCounter = ({
 
             <FormItem
               label="Voucher Image"
-              help="Only accept single jpg or png file, max: 2mb"
+              help="Only accept single jpg or png file, size: 1276x606 max: 2mb"
               hasFeedback
               {...formItemLayout}
             >

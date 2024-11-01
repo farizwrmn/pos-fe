@@ -21,6 +21,7 @@ import List from './List'
 
 const { TextArea } = Input
 const {
+  setCachedSerialPort,
   setQrisImage,
   removeQrisImage,
   getAvailablePaymentType
@@ -129,6 +130,9 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
+      serialPortName,
+      serialApprovalCode,
+      listSerialPort,
       dispatch,
       curTotal,
       listEdc,
@@ -311,6 +315,7 @@ class FormPayment extends React.Component {
                     title: 'There are credit charge for this payment'
                   })
                 }
+                resetFields()
               }
               onSubmit(data)
               onChangePaymentType(data.typeCode)
@@ -322,6 +327,7 @@ class FormPayment extends React.Component {
           Modal.confirm({
             title: 'Change this payment ?',
             onOk () {
+              resetFields()
               onEdit(data)
               onChangePaymentType(data.typeCode)
             },
@@ -383,6 +389,17 @@ class FormPayment extends React.Component {
       if (e.which === 66 && isCtrl === true && (paymentModalVisible || window.location.pathname === '/transaction/pos/payment')) { // ctrl + b
         perfect()
         return false
+      }
+    }
+
+    const onSelectPortName = (portName) => {
+      const filteredPortName = listSerialPort.filter(serial => serial.portName === portName)
+      if (filteredPortName && filteredPortName[0]) {
+        setCachedSerialPort({
+          typeCode: getFieldValue('typeCode'),
+          portName: filteredPortName[0].portName,
+          portDescription: filteredPortName[0].portDescription
+        })
       }
     }
 
@@ -541,8 +558,9 @@ class FormPayment extends React.Component {
               <FormItem label="Approval Code" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('approvalCode', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
-                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber : item.approvalCode),
-                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
+                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber
+                      : serialApprovalCode != null ? serialApprovalCode : item.approvalCode),
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'NID' || getFieldValue('typeCode') === 'MND' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {
                         required: true,
@@ -568,7 +586,8 @@ class FormPayment extends React.Component {
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
                   initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
-                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber : item.cardName),
+                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber
+                      : serialApprovalCode != null ? serialApprovalCode : item.cardName),
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',
@@ -609,6 +628,21 @@ class FormPayment extends React.Component {
                       }
                     ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
+            {(getFieldValue('typeCode') === 'NID' || getFieldValue('typeCode') === 'MND') && (
+              <FormItem label="Serial Port" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('portName', {
+                  initialValue: serialPortName,
+                  rules: [
+                    {
+                      required: false,
+                      message: 'Required'
+                    }
+                  ]
+                })(<Select style={{ width: '100%' }} onSelect={value => onSelectPortName(value)}>
+                  {listSerialPort.map(item => <Option value={item.portName} key={item.portName} title={item.portDescription}>{`${item.portName} ${item.portDescription}`}</Option>)}
+                </Select>)}
               </FormItem>
             )}
             <FormItem label="Note" hasFeedback {...formItemLayout}>
