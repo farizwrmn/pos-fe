@@ -445,11 +445,11 @@ export default {
             listSerialPort: listSerialResponse.list
           }
         })
+        const usageLoyalty = memberInformation.useLoyalty || 0
+        const totalDiscount = usageLoyalty
+        const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+        const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
         if (serialPortName != null) {
-          const usageLoyalty = memberInformation.useLoyalty || 0
-          const totalDiscount = usageLoyalty
-          const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-          const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
           const responseSerial = yield call(postSerialPort, {
             portName: serialPortName,
             total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
