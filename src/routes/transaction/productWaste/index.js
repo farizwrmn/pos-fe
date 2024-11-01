@@ -359,6 +359,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
   }
 
   const listProps = {
+    listAccountCode,
     dataSource: list,
     user,
     storeInfo,

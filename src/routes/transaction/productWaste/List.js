@@ -6,7 +6,7 @@ import moment from 'moment'
 import { Link } from 'dva/router'
 // import { numberFormatter } from 'utils/string'
 
-const List = ({ ...tableProps, onEditItem }) => {
+const List = ({ ...tableProps, listAccountCode, onEditItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -34,16 +34,16 @@ const List = ({ ...tableProps, onEditItem }) => {
       width: '70px'
     },
     {
-      title: 'Reference',
-      dataIndex: 'reference',
-      key: 'reference',
-      width: '120px'
-    },
-    {
-      title: 'PIC',
-      dataIndex: 'pic',
-      key: 'pic',
-      width: '100px'
+      title: 'Account Name',
+      dataIndex: 'accountName',
+      key: 'accountName',
+      width: '100px',
+      render: (text, record) => {
+        const filteredAccount = listAccountCode.filter(filtered => filtered.id === record.accountId)
+        if (filteredAccount && filteredAccount[0]) {
+          return filteredAccount[0].accountName
+        }
+      }
     },
     {
       title: 'Trans Date',
@@ -69,6 +69,12 @@ const List = ({ ...tableProps, onEditItem }) => {
       dataIndex: 'memo',
       key: 'memo',
       width: '300px'
+    },
+    {
+      title: 'Approve',
+      dataIndex: 'posting',
+      key: 'posting',
+      width: '50px'
     },
     {
       title: 'Operation',
