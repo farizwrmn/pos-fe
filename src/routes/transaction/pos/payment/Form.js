@@ -315,7 +315,6 @@ class FormPayment extends React.Component {
                     title: 'There are credit charge for this payment'
                   })
                 }
-                resetFields()
               }
               onSubmit(data)
               onChangePaymentType(data.typeCode)
@@ -327,7 +326,6 @@ class FormPayment extends React.Component {
           Modal.confirm({
             title: 'Change this payment ?',
             onOk () {
-              resetFields()
               onEdit(data)
               onChangePaymentType(data.typeCode)
             },
