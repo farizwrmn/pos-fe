@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 import { Link } from 'dva/router'
 // import { numberFormatter } from 'utils/string'
 
-const List = ({ ...tableProps, listAccountCode, onEditItem }) => {
+const List = ({ ...tableProps, approval, listAccountCode, onEditItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -74,7 +74,13 @@ const List = ({ ...tableProps, listAccountCode, onEditItem }) => {
       title: 'Approve',
       dataIndex: 'posting',
       key: 'posting',
-      width: '50px'
+      width: '50px',
+      render: (text) => {
+        if (text) {
+          return (<Tag color="green">Approved</Tag>)
+        }
+        return (<Tag color="yellow">Waiting</Tag>)
+      }
     },
     {
       title: 'Operation',
@@ -84,7 +90,7 @@ const List = ({ ...tableProps, listAccountCode, onEditItem }) => {
         return (<DropOption onMenuClick={e => handleMenuClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Approve', icon: 'edit' }
+            { key: '1', name: 'Approve', icon: 'edit', disabled: approval }
           ]}
         />)
       }

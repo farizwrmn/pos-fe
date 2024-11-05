@@ -105,8 +105,7 @@ const AdjustForm = ({
     onGetEmployee(e)
   }
 
-  const changeCascader = (e) => {
-    const value = e[0]
+  const changeCascader = (value) => {
     const variable = templistType.filter(x => x.code === value)
     if (!variable[0]) {
       return
@@ -225,17 +224,18 @@ const AdjustForm = ({
           </FormItem>
           <FormItem label="Type" {...formItemLayout}>
             {getFieldDecorator('transType', {
+              initialValue: listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ' && filtered.value !== 'AJIN')[0].value,
               rules: [{
                 required: true
               }]
             })(
-              <Cascader
-                size="large"
-                style={{ width: '100%' }}
-                options={listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ' && filtered.value !== 'AJIN')}
-                placeholder="Pick a Type"
-                onChange={value => changeCascader(value)}
-              />
+              <Select
+                onSelect={value => changeCascader(value)}
+              >
+                {listType
+                  .filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ' && filtered.value !== 'AJIN')
+                  .map(item => <Select.Option value={item.value} key={item.value}>{item.value}</Select.Option>)}
+              </Select>
             )}
           </FormItem>
           <FormItem label="Date" {...formItemLayout}>
@@ -248,26 +248,9 @@ const AdjustForm = ({
           </FormItem>
         </Col>
         <Col md={24} lg={12}>
-          <FormItem label="Employee" {...formItemLayout}>
-            {getFieldDecorator('employeeName', {
-              rules: [{
-                required: true
-              }]
-            })(
-              <AutoComplete
-                style={{ width: 200 }}
-                dataSource={listEmployee}
-                onChange={value => handleGetEmployee(value)}
-                placeholder="Select Employee"
-                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-              />
-            )}
-          </FormItem>
-          {/* <FormItem label="PIC" {...formItemLayout}>
-            <Input value={itemEmployee !== null ? itemEmployee.employeeName : ''} />
-          </FormItem> */}
           <FormItem label="Reference" {...formItemLayout1}>
             {getFieldDecorator('memo', {
+              initialValue: listReason && listReason.length > 0 ? listReason[0].paramValue : undefined,
               rules: [{
                 required: true
               }]

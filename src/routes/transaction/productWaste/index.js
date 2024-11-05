@@ -411,7 +411,22 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
           {activeKey === '1' &&
             <div>
               <Filter {...filterProps} />
-              <List {...listProps} />
+              <List approval {...listProps} />
+              <Row>
+                <Col xs={8} sm={8} md={18} lg={18} xl={18}>
+                  <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
+                    <AdjustFormEdit {...adjustProps} />
+                  </Modal>
+                </Col>
+              </Row>
+            </div>
+          }
+        </TabPane>
+        <TabPane tab="Approval" key="2" >
+          {activeKey === '2' &&
+            <div>
+              <Filter {...filterProps} />
+              <List approval={false} {...listProps} />
               <Row>
                 <Col xs={8} sm={8} md={18} lg={18} xl={18}>
                   <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>

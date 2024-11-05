@@ -52,6 +52,18 @@ export default modelExtend(pageModel, {
               type: 'query',
               payload: {
                 ...other,
+                order: '-id',
+                productWaste: 1,
+                storeId: lstorage.getCurrentUserStore()
+              }
+            })
+          }
+          if (activeKey === '2') {
+            dispatch({
+              type: 'query',
+              payload: {
+                ...other,
+                order: '-id',
                 posting: 0,
                 storeId: lstorage.getCurrentUserStore()
               }
