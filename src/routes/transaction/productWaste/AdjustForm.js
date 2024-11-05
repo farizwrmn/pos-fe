@@ -10,9 +10,7 @@ import {
   // Popover, Table, Icon,
   Row,
   Col,
-  DatePicker,
-  Cascader,
-  AutoComplete
+  DatePicker
 } from 'antd'
 import { DataQuery } from 'components'
 import { lstorage, alertModal } from 'utils'
@@ -99,10 +97,6 @@ const AdjustForm = ({
         }
       })
     })
-  }
-
-  const handleGetEmployee = (e) => {
-    onGetEmployee(e)
   }
 
   const changeCascader = (value) => {
