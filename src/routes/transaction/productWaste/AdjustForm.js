@@ -242,6 +242,7 @@ class AdjustForm extends Component {
                   message: 'Required'
                 }]
               })(<Select
+                disabled
                 showSearch
                 allowClear
                 optionFilterProp="children"
@@ -258,6 +259,7 @@ class AdjustForm extends Component {
                 }]
               })(
                 <Select
+                  disabled
                   onSelect={value => changeCascader(value)}
                 >
                   {listType
