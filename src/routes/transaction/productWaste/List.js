@@ -1,15 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag } from 'antd'
+import { Table, Modal, Tag } from 'antd'
 import { DropOption } from 'components'
 import moment from 'moment'
 import { Link } from 'dva/router'
 // import { numberFormatter } from 'utils/string'
 
-const List = ({ ...tableProps, approval, listAccountCode, onEditItem }) => {
+const List = ({ ...tableProps, approval, onCancelAdjust, listAccountCode, onEditItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
+    } else if (e.key === '2') {
+      Modal.confirm({
+        title: 'Reject this request',
+        content: 'Are you sure ?',
+        onOk () {
+          onCancelAdjust({
+            transNo: record.transNo,
+            storeId: record.storeId
+          })
+        }
+      })
     }
   }
 
@@ -90,7 +101,8 @@ const List = ({ ...tableProps, approval, listAccountCode, onEditItem }) => {
         return (<DropOption onMenuClick={e => handleMenuClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Approve', icon: 'edit', disabled: approval }
+            { key: '1', name: 'Approve', icon: 'edit', disabled: approval },
+            { key: '2', name: 'Decline', icon: 'edit', disabled: approval }
           ]}
         />)
       }

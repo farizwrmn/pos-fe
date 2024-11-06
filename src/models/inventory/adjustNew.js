@@ -53,6 +53,7 @@ export default modelExtend(pageModel, {
               payload: {
                 ...other,
                 order: '-id',
+                status: 1,
                 productWaste: 1,
                 storeId: lstorage.getCurrentUserStore()
               }
@@ -64,6 +65,7 @@ export default modelExtend(pageModel, {
               payload: {
                 ...other,
                 order: '-id',
+                status: 1,
                 posting: 0,
                 storeId: lstorage.getCurrentUserStore()
               }
