@@ -82,7 +82,7 @@ const List = ({ ...tableProps, approval, onCancelAdjust, listAccountCode, onEdit
       width: '300px'
     },
     {
-      title: 'Approve',
+      title: 'Status',
       dataIndex: 'posting',
       key: 'posting',
       width: '50px',
