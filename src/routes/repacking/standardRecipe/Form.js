@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Table, Button, InputNumber, Row, Col, Modal, Card, Select, Spin } from 'antd'
+import { Form, Table, Button, InputNumber, Row, Col, Modal, Card, Select, Spin, Checkbox } from 'antd'
 import ModalMemberTier from './ModalRecipe'
 
 const FormItem = Form.Item
@@ -92,6 +92,7 @@ const FormCounter = ({
       const response = {
         header: {
           productId: data.productId,
+          autoRepackingSales: data.autoRepackingSales,
           minQtyFactor: data.minQtyFactor,
           maxQtyFactor: data.maxQtyFactor
         },
@@ -153,6 +154,12 @@ const FormCounter = ({
                   }
                 ]
               })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+            </FormItem>
+            <FormItem label="Auto Repacking Sales" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('autoRepackingSales', {
+                valuePropName: 'checked',
+                initialValue: item.autoRepackingSales === undefined ? false : item.autoRepackingSales
+              })(<Checkbox>Enable</Checkbox>)}
             </FormItem>
           </Col>
         </Row>
