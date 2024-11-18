@@ -74,6 +74,17 @@ export async function posting (params) {
   })
 }
 
+export async function cancelAdjust (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/adjustcancel',
+    method: 'delete',
+    data: params,
+    body: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function remove (params) {
   let url = params.id ? `${adjust}/${encodeURIComponent(params.id)}` : null
   const apiHeaderToken = crypt.apiheader()

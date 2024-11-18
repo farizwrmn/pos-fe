@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import { lstorage, alertModal } from 'utils'
 import moment from 'moment'
-import { query, queryDetail, create, edit, posting, remove } from 'services/adjust'
+import { query, queryDetail, create, edit, posting, cancelAdjust, remove } from 'services/adjust'
 import { query as queryParameter } from 'services/utils/parameter'
 import { query as queryProducts, queryPOSproduct } from 'services/master/productstock'
 import { query as queryTransType } from 'services/transType'
@@ -251,6 +251,7 @@ export default modelExtend(pageModel, {
 
     * posting ({ payload }, { call, put }) {
       const response = yield call(posting, {
+        accountId: payload.data.accountId,
         transNo: payload.data.transNo,
         storeId: payload.data.storeId
       })
@@ -263,8 +264,16 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'loadDataAdjust'
         })
+        yield put({
+          type: 'adjustNew/query',
+          payload: {
+            order: '-id',
+            status: 1,
+            posting: 0,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
       } else {
-        stockMinusAlert(response)
         throw response
       }
     },
@@ -491,6 +500,33 @@ export default modelExtend(pageModel, {
           payload: {
             listAccountWaste: response.data
           }
+        })
+      } else {
+        throw response
+      }
+    },
+    * cancelAdjust ({ payload = {} }, { call, put }) {
+      const response = yield call(cancelAdjust, {
+        transNo: payload.data.transNo,
+        storeId: payload.data.storeId
+      })
+      if (response.success) {
+        if (payload.reset) {
+          payload.reset()
+        }
+        success()
+        yield put({ type: 'modalHide' })
+        yield put({
+          type: 'adjustNew/query',
+          payload: {
+            order: '-id',
+            status: 1,
+            posting: 0,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        yield put({
+          type: 'loadDataAdjust'
         })
       } else {
         throw response

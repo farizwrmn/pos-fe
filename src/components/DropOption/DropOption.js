@@ -26,6 +26,7 @@ const DropOption = ({ menuName, onMenuClick, menuOptions = [], buttonStyle, drop
         styleMenuItem = { color: '#00a854', background: '#cfefdf', bordercolor: '#cfefdf' }
         break
       default:
+        disabledItem = item.disabled || false
         styleMenuItem = {}
         break
     }

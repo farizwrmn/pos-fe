@@ -15,7 +15,7 @@ const fetch = (options) => {
     data,
     // fetchType,
     url = '',
-    timeout = 30000,
+    timeout,
     fullUrl,
     headers
   } = options
@@ -75,8 +75,12 @@ const fetch = (options) => {
         data: cloneData,
         headers
       })
-    case 'post':
-      return axios.post(url, cloneData, { headers, timeout })
+    case 'post': {
+      if (timeout) {
+        return axios.post(url, cloneData, { headers, timeout })
+      }
+      return axios.post(url, cloneData, { headers })
+    }
     case 'put':
       return axios.put(url, cloneData, { headers })
     case 'patch':

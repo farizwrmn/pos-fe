@@ -2556,16 +2556,10 @@ const Pos = ({
             typeCode: 'V'
           }))
         } else {
-          Modal.error({
-            title: 'Failed to create QRIS Payment',
-            content: 'Payment Cost is unavailable'
-          })
+          message.error('Payment Cost is unavailable')
         }
       } else {
-        Modal.error({
-          title: 'Failed to create QRIS Payment',
-          content: 'Payment Machine is unavailable'
-        })
+        message.error('Payment Machine is unavailable')
       }
     }
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
@@ -2794,16 +2788,10 @@ const Pos = ({
             typeCode: 'V'
           }))
         } else {
-          Modal.error({
-            title: 'Failed to create QRIS Payment',
-            content: 'Payment Cost is unavailable'
-          })
+          message.error('Payment Cost is unavailable')
         }
       } else {
-        Modal.error({
-          title: 'Failed to create QRIS Payment',
-          content: 'Payment Machine is unavailable'
-        })
+        message.error('Payment Machine is unavailable')
       }
     }
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)

@@ -287,6 +287,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
   }
 
   const onEditItem = (e) => {
+    console.log('onEditItem', e)
     const value = e.transType
     const variable = templistType.filter(x => x.code === value)
     const { miscVariable } = variable[0]
@@ -367,7 +368,16 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
     loading: loading.effects['adjustNew/query'],
     location,
     onEditItem (e) {
+      console.log('onEditItem 0', e)
       onEditItem(e)
+    },
+    onCancelAdjust (data) {
+      dispatch({
+        type: 'adjust/cancelAdjust',
+        payload: {
+          data
+        }
+      })
     },
     onChange (page) {
       const { query, pathname } = location
@@ -400,6 +410,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
       // })
     }
   }
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
 
   return (
     <div className="content-inner">
@@ -411,7 +422,7 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
           {activeKey === '1' &&
             <div>
               <Filter {...filterProps} />
-              <List {...listProps} />
+              <List approval {...listProps} />
               <Row>
                 <Col xs={8} sm={8} md={18} lg={18} xl={18}>
                   <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
@@ -422,6 +433,26 @@ const Adjust = ({ adjustNew, app, location, pos, dispatch, accountRule, adjust, 
             </div>
           }
         </TabPane>
+        {(defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS')
+          && <TabPane tab="Approval" key="2" >
+            {activeKey === '2' &&
+              <div>
+                <Filter {...filterProps} />
+                <List approval={false} {...listProps} />
+                <Row>
+                  <Col xs={8} sm={8} md={18} lg={18} xl={18}>
+                    <Modal footer={null} width="800px" {...modalProps} className="content-inner" style={{ float: 'center', display: 'flow-root' }}>
+                      <AdjustFormEdit {...adjustProps} />
+                    </Modal>
+                  </Col>
+                </Row>
+              </div>
+            }
+          </TabPane>}
         {/* <TabPane tab="Archive" key="2">
           {activeKey === '2' && (
             <div>

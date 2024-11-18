@@ -445,27 +445,29 @@ export default {
             listSerialPort: listSerialResponse.list
           }
         })
+        const usageLoyalty = memberInformation.useLoyalty || 0
+        const totalDiscount = usageLoyalty
+        const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+        const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
         if (serialPortName != null) {
-          const usageLoyalty = memberInformation.useLoyalty || 0
-          const totalDiscount = usageLoyalty
-          const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-          const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
-          const responseSerial = yield call(postSerialPort, {
-            portName: serialPortName,
-            total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
-          })
-          if (payload.typeCode === 'NID' && responseSerial.ecrType === 'BNI' && responseSerial.approvalCode !== '000000') {
-            setCachedSerialPort({
-              typeCode: payload.typeCode,
+          if (paymentValue > 0) {
+            const responseSerial = yield call(postSerialPort, {
               portName: serialPortName,
-              portDescription: serialPortDescription
+              total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
             })
-            yield put({
-              type: 'updateState',
-              payload: {
-                serialApprovalCode: responseSerial.approvalCode
-              }
-            })
+            if (payload.typeCode === 'NID' && responseSerial.ecrType === 'BNI' && responseSerial.approvalCode !== '000000') {
+              setCachedSerialPort({
+                typeCode: payload.typeCode,
+                portName: serialPortName,
+                portDescription: serialPortDescription
+              })
+              yield put({
+                type: 'updateState',
+                payload: {
+                  serialApprovalCode: responseSerial.approvalCode
+                }
+              })
+            }
           }
         }
       } else {
