@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition */
 const production = process.env.NODE_ENV === 'production'
-const APPVERSION = 'index-20241111'
+const APPVERSION = 'index-20241119'
 const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http'
 const MAIN_WEBSITE = production ? (process.env.MAIN_WEBSITE || 'k3mart.id') : 'k3mart.id'
