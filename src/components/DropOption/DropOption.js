@@ -30,6 +30,9 @@ const DropOption = ({ menuName, onMenuClick, menuOptions = [], buttonStyle, drop
         styleMenuItem = {}
         break
     }
+    if (item.color) {
+      styleMenuItem.color = item.color
+    }
     return <Menu.Item disabled={disabledItem} style={styleMenuItem} key={item.key}><Icon type={item.icon} /> {item.name}</Menu.Item>
   })
   return (<Dropdown

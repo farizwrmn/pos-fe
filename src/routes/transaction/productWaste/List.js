@@ -101,8 +101,8 @@ const List = ({ ...tableProps, approval, onCancelAdjust, listAccountCode, onEdit
         return (<DropOption onMenuClick={e => handleMenuClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Approve', icon: 'edit', disabled: approval },
-            { key: '2', name: 'Decline', icon: 'edit', disabled: approval }
+            { key: '1', name: 'Approve', color: '#55a756', icon: 'check', disabled: approval },
+            { key: '2', name: 'Decline', color: '#f04134', icon: 'delete', disabled: approval }
           ]}
         />)
       }
