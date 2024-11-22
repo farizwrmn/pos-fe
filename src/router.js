@@ -1008,6 +1008,14 @@ const Routers = function ({ history, app }) {
             }, 'transaction-productwaste')
           }
         }, {
+          path: 'transaction/product-waste/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/adjustDetail'))
+              cb(null, require('./routes/transaction/adjust/detail'))
+            }, 'transaction-product-waste-detail')
+          }
+        }, {
           path: 'transaction/adjust/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
