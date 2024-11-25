@@ -58,7 +58,6 @@ const List = ({ ...tableProps, listAllStores, editItem, deleteItem }) => {
           return 'All'
         }
         const listStores = text && text.split(',')
-        console.log('listStores', listStores)
         return listStores.map((storeId) => {
           const filteredStore = listAllStores.filter(filtered => filtered.id === Number(storeId))
           if (filteredStore && filteredStore[0]) {
