@@ -34,10 +34,12 @@ const FormCounter = ({
   onCancel,
   modalType,
   button,
+  listAllStores,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields
   }
 }) => {
@@ -72,6 +74,7 @@ const FormCounter = ({
       const data = {
         ...getFieldsValue()
       }
+      data.availableStore = (data.availableStore || []).length > 0 ? data.availableStore.toString() : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
@@ -81,6 +84,8 @@ const FormCounter = ({
       })
     })
   }
+
+  let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
 
   return (
     <Form layout="horizontal">
@@ -204,6 +209,27 @@ const FormCounter = ({
                   <Icon type="upload" /> Click to Upload
                 </Button>
               </Upload>
+            )}
+          </FormItem>
+          <FormItem
+            label="Store"
+            hasFeedback
+            help={(getFieldValue('availableStore') || '').length > 0 ? `${(getFieldValue('availableStore') || '').length} ${(getFieldValue('availableStore') || '').length === 1 ? 'store' : 'stores'}` : 'clear it if available all stores'}
+            {...formItemLayout}
+          >
+            {getFieldDecorator('availableStore', {
+              initialValue: item.availableStore ? (item.availableStore || '').split(',') : []
+            })(
+              <Select
+                mode="multiple"
+                allowClear
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose Store"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenStore}
+              </Select>
             )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>

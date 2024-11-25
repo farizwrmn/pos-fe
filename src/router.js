@@ -1481,6 +1481,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/marketing/advertising'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/marketing/advertising'))
             }, 'marketing-advertising')
           }
