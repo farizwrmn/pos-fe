@@ -20,6 +20,7 @@ import ModalEmployee from './ModalEmployee'
 import ModalPhaseTwo from './ModalPhaseTwo'
 import ListEmployee from './ListEmployee'
 import ListEmployeePhase2 from './ListEmployeePhase2'
+import ListLocationName from './ListLocationName'
 import PrintXLS from './PrintXLS'
 
 const { numberFormatter } = numberFormat
@@ -74,8 +75,8 @@ class Detail extends Component {
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination,
-      modalEditVisible, modalEditItem
+    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination, detailHistoryPagination,
+      modalEditVisible, modalEditItem, detailHistory
     } = stockOpname
     const content = []
     for (let key in detailData) {
@@ -88,6 +89,36 @@ class Detail extends Component {
             </div>
           )
         }
+      }
+    }
+
+    const filterProps = {
+      onFilterChange (value) {
+        dispatch({
+          type: 'stockOpname/queryListDetailHistory',
+          payload: {
+            ...value,
+            transId: detailData.id
+          }
+        })
+      },
+      onChange (page) {
+        const { queryDetailHistory } = stockOpname
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            queryDetailHistory
+          }
+        })
+        dispatch({
+          type: 'stockOpname/queryListDetailHistory',
+          payload: {
+            q: queryDetailHistory,
+            transId: detailData.id,
+            page: page.current,
+            pageSize: page.pageSize
+          }
+        })
       }
     }
 
@@ -401,6 +432,11 @@ class Detail extends Component {
                 </div>
               </Row>
             ) : null}
+          </div>
+          <div className="content-inner-zero-min-height">
+            <Row style={{ padding: '10px', margin: '4px', paddingTop: '10px' }}>
+              <ListLocationName {...filterProps} dataSource={detailHistory} pagination={detailHistoryPagination} />
+            </Row>
             <Row style={{ padding: '10px', margin: '4px' }}>
               {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Conflict ({detailPagination ? detailPagination.total : 0})</h1> : null}
               {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}

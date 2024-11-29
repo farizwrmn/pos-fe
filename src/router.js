@@ -246,6 +246,15 @@ const Routers = function ({ history, app }) {
             }, 'pkm-setting-store')
           }
         }, {
+          path: 'stock-opname-location',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpnameLocation'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameLocation'))
+            }, 'stock-opname-location')
+          }
+        }, {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1909,6 +1918,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/stockOpname'))
               cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
             }, 'stock-opname-detail')
+          }
+        }, {
+          path: 'stock-opname-detail-history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
+            }, 'stock-opname-detail-history')
           }
         }, {
           path: 'stock-opname-partial',

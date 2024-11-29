@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname, queryListDetailHistory } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -32,12 +32,19 @@ export default modelExtend(pageModel, {
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
+    detailHistory: [],
+    queryDetailHistory: '',
     finishPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
     },
     detailPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
+    detailHistoryPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
@@ -54,12 +61,19 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname) || pathToRegexp('/stock-opname-partial/:id').exec(location.pathname)
+        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname) || pathToRegexp('/stock-opname-partial/:id').exec(location.pathname) || pathToRegexp('/stock-opname-detail-history/:id')
         if (match) {
           dispatch({
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'queryListDetailHistory',
+            payload: {
+              transId: decodeURIComponent(match[1]),
               storeId: lstorage.getCurrentUserStore()
             }
           })
@@ -72,7 +86,7 @@ export default modelExtend(pageModel, {
           })
         }
         if (pathname === '/stock-opname'
-          || pathname === '/stock-opname-partial'
+          || pathname === '/stock-opname-partial' || pathname === '/stock-opname-detail-history'
         ) {
           dispatch({
             type: 'updateState',
@@ -177,6 +191,26 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw response
+      }
+    },
+
+    * queryListDetailHistory ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const response = yield call(queryListDetailHistory, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            detailHistoryPagination: {
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            },
+            detailHistory: response.data
+          }
+        })
       }
     },
 
