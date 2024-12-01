@@ -1,4 +1,5 @@
 import { Button, Modal, Table } from 'antd'
+import { Link } from 'dva/router'
 import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
@@ -11,42 +12,35 @@ const ModalList = ({ loading, list, ...modalProps }) => {
     {
       title: 'Invoice Number',
       dataIndex: 'transNo',
-      key: 'transNo'
+      key: 'transNo',
+      width: 150,
+      render: (text, record) => {
+        return <a href={`/transaction/pos/invoice/${record.posId}`} target="__blank">{text}</a>
+      }
+    },
+    {
+      title: 'Reference',
+      dataIndex: 'reference',
+      key: 'reference',
+      width: 180
     },
     {
       title: 'Trans Date',
       dataIndex: 'transDate',
       key: 'transDate',
-      render: value => moment(value).format('DD MMM YYYY, HH:mm:ss')
+      render: value => moment(value).format('DD MMM YYYY, HH:mm:ss'),
+      width: 150
     },
     {
       title: 'Total Amount',
       dataIndex: 'amount',
       key: 'amount',
+      width: 100,
       render: (value) => {
         return (
           <div style={{ textAlign: 'right' }}>
             {currencyFormatter(value)}
           </div>
-        )
-      }
-    },
-    {
-      title: 'Invoice',
-      dataIndex: 'posId',
-      key: 'posId',
-      render: (value) => {
-        return (
-          <Button
-            type="primary"
-            onClick={() => {
-              if (window) {
-                window.open(`/transaction/pos/invoice/${value}`)
-              }
-            }}
-          >
-            Open Invoice
-          </Button>
         )
       }
     }
@@ -55,6 +49,7 @@ const ModalList = ({ loading, list, ...modalProps }) => {
   return (
     <Modal
       {...modalProps}
+      width="700"
       footer={[
         <Button type="primary" onClick={modalProps.onCancel}>Close</Button>
       ]}
@@ -62,6 +57,7 @@ const ModalList = ({ loading, list, ...modalProps }) => {
       <Table
         {...tableProps}
         bordered
+        width={500}
         pagination={false}
         columns={columns}
         loading={loading.effects['pos/getDynamicQrisLatestTransaction']}

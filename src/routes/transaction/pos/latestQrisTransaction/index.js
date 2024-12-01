@@ -7,7 +7,7 @@ const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction,
   const modalListProps = {
     loading,
     visible: modalVisible,
-    title: 'Latest Dynamic Qris Transaction',
+    title: 'Latest Transaction',
     list,
     onOk: handleClickLatestTransaction,
     onCancel: handleClickLatestTransaction
