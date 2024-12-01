@@ -1,5 +1,4 @@
 import { Button, Modal, Table } from 'antd'
-import { Link } from 'dva/router'
 import moment from 'moment'
 import { currencyFormatter } from 'utils/string'
 
@@ -15,7 +14,7 @@ const ModalList = ({ loading, list, ...modalProps }) => {
       key: 'transNo',
       width: 150,
       render: (text, record) => {
-        return <a href={`/transaction/pos/invoice/${record.posId}`} target="__blank">{text}</a>
+        return <a href={`/transaction/pos/invoice/${record.posId}?status=reprint`} target="__blank">{text}</a>
       }
     },
     {

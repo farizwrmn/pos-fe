@@ -58,6 +58,7 @@ import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
 import PromotionGuide from './PromotionGuide'
 import RewardGuide from './RewardGuide'
 import ModalCustomerName from './ModalCustomerName'
+import ModalUnlockTransaction from './ModalUnlockTransaction'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -270,7 +271,10 @@ const Pos = ({
     enableDineInLastUpdatedAt,
     modalPosDescriptionVisible,
     modalPosDescriptionDynamicQrisVisible,
-    posDescription
+    posDescription,
+    lockTransaction,
+    modalUnlockTransactionVisible,
+    modalUnlockTransactionShowForm
   } = pos
   const { list: listAchievement } = incentiveAchievement
   const { listEmployee } = pettyCashDetail
@@ -355,6 +359,23 @@ const Pos = ({
     dispatch({
       type: 'planogram/openModal'
     })
+  }
+
+  const modalUnlockTransactionProps = {
+    title: 'Unlock Transaction',
+    footer: null,
+    visible: modalUnlockTransactionVisible,
+    showForm: modalUnlockTransactionShowForm,
+    dispatch,
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalUnlockTransactionVisible: false,
+          modalUnlockTransactionShowForm: false
+        }
+      })
+    }
   }
 
   const hotKeysHandler = {
@@ -2681,13 +2702,23 @@ const Pos = ({
 
   const buttomButtonProps = {
     loading,
+    lockTransaction,
     handlePayment () {
-      dispatch({
-        type: 'pos/updateState',
-        payload: {
-          modalPosDescriptionVisible: true
-        }
-      })
+      if (lockTransaction) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalUnlockTransactionVisible: true
+          }
+        })
+      } else {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalPosDescriptionVisible: true
+          }
+        })
+      }
     },
     handleSuspend () {
       if (document.getElementById('KM')) document.getElementById('KM').value = 0
@@ -3405,6 +3436,7 @@ const Pos = ({
       {/* {modalShiftVisible && <ModalShift {...modalShiftProps} />} */}
       {modalGrabmartCodeVisible && <ModalGrabmartCode {...modalGrabmartCodeProps} />}
       {modalExpressCodeVisible && <ModalExpressCode {...modalExpressCodeProps} />}
+      {modalUnlockTransactionVisible && <ModalUnlockTransaction {...modalUnlockTransactionProps} />}
     </div >
   )
 }

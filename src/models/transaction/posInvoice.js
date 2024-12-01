@@ -46,6 +46,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
+        const { status } = location.query
         let match = pathToRegexp('/transaction/pos/invoice/:id').exec(location.pathname)
         const matchAdmin = pathToRegexp('/transaction/pos/admin-invoice/:id').exec(location.pathname)
         if (matchAdmin) {
@@ -68,6 +69,7 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'queryPosById',
             payload: {
+              status,
               id: match[1],
               type: 'print'
             }
@@ -99,7 +101,7 @@ export default modelExtend(pageModel, {
     },
 
     * queryPosById ({ payload = {} }, { call, put }) {
-      const { type, ...other } = payload
+      const { type, status, ...other } = payload
       const response = yield call(queryInvoiceById, other)
       if (response && response.success) {
         yield put({
@@ -111,26 +113,29 @@ export default modelExtend(pageModel, {
             type
           }
         })
-        yield put({
-          type: 'updateState',
-          payload: {
-            directPrinting: response.directPrinting
+        console.log('status', status)
+        if (status !== 'reprint') {
+          yield put({
+            type: 'updateState',
+            payload: {
+              directPrinting: response.directPrinting
+            }
+          })
+          if (response.pos && response.directPrinting && response.directPrinting.length > 0) {
+            for (let key in response.directPrinting) {
+              const item = response.directPrinting[key]
+              const responseDirect = yield call(directPrinting, {
+                url: item.printingUrl,
+                data: item.groupName === 'QRIS' ? rearrangeDirectPrintingQris(response.pos, item) : rearrangeDirectPrinting(response.pos, item)
+              })
+              console.log('responseDirect', responseDirect)
+            }
           }
-        })
+        }
         yield put({
           type: 'setListPaymentDetail',
           payload: response.pos
         })
-        if (response.pos && response.directPrinting && response.directPrinting.length > 0) {
-          for (let key in response.directPrinting) {
-            const item = response.directPrinting[key]
-            const responseDirect = yield call(directPrinting, {
-              url: item.printingUrl,
-              data: item.groupName === 'QRIS' ? rearrangeDirectPrintingQris(response.pos, item) : rearrangeDirectPrinting(response.pos, item)
-            })
-            console.log('responseDirect', responseDirect)
-          }
-        }
       } else {
         throw response
       }

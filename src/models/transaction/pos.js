@@ -35,6 +35,10 @@ import {
 import {
   queryReference
 } from 'services/payment'
+import {
+  query as queryLockTransaction,
+  add as unlockTransaction
+} from 'services/pos/unlockTransaction'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -94,7 +98,9 @@ const {
   setPosReference,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
   getQrisPaymentTimeLimit,
-  setAvailablePaymentType
+  setAvailablePaymentType,
+
+  getPosLockTransaction, setPosLockTransaction
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -108,6 +114,9 @@ export default {
   namespace: 'pos',
 
   state: {
+    modalUnlockTransactionVisible: false,
+    modalUnlockTransactionShowForm: false,
+    lockTransaction: getPosLockTransaction() || false,
     modalPosDescriptionVisible: false,
     modalPosDescriptionDynamicQrisVisible: false,
     posDescription: null,
@@ -279,6 +288,9 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'pos/queryLockTransaction'
+          })
           getDynamicQrisImage()
           dispatch({
             type: 'getEnableDineIn',
@@ -321,6 +333,12 @@ export default {
           dispatch({
             type: 'checkPaymentTransactionInvoice'
           })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: false
+            }
+          })
         }
         if (location.pathname === '/transaction/pos/history') {
           dispatch({
@@ -346,6 +364,87 @@ export default {
   },
 
   effects: {
+    * printLatestTransaction (payload, { put, call }) {
+      const response = yield call(queryPaymentTransactionLatest, { storeId: lstorage.getCurrentUserStore() })
+      if (response.success && response.data && response.data.length > 0) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${response.data[0].posId}?status=reprint`)
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        if (invoiceWindow) {
+          invoiceWindow.focus()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: true
+            }
+          })
+        } else {
+          message.error('Please allow pop-up in your browser')
+        }
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalUnlockTransactionShowForm: true
+          }
+        })
+      }
+    },
+
+    * queryLockTransaction (payload, { put, call }) {
+      const lockTransaction = getPosLockTransaction()
+      console.log('first', lockTransaction)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          lockTransaction
+        }
+      })
+      if (!lockTransaction) {
+        const response = yield call(queryLockTransaction)
+        console.log('second', response)
+        if (response.success && response.data) {
+          setPosLockTransaction(true)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: true
+            }
+          })
+        } else {
+          setPosLockTransaction(false)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: false
+            }
+          })
+        }
+      }
+    },
+
+    * unlockTransaction (payload, { put, call }) {
+      setPosLockTransaction(false)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionVisible: true,
+          modalUnlockTransactionVisible: false,
+          modalUnlockTransactionShowForm: false,
+          lockTransaction: false
+        }
+      })
+      yield call(unlockTransaction, {})
+      yield put({
+        type: 'queryLockTransaction',
+        payload: {}
+      })
+    },
+
     * querySequenceReference (payload, { call }) {
       const response = yield call(queryReference, {
         storeId: lstorage.getCurrentUserStore()
@@ -4019,7 +4118,7 @@ export default {
     * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
       const response = yield call(queryCheckValidByPaymentReference, payload)
       if (response && response.success) {
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}?status=reprint`)
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -4033,7 +4132,7 @@ export default {
       const response = yield call(queryCheckPaymentTransactionStatus, payload)
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}?status=reprint`)
         yield put({
           type: 'payment/updateState',
           payload: {

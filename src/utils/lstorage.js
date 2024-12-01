@@ -108,6 +108,14 @@ const setGrabmartOrder = (grabOrder) => {
   return localStorage.setItem('grabmartOrder', JSON.stringify(grabOrder || '{}'))
 }
 
+const getPosLockTransaction = () => {
+  return localStorage.getItem('posLockTransaction') ? JSON.parse(localStorage.getItem('posLockTransaction')) : false
+}
+
+const setPosLockTransaction = (status) => {
+  return localStorage.setItem('posLockTransaction', status)
+}
+
 const getExpressOrder = () => {
   return localStorage.getItem('expressOrder') ? JSON.parse(localStorage.getItem('expressOrder')) : {}
 }
@@ -618,5 +626,7 @@ module.exports = {
   getExpressOrder,
   setExpressOrder,
   getCachedSerialPort,
-  setCachedSerialPort
+  setCachedSerialPort,
+  getPosLockTransaction,
+  setPosLockTransaction
 }
