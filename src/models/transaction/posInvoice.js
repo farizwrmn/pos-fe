@@ -113,7 +113,6 @@ export default modelExtend(pageModel, {
             type
           }
         })
-        console.log('status', status)
         if (status !== 'reprint') {
           yield put({
             type: 'updateState',

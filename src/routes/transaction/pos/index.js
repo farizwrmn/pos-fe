@@ -55,7 +55,9 @@ import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
+// eslint-disable-next-line no-unused-vars
 import PromotionGuide from './PromotionGuide'
+// eslint-disable-next-line no-unused-vars
 import RewardGuide from './RewardGuide'
 import ModalCustomerName from './ModalCustomerName'
 import ModalUnlockTransaction from './ModalUnlockTransaction'
@@ -349,12 +351,14 @@ const Pos = ({
     })
   }
 
+  // eslint-disable-next-line no-unused-vars
   const handleExpressBrowse = () => {
     dispatch({
       type: 'pos/getExpress'
     })
   }
 
+  // eslint-disable-next-line no-unused-vars
   const handlePlanogramBrowse = () => {
     dispatch({
       type: 'planogram/openModal'
@@ -2032,6 +2036,7 @@ const Pos = ({
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   const modalPromoGuideProps = {
     isModal: false,
     dataSource: listHighlight,
@@ -2054,6 +2059,7 @@ const Pos = ({
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   const modalRewardGuideProps = {
     isModal: false,
     dataSource: listAchievement,
@@ -3251,7 +3257,7 @@ const Pos = ({
                   >
                     Bundle
                   </Button>
-                  <Button
+                  {/* <Button
                     size="medium"
                     icon="tool"
                     onClick={handleExpressBrowse}
@@ -3263,8 +3269,8 @@ const Pos = ({
                     }}
                   >
                     K3Express
-                  </Button>
-                  <Button
+                  </Button> */}
+                  {/* <Button
                     size="medium"
                     icon="tool"
                     onClick={handlePlanogramBrowse}
@@ -3276,7 +3282,7 @@ const Pos = ({
                     }}
                   >
                     Planogram
-                  </Button>
+                  </Button> */}
                 </Col>
               </Row>
             </Form>
@@ -3396,8 +3402,8 @@ const Pos = ({
           <BottomButton {...buttomButtonProps} />
           {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
 
-          <PromotionGuide {...modalPromoGuideProps} />
-          <RewardGuide {...modalRewardGuideProps} />
+          {/* <PromotionGuide {...modalPromoGuideProps} /> */}
+          {/* <RewardGuide {...modalRewardGuideProps} /> */}
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}

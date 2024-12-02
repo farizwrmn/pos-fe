@@ -30,7 +30,8 @@ const {
   setDynamicQrisTimeLimit,
   getQrisPaymentTimeLimit,
   setCurrentPaymentTransactionId,
-  removeCurrentPaymentTransactionId
+  removeCurrentPaymentTransactionId,
+  setPosLockTransaction
 } = lstorage
 const { getSetting } = variables
 
@@ -135,6 +136,7 @@ export default {
       }
     },
     * create ({ payload }, { select, call, put }) {
+      setPosLockTransaction(true)
       const appVersion = APPVERSION
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
@@ -384,8 +386,19 @@ export default {
               woReference: payload.woNumber,
               listAmount: payload.listAmount
             }
+            yield put({
+              type: 'pos/updateState',
+              payload: {
+                lockTransaction: true
+              }
+            })
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
+              setPosLockTransaction(false)
+              yield put({
+                type: 'pos/unlockTransaction',
+                payload: {}
+              })
               const responsInsertPos = data_create.pos
               // const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
               try {
@@ -528,6 +541,11 @@ export default {
               }
               // }
             } else {
+              setPosLockTransaction(false)
+              yield put({
+                type: 'pos/queryLockTransaction',
+                payload: {}
+              })
               if (data_create && data_create.message && typeof data_create.message === 'string') {
                 if (data_create.message === 'Please set your balance') {
                   yield put(routerRedux.push('/balance/current'))

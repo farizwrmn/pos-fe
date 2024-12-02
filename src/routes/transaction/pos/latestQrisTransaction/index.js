@@ -20,10 +20,9 @@ const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction,
           <Col span={24}>
             <Tag
               color="green"
-              style={{ width: '100%' }}
               onClick={handleClickLatestTransaction}
             >
-              {`Latest Dynamic Qris Transaction | Invoice Number: ${latestTransaction.transNo}; Trans Date: ${moment(latestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(latestTransaction.amount)}; (click to show more)`}
+              Riwayat Transaksi (Klik Disini)
             </Tag>
           </Col>
         )

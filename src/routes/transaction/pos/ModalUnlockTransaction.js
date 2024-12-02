@@ -1,24 +1,21 @@
 import React, { Component } from 'react'
-import { Modal, Form, Row, message, Col, Input, Button } from 'antd'
+import { Modal, Form, Row, message, Col, Checkbox, Button } from 'antd'
 
 const FormItem = Form.Item
 
 const column = {
   sm: { span: 24 },
   md: { span: 24 },
-  lg: { span: 12 },
-  xl: { span: 12 }
+  lg: { span: 24 },
+  xl: { span: 24 }
 }
 
 const formItemLayout = {
   labelCol: {
-    sm: { span: 10 },
-    md: { span: 10 }
+    sm: { span: 8 }
   },
   wrapperCol: {
-    xs: { span: 14 },
-    sm: { span: 14 },
-    md: { span: 14 }
+    xs: { span: 16 }
   }
 }
 
@@ -44,7 +41,7 @@ class ModalUnlockTransaction extends Component {
         const data = {
           ...getFieldsValue()
         }
-        if (data.realization && data.realization.toLowerCase().replace(/^\s+|\s+$/gm, '') === 'saya paham') {
+        if (data.realization) {
           Modal.confirm({
             title: 'Do you want to save this item?',
             onOk () {
@@ -56,7 +53,7 @@ class ModalUnlockTransaction extends Component {
             onCancel () { }
           })
         } else {
-          message.error('Masukkan kata yang benar "saya paham"')
+          message.error('Checkbox harus di centang')
         }
       })
     }
@@ -77,14 +74,10 @@ class ModalUnlockTransaction extends Component {
         {showForm && (<Form layout="horizontal">
           <Row>
             <Col {...column}>
-              <FormItem label="Realization" hasFeedback {...formItemLayout}>
+              <FormItem label="Realization" {...formItemLayout}>
                 {getFieldDecorator('realization', {
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(<Input placeholder="saya paham" />)}
+                  valuePropName: 'checked'
+                })(<Checkbox>Transaksi sebelumnya tidak saya dengan yang ini</Checkbox>)}
               </FormItem>
               <Button type="primary" onClick={handleSubmit}>Submit</Button>
             </Col>
