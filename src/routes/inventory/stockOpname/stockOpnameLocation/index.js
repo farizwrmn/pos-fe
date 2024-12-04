@@ -7,6 +7,7 @@ import Form from './Form'
 import List from './List'
 import Filter from './Filter'
 
+
 const TabPane = Tabs.TabPane
 
 const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
@@ -22,7 +23,6 @@ const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
       })
     }
   }
-
   const listProps = {
     dataSource: list,
     user,
@@ -87,6 +87,18 @@ const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
     })
   }
 
+
+  const handlePrintBarcode = () => {
+    dispatch(
+      routerRedux.push({
+        pathname: 'print-barcode',
+        query: {
+          ...pagination
+        }
+      })
+    )
+  }
+
   const formProps = {
     modalType,
     storeInfo,
@@ -126,6 +138,7 @@ const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
     moreButtonTab = <Button onClick={() => clickBrowse()}>Browse</Button>
   }
 
+
   return (
     <div className="content-inner">
       <Tabs activeKey={activeKey} onChange={key => changeTab(key)} tabBarExtraContent={moreButtonTab} type="card">
@@ -135,16 +148,19 @@ const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
         {location.pathname === '/stock-opname-location' && (<TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
+
+              <Button onClick={handlePrintBarcode} type="primary">Print Barcode</Button>
+
               <Filter {...filterProps} />
               <List {...listProps} />
             </div>
           }
         </TabPane>)}
       </Tabs>
+
     </div>
   )
 }
-
 Counter.propTypes = {
   stockOpnameLocation: PropTypes.object,
   loading: PropTypes.object,
