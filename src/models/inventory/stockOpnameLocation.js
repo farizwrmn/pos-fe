@@ -27,6 +27,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
+        console.log('otherz', ...other)
         const { pathname } = location
         if (pathname === '/stock-opname-location') {
           dispatch({

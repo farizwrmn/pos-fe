@@ -252,7 +252,15 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/inventory/stockOpnameLocation'))
               cb(null, require('./routes/inventory/stockOpname/stockOpnameLocation'))
-            }, 'stock-opname-location')
+            }, 'stock-opname-locations')
+          }
+        }, {
+          path: 'print-barcode',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpnameBarcode'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameBarcode'))
+            }, 'print-barcode')
           }
         }, {
           path: 'stock',

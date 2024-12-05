@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import { Button, Tabs } from 'antd'
 import Form from './Form'
 import List from './List'
@@ -91,10 +91,7 @@ const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
   const handlePrintBarcode = () => {
     dispatch(
       routerRedux.push({
-        pathname: 'print-barcode',
-        query: {
-          ...pagination
-        }
+        pathname: 'print-barcode'
       })
     )
   }
@@ -149,7 +146,7 @@ const Counter = ({ stockOpnameLocation, loading, dispatch, location, app }) => {
           {activeKey === '1' &&
             <div>
 
-              <Button onClick={handlePrintBarcode} type="primary">Print Barcode</Button>
+              <Link to={'/print-barcode'} onClick={handlePrintBarcode} type="primary">Print Barcode</Link>
 
               <Filter {...filterProps} />
               <List {...listProps} />
