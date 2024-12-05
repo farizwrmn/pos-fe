@@ -10,11 +10,12 @@ const List = ({ editList, ...tableProps }) => {
     editList(record)
   }
 
+
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode',
       className: styles.alignCenter,
       width: '100px'
     },
@@ -28,21 +29,29 @@ const List = ({ editList, ...tableProps }) => {
       title: 'Location Name',
       dataIndex: 'locationName',
       key: 'locationName',
-      width: '200px'
+      width: '300px',
+      className: styles.alignCenter
     },
     {
       title: 'Quantity Location',
       dataIndex: 'qtyLocation',
       key: 'qtyLocation',
-      width: '100px'
+      className: styles.alignCenter,
+      width: '200px'
     },
     {
       title: 'Quantity',
       dataIndex: 'qty',
       key: 'qty',
+      className: styles.alignCenter,
       width: '100px'
     }
   ]
+
+  // const formattedData = columns.map((item, index) => ({
+  //   key: index,
+  //   locationName: item.locationName
+  // }))
 
   return (
     <div>

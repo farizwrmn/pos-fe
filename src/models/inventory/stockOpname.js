@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname, queryListDetailHistory } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname, queryListDetailHistory, queryDetailReportOpname } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -34,6 +34,7 @@ export default modelExtend(pageModel, {
     modalEditItem: {},
     detailHistory: [],
     queryDetailHistory: '',
+    listDetailHistory: [],
     finishPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -79,6 +80,13 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'queryDetailReport',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'queryDetailHistoryReport',
             payload: {
               id: decodeURIComponent(match[1]),
               storeId: lstorage.getCurrentUserStore()
@@ -130,6 +138,13 @@ export default modelExtend(pageModel, {
         })
         yield put({
           type: 'queryDetailReport',
+          payload: {
+            id: payload.detailData.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        yield put({
+          type: 'queryDetailHistoryReport',
           payload: {
             id: payload.detailData.id,
             storeId: lstorage.getCurrentUserStore()
@@ -196,8 +211,24 @@ export default modelExtend(pageModel, {
 
     * queryListDetailHistory ({ payload = {} }, { call, put }) {
       payload.storeId = lstorage.getCurrentUserStore()
+      const { detailData, ...other } = payload
+      const data = yield call(queryListDetail, other)
       const response = yield call(queryListDetailHistory, payload)
-      if (response.success) {
+      if (response.success && data.success && data.data) {
+        const dataMap = data.data.map((item) => {
+          const matchingLocations = response.data.filter(history => history.productCode === item.productCode).map(history => history.locationName)
+
+          const matchingQtyLocation = response.data
+            .filter(history => history.productCode === item.productCode)
+            .map(history => history.qtyLocation)
+
+          // const totalQtyLocation = matchingQtyLocation.reduce((total, qty) => total + qty, 0)
+          return {
+            ...item,
+            locationName: matchingLocations.join(', '),
+            qtyLocation: matchingQtyLocation.join(', ')
+          }
+        })
         yield put({
           type: 'updateState',
           payload: {
@@ -208,7 +239,8 @@ export default modelExtend(pageModel, {
               showSizeChanger: true,
               showQuickJumper: true
             },
-            detailHistory: response.data
+            // detailHistory: response.data
+            detailHistory: dataMap
           }
         })
       }
@@ -291,6 +323,31 @@ export default modelExtend(pageModel, {
               type: 'updateState',
               payload: {
                 listReport: response.data
+              }
+            })
+          } else {
+            throw response
+          }
+        }
+      } else {
+        throw data
+      }
+    },
+
+    * queryDetailHistoryReport ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+      if (data.success && data.data) {
+        const { detail, ...other } = data.data
+        if (other && other.activeBatch) {
+          const response = yield call(queryDetailReportOpname, {
+            batchId: other.activeBatch.id
+          })
+          console.log(response)
+          if (response.success) {
+            yield put({
+              type: 'updateState',
+              payload: {
+                listDetailHistory: response.data
               }
             })
           } else {

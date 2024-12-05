@@ -255,6 +255,16 @@ const Routers = function ({ history, app }) {
             }, 'stock-opname-location')
           }
         }, {
+        }, {
+          path: 'stock-opname-location/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpnameLocation'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameLocation'))
+            }, 'stock-opname-location/:id')
+          }
+        }, {
           path: 'stock',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

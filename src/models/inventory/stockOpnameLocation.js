@@ -7,7 +7,7 @@ import { lstorage } from 'utils'
 
 
 const success = () => {
-  message.success('Account Code has been saved')
+  message.success('Location and Barcode has been saved')
 }
 
 export default modelExtend(pageModel, {

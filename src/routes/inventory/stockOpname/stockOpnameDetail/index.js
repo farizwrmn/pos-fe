@@ -22,6 +22,7 @@ import ListEmployee from './ListEmployee'
 import ListEmployeePhase2 from './ListEmployeePhase2'
 import ListLocationName from './ListLocationName'
 import PrintXLS from './PrintXLS'
+import PrintLocationXLS from './PrintLocationXLS'
 
 const { numberFormatter } = numberFormat
 
@@ -76,7 +77,7 @@ class Detail extends Component {
     } = this.props
     const { storeInfo } = app
     const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination, detailHistoryPagination,
-      modalEditVisible, modalEditItem, detailHistory
+      modalEditVisible, modalEditItem, detailHistory, listDetailHistory
     } = stockOpname
     const content = []
     for (let key in detailData) {
@@ -124,6 +125,11 @@ class Detail extends Component {
 
     const printProps = {
       listTrans: listReport,
+      storeInfo
+    }
+
+    const printDetailLocationProps = {
+      listTrans: listDetailHistory,
       storeInfo
     }
 
@@ -435,6 +441,7 @@ class Detail extends Component {
           </div>
           <div className="content-inner-zero-min-height">
             <Row style={{ padding: '10px', margin: '4px', paddingTop: '10px' }}>
+              <PrintLocationXLS {...printDetailLocationProps} />
               <ListLocationName {...filterProps} dataSource={detailHistory} pagination={detailHistoryPagination} />
             </Row>
             <Row style={{ padding: '10px', margin: '4px' }}>
