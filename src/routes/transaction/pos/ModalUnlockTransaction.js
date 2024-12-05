@@ -77,9 +77,9 @@ class ModalUnlockTransaction extends Component {
               <FormItem label="Realization" {...formItemLayout}>
                 {getFieldDecorator('realization', {
                   valuePropName: 'checked'
-                })(<Checkbox>Transaksi sebelumnya tidak saya dengan yang ini</Checkbox>)}
+                })(<Checkbox>Transaksi sebelumnya tidak sama dengan yang ini</Checkbox>)}
               </FormItem>
-              <Button type="primary" onClick={handleSubmit}>Submit</Button>
+              <Button type="primary" onClick={handleSubmit}>Lanjutkan ke Pembayaran</Button>
             </Col>
           </Row>
         </Form>)}
