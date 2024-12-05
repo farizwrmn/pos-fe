@@ -7,7 +7,7 @@ import { withoutFormat } from 'utils/string'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, listAllStores, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -48,6 +48,24 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Sort',
       dataIndex: 'sort',
       key: 'sort'
+    },
+    {
+      title: 'Store',
+      dataIndex: 'availableStore',
+      key: 'availableStore',
+      render: (text) => {
+        if (!text) {
+          return 'All'
+        }
+        const listStores = text && text.split(',')
+        return listStores.map((storeId) => {
+          const filteredStore = listAllStores.filter(filtered => filtered.id === Number(storeId))
+          if (filteredStore && filteredStore[0]) {
+            return filteredStore[0].storeName
+          }
+          return ''
+        }).toString()
+      }
     },
     {
       title: 'Operation',

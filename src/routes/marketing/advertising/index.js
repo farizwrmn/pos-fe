@@ -9,9 +9,10 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const Counter = ({ advertising, loading, dispatch, location, app }) => {
+const Counter = ({ advertising, userStore, loading, dispatch, location, app }) => {
   const { list, pagination, modalType, currentItem, activeKey } = advertising
   const { user, storeInfo } = app
+  const { listAllStores } = userStore
   const filterProps = {
     onFilterChange (value) {
       dispatch({
@@ -25,6 +26,7 @@ const Counter = ({ advertising, loading, dispatch, location, app }) => {
 
   const listProps = {
     dataSource: list,
+    listAllStores,
     user,
     storeInfo,
     pagination,
@@ -88,6 +90,7 @@ const Counter = ({ advertising, loading, dispatch, location, app }) => {
   }
 
   const formProps = {
+    listAllStores,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -149,4 +152,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ advertising, loading, app }) => ({ advertising, loading, app }))(Counter)
+export default connect(({ advertising, userStore, loading, app }) => ({ advertising, userStore, loading, app }))(Counter)

@@ -53,7 +53,7 @@ export async function uploadAdvertisingImage (params) {
     ...crypt.apiheader()
   }
   return request({
-    fullUrl: `${APIIMAGEURL}/image/upload/advertising?compress=1`,
+    fullUrl: `${APIIMAGEURL}/image/upload/customerview?compress=1`,
     method: 'post',
     data: params,
     headers: apiHeaderToken,
