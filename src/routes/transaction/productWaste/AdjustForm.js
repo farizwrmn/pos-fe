@@ -210,6 +210,7 @@ class AdjustForm extends Component {
       }
     }
 
+    const listFilter = listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ' && filtered.value !== 'AJIN')
     const totalQtyIn = dataBrowse.reduce((prev, next) => prev + (next.In || 0), 0)
     const totalQtyOut = dataBrowse.reduce((prev, next) => prev + (next.Out || 0), 0)
     const totalPrice = dataBrowse.reduce((prev, next) => prev + ((next.price * next.In) + (next.price * next.Out)), 0)
@@ -253,7 +254,7 @@ class AdjustForm extends Component {
             </FormItem>
             <FormItem label="Type" {...formItemLayout}>
               {getFieldDecorator('transType', {
-                initialValue: listType.filter(filtered => filtered.value !== 'RBB' && filtered.value !== 'RJJ' && filtered.value !== 'AJIN')[0].value,
+                initialValue: listFilter && listFilter.length > 0 ? listFilter[0].value : undefined,
                 rules: [{
                   required: true
                 }]
