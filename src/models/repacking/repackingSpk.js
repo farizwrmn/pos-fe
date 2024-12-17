@@ -157,7 +157,7 @@ export default modelExtend(pageModel, {
           throw new Error('Standard Recipe Not Found')
         }
         const standardRecipe = responseStandardRecipe.data[0]
-        const responseStandardRecipeDetail = yield call(queryStandardRecipeDetail, { transId: standardRecipe.id })
+        const responseStandardRecipeDetail = yield call(queryStandardRecipeDetail, { transId: standardRecipe.id, type: 'all' })
         if (!responseStandardRecipeDetail.success || (responseStandardRecipeDetail && responseStandardRecipeDetail.data && responseStandardRecipe.data.length === 0)) {
           throw new Error('Standard Recipe Material Not Found')
         }
