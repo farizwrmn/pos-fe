@@ -277,6 +277,14 @@ class AdjustForm extends Component {
                 }]
               })(<DatePicker disabled format={dateFormat} />)}
             </FormItem>
+            <FormItem label="Reference Date" {...formItemLayout}>
+              {getFieldDecorator('referenceDate', {
+                initialValue: moment(),
+                rules: [{
+                  required: false
+                }]
+              })(<DatePicker format={dateFormat} />)}
+            </FormItem>
           </Col>
           <Col md={24} lg={12}>
             <FormItem label="Reference" {...formItemLayout1}>
