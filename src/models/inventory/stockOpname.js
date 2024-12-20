@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname, queryListDetailHistory, queryDetailReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname, queryListDetailHistory, queryDetailReportOpname, listDetailHistory } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -21,6 +21,7 @@ export default modelExtend(pageModel, {
     modalAddEmployeeVisible: false,
     modalPhaseOneVisible: false,
     modalPhaseTwoVisible: false,
+    modalLocationVisible: false,
     list: [],
     listReport: [],
     listEmployee: [],
@@ -32,9 +33,11 @@ export default modelExtend(pageModel, {
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
+    modalLocationItem: {},
     detailHistory: [],
     queryDetailHistory: '',
-    listDetailHistory: [],
+    queryListLocationDetailHistory: '',
+    listLocationDetailHistory: [],
     finishPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -46,6 +49,11 @@ export default modelExtend(pageModel, {
       current: 1
     },
     detailHistoryPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
+    listDetailHistoryPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
@@ -73,6 +81,20 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'queryListDetailHistory',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'listDetailHistory',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'fetchModalLocationData',
             payload: {
               transId: decodeURIComponent(match[1]),
               storeId: lstorage.getCurrentUserStore()
@@ -215,20 +237,27 @@ export default modelExtend(pageModel, {
       const data = yield call(queryListDetail, other)
       const response = yield call(queryListDetailHistory, payload)
       if (response.success && data.success && data.data) {
-        const dataMap = data.data.map((item) => {
+        const dataMap = new Map()
+        data.data.forEach((item) => {
+          // Extract matching location names and quantities from response data
           const matchingLocations = response.data.filter(history => history.productCode === item.productCode).map(history => history.locationName)
+          const matchingQtyLocation = response.data.filter(history => history.productCode === item.productCode).map(history => history.qtyLocation)
 
-          const matchingQtyLocation = response.data
-            .filter(history => history.productCode === item.productCode)
-            .map(history => history.qtyLocation)
-
-          // const totalQtyLocation = matchingQtyLocation.reduce((total, qty) => total + qty, 0)
-          return {
-            ...item,
-            locationName: matchingLocations.join(', '),
-            qtyLocation: matchingQtyLocation.join(', ')
+          if (!dataMap.has(item.productCode)) {
+            dataMap.set(item.productCode, {
+              ...item,
+              locationName: matchingLocations.join(', '),
+              qtyLocation: matchingQtyLocation.join(', ')
+            })
+          } else {
+            const existingItem = dataMap.get(item.productCode)
+            existingItem.locationName = [...new Set([...existingItem.locationName.split(', '), ...matchingLocations])].join(', ')
+            existingItem.qtyLocation = [...new Set([...existingItem.qtyLocation.split(', '), ...matchingQtyLocation])].join(', ')
           }
         })
+
+        const finalData = Array.from(dataMap.values())
+
         yield put({
           type: 'updateState',
           payload: {
@@ -240,7 +269,51 @@ export default modelExtend(pageModel, {
               showQuickJumper: true
             },
             // detailHistory: response.data
-            detailHistory: dataMap
+            detailHistory: finalData
+          }
+        })
+      }
+    },
+
+    * listDetailHistory ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const { detailData, ...other } = payload
+      const data = yield call(queryListDetail, other)
+      const response = yield call(listDetailHistory, payload)
+      if (response.success && data.success && data.data) {
+        const dataMap = new Map()
+        data.data.forEach((item) => {
+          // Extract matching location names and quantities from response data
+          const matchingLocations = response.data.filter(history => history.productCode === item.productCode).map(history => history.locationName)
+          const matchingQtyLocation = response.data.filter(history => history.productCode === item.productCode).map(history => history.qtyLocation)
+
+          if (!dataMap.has(item.productCode)) {
+            dataMap.set(item.productCode, {
+              ...item,
+              locationName: matchingLocations.join(', '),
+              qtyLocation: matchingQtyLocation.join(', ')
+            })
+          } else {
+            const existingItem = dataMap.get(item.productCode)
+            existingItem.locationName = [...new Set([...existingItem.locationName.split(', '), ...matchingLocations])].join(', ')
+            existingItem.qtyLocation = [...new Set([...existingItem.qtyLocation.split(', '), ...matchingQtyLocation])].join(', ')
+          }
+        })
+
+        const finalData = Array.from(dataMap.values())
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetailHistoryPagination: {
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            },
+            // detailHistory: response.data
+            listLocationDetailHistory: finalData
           }
         })
       }

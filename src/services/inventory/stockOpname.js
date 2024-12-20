@@ -90,6 +90,16 @@ export async function queryListDetailHistory (params) {
   })
 }
 
+export async function listDetailHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-detail-history',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryById (params) {
   const apiHeaderToken = crypt.apiheader()
   params.storeId = lstorage.getCurrentUserStore()

@@ -1,13 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from '../../../../themes/index.less'
 import Filter from './Filter'
 
 
-const List = ({ editList, ...tableProps }) => {
+const List = ({ onRowClick, ...listProps }) => {
   const handleMenuClick = (record) => {
-    editList(record)
+    onRowClick(record)
   }
 
 
@@ -26,20 +25,6 @@ const List = ({ editList, ...tableProps }) => {
       width: '200px'
     },
     {
-      title: 'Location Name',
-      dataIndex: 'locationName',
-      key: 'locationName',
-      width: '300px',
-      className: styles.alignCenter
-    },
-    {
-      title: 'Quantity Location',
-      dataIndex: 'qtyLocation',
-      key: 'qtyLocation',
-      className: styles.alignCenter,
-      width: '200px'
-    },
-    {
       title: 'Quantity',
       dataIndex: 'qty',
       key: 'qty',
@@ -55,8 +40,8 @@ const List = ({ editList, ...tableProps }) => {
 
   return (
     <div>
-      <Filter {...tableProps} />
-      <Table {...tableProps}
+      <Filter {...listProps} />
+      <Table {...listProps}
         bordered={false}
         scroll={{ x: 500 }}
         columns={columns}
@@ -66,10 +51,6 @@ const List = ({ editList, ...tableProps }) => {
       />
     </div>
   )
-}
-
-List.propTypes = {
-  editList: PropTypes.func
 }
 
 export default List
