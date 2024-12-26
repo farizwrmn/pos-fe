@@ -3,10 +3,26 @@
 import React from 'react'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import Excel from 'exceljs/dist/exceljs.min.js'
 import { message } from 'antd'
 import moment from 'moment'
 import ListFilenameImportCSV from './ListFilenameImportCSV'
+
+let csvHeader = [
+  'processEffectiveDate', // PROC DATE
+  'merchantId', // MID
+  'traceNumber', // OB
+  'traceNumber', // GB
+  'traceNumber', // SEQ
+  'traceNumber', // TYPE
+  'transactionDate', // TRX DATE
+  'approvalCode', // AUTH
+  'cardNumber', // CARD NO
+  'grossAmount', // AMOUNT
+  'transactionCode', // TID
+  'recordSource', // JENIS TRX
+  'traceNumber', // PTR
+  'mdr' // RATE
+]
 
 const ImportBcaRecon = ({
   loading,
@@ -38,151 +54,83 @@ const ImportBcaRecon = ({
 
   const handleChangeFile = (event) => {
     const file = event.target.files[0]
-    const workbook = new Excel.Workbook()
+    console.log('handleChangeFile', file)
     const reader = new FileReader()
-    console.log('file', file)
-    reader.readAsArrayBuffer(file)
 
-    reader.onload = () => {
-      const buffer = reader.result
-      workbook.xlsx.load(buffer)
-        .then(async (workbook) => {
-          let sheet = workbook.getWorksheet('Report')
-          let finalRequest = []
-          let csvHeader = [
-            'processEffectiveDate', // PROC DATE
-            'merchantId', // MID
-            'traceNumber', // OB
-            'traceNumber', // GB
-            'traceNumber', // SEQ
-            'traceNumber', // TYPE
-            'transactionDate', // TRX DATE
-            'approvalCode', // AUTH
-            'cardNumber', // CARD NO
-            'grossAmount', // AMOUNT
-            'transactionCode', // TID
-            'recordSource', // JENIS TRX
-            'traceNumber', // PTR
-            'mdr', // RATE
-            'mdrAmount', // DISC AMOUNT
-            'traceNumber', // AIR FARE
-            'traceNumber', // PLAN
-            'traceNumber', // SS AMOUNT
-            'traceNumber', // SS FEE TYPE
-            'traceNumber', // FLAG
-            'nettAmount', // NETT AMOUNT
-            'merchantName', // MERCHANT ACCOUNT
-            'merchantName' // MERCHANT NAME
-          ]
+    reader.onload = (event) => {
+      const data = event.target.result
+      console.log('data', data)
+      const csvRows = String(data).trim().split('\n')
+      const array = csvRows.map((record) => {
+        const values = record.split(';')
+        const obj = csvHeader.reduce((object, header, index) => {
+          object[header] = values[index].trim()
+          return object
+        }, {})
+        return obj
+      })
 
-          console.log('sheet', sheet)
-          if (!sheet) {
-            sheet = workbook.getWorksheet('Sheet1')
-            console.log('sheet workbook', sheet)
-            csvHeader = [
-              'traceNumber', // NO
-              'merchantName', // Nama Merchant
-              'merchantId', // MID
-              'transactionCode', // TID
-              'traceNumber', // Merchant PAN
+      const reformatArray = array.map((item) => {
+        if (item.processEffectiveDate === 'PROC DATE') return null
+        let recordSource = item.recordSource
+        let dateFormat = 'DD/MM/YYYY'
+        if (item.recordSource === 'DEBIT') {
+          recordSource = 'DEBIT-BNI'
+        }
+        if (item.recordSource === 'KREDIT') {
+          recordSource = 'KREDIT-BNI'
+        }
+        if (item.recordSource === 'QRIS') {
+          recordSource = 'QRIS-BNI'
+          dateFormat = 'DD/MM/YYYY'
+          item.approvalCode = item.approvalCode.slice(-6)
+        }
+        if (item.recordSource === 'MPM') {
+          recordSource = 'QRIS-BNI'
+          dateFormat = 'YYYY-MM-DD HH:mm:ss'
+          item.approvalCode = item.approvalCode.slice(-6)
+        }
+        if (item.recordSource === 'CPM') {
+          recordSource = 'QRIS-BNI'
+          dateFormat = 'YYYY-MM-DD HH:mm:ss'
+          item.approvalCode = item.approvalCode.slice(-6)
+        }
+        return ({
+          approvalCode: item.approvalCode,
+          cardNumber: item.cardNumber,
+          grossAmount: item.grossAmount,
+          mdr: item.mdr.replace(',', '.'),
+          merchantId: item.merchantId,
+          merchantName: item.merchantName,
+          nettAmount: item.nettAmount,
+          redeemAmount: 0,
+          rewardAmount: 0,
+          originalAmount: 0,
+          mdrAmount: item.mdrAmount,
+          reportDate: moment(item.processEffectiveDate || item.transactionDate, dateFormat).format('YYYY-MM-DD'),
+          processEffectiveDate: moment(item.processEffectiveDate || item.transactionDate, dateFormat).format('YYYY-MM-DD'),
+          recordSource,
+          traceNumber: item.traceNumber,
+          transactionCode: item.transactionCode,
+          transactionDate: moment(item.transactionDate, dateFormat).format('YYYY-MM-DD')
+        })
+      }).filter(filtered => filtered)
 
-              'billNumber', // Bill Number
-              'approvalCode', // Reff ID
-              'recordSource', // QR Method
-              'traceNumber', // Tipe QR
-              'traceNumber', // Tipe Transaksi
-
-              'traceNumber', // Nama Issuer
-              'traceNumber', // Customer PAN
-              'traceNumber', // Source Of Fund
-              'traceNumber', // Name Customer
-              'traceNumber', // Jenis Pembayaran
-
-              'traceNumber', // Nama Acquirer
-              'grossAmount', // Nominal
-              'mdrAmount', // MDR
-              'nettAmount', // Net Amount
-              'transactionDate', // TRX Datetime
-
-              'traceNumber', // Settlement Status
-              'traceNumber' // Status
-            ]
-          }
-          await sheet
-            .eachRow({ includeEmpty: false }, (obj, rowIndex) => {
-              if (rowIndex > 1) {
-                let startPoint = 0
-
-                const request = {}
-                for (let key in csvHeader) {
-                  request[csvHeader[key]] = obj.values[++startPoint]
-                }
-                finalRequest.push(request)
-              }
-            })
-
-          console.log('finalRequest', finalRequest)
-
-          finalRequest = finalRequest.map((item) => {
-            let recordSource = item.recordSource
-            let dateFormat = 'DD/MM/YYYY'
-            if (item.recordSource === 'DEBIT') {
-              recordSource = 'DEBIT-BNI'
-            }
-            if (item.recordSource === 'KREDIT') {
-              recordSource = 'KREDIT-BNI'
-            }
-            if (item.recordSource === 'QRIS') {
-              recordSource = 'QRIS-BNI'
-              dateFormat = 'DD/MM/YYYY'
-              item.approvalCode = item.approvalCode.slice(-6)
-            }
-            if (item.recordSource === 'MPM') {
-              recordSource = 'QRIS-BNI'
-              dateFormat = 'YYYY-MM-DD HH:mm:ss'
-              item.approvalCode = item.approvalCode.slice(-6)
-            }
-            if (item.recordSource === 'CPM') {
-              recordSource = 'QRIS-BNI'
-              dateFormat = 'YYYY-MM-DD HH:mm:ss'
-              item.approvalCode = item.approvalCode.slice(-6)
-            }
-
-            return ({
-              approvalCode: item.approvalCode,
-              cardNumber: item.cardNumber,
-              grossAmount: item.grossAmount,
-              mdr: item.mdr,
-              merchantId: item.merchantId,
-              merchantName: item.merchantName,
-              nettAmount: item.nettAmount,
-              redeemAmount: 0,
-              rewardAmount: 0,
-              originalAmount: 0,
-              mdrAmount: item.mdrAmount,
-              reportDate: moment(item.processEffectiveDate || item.transactionDate, dateFormat).format('YYYY-MM-DD'),
-              processEffectiveDate: moment(item.processEffectiveDate || item.transactionDate, dateFormat).format('YYYY-MM-DD'),
-              recordSource,
-              traceNumber: item.traceNumber,
-              transactionCode: item.transactionCode,
-              transactionDate: moment(item.transactionDate, dateFormat).format('YYYY-MM-DD')
-            })
-          }).filter(filtered => filtered)
-
-          if (finalRequest && finalRequest.length > 0) {
-            dispatch({
-              type: 'importBcaRecon/bulkInsert',
-              payload: {
-                bankName: 'BNI',
-                filename: file.name,
-                data: finalRequest
-              }
-            })
-          } else {
-            message.error('No Data to Upload')
+      console.log('reformatArray', reformatArray)
+      if (reformatArray && reformatArray.length > 0) {
+        dispatch({
+          type: 'importBcaRecon/bulkInsert',
+          payload: {
+            bankName: 'BNI',
+            filename: file.name,
+            data: reformatArray
           }
         })
+      } else {
+        message.error('No Data to Upload')
+      }
     }
+    reader.readAsText(file, { header: false })
   }
 
   return (
@@ -194,7 +142,7 @@ const ImportBcaRecon = ({
           <input
             id="importCsv"
             type="file"
-            accept=".xlsx"
+            accept=".csv"
             className="ant-btn ant-btn-default ant-btn-lg"
             style={{ visibility: 'hidden' }}
             {...uploadProps}
