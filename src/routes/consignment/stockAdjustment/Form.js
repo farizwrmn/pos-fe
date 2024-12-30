@@ -183,7 +183,7 @@ const FormCounter = ({
   }
 
   const vendorOption = vendorList ? vendorList.map(c => <Option key={c.id} value={c.id}>{c.vendor_code} - {c.name}</Option>) : []
-  const productOption = selectedVendorProductList ? selectedVendorProductList.map(c => <Option key={c.id} value={c.id}>{c.id} - {c.product_name}</Option>) : []
+  const productOption = selectedVendorProductList ? selectedVendorProductList.map(c => <Option key={c.id} value={c.id}>{c.product_code} - {c.product_name}</Option>) : []
 
   const productForm = (productList || []).map((record, index) => {
     return (
