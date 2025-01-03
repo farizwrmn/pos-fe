@@ -20,6 +20,16 @@ export async function queryReportOpname (params) {
   })
 }
 
+export async function queryDetailReportOpname (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-detail-report/finish',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryListEmployeeOnCharge (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
@@ -64,6 +74,26 @@ export async function queryListDetail (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/stock-opname-detail',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryListDetailHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-detail-history',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
+export async function listDetailHistory (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-detail-history',
     method: 'get',
     data: params,
     headers: apiHeaderToken

@@ -25,6 +25,7 @@
     "qs": "^6.5.0",
     "rc-tween-one": "^1.0.0",
     "react": "^15.6.1",
+    "react-barcode": "1.4.0",
     "react-countup": "^2.1.1",
     "react-dom": "^15.6.1",
     "react-helmet": "^5.1.3",
