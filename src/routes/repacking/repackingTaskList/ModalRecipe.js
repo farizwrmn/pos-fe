@@ -65,6 +65,8 @@ class ModalMemberTier extends Component {
             const request = {
               id: item.id,
               qty: data.qty,
+              minQty: data.minQty,
+              maxQty: data.maxQty,
               material
             }
             modalProps.onEdit(request, resetFields)
@@ -108,7 +110,31 @@ class ModalMemberTier extends Component {
                 }
               ]
             })(
-              <InputNumber min={0} disabled />
+              <InputNumber min={item.minQty || 0} max={item.maxQty || 0} />
+            )}
+          </FormItem>
+          <FormItem label="Min Qty" hasFeedback {...formItemLayout} >
+            {getFieldDecorator('minQty', {
+              initialValue: item.minQty,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber disabled />
+            )}
+          </FormItem>
+          <FormItem label="Max Qty" hasFeedback {...formItemLayout} >
+            {getFieldDecorator('maxQty', {
+              initialValue: item.maxQty,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(
+              <InputNumber disabled />
             )}
           </FormItem>
           <br />

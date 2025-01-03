@@ -6,6 +6,9 @@ import {
   // getGrabmartOrder,
   setCashierTrans, setServiceTrans, setBundleTrans
 } from 'utils/lstorage'
+import {
+  insertBundleTrans
+} from 'utils/variables'
 import reduce from 'lodash/reduce'
 import { query } from '../../services/marketing/bundling'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
@@ -87,10 +90,13 @@ export default modelExtend(pageModel, {
   effects: {
     * addPosPromoItem ({ payload = {} }, { put }) {
       const { bundleData, currentProduct, itemRewardProduct, currentService, itemRewardService, itemRewardCategory } = payload
+
+      const { qty } = bundleData
       if (itemRewardCategory.length === 0) {
         yield put({
           type: 'setProductPos',
           payload: {
+            qty,
             currentProduct,
             currentReward: itemRewardProduct
           }
@@ -98,6 +104,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'setServicePos',
           payload: {
+            qty,
             currentProduct: currentService,
             currentReward: itemRewardService
           }
@@ -107,10 +114,12 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             productData: {
+              qty,
               currentProduct,
               currentReward: itemRewardProduct
             },
             serviceData: {
+              qty,
               currentProduct: currentService,
               currentReward: itemRewardService
             }
@@ -120,6 +129,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'setCategoryPos',
         payload: {
+          qty,
           currentReward: itemRewardCategory,
           bundleData
         }
@@ -130,26 +140,26 @@ export default modelExtend(pageModel, {
     * addPosPromo ({ payload = {} }, { call, select, put }) {
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const currentBuildComponent = yield select(({ pos }) => pos.currentBuildComponent)
-      // * POS Total
       const dineInTax = yield select(({ pos }) => pos.dineInTax)
-      let product = getCashierTrans()
-      let consignment = getConsignment()
-      let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-      const bundleItem = getBundleTrans()
-      let bundle = groupProduct(product.filter(filtered => filtered.bundleId), bundleItem)
-      let dataPos = product.filter(filtered => !filtered.bundleId).concat(bundle).concat(service).concat(consignment)
-      let a = dataPos
-      let usageLoyalty = memberInformation.useLoyalty || 0
-      const totalDiscount = usageLoyalty
-      let totalPayment = a.reduce((cnt, o) => cnt + o.total, 0)
+      // * POS Total
+      const currentProduct = yield getCashierTrans()
+      const currentConsignment = yield getConsignment()
+      const currentService = yield getServiceTrans()
+      const currentBundle = yield getBundleTrans()
+
+      const groupDataBundle = groupProduct(currentProduct.filter(filtered => filtered.bundleId), currentBundle)
+      const groupDataPos = currentProduct.filter(filtered => !filtered.bundleId).concat(groupDataBundle).concat(currentService).concat(currentConsignment)
+      let totalDiscount = memberInformation.useLoyalty || 0
+      let totalPayment = groupDataPos.reduce((cnt, o) => cnt + o.total, 0)
 
       const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
       const dineIn = curNetto * (dineInTax / 100)
-      // * POS Total
+
       if (currentBuildComponent && currentBuildComponent.no) {
         message.error('Only allow 1 bundle for custom')
         return
       }
+
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
         const modal = Modal.warning({
           title: 'Warning',
@@ -159,11 +169,13 @@ export default modelExtend(pageModel, {
         return
       }
 
-      const { bundleId, currentBundle, currentProduct, currentService } = payload
-      const data = yield call(query, { id: bundleId })
-      const dataReward = yield call(queryReward, { bundleId, type: 'all' })
-      if (data.success && dataReward.success && dataReward.data && dataReward.data.length > 0) {
-        const item = data.data[0]
+      const { bundleId, qty = 1 } = payload
+
+      const dataHeaderBundle = yield call(query, { id: bundleId })
+      const dataDetailReward = yield call(queryReward, { bundleId, type: 'all' })
+
+      if (dataHeaderBundle.success && dataDetailReward.success && dataDetailReward.data && dataDetailReward.data.length > 0) {
+        const item = dataHeaderBundle.data[0]
         const total = (parseFloat(curNetto) + parseFloat(dineIn))
         if (item && item.minimumPayment > 0 && item.minimumPayment > total) {
           Modal.error({
@@ -172,39 +184,11 @@ export default modelExtend(pageModel, {
           })
           return
         }
-        const itemRewardProduct = dataReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
-        // for (let index in itemRewardProduct) {
-        // const currentDataReward = itemRewardProduct[index]
-        // const currentDataRewardQty = (itemRewardProduct || [])
-        // .filter(filtered => filtered.productCode === currentDataReward.productCode)
-        // .reduce((prev, curr) => { return prev + curr.qty }, 0)
-        // const currentProduct = (product || []).filter(filtered => filtered.code === currentDataReward.productCode)
-        // const currentProductQty = (currentProduct || []).reduce((prev, curr) => { return prev + curr.qty }, 0)
-        // const checkQty = currentDataRewardQty + currentProductQty
-        // if (checkQty > currentDataReward.stock || currentDataReward.stock <= 0) {
-        //   Modal.error({
-        //     title: 'Failed to add bundle item',
-        //     content: (
-        //       <div>
-        //         <div>
-        //           Bundle item out of stock!
-        //         </div>
-        //         <div>
-        //           Product: {currentDataReward.productCode} - {currentDataReward.productName}
-        //         </div>
-        //         <div>
-        //           Stock: {currentDataReward.stock}
-        //         </div>
-        //       </div>
-        //     )
-        //   })
-        //   return
-        // }
-        // }
-
-        const itemRewardService = dataReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
-        const itemRewardCategory = dataReward.data.filter(x => x.categoryCode !== null)
+        const itemRewardProduct = dataDetailReward.data.filter(x => x.type === 'P' && x.categoryCode === null)
+        const itemRewardService = dataDetailReward.data.filter(x => x.type !== 'P' && x.categoryCode === null)
+        const itemRewardCategory = dataDetailReward.data.filter(x => x.categoryCode !== null)
         const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === item.id)
+
         // eslint-disable-next-line eqeqeq
         if (resultCompareBundle && resultCompareBundle[0] && item.applyMultiple == 0) {
           Modal.warning({
@@ -213,30 +197,11 @@ export default modelExtend(pageModel, {
           })
           return
         }
-        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
         if (!categoryExists) {
-          const currentBundle = getBundleTrans()
-          const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(item.id))
-          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
-          if (exists) {
-            yield put({
-              type: 'setBundleAlreadyExists',
-              payload: {
-                currentBundle,
-                item
-              }
-            })
-          } else {
-            yield put({
-              type: 'setBundleNeverExists',
-              payload: {
-                currentBundle,
-                item
-              }
-            })
-          }
+          yield insertBundleTrans({ qty, item })
+          yield put({ type: 'pos/setCurrentBuildComponent' })
         } else {
           yield put({
             type: 'updateState',
@@ -251,19 +216,20 @@ export default modelExtend(pageModel, {
           type: 'addPosPromoItem',
           payload: {
             bundleData: {
+              qty,
               currentBundle,
               item
             },
-            currentProduct,
+            currentProduct: getCashierTrans(),
             itemRewardProduct,
-            currentService,
+            currentService: getServiceTrans(),
             itemRewardService,
             itemRewardCategory
           }
         })
         message.success('Success add bundle')
-      } else if (data.success && data.data[0]) {
-        const item = data.data[0]
+      } else if (dataHeaderBundle.success && dataHeaderBundle.data[0]) {
+        const item = dataHeaderBundle.data[0]
         const product = getCashierTrans()
         const service = getServiceTrans()
         const consignment = getConsignment()
@@ -285,13 +251,13 @@ export default modelExtend(pageModel, {
           })
         }
       } else {
-        if (dataReward.data && dataReward.data.length === 0) {
+        if (dataDetailReward.data && dataDetailReward.data.length === 0) {
           Modal.error({
             title: 'Data Not Found',
             content: 'Reward and Rules Not Found'
           })
         }
-        throw data
+        throw dataHeaderBundle
       }
     },
     * setBundleAlreadyExists ({ payload = {} }, { put }) {
@@ -360,13 +326,14 @@ export default modelExtend(pageModel, {
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
+      let { qty = 1 } = payload
       let arrayProd = currentProduct
       if (currentReward && currentReward[0]) {
         for (let key in currentReward) {
           const reward = currentReward[key]
           // eslint-disable-next-line no-loop-func
           // eslint-disable-next-line eqeqeq
-          const filteredProduct = currentProduct.filter(x => x.productId === reward.productId && x.bundleId == reward.bundleId && x.categoryCode == reward.categoryCode)
+          const filteredProduct = currentProduct.filter(x => Number(x.productId) === Number(reward.productId) && x.bundleId == reward.bundleId && x.categoryCode == reward.categoryCode)
           if (filteredProduct && filteredProduct[0]) {
             const selectedProduct = filteredProduct[0]
             let sellingPrice = (memberInformation.memberSellPrice ? reward[memberInformation.memberSellPrice.toString()] : reward.sellPrice)
@@ -403,7 +370,7 @@ export default modelExtend(pageModel, {
               employeeId: mechanicInformation.employeeId,
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'P',
-              qty: selectedProduct.qty + reward.qty,
+              qty: selectedProduct.qty + (reward.qty * qty),
               sellPrice: sellingPrice,
               sellingPrice,
               price: sellingPrice,
@@ -454,7 +421,7 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               name: reward.productName,
               typeCode: 'P',
-              qty: reward.qty,
+              qty: (reward.qty * qty),
               sellPrice: sellingPrice,
               sellingPrice,
               price: sellingPrice,
@@ -521,12 +488,13 @@ export default modelExtend(pageModel, {
       const mechanicInformation = yield select(({ pos }) => pos.mechanicInformation)
       let currentProduct = payload.currentProduct
       let currentReward = payload.currentReward
+      const { qty = 1 } = payload
       let arrayProd = currentProduct
       if (currentReward && currentReward[0]) {
         for (let key in currentReward) {
           const reward = currentReward[key]
           // eslint-disable-next-line no-loop-func
-          const filteredProduct = currentProduct.filter(x => x.productId === reward.productId && x.bundleId === reward.bundleId && x.categoryCode === reward.categoryCode)
+          const filteredProduct = currentProduct.filter(x => Number(x.productId) === Number(reward.productId) && x.bundleId === reward.bundleId && x.categoryCode === reward.categoryCode)
           if (filteredProduct && filteredProduct[0]) {
             const selectedProduct = filteredProduct[0]
             let data = {
@@ -542,7 +510,7 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'S',
               inputTime: new Date().valueOf(),
-              qty: selectedProduct.qty + reward.qty,
+              qty: selectedProduct.qty + (reward.qty * qty),
               sellPrice: reward.sellPrice,
               sellingPrice: reward.sellPrice,
               price: reward.sellPrice,
@@ -572,7 +540,7 @@ export default modelExtend(pageModel, {
               employeeName: `${mechanicInformation.employeeName} (${mechanicInformation.employeeCode})`,
               typeCode: 'S',
               inputTime: new Date().valueOf(),
-              qty: reward.qty,
+              qty: (reward.qty * qty),
               sellPrice: reward.sellPrice,
               sellingPrice: reward.sellPrice,
               price: reward.sellPrice,

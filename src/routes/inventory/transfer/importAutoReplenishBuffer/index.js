@@ -109,7 +109,7 @@ const ImportAutoReplenishBuffer = ({
     ? (<PrintXLS data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
-  const handleChangeFile = (event) => {
+  const handleChangeFile = (event, type = 'replace') => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -157,6 +157,7 @@ const ImportAutoReplenishBuffer = ({
                 type: 'importAutoReplenishBuffer/add',
                 payload: {
                   storeId: getData.storeIdReceiver,
+                  fileType: type,
                   detail: uploadData
                 }
               })
@@ -241,7 +242,7 @@ const ImportAutoReplenishBuffer = ({
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
 
       <Row>
-        <Col sm={24} md={12} lg={8}>
+        <Col sm={24} md={12} lg={12}>
           <Form layout="horizontal">
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
@@ -266,9 +267,9 @@ const ImportAutoReplenishBuffer = ({
         {'Stock: '}
         {buttonClickXLS}
         <span>
-          <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+          <label htmlFor="replaceFile" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Replace</label>
           <input
-            id="opname"
+            id="replaceFile"
             type="file"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             className="ant-btn ant-btn-default ant-btn-lg"
@@ -278,7 +279,24 @@ const ImportAutoReplenishBuffer = ({
               event.target.value = null
             }}
             onInput={(event) => {
-              handleChangeFile(event)
+              handleChangeFile(event, 'replace')
+            }}
+          />
+        </span>
+        <span>
+          <label htmlFor="newFile" className="ant-btn ant-btn-default ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Insert New</label>
+          <input
+            id="newFile"
+            type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            style={{ visibility: 'hidden' }}
+            {...uploadProps}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleChangeFile(event, 'new')
             }}
           />
         </span>

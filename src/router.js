@@ -230,6 +230,10 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/pkm/pkmFormula'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/product/productTag'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/productcategory'))
               cb(null, require('./routes/pkm/pkmFormula'))
             }, 'stock-pkm')
           }
@@ -240,6 +244,43 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/pkm/settingStore'))
               cb(null, require('./routes/pkm/settingStore'))
             }, 'pkm-setting-store')
+          }
+        }, {
+          path: 'stock-opname-location',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpnameLocation'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameLocation'))
+            }, 'stock-opname-locations')
+          }
+        }, {
+        }, {
+          path: 'stock-opname-detail-history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpnameLocation'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameLocation'))
+            }, 'stock-opname-detail-history')
+          }
+        }, {
+          path: 'print-barcode',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpnameBarcode'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameBarcode'))
+            }, 'print-barcode')
+          }
+        }, {
+        }, {
+          path: 'stock-opname-location/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/inventory/stockOpnameLocation'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameLocation'))
+            }, 'stock-opname-location/:id')
           }
         }, {
           path: 'stock',
@@ -992,6 +1033,26 @@ const Routers = function ({ history, app }) {
             }, 'transaction-adjust')
           }
         }, {
+          path: 'transaction/product-waste',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/adjustNew'))
+              registerModel(app, require('./models/inventory/adjust'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/transaction/pos'))
+              registerModel(app, require('./models/accounts/accountRule'))
+              cb(null, require('./routes/transaction/productWaste'))
+            }, 'transaction-productwaste')
+          }
+        }, {
+          path: 'transaction/product-waste/:id',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/adjustDetail'))
+              cb(null, require('./routes/transaction/adjust/detail'))
+            }, 'transaction-product-waste-detail')
+          }
+        }, {
           path: 'transaction/adjust/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
@@ -1089,6 +1150,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/report/pos'))
               cb(null, require('./routes/report/pos/daily/'))
             }, 'report-pos-daily')
+          }
+        }, {
+          path: 'report/pos/integration',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/report/posIntegration'))
+              cb(null, require('./routes/report/posIntegration'))
+            }, 'report-pos-integration')
           }
         }, {
           path: 'chart/pos',
@@ -1449,6 +1518,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/marketing/advertising'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/marketing/advertising'))
             }, 'marketing-advertising')
           }
@@ -1877,6 +1947,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/inventory/stockOpname'))
               cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
             }, 'stock-opname-detail')
+          }
+        }, {
+          path: 'stock-opname-detail-history',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/inventory/stockOpname'))
+              cb(null, require('./routes/inventory/stockOpname/stockOpnameDetail'))
+            }, 'stock-opname-detail-history')
           }
         }, {
           path: 'stock-opname-partial',

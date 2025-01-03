@@ -28,6 +28,7 @@ export default modelExtend(pageModel, {
 
   state: {
     listDetail: [],
+    listResult: [],
     listAccounting: [],
     data: {},
 
@@ -99,6 +100,7 @@ export default modelExtend(pageModel, {
           payload: {
             data: response.data,
             listDetail: response.detailRequest,
+            listResult: response.detailResult || [],
             materialRequest: response.materialRequest
             // listAccounting
           }
@@ -155,7 +157,7 @@ export default modelExtend(pageModel, {
           throw new Error('Standard Recipe Not Found')
         }
         const standardRecipe = responseStandardRecipe.data[0]
-        const responseStandardRecipeDetail = yield call(queryStandardRecipeDetail, { transId: standardRecipe.id })
+        const responseStandardRecipeDetail = yield call(queryStandardRecipeDetail, { transId: standardRecipe.id, type: 'all' })
         if (!responseStandardRecipeDetail.success || (responseStandardRecipeDetail && responseStandardRecipeDetail.data && responseStandardRecipe.data.length === 0)) {
           throw new Error('Standard Recipe Material Not Found')
         }
@@ -172,6 +174,8 @@ export default modelExtend(pageModel, {
                 productCode: response.data.productCode,
                 productId: response.data.id,
                 qty: payload.qty,
+                minQty: parseInt(standardRecipe.minQtyFactor * payload.qty, 10),
+                maxQty: parseInt(standardRecipe.maxQtyFactor * payload.qty, 10),
                 standardRecipeId: standardRecipe.id,
                 material: standardRecipeDetail.map((item) => {
                   if (!isInt(item.qty * payload.qty)) {
@@ -182,6 +186,8 @@ export default modelExtend(pageModel, {
                     productCode: item.productCode,
                     productId: item.productId,
                     qty: item.qty * payload.qty,
+                    minQty: item.qty * payload.minQty,
+                    maxQty: item.qty * payload.maxQty,
                     standardRecipeId: standardRecipe.id
                   })
                 })

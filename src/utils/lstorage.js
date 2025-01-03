@@ -108,6 +108,22 @@ const setGrabmartOrder = (grabOrder) => {
   return localStorage.setItem('grabmartOrder', JSON.stringify(grabOrder || '{}'))
 }
 
+const getPosLockTransaction = () => {
+  return localStorage.getItem('posLockTransaction') ? JSON.parse(localStorage.getItem('posLockTransaction')) : false
+}
+
+const setPosLockTransaction = (status) => {
+  return localStorage.setItem('posLockTransaction', status)
+}
+
+const getExpressOrder = () => {
+  return localStorage.getItem('expressOrder') ? JSON.parse(localStorage.getItem('expressOrder')) : {}
+}
+
+const setExpressOrder = (grabOrder) => {
+  return localStorage.setItem('expressOrder', JSON.stringify(grabOrder || '{}'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -126,6 +142,27 @@ const getVoucherList = () => {
 
 const setVoucherList = (data) => {
   return localStorage.setItem('voucher_list', data)
+}
+
+const getCachedSerialPort = () => {
+  return localStorage.getItem('cachedSerialPort') ? JSON.parse(localStorage.getItem('cachedSerialPort')) : []
+}
+
+const setCachedSerialPort = (item) => {
+  let data = []
+  const listCache = getCachedSerialPort()
+  const filteredTypeCode = listCache.filter(filtered => filtered.typeCode === item.typeCode)
+  if (filteredTypeCode && filteredTypeCode[0]) {
+    data = listCache.map((cache) => {
+      if (cache.typeCode === item.typeCode) {
+        return item
+      }
+      return cache
+    })
+  } else {
+    data = listCache.concat([item])
+  }
+  return localStorage.setItem('cachedSerialPort', JSON.stringify(data))
 }
 
 const getQrisImage = () => {
@@ -151,6 +188,7 @@ const getDynamicQrisPosTransId = () => {
 const setDynamicQrisPosTransId = (data) => {
   return localStorage.setItem('dynamic_qris_pos_trans_id', data)
 }
+
 
 const getDynamicQrisPosTransNo = () => {
   return localStorage.getItem('dynamic_qris_pos_trans_no') ? localStorage.getItem('dynamic_qris_pos_trans_no') : null
@@ -584,5 +622,11 @@ module.exports = {
   getDynamicQrisImageTTL,
   getAvailablePaymentType,
   setAvailablePaymentType,
-  removeAvailablePaymentType
+  removeAvailablePaymentType,
+  getExpressOrder,
+  setExpressOrder,
+  getCachedSerialPort,
+  setCachedSerialPort,
+  getPosLockTransaction,
+  setPosLockTransaction
 }

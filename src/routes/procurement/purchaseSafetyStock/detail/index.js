@@ -72,6 +72,7 @@ const Detail = ({ app, journalentry, dispatch }) => {
         </div>
 
         {(user.permissions.role === 'OWN'
+          || user.permissions.role === 'ITS'
           || user.permissions.role === 'SPR'
           || user.permissions.role === 'PCS'
           || user.permissions.role === 'HPC'

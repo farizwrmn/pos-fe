@@ -32,6 +32,7 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const match = pathToRegexp('/transaction/adjust/:id').exec(location.pathname)
+        const matchProductWaste = pathToRegexp('/transaction/product-waste/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
@@ -39,6 +40,16 @@ export default modelExtend(pageModel, {
               id: decodeURIComponent(match[1]),
               storeId: lstorage.getCurrentUserStore(),
               match
+            }
+          })
+        }
+        if (matchProductWaste) {
+          dispatch({
+            type: 'queryDetail',
+            payload: {
+              id: decodeURIComponent(matchProductWaste[1]),
+              storeId: lstorage.getCurrentUserStore(),
+              match: matchProductWaste
             }
           })
         }

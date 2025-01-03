@@ -1,7 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, add, edit, remove } from 'services/pkm/pkmFormula'
+import { query, add, addImport, editTag, edit, remove } from 'services/pkm/pkmFormula'
 import { pageModel } from 'models/common'
 import { lstorage } from 'utils'
 
@@ -17,6 +16,16 @@ export default modelExtend(pageModel, {
     modalType: 'add',
     activeKey: '0',
     list: [],
+    modalEditMinorVisible: false,
+    modalEditPkmItem: {},
+    modalEditPkmVisible: false,
+
+    modalEditMpkmVisible: false,
+    modalEditTagVisible: false,
+    modalEditTagItem: {},
+
+    tmpListProduct: [],
+    searchText: '',
     pagination: {
       pageSizeOptions: ['50', '100', '500', '1000'],
       showSizeChanger: true,
@@ -45,7 +54,10 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: response.data,
+            list: response.data.map((item, index) => {
+              item.no = index + 1
+              return item
+            }),
             pagination: {
               current: Number(response.page) || 1,
               pageSize: Number(response.pageSize) || 10,
@@ -93,38 +105,101 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * addImport ({ payload }, { call, put }) {
+      payload.header = { storeId: payload.storeId }
+      const data = yield call(addImport, payload)
+      if (data.success) {
+        success()
+        yield put({ type: 'query' })
+      } else {
+        throw data
+      }
+    },
+
     * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ accountCode }) => accountCode.currentItem.id)
+      console.log('edit', payload)
+      const id = yield select(({ pkmFormula }) => pkmFormula.modalEditPkmItem.id)
+      const list = yield select(({ pkmFormula }) => pkmFormula.list)
+      const tmpListProduct = yield select(({ pkmFormula }) => pkmFormula.tmpListProduct)
       const newCounter = { ...payload.data, id }
       const response = yield call(edit, newCounter)
       if (response.success) {
         success()
+        const { data } = payload
         yield put({
           type: 'updateState',
           payload: {
-            modalType: 'add',
-            currentItem: {},
-            activeKey: '1'
+            list: list.map((item, index) => {
+              item.no = index + 1
+              if (id === item.id) {
+                item.minor = data.minor
+                item.nPlus = data.nPlus
+                item.nCross = data.nCross
+                item.mpkm = data.mpkm
+                item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
+              }
+              return item
+            }),
+            tmpListProduct: tmpListProduct.map((item, index) => {
+              item.no = index + 1
+              if (id === item.id) {
+                item.minor = data.minor
+                item.nPlus = data.nPlus
+                item.nCross = data.nCross
+                item.mpkm = data.mpkm
+                item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
+              }
+              return item
+            }),
+            modalEditMinorVisible: false,
+            modalEditMpkmVisible: false,
+            modalEditPkmItem: {},
+            modalEditPkmVisible: false
           }
         })
-        const { pathname } = location
-        yield put(routerRedux.push({
-          pathname,
-          query: {
-            activeKey: '1'
-          }
-        }))
-        yield put({ type: 'query' })
+
         if (payload.reset) {
           payload.reset()
         }
       } else {
+        throw response
+      }
+    },
+    * editTag ({ payload }, { select, call, put }) {
+      const id = yield select(({ pkmFormula }) => pkmFormula.modalEditTagItem.productId)
+      const list = yield select(({ pkmFormula }) => pkmFormula.list)
+      const tmpListProduct = yield select(({ pkmFormula }) => pkmFormula.tmpListProduct)
+      const newCounter = { ...payload.data, id }
+      const response = yield call(editTag, newCounter)
+      if (response.success) {
+        success()
+        const { data } = payload
         yield put({
           type: 'updateState',
           payload: {
-            currentItem: payload
+            list: list.map((item, index) => {
+              item.no = index + 1
+              if (id === item.productId) {
+                item.productTag = data.productTag
+              }
+              return item
+            }),
+            tmpListProduct: tmpListProduct.map((item, index) => {
+              item.no = index + 1
+              if (id === item.productId) {
+                item.productTag = data.productTag
+              }
+              return item
+            }),
+            modalEditTagItem: {},
+            modalEditTagVisible: false
           }
         })
+
+        if (payload.reset) {
+          payload.reset()
+        }
+      } else {
         throw response
       }
     }
@@ -136,11 +211,38 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         list,
+        tmpListProduct: list.map((item, index) => {
+          item.no = index + 1
+          return item
+        }),
         pagination: {
           ...state.pagination,
           ...pagination
         }
       }
+    },
+
+    searchProduct (state, action) {
+      const { searchText } = action.payload
+      const { tmpListProduct } = state
+      const reg = new RegExp(searchText, 'gi')
+      let newData
+      newData = tmpListProduct.map((record) => {
+        const match = record.productCode.match(reg)
+          || record.productName.match(reg)
+          || (record.categoryName || '').match(reg)
+          || (record.departmentName || '').match(reg)
+          || (record.subdepartmentName || '').match(reg)
+          || (record.brandName || '').match(reg)
+        if (!match) {
+          return null
+        }
+        return {
+          ...record
+        }
+      }).filter(record => !!record)
+
+      return { ...state, list: newData }
     },
 
     updateState (state, { payload }) {

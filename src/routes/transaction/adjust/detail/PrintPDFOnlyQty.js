@@ -80,7 +80,7 @@ const PrintPDF = ({ user, listItem, itemHeader, storeInfo, printNo }) => {
         table: {
           widths: ['15%', '1%', '32%', '10%', '15%', '1%', '27%'],
           body: [
-            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 11 }, {}, {}, {}, {}],
+            [{ text: 'NO TRANSAKSI', fontSize: 11 }, ':', { text: (itemHeader.transNo || '').toString(), fontSize: 11 }, {}, { text: 'REF DATE', fontSize: 11 }, ':', { text: itemHeader.referenceDate ? moment(itemHeader.referenceDate).format('DD-MM-YYYY') : '', fontSize: 11 }],
             [{ text: 'TANGGAL', fontSize: 11 }, ':', { text: moment(itemHeader.transDate).format('DD-MM-YYYY'), fontSize: 11 }, {}, {}, {}, {}],
             [{ text: 'MEMO', fontSize: 11 }, ':', { text: (itemHeader.memo || '').toString(), fontSize: 11 }, {}, {}, {}, {}]
           ]

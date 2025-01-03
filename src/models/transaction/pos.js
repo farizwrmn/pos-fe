@@ -11,11 +11,14 @@ import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
+import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
+import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
 import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'services/store/expressStore'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { getSerialPort, postSerialPort } from 'services/edc/serialService'
 import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
-import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
+import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { currencyFormatter } from 'utils/string'
@@ -32,6 +35,10 @@ import {
 import {
   queryReference
 } from 'services/payment'
+import {
+  query as queryLockTransaction,
+  add as unlockTransaction
+} from 'services/pos/unlockTransaction'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -76,10 +83,13 @@ import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLate
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {
+  getCachedSerialPort, setCachedSerialPort,
+
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setBundleTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
+  getExpressOrder, setExpressOrder,
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
@@ -88,7 +98,9 @@ const {
   setPosReference,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
   getQrisPaymentTimeLimit,
-  setAvailablePaymentType
+  setAvailablePaymentType,
+
+  getPosLockTransaction, setPosLockTransaction
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -102,17 +114,31 @@ export default {
   namespace: 'pos',
 
   state: {
+    modalUnlockTransactionVisible: false,
+    modalUnlockTransactionShowForm: false,
+    lockTransaction: getPosLockTransaction() || false,
+    modalPosDescriptionVisible: false,
+    modalPosDescriptionDynamicQrisVisible: false,
+    posDescription: null,
     enableDineIn: 1,
     enableDineInLastUpdatedAt: null,
     enableDineInLastUpdatedBy: null,
     currentBundlePayment: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
+    modalExpressCodeVisible: false,
     modalGrabmartCodeVisible: false,
     modalGrabmartCodeItem: {},
+    modalExpressCodeItem: {},
     currentGrabOrder: {},
+    currentExpressOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
+    serialPortName: null,
+    serialPortDescription: null,
+    serialApprovalCode: null,
+    cachedSerialPortName: [],
+    listSerialPort: [],
     list: [],
     listRewardGuide: [],
     dataReward: [],
@@ -262,6 +288,9 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'pos/queryLockTransaction'
+          })
           getDynamicQrisImage()
           dispatch({
             type: 'getEnableDineIn',
@@ -304,6 +333,12 @@ export default {
           dispatch({
             type: 'checkPaymentTransactionInvoice'
           })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: false
+            }
+          })
         }
         if (location.pathname === '/transaction/pos/history') {
           dispatch({
@@ -329,6 +364,87 @@ export default {
   },
 
   effects: {
+    * printLatestTransaction (payload, { put, call }) {
+      const response = yield call(queryPaymentTransactionLatest, { storeId: lstorage.getCurrentUserStore() })
+      if (response.success && response.data && response.data.length > 0) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${response.data[0].posId}?status=reprint`)
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        if (invoiceWindow) {
+          invoiceWindow.focus()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: true
+            }
+          })
+        } else {
+          message.error('Please allow pop-up in your browser')
+        }
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalUnlockTransactionShowForm: true
+          }
+        })
+      }
+    },
+
+    * queryLockTransaction (payload, { put, call }) {
+      const lockTransaction = getPosLockTransaction()
+      console.log('first', lockTransaction)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          lockTransaction
+        }
+      })
+      if (!lockTransaction) {
+        const response = yield call(queryLockTransaction)
+        console.log('second', response)
+        if (response.success && response.data) {
+          setPosLockTransaction(true)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: true
+            }
+          })
+        } else {
+          setPosLockTransaction(false)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: false
+            }
+          })
+        }
+      }
+    },
+
+    * unlockTransaction (payload, { put, call }) {
+      setPosLockTransaction(false)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionVisible: true,
+          modalUnlockTransactionVisible: false,
+          modalUnlockTransactionShowForm: false,
+          lockTransaction: false
+        }
+      })
+      yield call(unlockTransaction, {})
+      yield put({
+        type: 'queryLockTransaction',
+        payload: {}
+      })
+    },
+
     * querySequenceReference (payload, { call }) {
       const response = yield call(queryReference, {
         storeId: lstorage.getCurrentUserStore()
@@ -337,6 +453,124 @@ export default {
         setPosReference(response.data)
       } else {
         throw response
+      }
+    },
+
+    * showEdcModal ({ payload = {} }, { select, call, put }) {
+      const { list } = payload
+      const listAmount = yield select(({ payment }) => payment.listAmount)
+      const listVoucher = yield select(({ pos }) => pos.listVoucher)
+      const curTotal = yield select(({ pos }) => pos.curTotal)
+      const data = yield call(queryEdc, {
+        paymentOption: 'V'
+      })
+      let listPayment = []
+      let listCost = []
+      if (data.success) {
+        listPayment = data.data
+        const responseCost = yield call(queryCost, {
+          machineId: listPayment[0].id,
+          relationship: 1
+        })
+        if (responseCost && responseCost.success) {
+          listCost = responseCost.data
+        }
+      }
+      for (let key = 0; key < list.length; key += 1) {
+        const item = list[key]
+        item.id = key + 1
+        if (listAmount && listAmount.filter(filtered => filtered.typeCode === 'V').length !== listVoucher.length) {
+          if (listPayment && listPayment.length === 1) {
+            if (listCost && listCost[0]) {
+              yield put({
+                type: 'payment/addMethod',
+                payload: {
+                  listAmount,
+                  data: {
+                    id: item.id,
+                    amount: item.voucherValue,
+                    bank: listCost[0].id,
+                    chargeNominal: 0,
+                    chargePercent: 0,
+                    chargeTotal: 0,
+                    description: item.voucherName,
+                    voucherCode: item.generatedCode,
+                    voucherId: item.voucherId,
+                    machine: listPayment[0].id,
+                    printDate: null,
+                    typeCode: 'V'
+                  }
+                }
+              })
+            }
+          }
+        }
+      }
+      yield put({ type: 'pos/setCurTotal' })
+
+      yield put({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+      yield put({
+        type: 'payment/showPaymentModal'
+      })
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      let serialPortName = null
+      let serialPortDescription = null
+      const listSerialResponse = yield call(getSerialPort, {
+        typeCode: payload.typeCode
+      })
+      if (listSerialResponse && Array.isArray(listSerialResponse.list) && listSerialResponse.list.length > 0) {
+        const listCachedSerial = getCachedSerialPort()
+        if (listCachedSerial && Array.isArray(listCachedSerial) && listCachedSerial.length > 0) {
+          const filteredCachedSerial = listCachedSerial.filter(filtered => filtered.typeCode === payload.typeCode)
+          if (filteredCachedSerial && filteredCachedSerial[0]) {
+            const filterSerialByName = listSerialResponse.list.filter(filtered => filtered.portDescription === filteredCachedSerial[0].portDescription)
+            if (filterSerialByName && filterSerialByName[0]) {
+              serialPortName = filterSerialByName[0].portName
+              serialPortDescription = filterSerialByName[0].portDescription
+            }
+          }
+        } else {
+          const filterIngenico = listSerialResponse.list.filter(filtered => filtered.portDescription.includes('Ingenico Card Reader'))
+          if (filterIngenico && filterIngenico[0]) {
+            serialPortName = filterIngenico[0].portName
+            serialPortDescription = filterIngenico[0].portDescription
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            serialPortName,
+            serialPortDescription,
+            listSerialPort: listSerialResponse.list
+          }
+        })
+        const usageLoyalty = memberInformation.useLoyalty || 0
+        const totalDiscount = usageLoyalty
+        const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+        const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
+        if (serialPortName != null) {
+          if (paymentValue > 0) {
+            const responseSerial = yield call(postSerialPort, {
+              portName: serialPortName,
+              total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
+            })
+            if (payload.typeCode === 'NID' && responseSerial.ecrType === 'BNI' && responseSerial.approvalCode !== '000000') {
+              setCachedSerialPort({
+                typeCode: payload.typeCode,
+                portName: serialPortName,
+                portDescription: serialPortDescription
+              })
+              yield put({
+                type: 'updateState',
+                payload: {
+                  serialApprovalCode: responseSerial.approvalCode
+                }
+              })
+            }
+          }
+        }
+      } else {
+        message.error('EDC Not Found')
       }
     },
 
@@ -850,6 +1084,16 @@ export default {
       })
     },
 
+    * getExpressOrder (payload, { put }) {
+      const currentExpressOrder = getExpressOrder()
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentGrabOrder: currentExpressOrder
+        }
+      })
+    },
+
     * setPaymentShortcut ({ payload = {} }, { put }) {
       const { item } = payload
       const listPaymentShortcut = lstorage.getPaymentShortcut()
@@ -888,7 +1132,7 @@ export default {
 
     * cancelInvoice ({ payload }, { select, call, put }) {
       const userRole = lstorage.getCurrentUserRole()
-      if (userRole !== 'OWN') {
+      if (userRole !== 'OWN' && userRole !== 'ITS') {
         const listPayment = yield select(({ pos }) => pos.listPayment)
         const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
         const responseRestrictDateTimeStamp = yield call(getDateTime, { id: 'timestamp' })
@@ -1263,10 +1507,7 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              bundleId: response.data.bundle.id,
-              currentBundle: getBundleTrans(),
-              currentProduct: getCashierTrans(),
-              currentService: getServiceTrans()
+              bundleId: response.data.bundle.id
             }
           })
         }
@@ -2535,10 +2776,7 @@ export default {
       if (listProductQty && listProductQty.length > 0) {
         const dataService = getServiceTrans()
 
-        // const currentBundle = getBundleTrans()
         const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-        // const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         if (payload.reset) {
           payload.reset()
         }
@@ -3346,10 +3584,7 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              bundleId: response.data.id,
-              currentBundle: getBundleTrans(),
-              currentProduct: getCashierTrans(),
-              currentService: getServiceTrans()
+              bundleId: response.data.id
             }
           })
         }
@@ -3635,6 +3870,7 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          posDescription: null,
           currentBundlePayment: {},
           currentBuildComponent: {},
           currentReplaceBundle: {},
@@ -3736,6 +3972,67 @@ export default {
       }
     },
 
+    * submitExpressCode ({ payload = {} }, { select, call, put }) {
+      const item = yield select(({ pos }) => pos.modalGrabmartCodeItem)
+      const response = yield call(queryExpressCode, payload)
+      if (response && response.success) {
+        const event = item.dineInTax
+        const type = item.consignmentPaymentType
+        setExpressOrder({
+          orderTag: response.data.orderTag,
+          firstName: response.data.firstName,
+          phoneNumber: response.data.phoneNumber,
+          orderShortNumber: response.data.orderShortNumber,
+          id: response.data.id
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalExpressCodeVisible: false
+          }
+        })
+        localStorage.setItem('dineInTax', 0)
+        localStorage.setItem('typePembelian', type)
+
+        yield put({
+          type: 'pos/changeDineIn',
+          payload: {
+            dineInTax: event,
+            typePembelian: type,
+            selectedPaymentShortcut: item
+          }
+        })
+
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            dineInTax: event,
+            typePembelian: type
+          }
+        })
+
+        yield put({
+          type: 'pos/setPaymentShortcut',
+          payload: {
+            item
+          }
+        })
+        yield put({
+          type: 'getGrabmartOrder',
+          payload: {}
+        })
+
+        yield put({
+          type: 'pos/removeTrans'
+        })
+        yield put({ type: 'pos/setDefaultMember' })
+        yield put({ type: 'pos/setDefaultEmployee' })
+        yield put({ type: 'pos/setDefaultPaymentShortcut' })
+      } else {
+        throw response
+      }
+    },
+
     * getServiceUsageReminder ({ payload = {} }, { call, put }) {
       const data = yield call(getServiceUsageReminder, payload)
       if (data.success) {
@@ -3821,7 +4118,7 @@ export default {
     * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
       const response = yield call(queryCheckValidByPaymentReference, payload)
       if (response && response.success) {
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}?status=reprint`)
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -3835,7 +4132,7 @@ export default {
       const response = yield call(queryCheckPaymentTransactionStatus, payload)
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}?status=reprint`)
         yield put({
           type: 'payment/updateState',
           payload: {
@@ -4242,7 +4539,7 @@ export default {
     },
 
     hideModalShift (state) {
-      return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
+      return { ...state, modalShiftVisible: false, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null }
     },
 
     showMemberModal (state, action) {
@@ -4267,7 +4564,7 @@ export default {
       return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
-      return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
+      return { ...state, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null, totalItem: 0, itemPayment: [] }
     },
 
     showServiceListModal (state, action) {
@@ -4345,6 +4642,9 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        serialPortName: null,
+        serialApprovalCode: null,
+        posDescription: null,
         listVoucher: [],
         currentBundlePayment: {},
         currentReplaceBundle: {},

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Form, Select, Spin, Button, InputNumber } from 'antd'
+import { Modal, Form, Select, Spin, Button, message, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -58,6 +58,14 @@ class ModalMemberTier extends Component {
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
+            if (data.minQty > data.qty) {
+              message.error('Min Qty is more than Qty')
+              return
+            }
+            if (data.maxQty < data.qty) {
+              message.error('Max Qty is more than Qty')
+              return
+            }
             if (modalProps.modalType === 'add') {
               modalProps.onAdd(data, resetFields)
             } else {
@@ -122,6 +130,27 @@ class ModalMemberTier extends Component {
               ]
             })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
           </FormItem>
+
+          {/* <FormItem label="Min Qty" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('minQty', {
+              initialValue: this.state.maxQtyFactor * getFieldValue('qty'),
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber disabled style={{ width: '100%' }} />)}
+          </FormItem>
+          <FormItem label="Max Qty" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('maxQty', {
+              initialValue: this.state.maxQtyFactor * getFieldValue('qty'),
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<InputNumber disabled style={{ width: '100%' }} />)}
+          </FormItem> */}
         </Form>
       </Modal>
     )

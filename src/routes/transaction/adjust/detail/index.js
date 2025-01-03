@@ -70,6 +70,7 @@ const Detail = ({ adjustDetail, app, dispatch }) => {
           </Row>
         </div>
         {(user.permissions.role === 'OWN'
+          || user.permissions.role === 'ITS'
           || user.permissions.role === 'SPR'
           || user.permissions.role === 'HPC'
           || user.permissions.role === 'SPC'

@@ -449,7 +449,7 @@ export default modelExtend(pageModel, {
     },
     * queryStore (payload, { call, put }) {
       const listStore = lstorage.getListUserStores()
-      if (listStore && listStore.length === 1) {
+      if (listStore && listStore.length > 0) {
         const response = yield call(queryStore, {
           id: listStore[0].value
         })

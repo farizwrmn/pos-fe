@@ -20,7 +20,10 @@ import ModalEmployee from './ModalEmployee'
 import ModalPhaseTwo from './ModalPhaseTwo'
 import ListEmployee from './ListEmployee'
 import ListEmployeePhase2 from './ListEmployeePhase2'
+import ListLocationName from './ListLocationName'
 import PrintXLS from './PrintXLS'
+import PrintLocationXLS from './PrintLocationXLS'
+import ModalLocation from './ModalLocation'
 
 const { numberFormatter } = numberFormat
 
@@ -74,8 +77,8 @@ class Detail extends Component {
       dispatch
     } = this.props
     const { storeInfo } = app
-    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination,
-      modalEditVisible, modalEditItem
+    const { modalPhaseOneVisible, modalPhaseTwoVisible, listEmployeePhase2, listEmployeeOnCharge, modalAddEmployeeVisible, listEmployee, listDetail, listReport, listDetailFinish, detailData, finishPagination, detailPagination, listLocationDetailHistory,
+      modalEditVisible, modalEditItem, detailHistory, listDetailHistory, modalLocationVisible, modalLocationItem, listDetailHistoryPagination
     } = stockOpname
     const content = []
     for (let key in detailData) {
@@ -93,6 +96,11 @@ class Detail extends Component {
 
     const printProps = {
       listTrans: listReport,
+      storeInfo
+    }
+
+    const printDetailLocationProps = {
+      listTrans: listDetailHistory,
       storeInfo
     }
 
@@ -207,6 +215,79 @@ class Detail extends Component {
             modalEditVisible: false
           }
         })
+      }
+    }
+
+    const modalLocationProps = {
+      visible: modalLocationVisible,
+      maskClosable: false,
+      dataSource: detailHistory,
+      title: modalLocationItem ? modalLocationItem.productName : 'Choose Product',
+      wrapClassName: 'vertical-center-modal',
+      onOpen: async (record) => {
+        await dispatch({
+          type: 'stockOpname/queryListDetailHistory',
+          payload: {
+            transId: detailData.id,
+            productCode: record.productCode
+          }
+        })
+      },
+      onCancel () {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalLocationVisible: false
+          }
+        })
+      },
+      onOk () {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalLocationVisible: false
+          }
+        })
+      }
+    }
+
+    const filterProps = {
+      onFilterChange (value) {
+        dispatch({
+          type: 'stockOpname/listDetailHistory',
+          payload: {
+            ...value,
+            transId: detailData.id
+          }
+        })
+      },
+      onChange (page) {
+        const { queryDetailHistory } = stockOpname
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            queryDetailHistory
+          }
+        })
+        dispatch({
+          type: 'stockOpname/listDetailHistory',
+          payload: {
+            q: queryDetailHistory,
+            transId: detailData.id,
+            page: page.current,
+            pageSize: page.pageSize
+          }
+        })
+      },
+      onRowClick (record) {
+        dispatch({
+          type: 'stockOpname/updateState',
+          payload: {
+            modalLocationVisible: true,
+            modalLocationItem: record
+          }
+        })
+        modalLocationProps.onOpen(record)
       }
     }
 
@@ -401,6 +482,13 @@ class Detail extends Component {
                 </div>
               </Row>
             ) : null}
+          </div>
+          <div className="content-inner-zero-min-height">
+            <Row style={{ padding: '10px', margin: '4px', paddingTop: '10px' }}>
+              <PrintLocationXLS {...printDetailLocationProps} />
+              <ListLocationName {...filterProps} dataSource={listLocationDetailHistory} pagination={listDetailHistoryPagination} onRowClick={filterProps.onRowClick} />
+              {modalLocationVisible && <ModalLocation {...modalLocationProps} />}
+            </Row>
             <Row style={{ padding: '10px', margin: '4px' }}>
               {listDetail && listDetail.length > 0 && listDetailFinish && listDetailFinish.length > 0 ? <h1>Conflict ({detailPagination ? detailPagination.total : 0})</h1> : null}
               {listDetail && listDetail.length > 0 ? <TransDetail {...formDetailProps} /> : null}

@@ -57,7 +57,9 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { pathname } = location
         const { activeKey } = location.query
-        if (pathname === '/transaction/adjust') {
+        if (pathname === '/transaction/adjust'
+          || pathname === '/transaction/product-waste'
+        ) {
           dispatch({
             type: 'query',
             payload: {

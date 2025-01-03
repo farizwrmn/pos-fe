@@ -215,7 +215,8 @@ const ImportBcaRecon = ({
           recordSource,
           traceNumber: item.traceNumber,
           transactionCode: item.transactionCode,
-          transactionDate: moment(item.transactionDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
+          transactionDate: moment(item.transactionDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+          transactionTime: moment(item.transactionTime, 'HHmmss').format('HH:mm:ss')
         })
       }).filter(filtered => filtered)
 

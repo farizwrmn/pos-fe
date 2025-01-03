@@ -26,6 +26,21 @@ const List = ({ editItem, deleteItem, ...tableProps }) => {
       key: 'productName'
     },
     {
+      title: 'Min Qty Factor',
+      dataIndex: 'minQtyFactor',
+      key: 'minQtyFactor'
+    },
+    {
+      title: 'Max Qty Factor',
+      dataIndex: 'maxQtyFactor',
+      key: 'maxQtyFactor'
+    },
+    {
+      title: 'Auto Repacking Sales',
+      dataIndex: 'autoRepackingSales',
+      key: 'autoRepackingSales'
+    },
+    {
       title: 'Operation',
       key: 'operation',
       width: 100,

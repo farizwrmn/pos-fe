@@ -156,7 +156,7 @@ const ModalEntry = ({
 
   const params = getAvailablePaymentType()
   const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
-  const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray.concat(['XQ']) : ['C', 'D', 'K', 'QR']
+  const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray.concat(['XQ', 'NID', 'MND']) : ['C', 'D', 'K', 'QR']
   const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode))
 
   return (

@@ -1,11 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { lstorage } from 'utils'
 import { Popover, Tag, Row, Col, Button, Table } from 'antd'
 import styles from '../../../themes/index.less'
-
-const { getCashierTrans, getBundleTrans, getServiceTrans } = lstorage
 
 const width = 500
 const PromoProductReward = ({
@@ -161,40 +158,41 @@ const PromoProductReward = ({
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
-        bundleId: currentId,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+        bundleId: currentId
       }
     })
     dispatch({
       type: 'promo/updateState',
       payload: {
+        visiblePopover: false,
         modalPromoVisible: false
       }
     })
   }
-  const titlePopover = () => {
-    return (
-      <Row>
-        <Col span={8}>
-          <h2>Promo Detail</h2>
-        </Col>
-        <Col span={1} offset={12}>
-          {enableChoosePromoDetail && <Button
-            type="primary"
-            onClick={() => choosePromo()}
-          >
-            Choose
-          </Button>}
-        </Col>
-      </Row>
-    )
-  }
 
   return (
     <div>
-      <Popover placement="leftTop" content={content} title={titlePopover()} trigger="click">
+      <Popover
+        placement="leftTop"
+        content={content}
+        title={(
+          <Row>
+            <Col span={8}>
+              <h2>Promo Detail</h2>
+            </Col>
+            <Col span={1} offset={12}>
+              {enableChoosePromoDetail && <Button
+                type="primary"
+                disabled={loading.effects['pospromo/addPosPromo']}
+                onClick={() => choosePromo()}
+              >
+                Choose
+              </Button>}
+            </Col>
+          </Row>
+        )}
+        trigger="click"
+      >
         <Button onClick={queryView}>View</Button>
       </Popover>
     </div>

@@ -32,6 +32,7 @@ const column = {
 const FormCounter = ({
   item = {},
   onSubmit,
+  onSubmitPkm,
   modalType,
   listStore,
   listPickingLine,
@@ -74,6 +75,32 @@ const FormCounter = ({
         title: 'Do you want to save this item?',
         onOk () {
           onSubmit({
+            header: {
+              pickingLineId: data.pickingLineId,
+              storeIdReceiver: data.storeIdReceiver,
+              storeId: lstorage.getCurrentUserStore(),
+              salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
+              salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
+            }
+          }, resetFields)
+        },
+        onCancel () { }
+      })
+    })
+  }
+
+  const handleSubmitPkm = () => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      const data = {
+        ...getFieldsValue()
+      }
+      Modal.confirm({
+        title: 'Do you want to save this item?',
+        onOk () {
+          onSubmitPkm({
             header: {
               pickingLineId: data.pickingLineId,
               storeIdReceiver: data.storeIdReceiver,
@@ -161,7 +188,10 @@ const FormCounter = ({
               })(<RangePicker />)}
             </FormItem>
             <FormItem {...tailFormItemLayout}>
-              <Button type="primary" onClick={handleSubmit} disabled={loading.effects['autoReplenish/add']}>Add</Button>
+              <Button type="primary" onClick={handleSubmit} disabled={loading.effects['autoReplenish/add']}>Generate Mindis</Button>
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              <Button type="default" onClick={handleSubmitPkm} disabled={loading.effects['autoReplenish/addPkm']}>Generate PKM</Button>
             </FormItem>
           </Col>
         </Row>

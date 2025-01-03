@@ -50,7 +50,8 @@ const PrintPDF = ({ dataSource, user, period, name }) => {
       { text: 'BIAYA', style: 'tableHeader' },
       { text: 'BIAYA TRANSFER', style: 'tableHeader' },
       { text: 'DIBAYARKAN', style: 'tableHeader' },
-      { text: 'DURASI SEWA', style: 'tableHeader' }
+      { text: 'DURASI SEWA', style: 'tableHeader' },
+      { text: 'AUTO REQUEST', style: 'tableHeader' }
     ]
   ]
 
@@ -81,6 +82,7 @@ const PrintPDF = ({ dataSource, user, period, name }) => {
           alignment: 'right'
         })
         row.push({ text: (tableBody[key].endDate || ''), alignment: 'left' })
+        row.push({ text: (tableBody[key].lastRentRequest || ''), alignment: 'left' })
         body.push(row)
       }
       count += 1
@@ -135,7 +137,7 @@ const PrintPDF = ({ dataSource, user, period, name }) => {
     buttonSize: '',
     name,
     className: '',
-    width: ['5%', '25%', '11%', '9%', '9%', '15%', '12%', '14%'],
+    width: ['5%', '22%', '10%', '9%', '9%', '12%', '11%', '12%', '10%'],
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 130, 40, 60],

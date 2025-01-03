@@ -20,12 +20,12 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
   const createTableBody = (tabledata) => {
     const headers = [
       [
-        { fontSize: 10, text: 'NO', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 10, text: '@', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 10, text: 'CODE', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 10, text: 'NAME', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 10, text: 'BARCODE', style: 'tableHeader', alignment: 'center' },
-        { fontSize: 10, text: 'QTY', style: 'tableHeader', alignment: 'center' }
+        { fontSize: 8, text: 'NO', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 8, text: '@', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 8, text: 'CODE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 8, text: 'NAME', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 8, text: 'BARCODE', style: 'tableHeader', alignment: 'center' },
+        { fontSize: 8, text: 'QTY', style: 'tableHeader', alignment: 'center' }
       ]
     ]
 
@@ -36,12 +36,12 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
       if (rows.hasOwnProperty(key)) {
         let data = rows[key]
         let row = [
-          { text: counter, alignment: 'center', fontSize: 10 },
-          { text: (data.locationName || '').toString(), alignment: 'left', fontSize: 10 },
-          { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 10 },
-          { text: (data.productName || '').toString(), alignment: 'left', fontSize: 10 },
-          { text: (data.barCode01 || '').toString(), alignment: 'left', fontSize: 10 },
-          { text: (data.qty || '').toString(), alignment: 'center', fontSize: 10 }
+          { text: counter, alignment: 'center', fontSize: 8 },
+          { text: (data.locationName || '').toString(), alignment: 'left', fontSize: 8 },
+          { text: (data.productCode || '').toString(), alignment: 'left', fontSize: 8 },
+          { text: (data.productName || '').toString(), alignment: 'left', fontSize: 8 },
+          { text: (data.barCode01 || '').toString(), alignment: 'left', fontSize: 8 },
+          { text: (data.qty || '').toString(), alignment: 'center', fontSize: 8 }
         ]
         body.push(row)
       }
@@ -51,12 +51,12 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
     const totalQty = tabledata.reduce((cnt, o) => cnt + (parseFloat(o.qty) || 0), 0)
 
     let totalRow = [
-      { text: 'Total', colSpan: 5, alignment: 'center', fontSize: 10 },
+      { text: 'Total', colSpan: 5, alignment: 'center', fontSize: 8 },
       {},
       {},
       {},
       {},
-      { text: totalQty, alignment: 'right', fontSize: 10 }
+      { text: totalQty, alignment: 'right', fontSize: 8 }
     ]
     body.push(totalRow)
     width.push(['6%', '7%', '20%', '38%', '20%', '9%'])
@@ -81,7 +81,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
           {
             text: 'PICKING LIST',
             style: 'header',
-            fontSize: 18,
+            fontSize: 12,
             alignment: 'center'
           },
           {
@@ -91,7 +91,7 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
             columns: [
               {
                 text: `\n DARI: ${itemPrint.storeName} KE ${itemPrint.storeReceiverName}`,
-                fontSize: 18,
+                fontSize: 12,
                 alignment: 'center'
               }
             ]
@@ -119,18 +119,18 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
             {
               text: `Tanggal cetak: ${moment().format('LLLL')}`,
               margin: [0, 0, 0, 0],
-              fontSize: 9,
+              fontSize: 8,
               alignment: 'left'
             },
             {
               text: `Dicetak oleh: ${user.username}`,
               margin: [0, 0, 0, 0],
-              fontSize: 9,
+              fontSize: 8,
               alignment: 'center'
             },
             {
               text: `Halaman: ${(currentPage || 0).toString()} dari ${pageCount}`,
-              fontSize: 9,
+              fontSize: 8,
               margin: [0, 0, 0, 0],
               alignment: 'right'
             }
@@ -142,12 +142,12 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
 
   const styles = {
     header: {
-      fontSize: 18,
+      fontSize: 8,
       bold: true,
       margin: [0, 0, 0, 10]
     },
     subheader: {
-      fontSize: 16,
+      fontSize: 8,
       bold: true,
       margin: [0, 10, 0, 5]
     },
@@ -156,11 +156,11 @@ const PrintPDF = ({ user, listTrans, itemPrint }) => {
     },
     tableHeader: {
       bold: true,
-      fontSize: 13,
+      fontSize: 8,
       color: 'black'
     },
     tableTitle: {
-      fontSize: 14,
+      fontSize: 8,
       margin: [0, 20, 0, 8]
     }
   }

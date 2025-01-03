@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { lstorage } from 'utils'
 // import { routerRedux } from 'dva/router'
 import { prefix } from 'utils/config.main'
 import {
@@ -50,9 +51,13 @@ const Payment = ({
     curRounding,
     curShift,
     curCashierNo,
+    posDescription,
     selectedPaymentShortcut,
     currentBundlePayment,
     currentGrabOrder,
+    serialPortName,
+    serialApprovalCode,
+    listSerialPort,
     cashierBalance } = pos
   const { user, setting } = app
   const { listOpts } = paymentOpts
@@ -100,6 +105,9 @@ const Payment = ({
 
     return `${h}:${m}:${s}`
   }
+
+  const currentExpressOrder = lstorage.getExpressOrder()
+
   const confirmPayment = (taxInfo) => {
     dispatch({
       type: 'payment/updateState',
@@ -136,9 +144,14 @@ const Payment = ({
   }
 
   const formPaymentProps = {
+    posDescription,
+    currentExpressOrder,
     currentGrabOrder,
     currentBundlePayment,
     selectedPaymentShortcut,
+    serialPortName,
+    serialApprovalCode,
+    listSerialPort,
     confirmPayment,
     cancelPayment,
     loading,
@@ -165,6 +178,14 @@ const Payment = ({
         message.error('Cannot add voucher from this form')
         return
       }
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          serialPortName: null,
+          serialPortDescription: null,
+          serialApprovalCode: null
+        }
+      })
       dispatch({
         type: 'payment/addMethod',
         payload: {

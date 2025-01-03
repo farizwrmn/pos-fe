@@ -4,6 +4,7 @@ import { Row, Col, Button } from 'antd'
 
 const LovButton = ({
   loading,
+  lockTransaction,
   handlePayment,
   handleCancel
 }) => {
@@ -29,6 +30,7 @@ const LovButton = ({
               width: '100%',
               height: 40
             }}
+            icon={lockTransaction ? 'lock' : 'unlock'}
             type="primary"
             disabled={loading.effects['pos/checkPaymentTransactionInvoice']}
             loading={loading.effects['pos/checkPaymentTransactionInvoice']}

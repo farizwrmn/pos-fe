@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Table, Button, Row, Col, Modal, Card, Select, Spin } from 'antd'
+import { Form, Table, Button, InputNumber, Row, Col, Modal, Card, Select, Spin, Checkbox } from 'antd'
 import ModalMemberTier from './ModalRecipe'
 
 const FormItem = Form.Item
@@ -91,7 +91,10 @@ const FormCounter = ({
       }
       const response = {
         header: {
-          productId: data.productId
+          productId: data.productId,
+          autoRepackingSales: data.autoRepackingSales,
+          minQtyFactor: data.minQtyFactor,
+          maxQtyFactor: data.maxQtyFactor
         },
         detail
       }
@@ -131,6 +134,32 @@ const FormCounter = ({
                   {childrenProduct}
                 </Select>
               )}
+            </FormItem>
+            <FormItem label="Min Qty Factor" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('minQtyFactor', {
+                initialValue: item.minQtyFactor || 1,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<InputNumber min={0} max={1} style={{ width: '100%' }} />)}
+            </FormItem>
+            <FormItem label="Max Qty Factor" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('maxQtyFactor', {
+                initialValue: item.maxQtyFactor || 1,
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(<InputNumber min={1} max={999999999} style={{ width: '100%' }} />)}
+            </FormItem>
+            <FormItem label="Auto Repacking Sales" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('autoRepackingSales', {
+                valuePropName: 'checked',
+                initialValue: item.autoRepackingSales === undefined ? false : item.autoRepackingSales
+              })(<Checkbox>Enable</Checkbox>)}
             </FormItem>
           </Col>
         </Row>
