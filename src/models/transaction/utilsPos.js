@@ -344,7 +344,6 @@ export const getListProductAfterBundling = (listProduct = [], bundle = []) => {
           return item
         })
       } else {
-        console.log('product', product)
         listNewCashier.push({
           ...product,
           transLog: 7,

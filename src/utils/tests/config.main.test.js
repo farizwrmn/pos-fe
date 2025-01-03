@@ -34,8 +34,8 @@ it('Should render App openPages', () =>
       '/transaction/pos/customer-view',
       '/transaction/pos/admin-invoice/:id',
       '/transaction/pos/invoice/:id',
-      '/balance/invoice/:id'
-      // 'print-barcode'
+      '/balance/invoice/:id',
+      '/print-barcode'
     ])
 )
 
