@@ -291,9 +291,9 @@ export default modelExtend(pageModel, {
         const MappingStore = dataMappingStore.data.length > 0
         const isDataValid = Balance || Transaction
         if (isDataValid) {
-          yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.payment.transDate).format('YYYY-MM-DD') } })
+          // yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.payment.transDate).format('YYYY-MM-DD') } })
           message.error('Already Recon')
-          return
+          // return
         }
 
         if (!MappingStore) {
