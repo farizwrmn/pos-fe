@@ -652,7 +652,7 @@ export default {
       })
       const response = yield call(queryAdvertising, {
         type: 'all',
-        typeAds: 'CUSTVIEW',
+        typeAds: ['CUSTVIEW', 'CUSTROLL'],
         order: 'sort'
       })
       if (response && response.success) {

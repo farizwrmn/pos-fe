@@ -77,33 +77,65 @@ export default modelExtend(pageModel, {
     * add ({ payload }, { call, put }) {
       // Start - Upload Image
       const uploadedImage = []
-      if (payload
-        && payload.data
-        && payload.data.image
-        && payload.data.image.fileList
-        && payload.data.image.fileList.length > 0) {
-        for (let key in payload.data.image.fileList) {
-          const item = payload.data.image.fileList[key]
-          const formData = new FormData()
-          formData.append('file', item.originFileObj)
-          const responseUpload = yield call(uploadAdvertisingImage, formData)
-          if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
-            uploadedImage.push(responseUpload.data.filename)
+
+      if (payload && payload.data && payload.data.typeAds === 'CUSTROLL') {
+        if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length <= 5) {
+          for (let key in payload.data.image.fileList) {
+            const item = payload.data.image.fileList[key]
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadAdvertisingImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
           }
-          break
+        } else if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length > 5) {
+          throw new Error('Cannot upload more than 5 image')
         }
-      } else if (payload
-        && payload.data
-        && payload.data.image
-        && payload.data.image.fileList
-        && payload.data.image.fileList.length > 0
-        && payload.data.image.fileList.length > 5) {
-        throw new Error('Cannot upload more than 5 image')
-      }
-      if (uploadedImage && uploadedImage.length) {
-        payload.data.image = uploadedImage[0]
+        if (uploadedImage && uploadedImage.length) {
+          payload.data.image = JSON.stringify(uploadedImage)
+        } else {
+          payload.data.image = '["no_image.png"]'
+        }
       } else {
-        payload.data.image = 'no_image.png'
+        if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0) {
+          for (let key in payload.data.image.fileList) {
+            const item = payload.data.image.fileList[key]
+            const formData = new FormData()
+            formData.append('file', item.originFileObj)
+            const responseUpload = yield call(uploadAdvertisingImage, formData)
+            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+              uploadedImage.push(responseUpload.data.filename)
+            }
+            break
+          }
+        } else if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length > 5) {
+          throw new Error('Cannot upload more than 5 image')
+        }
+        if (uploadedImage && uploadedImage.length) {
+          payload.data.image = uploadedImage[0]
+        } else {
+          payload.data.image = 'no_image.png'
+        }
       }
       // End - Upload Image
       const data = yield call(add, payload.data)
@@ -142,46 +174,89 @@ export default modelExtend(pageModel, {
       const image = yield select(({ advertising }) => advertising.currentItem.image)
       const id = yield select(({ advertising }) => advertising.currentItem.id)
       let uploadedImage = []
-      if (payload
-        && payload.data
-        && payload.data.image
-        && payload.data.image.fileList
-        && payload.data.image.fileList.length > 0
-        && payload.data.image.fileList.length <= 5) {
-        for (let key in payload.data.image.fileList) {
-          const item = payload.data.image.fileList[key]
-          if (item && item.originFileObj) {
-            const formData = new FormData()
-            formData.append('file', item.originFileObj)
-            const responseUpload = yield call(uploadAdvertisingImage, formData)
-            if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
-              uploadedImage.push(responseUpload.data.filename)
-            }
-          } else if (item && item.name) {
-            uploadedImage.push(item.name)
-          }
-        }
-      } else if (payload
-        && payload.data
-        && payload.data.image
-        && payload.data.image.fileList
-        && payload.data.image.fileList.length > 0
-        && payload.data.image.fileList.length > 5) {
-        throw new Error('Cannot upload more than 5 image')
-      } else if (image
-        && image != null
-        && image !== '["no_image.png"]'
-        && image !== '"no_image.png"'
-        && image !== 'no_image.png') {
-        uploadedImage = [image]
-      }
-      // End - Upload Image
       const newCounter = { ...payload.data, id }
-      if (uploadedImage && uploadedImage.length > 0) {
-        newCounter.image = uploadedImage && uploadedImage[0] ? uploadedImage[0] : null
+      if (payload && payload.data && payload.data.typeAds === 'CUSTROLL') {
+        if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length <= 5) {
+          for (let key in payload.data.image.fileList) {
+            const item = payload.data.image.fileList[key]
+            if (item && item.originFileObj) {
+              const formData = new FormData()
+              formData.append('file', item.originFileObj)
+              const responseUpload = yield call(uploadAdvertisingImage, formData)
+              if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+                uploadedImage.push(responseUpload.data.filename)
+              }
+            } else if (item && item.name) {
+              uploadedImage.push(item.name)
+            }
+          }
+        } else if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length > 5) {
+          throw new Error('Cannot upload more than 5 image')
+        } else if (image
+          && image != null
+          && image !== '["no_image.png"]'
+          && image !== '"no_image.png"'
+          && image !== 'no_image.png') {
+          uploadedImage = JSON.parse(image)
+        }
+        // End - Upload Image
+        if (uploadedImage && uploadedImage.length > 0) {
+          newCounter.image = JSON.stringify(uploadedImage)
+        } else {
+          newCounter.image = '["no_image.png"]'
+        }
       } else {
-        newCounter.image = 'no_image.png'
+        if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length <= 5) {
+          for (let key in payload.data.image.fileList) {
+            const item = payload.data.image.fileList[key]
+            if (item && item.originFileObj) {
+              const formData = new FormData()
+              formData.append('file', item.originFileObj)
+              const responseUpload = yield call(uploadAdvertisingImage, formData)
+              if (responseUpload.success && responseUpload.data && responseUpload.data.filename) {
+                uploadedImage.push(responseUpload.data.filename)
+              }
+            } else if (item && item.name) {
+              uploadedImage.push(item.name)
+            }
+          }
+        } else if (payload
+          && payload.data
+          && payload.data.image
+          && payload.data.image.fileList
+          && payload.data.image.fileList.length > 0
+          && payload.data.image.fileList.length > 5) {
+          throw new Error('Cannot upload more than 5 image')
+        } else if (image
+          && image != null
+          && image !== '["no_image.png"]'
+          && image !== '"no_image.png"'
+          && image !== 'no_image.png') {
+          uploadedImage = [image]
+        }
+        // End - Upload Image
+        if (uploadedImage && uploadedImage.length > 0) {
+          newCounter.image = uploadedImage && uploadedImage[0] ? uploadedImage[0] : null
+        } else {
+          newCounter.image = 'no_image.png'
+        }
       }
+
       const data = yield call(edit, newCounter)
       if (data.success) {
         success()
