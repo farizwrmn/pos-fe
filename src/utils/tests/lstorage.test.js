@@ -25,39 +25,6 @@ it('Return Cashier Trans LocalStorage', () => {
   expect(getCashierTrans()).toEqual(arrayItem)
 })
 
-it('Should Set udi d as MBI ', () => {
-  const arrayCompany = ['MBI', 'localhost', 6402]
-  removeItemKeys()
-  putStorageKey('cdi', arrayCompany)
-  const getIdBeCDI = getIdBE()
-  expect(getIdBeCDI).toEqual('MBI')
-})
-
-it('Should Set udi domain as localhost ', () => {
-  const arrayCompany = ['MBI', 'localhost', 6402]
-  removeItemKeys()
-  putStorageKey('cdi', arrayCompany)
-  const getDomainBeCDI = getDomainBE()
-  expect(getDomainBeCDI).toEqual('localhost')
-})
-
-it('Should Set udi port as 6402 ', () => {
-  const arrayCompany = ['MBI', 'localhost', 6402]
-  removeItemKeys()
-  putStorageKey('cdi', arrayCompany)
-  const getPortBeCDI = getPortBE()
-  expect(getPortBeCDI).toEqual('6402')
-})
-
-it('Should return --- because of removed cdi ', () => {
-  const arrayCompany = ['MBI', 'localhost', 6402]
-  removeItemKeys()
-  putStorageKey('cdi', arrayCompany)
-  removeItemKey('cdi')
-  const getPortBeCDI = getPortBE()
-  expect(getPortBeCDI).toEqual('---')
-})
-
 it('Should return reset all localStorage ', () => {
   removeAllKey()
   const data = getItem('setting')

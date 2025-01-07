@@ -37,7 +37,23 @@ const List = ({ ...tableProps, listAllStores, editItem, deleteItem }) => {
       dataIndex: 'image',
       key: 'image',
       width: '100px',
-      render: (text) => {
+      render: (text, record) => {
+        if (record && record.typeAds === 'CUSTROLL') {
+          try {
+            if (text
+              && text != null
+              && text !== '["no_image.png"]'
+              && text !== '"no_image.png"'
+              && text !== 'no_image.png') {
+              const item = JSON.parse(text)
+              if (item && item[0]) {
+                return <img height="70px" src={`${IMAGEURL}/${withoutFormat(item[0])}-main.jpg`} alt="no_image" />
+              }
+            }
+          } catch (error) {
+            console.log('Error: ', error)
+          }
+        }
         if (text) {
           return <img height="70px" src={`${IMAGEURL}/${withoutFormat(text)}-main.jpg`} alt="no_image" />
         }
