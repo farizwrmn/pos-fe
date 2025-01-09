@@ -99,8 +99,8 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length > 5) {
-          throw new Error('Cannot upload more than 5 image')
+          && payload.data.image.fileList.length > 10) {
+          throw new Error('Cannot upload more than 10 image')
         }
         if (uploadedImage && uploadedImage.length) {
           payload.data.image = JSON.stringify(uploadedImage)
@@ -128,8 +128,8 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length > 5) {
-          throw new Error('Cannot upload more than 5 image')
+          && payload.data.image.fileList.length > 10) {
+          throw new Error('Cannot upload more than 10 image')
         }
         if (uploadedImage && uploadedImage.length) {
           payload.data.image = uploadedImage[0]
@@ -200,8 +200,8 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length > 5) {
-          throw new Error('Cannot upload more than 5 image')
+          && payload.data.image.fileList.length > 10) {
+          throw new Error('Cannot upload more than 10 image')
         } else if (image
           && image != null
           && image !== '["no_image.png"]'
@@ -240,8 +240,8 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length > 5) {
-          throw new Error('Cannot upload more than 5 image')
+          && payload.data.image.fileList.length > 10) {
+          throw new Error('Cannot upload more than 10 image')
         } else if (image
           && image != null
           && image !== '["no_image.png"]'
