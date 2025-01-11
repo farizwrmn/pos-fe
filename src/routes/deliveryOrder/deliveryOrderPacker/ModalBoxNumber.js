@@ -44,11 +44,11 @@ const ModalBoxNumber = ({
             rules: [
               {
                 required: true,
-                pattern: /^[A-Za-z0-9/_-]{1,20}$/i,
+                pattern: /^[A-Za-z0-9/_-]{1,100}$/i,
                 message: 'A-Z and numeric only'
               }
             ]
-          })(<Input maxLength={20} />)}
+          })(<Input maxLength={100} placeholder="Nomor dapat diinput beberapa" />)}
         </FormItem>
       </Form>
     </Modal>
