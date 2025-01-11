@@ -257,7 +257,7 @@ export default modelExtend(pageModel, {
     },
 
     * submitTransferOut ({ payload = {} }, { select, call, put }) {
-      const { boxNumber } = payload
+      const { boxNumber, totalColly } = payload
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
       yield put({
         type: 'deliveryOrderPacker/groupingDeliveryOrderCart'
@@ -279,7 +279,7 @@ export default modelExtend(pageModel, {
           employeeId: 1,
           storeId: deliveryOrder.storeId,
           storeIdReceiver: deliveryOrder.storeIdReceiver,
-          totalColly: 1,
+          totalColly,
           transNo: deliveryOrder.transNo,
           transType: 'MUOUT'
         },
