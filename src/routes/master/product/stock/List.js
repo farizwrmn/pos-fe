@@ -117,6 +117,7 @@ const List = ({
           <div>
             <div><strong>{record.productCode}</strong></div>
             <div>{record.productName}</div>
+            <div>{record.shortName}</div>
             <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
           </div>
         )
