@@ -505,6 +505,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/product/bookmark'))
               registerModel(app, require('./models/product/bookmarkGroup'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/master/product/bookmark/'))
             }, 'master-product-bookmark')
           }
@@ -520,6 +521,7 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/marketing/bundling'))
               registerModel(app, require('./models/detail/productBookmarkDetail'))
               registerModel(app, require('./models/product/bookmark'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/master/productstock'))
               cb(null, require('./routes/master/product/bookmark/detail/'))
             }, 'master-product-bookmark-detail')

@@ -9,8 +9,9 @@ import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const ProductBookmard = ({ productBookmarkGroup, loading, dispatch, location }) => {
+const ProductBookmard = ({ productBookmarkGroup, userStore, loading, dispatch, location }) => {
   const { list, display, isChecked, modalType, currentItem, activeKey, show } = productBookmarkGroup
+  const { listAllStores } = userStore
   const filterProps = {
     display,
     isChecked,
@@ -92,6 +93,7 @@ const ProductBookmard = ({ productBookmarkGroup, loading, dispatch, location }) 
   }
 
   const formProps = {
+    listAllStores,
     modalType,
     item: currentItem,
     disabled: loading.effects[`productBookmarkGroup/${modalType}`],
@@ -144,4 +146,4 @@ ProductBookmard.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ productBookmarkGroup, loading }) => ({ productBookmarkGroup, loading }))(ProductBookmard)
+export default connect(({ productBookmarkGroup, userStore, loading }) => ({ productBookmarkGroup, userStore, loading }))(ProductBookmard)

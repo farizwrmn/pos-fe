@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, Modal } from 'antd'
+import { Form, Input, Select, TimePicker, DatePicker, Button, Row, Col, Modal } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
+const { Option } = Select
+const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
@@ -31,10 +34,12 @@ const formProductBrand = ({
   modalType,
   onCancel,
   button,
+  listAllStores = [],
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields
   }
 }) => {
@@ -82,6 +87,13 @@ const formProductBrand = ({
     })
   }
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().startOf('day')
+  }
+
+  let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+
   return (
     <Form layout="horizontal">
       <Row>
@@ -109,6 +121,87 @@ const formProductBrand = ({
                 }
               ]
             })(<Input />)}
+          </FormItem>
+          <FormItem label="Available Period" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('Date', {
+              initialValue: item.startDate ? [
+                moment(item.startDate),
+                moment(item.endDate)
+              ] : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<RangePicker disabledDate={disabledDate} allowClear />)}
+          </FormItem>
+          <FormItem label="Available Hour" hasFeedback {...formItemLayout}>
+            <Row gutter={12}>
+              <Col span={12}>
+                {getFieldDecorator('startHour', {
+                  initialValue: item.startHour ? moment(item.startHour, 'HH:mm') : moment('00:00', 'HH:mm'),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TimePicker defaultValue={moment('00:00', 'HH:mm')} style={{ width: '100%' }} allowClear format={'HH:mm'} />)}
+              </Col>
+              <Col span={12}>
+                {getFieldDecorator('endHour', {
+                  initialValue: item.endHour ? moment(item.endHour, 'HH:mm') : moment('23:59', 'HH:mm'),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TimePicker defaultValue={moment('23:59', 'HH:mm')} style={{ width: '100%' }} allowClear format={'HH:mm'} />)}
+              </Col>
+            </Row>
+          </FormItem>
+          <FormItem
+            label="Available Days"
+            hasFeedback
+            help={(getFieldValue('availableDate') || '').length > 0 ? `${(getFieldValue('availableDate') || '').length} ${(getFieldValue('availableDate') || '').length === 1 ? 'day' : 'days'}` : 'clear it if available every day'}
+            {...formItemLayout}
+          >
+            {getFieldDecorator('availableDate', {
+              initialValue: item.availableDate ? (item.availableDate || '').split(',') : [],
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
+              <Option value="1">Monday</Option>
+              <Option value="2">Tuesday</Option>
+              <Option value="3">Wednesday</Option>
+              <Option value="4">Thursday</Option>
+              <Option value="5">Friday</Option>
+              <Option value="6">Saturday</Option>
+              <Option value="7">Sunday</Option>
+            </Select>)}
+          </FormItem>
+          <FormItem
+            label="Store"
+            hasFeedback
+            help={(getFieldValue('availableStore') || '').length > 0 ? `${(getFieldValue('availableStore') || '').length} ${(getFieldValue('availableStore') || '').length === 1 ? 'store' : 'stores'}` : 'clear it if available all stores'}
+            {...formItemLayout}
+          >
+            {getFieldDecorator('availableStore', {
+              initialValue: item.availableStore ? (item.availableStore || '').split(',') : []
+            })(
+              <Select
+                mode="multiple"
+                allowClear
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose Store"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenStore}
+              </Select>
+            )}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             {modalType === 'edit' && <Button type="danger" style={{ margin: '0 10px' }} onClick={handleCancel}>Cancel</Button>}
