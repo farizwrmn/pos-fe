@@ -21,7 +21,7 @@ import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
-import { currencyFormatter } from 'utils/string'
+import { currencyFormatter, getSalesProductFields } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { getDateTime } from 'services/setting/time'
 import {
@@ -69,7 +69,8 @@ import {
   query as queryProductStock,
   queryPOSProductSales,
   queryByBarcode,
-  queryPOSstock as queryProductsInStock
+  queryPOSstock as queryProductsInStock,
+  queryStorePriceSales
 } from '../../services/master/productstock'
 import {
   query as queryConsignment
@@ -2375,7 +2376,7 @@ export default {
                 type: 'all'
               }
 
-
+              params.field = getSalesProductFields()
               const response = yield call(queryProductStock, params)
               let listProduct = response.data
               const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -3108,7 +3109,7 @@ export default {
       }
     },
 
-    * chooseProduct ({ payload }, { select, put }) {
+    * chooseProduct ({ payload }, { select, put, call }) {
       const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
@@ -3163,6 +3164,14 @@ export default {
       }
 
       const { item, type } = payload
+      if (item) {
+        if (!item.storePrice) {
+          const storePrice = yield call(queryStorePriceSales, { productId: item.id, storeId: lstorage.getCurrentUserStore() })
+          if (storePrice && storePrice.data) {
+            item.storePrice = storePrice.data
+          }
+        }
+      }
       if (item && item.storePrice && item.storePrice[0]) {
         const price = item.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
         if (price && price[0]) {
@@ -3656,6 +3665,8 @@ export default {
         payload.categoryCode = currentReward.categoryCode
         payload.type = 'all'
       }
+
+      payload.field = getSalesProductFields()
       const data = yield call(queryProductStock, payload)
       let newData = data.data
       if (data.success) {
