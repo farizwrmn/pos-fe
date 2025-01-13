@@ -3,6 +3,7 @@ import { request, config, crypt, lstorage } from '../../utils'
 const { stock, fiforeport } = config.api
 
 export async function query (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: stock,
@@ -14,6 +15,7 @@ export async function query (params) {
 }
 
 export async function queryById (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${stock}/${params.id}`,
@@ -24,8 +26,20 @@ export async function queryById (params) {
   })
 }
 
+export async function queryStorePriceSales (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-price-sales',
+    method: 'get',
+    data: params,
+    alt: true,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryByBarcode (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${stock}/barcode/${params.id}`,
     method: 'get',
@@ -126,10 +140,12 @@ export async function queryPOSproductStore (params) {
 export async function queryProductByCode (params) {
   let url = `${stock}/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url,
     alt: true,
     method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }

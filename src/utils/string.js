@@ -10,6 +10,36 @@ import {
 } from 'utils/variable'
 import lstorage from './lstorage'
 
+const getSalesProductFields = () => {
+  const salesProductFields = [
+    'id',
+    'productCode',
+    'productName',
+    'shortName',
+    'barCode01',
+    'barCode02',
+    'divisionId',
+    'departmentId',
+    'subdepartmentId',
+    'costPrice',
+    'PPN',
+    'sellPrice',
+    'distPrice01',
+    'distPrice02',
+    'distPrice03',
+    'distPrice04',
+    'distPrice05',
+    'distPrice06',
+    'distPrice07',
+    'distPrice08',
+    'distPrice09',
+    'active',
+    'taxType',
+    'productImage'
+  ]
+  return salesProductFields.toString()
+}
+
 const showOnlyLastWord = (words, digitToShow) => {
   let result = ''
   if (!words) return words
@@ -128,6 +158,7 @@ function withoutFormat (file) {
 }
 
 export {
+  getSalesProductFields,
   showOnlyLastWord,
   currencyFormatter,
   currencyFormatterSetoran,

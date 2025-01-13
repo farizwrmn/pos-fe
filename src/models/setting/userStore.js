@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { messageInfo } from 'utils'
+import pathToRegexp from 'path-to-regexp'
 import { getAllStores, getListStores, getUserStores, saveUserDefaultStore, saveUserStore }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
@@ -26,6 +27,7 @@ export default modelExtend(pageModel, {
         if (location.pathname === '/master/account') {
           dispatch({ type: 'userStore/getAllStores', payload: {} })
         }
+        const matchBookmarkDetail = pathToRegexp('/master/product/bookmark/:id').exec(location.pathname)
         if (location.pathname === '/marketing/promo'
           || location.pathname === '/report/accounting/profit-loss'
           || (location.pathname === '/master/paymentoption' && location.query.activeKey === '2')
@@ -34,6 +36,7 @@ export default modelExtend(pageModel, {
           || location.pathname === '/report/accounts/payable'
           || location.pathname === '/report/purchase/summary'
           || location.pathname === '/report/accounts/payment'
+          || location.pathname === '/master/product/bookmark'
           || location.pathname === '/marketing/advertising'
           || location.pathname === '/balance/finance/history'
           || location.pathname === '/marketing/incentive-item'
@@ -48,7 +51,8 @@ export default modelExtend(pageModel, {
           || location.pathname === '/stock'
           || location.pathname === '/integration/grabmart-campaign'
           || location.pathname === '/stock-planogram'
-          || location.pathname === '/master/store-price-upload') {
+          || location.pathname === '/master/store-price-upload'
+          || matchBookmarkDetail) {
           dispatch({
             type: 'getAllListStores'
             // payload: location.query

@@ -457,6 +457,7 @@ class Adjust extends Component {
           {(defaultRole === 'OWN'
             || defaultRole === 'ITS'
             || defaultRole === 'HPC'
+            || defaultRole === 'CAP'
             || defaultRole === 'SPC'
             || defaultRole === 'PCS')
             && <TabPane tab="Approval" key="2" >

@@ -16,6 +16,11 @@ const ListTransferOut = ({ toDetail, ...tableProps }) => {
       key: 'boxNumber'
     },
     {
+      title: 'Jumlah Koli',
+      dataIndex: 'totalColly',
+      key: 'totalColly'
+    },
+    {
       title: 'From',
       dataIndex: 'storeName',
       key: 'storeName'

@@ -102,6 +102,9 @@ export default modelExtend(pageModel, {
             currentItem: {}
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
       } else {
         let current = Object.assign({}, payload.id, payload.data)
         yield put({
@@ -128,6 +131,9 @@ export default modelExtend(pageModel, {
             activeKey: '1'
           }
         })
+        if (payload.reset) {
+          payload.reset()
+        }
         const { pathname } = location
         yield put(routerRedux.push({
           pathname,
