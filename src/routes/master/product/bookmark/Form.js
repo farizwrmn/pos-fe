@@ -74,12 +74,19 @@ const formProductBrand = ({
       const data = {
         ...getFieldsValue()
       }
+
+      data.startDate = (data.Date || []).length > 0 ? moment(data.Date[0]).format('YYYY-MM-DD') : null
+      data.endDate = (data.Date || []).length > 0 ? moment(data.Date[1]).format('YYYY-MM-DD') : null
+      data.availableDate = (data.availableDate || []).length > 0 ? data.availableDate.toString() : null
+      data.availableStore = (data.availableStore || []).length > 0 ? data.availableStore.toString() : null
+      data.startHour = data.startHour ? moment(data.startHour).format('HH:mm') : null
+      data.endHour = data.endHour ? moment(data.endHour).format('HH:mm') : null
       Modal.confirm({
         title: 'Do you want to save this item?',
         onOk () {
-          onSubmit(data.brandCode, data)
+          onSubmit(data.brandCode, data, resetFields)
           // setTimeout(() => {
-          resetFields()
+
           // }, 500)
         },
         onCancel () { }

@@ -41,6 +41,12 @@ class ModalBookmark extends Component {
         const record = {
           ...getFieldsValue()
         }
+        record.startDate = (record.Date || []).length > 0 ? moment(record.Date[0]).format('YYYY-MM-DD') : null
+        record.endDate = (record.Date || []).length > 0 ? moment(record.Date[1]).format('YYYY-MM-DD') : null
+        record.availableDate = (record.availableDate || []).length > 0 ? record.availableDate.toString() : null
+        record.availableStore = (record.availableStore || []).length > 0 ? record.availableStore.toString() : null
+        record.startHour = record.startHour ? moment(record.startHour).format('HH:mm') : null
+        record.endHour = record.endHour ? moment(record.endHour).format('HH:mm') : null
         Modal.confirm({
           title: 'Save This Data',
           content: 'Are you sure ?',

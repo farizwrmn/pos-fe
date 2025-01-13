@@ -98,12 +98,13 @@ const ProductBookmard = ({ productBookmarkGroup, userStore, loading, dispatch, l
     item: currentItem,
     disabled: loading.effects[`productBookmarkGroup/${modalType}`],
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
-    onSubmit (id, data) {
+    onSubmit (id, data, reset) {
       dispatch({
         type: `productBookmarkGroup/${modalType}`,
         payload: {
           id,
-          data
+          data,
+          reset
         }
       })
     },
