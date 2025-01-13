@@ -257,7 +257,7 @@ export default modelExtend(pageModel, {
     },
 
     * submitTransferOut ({ payload = {} }, { select, call, put }) {
-      const { boxNumber, totalColly } = payload
+      const { boxNumber, totalColly = 1 } = payload
       const deliveryOrder = yield select(({ deliveryOrderPacker }) => deliveryOrderPacker.deliveryOrder)
       yield put({
         type: 'deliveryOrderPacker/groupingDeliveryOrderCart'
