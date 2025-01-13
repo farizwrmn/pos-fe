@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Button } from 'antd'
+import { Form, Input, Modal, Button, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 
@@ -60,7 +60,7 @@ const ModalBoxNumber = ({
                 message: 'A-Z and numeric only'
               }
             ]
-          })(<Input maxLength={7} />)}
+          })(<InputNumber min={1} maxLength={7} />)}
         </FormItem>
       </Form>
     </Modal>

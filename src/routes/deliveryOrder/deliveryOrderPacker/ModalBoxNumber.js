@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Button } from 'antd'
+import { Form, Input, Modal, Button, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 
@@ -49,6 +49,18 @@ const ModalBoxNumber = ({
               }
             ]
           })(<Input maxLength={100} placeholder="Nomor dapat diinput beberapa" />)}
+        </FormItem>
+        <FormItem label="Total Pack" {...formItemLayout}>
+          {getFieldDecorator('totalColly', {
+            initialValue: 1,
+            rules: [
+              {
+                required: true,
+                pattern: /^[0-9]{1,7}$/i,
+                message: 'A-Z and numeric only'
+              }
+            ]
+          })(<InputNumber min={1} maxLength={7} />)}
         </FormItem>
       </Form>
     </Modal>
