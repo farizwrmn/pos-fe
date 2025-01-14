@@ -643,7 +643,7 @@ class AdvancedForm extends Component {
                       pattern: /^[A-Za-z0-9-.,%'"=><$@^&*!() _/]{3,85}$/i
                     }
                   ]
-                })(<Input maxLength={85} onChange={this.changeName} />)}
+                })(<Input maxLength={35} onChange={this.changeName} />)}
               </FormItem>
               <FormItem label="Image" {...formItemLayout}>
                 {getFieldDecorator('productImage', {
