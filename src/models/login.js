@@ -208,8 +208,8 @@ export default {
     },
     * getRole ({ payload }, { put, call }) {
       const userRole = yield call(getUserRole, { as: 'value,label', userId: payload.userId })
-      console.log('userRole', userRole)
-      if (userRole && userRole.data && userRole.data.length > 0) {
+      if (userRole) {
+        console.log('userRole', [JSON.stringify(userRole.data.mapped)])
         lstorage.putStorageKey('uelor', [JSON.stringify(userRole.data.mapped)])
       }
       const roleLov = userRole && userRole.data ? userRole.data.mapped : []
@@ -223,7 +223,7 @@ export default {
     * getStore ({ payload }, { put, call }) {
       const userStore = yield call(getUserStore, { userId: payload.userId, mode: 'lov' })
       if (userStore) {
-        lstorage.putStorageKey('utores', [JSON.stringify(userStore.data)])
+        lstorage.putStorageKey('utores', [JSON.stringify(userStore.data.map(item => ({ ...item, value: parseFloat(item.value) })))])
       }
       const storeLov = userStore ? userStore.data : []
       yield put({
