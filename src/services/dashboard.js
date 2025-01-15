@@ -66,23 +66,33 @@ export async function getNotifications () {
 }
 
 export async function getListNotifications () {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${dashboards}/notification`,
-    method: 'post',
-    alt: true,
-    data: { store: lstorage.getCurrentUserStore() },
-    headers: apiHeaderToken
+  // const apiHeaderToken = crypt.apiheader()
+  // return request({
+  //   url: `${dashboards}/notification`,
+  //   method: 'post',
+  //   alt: true,
+  //   data: { store: lstorage.getCurrentUserStore() },
+  //   headers: apiHeaderToken
+  // })
+  return ({
+    success: true,
+    message: 'Success',
+    data: []
   })
 }
 
 export async function refreshNotifications () {
-  const apiHeaderToken = crypt.apiheader()
-  return request({
-    url: `${dashboards}/notification/refresh`,
-    method: 'post',
-    alt: true,
-    data: { store: lstorage.getCurrentUserStore() },
-    headers: apiHeaderToken
+  // const apiHeaderToken = crypt.apiheader()
+  // return request({
+  //   url: `${dashboards}/notification/refresh`,
+  //   method: 'post',
+  //   alt: true,
+  //   data: { store: lstorage.getCurrentUserStore() },
+  //   headers: apiHeaderToken
+  // })
+  return ({
+    success: true,
+    message: 'Success',
+    data: []
   })
 }
