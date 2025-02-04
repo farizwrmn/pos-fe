@@ -31,7 +31,7 @@ const column = {
 
 const FormCounter = ({
   item = {},
-  onSubmit,
+  // onSubmit,
   onSubmitPkm,
   modalType,
   listStore,
@@ -63,31 +63,31 @@ const FormCounter = ({
     }
   }
 
-  const handleSubmit = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue()
-      }
-      Modal.confirm({
-        title: 'Do you want to save this item?',
-        onOk () {
-          onSubmit({
-            header: {
-              pickingLineId: data.pickingLineId,
-              storeIdReceiver: data.storeIdReceiver,
-              storeId: lstorage.getCurrentUserStore(),
-              salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
-              salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
-            }
-          }, resetFields)
-        },
-        onCancel () { }
-      })
-    })
-  }
+  // const handleSubmit = () => {
+  //   validateFields((errors) => {
+  //     if (errors) {
+  //       return
+  //     }
+  //     const data = {
+  //       ...getFieldsValue()
+  //     }
+  //     Modal.confirm({
+  //       title: 'Do you want to save this item?',
+  //       onOk () {
+  //         onSubmit({
+  //           header: {
+  //             pickingLineId: data.pickingLineId,
+  //             storeIdReceiver: data.storeIdReceiver,
+  //             storeId: lstorage.getCurrentUserStore(),
+  //             salesDateFrom: data.salesDate ? data.salesDate[0].format('YYYY-MM-DD') : undefined,
+  //             salesDateTo: data.salesDate ? data.salesDate[1].format('YYYY-MM-DD') : undefined
+  //           }
+  //         }, resetFields)
+  //       },
+  //       onCancel () { }
+  //     })
+  //   })
+  // }
 
   const handleSubmitPkm = () => {
     validateFields((errors) => {
