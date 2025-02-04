@@ -187,9 +187,9 @@ const FormCounter = ({
                 ]
               })(<RangePicker />)}
             </FormItem>
-            <FormItem {...tailFormItemLayout}>
+            {/* <FormItem {...tailFormItemLayout}>
               <Button type="primary" onClick={handleSubmit} disabled={loading.effects['autoReplenish/add']}>Generate Mindis</Button>
-            </FormItem>
+            </FormItem> */}
             <FormItem {...tailFormItemLayout}>
               <Button type="default" onClick={handleSubmitPkm} disabled={loading.effects['autoReplenish/addPkm']}>Generate PKM</Button>
             </FormItem>
