@@ -18,7 +18,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
       }
       if (record.recon) {
         message.error('Already Recon')
-        return
+        // return
       }
       if (currentRole !== 'OWN' && currentRole !== 'ITS') {
         const transDate = moment(record.transDate).format('YYYY-MM-DD')

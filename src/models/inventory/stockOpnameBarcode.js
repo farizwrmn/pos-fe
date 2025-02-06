@@ -28,33 +28,37 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       payload.storeId = lstorage.getCurrentUserStore()
-      const response = yield call(query, payload)
-      if (response.success) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: response.data,
-            pagination: {
-              current: Number(response.page) || 1,
-              pageSize: Number(response.pageSize) || 10,
-              total: response.total
-            }
-          }
-        })
+      payload.pageSize = 10
+      payload.page = 1
+
+      let allData = []
+      let hasMore = true
+
+      while (hasMore) {
+        const response = yield call(query, payload)
+        if (response.success) {
+          allData = allData.concat(response.data)
+          hasMore = allData.length < response.total
+          payload.page += 1
+        } else {
+          hasMore = false
+        }
       }
+      yield put({
+        type: 'querySuccess',
+        payload: {
+          list: allData
+        }
+      })
     }
   },
 
   reducers: {
     querySuccess (state, action) {
-      const { list, pagination } = action.payload
+      const { list } = action.payload
       return {
         ...state,
-        list,
-        pagination: {
-          ...state.pagination,
-          ...pagination
-        }
+        list
       }
     }
   }

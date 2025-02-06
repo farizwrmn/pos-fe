@@ -10,10 +10,12 @@ import ModalBookmark from './ModalBookmark'
 
 const Detail = ({
   productBookmarkDetail,
+  userStore,
   dispatch,
   loading
 }) => {
   const { data, listBookmark, modalProductVisible, modalBundleVisible, modalBookmarkVisible, modalBookmarkItem } = productBookmarkDetail
+  const { listAllStore } = userStore
 
   const content = []
   for (let key in data) {
@@ -170,6 +172,7 @@ const Detail = ({
 
   const modalBookmarkProps = {
     visible: modalBookmarkVisible,
+    listAllStore,
     item: modalBookmarkItem,
     loading: loading.effects['productBookmarkDetail/updateBookmarkDetail'],
     onSubmit (data) {
@@ -230,4 +233,4 @@ Detail.propTypes = {
   productBookmarkDetail: PropTypes.object
 }
 
-export default connect(({ productstock, bundling, productBookmark, productBookmarkDetail, loading }) => ({ productstock, bundling, productBookmark, productBookmarkDetail, loading }))(Detail)
+export default connect(({ productstock, userStore, bundling, productBookmark, productBookmarkDetail, loading }) => ({ productstock, userStore, bundling, productBookmark, productBookmarkDetail, loading }))(Detail)

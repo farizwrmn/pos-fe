@@ -303,6 +303,16 @@ class ModalAccept extends Component {
                     ]
                   })(<DatePicker placeholder="Select Period" disabled />)}
                 </FormItem>
+                <FormItem label="Created At" hasFeedback {...formItemLayout}>
+                  {getFieldDecorator('createdAt', {
+                    initialValue: item.transDate,
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(<Input disabled />)}
+                </FormItem>
                 <FormItem label="reference" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('transNoReference', {
                     initialValue: item.transNo,

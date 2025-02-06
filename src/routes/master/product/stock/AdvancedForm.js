@@ -633,6 +633,18 @@ class AdvancedForm extends Component {
                   ]
                 })(<Input maxLength={85} onChange={this.changeName} />)}
               </FormItem>
+              <FormItem label="Short Name (Invoice)" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('shortName', {
+                  initialValue: item.shortName,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'a-Z & 0-9',
+                      pattern: /^[A-Za-z0-9-.,%'"=><$@^&*!() _/]{3,85}$/i
+                    }
+                  ]
+                })(<Input maxLength={35} onChange={this.changeName} />)}
+              </FormItem>
               <FormItem label="Image" {...formItemLayout}>
                 {getFieldDecorator('productImage', {
                   initialValue: item.productImage
