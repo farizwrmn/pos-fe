@@ -474,6 +474,17 @@ export default modelExtend(pageModel, {
               })
             }
           }
+          if (response.data[0].badStockParent) {
+            const responseCentral = yield call(queryStore, {
+              id: response.data[0].badStockParent
+            })
+            if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
+              listStore.push({
+                value: responseCentral.data[0].id,
+                label: responseCentral.data[0].storeName
+              })
+            }
+          }
         }
       }
       yield put({

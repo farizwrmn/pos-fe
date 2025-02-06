@@ -84,7 +84,7 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length <= 5) {
+          && payload.data.image.fileList.length <= 10) {
           for (let key in payload.data.image.fileList) {
             const item = payload.data.image.fileList[key]
             const formData = new FormData()
@@ -181,7 +181,7 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length <= 5) {
+          && payload.data.image.fileList.length <= 10) {
           for (let key in payload.data.image.fileList) {
             const item = payload.data.image.fileList[key]
             if (item && item.originFileObj) {
@@ -221,7 +221,7 @@ export default modelExtend(pageModel, {
           && payload.data.image
           && payload.data.image.fileList
           && payload.data.image.fileList.length > 0
-          && payload.data.image.fileList.length <= 5) {
+          && payload.data.image.fileList.length <= 10) {
           for (let key in payload.data.image.fileList) {
             const item = payload.data.image.fileList[key]
             if (item && item.originFileObj) {
