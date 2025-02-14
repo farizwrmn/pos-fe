@@ -15,7 +15,7 @@ import { query as queryMenu } from '../services/menus'
 import { queryMode as miscQuery } from '../services/misc'
 import { queryLastActive } from '../services/period'
 import { query as queryPermission } from '../services/permission'
-import { getListNotifications, refreshNotifications } from '../services/dashboard'
+import { getNotifications, getListNotifications, refreshNotifications } from '../services/dashboard'
 import {
   queryTotalBirthdayPerDate,
   queryShowCustomerBirthdayPerDate,
@@ -90,7 +90,7 @@ export default {
       const { success, user } = yield call(query, payload)
       if (success && user) {
         yield put({ type: 'app/queryRefreshNotifications' })
-        // const notifications = yield call(getNotifications, payload)
+        const notifications = yield call(getNotifications, payload)
         getVersionInfo(VERSION)
         const { permissions } = user
 
@@ -190,7 +190,7 @@ export default {
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
-        // if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
+        if (notifications.success) yield put({ type: 'updateState', payload: { listNotification: notifications.data } })
         yield put({ type: 'queryListNotifications' })
       } else if (openPages && openPages.indexOf(location.pathname) < 0) {
         let from = location.pathname

@@ -517,9 +517,7 @@ const getCurrentUserStoreDetail = () => {
     }
   }
   const listUserStores = getListUserStores()
-  console.log('listUserStores', listUserStores)
   const currentStore = getCurrentUserStore()
-  console.log('currentStore', currentStore)
   let currentStoreName = ''
   if (listUserStores) {
     currentStoreName = listUserStores.find(valueStoreName, [currentStore])
