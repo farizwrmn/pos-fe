@@ -70,7 +70,7 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname) || pathToRegexp('/stock-opname-partial/:id').exec(location.pathname) || pathToRegexp('/stock-opname-detail-history/:id')
+        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname) || pathToRegexp('/stock-opname-partial/:id').exec(location.pathname) || pathToRegexp('/stock-opname-detail-history/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',

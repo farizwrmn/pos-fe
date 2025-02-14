@@ -17,7 +17,7 @@ const PrintPDF = ({ user, itemPrint, listTrans }) => {
         row.push({ text: (data.transNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.deliveryOrderNo || '').toString(), alignment: 'left', fontSize: 11 })
         row.push({ text: (data.boxNumber || '').toString(), alignment: 'center', fontSize: 11 })
-        row.push({ text: '', alignment: 'left', fontSize: 11 })
+        row.push({ text: (data.totalColly || ''), alignment: 'left', fontSize: 11 })
         body.push(row)
       }
       count += 1
@@ -116,7 +116,7 @@ const PrintPDF = ({ user, itemPrint, listTrans }) => {
       { fontSize: 12, text: 'TRANSFER OUT', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'DELIVERY ORDER', style: 'tableHeader', alignment: 'center' },
       { fontSize: 12, text: 'BOX NUMBER', style: 'tableHeader', alignment: 'center' },
-      { fontSize: 12, text: 'CHECK', style: 'tableHeader', alignment: 'center' }
+      { fontSize: 12, text: 'TOTAL PACK', style: 'tableHeader', alignment: 'center' }
     ]
   ]
   let tableBody = []

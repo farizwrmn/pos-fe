@@ -62,6 +62,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         row.push({ value: (data.employee.bankName || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.employee.accountNo || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: (data.employee.accountName || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
+        row.push({ value: (data.validationType || ''), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.createdAt).format('YYYY-MM-DD'), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({ value: moment(data.createdAt).format('HH:mm'), alignment: styles.alignmentRight, font: styles.tableBody, border: styles.tableBorder })
         row.push({
@@ -83,6 +84,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
         { value: 'BANK', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NO AKUN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA AKUN', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
+        { value: 'TYPE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'LOGIN DATE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'LOGIN TIME', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder },
         { value: 'NAMA STORE', alignment: styles.alignmentCenter, font: styles.tableHeader, border: styles.tableBorder }

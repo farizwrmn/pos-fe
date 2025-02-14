@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { IMAGEURL, rest } from 'utils/config.company'
-import { Form, Modal, Input, Button, message, Icon, Upload } from 'antd'
+import { Form, Modal, Input, Row, Col, Select, TimePicker, DatePicker, Button, message, Icon, Upload } from 'antd'
+import moment from 'moment'
 
 const { apiCompanyURL } = rest
+const { Option } = Select
 const FormItem = Form.Item
+const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -27,7 +30,8 @@ class ModalBookmark extends Component {
       item,
       onSubmit,
       loading,
-      form: { getFieldDecorator, validateFields, getFieldsValue },
+      listAllStores = [],
+      form: { getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
       ...modalProps
     } = this.props
 
@@ -37,6 +41,12 @@ class ModalBookmark extends Component {
         const record = {
           ...getFieldsValue()
         }
+        record.startDate = (record.Date || []).length > 0 ? moment(record.Date[0]).format('YYYY-MM-DD') : null
+        record.endDate = (record.Date || []).length > 0 ? moment(record.Date[1]).format('YYYY-MM-DD') : null
+        record.availableDate = (record.availableDate || []).length > 0 ? record.availableDate.toString() : null
+        record.availableStore = (record.availableStore || []).length > 0 ? record.availableStore.toString() : null
+        record.startHour = record.startHour ? moment(record.startHour).format('HH:mm') : null
+        record.endHour = record.endHour ? moment(record.endHour).format('HH:mm') : null
         Modal.confirm({
           title: 'Save This Data',
           content: 'Are you sure ?',
@@ -54,6 +64,14 @@ class ModalBookmark extends Component {
       ...modalProps,
       onOk: handleOk
     }
+
+    const disabledDate = (current) => {
+      // Can not select days before today and today
+      return current && current < moment().startOf('day')
+    }
+
+    let childrenStore = listAllStores.length > 0 ? listAllStores.map(x => (<Option key={x.id}>{x.storeName}</Option>)) : []
+
     return (
       <Modal {...modalOpts}
         footer={[
@@ -73,7 +91,87 @@ class ModalBookmark extends Component {
               ]
             })(<Input maxLength={10} placeholder="Shortcut Code" />)}
           </FormItem>
-
+          <FormItem label="Available Period" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('Date', {
+              initialValue: item.startDate ? [
+                moment(item.startDate),
+                moment(item.endDate)
+              ] : null,
+              rules: [
+                {
+                  required: true
+                }
+              ]
+            })(<RangePicker disabledDate={disabledDate} allowClear />)}
+          </FormItem>
+          <FormItem label="Available Hour" hasFeedback {...formItemLayout}>
+            <Row gutter={12}>
+              <Col span={12}>
+                {getFieldDecorator('startHour', {
+                  initialValue: item.startHour ? moment(item.startHour, 'HH:mm') : moment('00:00', 'HH:mm'),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TimePicker defaultValue={moment('00:00', 'HH:mm')} style={{ width: '100%' }} allowClear format={'HH:mm'} />)}
+              </Col>
+              <Col span={12}>
+                {getFieldDecorator('endHour', {
+                  initialValue: item.endHour ? moment(item.endHour, 'HH:mm') : moment('23:59', 'HH:mm'),
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<TimePicker defaultValue={moment('23:59', 'HH:mm')} style={{ width: '100%' }} allowClear format={'HH:mm'} />)}
+              </Col>
+            </Row>
+          </FormItem>
+          <FormItem
+            label="Available Days"
+            hasFeedback
+            help={(getFieldValue('availableDate') || '').length > 0 ? `${(getFieldValue('availableDate') || '').length} ${(getFieldValue('availableDate') || '').length === 1 ? 'day' : 'days'}` : 'clear it if available every day'}
+            {...formItemLayout}
+          >
+            {getFieldDecorator('availableDate', {
+              initialValue: item.availableDate ? (item.availableDate || '').split(',') : [],
+              rules: [
+                {
+                  required: false
+                }
+              ]
+            })(<Select style={{ width: '100%' }} mode="multiple" allowClear size="large">
+              <Option value="1">Monday</Option>
+              <Option value="2">Tuesday</Option>
+              <Option value="3">Wednesday</Option>
+              <Option value="4">Thursday</Option>
+              <Option value="5">Friday</Option>
+              <Option value="6">Saturday</Option>
+              <Option value="7">Sunday</Option>
+            </Select>)}
+          </FormItem>
+          <FormItem
+            label="Store"
+            hasFeedback
+            help={(getFieldValue('availableStore') || '').length > 0 ? `${(getFieldValue('availableStore') || '').length} ${(getFieldValue('availableStore') || '').length === 1 ? 'store' : 'stores'}` : 'clear it if available all stores'}
+            {...formItemLayout}
+          >
+            {getFieldDecorator('availableStore', {
+              initialValue: item.availableStore ? (item.availableStore || '').split(',') : []
+            })(
+              <Select
+                mode="multiple"
+                allowClear
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Choose Store"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {childrenStore}
+              </Select>
+            )}
+          </FormItem>
           <FormItem
             label="Bookmark Image"
             help="Only accept single jpg or png file, max: 2mb"

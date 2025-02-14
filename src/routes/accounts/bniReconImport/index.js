@@ -40,14 +40,14 @@ const ImportBcaRecon = ({
     const file = event.target.files[0]
     const workbook = new Excel.Workbook()
     const reader = new FileReader()
-    console.log('file', file)
     reader.readAsArrayBuffer(file)
 
     reader.onload = () => {
       const buffer = reader.result
       workbook.xlsx.load(buffer)
         .then(async (workbook) => {
-          let sheet = workbook.getWorksheet('Report')
+          let sheet = workbook.getWorksheet()
+          console.log('sheet', sheet)
           let finalRequest = []
           let csvHeader = [
             'processEffectiveDate', // PROC DATE

@@ -21,7 +21,7 @@ import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
-import { currencyFormatter } from 'utils/string'
+import { currencyFormatter, getSalesProductFields } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { getDateTime } from 'services/setting/time'
 import {
@@ -35,6 +35,10 @@ import {
 import {
   queryReference
 } from 'services/payment'
+import {
+  query as queryLockTransaction,
+  add as unlockTransaction
+} from 'services/pos/unlockTransaction'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -65,7 +69,8 @@ import {
   query as queryProductStock,
   queryPOSProductSales,
   queryByBarcode,
-  queryPOSstock as queryProductsInStock
+  queryPOSstock as queryProductsInStock,
+  queryStorePriceSales
 } from '../../services/master/productstock'
 import {
   query as queryConsignment
@@ -94,7 +99,9 @@ const {
   setPosReference,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
   getQrisPaymentTimeLimit,
-  setAvailablePaymentType
+  setAvailablePaymentType,
+
+  getPosLockTransaction, setPosLockTransaction
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -108,6 +115,9 @@ export default {
   namespace: 'pos',
 
   state: {
+    modalUnlockTransactionVisible: false,
+    modalUnlockTransactionShowForm: false,
+    lockTransaction: getPosLockTransaction() || false,
     modalPosDescriptionVisible: false,
     modalPosDescriptionDynamicQrisVisible: false,
     posDescription: null,
@@ -279,6 +289,9 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'pos/queryLockTransaction'
+          })
           getDynamicQrisImage()
           dispatch({
             type: 'getEnableDineIn',
@@ -321,6 +334,12 @@ export default {
           dispatch({
             type: 'checkPaymentTransactionInvoice'
           })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: false
+            }
+          })
         }
         if (location.pathname === '/transaction/pos/history') {
           dispatch({
@@ -346,6 +365,87 @@ export default {
   },
 
   effects: {
+    * printLatestTransaction (payload, { put, call }) {
+      const response = yield call(queryPaymentTransactionLatest, { storeId: lstorage.getCurrentUserStore() })
+      if (response.success && response.data && response.data.length > 0) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${response.data[0].posId}?status=reprint`)
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        if (invoiceWindow) {
+          invoiceWindow.focus()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: true
+            }
+          })
+        } else {
+          message.error('Please allow pop-up in your browser')
+        }
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalUnlockTransactionShowForm: true
+          }
+        })
+      }
+    },
+
+    * queryLockTransaction (payload, { put, call }) {
+      const lockTransaction = getPosLockTransaction()
+      console.log('first', lockTransaction)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          lockTransaction
+        }
+      })
+      if (!lockTransaction) {
+        const response = yield call(queryLockTransaction)
+        console.log('second', response)
+        if (response.success && response.data) {
+          setPosLockTransaction(true)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: true
+            }
+          })
+        } else {
+          setPosLockTransaction(false)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: false
+            }
+          })
+        }
+      }
+    },
+
+    * unlockTransaction (payload, { put, call }) {
+      setPosLockTransaction(false)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionVisible: true,
+          modalUnlockTransactionVisible: false,
+          modalUnlockTransactionShowForm: false,
+          lockTransaction: false
+        }
+      })
+      yield call(unlockTransaction, {})
+      yield put({
+        type: 'queryLockTransaction',
+        payload: {}
+      })
+    },
+
     * querySequenceReference (payload, { call }) {
       const response = yield call(queryReference, {
         storeId: lstorage.getCurrentUserStore()
@@ -553,7 +653,7 @@ export default {
       })
       const response = yield call(queryAdvertising, {
         type: 'all',
-        typeAds: 'CUSTVIEW',
+        typeAds: ['CUSTVIEW', 'CUSTROLL'],
         order: 'sort'
       })
       if (response && response.success) {
@@ -2276,7 +2376,7 @@ export default {
                 type: 'all'
               }
 
-
+              params.field = getSalesProductFields()
               const response = yield call(queryProductStock, params)
               let listProduct = response.data
               const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -3009,7 +3109,7 @@ export default {
       }
     },
 
-    * chooseProduct ({ payload }, { select, put }) {
+    * chooseProduct ({ payload }, { select, put, call }) {
       const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
@@ -3064,6 +3164,14 @@ export default {
       }
 
       const { item, type } = payload
+      if (item) {
+        if (!item.storePrice) {
+          const storePrice = yield call(queryStorePriceSales, { productId: item.id, storeId: lstorage.getCurrentUserStore() })
+          if (storePrice && storePrice.data) {
+            item.storePrice = storePrice.data
+          }
+        }
+      }
       if (item && item.storePrice && item.storePrice[0]) {
         const price = item.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
         if (price && price[0]) {
@@ -3557,6 +3665,8 @@ export default {
         payload.categoryCode = currentReward.categoryCode
         payload.type = 'all'
       }
+
+      payload.field = getSalesProductFields()
       const data = yield call(queryProductStock, payload)
       let newData = data.data
       if (data.success) {
@@ -4019,7 +4129,7 @@ export default {
     * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
       const response = yield call(queryCheckValidByPaymentReference, payload)
       if (response && response.success) {
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}?status=reprint`)
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -4033,7 +4143,7 @@ export default {
       const response = yield call(queryCheckPaymentTransactionStatus, payload)
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}?status=reprint`)
         yield put({
           type: 'payment/updateState',
           payload: {
@@ -4105,7 +4215,18 @@ export default {
           const secondDiff = moment().diff(moment(paymentTransaction.createdAt), 'seconds')
           const currentPaymentTransactionLimitTimeInSecond = (Number(paymentTransactionLimitTime || 15) * 60) - secondDiff
           const currentPaymentTransactionLimitTimeInMinute = currentPaymentTransactionLimitTimeInSecond / 60
-          if (removeStorage) {
+
+          const listCashier = getCashierTrans()
+          const listBundle = getBundleTrans()
+          const listService = getServiceTrans()
+          const listConsignment = getConsignment()
+          // Change this
+          if (removeStorage
+            && listCashier.length === 0
+            && listBundle.length === 0
+            && listService.length === 0
+            && listConsignment.length === 0
+          ) {
             removeCurrentPaymentTransactionId()
           } else {
             yield put({

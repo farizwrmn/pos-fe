@@ -87,7 +87,7 @@ export default modelExtend(pageModel, {
     },
 
     * loadList ({ payload }, { call, put }) {
-      const response = yield call(queryListDetail, { transId: payload.id })
+      const response = yield call(queryListDetail, { transId: payload.id, type: 'all' })
       yield put({
         type: 'productstock/query',
         payload: {

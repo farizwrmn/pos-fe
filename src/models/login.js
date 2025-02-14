@@ -46,6 +46,7 @@ export default {
       // use below if network error
       const userCompany = { success: true, message: 'Ok', data: { domainName: apiCompanyHost, domainPort: apiCompanyPort, domainProtocol: apiCompanyProtocol, altDomainName: apiCompanyHostAlt } }
       if (userCompany.success) {
+        yield lstorage.removeItemKeys() // remove items in local storage
         yield put({ type: 'getCompanySuccess', payload: { cid: payload.cid || configCompany.idCompany, data: Object.values(userCompany.data) } })
       } else {
         yield put({ type: 'getCompanyFailure' })
@@ -300,7 +301,6 @@ export default {
     getCompanySuccess (state, action) {
       let cdi = [action.payload.cid]
       cdi.push(...action.payload.data)
-      lstorage.removeItemKeys() // remove items in local storage
       lstorage.putStorageKey('cdi', cdi)
       return {
         ...state,
