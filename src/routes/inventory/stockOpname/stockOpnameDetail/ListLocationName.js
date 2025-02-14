@@ -4,7 +4,7 @@ import styles from '../../../../themes/index.less'
 import Filter from './Filter'
 
 
-const List = ({ onRowClick, ...listProps }) => {
+const ListLocationName = ({ onRowClick, ...listProps }) => {
   const handleMenuClick = (record) => {
     onRowClick(record)
   }
@@ -53,4 +53,4 @@ const List = ({ onRowClick, ...listProps }) => {
   )
 }
 
-export default List
+export default ListLocationName

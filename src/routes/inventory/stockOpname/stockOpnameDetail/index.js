@@ -283,8 +283,8 @@ class Detail extends Component {
         dispatch({
           type: 'stockOpname/updateState',
           payload: {
-            modalLocationVisible: true,
-            modalLocationItem: record
+            modalLocationItem: record,
+            modalLocationVisible: true
           }
         })
         modalLocationProps.onOpen(record)

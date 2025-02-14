@@ -30,6 +30,16 @@ export async function queryDetailReportOpname (params) {
   })
 }
 
+export async function queryDetailHistoryReportOpname (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-opname-detail-history-report/finish',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryListEmployeeOnCharge (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
