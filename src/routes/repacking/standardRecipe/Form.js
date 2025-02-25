@@ -53,9 +53,20 @@ const FormCounter = ({
       key: 'productName'
     },
     {
-      title: 'Qty',
+      title: 'Qty Produksi Per 1000 Unit',
+      dataIndex: 'gram',
+      key: 'gram',
+      render: (text, record) => {
+        return record.qty * 1000
+      }
+    },
+    {
+      title: 'Simulasi',
       dataIndex: 'qty',
-      key: 'qty'
+      key: 'qty',
+      render: (text, record) => {
+        return record.qty
+      }
     }
   ]
   const tailFormItemLayout = {
