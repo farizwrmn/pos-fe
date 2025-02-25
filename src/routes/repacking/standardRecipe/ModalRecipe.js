@@ -41,7 +41,6 @@ class ModalMemberTier extends Component {
       form: {
         getFieldDecorator,
         getFieldsValue,
-        getFieldValue,
         validateFields,
         resetFields
       },
@@ -56,7 +55,6 @@ class ModalMemberTier extends Component {
         const data = {
           ...getFieldsValue()
         }
-        data.qty = data.gram / 1000
         Modal.confirm({
           title: 'Do you want to save this item?',
           onOk () {
@@ -113,18 +111,15 @@ class ModalMemberTier extends Component {
               </Select>
             )}
           </FormItem>
-          <FormItem label="Qty Produksi Per 1000 Unit" help="Butuh berapa gram atau pcs" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('gram', {
-              initialValue: item.qty != null ? item.qty * 1000 : 1,
+          <FormItem label="Qty" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('qty', {
+              initialValue: item.qty || 1,
               rules: [
                 {
                   required: true
                 }
               ]
             })(<InputNumber min={0.0001} max={999999999} style={{ width: '100%' }} />)}
-          </FormItem>
-          <FormItem label="Simulasi" help="Simulasi Per Unit/Kg/L Dibutuhkan Berapa Gram" hasFeedback {...formItemLayout}>
-            <InputNumber disabled style={{ width: '100%' }} value={getFieldValue('gram') / 1000} />
           </FormItem>
         </Form>
       </Modal>
