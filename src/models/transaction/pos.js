@@ -407,7 +407,6 @@ export default {
       })
       if (!lockTransaction) {
         const response = yield call(queryLockTransaction)
-        console.log('second', response)
         if (response.success && response.data) {
           setPosLockTransaction(true)
           yield put({
