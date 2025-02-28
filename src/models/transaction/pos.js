@@ -3424,7 +3424,7 @@ export default {
 
     * calculateAutoBundle ({ payload }, { select, put }) {
       const selectedPaymentShortcut = yield select(({ pos }) => pos.selectedPaymentShortcut)
-      if (selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') return
+      if (selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'GF') return
       const { listProduct } = payload
       let listBundle = getBundleTrans()
       let { cashier, bundle } = getListProductAfterBundling(listProduct, listBundle)
