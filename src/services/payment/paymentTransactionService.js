@@ -46,6 +46,17 @@ export const queryLatest = (params) => {
   })
 }
 
+export const queryLatestNotVald = (params) => {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: `${paymentTransaction}/latest-not-valid`,
+    alt: true,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export const queryById = (params) => {
   const apiHeaderToken = crypt.apiheader()
   const { paymentTransactionId } = params

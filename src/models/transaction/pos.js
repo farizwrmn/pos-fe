@@ -21,7 +21,7 @@ import { queryProductBarcode } from 'services/consignment/products'
 import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
-import { currencyFormatter, getSalesProductFields } from 'utils/string'
+import { getSalesProductFields } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { getDateTime } from 'services/setting/time'
 import {
@@ -79,7 +79,15 @@ import { query as queryService, queryById as queryServiceById } from '../../serv
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
 import { getDiscountByProductCode } from './utils'
 import { getListProductAfterBundling } from './utilsPos'
-import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
+import {
+  queryCheckStoreAvailability,
+  queryLatest as queryPaymentTransactionLatest,
+  queryLatestNotVald as queryPaymentTransactionLatestNotValid,
+  queryFailed as queryPaymentTransactionFailed,
+  queryCheckValidByPaymentReference,
+  queryCheckStatus as queryCheckPaymentTransactionStatus,
+  queryCheckPaymentTransactionInvoice
+} from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -91,7 +99,6 @@ const {
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
   getExpressOrder, setExpressOrder,
-  setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
   removeDynamicQrisPosTransId, removeDynamicQrisPosTransNo, removeQrisMerchantTradeNo,
@@ -129,6 +136,7 @@ export default {
     modalVoucherVisible: false,
     modalExpressCodeVisible: false,
     modalGrabmartCodeVisible: false,
+    paymentTransaction: {},
     modalGrabmartCodeItem: {},
     modalExpressCodeItem: {},
     currentGrabOrder: {},
@@ -318,12 +326,6 @@ export default {
           dispatch({
             type: 'checkStoreDynamicQrisAvaibility'
           })
-          dispatch({
-            type: 'getDynamicQrisLatestTransaction',
-            payload: {
-              storeId: lstorage.getCurrentUserStore()
-            }
-          })
           dispatch({ type: 'availablePaymentType' })
           // dispatch({
           //   type: 'queryPaymentTransactionFailed',
@@ -391,6 +393,25 @@ export default {
           type: 'updateState',
           payload: {
             modalUnlockTransactionShowForm: true
+          }
+        })
+      }
+    },
+
+    * queryLatestNotValidTransaction ({ payload = {} }, { put, call }) {
+      const response = yield call(queryPaymentTransactionLatestNotValid, payload)
+      if (response && response.success && response.data && response.data.length > 0) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisLatestTransaction: response.data
+          }
+        })
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisLatestTransaction: []
           }
         })
       }
@@ -4128,7 +4149,7 @@ export default {
     * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
       const response = yield call(queryCheckValidByPaymentReference, payload)
       if (response && response.success) {
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}?status=reprint`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -4171,17 +4192,19 @@ export default {
     * getDynamicQrisLatestTransaction ({ payload = {} }, { call, put }) {
       const response = yield call(queryPaymentTransactionLatest, payload)
       if (response && response.success && response.data && response.data.length > 0) {
-        const qrisLatestTransaction = response.data[0]
         yield put({
           type: 'updateState',
           payload: {
-            qrisLatestTransaction,
             listQrisLatestTransaction: response.data
           }
         })
-        setQrisPaymentLastTransaction(`Trans Date: ${moment(qrisLatestTransaction.transDate).format('DD MMM YYYY, HH:mm:ss')}; Total Amount: ${currencyFormatter(qrisLatestTransaction.amount)};`)
       } else {
-        removeQrisPaymentLastTransaction()
+        yield put({
+          type: 'updateState',
+          payload: {
+            listQrisLatestTransaction: []
+          }
+        })
       }
     },
     * queryPaymentTransactionFailed ({ payload = {} }, { call, put }) {
@@ -4205,7 +4228,14 @@ export default {
       }
     },
     * checkPaymentTransactionInvoice (_, { call, put }) {
-      const paymentTransactionId = getCurrentPaymentTransactionId()
+      let paymentTransactionId = getCurrentPaymentTransactionId()
+      if (!paymentTransactionId) {
+        const response = yield call(queryPaymentTransactionLatestNotValid, { storeId: lstorage.getCurrentUserStore() })
+        if (response && response.success && response.data && response.data[0]) {
+          paymentTransactionId = response.data[0].paymentTransactionId
+        }
+      }
+
       if (paymentTransactionId) {
         const response = yield call(queryCheckPaymentTransactionInvoice, { paymentTransactionId })
         if (response && response.success && response.data) {
@@ -4240,7 +4270,8 @@ export default {
               payload: {
                 modalQrisPaymentVisible: true,
                 modalQrisPaymentType: 'waiting',
-                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo
+                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo,
+                paymentTransaction
               }
             })
           }

@@ -1,32 +1,30 @@
-import { Col, Row, Tag } from 'antd'
-import moment from 'moment'
-import { currencyFormatter } from 'utils/string'
+import { Row, Tag } from 'antd'
 import ModalList from './ModalList'
 
-const LatestQrisTransaction = ({ loading, modalVisible, list, latestTransaction, handleClickLatestTransaction }) => {
+const LatestQrisTransaction = ({ loading, modalVisible, list, onOk, onNotValid, onCancel }) => {
   const modalListProps = {
     loading,
     visible: modalVisible,
-    title: 'Latest Transaction',
+    title: 'History',
     list,
-    onOk: handleClickLatestTransaction,
-    onCancel: handleClickLatestTransaction
+    onOk,
+    onCancel
   }
 
   return (
     <Row>
-      {
-        Boolean(latestTransaction) && (
-          <Col span={24}>
-            <Tag
-              color="green"
-              onClick={handleClickLatestTransaction}
-            >
-              Riwayat Transaksi (Klik Disini)
-            </Tag>
-          </Col>
-        )
-      }
+      <Tag
+        color="green"
+        onClick={onOk}
+      >
+        Riwayat Transaksi (Klik Disini)
+      </Tag>
+      <Tag
+        color="red"
+        onClick={onNotValid}
+      >
+        Payment Status: Not Valid
+      </Tag>
       {modalVisible && <ModalList {...modalListProps} />}
     </Row>
   )
