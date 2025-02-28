@@ -82,7 +82,6 @@ const ModalBundleCategory = ({
                   filterOption={filterOption}
                 >{
                     data.listItem && data.listItem
-                      .filter(filtered => filtered.count > 0)
                       .map(c => <Option value={c.id} key={c.id} title={`${c.productCode} - ${c.productName}`}>{c.productName}</Option>)
                   }
                 </Select>)}
