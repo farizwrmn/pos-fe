@@ -3082,19 +3082,40 @@ const Pos = ({
     latestTransaction: qrisLatestTransaction,
     list: listQrisLatestTransaction,
     modalVisible: modalQrisLatestTransactionVisible,
-    handleClickLatestTransaction: () => {
-      if (!modalQrisLatestTransactionVisible) {
-        dispatch({
-          type: 'pos/getDynamicQrisLatestTransaction',
-          payload: {
-            storeId: lstorage.getCurrentUserStore()
-          }
-        })
-      }
+    onOk () {
+      dispatch({
+        type: 'pos/getDynamicQrisLatestTransaction',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalQrisLatestTransactionVisible: !modalQrisLatestTransactionVisible
+          modalQrisLatestTransactionVisible: true
+        }
+      })
+    },
+    onNotValid () {
+      dispatch({
+        type: 'pos/queryLatestNotValidTransaction',
+        payload: {
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisLatestTransactionVisible: true
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalQrisLatestTransactionVisible: false,
+          listQrisLatestTransaction: []
         }
       })
     }
@@ -3182,9 +3203,7 @@ const Pos = ({
           </Col>
         ) : null}
         <Col md={hasBookmark ? 17 : 24} sm={24}>
-          {qrisLatestTransaction && (
-            <LatestQrisTransaction {...latestQrisTransactionProps} />
-          )}
+          <LatestQrisTransaction {...latestQrisTransactionProps} />
           <Card bordered={false} bodyStyle={{ padding: '0px', margin: 0 }} style={{ padding: '0px', margin: 0 }} noHovering>
             <Form layout="vertical">
               <LovButton {...lovButtonProps} />
