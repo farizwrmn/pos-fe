@@ -23,7 +23,7 @@ const LatestQrisTransaction = ({ loading, modalVisible, list, onOk, onNotValid, 
         color="red"
         onClick={onNotValid}
       >
-        Payment Status: Not Valid
+        History Payment
       </Tag>
       {modalVisible && <ModalList {...modalListProps} />}
     </Row>
