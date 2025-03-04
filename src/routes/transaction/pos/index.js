@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
-import { variables, lstorage, color } from 'utils'
+import { variables, lstorage, isElectron, color } from 'utils'
 // import {
 //   TYPE_PEMBELIAN_UMUM,
 //   TYPE_PEMBELIAN_GRABFOOD,
@@ -43,7 +43,7 @@ import BarcodeInput from './BarcodeInput'
 import ModalLogin from '../ModalLogin'
 import ModalVoucher from './ModalVoucher'
 import ModalCashRegister from './ModalCashRegister'
-import { isElectron, groupProduct } from './utils'
+import { groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
 import ModalExpressCode from './ModalExpressCode'
