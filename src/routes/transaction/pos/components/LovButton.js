@@ -138,6 +138,7 @@ const LovButton = ({
         type="primary"
         size="large"
         icon="customer-service"
+        disabled
         style={{ marginRight: 8 }}
         onClick={handleMechanicBrowse}
       >
