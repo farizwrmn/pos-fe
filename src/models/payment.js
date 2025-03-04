@@ -6,6 +6,7 @@ import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNEx
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
 import { APPVERSION } from 'utils/config.company'
+import { isElectron } from 'routes/transaction/pos/utils'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
@@ -528,6 +529,16 @@ export default {
               // })
 
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
+
+              if (!isElectron()) {
+                yield put({
+                  type: 'directPrintInvoice',
+                  payload: {
+                    id: responsInsertPos.id
+                  }
+                })
+              }
+
               yield put({
                 type: 'updateState',
                 payload: {
@@ -572,6 +583,11 @@ export default {
           title: 'Cannot get current time'
         })
       }
+    },
+
+    * directPrintInvoice ({ payload }, { call, select, put }) {
+      // Get Pos Header and all Data
+      // Print To http://localhost:8080/api/message?printerName=KASIR&paperWidth=58
     },
 
     * addMethodVoucher ({ payload }, { call, select, put }) {
