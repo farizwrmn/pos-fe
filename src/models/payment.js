@@ -585,8 +585,44 @@ export default {
     },
 
     * directPrintInvoice ({ payload }, { call, select, put }) {
-      // Get Pos Header and all Data
-      // Print To http://localhost:8080/api/message?printerName=KASIR&paperWidth=58
+      try {
+        // Get Pos Header and all Data
+        yield put({
+          type: 'queryPosDetail',
+          payload: {
+            reference: payload.id,
+            id: response.pos.transNo,
+            data: response.pos,
+            type
+          }
+        })
+        if (status !== 'reprint') {
+          yield put({
+            type: 'updateState',
+            payload: {
+              directPrinting: response.directPrinting
+            }
+          })
+          if (response.pos && response.directPrinting && response.directPrinting.length > 0) {
+            for (let key in response.directPrinting) {
+              const item = response.directPrinting[key]
+              const responseDirect = yield call(directPrinting, {
+                url: item.printingUrl,
+                data: item.groupName === 'QRIS' ? rearrangeDirectPrintingQris(response.pos, item) : rearrangeDirectPrinting(response.pos, item)
+              })
+              console.log('responseDirect', responseDirect)
+            }
+          }
+        }
+        yield put({
+          type: 'setListPaymentDetail',
+          payload: response.pos
+        })
+        // Print To http://localhost:8080/api/message?printerName=KASIR&paperWidth=58
+        yield call(directPrinting, payload)
+      } catch (error) {
+        throw error
+      }
     },
 
     * addMethodVoucher ({ payload }, { call, select, put }) {
