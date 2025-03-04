@@ -10,6 +10,8 @@ import * as Excel from 'exceljs/dist/exceljs.min.js'
 import { lstorage } from 'utils'
 import List from './List'
 import PrintXLS from './PrintXLS'
+import Filter from './Filter'
+import PrintXLSDownloadData from './PrintXLSDownloadData'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -28,6 +30,7 @@ const formItemLayout = {
 }
 
 const ImportAutoReplenishBuffer = ({
+  location,
   loading,
   dispatch,
   importAutoReplenishBuffer,
@@ -46,7 +49,7 @@ const ImportAutoReplenishBuffer = ({
   const { listStore } = transferOut
   const { listBrand } = productbrand
   const { listCategory } = productcategory
-  const { list, pagination } = importAutoReplenishBuffer
+  const { list, listAutoReplenish, pagination } = importAutoReplenishBuffer
   const { user, storeInfo } = app
   const {
     changed,
@@ -67,6 +70,16 @@ const ImportAutoReplenishBuffer = ({
           pageSize: page.pageSize
         }
       }))
+    },
+    onDelete (data) {
+      const { query } = location
+      dispatch({
+        type: 'importAutoReplenishBuffer/remove',
+        payload: {
+          data,
+          otherQuery: query
+        }
+      })
     }
   }
 
@@ -96,7 +109,7 @@ const ImportAutoReplenishBuffer = ({
     ? (<PrintXLS data={listPrintAllStock} name="Export Template Stock" {...printProps} />)
     : (<Button type="default" disabled={stockLoading} size="large" onClick={getAllStock} loading={stockLoading}><Icon type="file-pdf" />Get Template Stock</Button>)
 
-  const handleChangeFile = (event) => {
+  const handleChangeFile = (event, type = 'replace') => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -144,6 +157,7 @@ const ImportAutoReplenishBuffer = ({
                 type: 'importAutoReplenishBuffer/add',
                 payload: {
                   storeId: getData.storeIdReceiver,
+                  fileType: type,
                   detail: uploadData
                 }
               })
@@ -174,12 +188,61 @@ const ImportAutoReplenishBuffer = ({
     childrenStoreReceived.push(groupStore)
   }
 
+  const getDownloadData = (storeId) => {
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      if (!storeId) {
+        message.error('Pick store')
+        return
+      }
+      dispatch({
+        type: 'importAutoReplenishBuffer/downloadData',
+        payload: {
+          storeId
+        }
+      })
+    })
+  }
+
+  const onChooseStore = (storeId) => {
+    dispatch({
+      type: 'importAutoReplenishBuffer/updateState',
+      payload: {
+        listAutoReplenish: []
+      }
+    })
+    const { query, pathname } = location
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        page: 1,
+        storeId
+      }
+    }))
+  }
+
+  const filterProps = {
+    onFilterChange (value) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          q: value.q
+        }
+      }))
+    }
+  }
+
   return (
     <div className="content-inner">
       <Button type="primary" style={{ marginBottom: '10px' }} icon="rollback" onClick={() => BackToList()}>Back</Button>
 
       <Row>
-        <Col sm={24} md={12} lg={8}>
+        <Col sm={24} md={12} lg={12}>
           <Form layout="horizontal">
             <FormItem label="To Store" hasFeedback {...formItemLayout}>
               {getFieldDecorator('storeIdReceiver', {
@@ -190,6 +253,7 @@ const ImportAutoReplenishBuffer = ({
                 ]
               })(<Select
                 showSearch
+                onSelect={event => onChooseStore(event)}
                 filterOption={filterOption}
               >
                 {childrenStoreReceived}
@@ -203,9 +267,9 @@ const ImportAutoReplenishBuffer = ({
         {'Stock: '}
         {buttonClickXLS}
         <span>
-          <label htmlFor="opname" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Select File</label>
+          <label htmlFor="replaceFile" className="ant-btn ant-btn-primary ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Replace</label>
           <input
-            id="opname"
+            id="replaceFile"
             type="file"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             className="ant-btn ant-btn-default ant-btn-lg"
@@ -215,12 +279,45 @@ const ImportAutoReplenishBuffer = ({
               event.target.value = null
             }}
             onInput={(event) => {
-              handleChangeFile(event)
+              handleChangeFile(event, 'replace')
+            }}
+          />
+        </span>
+        <span>
+          <label htmlFor="newFile" className="ant-btn ant-btn-default ant-btn-lg" style={{ marginLeft: '15px', padding: '0.5em' }}>Insert New</label>
+          <input
+            id="newFile"
+            type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            style={{ visibility: 'hidden' }}
+            {...uploadProps}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={(event) => {
+              handleChangeFile(event, 'new')
             }}
           />
         </span>
       </div>
+
+      <Filter {...filterProps} />
       <List {...listProps} />
+
+      <div>
+        <Button
+          type="default"
+          disabled={loading.effects['importAutoReplenishBuffer/downloadData']}
+          size="large"
+          onClick={() => getDownloadData(location.query.storeId)}
+          loading={loading.effects['importAutoReplenishBuffer/downloadData']}
+        >
+          <Icon type="download" />Download Data
+        </Button>
+        {listAutoReplenish && listAutoReplenish.length > 0 ? <PrintXLSDownloadData listAutoReplenish={listAutoReplenish} /> : null}
+      </div>
+      <br />
     </div>
   )
 }

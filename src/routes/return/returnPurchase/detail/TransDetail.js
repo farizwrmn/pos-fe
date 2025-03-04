@@ -8,15 +8,11 @@ import List from './ListDetail'
 
 const TransDetail = ({
   dataSource,
-  form: {
-    resetFields
-  }
+  editList
 }) => {
   const listProps = {
     dataSource,
-    editList () {
-      resetFields()
-    }
+    editList
   }
 
   return (

@@ -22,7 +22,8 @@ import {
   queryHour,
   queryInterval,
   queryWoDetail,
-  queryWoCheck
+  queryWoCheck,
+  queryEmbeddedUrl
 } from '../../services/report/pos'
 
 // const { getPermission } = variables
@@ -31,6 +32,7 @@ export default {
   namespace: 'posReport',
 
   state: {
+    iframeUrl: '',
     list: [],
     listTrans: [],
     listDaily: [],
@@ -85,6 +87,10 @@ export default {
         })
 
         if (location.pathname === '/report/pos/summary') {
+          dispatch({
+            type: 'posReport/queryEmbeddedUrl'
+          })
+
           const { query } = location
           if (query.activeKey === '4' && query.from && query.to) {
             dispatch({
@@ -132,6 +138,19 @@ export default {
     }
   },
   effects: {
+    * queryEmbeddedUrl ({ payload = {} }, { call, put }) {
+      const response = yield call(queryEmbeddedUrl, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            iframeUrl: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
     * queryPart ({ payload }, { call, put }) {
       let data = []
       if (payload) {
@@ -298,7 +317,7 @@ export default {
       })
     },
 
-    * d ({ payload }, { call, put }) {
+    * queryPosDaily ({ payload }, { call, put }) {
       let data = yield call(queryPosDaily, payload)
       yield put({
         type: 'querySuccessDaily',

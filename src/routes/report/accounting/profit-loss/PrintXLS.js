@@ -407,7 +407,7 @@ const PrintXLS = ({ listTrans, listProfitCompare, listProfit, storeInfo, to }) =
     tableBody,
     tableFooter,
     data: listTrans,
-    fileName: 'Accounting-Detail-Summary'
+    fileName: 'Profit-Loss'
   }
 
   return (

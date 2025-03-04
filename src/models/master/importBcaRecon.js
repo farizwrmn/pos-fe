@@ -39,6 +39,7 @@ export default modelExtend(pageModel, {
     modalStoreVisible: false,
     modalSettlementVisible: false,
     list: [],
+    tmpListCsv: [], // Untuk filter list
     listRecon: [],
     listReconLog: [],
     listErrorLog: [],
@@ -70,10 +71,58 @@ export default modelExtend(pageModel, {
         const { ...other } = location.query
         const { pathname } = location
         if (pathname === '/accounting/bca-recon') {
-          dispatch({ type: 'queryReconLog', payload: other })
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'BCA',
+              ...other
+            }
+          })
+        }
+        if (pathname === '/accounting/bni-recon') {
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'BNI',
+              ...other
+            }
+          })
+        }
+        if (pathname === '/accounting/mandiri-recon') {
+          dispatch({
+            type: 'queryReconLog',
+            payload: {
+              bankName: 'MANDIRI',
+              ...other
+            }
+          })
         }
         if (pathname === '/accounting/bca-recon-import') {
-          dispatch({ type: 'queryImportLog', payload: other })
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'BCA'
+            }
+          })
+        }
+        if (pathname === '/accounting/bni-recon-import') {
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'BNI'
+            }
+          })
+        }
+        if (pathname === '/accounting/mandiri-recon-import') {
+          dispatch({
+            type: 'queryImportLog',
+            payload: {
+              ...other,
+              bankName: 'MANDIRI'
+            }
+          })
         }
       })
     }
@@ -87,32 +136,34 @@ export default modelExtend(pageModel, {
       let transDate = yield select(({ importBcaRecon }) => importBcaRecon.transDate)
       const { query, pathname } = payload.location
       const { ...other } = query
-      const loginTimeDiff = lstorage.getLoginTimeDiff()
-      const localId = lstorage.getStorageKey('udi')
-      const listUserStores = lstorage.getListUserStores()
-      const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
-      const dataUdi = [
-        localId[1],
-        localId[2],
-        [storeId],
-        localId[4],
-        moment(new Date(serverTime)),
-        localId[6],
-        listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
-      ]
-      lstorage.putStorageKey('udi', dataUdi, localId[0])
-      localStorage.setItem('newItem', JSON.stringify({ store: false }))
-      localStorage.removeItem('cashier_trans')
-      localStorage.removeItem('queue')
-      localStorage.removeItem('member')
-      localStorage.removeItem('workorder')
-      localStorage.removeItem('memberUnit')
-      localStorage.removeItem('mechanic')
-      localStorage.removeItem('service_detail')
-      localStorage.removeItem('consignment')
-      localStorage.removeItem('bundle_promo')
-      localStorage.removeItem('cashierNo')
-      yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
+      if (storeId !== lstorage.getCurrentUserStore()) {
+        const loginTimeDiff = lstorage.getLoginTimeDiff()
+        const localId = lstorage.getStorageKey('udi')
+        const listUserStores = lstorage.getListUserStores()
+        const serverTime = moment(new Date()).subtract(loginTimeDiff, 'milliseconds').toDate()
+        const dataUdi = [
+          localId[1],
+          localId[2],
+          [storeId],
+          localId[4],
+          moment(new Date(serverTime)),
+          localId[6],
+          listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId ? listUserStores.filter(filtered => filtered.value === storeId)[0].consignmentId.toString() : null
+        ]
+        lstorage.putStorageKey('udi', dataUdi, localId[0])
+        localStorage.setItem('newItem', JSON.stringify({ store: false }))
+        localStorage.removeItem('cashier_trans')
+        localStorage.removeItem('queue')
+        localStorage.removeItem('member')
+        localStorage.removeItem('workorder')
+        localStorage.removeItem('memberUnit')
+        localStorage.removeItem('mechanic')
+        localStorage.removeItem('service_detail')
+        localStorage.removeItem('consignment')
+        localStorage.removeItem('bundle_promo')
+        localStorage.removeItem('cashierNo')
+        yield put({ type: 'app/query', payload: { userid: user.userid, role: storeId } })
+      }
 
       yield put({ type: 'closeModalStore' })
       yield put({
@@ -144,7 +195,7 @@ export default modelExtend(pageModel, {
       const dataMappingStore = yield call(queryMappingStore)
       const listReconLog = yield call(queryReconLog, {
         ...payload.other,
-        order: '-transDate'
+        order: 'storeId'
       })
       // update list Total Transfer
       yield put({
@@ -161,7 +212,7 @@ export default modelExtend(pageModel, {
         for (let key in posPaymentData.data) {
           let tablePayment = posPaymentData.data[key]
           const filteredPaymentImportBcaData = paymentImportBcaData.data
-            .filter(filtered => Number(filtered.edcBatchNumber) === Number(tablePayment.batchNumber)
+            .filter(filtered => Number(filtered.approvalCode) === Number(tablePayment.batchNumber)
               && filtered.grossAmount === tablePayment.amount)
           if (filteredPaymentImportBcaData && filteredPaymentImportBcaData.length > 0) {
             paymentImportBcaData.data = paymentImportBcaData.data.map((item) => {
@@ -176,6 +227,7 @@ export default modelExtend(pageModel, {
               amount: tablePayment.amount,
               csvId: filteredPaymentImportBcaData[0].id,
               matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
+              userName: tablePayment.userName,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
               typeCode: tablePayment.typeCode,
@@ -188,6 +240,7 @@ export default modelExtend(pageModel, {
               id: tablePayment.id,
               amount: tablePayment.amount,
               matchMdr: null,
+              userName: tablePayment.userName,
               transDate: tablePayment.transDate,
               batchNumber: tablePayment.batchNumber,
               typeCode: tablePayment.typeCode,
@@ -195,6 +248,31 @@ export default modelExtend(pageModel, {
               match: false,
               editState: false
             })
+          }
+        }
+        for (let key in sortDataPayment) {
+          const tablePayment = sortDataPayment[key]
+          if (!tablePayment.match) {
+            const filteredPaymentImportBcaData = paymentImportBcaData.data
+              .filter(filtered => !filtered.match
+                && filtered.grossAmount === tablePayment.amount)
+
+            if (filteredPaymentImportBcaData && filteredPaymentImportBcaData.length === 1) {
+              paymentImportBcaData.data = paymentImportBcaData.data.map((item) => {
+                if (item.id === filteredPaymentImportBcaData[0].id) {
+                  return { ...item, match: true }
+                }
+                return item
+              })
+
+              sortDataPayment[key] = {
+                ...sortDataPayment[key],
+                csvId: filteredPaymentImportBcaData[0].id,
+                matchMdr: filteredPaymentImportBcaData[0].mdrAmount,
+                match: true,
+                editState: true
+              }
+            }
           }
         }
         // console.log('dataBalance', dataBalance)
@@ -213,8 +291,9 @@ export default modelExtend(pageModel, {
         const MappingStore = dataMappingStore.data.length > 0
         const isDataValid = Balance || Transaction
         if (isDataValid) {
+          // yield put({ type: 'deleteReconLog', payload: { transDate: moment(payload.payment.transDate).format('YYYY-MM-DD') } })
           message.error('Already Recon')
-          return
+          // return
         }
 
         if (!MappingStore) {
@@ -235,6 +314,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listSortPayment: sortDataPayment,
+            tmpListCsv: paymentImportBcaData.data,
             list: paymentImportBcaData.data
           }
         })
@@ -270,7 +350,10 @@ export default modelExtend(pageModel, {
               return {
                 id: payload.id,
                 csvId: payload.csvId,
+                userName: item.userName,
                 matchMdr: payload.mdrAmount,
+                transNo: payload.transNo,
+                typeCode: payload.typeCode,
                 match: true,
                 amount: item.amount,
                 transDate: item.transDate,
@@ -356,24 +439,6 @@ export default modelExtend(pageModel, {
           listReconNotMatch: filterList
         }
       })
-    },
-    * openModalStore ({ payload = {} }, { put }) {
-      payload.updated = 0
-      const listUserStores = lstorage.getListUserStores()
-      const filterStore = listUserStores.filter(filtered => filtered.value === payload.storeId)
-      if (filterStore && filterStore.length > 0) {
-        const store = filterStore[0]
-        yield put({
-          type: 'updateState',
-          payload: {
-            modalStoreVisible: true,
-            storeName: store.label,
-            storeId: store.value,
-            transDate: payload.transDate,
-            reconLogId: payload.id
-          }
-        })
-      }
     },
     * closeModalStore ({ payload = {} }, { put }) {
       payload.updated = 0
@@ -469,7 +534,7 @@ export default modelExtend(pageModel, {
       const list = yield select(({ importBcaRecon }) => importBcaRecon.list)
       const data = yield call(queryReconLog, {
         ...payload,
-        order: '-transDate'
+        order: '-storeId'
       })
       if (data.success) {
         yield put({
@@ -520,6 +585,7 @@ export default modelExtend(pageModel, {
     },
     * bulkInsert ({ payload }, { call, put }) {
       let dataExist = yield call(queryImportLog, {
+        bankName: payload.bankName,
         filename: payload.filename
       })
       if (dataExist && dataExist.data && dataExist.data.length > 0) {
@@ -529,20 +595,13 @@ export default modelExtend(pageModel, {
       const data = yield call(bulkInsert, payload)
       if (data.success) {
         yield put({
-          type: 'queryImportLog'
-        })
-        success()
-        yield put({
-          type: 'query',
-          payload
-        })
-      } else {
-        yield put({
-          type: 'updateState',
+          type: 'queryImportLog',
           payload: {
-            currentItem: payload
+            bankName: payload.bankName
           }
         })
+        success()
+      } else {
         throw data
       }
     },

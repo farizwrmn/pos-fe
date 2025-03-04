@@ -9,6 +9,8 @@ import { queryFifo } from 'services/report/fifo'
 import { uploadProductImage } from 'services/utils/imageUploader'
 import { queryProductByCode } from 'services/consignment/products'
 import { query as queryProductCost } from 'services/product/productCost'
+import { query as queryStockPickingLine, add as addStockPickingLine, remove as removeStockPickingLine } from 'services/pickingLine/stockPickingLine'
+import { query as queryPickingLine } from 'services/pickingLine/pickingLine'
 import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
 import { lstorage } from 'utils'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
@@ -40,6 +42,8 @@ export default modelExtend(pageModel, {
     modalGrabmartCampaignVisible: false,
     modalProductType: '',
     listPrintAllStock: [],
+    listStockPickingLine: [],
+    listPickingLine: [],
     tmpProductData: [],
     productInformation: {},
     filteredInfo: {},
@@ -88,10 +92,24 @@ export default modelExtend(pageModel, {
             break
           default:
         }
+        if (pathname === '/inventory/transfer/auto-replenish') {
+          dispatch({
+            type: 'productstock/queryPickingLine'
+          })
+        }
         if (pathname === '/stock') {
           dispatch({ type: 'queryLastAdjust' })
           dispatch({ type: 'loadDataValue' })
           if (!activeKey) dispatch({ type: 'refreshView' })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              listStockPickingLine: []
+            }
+          })
+          dispatch({
+            type: 'productstock/queryPickingLine'
+          })
           if (activeKey === '1') {
             if (mode === 'inventory') {
               dispatch({
@@ -129,6 +147,63 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    * queryPickingLine (payload, { select, call, put }) {
+      const listPickingLine = yield select(({ productstock }) => productstock.listPickingLine)
+      if (listPickingLine && listPickingLine.length > 0) {
+        return
+      }
+      const response = yield call(queryPickingLine, { type: 'all' })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listPickingLine: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+    * queryStockPickingLine ({ payload = {} }, { call, put }) {
+      const response = yield call(queryStockPickingLine, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listStockPickingLine: response.data
+          }
+        })
+      }
+    },
+    * addStockPickingLine ({ payload = {} }, { call, put }) {
+      const response = yield call(addStockPickingLine, payload.data)
+      if (response.success) {
+        yield put({
+          type: 'queryStockPickingLine',
+          payload: {
+            storeId: lstorage.getCurrentUserStore(),
+            productId: payload.data.productId
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+    * deleteStockPickingLine ({ payload }, { call, put }) {
+      const response = yield call(removeStockPickingLine, payload.id)
+      if (response.success) {
+        yield put({
+          type: 'queryStockPickingLine',
+          payload: {
+            storeId: lstorage.getCurrentUserStore(),
+            productId: payload.productId
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
     * hideModalStorePrice (payload, { put }) {
       yield put({
         type: 'updateState',
@@ -484,11 +559,25 @@ export default modelExtend(pageModel, {
         if (payload.reset) {
           payload.reset()
         }
+        if (payload.data.pickingLineId) {
+          const productId = data.stock.id
+          yield put({
+            type: 'addStockPickingLine',
+            payload: {
+              data: {
+                storeId: lstorage.getCurrentUserStore(),
+                productId,
+                pickingLineId: payload.data.pickingLineId
+              }
+            }
+          })
+        }
         // yield put({ type: 'query' })
         success('Stock Product has been saved')
         yield put({
           type: 'updateState',
           payload: {
+            listStockPickingLine: [],
             activeKey: '1',
             modalType: 'add',
             currentItem: {}
@@ -578,6 +667,19 @@ export default modelExtend(pageModel, {
         newProductStock.data.productImage = '["no_image.png"]'
       }
       const data = yield call(edit, newProductStock)
+      if (payload.data.pickingLineId) {
+        const productId = yield select(({ productstock }) => productstock.currentItem.id)
+        yield put({
+          type: 'addStockPickingLine',
+          payload: {
+            data: {
+              storeId: lstorage.getCurrentUserStore(),
+              productId,
+              pickingLineId: payload.data.pickingLineId
+            }
+          }
+        })
+      }
       if (data.success) {
         if (payload.reset) {
           payload.reset()
@@ -587,6 +689,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             modalType: 'add',
+            listStockPickingLine: [],
             currentItem: {},
             activeKey: '1'
           }

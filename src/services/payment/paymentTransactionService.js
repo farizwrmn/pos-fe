@@ -18,6 +18,7 @@ export const queryCancel = (params) => {
   return request({
     url: `${paymentTransaction}/${paymentTransactionId}`,
     method: 'put',
+    alt: true,
     data: pos,
     headers: apiHeaderToken
   })
@@ -27,6 +28,7 @@ export const queryFailed = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/failed`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -37,6 +39,7 @@ export const queryLatest = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/latest`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -58,6 +61,7 @@ export const queryCheckStoreAvailability = () => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/check-store`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -67,6 +71,7 @@ export const queryTimeLimit = () => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/time-limit`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -76,6 +81,7 @@ export const queryCustomerViewTimeLimit = () => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/customer-view-time-limit`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -86,6 +92,7 @@ export const queryCheckValidByPaymentReference = (params) => {
   const { reference } = params
   return request({
     url: `${paymentTransaction}/check-valid/payment/${reference}`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -97,6 +104,7 @@ export const queryCheckStatus = (params) => {
   return request({
     url: `${paymentTransaction}/check-status/${paymentTransactionId}`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -107,6 +115,7 @@ export const queryCheckPaymentTransactionInvoice = (params) => {
   const { paymentTransactionId } = params
   return request({
     url: `${paymentTransaction}/check-invoice-status/${paymentTransactionId}`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken

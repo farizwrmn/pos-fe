@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { lstorage } from 'utils'
-import { Badge, Table, Tabs } from 'antd'
+import { Table } from 'antd'
 import styles from '../../../themes/index.less'
 import {
   groupProduct
 } from './utils'
 
 const { getCashierTrans, getServiceTrans, getConsignment, getBundleTrans } = lstorage
-const TabPane = Tabs.TabPane
 
 function addHandler (ele, trigger, handler) {
   if (window.addEventListener) {
@@ -152,79 +151,79 @@ class TransactionDetail extends Component {
       .sort((a, b) => b.no - a.no)
 
     return (
-      <Tabs activeKey="1">
-        <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="1">
-          <Table
-            rowKey={(record, key) => key}
-            bordered
-            size="small"
-            scroll={{ x: '580px', y: '780px' }}
-            locale={{
-              emptyText: 'Your Sales List'
-            }}
-            columns={[
-              {
-                title: 'No',
-                width: '60px',
-                dataIndex: 'no'
-              },
-              {
-                title: 'Type',
-                dataIndex: 'typeTrans',
-                width: '130px'
-              },
-              {
-                title: 'Product',
-                dataIndex: 'code',
-                width: '300px',
-                render: (text, record) => {
-                  return (
-                    <div>
-                      <div><strong>{record.code}</strong>-{record.name}</div>
-                    </div>
-                  )
-                }
-              },
-              {
-                title: 'Qty',
-                dataIndex: 'qty',
-                width: '40px',
-                className: styles.alignCenter,
-                render: text => (text).toLocaleString()
-              },
-              {
-                title: 'Price',
-                dataIndex: 'sellPrice',
-                width: '100px',
-                className: styles.alignRight,
-                render: (text, record) => {
-                  // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
-                  // const disc1 = record.disc1
-                  // const disc2 = record.disc2
-                  // const disc3 = record.disc3
-                  // const discount = record.discount
-                  const total = record.total
-                  return (
-                    <div>
-                      <div>
-                        <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
-                      </div>
-                    </div>
-                  )
-                }
-              }
-            ]}
-            rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
-            onRowClick={record => onModalClick({
-              ...record,
-              no: record.posit
-            })}
-            dataSource={listTrans}
-            pagination={false}
-            style={{ marginBottom: 16 }}
-          />
-        </TabPane>
-      </Tabs>
+      // <Tabs activeKey="1">
+      //   <TabPane tab={<Badge count={listTrans.length}>Sales</Badge>} key="1">
+      <Table
+        rowKey={(record, key) => key}
+        bordered
+        size="small"
+        scroll={{ x: '580px', y: '780px' }}
+        locale={{
+          emptyText: 'Your Sales List'
+        }}
+        columns={[
+          {
+            title: 'No',
+            width: '60px',
+            dataIndex: 'no'
+          },
+          {
+            title: 'Type',
+            dataIndex: 'typeTrans',
+            width: '130px'
+          },
+          {
+            title: 'Product',
+            dataIndex: 'code',
+            width: '300px',
+            render: (text, record) => {
+              return (
+                <div>
+                  <div><strong>{record.code}</strong>-{record.name}</div>
+                </div>
+              )
+            }
+          },
+          {
+            title: 'Qty',
+            dataIndex: 'qty',
+            width: '40px',
+            className: styles.alignCenter,
+            render: text => (text).toLocaleString()
+          },
+          {
+            title: 'Price',
+            dataIndex: 'sellPrice',
+            width: '100px',
+            className: styles.alignRight,
+            render: (text, record) => {
+              // const sellPrice = record.sellPrice - record.price > 0 ? record.sellPrice : record.price
+              // const disc1 = record.disc1
+              // const disc2 = record.disc2
+              // const disc3 = record.disc3
+              // const discount = record.discount
+              const total = record.total
+              return (
+                <div>
+                  <div>
+                    <strong>{`Total: ${(total || 0).toLocaleString()}`}</strong>
+                  </div>
+                </div>
+              )
+            }
+          }
+        ]}
+        rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
+        onRowClick={record => onModalClick({
+          ...record,
+          no: record.posit
+        })}
+        dataSource={listTrans}
+        pagination={false}
+        style={{ marginBottom: 16 }}
+      />
+      //   </TabPane>
+      // </Tabs>
     )
   }
 }

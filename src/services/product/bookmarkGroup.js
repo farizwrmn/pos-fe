@@ -7,6 +7,7 @@ export async function queryById (params) {
   return request({
     url: `${bookmarkGroup}/${params.id}`,
     method: 'get',
+    alt: true,
     data: {
       relationship: 1
     },
@@ -18,6 +19,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: bookmarkGroup,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -28,6 +30,7 @@ export async function add (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: bookmarkGroup,
+    alt: true,
     method: 'post',
     data: params.data,
     headers: apiHeaderToken
@@ -40,6 +43,7 @@ export async function remove (params) {
   return request({
     url,
     method: 'delete',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -51,6 +55,7 @@ export async function edit (params) {
   return request({
     url,
     method: 'put',
+    alt: true,
     data: params.data,
     headers: apiHeaderToken
   })

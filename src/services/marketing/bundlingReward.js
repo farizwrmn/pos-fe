@@ -8,6 +8,7 @@ export async function query (params) {
   params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${apiPromo}/reward`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken

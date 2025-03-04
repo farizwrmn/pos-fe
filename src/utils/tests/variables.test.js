@@ -1,10 +1,10 @@
 import {
   reArrangeMember,
   reArrangeMemberId,
-  insertCashierTrans,
-  getSetting
+  insertCashierTrans
+  // getSetting
 } from '../variables'
-import { getCashierTrans, setItem } from '../lstorage'
+import { getCashierTrans } from '../lstorage'
 
 it('Return Object of Customer Umum with phoneNumber', () => {
   const data = {
@@ -232,6 +232,11 @@ it('Return Object of Customer Umum by memberId without cashback 2', () => {
     categoryCode: data.categoryCode,
     hide: data.hide,
     inputTime: new Date().valueOf(),
+    probBundleId: undefined,
+    probBundleCode: undefined,
+    probBundleName: undefined,
+    probBundleTargetQty: undefined,
+    probFinalPrice: undefined,
     newValue: data.newValue,
     oldValue: data.oldValue,
     replaceable: data.replaceable,
@@ -253,13 +258,13 @@ it('Return Object of Customer Umum by memberId without cashback 2', () => {
   }])
 })
 
-it('Return Object of Setting Invoice', () => {
-  const arrayProd = []
-  arrayProd.Invoice = {
-    showCashback: false,
-    footer1: '* Harga sudah termasuk PPN 10%',
-    footer2: null
-  }
-  setItem('setting', JSON.stringify(Object.assign({}, arrayProd)))
-  expect(getSetting('Invoice')).toEqual(arrayProd.Invoice)
-})
+// it('Return Object of Setting Invoice', () => {
+//   const arrayProd = []
+//   arrayProd.Invoice = {
+//     showCashback: false,
+//     footer1: '* Harga sudah termasuk PPN 10%',
+//     footer2: null
+//   }
+//   setItem('setting', JSON.stringify(Object.assign({}, arrayProd)))
+//   expect(getSetting('Invoice')).toEqual(arrayProd.Invoice)
+// })

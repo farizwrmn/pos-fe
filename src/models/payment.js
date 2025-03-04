@@ -1,16 +1,16 @@
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { lstorage, variables, alertModal } from 'utils'
 import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
 import { query as queryCost, queryPosDirectPrinting, directPrinting } from 'services/master/paymentOption/paymentCostService'
 import { getDenominatorDppInclude, getDenominatorPPNInclude, getDenominatorPPNExclude } from 'utils/tax'
 import { routerRedux } from 'dva/router'
 import { queryCancel as cancelDynamicQrisPayment } from 'services/payment/paymentTransactionService'
+import { APPVERSION } from 'utils/config.company'
 import * as cashierService from '../services/payment'
 import * as creditChargeService from '../services/creditCharge'
 import { query as querySequence } from '../services/sequence'
 import { query as querySetting } from '../services/setting'
 import { getDateTime } from '../services/setting/time'
-import { queryCurrentOpenCashRegister } from '../services/setting/cashier'
 import { TYPE_PEMBELIAN_DINEIN, TYPE_PEMBELIAN_UMUM } from '../utils/variable'
 
 const { stockMinusAlert } = alertModal
@@ -22,13 +22,16 @@ const {
   setDynamicQrisImage,
   setQrisMerchantTradeNo,
   setDynamicQrisPosTransId,
+  setDynamicQrisPosTransNo,
   removeDynamicQrisImage,
   removeQrisMerchantTradeNo,
   removeDynamicQrisPosTransId,
+  removeDynamicQrisPosTransNo,
   setDynamicQrisTimeLimit,
   getQrisPaymentTimeLimit,
   setCurrentPaymentTransactionId,
-  removeCurrentPaymentTransactionId
+  removeCurrentPaymentTransactionId,
+  setPosLockTransaction
 } = lstorage
 const { getSetting } = variables
 
@@ -133,8 +136,11 @@ export default {
       }
     },
     * create ({ payload }, { select, call, put }) {
+      setPosLockTransaction(true)
+      const appVersion = APPVERSION
       const { curTotalPayment, curNetto } = payload
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      const posDescription = yield select(({ pos }) => pos.posDescription)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
         const modal = Modal.warning({
@@ -144,7 +150,7 @@ export default {
         setTimeout(() => modal.destroy(), 1000)
         return
       }
-      if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
+      if ((memberInformation.memberPendingPayment === '1' ? false : parseInt(curTotalPayment, 0) < parseInt(curNetto, 0))) {
         Modal.error({
           title: 'Payment pending restricted',
           content: 'This member type cannot allow to pending'
@@ -326,14 +332,29 @@ export default {
             }
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
-          const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
           let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
-          if (currentRegister.success || payload.memberCode !== null) {
+          let expressOrderId = null
+          let orderShortNumber = null
+          if (payload.memberCode !== null) {
+            if (payload.listAmount && payload.listAmount.length > 0) {
+              const filterExpress = payload.listAmount.filter(filtered => filtered.typeCode === 'KX' && filtered.cardNo)
+              if (filterExpress && filterExpress[0]) {
+                const currentExpressOrder = lstorage.getExpressOrder()
+                if (currentExpressOrder) {
+                  expressOrderId = currentExpressOrder.id
+                  orderShortNumber = currentExpressOrder.orderShortNumber
+                }
+              }
+            }
             const detailPOS = {
               reference,
+              description: posDescription,
               dataPos: newArrayProd,
+              expressOrderId,
+              orderShortNumber,
               dataConsignment: consignment,
               dataBundle,
+              appVersion,
               orderType: selectedPaymentShortcut && selectedPaymentShortcut.shortcutName ? selectedPaymentShortcut.shortcutName : 'Take Away',
               grabOrder: lstorage.getGrabmartOrder(),
               transNo: trans,
@@ -365,8 +386,19 @@ export default {
               woReference: payload.woNumber,
               listAmount: payload.listAmount
             }
+            yield put({
+              type: 'pos/updateState',
+              payload: {
+                lockTransaction: true
+              }
+            })
             const data_create = yield call(create, detailPOS)
             if (data_create.success) {
+              setPosLockTransaction(false)
+              yield put({
+                type: 'pos/unlockTransaction',
+                payload: {}
+              })
               const responsInsertPos = data_create.pos
               // const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : {}
               try {
@@ -375,6 +407,7 @@ export default {
                 localStorage.removeItem('consignment')
                 localStorage.removeItem('payShortcutSelected')
                 localStorage.removeItem('grabmartOrder')
+                localStorage.removeItem('expressOrder')
                 yield localStorage.removeItem('member')
                 yield localStorage.removeItem('memberUnit')
                 yield localStorage.removeItem('mechanic')
@@ -386,6 +419,7 @@ export default {
                 removeDynamicQrisImage()
                 removeQrisMerchantTradeNo()
                 removeDynamicQrisPosTransId()
+                removeDynamicQrisPosTransNo()
                 localStorage.removeItem('bundle_promo')
                 localStorage.removeItem('payShortcutSelected')
                 yield put({
@@ -485,13 +519,13 @@ export default {
               })
 
               // get template
-              yield put({
-                type: 'queryPosDirectPrinting',
-                payload: {
-                  storeId: lstorage.getCurrentUserStore(),
-                  transNo: responsInsertPos.transNo
-                }
-              })
+              // yield put({
+              //   type: 'queryPosDirectPrinting',
+              //   payload: {
+              //     storeId: lstorage.getCurrentUserStore(),
+              //     transNo: responsInsertPos.transNo
+              //   }
+              // })
 
               const invoiceWindow = window.open(`/transaction/pos/invoice/${responsInsertPos.id}`)
               yield put({
@@ -500,9 +534,18 @@ export default {
                   paymentTransactionInvoiceWindow: invoiceWindow
                 }
               })
-              invoiceWindow.focus()
+              if (invoiceWindow) {
+                invoiceWindow.focus()
+              } else {
+                message.error('Please allow pop-up in your browser')
+              }
               // }
             } else {
+              setPosLockTransaction(false)
+              yield put({
+                type: 'pos/queryLockTransaction',
+                payload: {}
+              })
               if (data_create && data_create.message && typeof data_create.message === 'string') {
                 if (data_create.message === 'Please set your balance') {
                   yield put(routerRedux.push('/balance/current'))
@@ -536,7 +579,6 @@ export default {
       const listAmount = yield select(({ payment }) => payment.listAmount)
       const listVoucher = yield select(({ pos }) => pos.listVoucher)
       const curTotal = yield select(({ pos }) => pos.curTotal)
-      const storeId = lstorage.getCurrentUserStore()
       const data = yield call(queryEdc, {
         paymentOption: 'V'
       })
@@ -544,23 +586,6 @@ export default {
       let listCost = []
       if (data.success) {
         listPayment = data.data
-        if (storeId) {
-          listPayment = listPayment.filter((filtered) => {
-            if (filtered.storeHide) {
-              const hideFrom = filtered.storeHide.split(',')
-              let exists = true
-              for (let key in hideFrom) {
-                const item = hideFrom[key]
-                if (parseFloat(item) === parseFloat(storeId)) {
-                  exists = false
-                  break
-                }
-              }
-              return exists
-            }
-            return true
-          })
-        }
         const responseCost = yield call(queryCost, {
           machineId: listPayment[0].id,
           relationship: 1
@@ -703,8 +728,10 @@ export default {
       }
     },
     * createDynamicQrisPayment ({ payload }, { call, select, put }) {
+      const appVersion = APPVERSION
       removeDynamicQrisImage()
       const { curTotalPayment, curNetto } = payload
+      const posDescription = yield select(({ pos }) => pos.posDescription)
       const memberInformation = yield select(({ pos }) => pos.memberInformation)
       const typeTrans = yield select(({ payment }) => payment.typeTrans)
       if (!memberInformation || JSON.stringify(memberInformation) === '{}') {
@@ -715,7 +742,7 @@ export default {
         setTimeout(() => modal.destroy(), 1000)
         return
       }
-      if ((memberInformation.memberPendingPayment === '1' ? false : curTotalPayment < curNetto)) {
+      if ((memberInformation.memberPendingPayment === '1' ? false : parseInt(curTotalPayment, 0) < parseInt(curNetto, 0))) {
         Modal.error({
           title: 'Payment pending restricted',
           content: 'This member type cannot allow to pending'
@@ -896,13 +923,14 @@ export default {
             }
           })
           const dineIn = (grandTotal + consignmentTotal) * (dineInTax / 100)
-          const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-          if (currentRegister.success || payload.memberCode !== null) {
+          if (payload.memberCode !== null) {
             const paymentTransactionParams = payload.params
             const goodsInfo = product.map(item => `${item.productId}:${item.qty}:${item.total}`).join(';')
             paymentTransactionParams.goodsInfo = String(goodsInfo).substring(0, 99)
             const detailPOS = {
               reference,
+              description: posDescription,
+              appVersion,
               dataPos: newArrayProd,
               dataConsignment: consignment,
               dataBundle,
@@ -946,6 +974,7 @@ export default {
                 const paymentTransactionLimitTime = getQrisPaymentTimeLimit()
                 const merchantTradeNo = createdQrisPaymentResponse.merchantTradeNo
                 setDynamicQrisPosTransId(responsInsertPos.id)
+                setDynamicQrisPosTransNo(responsInsertPos.transNo)
                 setDynamicQrisImage(createdQrisPaymentResponse.qrCode)
                 setQrisMerchantTradeNo(merchantTradeNo)
                 setDynamicQrisTimeLimit(Number(paymentTransactionLimitTime || 15))
@@ -1035,6 +1064,7 @@ export default {
         removeDynamicQrisImage()
         removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
+        removeDynamicQrisPosTransNo()
         removeCurrentPaymentTransactionId()
         yield put({
           type: 'updateState',

@@ -8,6 +8,7 @@ export async function query (params) {
   return request({
     url,
     method: 'get',
+    alt: true,
     // data: params,
     headers: apiHeaderToken
   })
@@ -74,6 +75,7 @@ export async function getServiceReminder () {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${services}/checks`,
+    alt: true,
     method: 'get',
     headers: apiHeaderToken
   })
@@ -83,6 +85,7 @@ export async function getServiceUsageReminder (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${services}/checks/usage`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken

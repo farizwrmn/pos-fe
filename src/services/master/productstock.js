@@ -3,31 +3,48 @@ import { request, config, crypt, lstorage } from '../../utils'
 const { stock, fiforeport } = config.api
 
 export async function query (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: stock,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
 
 export async function queryById (params) {
+  params.storeId = lstorage.getCurrentUserStore()
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${stock}/${params.id}`,
     method: 'get',
     data: params,
+    alt: true,
+    headers: apiHeaderToken
+  })
+}
+
+export async function queryStorePriceSales (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/stock-price-sales',
+    method: 'get',
+    data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
 
 export async function queryByBarcode (params) {
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url: `${stock}/barcode/${params.id}`,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -49,6 +66,7 @@ export async function queryPOSstock (params) {
   return request({
     url: `${fiforeport}/stock`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -65,6 +83,7 @@ export async function queryPOSproduct (params) {
     if (product && product.length === 1) {
       return request({
         url: `${fiforeport}/new-saldo-stock`,
+        alt: true,
         method: 'get',
         data: params,
         headers: apiHeaderToken
@@ -74,6 +93,7 @@ export async function queryPOSproduct (params) {
   return request({
     url: `${fiforeport}/stock`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -91,6 +111,7 @@ export async function queryPOSProductSales (params) {
       return request({
         url: `${fiforeport}/new-saldo-stock-sales`,
         method: 'get',
+        alt: true,
         data: params,
         headers: apiHeaderToken
       })
@@ -98,6 +119,7 @@ export async function queryPOSProductSales (params) {
   }
   return request({
     url: `${fiforeport}/stock-sales`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -109,6 +131,7 @@ export async function queryPOSproductStore (params) {
   return request({
     url: `${fiforeport}/store-stock`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -117,9 +140,12 @@ export async function queryPOSproductStore (params) {
 export async function queryProductByCode (params) {
   let url = `${stock}/${encodeURIComponent(params)}`
   const apiHeaderToken = crypt.apiheader()
+  params.storeId = lstorage.getCurrentUserStore()
   return request({
     url,
+    alt: true,
     method: 'get',
+    data: params,
     headers: apiHeaderToken
   })
 }

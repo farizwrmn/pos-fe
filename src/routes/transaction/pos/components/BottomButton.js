@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Row, Col, Button } from 'antd'
 
 const LovButton = ({
+  loading,
+  lockTransaction,
   handlePayment,
   handleCancel
 }) => {
@@ -13,6 +15,8 @@ const LovButton = ({
           <Button
             style={{ fontWeight: 400, fontSize: 'large', width: '100%', height: 40 }}
             type="danger"
+            disabled={loading.effects['pos/checkPaymentTransactionInvoice']}
+            loading={loading.effects['pos/checkPaymentTransactionInvoice']}
             onClick={handleCancel}
           >
             Cancel
@@ -26,7 +30,10 @@ const LovButton = ({
               width: '100%',
               height: 40
             }}
+            icon={lockTransaction ? 'lock' : 'unlock'}
             type="primary"
+            disabled={loading.effects['pos/checkPaymentTransactionInvoice']}
+            loading={loading.effects['pos/checkPaymentTransactionInvoice']}
             onClick={handlePayment}
           >
             Payment

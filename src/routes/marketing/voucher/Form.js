@@ -3,16 +3,16 @@ import PropTypes from 'prop-types'
 import {
   Form, Input, InputNumber, Button, Checkbox,
   Select, DatePicker,
-  // Upload, message, Icon,
+  Upload, message, Icon,
   Row, Col, Modal
 } from 'antd'
 import moment from 'moment'
-// import { IMAGEURL, rest } from 'utils/config.company'
+import { IMAGEURL, rest } from 'utils/config.company'
 
 const { TextArea } = Input
 const FormItem = Form.Item
 const { Option } = Select
-// const { apiCompanyURL } = rest
+const { apiCompanyURL } = rest
 
 const formItemLayout = {
   labelCol: {
@@ -42,17 +42,20 @@ const FormCounter = ({
   onCancel,
   modalType,
   listAccountCode,
+  listAccountCodeLov,
   button,
   form: {
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
     resetFields
   }
   // ...props
 }) => {
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const listAccountOpt = (listAccountCode || []).length > 0 ? listAccountCode.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
+  const listAccountOptLov = (listAccountCodeLov || []).length > 0 ? listAccountCodeLov.map(c => <Option value={c.id} key={c.id} title={`${c.accountName} (${c.accountCode})`}>{`${c.accountName} (${c.accountCode})`}</Option>) : []
   const tailFormItemLayout = {
     wrapperCol: {
       span: 24,
@@ -101,9 +104,9 @@ const FormCounter = ({
 
   return (
     <Form layout="horizontal">
-      <h1>General Info</h1>
       <Row>
         <Col {...column}>
+          <h1>General Info</h1>
           <FormItem label="Voucher Code" hasFeedback {...formItemLayout}>
             {getFieldDecorator('voucherCode', {
               initialValue: modalType === 'edit' ? item.voucherCode : newTransNo,
@@ -158,69 +161,135 @@ const FormCounter = ({
               ]
             })(<InputNumber disabled={modalType === 'edit'} min={1} max={9999} />)}
           </FormItem>
-          {/* <FormItem label="Image" {...formItemLayout}>
-            {getFieldDecorator('productImage', {
-              initialValue: item.productImage
-                && item.productImage != null
-                && item.productImage !== '["no_image.png"]'
-                && item.productImage !== '"no_image.png"'
-                && item.productImage !== 'no_image.png' ?
-                {
-                  fileList: JSON.parse(item.productImage).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
-                      status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
-                }
-                : []
-            })(
-              <Upload
-                {...props}
-                multiple
-                showUploadList={{
-                  showPreviewIcon: true
-                }}
-                defaultFileList={item.productImage
-                  && item.productImage != null
-                  && item.productImage !== '["no_image.png"]'
-                  && item.productImage !== '"no_image.png"'
-                  && item.productImage !== 'no_image.png' ?
-                  JSON.parse(item.productImage).map((detail, index) => {
-                    return ({
-                      uid: index + 1,
-                      name: detail,
-                      status: 'done',
-                      url: `${IMAGEURL}/${detail}`,
-                      thumbUrl: `${IMAGEURL}/${detail}`
-                    })
-                  })
-                  : []}
-                listType="picture"
-                action={`${apiCompanyURL}/time/time`}
-                onPreview={file => console.log('file', file)}
-                onChange={(info) => {
-                  if (info.file.status !== 'uploading') {
-                    console.log('pending', info.fileList)
+        </Col>
+        <Col {...column}>
+          <h1>Membership Integration</h1>
+          <FormItem label="Only Member" {...formItemLayout}>
+            {getFieldDecorator('onlyMember', {
+              valuePropName: 'checked',
+              initialValue: item.onlyMember === undefined ? false : item.onlyMember
+            })(<Checkbox>Active</Checkbox>)}
+          </FormItem>
+          {getFieldValue('onlyMember') && <div>
+            <FormItem label="Redeem Expired" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('memberExpiredDay', {
+                initialValue: modalType === 'add' ? 30 : item.memberExpiredDay,
+                rules: [
+                  {
+                    pattern: /^[0-9/]{1,50}$/i,
+                    required: true
                   }
-                  if (info.file.status === 'done') {
-                    console.log('success', info)
-                    message.success(`${info.file.name} file staged success`)
-                  } else if (info.file.status === 'error') {
-                    console.log('error', info)
-                    message.error(`${info.file.name} file staged failed.`)
+                ]
+              })(<InputNumber onBlur={() => resetFields(['memberLastPurchaseDate'])} disabled={modalType === 'edit'} min={1} max={9999} />)}
+            </FormItem>
+            <FormItem label="Last Redeem Date" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('memberLastPurchaseDate', {
+                initialValue: getFieldValue('expireDate') ? moment(getFieldValue('expireDate')).subtract(getFieldValue('memberExpiredDay'), 'days') : null,
+                rules: [
+                  {
+                    required: true
                   }
-                }}
-              >
-                <Button>
-                  <Icon type="upload" /> Click to Upload
-                </Button>
-              </Upload>
-            )}
-          </FormItem> */}
+                ]
+              })(<DatePicker disabled showToday={false} disabledDate={disabledDate} />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Redeem Account Id">
+              {getFieldDecorator('paymentAccountId', {
+                initialValue: item.paymentAccountId,
+                rules: [{
+                  required: true,
+                  message: 'Required'
+                }]
+              })(<Select
+                showSearch
+                allowClear
+                placeholder="Bank or Payable"
+                disabled={modalType === 'edit'}
+                optionFilterProp="children"
+                filterOption={filterOption}
+              >{listAccountOptLov}
+              </Select>)}
+            </FormItem>
+            <FormItem label="Loyalty Point" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('loyaltyPoint', {
+                initialValue: modalType === 'add' ? 10 : item.loyaltyPoint,
+                rules: [
+                  {
+                    pattern: /^[0-9/]{1,50}$/i,
+                    required: true
+                  }
+                ]
+              })(<InputNumber disabled={modalType === 'edit'} min={1} max={9999} />)}
+            </FormItem>
+
+            <FormItem
+              label="Voucher Image"
+              help="Only accept single jpg or png file, size: 1276x606 max: 2mb"
+              hasFeedback
+              {...formItemLayout}
+            >
+              {getFieldDecorator('voucherImage', {
+                initialValue: item && item.voucherImage
+                  ? {
+                    fileList: [
+                      {
+                        uid: 1,
+                        name: item.voucherImage,
+                        status: 'done',
+                        url: `${IMAGEURL}/${item.voucherImage}`,
+                        thumbUrl: `${IMAGEURL}/${item.voucherImage}`
+                      }
+                    ]
+                  }
+                  : null,
+                valuePropName: 'file',
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Upload
+                  multiple={false}
+                  showUploadList={{
+                    showPreviewIcon: true
+                  }}
+                  defaultFileList={item && item.voucherImage
+                    ? [
+                      {
+                        uid: 1,
+                        name: item.voucherImage,
+                        status: 'done',
+                        url: `${IMAGEURL}/${item.voucherImage}`,
+                        thumbUrl: `${IMAGEURL}/${item.voucherImage}`
+                      }
+                    ]
+                    : []}
+                  action={`${apiCompanyURL}/time/time`}
+                  onPreview={file => console.log('file', file)}
+                  onChange={(info) => {
+                    if (info.file.status !== 'uploading') {
+                      console.log('pending', info.fileList)
+                    }
+                    if (info.file.status === 'done') {
+                      console.log('success', info)
+                      message.success(`${info.file.name} file staged success`)
+                    } else if (info.file.status === 'error') {
+                      console.log('error', info)
+                      message.error(`${info.file.name} file staged failed.`)
+                    }
+                  }}
+                >
+                  <Button>
+                    <Icon type="upload" />
+                    Click to choice image
+                  </Button>
+                </Upload>
+              )}
+              {item.voucherImage && (
+                <img src={`${IMAGEURL}/${item.voucherImage}`} alt="" width="100" />
+              )}
+            </FormItem>
+          </div>}
         </Col>
       </Row>
       <h1>Advanced Option</h1>

@@ -289,6 +289,7 @@ const ModalEntry = ({
                   disabled={!(
                     user.permissions.role === 'SPR'
                     || user.permissions.role === 'OWN'
+                    || user.permissions.role === 'ITS'
                     || user.permissions.role === 'HPC'
                     || user.permissions.role === 'SPC'
                     || user.permissions.role === 'HFC'

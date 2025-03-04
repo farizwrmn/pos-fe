@@ -96,7 +96,8 @@ const List = ({
         dispatch({
           type: 'stockExtraPriceStore/query',
           payload: {
-            productId: record.id
+            productId: record.id,
+            type: 'all'
           }
         })
       },
@@ -116,6 +117,7 @@ const List = ({
           <div>
             <div><strong>{record.productCode}</strong></div>
             <div>{record.productName}</div>
+            <div>{record.shortName}</div>
             <div>Dimension: {record.dimension} Pack: {record.dimensionPack} Box: {record.dimensionBox}</div>
           </div>
         )
@@ -413,6 +415,7 @@ const List = ({
         bordered
         columns={(user.permissions.role === 'SPR'
           || user.permissions.role === 'OWN'
+          || user.permissions.role === 'ITS'
           || user.permissions.role === 'HPC'
           || user.permissions.role === 'SPC'
           || user.permissions.role === 'HFC'

@@ -15,12 +15,13 @@ import {
   InputNumber,
   Radio
 } from 'antd'
-import { arrayToTree } from 'utils'
 import lstorage from 'utils/lstorage'
 import moment from 'moment'
 import List from './List'
 
+const { TextArea } = Input
 const {
+  setCachedSerialPort,
   setQrisImage,
   removeQrisImage,
   getAvailablePaymentType
@@ -119,6 +120,7 @@ class FormPayment extends React.Component {
   render () {
     const {
       currentGrabOrder,
+      currentExpressOrder,
       currentBundlePayment,
       item = {},
       paymentModalVisible,
@@ -128,6 +130,9 @@ class FormPayment extends React.Component {
       editItem,
       cancelEdit,
       dineInTax,
+      serialPortName,
+      serialApprovalCode,
+      listSerialPort,
       dispatch,
       curTotal,
       listEdc,
@@ -142,7 +147,6 @@ class FormPayment extends React.Component {
       confirmPayment,
       cancelPayment,
       loading,
-      // cashierInformation,
       cashierBalance,
       form: {
         getFieldDecorator,
@@ -152,6 +156,7 @@ class FormPayment extends React.Component {
         resetFields,
         setFieldsValue
       },
+      posDescription,
       selectedPaymentShortcut
     } = this.props
     const {
@@ -160,6 +165,63 @@ class FormPayment extends React.Component {
       typeCode
     } = this.state
 
+    const listProps = {
+      cashierBalance,
+      dataSource: listAmount,
+      editList (data) {
+        editItem(data)
+        resetFields()
+      }
+    }
+
+    const useNetto = (e) => {
+      setFieldsValue({
+        amount: e
+      })
+    }
+
+    const onCancelEdit = () => {
+      cancelEdit()
+      resetFields()
+    }
+
+    const usageLoyalty = memberInformation.useLoyalty || 0
+    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
+    const totalDiscount = usageLoyalty
+    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
+    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+    const dineIn = curNetto * (dineInTax / 100)
+    let curChange = 0
+    if (listAmount && listAmount.length > 0) {
+      const listCash = listAmount.filter(filtered => filtered.typeCode === 'C')
+      if (listCash && listCash.length > 0) {
+        curChange = (curPayment + curCharge) - (curNetto + dineIn)
+      }
+    }
+    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
+
+    const params = getAvailablePaymentType()
+    const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
+    const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray : ['C', 'D', 'K', 'QR']
+
+    const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
+      || currentBundlePayment.paymentOption === filtered.typeCode
+      || typeCode === filtered.typeCode))
+
+    const getMenus = (menuTreeN) => {
+      return menuTreeN.map((item) => {
+        if (item.children && item.children.length) {
+          return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
+        }
+        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
+      })
+    }
+
+    const defaultTypeCode = currentBundlePayment && currentBundlePayment.paymentOption ?
+      currentBundlePayment.paymentOption
+      : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+        typeCode : (item.typeCode ? item.typeCode : 'C'))
+
     const onChangePaymentType = (value) => {
       removeQrisImage()
       setFieldsValue({
@@ -167,6 +229,7 @@ class FormPayment extends React.Component {
         machine: undefined,
         bank: undefined
       })
+      useNetto(paymentValue)
       this.setState({
         typeCode: value
       })
@@ -206,7 +269,7 @@ class FormPayment extends React.Component {
       }
 
       setTimeout(() => {
-        const selector = document.getElementById('batchNumber')
+        const selector = document.getElementById('approvalCode')
         if (selector) {
           selector.focus()
           selector.select()
@@ -220,8 +283,6 @@ class FormPayment extends React.Component {
           return
         }
         const data = {
-          // cashierTransId: cashierInformation.id,
-          // cashierName: cashierInformation.cashierName,
           ...getFieldsValue()
         }
 
@@ -236,7 +297,7 @@ class FormPayment extends React.Component {
             }
           }
         }
-
+        data.batchNumber = data.approvalCode
         data.amount = parseFloat(data.amount)
         const selectedBank = listCost ? listCost.filter(filtered => filtered.id === data.bank) : []
 
@@ -274,89 +335,17 @@ class FormPayment extends React.Component {
       })
     }
 
-    const listProps = {
-      cashierBalance,
-      // cashierInformation,
-      dataSource: listAmount,
-      editList (data) {
-        editItem(data)
-        resetFields()
+    const onConfirm = () => {
+      const listAmountFiltered = listAmount.filter(filtered => filtered !== 'V')
+
+      if (listAmountFiltered && listAmountFiltered.length === 0) {
+        handleSubmit()
+      } else {
+        const { taxInvoiceNo, taxDate } = this.state
+        confirmPayment({
+          taxInvoiceNo, taxDate
+        })
       }
-    }
-
-    // const changeToNumber = (e) => {
-    //   const { value } = e.target
-    //   const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
-    //   if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-    //     setFieldsValue({
-    //       amount: value
-    //     })
-    //   }
-    // }
-
-    let isCtrl = false
-    const perfect = () => {
-      handleSubmit()
-    }
-    document.onkeyup = function (e) {
-      if (e.which === 17) isCtrl = false
-    }
-    document.onkeydown = function (e) {
-      if (e.which === 17) isCtrl = true
-      if (e.which === 66 && isCtrl === true && (paymentModalVisible || window.location.pathname === '/transaction/pos/payment')) { // ctrl + b
-        perfect()
-        return false
-      }
-    }
-
-    const useNetto = (e) => {
-      setFieldsValue({
-        amount: e
-      })
-    }
-
-    const onCancelEdit = () => {
-      cancelEdit()
-      resetFields()
-    }
-
-    // const changeMethod = () => {
-    //   setFieldsValue({
-    //     cardName: null,
-    //     cardNo: null
-    //   })
-    // }
-    const usageLoyalty = memberInformation.useLoyalty || 0
-    const curCharge = listAmount.reduce((cnt, o) => cnt + parseFloat(o.chargeTotal || 0), 0)
-    const totalDiscount = usageLoyalty
-    const curNetto = ((parseFloat(curTotal) - parseFloat(totalDiscount)) + parseFloat(curRounding) + parseFloat(curCharge)) || 0
-    const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
-    const dineIn = curNetto * (dineInTax / 100)
-    let curChange = 0
-    if (listAmount && listAmount.length > 0) {
-      const listCash = listAmount.filter(filtered => filtered.typeCode === 'C')
-      if (listCash && listCash.length > 0) {
-        curChange = (curPayment + curCharge) - (curNetto + dineIn)
-      }
-    }
-    const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment)) + parseFloat(curRounding) + parseFloat(dineIn)
-
-    const params = getAvailablePaymentType()
-    const paramsArray = typeof params === 'string' && String(params).includes(',') ? params.split(',') : ['C', 'D', 'K', 'QR']
-    const currentShownPaymentOption = Array.isArray(paramsArray) ? paramsArray : ['C', 'D', 'K', 'QR']
-
-    const filteredOptions = options.filter(filtered => currentShownPaymentOption.find(item => item === filtered.typeCode
-      || currentBundlePayment.paymentOption === filtered.typeCode
-      || typeCode === filtered.typeCode))
-    const menuTree = arrayToTree(filteredOptions.filter(filtered => filtered.parentId !== '-1').sort((x, y) => x.id - y.id), 'id', 'parentId')
-
-    const getMenus = (menuTreeN) => {
-      return menuTreeN.map((item) => {
-        if (item.children && item.children.length) {
-          return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName}>{getMenus(item.children)}</TreeNode>
-        }
-        return <TreeNode value={item.typeCode} key={item.typeCode} title={item.typeName} />
-      })
     }
 
     const onChangeMachine = (machineId) => {
@@ -385,26 +374,38 @@ class FormPayment extends React.Component {
       }
     }
 
-    const onConfirm = () => {
-      const listAmountFiltered = listAmount.filter(filtered => filtered !== 'V')
 
-      if (listAmountFiltered && listAmountFiltered.length === 0) {
-        handleSubmit()
-      } else {
-        const { taxInvoiceNo, taxDate } = this.state
-        confirmPayment({
-          taxInvoiceNo, taxDate
-        })
+    let isCtrl = false
+    const perfect = () => {
+      handleSubmit()
+    }
+    document.onkeyup = function (e) {
+      if (e.which === 17) isCtrl = false
+    }
+    document.onkeydown = function (e) {
+      if (e.which === 17) isCtrl = true
+      if (e.which === 66 && isCtrl === true && (paymentModalVisible || window.location.pathname === '/transaction/pos/payment')) { // ctrl + b
+        perfect()
+        return false
       }
     }
 
-    console.log('storeId', lstorage.getCurrentUserStore())
+    const onSelectPortName = (portName) => {
+      const filteredPortName = listSerialPort.filter(serial => serial.portName === portName)
+      if (filteredPortName && filteredPortName[0]) {
+        setCachedSerialPort({
+          typeCode: getFieldValue('typeCode'),
+          portName: filteredPortName[0].portName,
+          portDescription: filteredPortName[0].portDescription
+        })
+      }
+    }
 
     return (
       <Form layout="horizontal">
         <FormItem label="Amount" hasFeedback {...ammountItemLayout}>
           {getFieldDecorator('amount', {
-            initialValue: item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0,
+            initialValue: parseInt(item.amount ? item.amount : paymentValue > 0 ? paymentValue : 0, 0),
             rules: [
               {
                 required: true,
@@ -414,6 +415,8 @@ class FormPayment extends React.Component {
             ]
           })(
             <InputNumber
+              disabled={getFieldValue('typeCode') === undefined ? defaultTypeCode !== 'C'
+                : getFieldValue('typeCode') !== 'C'}
               style={{ width: '100%', fontSize: '30px', height: 'auto', textAlign: 'center', padding: '10px 0 10px 0' }}
               formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -441,61 +444,40 @@ class FormPayment extends React.Component {
         </Button>
         <Row>
           <Col md={24} lg={12}>
-            {Number(lstorage.getCurrentUserStore()) !== 30 ? (
-              <FormItem label="Type" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('typeCode', {
-                  initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
-                    currentBundlePayment.paymentOption
-                    : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
-                      typeCode : (item.typeCode ? item.typeCode : 'C')),
-                  rules: [
-                    {
-                      required: true
+            <FormItem label="Type" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('typeCode', {
+                initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
+                  currentBundlePayment.paymentOption
+                  : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
+                    typeCode : (item.typeCode ? item.typeCode : 'C')),
+                rules: [
+                  {
+                    required: true
+                  }
+                ]
+              })(
+                <Radio.Group
+                  onChange={(e) => {
+                    if (e && e.target) {
+                      onChangePaymentType(e.target.value)
+                    } else {
+                      onChangePaymentType(e)
                     }
-                  ]
-                })(
-                  <TreeSelect
-                    showSearch
-                    disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
-                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeNodeFilterProp="title"
-                    filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                    treeDefaultExpandAll
-                    onChange={onChangePaymentType}
-                  >
-                    {getMenus(menuTree)}
-                  </TreeSelect>
-                )}
-              </FormItem>
-            ) : (
-              <FormItem label="Type" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('typeCode', {
-                  initialValue: currentBundlePayment && currentBundlePayment.paymentOption ?
-                    currentBundlePayment.paymentOption
-                    : (selectedPaymentShortcut && selectedPaymentShortcut.typeCode ?
-                      typeCode : (item.typeCode ? item.typeCode : 'C')),
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(
-                  <Radio.Group>
-                    {filteredOptions.map((item) => {
-                      return (
-                        <Radio.Button
-                          disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
-                          value={item.typeCode}
-                          onChange={onChangePaymentType}
-                        >
-                          {item.typeName}
-                        </Radio.Button>
-                      )
-                    })}
-                  </Radio.Group>
-                )}
-              </FormItem>
-            )}
+                  }}
+                >
+                  {filteredOptions.map((item) => {
+                    return (
+                      <Radio.Button
+                        disabled={(currentBundlePayment && currentBundlePayment.paymentOption) || (selectedPaymentShortcut && selectedPaymentShortcut.machine)}
+                        value={item.typeCode}
+                      >
+                        {item.typeName}
+                      </Radio.Button>
+                    )
+                  })}
+                </Radio.Group>
+              )}
+            </FormItem>
             <FormItem label="EDC" hasFeedback {...formItemLayout}>
               {getFieldDecorator('machine', {
                 initialValue: selectedPaymentShortcut && selectedPaymentShortcut.typeCode ? (
@@ -571,21 +553,27 @@ class FormPayment extends React.Component {
               </FormItem>
             }
             {getFieldValue('typeCode') !== 'C' && (
-              <FormItem label="Batch Number" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('batchNumber', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.batchNumber,
-                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
+              <FormItem label="Approval Code" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('approvalCode', {
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
+                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber
+                      : serialApprovalCode != null ? serialApprovalCode : item.approvalCode),
+                  rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'NID' || getFieldValue('typeCode') === 'MND' || getFieldValue('typeCode') === 'K' || getFieldValue('typeCode') === 'QR')
                     ? [
                       {
                         required: true,
-                        pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
+                        // pattern: /^-?(0|[1-9][0-9]{0,5})(\.[0-9]{0,2})?$/,
+                        // pattern: /^[a-zA-Z0-9]{1,6}$/,
+                        pattern: /^[a-zA-Z0-9-}{';]{1,6}$/,
                         message: '0-9 please insert the value (max. 6 digits)'
                       }
                     ] :
                     [
                       {
                         required: false,
-                        pattern: /^[0-9]+$/i,
+                        // pattern: /^[0-9]+$/i,
+                        // pattern: /^[a-zA-Z0-9]*$/,
+                        pattern: /^[a-zA-Z0-9-}{';]*$/,
                         message: 'please insert the value'
                       }
                     ]
@@ -595,7 +583,9 @@ class FormPayment extends React.Component {
             {cardVisible && getFieldValue('typeCode') !== 'C' && (
               <FormItem label="Card/Phone No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('cardNo', {
-                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber : item.cardName,
+                  initialValue: getFieldValue('typeCode') === 'GM' && currentGrabOrder && currentGrabOrder.shortOrderNumber ? currentGrabOrder.shortOrderNumber
+                    : (getFieldValue('typeCode') === 'KX' && currentExpressOrder && currentExpressOrder.orderShortNumber ? currentExpressOrder.orderShortNumber
+                      : serialApprovalCode != null ? serialApprovalCode : item.cardName),
                   rules: [
                     {
                       required: getFieldValue('typeCode') !== 'C',
@@ -625,17 +615,32 @@ class FormPayment extends React.Component {
                   rules: (getFieldValue('typeCode') === 'D' || getFieldValue('typeCode') === 'K')
                     ? [
                       {
-                        required: true,
+                        required: false,
                         message: 'required'
                       }
                     ] : [
                       {
-                        required: getFieldValue('typeCode') !== 'C',
+                        required: false,
                         pattern: /^[a-z0-9 -.,_]+$/i,
                         message: 'please insert the value'
                       }
                     ]
                 })(<Input disabled={getFieldValue('typeCode') === 'C'} maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+              </FormItem>
+            )}
+            {(getFieldValue('typeCode') === 'NID' || getFieldValue('typeCode') === 'MND') && (
+              <FormItem label="Serial Port" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('portName', {
+                  initialValue: serialPortName,
+                  rules: [
+                    {
+                      required: false,
+                      message: 'Required'
+                    }
+                  ]
+                })(<Select style={{ width: '100%' }} onSelect={value => onSelectPortName(value)}>
+                  {listSerialPort.map(item => <Option value={item.portName} key={item.portName} title={item.portDescription}>{`${item.portName} ${item.portDescription}`}</Option>)}
+                </Select>)}
               </FormItem>
             )}
             <FormItem label="Note" hasFeedback {...formItemLayout}>
@@ -649,6 +654,11 @@ class FormPayment extends React.Component {
                   }
                 ]
               })(<Input maxLength={250} style={{ width: '100%', fontSize: '14pt' }} />)}
+            </FormItem>
+            <FormItem label="Label/Customer" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('posDescription', {
+                initialValue: posDescription
+              })(<TextArea maxLength={255} disabled />)}
             </FormItem>
           </Col>
         </Row>

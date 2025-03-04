@@ -7,7 +7,7 @@ import { message } from 'antd'
 // import { YQL, CORS } from './config'
 import { apiPrefix } from './config.rest'
 // import crypt from './crypt'
-import { getAPIURL } from './variables'
+import { getAPIURL, getAPIURLAlt } from './variables'
 
 const fetch = (options) => {
   let {
@@ -15,6 +15,7 @@ const fetch = (options) => {
     data,
     // fetchType,
     url = '',
+    timeout,
     fullUrl,
     headers
   } = options
@@ -74,8 +75,12 @@ const fetch = (options) => {
         data: cloneData,
         headers
       })
-    case 'post':
+    case 'post': {
+      if (timeout) {
+        return axios.post(url, cloneData, { headers, timeout })
+      }
       return axios.post(url, cloneData, { headers })
+    }
     case 'put':
       return axios.put(url, cloneData, { headers })
     case 'patch':
@@ -86,7 +91,10 @@ const fetch = (options) => {
 }
 
 export default function request (options) {
-  const APIURL = getAPIURL()
+  let APIURL = getAPIURL()
+  if (options.alt) {
+    APIURL = getAPIURLAlt()
+  }
   options.usage = options.usage || 'store'
   if (options.usage === 'store' || options.usage === 'form') {
     options.url = APIURL + apiPrefix + options.url

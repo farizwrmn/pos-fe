@@ -34,6 +34,7 @@ export async function queryLastActive () {
     url,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }

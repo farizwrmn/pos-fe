@@ -12,7 +12,7 @@ import TransDetail from './TransDetail'
 import FormAccounting from './FormAccounting'
 import styles from './index.less'
 
-const Detail = ({ pettyCashDetail, app, dispatch }) => {
+const Detail = ({ loading, pettyCashDetail, app, dispatch }) => {
   const { listDetail, listAccounting, listDetailTrans, data } = pettyCashDetail
   const { user, storeInfo } = app
   const content = []
@@ -34,11 +34,17 @@ const Detail = ({ pettyCashDetail, app, dispatch }) => {
   }
 
   const formDetailProps = {
+    loading: loading.effects['pettyCashDetail/queryAccounting'],
     storeInfo,
     user,
     dataSource: listDetail,
     listDetailTrans,
     data
+  }
+
+  const FormAccountingProps = {
+    listAccounting,
+    loading: loading.effects['pettyCashDetail/queryAccounting']
   }
 
   return (<div className="wrapper">
@@ -59,7 +65,6 @@ const Detail = ({ pettyCashDetail, app, dispatch }) => {
             <TransDetail {...formDetailProps} />
           </Row>
         </div>
-
         {(user.permissions.role === 'OWN'
           || user.permissions.role === 'SPR'
           || user.permissions.role === 'HFC'
@@ -67,7 +72,7 @@ const Detail = ({ pettyCashDetail, app, dispatch }) => {
             <div className="content-inner-zero-min-height">
               <h1>Accounting Journal</h1>
               <Row style={{ padding: '10px', margin: '4px' }}>
-                <FormAccounting listAccounting={listAccounting} />
+                <FormAccounting {...FormAccountingProps} />
               </Row>
             </div>
           )}
@@ -80,4 +85,4 @@ Detail.propTypes = {
   pettyCashDetail: PropTypes.object
 }
 
-export default connect(({ app, pettyCashDetail }) => ({ app, pettyCashDetail }))(Detail)
+export default connect(({ app, pettyCashDetail, loading }) => ({ app, pettyCashDetail, loading }))(Detail)

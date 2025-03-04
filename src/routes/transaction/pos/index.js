@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
-import { variables, isEmptyObject, lstorage, color } from 'utils'
+import { variables, lstorage, color } from 'utils'
 // import {
 //   TYPE_PEMBELIAN_UMUM,
 //   TYPE_PEMBELIAN_GRABFOOD,
@@ -46,6 +46,7 @@ import ModalCashRegister from './ModalCashRegister'
 import { isElectron, groupProduct } from './utils'
 import Advertising from './Advertising'
 import ModalGrabmartCode from './ModalGrabmartCode'
+import ModalExpressCode from './ModalExpressCode'
 import ModalBookmark from './Bookmark/ModalBookmark'
 import ModalExpressDineIn from './Dinein'
 import ModalPlanogramCashier from './PlanogramCashier'
@@ -55,6 +56,12 @@ import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
 import NotFoundPage from './NotFoundPage'
+// eslint-disable-next-line no-unused-vars
+import PromotionGuide from './PromotionGuide'
+// eslint-disable-next-line no-unused-vars
+import RewardGuide from './RewardGuide'
+import ModalCustomerName from './ModalCustomerName'
+import ModalUnlockTransaction from './ModalUnlockTransaction'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -153,6 +160,7 @@ const setTime = () => {
 
 
 const Pos = ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -237,7 +245,6 @@ const Pos = ({
     showListReminder,
     listServiceReminder,
     modalAddUnit,
-    cashierInformation,
     dineInTax,
     currentItem: currentItemPos,
     // typePembelian,
@@ -249,6 +256,7 @@ const Pos = ({
     modalVoucherVisible,
     modalCashRegisterVisible,
     modalGrabmartCodeVisible,
+    modalExpressCodeVisible,
     currentGrabOrder,
     dynamicQrisPaymentAvailability,
     qrisLatestTransaction,
@@ -261,11 +269,21 @@ const Pos = ({
     curRounding,
     curShift,
     curCashierNo,
-    electronABTesting
+    electronABTesting,
+    enableDineIn,
+    enableDineInLastUpdatedBy,
+    enableDineInLastUpdatedAt,
+    modalPosDescriptionVisible,
+    modalPosDescriptionDynamicQrisVisible,
+    posDescription,
+    lockTransaction,
+    modalUnlockTransactionVisible,
+    modalUnlockTransactionShowForm
   } = pos
+  const { list: listAchievement } = incentiveAchievement
   const { listEmployee } = pettyCashDetail
   const { modalLoginData } = login
-  const { modalPromoVisible, listMinimumPayment } = promo
+  const { modalPromoVisible, listHighlight, listMinimumPayment } = promo
   const { modalAddMember, currentItem } = customer
   // const { user } = app
   const {
@@ -351,16 +369,35 @@ const Pos = ({
     })
   }
 
+  // eslint-disable-next-line no-unused-vars
   const handleExpressBrowse = () => {
     dispatch({
       type: 'pos/getExpress'
     })
   }
 
+  // eslint-disable-next-line no-unused-vars
   const handlePlanogramBrowse = () => {
     dispatch({
       type: 'planogram/openModal'
     })
+  }
+
+  const modalUnlockTransactionProps = {
+    title: 'Unlock Transaction',
+    footer: null,
+    visible: modalUnlockTransactionVisible,
+    showForm: modalUnlockTransactionShowForm,
+    dispatch,
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalUnlockTransactionVisible: false,
+          modalUnlockTransactionShowForm: false
+        }
+      })
+    }
   }
 
   const hotKeysHandler = {
@@ -562,6 +599,7 @@ const Pos = ({
   }
 
   const modalPaymentTypeProps = {
+    posDescription,
     selectedPaymentShortcut,
     width: '650px',
     visible: paymentModalVisible,
@@ -608,6 +646,7 @@ const Pos = ({
 
   const modaladdMemberProps = {
     item: currentItem,
+    loading,
     modalAddMember,
     cancelMember () {
       dispatch({
@@ -1221,7 +1260,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -1268,6 +1306,213 @@ const Pos = ({
         dispatch({ type: 'pos/serviceEdit', payload: data })
         dispatch({ type: 'pos/hideServiceListModal' })
       }
+    }
+  }
+
+  const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
+  const dineIn = curNetto * (dineInTax / 100)
+
+  const onPayment = () => {
+    let defaultRole = ''
+    const localId = localStorage.getItem(`${prefix}udi`)
+    if (localId && localId.indexOf('#') > -1) {
+      defaultRole = localId.split(/[# ]+/).pop()
+    }
+    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
+    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
+    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
+    const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
+    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'Member Unit is not Defined '
+      })
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
+        return
+      }
+    }
+    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are inserting Member Unit without Work Order'
+      })
+    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
+      Modal.warning({
+        title: 'Unit Validation',
+        content: 'You are Work Order without Member Unit'
+      })
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
+        return
+      }
+    }
+    if (memberData === null) {
+      Modal.warning({
+        title: 'Member Validation',
+        content: 'Member Data Cannot be Null'
+      })
+      return
+    }
+    dispatch({ type: 'pos/setCurTotal' })
+
+    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+
+    // Untuk tipe page
+    // dispatch(routerRedux.push('/transaction/pos/payment'))
+    if (selectedPaymentShortcut.typeCode === 'NID') {
+      dispatch({
+        type: 'pos/showEdcModal',
+        payload: {
+          list: listVoucher,
+          typeCode: selectedPaymentShortcut.typeCode
+        }
+      })
+    } else {
+      if (listVoucher && listVoucher.length > 0) {
+        dispatch({
+          type: 'payment/addMethodVoucher',
+          payload: {
+            list: listVoucher
+          }
+        })
+      }
+      dispatch({
+        type: 'payment/showPaymentModal'
+      })
+    }
+
+
+    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listEdcId = listEdc.map(item => item.id)
+        const listCost = listAllCost.filter(filtered => listEdcId.includes(filtered.machineId))
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    } else if (listOpts && listOpts.length > 0) {
+      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === listOpts[0].typeCode)
+      dispatch({
+        type: 'paymentEdc/updateState',
+        payload: {
+          paymentLovFiltered: listEdc
+        }
+      })
+      if (listEdc && listEdc.length > 0) {
+        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
+        dispatch({
+          type: 'paymentCost/updateState',
+          payload: {
+            paymentLovFiltered: listCost
+          }
+        })
+      }
+    }
+
+    if (bundleItem && bundleItem.length > 0) {
+      const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
+      if (filteredBundlePayment && filteredBundlePayment[0]) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            currentBundlePayment: {
+              paymentOption: filteredBundlePayment[0].paymentOption,
+              paymentBankId: filteredBundlePayment[0].paymentBankId
+            }
+          }
+        })
+      }
+    }
+  }
+
+  const modalCustomerNameProps = {
+    title: 'Label/Customer Name',
+    visible: modalPosDescriptionVisible,
+    posDescription,
+    onOk (item) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          posDescription: item.posDescription,
+          modalPosDescriptionVisible: false
+        }
+      })
+      if (currentBuildComponent && currentBuildComponent.no) {
+        const service = getServiceTrans()
+        let haveUnderZero = false
+
+        for (let key in service) {
+          const item = service[key]
+          if (item.total < 0) {
+            haveUnderZero = true
+            break
+          }
+        }
+
+        if (haveUnderZero) {
+          Modal.error({
+            title: 'Invalid Service Cost',
+            content: 'Please Check Service Section and Reduce some Product'
+          })
+          return
+        }
+
+        const total = (parseFloat(curNetto) + parseFloat(dineIn))
+        const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
+        let servicePrice = 0
+        if (serviceSelected && serviceSelected[0]) {
+          servicePrice = serviceSelected[0].total
+        }
+        if (total - servicePrice > currentBuildComponent.targetCostPrice) {
+          Modal.error({
+            title: 'Cost price exceed',
+            content: `Bundle cost price limit is ${currentBuildComponent.targetCostPrice.toLocaleString()}; Your Input: ${(total - servicePrice).toLocaleString()}`
+          })
+          return
+        }
+      }
+      onPayment()
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionVisible: false
+        }
+      })
+    }
+  }
+
+  const modalPosDescriptionDynamicQrisProps = {
+    title: 'Label/Customer Name',
+    visible: modalPosDescriptionDynamicQrisVisible,
+    posDescription,
+    onOk (item) {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          posDescription: item.posDescription,
+          modalPosDescriptionDynamicQrisVisible: false,
+          modalConfirmQrisPaymentVisible: true
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionDynamicQrisVisible: false
+        }
+      })
     }
   }
 
@@ -1320,7 +1565,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -1810,6 +2054,52 @@ const Pos = ({
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
+  const modalPromoGuideProps = {
+    isModal: false,
+    dataSource: listHighlight,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  const modalRewardGuideProps = {
+    isModal: false,
+    dataSource: listAchievement,
+    enableFilter: false,
+    onCancel () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          searchText: null
+        }
+      })
+    },
+    onChooseItem () {
+      dispatch({
+        type: 'promo/updateState',
+        payload: {
+          visiblePopover: true
+        }
+      })
+    }
+  }
+
   const modalPromoProps = {
     visible: modalPromoVisible,
     onCancel () {
@@ -2113,6 +2403,32 @@ const Pos = ({
     }
   }
 
+  const modalExpressCodeProps = {
+    visible: modalExpressCodeVisible,
+    loading: loading.effects['pos/submitExpressCode'],
+    maskClosable: false,
+    title: 'Input your Express Invoice Code',
+    confirmLoading: loading.effects['pos/submitExpressCode'],
+    wrapClassName: 'vertical-center-modal',
+    onSubmit (data) {
+      dispatch({
+        type: 'pos/submitExpressCode',
+        payload: {
+          ...data,
+          storeId: lstorage.getCurrentUserStore()
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalExpressCodeVisible: false
+        }
+      })
+    }
+  }
+
   const handleChangeDineIn = (dineInTax, consignmentPaymentType, item) => {
     if (item.typeCode === 'GM') {
       dispatch({
@@ -2161,9 +2477,6 @@ const Pos = ({
     }
   }
 
-  const curNetto = (parseFloat(totalPayment) - parseFloat(totalDiscount)) || 0
-  const dineIn = curNetto * (dineInTax / 100)
-
   const handleChangeBookmark = (key = 1, page = 1) => {
     dispatch({
       type: 'pos/updateState',
@@ -2191,10 +2504,7 @@ const Pos = ({
     dispatch({
       type: 'pospromo/addPosPromo',
       payload: {
-        bundleId: item.id,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+        bundleId: item.id
       }
     })
   }
@@ -2214,118 +2524,6 @@ const Pos = ({
     })
   }
 
-  const onPayment = () => {
-    let defaultRole = ''
-    const localId = localStorage.getItem(`${prefix}udi`)
-    if (localId && localId.indexOf('#') > -1) {
-      defaultRole = localId.split(/[# ]+/).pop()
-    }
-    const service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
-    const memberData = localStorage.getItem('member') ? JSON.parse(localStorage.getItem('member')).id : null
-    const memberUnit = localStorage.getItem('memberUnit') ? JSON.parse(localStorage.getItem('memberUnit')) : { id: null, policeNo: null, merk: null, model: null }
-    const workorder = localStorage.getItem('workorder') ? JSON.parse(localStorage.getItem('workorder')) : {}
-    if (service.length === 0 && memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Unit Validation',
-        content: 'Member Unit is not Defined '
-      })
-      if (defaultRole !== 'OWN') {
-        return
-      }
-    }
-    if (!(memberUnit.id === null) && (woNumber === '' || woNumber === null) && !workorder) {
-      Modal.warning({
-        title: 'Unit Validation',
-        content: 'You are inserting Member Unit without Work Order'
-      })
-    } else if (memberUnit.id === null && !(woNumber === '' || woNumber === null)) {
-      Modal.warning({
-        title: 'Unit Validation',
-        content: 'You are Work Order without Member Unit'
-      })
-      if (defaultRole !== 'OWN') {
-        return
-      }
-    }
-    if (memberData === null) {
-      Modal.warning({
-        title: 'Member Validation',
-        content: 'Member Data Cannot be Null'
-      })
-      return
-    }
-    dispatch({ type: 'pos/setCurTotal' })
-
-    dispatch({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
-
-    if (listVoucher && listVoucher.length > 0) {
-      dispatch({
-        type: 'payment/addMethodVoucher',
-        payload: {
-          list: listVoucher
-        }
-      })
-    }
-
-    // Untuk tipe page
-    // dispatch(routerRedux.push('/transaction/pos/payment'))
-    dispatch({
-      type: 'payment/showPaymentModal'
-    })
-
-    if (selectedPaymentShortcut && selectedPaymentShortcut.typeCode && selectedPaymentShortcut.paymentOptionId) {
-      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === selectedPaymentShortcut.typeCode)
-      dispatch({
-        type: 'paymentEdc/updateState',
-        payload: {
-          paymentLovFiltered: listEdc
-        }
-      })
-      if (listEdc && listEdc.length > 0) {
-        const listEdcId = listEdc.map(item => item.id)
-        const listCost = listAllCost.filter(filtered => listEdcId.includes(filtered.machineId))
-        dispatch({
-          type: 'paymentCost/updateState',
-          payload: {
-            paymentLovFiltered: listCost
-          }
-        })
-      }
-    } else if (listOpts && listOpts.length > 0) {
-      const listEdc = listAllEdc.filter(filtered => filtered.paymentOption === listOpts[0].typeCode)
-      dispatch({
-        type: 'paymentEdc/updateState',
-        payload: {
-          paymentLovFiltered: listEdc
-        }
-      })
-      if (listEdc && listEdc.length > 0) {
-        const listCost = listAllCost.filter(filtered => filtered.machineId === listEdc[0].id)
-        dispatch({
-          type: 'paymentCost/updateState',
-          payload: {
-            paymentLovFiltered: listCost
-          }
-        })
-      }
-    }
-
-    if (bundleItem && bundleItem.length > 0) {
-      const filteredBundlePayment = bundleItem.filter(filtered => filtered.minimumPayment > 0)
-      if (filteredBundlePayment && filteredBundlePayment[0]) {
-        dispatch({
-          type: 'pos/updateState',
-          payload: {
-            currentBundlePayment: {
-              paymentOption: filteredBundlePayment[0].paymentOption,
-              paymentBankId: filteredBundlePayment[0].paymentBankId
-            }
-          }
-        })
-      }
-    }
-  }
-
   const onPaymentDynamicQris = () => {
     let defaultRole = ''
     const localId = localStorage.getItem(`${prefix}udi`)
@@ -2341,7 +2539,7 @@ const Pos = ({
         title: 'Unit Validation',
         content: 'Member Unit is not Defined '
       })
-      if (defaultRole !== 'OWN') {
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
         return
       }
     }
@@ -2355,7 +2553,7 @@ const Pos = ({
         title: 'Unit Validation',
         content: 'You are Work Order without Member Unit'
       })
-      if (defaultRole !== 'OWN') {
+      if (defaultRole !== 'OWN' || defaultRole !== 'ITS') {
         return
       }
     }
@@ -2403,16 +2601,10 @@ const Pos = ({
             typeCode: 'V'
           }))
         } else {
-          Modal.error({
-            title: 'Failed to create QRIS Payment',
-            content: 'Payment Cost is unavailable'
-          })
+          message.error('Payment Cost is unavailable')
         }
       } else {
-        Modal.error({
-          title: 'Failed to create QRIS Payment',
-          content: 'Payment Machine is unavailable'
-        })
+        message.error('Payment Machine is unavailable')
       }
     }
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
@@ -2533,42 +2725,24 @@ const Pos = ({
   }
 
   const buttomButtonProps = {
+    loading,
+    lockTransaction,
     handlePayment () {
-      if (currentBuildComponent && currentBuildComponent.no) {
-        const service = getServiceTrans()
-        let haveUnderZero = false
-
-        for (let key in service) {
-          const item = service[key]
-          if (item.total < 0) {
-            haveUnderZero = true
-            break
+      if (lockTransaction) {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalUnlockTransactionVisible: true
           }
-        }
-
-        if (haveUnderZero) {
-          Modal.error({
-            title: 'Invalid Service Cost',
-            content: 'Please Check Service Section and Reduce some Product'
-          })
-          return
-        }
-
-        const total = (parseFloat(curNetto) + parseFloat(dineIn))
-        const serviceSelected = service.filter(filtered => filtered.code === 'TDF')
-        let servicePrice = 0
-        if (serviceSelected && serviceSelected[0]) {
-          servicePrice = serviceSelected[0].total
-        }
-        if (total - servicePrice > currentBuildComponent.targetCostPrice) {
-          Modal.error({
-            title: 'Cost price exceed',
-            content: `Bundle cost price limit is ${currentBuildComponent.targetCostPrice.toLocaleString()}; Your Input: ${(total - servicePrice).toLocaleString()}`
-          })
-          return
-        }
+        })
+      } else {
+        dispatch({
+          type: 'pos/updateState',
+          payload: {
+            modalPosDescriptionVisible: true
+          }
+        })
       }
-      onPayment()
     },
     handleSuspend () {
       if (document.getElementById('KM')) document.getElementById('KM').value = 0
@@ -2589,7 +2763,6 @@ const Pos = ({
       })
     },
     handleCancel () {
-      console.log('bundle', bundle)
       Modal.confirm({
         title: 'Reset unsaved process',
         content: 'this action will reset your current process',
@@ -2614,7 +2787,6 @@ const Pos = ({
               singleDeletion: record.singleDeletion || 0
             }))
             : []
-          console.log('listTrans', listTrans)
           dispatch({
             type: 'pos/showModalLogin',
             payload: {
@@ -2640,11 +2812,10 @@ const Pos = ({
   const dynamicQrisButtonProps = {
     loading,
     handleDynamicQrisButton: () => {
-      // onPaymentDynamicQris()
       dispatch({
         type: 'pos/updateState',
         payload: {
-          modalConfirmQrisPaymentVisible: true
+          modalPosDescriptionDynamicQrisVisible: true
         }
       })
     }
@@ -2672,16 +2843,10 @@ const Pos = ({
             typeCode: 'V'
           }))
         } else {
-          Modal.error({
-            title: 'Failed to create QRIS Payment',
-            content: 'Payment Cost is unavailable'
-          })
+          message.error('Payment Cost is unavailable')
         }
       } else {
-        Modal.error({
-          title: 'Failed to create QRIS Payment',
-          content: 'Payment Machine is unavailable'
-        })
+        message.error('Payment Machine is unavailable')
       }
     }
     let grandTotal = a.reduce((cnt, o) => { return cnt + o.total }, 0)
@@ -2774,13 +2939,16 @@ const Pos = ({
       message.error('Already choose offering, please cancel this transaction.')
       return
     }
-    dispatch({
-      type: 'pospromo/addPosPromo',
-      payload: {
-        bundleId: item.id,
-        currentBundle: getBundleTrans(),
-        currentProduct: getCashierTrans(),
-        currentService: getServiceTrans()
+    Modal.confirm({
+      title: 'Chose Offering',
+      content: 'Are you sure ?',
+      onOk () {
+        dispatch({
+          type: 'pospromo/addPosPromo',
+          payload: {
+            bundleId: item.id
+          }
+        })
       }
     })
   }
@@ -2821,9 +2989,27 @@ const Pos = ({
   const modalExpressProps = {
     visible: modalExpressVisible,
     editVisible: modalEditExpressVisible,
+    enableDineIn,
+    enableDineInLastUpdatedBy,
+    enableDineInLastUpdatedAt,
     list: listExpress,
     item: currentItemPos,
     loading,
+    updateEnableDineIn (enableDineIn) {
+      Modal.confirm({
+        title: 'Update Dine In Status',
+        content: 'Are you sure ?',
+        onOk () {
+          dispatch({
+            type: 'pos/updateEnableDineIn',
+            payload: {
+              storeId: lstorage.getCurrentUserStore(),
+              enableDineIn
+            }
+          })
+        }
+      })
+    },
     onClose () {
       dispatch({
         type: 'pos/updateState',
@@ -2871,6 +3057,15 @@ const Pos = ({
       || loading.effects['pos/checkQuantityEditProduct']
       || loading.effects['pos/checkQuantityNewProduct']
       || loading.effects['pospromo/addPosPromo']
+      || loading.effects['pospromo/setBundleAlreadyExists']
+      || loading.effects['pospromo/setBundleNeverExists']
+      || loading.effects['pospromo/updateState']
+      || loading.effects['pospromo/addPosPromoItem']
+      || loading.effects['pos/setCurrentBuildComponent']
+      || loading.effects['pospromo/setProductPos']
+      || loading.effects['pospromo/setCategoryPos']
+      || loading.effects['pospromo/setServicePos']
+      || loading.effects['pos/openBundleCategory']
       || loading.effects['pos/getProductByBarcode']),
     productBookmarkGroup,
     productBookmark,
@@ -2927,7 +3122,6 @@ const Pos = ({
     visible: modalBundleDetailVisible,
     item: currentBundle,
     DeleteItem (data) {
-      console.log('bundle', bundle, data)
       const cashierTrans = product
         .filter(filtered => !filtered.bundleId)
         .map(item => ({ ...item, type: 'Product' }))
@@ -2953,7 +3147,6 @@ const Pos = ({
           singleDeletion: record.singleDeletion || 0
         }))
         : []
-      console.log('listTrans', listTrans)
       dispatch({
         type: 'pos/showModalLogin',
         payload: {
@@ -3082,7 +3275,7 @@ const Pos = ({
                   >
                     Bundle
                   </Button>
-                  <Button
+                  {/* <Button
                     size="medium"
                     icon="tool"
                     onClick={handleExpressBrowse}
@@ -3094,8 +3287,8 @@ const Pos = ({
                     }}
                   >
                     K3Express
-                  </Button>
-                  <Button
+                  </Button> */}
+                  {/* <Button
                     size="medium"
                     icon="tool"
                     onClick={handlePlanogramBrowse}
@@ -3107,7 +3300,7 @@ const Pos = ({
                     }}
                   >
                     Planogram
-                  </Button>
+                  </Button> */}
                 </Col>
               </Row>
             </Form>
@@ -3147,7 +3340,7 @@ const Pos = ({
                     .map((item) => {
                       return (
                         <Button
-                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
+                          disabled={(selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
                           onClick={() => {
@@ -3158,7 +3351,7 @@ const Pos = ({
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {selectedPaymentShortcut
-                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && (selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'KX')
                             && selectedPaymentShortcut.typeCode === item.typeCode
                             && currentGrabOrder
                             && currentGrabOrder.shortOrderNumber
@@ -3176,7 +3369,7 @@ const Pos = ({
                     .map((item) => {
                       return (
                         <Button
-                          disabled={selectedPaymentShortcut.typeCode === 'GM' && selectedPaymentShortcut.typeCode !== item.typeCode}
+                          disabled={(selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') && selectedPaymentShortcut.typeCode !== item.typeCode}
                           style={{ width: '20%' }}
                           size="large"
                           onClick={() => {
@@ -3187,7 +3380,7 @@ const Pos = ({
                           type={selectedPaymentShortcut.id === item.id ? 'primary' : 'secondary'}
                         >
                           {selectedPaymentShortcut
-                            && selectedPaymentShortcut.typeCode === 'GM'
+                            && (selectedPaymentShortcut.typeCode === 'GM' || selectedPaymentShortcut.typeCode === 'KX')
                             && selectedPaymentShortcut.typeCode === item.typeCode
                             && currentGrabOrder
                             && currentGrabOrder.shortOrderNumber
@@ -3226,6 +3419,9 @@ const Pos = ({
           </Card>
           <BottomButton {...buttomButtonProps} />
           {dynamicQrisPaymentAvailability && <DynamicQrisButton {...dynamicQrisButtonProps} />}
+
+          {/* <PromotionGuide {...modalPromoGuideProps} /> */}
+          {/* <RewardGuide {...modalRewardGuideProps} /> */}
         </Col>
       </Row >
       {modalVoucherVisible && <ModalVoucher {...modalVoucherProps} />}
@@ -3259,8 +3455,12 @@ const Pos = ({
           <Reminder {...reminderProps} />
         </div>
       }
+      {modalPosDescriptionVisible && <ModalCustomerName {...modalCustomerNameProps} />}
+      {modalPosDescriptionDynamicQrisVisible && <ModalCustomerName {...modalPosDescriptionDynamicQrisProps} />}
       {/* {modalShiftVisible && <ModalShift {...modalShiftProps} />} */}
       {modalGrabmartCodeVisible && <ModalGrabmartCode {...modalGrabmartCodeProps} />}
+      {modalExpressCodeVisible && <ModalExpressCode {...modalExpressCodeProps} />}
+      {modalUnlockTransactionVisible && <ModalUnlockTransaction {...modalUnlockTransactionProps} />}
     </div >
   )
 }
@@ -3281,6 +3481,7 @@ Pos.propTypes = {
 }
 
 export default connect(({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,
@@ -3303,6 +3504,7 @@ export default connect(({
   payment,
   parameter
 }) => ({
+  incentiveAchievement,
   planogram,
   fingerEmployee,
   pospromo,

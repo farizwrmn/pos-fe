@@ -7,6 +7,7 @@ export async function query (params) {
   params.order = '-createdAt,startDate,endDate'
   return request({
     url: `${apiPromo}/list`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken

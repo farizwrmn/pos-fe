@@ -99,7 +99,7 @@ class TransferModal extends Component {
 
     return (
       <Modal
-        width="700px"
+        width="80%"
         title={`${currentItemList.productCode} - ${currentItemList.productName}`}
         {...modalOpts}
         footer={[
@@ -111,10 +111,10 @@ class TransferModal extends Component {
         ]}
       >
         <Row>
-          <Col md={24} lg={12}>
+          <Col md={24} lg={16}>
             <LatestPrice {...latestPriceProps} />
           </Col>
-          <Col md={24} lg={12}>
+          <Col md={24} lg={8}>
             <Form layout="horizontal">
               <FormItem label="No" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('no', {

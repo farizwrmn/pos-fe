@@ -7,6 +7,7 @@ export async function queryById (params) {
   return request({
     url: `${services}/${params.id}`,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })
@@ -17,6 +18,7 @@ export async function query (params) {
   return request({
     url: services,
     method: 'get',
+    alt: true,
     data: params,
     headers: apiHeaderToken
   })

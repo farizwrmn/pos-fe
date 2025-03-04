@@ -19,7 +19,7 @@ const Member = ({
           </span>
         </Col>
         <Col span={12} className={styles.right}>
-          {numberFormatter(invoiceInfo.memberName)}
+          {invoiceInfo.memberName}
         </Col>
       </Row>
       {invoiceInfo.unitInfo && invoiceInfo.unitInfo.id && !invoiceInfo.unitInfo.defaultMember && (
@@ -27,7 +27,7 @@ const Member = ({
           <Col span={12} className={styles.right}>
             <span>
               <strong>
-                Point
+                Coin
               </strong>
             </span>
           </Col>

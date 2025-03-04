@@ -38,14 +38,12 @@ const FormAccounting = ({
   listAccounting,
   cancelPayment,
   editItem,
-  cashierInformation,
   form: {
     resetFields
   }
 }) => {
   const listProps = {
     dataSource: listAccounting,
-    cashierInformation,
     cancelPayment,
     editList (data) {
       editItem(data)

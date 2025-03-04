@@ -4,6 +4,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: '/product-cost',
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken

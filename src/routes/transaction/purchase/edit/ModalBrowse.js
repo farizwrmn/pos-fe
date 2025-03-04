@@ -10,7 +10,7 @@ const Browse = ({ location, pagination, purchase, onChange, loading, onRestoreVo
   const modalOpts = {
     ...purchaseProps
   }
-  let listProductFilter = listProduct ? listProduct.filter(el => el.active === true) : []
+  let listProductFilter = listProduct ? listProduct.filter(el => el.active) : []
   const listProps = {
     dataSource: modalType === 'browseProduct' ? listProductFilter : modalType === 'browseInvoice' ? listInvoice : listVoid,
     loading: loading.effects[(

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import styles from 'themes/index.less'
-import { numberFormatter } from 'utils/string'
+import { currencyFormatter } from 'utils/string'
 
 const ListItem = ({ ...tableProps, listItem, onModalVisible }) => {
   const handleMenuClick = (record) => {
@@ -122,8 +122,8 @@ const ListItem = ({ ...tableProps, listItem, onModalVisible }) => {
         footer={() => {
           return (
             <div>
-              <div>Total Qty: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0)}</div>
-              <div>Total Price: {numberFormatter(listItem ? listItem.reduce((prev, next) => prev + (next.qty * next.DPP), 0) : 0)}</div>
+              <div>Total Qty: {currencyFormatter(listItem ? listItem.reduce((prev, next) => prev + next.qty, 0) : 0)}</div>
+              <div>Total Price: {currencyFormatter(listItem ? listItem.reduce((prev, next) => prev + (next.qty * next.DPP), 0) : 0)}</div>
             </div>
           )
         }}

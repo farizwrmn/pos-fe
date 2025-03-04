@@ -166,29 +166,6 @@ export async function voidTrans (params) {
   })
 }
 
-// export async function edit (params) {
-//   let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
-//   const apiHeaderToken = crypt.apiheader()
-//   return request({
-//     url: url,
-//     method: 'put',
-//     data: params.data,
-//     body: params.data,
-//     headers: apiHeaderToken
-//   })
-// }
-
-// export async function remove (params) {
-//   let url = params.id ? stock + '/' + encodeURIComponent(params.id) : stock
-//   const apiHeaderToken = crypt.apiheader()
-//   return request({
-//     url: url,
-//     method: 'delete',
-//     data: params,
-//     headers: apiHeaderToken
-//   })
-// }
-
 export async function updateTransferOutHpokok (params) {
   let url = `${transfer}/out/detail/${params.id}`
   const apiHeaderToken = crypt.apiheader()

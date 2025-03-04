@@ -55,7 +55,7 @@ export default modelExtend(pageModel, {
       if (response && response.success && response.data) {
         message.success('Successfully adding request cancel pos')
         yield put({
-          type: 'queryPending'
+          type: 'salesDiscount/query'
         })
       } else {
         throw response

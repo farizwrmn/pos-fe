@@ -7,7 +7,7 @@ import { withoutFormat } from 'utils/string'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ ...tableProps, listAllStores, editItem, deleteItem }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -37,7 +37,23 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       dataIndex: 'image',
       key: 'image',
       width: '100px',
-      render: (text) => {
+      render: (text, record) => {
+        if (record && record.typeAds === 'CUSTROLL') {
+          try {
+            if (text
+              && text != null
+              && text !== '["no_image.png"]'
+              && text !== '"no_image.png"'
+              && text !== 'no_image.png') {
+              const item = JSON.parse(text)
+              if (item && item[0]) {
+                return <img height="70px" src={`${IMAGEURL}/${withoutFormat(item[0])}-main.jpg`} alt="no_image" />
+              }
+            }
+          } catch (error) {
+            console.log('Error: ', error)
+          }
+        }
         if (text) {
           return <img height="70px" src={`${IMAGEURL}/${withoutFormat(text)}-main.jpg`} alt="no_image" />
         }
@@ -48,6 +64,24 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Sort',
       dataIndex: 'sort',
       key: 'sort'
+    },
+    {
+      title: 'Store',
+      dataIndex: 'availableStore',
+      key: 'availableStore',
+      render: (text) => {
+        if (!text) {
+          return 'All'
+        }
+        const listStores = text && text.split(',')
+        return listStores.map((storeId) => {
+          const filteredStore = listAllStores.filter(filtered => filtered.id === Number(storeId))
+          if (filteredStore && filteredStore[0]) {
+            return filteredStore[0].storeName
+          }
+          return ''
+        }).toString()
+      }
     },
     {
       title: 'Operation',

@@ -101,6 +101,7 @@ export async function queryWOHeader (params) {
     url: `${workOrder}/header`,
     method: 'get',
     data: params,
+    alt: true,
     headers: apiHeaderToken
   })
 }

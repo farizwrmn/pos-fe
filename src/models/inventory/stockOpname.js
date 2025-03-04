@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { lstorage } from 'utils'
-import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname } from 'services/inventory/stockOpname'
+import { query, queryActive, queryById, insertEmployee, updateFinishBatch2, queryListEmployeePhaseTwo, queryListEmployeeOnCharge, addBatch, updateFinishLine, queryListDetail, add, edit, remove, queryReportOpname, queryListDetailHistory, queryDetailReportOpname, queryDetailHistoryReportOpname, listDetailHistory } from 'services/inventory/stockOpname'
 import { query as queryEmployee } from 'services/master/employee'
 import { pageModel } from 'models/common'
 import pathToRegexp from 'path-to-regexp'
@@ -21,6 +21,7 @@ export default modelExtend(pageModel, {
     modalAddEmployeeVisible: false,
     modalPhaseOneVisible: false,
     modalPhaseTwoVisible: false,
+    modalLocationVisible: false,
     list: [],
     listReport: [],
     listEmployee: [],
@@ -32,12 +33,27 @@ export default modelExtend(pageModel, {
     detailData: {},
     modalEditVisible: false,
     modalEditItem: {},
+    modalLocationItem: {},
+    detailHistory: [],
+    queryDetailHistory: '',
+    queryListLocationDetailHistory: '',
+    listLocationDetailHistory: [],
     finishPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
     },
     detailPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
+    detailHistoryPagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1
+    },
+    listDetailHistoryPagination: {
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
@@ -54,12 +70,33 @@ export default modelExtend(pageModel, {
       history.listen((location) => {
         const { activeKey, ...other } = location.query
         const { pathname } = location
-        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname)
+        const match = pathToRegexp('/stock-opname/:id').exec(location.pathname) || pathToRegexp('/stock-opname-partial/:id').exec(location.pathname) || pathToRegexp('/stock-opname-detail-history/:id').exec(location.pathname)
         if (match) {
           dispatch({
             type: 'queryDetail',
             payload: {
               id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'queryListDetailHistory',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'listDetailHistory',
+            payload: {
+              transId: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
+          dispatch({
+            type: 'fetchModalLocationData',
+            payload: {
+              transId: decodeURIComponent(match[1]),
               storeId: lstorage.getCurrentUserStore()
             }
           })
@@ -70,8 +107,17 @@ export default modelExtend(pageModel, {
               storeId: lstorage.getCurrentUserStore()
             }
           })
+          dispatch({
+            type: 'queryDetailHistoryReport',
+            payload: {
+              id: decodeURIComponent(match[1]),
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
         }
-        if (pathname === '/stock-opname') {
+        if (pathname === '/stock-opname'
+          || pathname === '/stock-opname-partial' || pathname === '/stock-opname-detail-history'
+        ) {
           dispatch({
             type: 'updateState',
             payload: {
@@ -114,6 +160,13 @@ export default modelExtend(pageModel, {
         })
         yield put({
           type: 'queryDetailReport',
+          payload: {
+            id: payload.detailData.id,
+            storeId: lstorage.getCurrentUserStore()
+          }
+        })
+        yield put({
+          type: 'queryDetailHistoryReport',
           payload: {
             id: payload.detailData.id,
             storeId: lstorage.getCurrentUserStore()
@@ -175,6 +228,108 @@ export default modelExtend(pageModel, {
         })
       } else {
         throw response
+      }
+    },
+
+    * queryListDetailHistory ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const { detailData, ...other } = payload
+      const data = yield call(queryListDetail, other)
+      const response = yield call(queryListDetailHistory, payload)
+
+      if (response.success && data.success && data.data) {
+        const dataMap = new Map()
+
+        data.data.forEach((item) => {
+          const productCode = item.productCode
+
+          const matchingHistories = response.data.filter(history => history.productCode === productCode)
+
+          const locationNames = []
+          const quantityLocations = []
+
+          matchingHistories.forEach((history) => {
+            locationNames.push(history.locationName)
+            quantityLocations.push(history.qtyLocation)
+          })
+
+          if (!dataMap.has(productCode)) {
+            dataMap.set(productCode, {
+              ...item,
+              locationName: locationNames.join(', '),
+              qtyLocation: quantityLocations.join(', ')
+            })
+          }
+        })
+
+        const finalData = Array.from(dataMap.values())
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            detailHistoryPagination: {
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            },
+            detailHistory: finalData
+          }
+        })
+      }
+    },
+
+    * listDetailHistory ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
+      const { detailData, ...other } = payload
+      const data = yield call(queryListDetail, other)
+      const response = yield call(listDetailHistory, payload)
+
+      if (response.success && data.success && data.data) {
+        const dataMap = new Map()
+
+        data.data.forEach((item) => {
+          const productCode = item.productCode
+
+          const matchingHistories = response.data.filter(history => history.productCode === productCode)
+
+          const locationQtyMap = new Map()
+
+          matchingHistories.forEach((history) => {
+            if (!locationQtyMap.has(history.locationName)) {
+              locationQtyMap.set(history.locationName, 0)
+            }
+            locationQtyMap.set(history.locationName, locationQtyMap.get(history.locationName) + Number(history.qtyLocation))
+          })
+
+          const uniqueLocations = Array.from(locationQtyMap.keys()).join(', ')
+          const summedQtyLocations = Array.from(locationQtyMap.values()).join(', ')
+
+          if (!dataMap.has(productCode)) {
+            dataMap.set(productCode, {
+              ...item,
+              locationName: uniqueLocations,
+              qtyLocation: summedQtyLocations
+            })
+          }
+        })
+
+        const finalData = Array.from(dataMap.values())
+
+        yield put({
+          type: 'updateState',
+          payload: {
+            listDetailHistoryPagination: {
+              current: Number(response.page) || 1,
+              pageSize: Number(response.pageSize) || 10,
+              total: response.total,
+              showSizeChanger: true,
+              showQuickJumper: true
+            },
+            listLocationDetailHistory: finalData
+          }
+        })
       }
     },
 
@@ -263,6 +418,60 @@ export default modelExtend(pageModel, {
         }
       } else {
         throw data
+      }
+    },
+
+    * queryDetailHistoryReport ({ payload = {} }, { call, put }) {
+      const data = yield call(queryById, payload)
+
+      if (data.success && data.data) {
+        const { detail, ...other } = data.data
+
+        if (other && other.activeBatch) {
+          const response1 = yield call(queryDetailReportOpname, {
+            batchId: other.activeBatch.id
+          })
+
+          const response2 = yield call(queryDetailHistoryReportOpname, {
+            batchId: other.activeBatch.id,
+            transId: other.id
+          })
+
+          console.log('Reports', response1, response2)
+
+          if (response1.success && response2.success) {
+            const stockDetails = response1.data
+            const historyDetails = response2.data
+
+            const historyMap = {}
+            historyDetails.forEach((history) => {
+              const productId = history.productId
+              if (!historyMap[productId]) {
+                historyMap[productId] = {
+                  qtyLocation: [],
+                  locationName: []
+                }
+              }
+              historyMap[productId].qtyLocation.push(history.qtyLocation)
+              historyMap[productId].locationName.push(history.locationName)
+            })
+
+            const mergedData = stockDetails.map(stock => ({
+              ...stock,
+              qtyLocation: (historyMap[stock.productId] && historyMap[stock.productId].qtyLocation.join(', ')) || '',
+              locationName: (historyMap[stock.productId] && historyMap[stock.productId].locationName.join(', ')) || ''
+            }))
+
+            yield put({
+              type: 'updateState',
+              payload: {
+                listDetailHistory: mergedData
+              }
+            })
+          } else {
+            throw new Error('Failed to fetch both reports')
+          }
+        }
       }
     },
 
@@ -410,6 +619,7 @@ export default modelExtend(pageModel, {
     },
 
     * query ({ payload = {} }, { call, put }) {
+      payload.storeId = lstorage.getCurrentUserStore()
       const data = yield call(query, payload)
       if (data.success) {
         yield put({

@@ -6,6 +6,7 @@ export async function query (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${apiMobile}/members/${params.id}`,
+    alt: true,
     method: 'get',
     data: params,
     headers: apiHeaderToken
@@ -28,6 +29,7 @@ export async function srvGetMemberStatus (params) {
   return request({
     url: `${apiMobile}/members/${params.memberCardId}/status?detail=1`,
     method: 'get',
+    alt: true,
     headers: apiHeaderToken
   })
 }
@@ -36,6 +38,7 @@ export async function srvActivateMember (params) {
   return request({
     url: `${apiMobile}/members/${params.memberCardId}`,
     method: 'put',
+    alt: true,
     headers: apiHeaderToken,
     data: params
   })

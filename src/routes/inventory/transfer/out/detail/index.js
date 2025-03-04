@@ -100,9 +100,12 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
     printNo: 1
   }
 
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+
   const formDetailProps = {
     dataSource: listDetail,
     editList (record) {
+      if (defaultRole === 'CSH' || defaultRole === 'HKS') return
       if (!loading.effects['transferOutDetail/editPrice']) {
         dispatch({
           type: 'transferOutDetail/editListPrice',
@@ -237,9 +240,9 @@ const Detail = ({ transferOut, transferOutDetail, location, dispatch, loading, a
       <Col lg={17}>
         <div className="content-inner-zero-min-height">
           <h1>Items</h1>
-          <Button type="danger" icon="delete" loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => voidTrans()}>Void</Button>
-          {data && data[0] && !data[0].paid && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail'] || loading.effects['transferOutDetail/editTrans']} disabled={loading.effects['transferOutDetail/editTrans'] || (data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1)} onClick={() => editTrans()}>Get Default Price</Button>}
-          {data && data[0] && !data[0].posting && !data[0].invoicing && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => postTrans()}>Post</Button>}
+          {defaultRole !== 'CSH' && defaultRole !== 'HKS' && <Button type="danger" icon="delete" loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => voidTrans()}>Void</Button>}
+          {defaultRole !== 'CSH' && defaultRole !== 'HKS' && data && data[0] && !data[0].paid && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail'] || loading.effects['transferOutDetail/editTrans']} disabled={loading.effects['transferOutDetail/editTrans'] || (data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1)} onClick={() => editTrans()}>Get Default Price</Button>}
+          {defaultRole !== 'CSH' && defaultRole !== 'HKS' && data && data[0] && !data[0].posting && !data[0].invoicing && <Button type="default" style={{ float: 'right' }} loading={loading.effects['transferOutDetail/queryDetail']} disabled={data.length > 0 ? !data[0].active : data[0] ? data[0].status : 1} onClick={() => postTrans()}>Post</Button>}
           <Row style={{ padding: '10px', margin: '4px' }}>
             <TransDetail {...formDetailProps} />
           </Row>

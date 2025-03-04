@@ -11,7 +11,7 @@ const TabPane = Tabs.TabPane
 
 const Voucher = ({ marketingVoucher, accountRule, loading, dispatch, location, app }) => {
   const { list, pagination, newTransNo, modalType, currentItem, activeKey } = marketingVoucher
-  const { listAccountCode } = accountRule
+  const { listAccountCode, listAccountCodeLov } = accountRule
   const { user, storeInfo } = app
   const filterProps = {
     onFilterChange (value) {
@@ -93,6 +93,7 @@ const Voucher = ({ marketingVoucher, accountRule, loading, dispatch, location, a
     disableButton: loading.effects['marketingVoucher/add'] || loading.effects['marketingVoucher/edit'],
     newTransNo,
     listAccountCode,
+    listAccountCodeLov,
     modalType,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,

@@ -9,6 +9,7 @@ import styles from '../index.less'
 
 const PaymentItem = ({
   item,
+  directPrinting,
   listOpts
 }) => {
   if (!item) return null
@@ -19,6 +20,12 @@ const PaymentItem = ({
         <Col span={12} className={styles.right}>
           <span>
             <strong>
+              {item.typeCode === 'XQ'
+                && directPrinting
+                && directPrinting
+                  .filter(filtered => filtered.groupName === 'QRIS').length > 0
+                ? `${directPrinting.filter(filtered => filtered.groupName === 'QRIS')[0].platformTransactionId} - `
+                : ''}
               {chooseOnePaymentType(item.typeCode, listOpts)}
             </strong>
             :Rp

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input, message, InputNumber, Button, Row, Col, Select } from 'antd'
+import { Modal, Form, Input, message, InputNumber, Button, Row, Col, Checkbox, Select } from 'antd'
 import { Link } from 'dva/router'
+import { lstorage } from 'utils'
 import ModalDemand from './ModalDemand'
 import ListItem from './ListItem'
 import Browse from './Browse'
@@ -152,6 +153,8 @@ const FormAdd = ({
     })
   }
 
+  let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
+
   return (
     <div>
       <Form layout="horizontal">
@@ -167,11 +170,11 @@ const FormAdd = ({
                 ]
               })(<Input disabled maxLength={20} />)}
             </FormItem>
-            {/* <FormItem label="Delivery Order" {...formItemLayout}>
+            <FormItem label="Delivery Order" {...formItemLayout}>
               {getFieldDecorator('deliveryOrder', {
                 valuePropName: 'checked'
               })(<Checkbox>Delivery Order</Checkbox>)}
-            </FormItem> */}
+            </FormItem>
             <FormItem label="reference" hasFeedback {...formItemLayout}>
               {getFieldDecorator('referenceNo', {
                 initialValue: item.referenceNo,
@@ -227,6 +230,8 @@ const FormAdd = ({
                   }
                 ]
               })(<Select
+                showSearch
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={value => onChangeStoreIdReceiver(value)}
               >
                 {childrenStoreReceived}
@@ -277,9 +282,9 @@ const FormAdd = ({
         </Row>
 
         <ListItem {...otherListProps} style={{ marginTop: '10px' }} />
-        <FormItem>
+        {defaultRole !== 'CSH' && <FormItem>
           <Button disabled={loadingButton.effects['transferOut/add']} size="large" type="primary" onClick={handleSubmit} style={{ marginTop: '8px', float: 'right' }}>{button}</Button>
-        </FormItem>
+        </FormItem>}
         {modalProductDemandProps.visible && (
           <ModalDemand
             onGetAll={() => {

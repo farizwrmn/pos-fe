@@ -14,9 +14,29 @@ const LatestPrice = ({
       render: text => (text ? moment(text).format('DD-MM-YYYY') : '')
     },
     {
+      title: 'Supplier',
+      dataIndex: 'supplierName',
+      key: 'supplierName'
+    },
+    {
+      title: 'Tax Invoice',
+      dataIndex: 'taxInvoiceNo',
+      key: 'taxInvoiceNo'
+    },
+    {
+      title: 'Tax Date',
+      dataIndex: 'taxDate',
+      key: 'taxDate'
+    },
+    {
       title: 'Trans No',
       dataIndex: 'transNo',
       key: 'transNo'
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+      key: 'qty'
     },
     {
       title: 'DPP',

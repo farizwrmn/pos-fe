@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DropOption } from 'components'
-import { Table, Icon, Tag } from 'antd'
+import { Table, Icon, Tag, message } from 'antd'
 import { numberFormat, alertModal, lstorage } from 'utils'
 import moment from 'moment'
 
@@ -12,7 +12,15 @@ const List = ({ cancelPayment, ...tableProps }) => {
   const hdlDropOptionClick = (record, e) => {
     if (e.key === '1') {
       const currentRole = lstorage.getCurrentUserRole()
-      if (currentRole !== 'OWN') {
+      if (record.typeCode === 'XQ' && record.validPayment) {
+        message.error('Valid payment of XQRIS cannot be void')
+        return
+      }
+      if (record.recon) {
+        message.error('Already Recon')
+        // return
+      }
+      if (currentRole !== 'OWN' && currentRole !== 'ITS') {
         const transDate = moment(record.transDate).format('YYYY-MM-DD')
         const checkDayBefore = checkPermissionDayBeforeTransaction(transDate)
         if (checkDayBefore) {
@@ -122,7 +130,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
         return (<DropOption onMenuClick={e => hdlDropOptionClick(record, e)}
           type="primary"
           menuOptions={[
-            { key: '1', name: 'Void', icon: 'delete', disabled: true }
+            { key: '1', name: 'Void', icon: 'delete', disabled: false }
           ]}
         />)
       }
@@ -144,8 +152,7 @@ const List = ({ cancelPayment, ...tableProps }) => {
 
 List.propTypes = {
   editList: PropTypes.func,
-  cancelPayment: PropTypes.func.isRequired,
-  cashierInformation: PropTypes.object.isRequired
+  cancelPayment: PropTypes.func.isRequired
 }
 
 export default List

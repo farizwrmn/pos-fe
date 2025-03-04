@@ -7,6 +7,7 @@ export async function queryProductByCode (params) {
   if (params && params.outlet_id) {
     return request({
       fullUrl: `${rest.apiConsignmentURL}/product-code`,
+      alt: true,
       method: 'get',
       data: params,
       headers: apiHeaderToken
@@ -41,6 +42,7 @@ export async function queryProductBarcode (params) {
     return request({
       fullUrl: `${rest.apiConsignmentURL}/product-barcode`,
       method: 'get',
+      alt: true,
       data: params,
       headers: apiHeaderToken
     })

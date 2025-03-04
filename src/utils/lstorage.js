@@ -57,6 +57,7 @@ const getStorageKey = (key) => {
     pair[5] = decrypt(localIds[5], rdmText) || ''
     pair[6] = localIds[6] || ''
     pair[7] = decrypt(localIds[7], rdmText) || ''
+    pair[8] = decrypt(localIds[8], rdmText) || ''
   } else {
     pair[1] = decrypt(localStorage.getItem(`${prefix}${key}`)) || ''
     pair[2] = '---'
@@ -107,6 +108,22 @@ const setGrabmartOrder = (grabOrder) => {
   return localStorage.setItem('grabmartOrder', JSON.stringify(grabOrder || '{}'))
 }
 
+const getPosLockTransaction = () => {
+  return localStorage.getItem('posLockTransaction') ? JSON.parse(localStorage.getItem('posLockTransaction')) : false
+}
+
+const setPosLockTransaction = (status) => {
+  return localStorage.setItem('posLockTransaction', status)
+}
+
+const getExpressOrder = () => {
+  return localStorage.getItem('expressOrder') ? JSON.parse(localStorage.getItem('expressOrder')) : {}
+}
+
+const setExpressOrder = (grabOrder) => {
+  return localStorage.setItem('expressOrder', JSON.stringify(grabOrder || '{}'))
+}
+
 const getConsignment = () => {
   return localStorage.getItem('consignment') ? JSON.parse(localStorage.getItem('consignment')) : []
 }
@@ -125,6 +142,27 @@ const getVoucherList = () => {
 
 const setVoucherList = (data) => {
   return localStorage.setItem('voucher_list', data)
+}
+
+const getCachedSerialPort = () => {
+  return localStorage.getItem('cachedSerialPort') ? JSON.parse(localStorage.getItem('cachedSerialPort')) : []
+}
+
+const setCachedSerialPort = (item) => {
+  let data = []
+  const listCache = getCachedSerialPort()
+  const filteredTypeCode = listCache.filter(filtered => filtered.typeCode === item.typeCode)
+  if (filteredTypeCode && filteredTypeCode[0]) {
+    data = listCache.map((cache) => {
+      if (cache.typeCode === item.typeCode) {
+        return item
+      }
+      return cache
+    })
+  } else {
+    data = listCache.concat([item])
+  }
+  return localStorage.setItem('cachedSerialPort', JSON.stringify(data))
 }
 
 const getQrisImage = () => {
@@ -149,6 +187,19 @@ const getDynamicQrisPosTransId = () => {
 
 const setDynamicQrisPosTransId = (data) => {
   return localStorage.setItem('dynamic_qris_pos_trans_id', data)
+}
+
+
+const getDynamicQrisPosTransNo = () => {
+  return localStorage.getItem('dynamic_qris_pos_trans_no') ? localStorage.getItem('dynamic_qris_pos_trans_no') : null
+}
+
+const setDynamicQrisPosTransNo = (data) => {
+  return localStorage.setItem('dynamic_qris_pos_trans_no', data)
+}
+
+const removeDynamicQrisPosTransNo = () => {
+  return localStorage.removeItem('dynamic_qris_pos_trans_no')
 }
 
 const removeDynamicQrisPosTransId = () => {
@@ -478,6 +529,12 @@ const getIdBE = () => { return getStorageKey('cdi')[1] }
 const getDomainBE = () => { return getStorageKey('cdi')[2] }
 const getPortBE = () => { return getStorageKey('cdi')[3] }
 const getProtocolBE = () => { return getStorageKey('cdi')[4] }
+const getDomainBEAlt = () => {
+  if (!getStorageKey('cdi')[5]) {
+    return getStorageKey('cdi')[2]
+  }
+  return getStorageKey('cdi')[5]
+}
 
 module.exports = {
   putStorageKey,
@@ -500,6 +557,7 @@ module.exports = {
   getDomainBE,
   getPortBE,
   getProtocolBE,
+  getDomainBEAlt,
   getIdBE,
   getCashierTrans,
   getConsignment,
@@ -528,6 +586,9 @@ module.exports = {
   getQrisPaymentLastTransaction,
   setQrisPaymentLastTransaction,
   removeQrisPaymentLastTransaction,
+  getDynamicQrisPosTransNo,
+  setDynamicQrisPosTransNo,
+  removeDynamicQrisPosTransNo,
   getVoucherList,
   setVoucherList,
   removeQrisImage,
@@ -561,5 +622,11 @@ module.exports = {
   getDynamicQrisImageTTL,
   getAvailablePaymentType,
   setAvailablePaymentType,
-  removeAvailablePaymentType
+  removeAvailablePaymentType,
+  getExpressOrder,
+  setExpressOrder,
+  getCachedSerialPort,
+  setCachedSerialPort,
+  getPosLockTransaction,
+  setPosLockTransaction
 }

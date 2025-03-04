@@ -1,4 +1,3 @@
-import pathToRegexp from 'path-to-regexp'
 import { parse } from 'qs'
 import { Modal, message } from 'antd'
 import moment from 'moment'
@@ -12,13 +11,17 @@ import {
   TYPE_PEMBELIAN_GRABFOOD,
   TYPE_PEMBELIAN_GRABMART
 } from 'utils/variable'
+import { query as queryEdc } from 'services/master/paymentOption/paymentMachineService'
+import { query as queryCost } from 'services/master/paymentOption/paymentCostService'
+import { queryById as queryEnableDineIn, add as updateEnableDineIn } from 'services/store/expressStore'
 import { queryPaymentInvoice } from 'services/payment/payment'
+import { getSerialPort, postSerialPort } from 'services/edc/serialService'
 import { queryShortcut, queryShortcutGroup } from 'services/product/bookmark'
 import { queryProductBarcode } from 'services/consignment/products'
-import { queryGrabmartCode } from 'services/grabmart/grabmartOrder'
+import { queryGrabmartCode, queryExpressCode } from 'services/grabmart/grabmartOrder'
 import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
-import { currencyFormatter } from 'utils/string'
+import { currencyFormatter, getSalesProductFields } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
 import { getDateTime } from 'services/setting/time'
 import {
@@ -33,6 +36,10 @@ import {
 import {
   queryReference
 } from 'services/payment'
+import {
+  query as queryLockTransaction,
+  add as unlockTransaction
+} from 'services/pos/unlockTransaction'
 import { validateVoucher } from '../../services/marketing/voucher'
 import { groupProduct } from '../../routes/transaction/pos/utils'
 import { queryById as queryStoreById } from '../../services/store/store'
@@ -63,33 +70,39 @@ import {
   query as queryProductStock,
   queryPOSProductSales,
   queryByBarcode,
-  queryPOSstock as queryProductsInStock
+  queryPOSstock as queryProductsInStock,
+  queryStorePriceSales
 } from '../../services/master/productstock'
 import {
   query as queryConsignment
 } from '../../services/master/consignment'
 import { query as queryService, queryById as queryServiceById } from '../../services/master/service'
 import { query as queryUnit, getServiceReminder, getServiceUsageReminder } from '../../services/units'
-import { queryCurrentOpenCashRegister, queryCashierTransSource, cashRegister } from '../../services/setting/cashier'
 import { getDiscountByProductCode } from './utils'
+import { getListProductAfterBundling } from './utilsPos'
 import { queryCheckStoreAvailability, queryLatest as queryPaymentTransactionLatest, queryFailed as queryPaymentTransactionFailed, queryCheckValidByPaymentReference, queryCheckStatus as queryCheckPaymentTransactionStatus, queryCheckPaymentTransactionInvoice } from '../../services/payment/paymentTransactionService'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
 const {
+  getCachedSerialPort, setCachedSerialPort,
+
   getCashierTrans, getBundleTrans, getServiceTrans, getConsignment,
   setCashierTrans, setBundleTrans, setServiceTrans, setConsignment,
   getVoucherList, setVoucherList,
   getGrabmartOrder, setGrabmartOrder,
+  getExpressOrder, setExpressOrder,
   setQrisPaymentLastTransaction, removeQrisPaymentLastTransaction,
   getDynamicQrisPosTransId, removeQrisImage,
   removeDynamicQrisImage,
-  removeDynamicQrisPosTransId, removeQrisMerchantTradeNo,
+  removeDynamicQrisPosTransId, removeDynamicQrisPosTransNo, removeQrisMerchantTradeNo,
   getDynamicQrisImage,
   setPosReference,
   removeCurrentPaymentTransactionId, getCurrentPaymentTransactionId,
   getQrisPaymentTimeLimit,
-  setAvailablePaymentType
+  setAvailablePaymentType,
+
+  getPosLockTransaction, setPosLockTransaction
 } = lstorage
 
 const { updateCashierTrans } = cashierService
@@ -103,16 +116,34 @@ export default {
   namespace: 'pos',
 
   state: {
+    modalUnlockTransactionVisible: false,
+    modalUnlockTransactionShowForm: false,
+    lockTransaction: getPosLockTransaction() || false,
+    modalPosDescriptionVisible: false,
+    modalPosDescriptionDynamicQrisVisible: false,
+    posDescription: null,
+    enableDineIn: 1,
+    enableDineInLastUpdatedAt: null,
+    enableDineInLastUpdatedBy: null,
     currentBundlePayment: {},
     electronABTesting: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
+    modalExpressCodeVisible: false,
     modalGrabmartCodeVisible: false,
     modalGrabmartCodeItem: {},
+    modalExpressCodeItem: {},
     currentGrabOrder: {},
+    currentExpressOrder: {},
     currentReplaceBundle: {},
     currentBuildComponent: {},
+    serialPortName: null,
+    serialPortDescription: null,
+    serialApprovalCode: null,
+    cachedSerialPortName: [],
+    listSerialPort: [],
     list: [],
+    listRewardGuide: [],
     dataReward: [],
     currentCategory: [],
     tmpList: [],
@@ -184,7 +215,6 @@ export default {
     totalItem: 0,
     lastMeter: localStorage.getItem('lastMeter') ? localStorage.getItem('lastMeter') : 0,
     selectedRowKeys: [],
-    cashierInformation: {},
     cashierBalance: {},
     pagination: {
       current: 1,
@@ -242,7 +272,6 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const userId = lstorage.getStorageKey('udi')[1]
         if (location.pathname === '/dashboard' || location.pathname === '/') {
           dispatch({
             type: 'queryDashboard',
@@ -262,7 +291,16 @@ export default {
           })
         }
         if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'pos/queryLockTransaction'
+          })
           getDynamicQrisImage()
+          dispatch({
+            type: 'getEnableDineIn',
+            payload: {
+              storeId: lstorage.getCurrentUserStore()
+            }
+          })
           dispatch({ type: 'querySequenceReference' })
           dispatch({ type: 'getAdvertising' })
           dispatch({ type: 'setCurrentBuildComponent' })
@@ -298,28 +336,19 @@ export default {
           dispatch({
             type: 'checkPaymentTransactionInvoice'
           })
-        }
-        if (location.pathname === '/transaction/pos' || location.pathname === '/transaction/pos/payment') {
           dispatch({
-            type: 'loadDataPos',
+            type: 'updateState',
             payload: {
-              cashierId: userId,
-              status: 'O'
+              modalUnlockTransactionShowForm: false
             }
           })
-        } else if (location.pathname === '/transaction/pos/history') {
+        }
+        if (location.pathname === '/transaction/pos/history') {
           dispatch({
             type: 'queryHistory',
             payload: {
               startPeriod: moment().startOf('month').format('YYYY-MM-DD'),
               endPeriod: moment().endOf('month').format('YYYY-MM-DD')
-            }
-          })
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
             }
           })
         } else if (location.pathname === '/monitor/service/history') {
@@ -343,21 +372,6 @@ export default {
           })
         }
       })
-
-      history.listen(() => {
-        const match = pathToRegexp('/accounts/payment/:id').exec(location.pathname)
-        const userId = lstorage.getStorageKey('udi')[1]
-
-        if (match) {
-          dispatch({
-            type: 'loadDataPos',
-            payload: {
-              cashierId: userId,
-              status: 'O'
-            }
-          })
-        }
-      })
     }
   },
 
@@ -377,6 +391,88 @@ export default {
         })
       }
     },
+
+    * printLatestTransaction (payload, { put, call }) {
+      const response = yield call(queryPaymentTransactionLatest, { storeId: lstorage.getCurrentUserStore() })
+      if (response.success && response.data && response.data.length > 0) {
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${response.data[0].posId}?status=reprint`)
+        yield put({
+          type: 'updateState',
+          payload: {
+            paymentTransactionInvoiceWindow: invoiceWindow
+          }
+        })
+        if (invoiceWindow) {
+          invoiceWindow.focus()
+          yield put({
+            type: 'updateState',
+            payload: {
+              modalUnlockTransactionShowForm: true
+            }
+          })
+        } else {
+          message.error('Please allow pop-up in your browser')
+        }
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalUnlockTransactionShowForm: true
+          }
+        })
+      }
+    },
+
+    * queryLockTransaction (payload, { put, call }) {
+      const lockTransaction = getPosLockTransaction()
+      console.log('first', lockTransaction)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          lockTransaction
+        }
+      })
+      if (!lockTransaction) {
+        const response = yield call(queryLockTransaction)
+        console.log('second', response)
+        if (response.success && response.data) {
+          setPosLockTransaction(true)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: true
+            }
+          })
+        } else {
+          setPosLockTransaction(false)
+          yield put({
+            type: 'pos/updateState',
+            payload: {
+              lockTransaction: false
+            }
+          })
+        }
+      }
+    },
+
+    * unlockTransaction (payload, { put, call }) {
+      setPosLockTransaction(false)
+      yield put({
+        type: 'pos/updateState',
+        payload: {
+          modalPosDescriptionVisible: true,
+          modalUnlockTransactionVisible: false,
+          modalUnlockTransactionShowForm: false,
+          lockTransaction: false
+        }
+      })
+      yield call(unlockTransaction, {})
+      yield put({
+        type: 'queryLockTransaction',
+        payload: {}
+      })
+    },
+
     * querySequenceReference (payload, { call }) {
       const response = yield call(queryReference, {
         storeId: lstorage.getCurrentUserStore()
@@ -385,6 +481,124 @@ export default {
         setPosReference(response.data)
       } else {
         throw response
+      }
+    },
+
+    * showEdcModal ({ payload = {} }, { select, call, put }) {
+      const { list } = payload
+      const listAmount = yield select(({ payment }) => payment.listAmount)
+      const listVoucher = yield select(({ pos }) => pos.listVoucher)
+      const curTotal = yield select(({ pos }) => pos.curTotal)
+      const data = yield call(queryEdc, {
+        paymentOption: 'V'
+      })
+      let listPayment = []
+      let listCost = []
+      if (data.success) {
+        listPayment = data.data
+        const responseCost = yield call(queryCost, {
+          machineId: listPayment[0].id,
+          relationship: 1
+        })
+        if (responseCost && responseCost.success) {
+          listCost = responseCost.data
+        }
+      }
+      for (let key = 0; key < list.length; key += 1) {
+        const item = list[key]
+        item.id = key + 1
+        if (listAmount && listAmount.filter(filtered => filtered.typeCode === 'V').length !== listVoucher.length) {
+          if (listPayment && listPayment.length === 1) {
+            if (listCost && listCost[0]) {
+              yield put({
+                type: 'payment/addMethod',
+                payload: {
+                  listAmount,
+                  data: {
+                    id: item.id,
+                    amount: item.voucherValue,
+                    bank: listCost[0].id,
+                    chargeNominal: 0,
+                    chargePercent: 0,
+                    chargeTotal: 0,
+                    description: item.voucherName,
+                    voucherCode: item.generatedCode,
+                    voucherId: item.voucherId,
+                    machine: listPayment[0].id,
+                    printDate: null,
+                    typeCode: 'V'
+                  }
+                }
+              })
+            }
+          }
+        }
+      }
+      yield put({ type: 'pos/setCurTotal' })
+
+      yield put({ type: 'payment/setCurTotal', payload: { grandTotal: curTotal } })
+      yield put({
+        type: 'payment/showPaymentModal'
+      })
+      const memberInformation = yield select(({ pos }) => pos.memberInformation)
+      let serialPortName = null
+      let serialPortDescription = null
+      const listSerialResponse = yield call(getSerialPort, {
+        typeCode: payload.typeCode
+      })
+      if (listSerialResponse && Array.isArray(listSerialResponse.list) && listSerialResponse.list.length > 0) {
+        const listCachedSerial = getCachedSerialPort()
+        if (listCachedSerial && Array.isArray(listCachedSerial) && listCachedSerial.length > 0) {
+          const filteredCachedSerial = listCachedSerial.filter(filtered => filtered.typeCode === payload.typeCode)
+          if (filteredCachedSerial && filteredCachedSerial[0]) {
+            const filterSerialByName = listSerialResponse.list.filter(filtered => filtered.portDescription === filteredCachedSerial[0].portDescription)
+            if (filterSerialByName && filterSerialByName[0]) {
+              serialPortName = filterSerialByName[0].portName
+              serialPortDescription = filterSerialByName[0].portDescription
+            }
+          }
+        } else {
+          const filterIngenico = listSerialResponse.list.filter(filtered => filtered.portDescription.includes('Ingenico Card Reader'))
+          if (filterIngenico && filterIngenico[0]) {
+            serialPortName = filterIngenico[0].portName
+            serialPortDescription = filterIngenico[0].portDescription
+          }
+        }
+        yield put({
+          type: 'updateState',
+          payload: {
+            serialPortName,
+            serialPortDescription,
+            listSerialPort: listSerialResponse.list
+          }
+        })
+        const usageLoyalty = memberInformation.useLoyalty || 0
+        const totalDiscount = usageLoyalty
+        const curPayment = listAmount.reduce((cnt, o) => cnt + parseFloat(o.amount), 0)
+        const paymentValue = (parseFloat(curTotal) - parseFloat(totalDiscount) - parseFloat(curPayment))
+        if (serialPortName != null) {
+          if (paymentValue > 0) {
+            const responseSerial = yield call(postSerialPort, {
+              portName: serialPortName,
+              total: `${parseInt(paymentValue > 0 ? paymentValue : 0, 0)}00`
+            })
+            if (payload.typeCode === 'NID' && responseSerial.ecrType === 'BNI' && responseSerial.approvalCode !== '000000') {
+              setCachedSerialPort({
+                typeCode: payload.typeCode,
+                portName: serialPortName,
+                portDescription: serialPortDescription
+              })
+              yield put({
+                type: 'updateState',
+                payload: {
+                  serialApprovalCode: responseSerial.approvalCode
+                }
+              })
+            }
+          }
+        }
+      } else {
+        message.error('EDC Not Found')
       }
     },
 
@@ -466,7 +680,7 @@ export default {
       })
       const response = yield call(queryAdvertising, {
         type: 'all',
-        typeAds: 'CUSTVIEW',
+        typeAds: ['CUSTVIEW', 'CUSTROLL'],
         order: 'sort'
       })
       if (response && response.success) {
@@ -581,6 +795,12 @@ export default {
       }
       yield put({ type: 'hidePaymentModal' })
       yield put({ type: 'setCurTotal' })
+      yield put({
+        type: 'calculateAutoBundle',
+        payload: {
+          listProduct: dataPos
+        }
+      })
     },
 
     * serviceEdit ({ payload }, { put }) {
@@ -765,6 +985,7 @@ export default {
     * bundleDelete ({ payload }, { put }) {
       let dataBundle = getBundleTrans()
       let dataPos = getCashierTrans()
+      let dataService = getServiceTrans()
       let checkExists = dataBundle
         .filter(filtered => filtered.code === payload.Record)
       if (checkExists && checkExists[0]) {
@@ -774,8 +995,12 @@ export default {
         let newPos = dataPos
           .filter(filtered => filtered.bundleId !== checkExists[0].bundleId)
           .map((item, index) => ({ ...item, no: index + 1 }))
+        let newService = dataService
+          .filter(filtered => filtered.bundleId !== checkExists[0].bundleId)
+          .map((item, index) => ({ ...item, no: index + 1 }))
         setBundleTrans(JSON.stringify(newBundle))
         setCashierTrans(JSON.stringify(newPos))
+        setServiceTrans(JSON.stringify(newService))
         yield put({
           type: 'setCurTotal'
         })
@@ -887,6 +1112,16 @@ export default {
       })
     },
 
+    * getExpressOrder (payload, { put }) {
+      const currentExpressOrder = getExpressOrder()
+      yield put({
+        type: 'updateState',
+        payload: {
+          currentGrabOrder: currentExpressOrder
+        }
+      })
+    },
+
     * setPaymentShortcut ({ payload = {} }, { put }) {
       const { item } = payload
       const listPaymentShortcut = lstorage.getPaymentShortcut()
@@ -925,7 +1160,7 @@ export default {
 
     * cancelInvoice ({ payload }, { select, call, put }) {
       const userRole = lstorage.getCurrentUserRole()
-      if (userRole !== 'OWN') {
+      if (userRole !== 'OWN' && userRole !== 'ITS') {
         const listPayment = yield select(({ pos }) => pos.listPayment)
         const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
         const responseRestrictDateTimeStamp = yield call(getDateTime, { id: 'timestamp' })
@@ -990,6 +1225,7 @@ export default {
         removeDynamicQrisImage()
         removeQrisMerchantTradeNo()
         removeDynamicQrisPosTransId()
+        removeDynamicQrisPosTransNo()
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('payShortcutSelected')
         yield put({
@@ -1239,38 +1475,6 @@ export default {
       }
     },
 
-    * loadDataPos ({ payload = {} }, { call, put }) {
-      const currentRegister = yield call(queryCurrentOpenCashRegister, payload)
-      if (currentRegister.success) {
-        const cashierInformation = (Array.isArray(currentRegister.data)) ? currentRegister.data[0] : currentRegister.data
-        if (cashierInformation) {
-          const cashierBalance = yield call(queryCashierTransSource, cashierInformation)
-          if (cashierBalance.success) {
-            yield put({
-              type: 'updateState',
-              payload: {
-                cashierInformation,
-                dataCashierTrans: cashierInformation,
-                cashierBalance: cashierBalance.data.total[0] ? cashierBalance.data.total[0] : {}
-              }
-            })
-          } else {
-            throw cashierBalance
-          }
-        } else {
-          yield put({
-            type: 'updateState',
-            payload: {
-              cashierInformation,
-              dataCashierTrans: cashierInformation
-            }
-          })
-        }
-      } else {
-        throw currentRegister
-      }
-    },
-
     * getMember ({ payload }, { call, put }) {
       const data = yield call(queryMemberCode, payload)
       let newData = payload ? data.data : data.member
@@ -1331,10 +1535,7 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              bundleId: response.data.bundle.id,
-              currentBundle: getBundleTrans(),
-              currentProduct: getCashierTrans(),
-              currentService: getServiceTrans()
+              bundleId: response.data.bundle.id
             }
           })
         }
@@ -1627,8 +1828,6 @@ export default {
       function checkPrice (input, temp) {
         const price = ((input.price * input.qty) * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
         const cost = temp[0].amount * input.qty
-        console.log('price', price)
-        console.log('cost', cost)
         if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
           return false
         }
@@ -1652,10 +1851,10 @@ export default {
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
-          Modal.warning({
-            title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
-          })
+          // Modal.warning({
+          //   title: 'Waning Out of stock option',
+          //   content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // })
           yield put({
             type: 'paymentEdit',
             payload: data
@@ -1693,7 +1892,6 @@ export default {
         if (tempTrans.length > 0) {
           return tempTrans
         }
-        console.log('queue')
         return []
       }
 
@@ -1713,8 +1911,6 @@ export default {
       let tempListProduct = []
       function getSetting (setting) {
         let json = setting.Inventory
-        console.log('json', json)
-
         let jsondata = JSON.stringify(eval(`(${json})`))
         const outOfStock = JSON.parse(jsondata).posOrder.outOfStock
         return outOfStock
@@ -1722,8 +1918,6 @@ export default {
       function checkPrice (input, temp) {
         const price = ((input.price * input.qty) * (1 - (input.disc1 / 100)) * (1 - (input.disc2 / 100)) * (1 - (input.disc3 / 100))) - input.discount
         const cost = temp[0].amount * input.qty
-        console.log('price', price)
-        console.log('cost', cost)
         if (parseFloat(parseFloat(price).toFixed(2)) >= parseFloat(parseFloat(cost).toFixed(2))) {
           return false
         }
@@ -1754,18 +1948,30 @@ export default {
             content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
           })
         } else if (totalQty > totalTempListProduct && outOfStock === 1) {
-          Modal.warning({
-            title: 'Waning Out of stock option',
-            content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // Modal.warning({
+          //   title: 'Waning Out of stock option',
+          //   content: `Your input: ${totalCashier} Queue : ${totalQueue} Available: ${totalTempListProduct}`
+          // })
+          const listProduct = insertCashierTrans(data)
+          yield put({
+            type: 'calculateAutoBundle',
+            payload: {
+              listProduct
+            }
           })
-          insertCashierTrans(data)
           yield put({
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
           })
           yield put({ type: 'pos/hideProductModal' })
         } else {
-          insertCashierTrans(data)
+          const listProduct = insertCashierTrans(data)
+          yield put({
+            type: 'calculateAutoBundle',
+            payload: {
+              listProduct
+            }
+          })
           yield put({
             type: 'pos/setUtil',
             payload: { kodeUtil: 'barcode', infoUtil: 'Product' }
@@ -1849,9 +2055,12 @@ export default {
       yield put({ type: 'pos/hideMechanicModal' })
     },
 
-    * chooseMember ({ payload = {} }, { put }) {
+    * chooseMember ({ payload = {} }, { select, put }) {
+      const selectedPayment = yield select(({ pos }) => pos.selectedPaymentShortcut)
       const { item } = payload
       let newItem = reArrangeMember(item)
+      const memberInformation = newItem
+
       localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
         type: 'pos/syncCustomerCashback',
@@ -1868,6 +2077,49 @@ export default {
       yield put({
         type: 'pos/hideMemberModal'
       })
+
+      try {
+        let selectedPaymentShortcut = lstorage.getPaymentShortcutSelected()
+        if ((!selectedPaymentShortcut) || (selectedPaymentShortcut && !selectedPaymentShortcut.sellPrice)) {
+          selectedPaymentShortcut = selectedPayment
+        }
+        const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
+        let dataPos = localStorage.getItem('cashier_trans') ? JSON.parse(localStorage.getItem('cashier_trans')) : []
+        const { sellPrice, memberId } = selectedPaymentShortcut
+        if (sellPrice
+          // eslint-disable-next-line eqeqeq
+          && memberId == 0) {
+          for (let key in dataPos) {
+            const item = dataPos[key]
+            if (!item.bundleId) {
+              dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+            }
+            dataPos[key].sellPrice = item[sellPrice] ? item[sellPrice] : item.price
+            dataPos[key].price = item[sellPrice] ? item[sellPrice] : item.price
+            dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
+          }
+        }
+        // eslint-disable-next-line eqeqeq
+        if (memberId == 1) {
+          for (let key in dataPos) {
+            const item = dataPos[key]
+            if (memberInformation.memberSellPrice === 'sellPrice') {
+              memberInformation.memberSellPrice = 'retailPrice'
+            }
+            if (!item.bundleId) {
+              dataPos[key].discount = getDiscountByProductCode(currentGrabOrder, item.code)
+            }
+            dataPos[key].sellPrice = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+            dataPos[key].price = item[memberInformation.memberSellPrice.toString()] == null ? item.price : item[memberInformation.memberSellPrice.toString()]
+            dataPos[key].total = (dataPos[key].sellPrice * item.qty) - dataPos[key].discount
+          }
+        }
+
+        setCashierTrans(JSON.stringify(dataPos))
+      } catch (error) {
+        console.log('Choose Member', error)
+      }
+
       yield put({
         type: 'pos/updateState',
         payload: {
@@ -2151,7 +2403,7 @@ export default {
                 type: 'all'
               }
 
-
+              params.field = getSalesProductFields()
               const response = yield call(queryProductStock, params)
               let listProduct = response.data
               const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
@@ -2361,16 +2613,19 @@ export default {
             content: message
           })
         } else {
-          const currentBundle = getBundleTrans()
+          // const currentBundle = getBundleTrans()
           // const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
           const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-          const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
+          // const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
+          // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
           if (payload.reset) {
             payload.reset()
           }
           if (!payload.hasService) {
             if (bundleData.mode !== 'edit') {
+              const currentBundle = getBundleTrans()
+              const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(bundleData.item.id))
+              const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
               if (exists) {
                 yield put({
                   type: 'pospromo/setBundleAlreadyExists',
@@ -2420,12 +2675,22 @@ export default {
               item.item.distPrice09 = currentReward.distPrice09
             }
             let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
-            if (selectedPaymentShortcut
-              && selectedPaymentShortcut.sellPrice
+            const { sellPrice, memberId } = selectedPaymentShortcut
+            if (sellPrice
               // eslint-disable-next-line eqeqeq
-              && selectedPaymentShortcut.memberId == 0) {
-              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              && memberId == 0) {
+              if (selectedPaymentShortcut
+                && selectedPaymentShortcut.sellPrice
+                // eslint-disable-next-line eqeqeq
+                && selectedPaymentShortcut.memberId == 0) {
+                selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.sellPrice
+              }
             }
+            // eslint-disable-next-line eqeqeq
+            if (memberId == 1) {
+              selectedPrice = item.item[memberInformation.memberSellPrice.toString()] ? item.item[memberInformation.memberSellPrice.toString()] : item.item.sellPrice
+            }
+
             const dataProduct = {
               no: arrayProd.length + 1,
               categoryCode: currentReward && currentReward.categoryCode && currentReward.type === 'P' ? currentReward.categoryCode : undefined,
@@ -2539,14 +2804,14 @@ export default {
       if (listProductQty && listProductQty.length > 0) {
         const dataService = getServiceTrans()
 
-        const currentBundle = getBundleTrans()
         const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-        const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-        const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         if (payload.reset) {
           payload.reset()
         }
         if (bundleData.mode !== 'edit') {
+          const currentBundle = getBundleTrans()
+          const resultCompareBundle = currentBundle.filter(filtered => Number(filtered.bundleId) === Number(bundleData.item.id))
+          const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
           if (exists) {
             yield put({
               type: 'pospromo/setBundleAlreadyExists',
@@ -2606,11 +2871,20 @@ export default {
             item.item.distPrice09 = item.item.serviceCost
           }
           let selectedPrice = memberInformation.memberSellPrice ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item.item[selectedPaymentShortcut.sellPrice] ? item.item[selectedPaymentShortcut.sellPrice] : item.item.serviceCost
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item.item[memberInformation.memberSellPrice.toString()] ? item.item[memberInformation.memberSellPrice.toString()] : item.item.serviceCost
           }
 
           const dataService = {
@@ -2862,11 +3136,27 @@ export default {
       }
     },
 
-    * chooseProduct ({ payload }, { select, put }) {
+    * chooseProduct ({ payload }, { select, put, call }) {
       const currentGrabOrder = yield select(({ pos }) => (pos ? pos.currentGrabOrder : {}))
       const selectedPaymentShortcut = yield select(({ pos }) => (pos ? pos.selectedPaymentShortcut : {}))
       const currentReplaceBundle = yield select(({ pos }) => (pos ? pos.currentReplaceBundle : {}))
       const currentBuildComponent = yield select(({ pos }) => (pos ? pos.currentBuildComponent : {}))
+      if (!payload.item.bundleId) {
+        const listBuyBundleDetail = yield select(({ promo }) => (promo ? promo.listBuyBundleDetail : {}))
+        const listBuyBundle = yield select(({ promo }) => (promo ? promo.listBuyBundle : {}))
+        const filteredBundleDetail = listBuyBundleDetail.filter(filtered => filtered.productId === payload.item.id)
+        if (filteredBundleDetail && filteredBundleDetail[0]) {
+          const filteredBundleHeader = listBuyBundle.filter(filtered => filtered.id === filteredBundleDetail[0].bundleId)
+          if (filteredBundleHeader && filteredBundleHeader[0]) {
+            payload.item.probBundleId = filteredBundleHeader[0].id
+            payload.item.probBundleCode = filteredBundleHeader[0].code
+            payload.item.probBundleName = filteredBundleHeader[0].name
+            payload.item.probBundleTargetQty = filteredBundleHeader[0].targetCostPrice
+            payload.item.probFinalPrice = filteredBundleHeader[0].targetRetailPrice
+            payload.item.probBundle = filteredBundleHeader[0]
+          }
+        }
+      }
       if (currentReplaceBundle && currentReplaceBundle.no) {
         yield put({
           type: 'replaceProduct',
@@ -2901,6 +3191,14 @@ export default {
       }
 
       const { item, type } = payload
+      if (item) {
+        if (!item.storePrice) {
+          const storePrice = yield call(queryStorePriceSales, { productId: item.id, storeId: lstorage.getCurrentUserStore() })
+          if (storePrice && storePrice.data) {
+            item.storePrice = storePrice.data
+          }
+        }
+      }
       if (item && item.storePrice && item.storePrice[0]) {
         const price = item.storePrice.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())
         if (price && price[0]) {
@@ -2946,11 +3244,20 @@ export default {
           const currentItem = checkExists[0]
           const newQty = currentItem.qty + currentReward.qty
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item[memberInformation.memberSellPrice.toString()] ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           }
           if (!((currentBuildComponent || {}).no)
             && !((currentReward || {}).categoryCode)
@@ -2970,6 +3277,12 @@ export default {
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            probBundleId: item.probBundleId,
+            probBundleCode: item.probBundleCode,
+            probBundleName: item.probBundleName,
+            probBundleTargetQty: item.probBundleTargetQty,
+            probFinalPrice: item.probFinalPrice,
+            probBundle: item.probBundle,
             oldValue: item.oldValue,
             newValue: item.newValue,
             retailPrice: item.sellPrice,
@@ -3015,11 +3328,20 @@ export default {
           ((checkExists || []).length === 0)
           || ((checkExists || []).length > 0 && type === 'barcode')) {
           let selectedPrice = memberInformation.memberSellPrice ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
-          if (selectedPaymentShortcut
-            && selectedPaymentShortcut.sellPrice
+          const { sellPrice, memberId } = selectedPaymentShortcut
+          if (sellPrice
             // eslint-disable-next-line eqeqeq
-            && selectedPaymentShortcut.memberId == 0) {
-            selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            && memberId == 0) {
+            if (selectedPaymentShortcut
+              && selectedPaymentShortcut.sellPrice
+              // eslint-disable-next-line eqeqeq
+              && selectedPaymentShortcut.memberId == 0) {
+              selectedPrice = item[selectedPaymentShortcut.sellPrice] ? item[selectedPaymentShortcut.sellPrice] : item.sellPrice
+            }
+          }
+          // eslint-disable-next-line eqeqeq
+          if (memberId == 1) {
+            selectedPrice = item[memberInformation.memberSellPrice.toString()] ? item[memberInformation.memberSellPrice.toString()] : item.sellPrice
           }
           if (
             !((currentBuildComponent || {}).no)
@@ -3040,6 +3362,12 @@ export default {
             code: item.productCode,
             productId: item.id,
             name: item.productName,
+            probBundleId: item.probBundleId,
+            probBundleCode: item.probBundleCode,
+            probBundleName: item.probBundleName,
+            probBundleTargetQty: item.probBundleTargetQty,
+            probFinalPrice: item.probFinalPrice,
+            probBundle: item.probBundle,
             oldValue: item.oldValue,
             newValue: item.newValue,
             retailPrice: item.sellPrice,
@@ -3121,6 +3449,21 @@ export default {
       }
     },
 
+    * calculateAutoBundle ({ payload }, { select, put }) {
+      const selectedPaymentShortcut = yield select(({ pos }) => pos.selectedPaymentShortcut)
+      if (selectedPaymentShortcut.typeCode === 'KX' || selectedPaymentShortcut.typeCode === 'GM') return
+      const { listProduct } = payload
+      let listBundle = getBundleTrans()
+      let { cashier, bundle } = getListProductAfterBundling(listProduct, listBundle)
+      if (cashier && cashier.length > 0) {
+        setCashierTrans(JSON.stringify(cashier))
+      }
+      if (bundle && bundle.length > 0) {
+        setBundleTrans(JSON.stringify(bundle))
+      }
+      yield put({ type: 'setCurTotal' })
+    },
+
     * getMemberByPhone ({ payload }, { call, put }) {
       const response = yield call(queryByPhone, payload)
       if (response && response.success && response.data && response.data.id) {
@@ -3160,9 +3503,42 @@ export default {
       })
     },
 
+    * getEnableDineIn ({ payload }, { call, put }) {
+      const response = yield call(queryEnableDineIn, payload)
+      if (response.success && response.data && response.data.id) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            enableDineInLastUpdatedBy: response.data.updatedBy,
+            enableDineInLastUpdatedAt: response.data.updatedAt,
+            enableDineIn: response.data.enableDineIn
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+
+    * updateEnableDineIn ({ payload }, { call, put }) {
+      const response = yield call(updateEnableDineIn, payload)
+      if (response.success && response.data && response.data.id) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            enableDineInLastUpdatedBy: response.data.updatedBy,
+            enableDineInLastUpdatedAt: response.data.updatedAt,
+            enableDineIn: response.data.enableDineIn
+          }
+        })
+        message.success('Success update store dine in')
+      } else {
+        throw response
+      }
+    },
+
     * getProductByBarcode ({ payload }, { call, put }) {
       // ONLINE
-      let startOnline = window.performance.now()
+      // let startOnline = window.performance.now()
       const barcode = payload.id
       if (barcode && barcode[0] && barcode[0] === '0') {
         if (barcode.length === 3) {
@@ -3225,9 +3601,9 @@ export default {
         }
       }
       const response = yield call(queryByBarcode, payload)
-      let endOnline = window.performance.now()
-      const timeToExecuteOnline = endOnline - startOnline
-      console.log('queryByBarcode', timeToExecuteOnline >= 1000 ? `${timeToExecuteOnline / 1000} s` : `${timeToExecuteOnline} ms`, response)
+      // let endOnline = window.performance.now()
+      // const timeToExecuteOnline = endOnline - startOnline
+      // console.log('queryByBarcode', timeToExecuteOnline >= 1000 ? `${timeToExecuteOnline / 1000} s` : `${timeToExecuteOnline} ms`, response)
       if (response && response.success && response.data && response.data.id) {
         if (response.data.productCode) {
           yield put({
@@ -3244,10 +3620,7 @@ export default {
           yield put({
             type: 'pospromo/addPosPromo',
             payload: {
-              bundleId: response.data.id,
-              currentBundle: getBundleTrans(),
-              currentProduct: getCashierTrans(),
-              currentService: getServiceTrans()
+              bundleId: response.data.id
             }
           })
         }
@@ -3319,6 +3692,8 @@ export default {
         payload.categoryCode = currentReward.categoryCode
         payload.type = 'all'
       }
+
+      payload.field = getSalesProductFields()
       const data = yield call(queryProductStock, payload)
       let newData = data.data
       if (data.success) {
@@ -3392,45 +3767,6 @@ export default {
         })
         setTimeout(() => modal.destroy(), 1000)
         // throw data
-      }
-    },
-
-    * cashRegister ({ payload = {} }, { call, put }) {
-      const userId = lstorage.getStorageKey('udi')[1]
-      const data = yield call(cashRegister, payload)
-      if (data.success) {
-        localStorage.setItem('cashierNo', data.cashregisters.cashierId)
-        yield put({
-          type: 'updateState',
-          payload: {
-            cashierInformation: data.cashregisters,
-            dataCashierTrans: data.cashregisters
-          }
-        })
-        yield put({
-          type: 'loadDataPos',
-          payload: {
-            cashierId: userId,
-            status: 'O'
-          }
-        })
-        yield put({
-          type: 'hideShiftModal',
-          payload: {
-            curShift: payload.shift,
-            curCashierNo: payload.cashierNo
-          }
-        })
-      } else if (data.statusCode === 422) {
-        Modal.warning({
-          title: 'Warning',
-          content: (<p>Please go to <b>Setting &gt; Person &gt; Cashier</b> to make sure that your account has registered</p>)
-        })
-      } else if (data.statusCode === 409) {
-        Modal.warning({
-          title: 'Warning',
-          content: (<p>{data.message}</p>)
-        })
       }
     },
 
@@ -3572,6 +3908,7 @@ export default {
       yield put({
         type: 'updateState',
         payload: {
+          posDescription: null,
           currentBundlePayment: {},
           currentBuildComponent: {},
           currentReplaceBundle: {},
@@ -3623,6 +3960,12 @@ export default {
       const item = yield select(({ pos }) => pos.modalGrabmartCodeItem)
       const response = yield call(queryGrabmartCode, payload)
       if (response && response.success) {
+        yield put({
+          type: 'pos/removeTrans'
+        })
+        yield put({ type: 'pos/setDefaultMember' })
+        yield put({ type: 'pos/setDefaultEmployee' })
+        yield put({ type: 'pos/setDefaultPaymentShortcut' })
         const event = item.dineInTax
         const type = item.consignmentPaymentType
         setGrabmartOrder(response.data)
@@ -3662,6 +4005,67 @@ export default {
           type: 'getGrabmartOrder',
           payload: {}
         })
+      } else {
+        throw response
+      }
+    },
+
+    * submitExpressCode ({ payload = {} }, { select, call, put }) {
+      const item = yield select(({ pos }) => pos.modalGrabmartCodeItem)
+      const response = yield call(queryExpressCode, payload)
+      if (response && response.success) {
+        const event = item.dineInTax
+        const type = item.consignmentPaymentType
+        setExpressOrder({
+          orderTag: response.data.orderTag,
+          firstName: response.data.firstName,
+          phoneNumber: response.data.phoneNumber,
+          orderShortNumber: response.data.orderShortNumber,
+          id: response.data.id
+        })
+        yield put({
+          type: 'updateState',
+          payload: {
+            modalExpressCodeVisible: false
+          }
+        })
+        localStorage.setItem('dineInTax', 0)
+        localStorage.setItem('typePembelian', type)
+
+        yield put({
+          type: 'pos/changeDineIn',
+          payload: {
+            dineInTax: event,
+            typePembelian: type,
+            selectedPaymentShortcut: item
+          }
+        })
+
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            dineInTax: event,
+            typePembelian: type
+          }
+        })
+
+        yield put({
+          type: 'pos/setPaymentShortcut',
+          payload: {
+            item
+          }
+        })
+        yield put({
+          type: 'getGrabmartOrder',
+          payload: {}
+        })
+
+        yield put({
+          type: 'pos/removeTrans'
+        })
+        yield put({ type: 'pos/setDefaultMember' })
+        yield put({ type: 'pos/setDefaultEmployee' })
+        yield put({ type: 'pos/setDefaultPaymentShortcut' })
       } else {
         throw response
       }
@@ -3752,7 +4156,7 @@ export default {
     * checkPaymentTransactionValidPaymentByPaymentReference ({ payload = {} }, { call }) {
       const response = yield call(queryCheckValidByPaymentReference, payload)
       if (response && response.success) {
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${payload.reference}?status=reprint`)
         invoiceWindow.focus()
       } else {
         Modal.error({
@@ -3766,7 +4170,7 @@ export default {
       const response = yield call(queryCheckPaymentTransactionStatus, payload)
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}?status=reprint`)
         yield put({
           type: 'payment/updateState',
           payload: {
@@ -3838,7 +4242,18 @@ export default {
           const secondDiff = moment().diff(moment(paymentTransaction.createdAt), 'seconds')
           const currentPaymentTransactionLimitTimeInSecond = (Number(paymentTransactionLimitTime || 15) * 60) - secondDiff
           const currentPaymentTransactionLimitTimeInMinute = currentPaymentTransactionLimitTimeInSecond / 60
-          if (removeStorage) {
+
+          const listCashier = getCashierTrans()
+          const listBundle = getBundleTrans()
+          const listService = getServiceTrans()
+          const listConsignment = getConsignment()
+          // Change this
+          if (removeStorage
+            && listCashier.length === 0
+            && listBundle.length === 0
+            && listService.length === 0
+            && listConsignment.length === 0
+          ) {
             removeCurrentPaymentTransactionId()
           } else {
             yield put({
@@ -4162,7 +4577,7 @@ export default {
     },
 
     hideModalShift (state) {
-      return { ...state, modalShiftVisible: false, modalPaymentVisible: false }
+      return { ...state, modalShiftVisible: false, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null }
     },
 
     showMemberModal (state, action) {
@@ -4187,7 +4602,7 @@ export default {
       return { ...state, ...action.payload, totalItem: action.payload.item.total, itemPayment: action.payload.item, modalPaymentVisible: true }
     },
     hidePaymentModal (state) {
-      return { ...state, modalPaymentVisible: false, totalItem: 0, itemPayment: [] }
+      return { ...state, modalPaymentVisible: false, serialPortName: null, serialApprovalCode: null, totalItem: 0, itemPayment: [] }
     },
 
     showServiceListModal (state, action) {
@@ -4265,6 +4680,9 @@ export default {
     setAllNull (state) {
       return {
         ...state,
+        serialPortName: null,
+        serialApprovalCode: null,
+        posDescription: null,
         listVoucher: [],
         currentBundlePayment: {},
         currentReplaceBundle: {},

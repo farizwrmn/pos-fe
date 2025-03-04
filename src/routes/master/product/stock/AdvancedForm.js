@@ -8,6 +8,7 @@ import { IMAGEURL, rest } from 'utils/config.company'
 import { getCountryTaxPercentage, getVATPercentage } from 'utils/tax'
 import ModalGrabmartCampaign from 'components/ModalGrabmartCampaign'
 import { getDistPriceName, getDistPricePercent, getDistPriceDescription } from 'utils/string'
+import lstorage from 'utils/lstorage'
 import { formatWeight, formatBox, formatPack, formatDimension } from 'utils/dimension'
 import ModalSupplier from './ModalSupplier'
 
@@ -58,6 +59,10 @@ class AdvancedForm extends Component {
 
   render () {
     const {
+      listStockPickingLine,
+      listPickingLine,
+      openPickingLineModal,
+      deleteStockPickingLine,
       lastTrans,
       listK3ExpressCategory,
       listK3ExpressBrand,
@@ -65,6 +70,7 @@ class AdvancedForm extends Component {
       onSubmit,
       onCancel,
       onClickPlanogram,
+      listTag,
       listSource,
       listDivision,
       listDepartment,
@@ -289,6 +295,7 @@ class AdvancedForm extends Component {
     const grabCategory = (listGrabCategory || []).length > 0 ? listGrabCategory.map(c => <Option value={c.id} key={c.id} title={`${c.categoryName} | ${c.subcategoryName}`}>{`${c.categoryName} | ${c.subcategoryName}`}</Option>) : []
     const productCategory = (listCategory || []).length > 0 ? listCategory.map(c => <Option value={c.id} key={c.id}>{c.categoryName}</Option>) : []
     const productBrand = (listBrand || []).length > 0 ? listBrand.map(b => <Option value={b.id} key={b.id}>{b.brandName}</Option>) : []
+    const productStockPickingLine = (listPickingLine || []).length > 0 ? listPickingLine.map(b => <Option value={b.id} key={b.id}>{b.lineName}</Option>) : []
     // const productVariant = (availableVariant || []).length > 0 ? availableVariant.map(b => <Option value={b.id} key={b.id}>{b.name}</Option>) : []
 
     const changeProductCode = (e) => {
@@ -582,10 +589,11 @@ class AdvancedForm extends Component {
       }
     }
 
-    const productSource = (listSource || []).length > 0 ? listSource.map(c => <Option value={c.id} key={c.id}>{c.sourceName}</Option>) : []
-    const productDivision = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id}>{c.divisionName}</Option>) : []
-    const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.divisionId === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id}>{c.departmentName}</Option>) : []
-    const productSubdepartment = (listSubdepartment || []).length > 0 ? listSubdepartment.filter(filtered => filtered.departmentId === getFieldValue('departmentId')).map(c => <Option value={c.id} key={c.id}>{c.subdepartmentName}</Option>) : []
+    const productTag = (listTag || []).length > 0 ? listTag.map(c => <Option value={c.tagCode} key={c.tagCode} title={c.tagDescription}>{c.tagCode} ({c.tagDescription})</Option>) : []
+    const productSource = (listSource || []).length > 0 ? listSource.map(c => <Option value={c.id} key={c.id} title={c.sourceName}>{c.sourceName}</Option>) : []
+    const productDivision = (listDivision || []).length > 0 ? listDivision.map(c => <Option value={c.id} key={c.id} title={c.divisionName}>{c.divisionName}</Option>) : []
+    const productDepartment = (listDepartment || []).length > 0 ? listDepartment.filter(filtered => filtered.divisionId === getFieldValue('divisionId')).map(c => <Option value={c.id} key={c.id} title={c.departmentName}>{c.departmentName}</Option>) : []
+    const productSubdepartment = (listSubdepartment || []).length > 0 ? listSubdepartment.filter(filtered => filtered.departmentId === getFieldValue('departmentId')).map(c => <Option value={c.id} key={c.id} title={c.subdepartmentName}>{c.subdepartmentName}</Option>) : []
 
     return (
       <Form layout="horizontal">
@@ -620,10 +628,22 @@ class AdvancedForm extends Component {
                     {
                       required: true,
                       message: 'a-Z & 0-9',
-                      pattern: /^[A-Za-z0-9-.,%'"=><$#@^&*!() _/]{3,85}$/i
+                      pattern: /^[A-Za-z0-9-.,%'"=><$@^&*!() _/]{3,85}$/i
                     }
                   ]
                 })(<Input maxLength={85} onChange={this.changeName} />)}
+              </FormItem>
+              <FormItem label="Short Name (Invoice)" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('shortName', {
+                  initialValue: item.shortName,
+                  rules: [
+                    {
+                      required: true,
+                      message: 'a-Z & 0-9',
+                      pattern: /^[A-Za-z0-9-.,%'"=><$@^&*!() _/]{3,85}$/i
+                    }
+                  ]
+                })(<Input maxLength={35} onChange={this.changeName} />)}
               </FormItem>
               <FormItem label="Image" {...formItemLayout}>
                 {getFieldDecorator('productImage', {
@@ -727,6 +747,21 @@ class AdvancedForm extends Component {
         <Row>
           <Col {...parentThreeDivision}>
             <Card {...cardProps} title={<h3>Category & Brand</h3>}>
+              <FormItem label={(<Link target="_blank" to="/stock-tag">Tag</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('productTag', {
+                  initialValue: item.productTag,
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >{productTag}
+                </Select>)}
+              </FormItem>
               <FormItem label={(<Link target="_blank" to="/stock-source">Source</Link>)} hasFeedback {...formItemLayout}>
                 {getFieldDecorator('supplierSource', {
                   initialValue: item.supplierSource,
@@ -982,6 +1017,12 @@ class AdvancedForm extends Component {
                     : item.activeShop
                 })(<Checkbox>Publish</Checkbox>)}
               </FormItem>
+              <FormItem label="Stock Opname" {...formItemLayout}>
+                {getFieldDecorator('isStockOpname', {
+                  valuePropName: 'checked',
+                  initialValue: item.isStockOpname == null ? true : item.isStockOpname
+                })(<Checkbox>Enable</Checkbox>)}
+              </FormItem>
               <FormItem label="Halal" {...formItemLayout}>
                 {getFieldDecorator('isHalal', {
                   initialValue: item.isHalal
@@ -1025,21 +1066,6 @@ class AdvancedForm extends Component {
                   optionFilterProp="children"
                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
                 >{productCountry}
-                </Select>)}
-              </FormItem>
-              <FormItem label={(<Link target="_blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
-                {getFieldDecorator('locationId', {
-                  initialValue: modalType === 'add' ? undefined : item.locationId,
-                  rules: [
-                    {
-                      required: false
-                    }
-                  ]
-                })(<Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
-                >{productLocation}
                 </Select>)}
               </FormItem>
               <FormItem label="Status" {...formItemLayout}>
@@ -1104,6 +1130,43 @@ class AdvancedForm extends Component {
                     }
                   ]
                 })(<Input maxLength={25} />)}
+              </FormItem>
+            </Card>
+
+            <Card {...cardProps} title={<h3>Picking Line</h3>}>
+              {listStockPickingLine && listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore()).length > 0 ? listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore()).map(pickingLine => (
+                <div>
+                  <span>Line: {pickingLine.lineName} <span style={{ color: 'red', cursor: 'pointer' }} onClick={() => deleteStockPickingLine(pickingLine.id, item.id)}>X</span></span>
+                </div>
+              )) : null}
+              <FormItem label={(<Link target="_blank" to="/picking-line">Picking Line</Link>)} hasFeedback {...formItemLayout}>
+                {getFieldDecorator('pickingLineId', {
+                  initialValue: listStockPickingLine && listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore()).length > 0 ? listStockPickingLine.filter(filtered => filtered.storeId === lstorage.getCurrentUserStore())[0].pickingLineId : undefined,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  showSearch
+                >{productStockPickingLine}
+                </Select>)}
+              </FormItem>
+              <FormItem label={(<Link target="_blank" to="/master/product/location">Store Location</Link>)} hasFeedback help="Usage in transfer out" {...formItemLayout}>
+                {getFieldDecorator('locationId', {
+                  initialValue: modalType === 'add' ? undefined : item.locationId,
+                  rules: [
+                    {
+                      required: false
+                    }
+                  ]
+                })(<Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+                >{productLocation}
+                </Select>)}
               </FormItem>
             </Card>
           </Col>
@@ -1207,28 +1270,30 @@ class AdvancedForm extends Component {
             </Card>
           </Col>
         </Row>
-        {modalSupplierVisible && (
-          <ModalSupplier {...modalSupplierProps}>
-            <Table
-              bordered
-              pagination={paginationSupplier}
-              scroll={{ x: 500 }}
-              columns={columns}
-              simple
-              loading={loadingButton.effects['purchase/querySupplier']}
-              dataSource={listSupplier}
-              size="small"
-              pageSize={10}
-              onChange={hdlSearchPagination}
-              onRowClick={_record => handleMenuClick(_record)}
-            />
-          </ModalSupplier>
-        )}
+        {
+          modalSupplierVisible && (
+            <ModalSupplier {...modalSupplierProps}>
+              <Table
+                bordered
+                pagination={paginationSupplier}
+                scroll={{ x: 500 }}
+                columns={columns}
+                simple
+                loading={loadingButton.effects['purchase/querySupplier']}
+                dataSource={listSupplier}
+                size="small"
+                pageSize={10}
+                onChange={hdlSearchPagination}
+                onRowClick={_record => handleMenuClick(_record)}
+              />
+            </ModalSupplier>
+          )
+        }
         {modalVariantVisible && <Variant {...modalVariantProps} />}
         {modalSpecificationVisible && <Specification {...modalSpecificationProps} />}
         {modalProductVisible && <Stock {...modalProductProps} />}
         {modalGrabmartCampaignProps.visible && <ModalGrabmartCampaign {...modalGrabmartCampaignProps} />}
-      </Form>
+      </Form >
     )
   }
 }

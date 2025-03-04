@@ -6,6 +6,7 @@ export async function getDateTime (params) {
   const apiHeaderToken = crypt.apiheader()
   const url = `${apiTime}/${params.id}`
   return request({
+    alt: true,
     url,
     method: 'get',
     headers: apiHeaderToken

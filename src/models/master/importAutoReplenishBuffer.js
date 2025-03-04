@@ -3,7 +3,8 @@ import { message } from 'antd'
 import {
   queryTransferOut,
   query,
-  add
+  add,
+  remove
 } from 'services/master/importAutoReplenishBuffer'
 import { pageModel } from 'common'
 import { lstorage } from 'utils'
@@ -20,8 +21,10 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalType: 'add',
     list: [],
+    listAutoReplenish: [],
     listImported: [],
     pagination: {
+      pageSizeOptions: ['50', '100', '500', '1000'],
       showSizeChanger: true,
       showQuickJumper: true,
       current: 1
@@ -59,7 +62,20 @@ export default modelExtend(pageModel, {
       }
     },
 
+    * downloadData ({ payload = {} }, { call, put }) {
+      const response = yield call(query, { storeId: payload.storeId, type: 'all' })
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listAutoReplenish: response.data
+          }
+        })
+      }
+    },
+
     * query ({ payload = {} }, { call, put }) {
+      payload.order = '-id'
       const data = yield call(query, payload)
       if (data.success) {
         yield put({
@@ -77,7 +93,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      payload.header = { storeId: payload.storeId }
+      payload.header = { storeId: payload.storeId, fileType: payload.fileType }
       const data = yield call(add, payload)
       if (data.success) {
         success()
@@ -103,6 +119,14 @@ export default modelExtend(pageModel, {
           }
         })
         throw data
+      }
+    },
+    * remove ({ payload }, { call, put }) {
+      const response = yield call(remove, payload.data.id)
+      if (response.success) {
+        yield put({ type: 'query', payload: payload.otherQuery })
+      } else {
+        throw response
       }
     }
   },

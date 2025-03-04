@@ -92,6 +92,7 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
     storeInfo,
     listActive,
     dispatch,
+    location,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (data, reset) {
@@ -131,14 +132,14 @@ const Counter = ({ stockOpname, loading, dispatch, location, app }) => {
         <TabPane tab="Form" key="0" >
           {activeKey === '0' && <Form {...formProps} />}
         </TabPane>
-        <TabPane tab="Browse" key="1" >
+        {location.pathname === '/stock-opname-partial' && (<TabPane tab="Browse" key="1" >
           {activeKey === '1' &&
             <div>
               <Filter {...filterProps} />
               <List {...listProps} />
             </div>
           }
-        </TabPane>
+        </TabPane>)}
       </Tabs>
     </div>
   )

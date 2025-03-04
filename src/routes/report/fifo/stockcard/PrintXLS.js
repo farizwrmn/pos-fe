@@ -164,7 +164,7 @@ const PrintXLS = ({ listRekap, period, year, storeInfo }) => {
     tableBody: tableBodies,
     tableFooter: tableFooters,
     data: arr,
-    fileName: 'Purchase-Summary'
+    fileName: 'Stock-Card'
   }
 
   return (
