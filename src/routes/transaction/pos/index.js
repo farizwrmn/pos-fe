@@ -331,8 +331,6 @@ const Pos = ({
     }
   }
 
-  if (!isEmptyObject(cashierInformation)) currentCashier = cashierInformation
-
   let product = getCashierTrans()
   let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
