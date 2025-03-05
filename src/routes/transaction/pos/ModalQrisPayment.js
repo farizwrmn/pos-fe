@@ -222,7 +222,7 @@ class ModalQrisPayment extends React.Component {
     return (
       <Modal
         closable={false}
-        width="35%"
+        width="80%"
         style={{ minWidth: '600px' }}
         {...modalProps}
       >
