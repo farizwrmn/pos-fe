@@ -130,7 +130,8 @@ class ModalQrisPayment extends React.Component {
     } = this.props
     const {
       modalCancelQrisPaymentVisible,
-      qrisPaymentCurrentTransNo
+      qrisPaymentCurrentTransNo,
+      paymentTransaction
     } = pos
     const {
       paymentTransactionLimitTime,
@@ -138,6 +139,7 @@ class ModalQrisPayment extends React.Component {
       paymentTransactionInvoiceWindow
     } = payment
     const qrisPaymentProps = {
+      paymentTransaction,
       cancelQrisPayment: onCancel,
       selectedPaymentShortcut,
       paymentFailed,
@@ -220,7 +222,7 @@ class ModalQrisPayment extends React.Component {
     return (
       <Modal
         closable={false}
-        width="35%"
+        width="80%"
         style={{ minWidth: '600px' }}
         {...modalProps}
       >

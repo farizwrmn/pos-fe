@@ -89,7 +89,11 @@ const ModalForm = ({
               }
             ]
           })(
-            <Select placeholder="Select Assigned Store">
+            <Select
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0}
+              placeholder="Select Assigned Store"
+            >
               {storeOpt}
             </Select>
           )}
