@@ -690,7 +690,7 @@ export default {
     *directPrintInvoice({ payload }, { call, select, put }) {
       try {
         const { type, status, id } = payload;
-        const response = yield call(queryInvoiceById, { id, storeId: 30 });
+        const response = yield call(queryInvoiceById, { id, storeId: lstorage.getCurrentUserStore() });
         if (response && response.success) {
           let directPrinting = [];
           if (status !== "reprint") {
