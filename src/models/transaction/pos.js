@@ -23,7 +23,7 @@ import { queryProduct } from 'services/grab/grabConsignment'
 import { query as queryAdvertising } from 'services/marketing/advertising'
 import { getSalesProductFields } from 'utils/string'
 import { queryAvailablePaymentType } from 'services/master/paymentOption'
-import { getDateTime } from 'services/setting/time'
+// import { getDateTime } from 'services/setting/time'
 import {
   query as queryExpress,
   edit as editExpress
@@ -1151,24 +1151,24 @@ export default {
       }
     },
 
-    * cancelInvoice ({ payload }, { select, call, put }) {
+    * cancelInvoice ({ payload }, { call, put }) {
       const userRole = lstorage.getCurrentUserRole()
       if (userRole !== 'OWN' && userRole !== 'ITS') {
-        const listPayment = yield select(({ pos }) => pos.listPayment)
-        const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
-        const responseRestrictDateTimeStamp = yield call(getDateTime, { id: 'timestamp' })
-        const restrictedDate = responseRestrictDateTimeStamp && responseRestrictDateTimeStamp.success
-          ? moment(responseRestrictDateTimeStamp.data).subtract(1, 'days')
-          : moment().subtract(1, 'days')
-        const paymentTransDate = moment(selectedPayment.transDate, 'YYYY-MM-DD')
-        const restrictCancel = restrictedDate.isAfter(paymentTransDate)
-        if (!selectedPayment || restrictCancel) {
-          Modal.error({
-            title: 'Failed to cancel invoice',
-            content: 'Please contact administrator to complete this action!'
-          })
-          return
-        }
+        // const listPayment = yield select(({ pos }) => pos.listPayment)
+        // const selectedPayment = listPayment.find(item => item.transNo === payload.transNo)
+        // const responseRestrictDateTimeStamp = yield call(getDateTime, { id: 'timestamp' })
+        // const restrictedDate = responseRestrictDateTimeStamp && responseRestrictDateTimeStamp.success
+        //   ? moment(responseRestrictDateTimeStamp.data).subtract(1, 'days')
+        //   : moment().subtract(1, 'days')
+        // const paymentTransDate = moment(selectedPayment.transDate, 'YYYY-MM-DD')
+        // const restrictCancel = restrictedDate.isAfter(paymentTransDate)
+        // if (!selectedPayment || restrictCancel) {
+        Modal.error({
+          title: 'Failed to cancel invoice',
+          content: 'Please contact administrator to complete this action!'
+        })
+        return
+        // }
       }
       payload.status = 'C'
       payload.storeId = lstorage.getCurrentUserStore()
@@ -2576,30 +2576,30 @@ export default {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: listProductId.toString() })
       if (listProductData && listProductData.success && listProductQty && listProductQty.length > 0) {
-        let success = false
-        let message = ''
-        const dataPos = getCashierTrans()
-        for (let key in listProductQty) {
-          const { item } = listProductQty[key]
-          const filteredStock = listProductData.data.filter(filtered => filtered.productId === item.id)
-          const existsQty = dataPos
-            .filter(filtered => filtered.productId === item.id && filtered.categoryCode !== item.categoryCode)
-            .reduce((prev, next) => prev + next.qty, 0)
-          if (filteredStock && filteredStock[0]) {
-            const totalQty = listProductQty[key].qty + existsQty
-            if (filteredStock[0].count >= totalQty) {
-              success = true
-            } else {
-              success = false
-              message = `Your input: ${existsQty + listProductQty[key].qty} Available: ${filteredStock[0].count}`
-              break
-            }
-          } else {
-            success = false
-            message = `Your input: ${existsQty + listProductQty[key].qty} Available: Not Found`
-            break
-          }
-        }
+        // let success = false
+        // let message = ''
+        // const dataPos = getCashierTrans()
+        // for (let key in listProductQty) {
+        //   const { item } = listProductQty[key]
+        //   const filteredStock = listProductData.data.filter(filtered => filtered.productId === item.id)
+        //   const existsQty = dataPos
+        //     .filter(filtered => filtered.productId === item.id && filtered.categoryCode !== item.categoryCode)
+        //     .reduce((prev, next) => prev + next.qty, 0)
+        //   if (filteredStock && filteredStock[0]) {
+        //     const totalQty = listProductQty[key].qty + existsQty
+        //     if (filteredStock[0].count >= totalQty) {
+        //       success = true
+        //     } else {
+        //       success = false
+        //       message = `Your input: ${existsQty + listProductQty[key].qty} Available: ${filteredStock[0].count}`
+        //       break
+        //     }
+        //   } else {
+        //     success = false
+        //     message = `Your input: ${existsQty + listProductQty[key].qty} Available: Not Found`
+        //     break
+        //   }
+        // }
         // if (!success) {
         // Modal.warning({
         //   title: 'No available stock',
