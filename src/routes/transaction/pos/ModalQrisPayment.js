@@ -2,7 +2,7 @@ import { Modal } from 'antd'
 import React from 'react'
 import { connect } from 'dva'
 import { lstorage } from 'utils'
-import { APISOCKET } from 'utils/config.company'
+import { APISOCKETALT } from 'utils/config.company'
 import io from 'socket.io-client'
 import QrisPayment from './qrisPayment'
 import Success from './qrisPayment/Success'
@@ -22,7 +22,7 @@ const options = {
   pingInterval: 100
 }
 
-const socket = io(APISOCKET, options)
+const socket = io(APISOCKETALT, options)
 
 const handleUnload = (event) => {
   if (event) {
