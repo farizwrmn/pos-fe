@@ -4163,7 +4163,7 @@ export default {
       const response = yield call(queryCheckPaymentTransactionStatus, payload)
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}?status=reprint`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
         yield put({
           type: 'payment/updateState',
           payload: {
