@@ -236,16 +236,16 @@ class FormCounter extends Component {
                           && item.image != null
                           && item.image !== '["no_image.png"]'
                           && item.image !== '"no_image.png"' ?
-                          [
-                            {
-                              uid: 1,
-                              name: item.image,
-                              status: 'done',
-                              url: `${IMAGEURL}/${item.image}`,
-                              thumbUrl: `${IMAGEURL}/${item.image}`
-                            }
-                          ]
-                          : [])}
+                        [
+                          {
+                            uid: 1,
+                            name: item.image,
+                            status: 'done',
+                            url: `${IMAGEURL}/${item.image}`,
+                            thumbUrl: `${IMAGEURL}/${item.image}`
+                          }
+                        ]
+                        : [])}
                     listType="picture"
                     action={`${apiCompanyURL}/time/time`}
                     onPreview={file => console.log('file', file)}

@@ -2578,7 +2578,7 @@ export default {
       if (listProductData && listProductData.success && listProductQty && listProductQty.length > 0) {
         // let success = false
         // let message = ''
-        // const dataPos = getCashierTrans()
+        const dataPos = getCashierTrans()
         // for (let key in listProductQty) {
         //   const { item } = listProductQty[key]
         //   const filteredStock = listProductData.data.filter(filtered => filtered.productId === item.id)
