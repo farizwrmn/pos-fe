@@ -3,13 +3,19 @@ import PropTypes from 'prop-types'
 import pathToRegexp from 'path-to-regexp'
 import moment from 'moment'
 import { queryArray, lstorage } from 'utils'
-import { Breadcrumb, Icon, Tooltip, Cascader, Modal, Row, Col } from 'antd'
+import { Form, Breadcrumb, Icon, Select, Modal, Row, Col } from 'antd'
 import { Link } from 'dva/router'
 import styles from './Bread.less'
 
-const Bread = ({ menu, changeRole }) => {
+const Bread = ({
+  form: {
+    getFieldDecorator,
+    setFieldsValue
+  },
+  menu,
+  changeRole
+}) => {
   // user store
-  const currentStoreName = lstorage.getCurrentUserStoreName()
   const listUserStores = lstorage.getListUserStores()
   const defaultStore = lstorage.getCurrentUserStore()
 
@@ -64,7 +70,10 @@ const Bread = ({ menu, changeRole }) => {
     )
   })
 
-  const handleChangeStore = (value) => {
+  const handleChangeStore = (storeId) => {
+    const selected = listUserStores.find(item => item.value === storeId)
+    if (!selected) return
+    const value = selected.value
     Modal.confirm({
       title: 'Warning: current Local storage will be delete',
       content: 'this action will delete current local storage',
@@ -78,7 +87,7 @@ const Bread = ({ menu, changeRole }) => {
           localId[4],
           moment(new Date(serverTime)),
           localId[6],
-          listUserStores.filter(filtered => filtered.value === value[0])[0].consignmentId ? listUserStores.filter(filtered => filtered.value === value[0])[0].consignmentId.toString() : null
+          selected && selected.consignmentId ? selected.consignmentId.toString() : null
         ]
         lstorage.putStorageKey('udi', dataUdi, localId[0])
         localStorage.setItem('newItem', JSON.stringify({ store: false }))
@@ -94,6 +103,11 @@ const Bread = ({ menu, changeRole }) => {
         localStorage.removeItem('bundle_promo')
         localStorage.removeItem('cashierNo')
         setTimeout(() => { window.location.reload() }, 1000)
+      },
+      onCancel () {
+        setFieldsValue({
+          chooseStore: defaultStore
+        })
       }
     })
   }
@@ -110,23 +124,23 @@ const Bread = ({ menu, changeRole }) => {
         </Col>
         <Col xs={20} sm={14} md={14} lg={14} xl={12}>
           <div className={styles.currentStore}>
-            <Col span={22}>
-              <span>{currentStoreName}</span>
-            </Col>
-            <Col span={2}>
-              <Tooltip placement="right" title={`click to switch current store: \n ${currentStoreName}`}>
-                <Cascader options={listUserStores}
-                  onChange={handleChangeStore}
-                  changeOnSelect
-                  allowClear={false}
-                  defaultValue={[defaultStore]}
-                  placeholder="Switch Store"
-                >
-                  <a>
-                    <Icon type="shop" />
-                  </a>
-                </Cascader>
-              </Tooltip>
+            <Col span={14} />
+            <Col span={4}>
+              {getFieldDecorator('chooseStore', {
+                initialValue: defaultStore
+              })(<Select
+                defaultValue={defaultStore}
+                className={styles.currentStore}
+                onSelect={handleChangeStore}
+                changeOnSelect
+                showSearch
+                style={{ width: '250px' }}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                allowClear={false}
+                placeholder="Switch Store"
+              >
+                {listUserStores.map(item => <Select.Option value={item.value} key={item.value}>{item.label}</Select.Option>)}
+              </Select>)}
             </Col>
           </div>
         </Col>
@@ -139,4 +153,4 @@ Bread.propTypes = {
   menu: PropTypes.array
 }
 
-export default Bread
+export default Form.create()(Bread)
