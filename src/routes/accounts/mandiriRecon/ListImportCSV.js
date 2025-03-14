@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import { formatTimeBCA } from './utils'
 import styles from '../../../themes/index.less'
 
 const ListImportCSV = ({ ...tableProps }) => {

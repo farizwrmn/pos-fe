@@ -127,9 +127,9 @@ const Bread = ({
             <Col span={14} />
             <Col span={4}>
               {getFieldDecorator('chooseStore', {
-                initialValue: defaultStore
+                initialValue: Number(defaultStore)
               })(<Select
-                defaultValue={defaultStore}
+                defaultValue={Number(defaultStore)}
                 className={styles.currentStore}
                 onSelect={handleChangeStore}
                 changeOnSelect
@@ -139,7 +139,7 @@ const Bread = ({
                 allowClear={false}
                 placeholder="Switch Store"
               >
-                {listUserStores.map(item => <Select.Option value={item.value} key={item.value}>{item.label}</Select.Option>)}
+                {listUserStores.map(item => <Select.Option value={Number(item.value)} key={Number(item.value)}>{item.label}</Select.Option>)}
               </Select>)}
             </Col>
           </div>

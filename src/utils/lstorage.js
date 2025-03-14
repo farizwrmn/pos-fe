@@ -510,16 +510,14 @@ const getCurrentUserStoreCode = () => {
 
 // current StoreCode 24/01/2017
 const getCurrentUserStoreDetail = () => {
-  function valueStoreName (store) {
-    if (store.value === this[0]) {
-      return store
-    }
-  }
   const listUserStores = getListUserStores()
   const currentStore = getCurrentUserStore()
   let currentStoreName = ''
   if (listUserStores) {
-    currentStoreName = listUserStores.find(valueStoreName, [currentStore])
+    const selectedStore = listUserStores.find(filter => Number(filter.value) === Number(currentStore))
+    if (selectedStore) {
+      currentStoreName = selectedStore
+    }
   }
   return currentStoreName
 }
