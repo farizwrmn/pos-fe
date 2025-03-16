@@ -57,7 +57,7 @@ const List = ({ onOpenModalFinish, ...tableProps }) => {
       width: 100,
       fixed: 'right',
       render: (text, record) => {
-        if (record.statusText === 'ADMIN STATION' || record.statusText === 'AUTO SALES') {
+        if (record.statusText === 'ADMIN STATION' && record.description === 'AUTO SALES') {
           return <DropOption onMenuClick={() => { }} menuOptions={[{ key: '1', name: 'Finish' }]} />
         }
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Finish' }]} />
