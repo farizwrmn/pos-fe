@@ -46,7 +46,7 @@ export const queryLatest = (params) => {
   })
 }
 
-export const queryLatestNotVald = (params) => {
+export const queryLatestNotValid = (params) => {
   const apiHeaderToken = crypt.apiheader()
   return request({
     url: `${paymentTransaction}/latest-not-valid`,

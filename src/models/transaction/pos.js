@@ -82,7 +82,7 @@ import { getListProductAfterBundling } from './utilsPos'
 import {
   queryCheckStoreAvailability,
   queryLatest as queryPaymentTransactionLatest,
-  queryLatestNotVald as queryPaymentTransactionLatestNotValid,
+  queryLatestNotValid as queryPaymentTransactionLatestNotValid,
   queryFailed as queryPaymentTransactionFailed,
   queryCheckValidByPaymentReference,
   queryCheckStatus as queryCheckPaymentTransactionStatus,
@@ -405,6 +405,12 @@ export default {
           type: 'updateState',
           payload: {
             listQrisLatestTransaction: response.data
+          }
+        })
+        yield put({
+          type: 'payment/updateState',
+          payload: {
+            paymentTransactionId: response.data[0].paymentTransactionId
           }
         })
       } else {
