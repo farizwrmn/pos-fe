@@ -405,7 +405,8 @@ export default {
           type: 'updateState',
           payload: {
             listQrisLatestTransaction: response.data,
-            paymentTransaction: response.data[0]
+            paymentTransaction: response.data[0],
+            qrisPaymentCurrentTransNo: response.data[0].transNo
           }
         })
         yield put({
