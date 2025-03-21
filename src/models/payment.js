@@ -615,7 +615,7 @@ export default {
               //   }
               // })
 
-              if (!isElectron()) {
+              if (isElectron()) {
                 yield put({
                   type: 'directPrintInvoice',
                   payload: {
@@ -1189,17 +1189,7 @@ export default {
           listAmountPrint = listAmountPrint.concat([
             {
               alignment: 'two',
-              text: `${item.typeCode === 'XQ' &&
-                payload.directPrinting &&
-                payload.directPrinting.filter(
-                  filtered => filtered.groupName === 'QRIS'
-                ).length > 0
-                ? `${payload.directPrinting.filter(
-                  filtered => filtered.groupName === 'QRIS'
-                )[0].platformTransactionId
-                } - `
-                : ''
-                } ${chooseOnePaymentType(item.typeCode, listOpts)}:Rp`,
+              text: `${chooseOnePaymentType(item.typeCode, listOpts)}:Rp`,
               rightText: `${numberFormatter(item.paid + item.chargeTotal)}`
             }
           ])
@@ -1227,12 +1217,28 @@ export default {
         // Member
         let memberPrint = []
         let memberConcat = []
+        let coinConcat = []
+
+        if (invoiceInfo.unitInfo && invoiceInfo.unitInfo.id && !invoiceInfo.unitInfo.defaultMember) {
+          coinConcat.concat({
+            alignment: 'two',
+            text: 'Coin',
+            rightText: `${numberFormatter(
+              invoiceInfo.unitInfo.lastCashback
+            )} ${invoiceInfo.unitInfo.gettingCashback > 0
+              ? ` (+${numberFormatter(
+                invoiceInfo.unitInfo.gettingCashback
+              )})`
+              : null}`
+          })
+        }
         if (invoiceInfo.posData &&
           invoiceInfo.posData.orderShortNumber &&
           invoiceInfo.posData.orderShortNumber) {
           memberConcat = memberConcat.concat([
             {
-              alignment: 'two',
+              alignment: 'center',
+              style: 'bold-3',
               text: `${invoiceInfo.posData &&
                 invoiceInfo.posData.orderShortNumber &&
                 invoiceInfo.posData.orderShortNumber
@@ -1251,24 +1257,13 @@ export default {
               alignment: 'two',
               text: 'MEMBER',
               rightText: `${invoiceInfo.memberName}`
-            },
-            {
-              alignment: 'two',
-              text: 'Coin',
-              rightText: `${numberFormatter(
-                invoiceInfo.unitInfo.lastCashback
-              )} ${invoiceInfo.unitInfo.gettingCashback > 0
-                ? ` (+${numberFormatter(
-                  invoiceInfo.unitInfo.gettingCashback
-                )})`
-                : null
-                }`
             }])
+            .concat(coinConcat)
             .concat(memberConcat)
             .concat([
               {
                 alignment: 'center',
-                style: 'bold',
+                style: 'bold-2',
                 text: `${invoiceInfo.posData &&
                   invoiceInfo.posData.orderType &&
                   invoiceInfo.posData.orderType
@@ -1444,7 +1439,7 @@ export default {
             // },
             {
               alignment: 'two',
-              style: 'bold',
+              style: 'bold-2',
               text: `Total (${numberFormatter(parseFloat(TotalQty))} items):Rp`,
               rightText: `${numberFormatter(
                 parseInt(Total, 0) +
@@ -1455,11 +1450,11 @@ export default {
           ])
           .concat(listAmountPrint)
           .concat([
-            // {
-            //   alignment: "two",
-            //   text: `Change:Rp`,
-            //   rightText: `${numberFormatter(PosData.pos.change)}`,
-            // },
+            {
+              alignment: 'two',
+              text: 'Kembalian:Rp',
+              rightText: `${numberFormatter(PosData.pos.change)}`
+            },
             {
               alignment: 'two',
               text: 'DPP:Rp',

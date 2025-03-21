@@ -3,7 +3,7 @@ import { Row, Col } from 'antd'
 import { APPNAME } from 'utils/config.company'
 import styles from './index.less'
 
-const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
+const Header = ({ onShowInvoice, onShowKitchenOrder, loading, invoiceInfo }) => {
   return (
     <div>
       <div className={styles.center}>
@@ -12,7 +12,8 @@ const Header = ({ onShowDeliveryOrder, invoiceInfo }) => {
           style={{ height: '100%', width: '100%' }}
           alt={`${(APPNAME || '').toUpperCase()}`}
         />
-        <button className={styles.buttonPrint} onClick={onShowDeliveryOrder}>Delivery Orders</button>
+        <button disabled={loading.effects['payment/directPrintInvoice']} className={styles.buttonPrint} onClick={onShowInvoice}>Invoice</button> <br />
+        <button disabled={loading.effects['payment/directPrintInvoice']} className={styles.buttonPrint} onClick={onShowKitchenOrder}>Kitchen</button>
       </div>
       <div className={styles.separator} />
       <div className={styles.left}>

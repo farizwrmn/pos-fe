@@ -460,7 +460,7 @@ export default {
       yield put({
         type: 'pos/updateState',
         payload: {
-          modalPosDescriptionVisible: true,
+          modalPosDescriptionVisible: false,
           modalUnlockTransactionVisible: false,
           modalUnlockTransactionShowForm: false,
           lockTransaction: false
