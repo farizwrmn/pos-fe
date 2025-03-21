@@ -28,6 +28,7 @@ import {
   query as queryExpress,
   edit as editExpress
 } from 'services/k3express/dinein/dineinMap'
+import { queryId } from 'services/utils/parameter'
 import {
   getDataEmployeeByUserId,
   checkUserRole
@@ -132,6 +133,7 @@ export default {
     enableDineInLastUpdatedAt: null,
     enableDineInLastUpdatedBy: null,
     currentBundlePayment: {},
+    electronABTesting: {},
     listVoucher: getVoucherList(),
     modalVoucherVisible: false,
     modalExpressCodeVisible: false,
@@ -362,11 +364,36 @@ export default {
             }
           })
         }
+
+        if (location.pathname === '/transaction/pos') {
+          dispatch({
+            type: 'queryParameter',
+            payload: {
+              paramCode: 'electronABTesting'
+            }
+          })
+        }
       })
     }
   },
 
   effects: {
+    * queryParameter ({ payload = {} }, { call, put }) {
+      // Hanya Kepala Toko dengan store yang telah ditentukan
+      // get paramCode like electronABTesting to targeted storeId had access to electron POS
+      // payload { paramCode: 'electronABTesting' }
+      const response = yield call(queryId, payload)
+      if (response && response.success) {
+        // validate current storeId
+        yield put({
+          type: 'updateState',
+          payload: {
+            electronABTesting: response.data
+          }
+        })
+      }
+    },
+
     * printLatestTransaction (payload, { put, call }) {
       const response = yield call(queryPaymentTransactionLatest, { storeId: lstorage.getCurrentUserStore() })
       if (response.success && response.data && response.data.length > 0) {
@@ -453,7 +480,7 @@ export default {
       yield put({
         type: 'pos/updateState',
         payload: {
-          modalPosDescriptionVisible: true,
+          modalPosDescriptionVisible: false,
           modalUnlockTransactionVisible: false,
           modalUnlockTransactionShowForm: false,
           lockTransaction: false
