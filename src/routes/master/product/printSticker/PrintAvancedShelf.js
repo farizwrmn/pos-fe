@@ -477,7 +477,6 @@ class PrintShelf extends Component {
   }
 
   render () {
-    console.log('tableBody', this.state.pdfProps.tableBody)
     return (
       <ShelfStickerCard {...this.state.pdfProps} />
     )

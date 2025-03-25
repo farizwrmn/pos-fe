@@ -12,6 +12,7 @@ import { query as queryProductCost } from 'services/product/productCost'
 import { query as queryStockPickingLine, add as addStockPickingLine, remove as removeStockPickingLine } from 'services/pickingLine/stockPickingLine'
 import { query as queryPickingLine } from 'services/pickingLine/pickingLine'
 import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
+import { queryActive } from 'services/marketing/bundling'
 import { lstorage } from 'utils'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
@@ -706,6 +707,36 @@ export default modelExtend(pageModel, {
         yield put({ type: 'query', payload: { stockQuery: true } })
       } else {
         throw data
+      }
+    },
+
+    * printStickerActive ({ payload = {} }, { call, put }) {
+      const { resetChild, resetChildShelf, resetChildLong } = payload
+      const params = { storeId: lstorage.getCurrentUserStore() }
+      const response = yield call(queryActive, params)
+      if (response.success) {
+        const listSticker = response.data.map(item => ({
+          info: item,
+          name: item.productName,
+          qty: 1
+        }))
+        yield put({
+          type: 'updateState',
+          payload: {
+            listSticker
+          }
+        })
+        if (resetChild) {
+          resetChild(listSticker)
+        }
+        if (resetChildShelf) {
+          resetChildShelf(listSticker)
+        }
+        if (resetChildLong) {
+          resetChildLong(listSticker)
+        }
+      } else {
+        throw response
       }
     },
 

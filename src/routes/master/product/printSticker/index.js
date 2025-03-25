@@ -16,7 +16,7 @@ const TabPane = Tabs.TabPane
 
 class ProductStock extends Component {
   render () {
-    const { productstock, dispatch, location, app } = this.props
+    const { productstock, dispatch, loading, location, app } = this.props
     const { listItem, update, activeKey,
       showModalProduct, modalProductType, period, listSticker,
       aliases,
@@ -75,6 +75,10 @@ class ProductStock extends Component {
 
     const stickerProps = (parentProps) => {
       return ({
+        clickChild: parentProps.clickChild,
+        clickChildShelf: parentProps.clickChildShelf,
+        clickLongChild: parentProps.clickLongChild,
+        loading,
         dispatch,
         aliases,
         showModalProduct,
@@ -84,6 +88,16 @@ class ProductStock extends Component {
         listSticker,
         modalProductType,
         selectedSticker,
+        onGetPromoList () {
+          dispatch({
+            type: 'productstock/printStickerActive',
+            payload: {
+              resetChild: parentProps ? parentProps.clickChild : undefined,
+              resetChildShelf: parentProps ? parentProps.clickChildShelf : undefined,
+              resetChildLong: parentProps ? parentProps.clickLongChild : undefined
+            }
+          })
+        },
         onShowModalProduct (key) {
           dispatch({
             type: 'productstock/updateState',
