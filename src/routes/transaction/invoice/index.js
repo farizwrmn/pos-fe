@@ -40,7 +40,7 @@ class Invoice extends React.Component {
   }
 
   render () {
-    const { dispatch, posInvoice, app } = this.props
+    const { dispatch, loading, posInvoice, app } = this.props
     const {
       listPaymentDetail,
       memberPrint,
@@ -165,13 +165,30 @@ class Invoice extends React.Component {
       printNo: 'copy'
     }
 
-    const onShowDeliveryOrder = () => {
-      dispatch({
-        type: 'posInvoice/updateState',
-        payload: {
-          modalConfirmVisible: true
-        }
-      })
+    const onShowInvoice = () => {
+      if (posData && posData.id) {
+        dispatch({
+          type: 'payment/directPrintInvoice',
+          payload: {
+            type: 'reprint',
+            status: 'reprint',
+            id: posData.id
+          }
+        })
+      }
+    }
+
+    const onShowKitchenOrder = () => {
+      if (posData && posData.id) {
+        dispatch({
+          type: 'payment/directPrintInvoice',
+          payload: {
+            type: 'print',
+            status: 'print',
+            id: posData.id
+          }
+        })
+      }
     }
 
     const formConfirmOpts = {
@@ -221,7 +238,7 @@ class Invoice extends React.Component {
     return (
       <LocaleProvider locale={enUS}>
         <div className={styles.invoiceMini}>
-          <Header onShowDeliveryOrder={onShowDeliveryOrder} invoiceInfo={invoiceInfo} />
+          <Header loading={loading} onShowInvoice={onShowInvoice} onShowKitchenOrder={onShowKitchenOrder} invoiceInfo={invoiceInfo} />
           <Body
             user={app.user}
             standardInvoice={standardInvoice}

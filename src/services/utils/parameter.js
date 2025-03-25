@@ -13,7 +13,7 @@ export async function query (params) {
 export async function queryId (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: `/utils/parameter/${params.id}`,
+    url: `/utils/parameter/${params.paramCode}`,
     method: 'get',
     data: params,
     headers: apiHeaderToken

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import moment from 'moment'
 import { prefix } from 'utils/config.main'
-import { variables, lstorage, color } from 'utils'
+import { variables, lstorage, isElectron, color } from 'utils'
 // import {
 //   TYPE_PEMBELIAN_UMUM,
 //   TYPE_PEMBELIAN_GRABFOOD,
@@ -55,6 +55,7 @@ import DynamicQrisButton from './components/BottomDynamicQrisButton'
 import LatestQrisTransaction from './latestQrisTransaction'
 import ModalConfirmQrisPayment from './ModalConfirmQrisPayment'
 import ModalQrisTransactionFailed from './ModalQrisTransactionFailed'
+import NotFoundPage from './NotFoundPage'
 // eslint-disable-next-line no-unused-vars
 import PromotionGuide from './PromotionGuide'
 // eslint-disable-next-line no-unused-vars
@@ -268,6 +269,7 @@ const Pos = ({
     curRounding,
     curShift,
     curCashierNo,
+    electronABTesting,
     enableDineIn,
     enableDineInLastUpdatedBy,
     enableDineInLastUpdatedAt,
@@ -315,6 +317,20 @@ const Pos = ({
     status: null,
     cashActive: null
   }
+
+  const { getCurrentUserStore } = lstorage
+  if (electronABTesting && electronABTesting.paramValue) {
+    let stringElArr = electronABTesting.paramValue.split(',')
+    let dataElectronABTesting = stringElArr.map(item => Number(item))
+    let storeId = getCurrentUserStore()
+    if (dataElectronABTesting.includes(Number(storeId))) {
+      // validation: is user using electron base application
+      if (!isElectron()) {
+        return <NotFoundPage />
+      }
+    }
+  }
+
   let product = getCashierTrans()
   let consignment = getConsignment()
   let service = localStorage.getItem('service_detail') ? JSON.parse(localStorage.getItem('service_detail')) : []
@@ -3502,7 +3518,8 @@ export default connect(({
   app,
   loading,
   customerunit,
-  payment
+  payment,
+  parameter
 }) => ({
   incentiveAchievement,
   planogram,
@@ -3524,5 +3541,6 @@ export default connect(({
   app,
   loading,
   customerunit,
-  payment
+  payment,
+  parameter
 }))(Pos)

@@ -1,5 +1,32 @@
 import reduce from 'lodash/reduce'
 
+const isChromeBrowser = () => {
+  // Check for the presence of the 'webkitPersistentStorage' property
+  return 'webkitPersistentStorage' in navigator
+}
+
+function isElectron () {
+  // Renderer process
+  if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+    console.log('electron 1')
+    return true
+  }
+
+  // Main process
+  if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+    console.log('electron 2')
+    return true
+  }
+
+  // Detect the user agent when the `nodeIntegration` option is set to true
+  if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+    console.log('electron 3')
+    return true
+  }
+
+  return false
+}
+
 const chooseOnePaymentType = (type = 'C', list = []) => {
   if (!type) return 'Cash'
   if (!list) return 'Cash'
@@ -46,5 +73,7 @@ const groupProduct = (list, dataBundle = []) => {
 
 export {
   chooseOnePaymentType,
-  groupProduct
+  groupProduct,
+  isChromeBrowser,
+  isElectron
 }
