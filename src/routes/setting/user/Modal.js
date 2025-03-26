@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  Form, Input, Modal, Checkbox, Button, Row, Col, Popover, Table, Collapse,
+  Form, Input, Modal, Checkbox, Button, Row, Col, Collapse,
   Tabs, Transfer, Tree,
   // Switch, Icon, Card,
   Select
@@ -43,8 +43,6 @@ const ModalEntry = ({
   dispatch,
   onOk,
   onChooseItem,
-  visiblePopover = false,
-  disabledItem = { userId: true, getEmployee: true },
   activeTab,
   totpChecked,
   // totp = { key: '', url: '' },
@@ -83,27 +81,6 @@ const ModalEntry = ({
     ...modalProps,
     onOk: handleOk
   }
-  const columns = [{
-    title: 'Employee Id',
-    dataIndex: 'employeeId',
-    key: 'employeeId',
-    width: 100
-  }, {
-    title: 'Name',
-    dataIndex: 'employeeName',
-    key: 'employeeName',
-    width: 200
-  }, {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-    width: 250
-  }, {
-    title: 'Position',
-    dataIndex: 'positionName',
-    key: 'positionName',
-    width: 200
-  }]
 
 
   const hdlTabCallback = (key) => {
@@ -121,12 +98,6 @@ const ModalEntry = ({
   }
   const hdlTableRowClick = (record) => {
     onChooseItem(record)
-  }
-  const hdlPopoverVisibleChange = () => {
-    modalPopoverVisible()
-  }
-  const hdlPopoverClose = () => {
-    modalPopoverClose()
   }
   const hdlButtonCancelClick = () => {
     modalButtonCancelClick()
@@ -199,30 +170,6 @@ const ModalEntry = ({
   //   }
   // }
 
-  const titlePopover = (
-    <Row>
-      <Col span={8}>Choose Employee</Col>
-      <Col span={1} offset={15}>
-        <Button shape="circle"
-          icon="close-circle"
-          size="small"
-          onClick={() => hdlPopoverClose()}
-        />
-      </Col>
-    </Row>
-  )
-  const contentPopover = (
-    <div>
-      <Table
-        columns={columns}
-        dataSource={listLovEmployee}
-        size="small"
-        bordered
-        pagination={{ pageSize: 5 }}
-        onRowClick={record => hdlTableRowClick(record)}
-      />
-    </div>
-  )
 
   const targetKeys = listUserRoleTarget
   const optionRole = listRole && listRole.length > 0
@@ -288,6 +235,8 @@ const ModalEntry = ({
       })
   }
 
+  const listEmployee = (listLovEmployee || []).length > 0 ? listLovEmployee.map(c => <Option value={c.employeeId} key={c.employeeId} title={`${c.employeeId} (${c.employeeName})`}>{`${c.employeeId} (${c.employeeName})`}</Option>) : []
+
   return (
     <Modal width="35vw"
       height="70vh"
@@ -312,29 +261,22 @@ const ModalEntry = ({
               {...formItemLayout}
               extra="If user is employee then click [Get Employee]."
             >
-              <Row gutter={2}>
-                <Col span={10}>
-                  <Popover visible={visiblePopover}
-                    onVisibleChange={() => hdlPopoverVisibleChange()}
-                    title={titlePopover}
-                    content={contentPopover}
-                    trigger="click"
-                  >
-                    <Button type="primary"
-                      disabled={modalType === 'edit' || disabledItem.getEmployee}
-                    > Get Employee
-                    </Button>
-                  </Popover>
-                </Col>
-                <Col span={14}>
-                  {getFieldDecorator('userId', {
-                    initialValue: item.userId,
-                    rules: [{ required: true, min: 5 }]
-                  })(
-                    <Input disabled />
-                  )}
-                </Col>
-              </Row>
+              {getFieldDecorator('userId', {
+                initialValue: item.userId,
+                rules: [{ required: true, pattern: /^[\s\S]{4,200}$/, message: 'Min: 4, Max: 200' }]
+              })(<Select
+                showSearch
+                disabled={modalType === 'edit'}
+                placeholder="Select a person"
+                optionFilterProp="children"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                onSelect={(employeeId) => {
+                  const selected = listLovEmployee.find(filtered => filtered.employeeId === employeeId)
+                  hdlTableRowClick(selected)
+                }}
+              >
+                {listEmployee}
+              </Select>)}
             </FormItem>
             <FormItem label="Mobile Number" hasFeedback {...formItemLayout}>
               {getFieldDecorator('mobileNumber', {

@@ -1,4 +1,4 @@
-import { getCashierTrans, putStorageKey, removeAllKey, getIdBE, getDomainBE, getPortBE, removeItemKeys, removeItemKey, getItem, setCashierTrans } from '../lstorage'
+import { getCashierTrans, removeAllKey, getItem, setCashierTrans } from '../lstorage'
 
 it('Return Cashier Trans LocalStorage', () => {
   const arrayItem = [

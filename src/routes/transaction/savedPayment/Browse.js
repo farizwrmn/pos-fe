@@ -139,7 +139,23 @@ const BrowseGroup = ({
       key: 'posTotal.netto',
       width: 70,
       className: styles.alignRight,
-      render: text => (text || '-').toLocaleString()
+      render: (text, record) => {
+        if (record.paymentVia === 'C') {
+          const splitted = (text || '-').toLocaleString().split('')
+          let finalText = ''
+          for (let key in splitted) {
+            const str = splitted[key]
+            console.log('key', key)
+            if (Number(key) === 0 || str === ',' || str === '.') {
+              finalText += str
+            } else {
+              finalText += 'X'
+            }
+          }
+          return finalText
+        }
+        return (text || '-').toLocaleString()
+      }
     },
     {
       title: 'Cashier',

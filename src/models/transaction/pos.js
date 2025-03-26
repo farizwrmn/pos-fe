@@ -83,7 +83,7 @@ import { getListProductAfterBundling } from './utilsPos'
 import {
   queryCheckStoreAvailability,
   queryLatest as queryPaymentTransactionLatest,
-  queryLatestNotVald as queryPaymentTransactionLatestNotValid,
+  queryLatestNotValid as queryPaymentTransactionLatestNotValid,
   queryFailed as queryPaymentTransactionFailed,
   queryCheckValidByPaymentReference,
   queryCheckStatus as queryCheckPaymentTransactionStatus,
@@ -431,7 +431,15 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            listQrisLatestTransaction: response.data
+            listQrisLatestTransaction: response.data,
+            paymentTransaction: response.data[0],
+            qrisPaymentCurrentTransNo: response.data[0].transNo
+          }
+        })
+        yield put({
+          type: 'payment/updateState',
+          payload: {
+            paymentTransactionId: response.data[0].paymentTransactionId
           }
         })
       } else {
@@ -2605,7 +2613,7 @@ export default {
       if (listProductData && listProductData.success && listProductQty && listProductQty.length > 0) {
         // let success = false
         // let message = ''
-        // const dataPos = getCashierTrans()
+        const dataPos = getCashierTrans()
         // for (let key in listProductQty) {
         //   const { item } = listProductQty[key]
         //   const filteredStock = listProductData.data.filter(filtered => filtered.productId === item.id)
@@ -4190,7 +4198,7 @@ export default {
       const response = yield call(queryCheckPaymentTransactionStatus, payload)
       if (response && response.success) {
         const posId = getDynamicQrisPosTransId()
-        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}?status=reprint`)
+        const invoiceWindow = window.open(`/transaction/pos/invoice/${posId}`)
         yield put({
           type: 'payment/updateState',
           payload: {

@@ -41,7 +41,6 @@ const gridStyle = {
 
 const iconStyle = {
   fontSize: 25,
-  fontWeight: 'bold',
   color: '#444',
   float: 'right',
   margin: '0 2.5px'
@@ -94,8 +93,13 @@ const Shelf = ({
   deleteSticker,
   updateSticker,
   onSelectSticker,
+  onGetPromoList,
   aliases,
   dispatch,
+  clickChild,
+  clickChildShelf,
+  clickLongChild,
+  loading,
   form: {
     getFieldsValue,
     getFieldDecorator
@@ -253,6 +257,7 @@ const Shelf = ({
           <h2 style={{ padding: '10px 0 0 15px' }}>
             Products
             {totalQty !== 0 && <span style={{ fontSize: 12, margin: '0 10px' }}>{totalQty} stiker(s)</span>}
+            <Button onClick={() => onGetPromoList()} style={iconStyle} disabled={loading.effects['productstock/printStickerActive']}>Promo</Button>
             <a onClick={() => onShowModalProduct('all')}><Icon title="Basic Product" style={iconStyle} type="plus-circle-o" /></a>
             <a onClick={() => onShowModalProduct('consignment')}><Icon title="Consignment" style={iconStyle} type="tag" /></a>
             <a onClick={() => onShowModalProduct('update')} > <Icon title="History" style={iconStyle} type="clock-circle-o" /></a>

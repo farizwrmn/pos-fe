@@ -20,7 +20,7 @@ const Filter = ({
     validateFields
   }
 }) => {
-  const handleSubmit = (value) => {
+  const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
         return

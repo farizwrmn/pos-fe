@@ -22,6 +22,10 @@ const PRODUCT_CODE_SIZE = PRODUCT_CODE_SIZE_IN_POINT * 1.3333 // ubah ke adobe p
 
 const PRICE_SIZE_IN_POINT = 12
 const PRICE_SIZE = PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
+const NORMAL_PRICE_SIZE_IN_POINT = 6
+const NORMAL_PRICE_SIZE = NORMAL_PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
+const DISCOUNT_PRICE_SIZE_IN_POINT = 10
+const DISCOUNT_PRICE_SIZE = DISCOUNT_PRICE_SIZE_IN_POINT * 1.3333 // ubah ke adobe pt
 const NUMBER_OF_PRODUCT_NAME = 32
 const WIDTH_TABLE_IN_CENTI = 5
 const HEIGHT_TABLE_IN_CENTI = 3.4
@@ -42,6 +46,21 @@ const styles = {
     bold: true,
     alignment: 'right',
     fontSize: PRICE_SIZE,
+    width: '100%',
+    margin: [3, 0]
+  },
+  normalPrice: {
+    bold: false,
+    decoration: 'lineThrough',
+    alignment: 'left',
+    fontSize: NORMAL_PRICE_SIZE,
+    width: '100%',
+    margin: [3, 0]
+  },
+  discountPrice: {
+    bold: true,
+    alignment: 'right',
+    fontSize: DISCOUNT_PRICE_SIZE,
     width: '100%',
     margin: [3, 0]
   },
@@ -198,25 +217,31 @@ const createTableBody = async (tableBody, aliases) => {
         // })
         // eslint-disable-next-line no-await-in-loop
 
-
-        if (aliases.check1) {
+        if (aliases.check2 && numberFormatter(tableBody[key].info[aliases.price1]) < numberFormatter(tableBody[key].info[aliases.price2])) {
+          row.push({
+            background,
+            color,
+            fillColor: background,
+            columns: [
+              {
+                text: `Rp ${numberFormatter(tableBody[key].info[aliases.price2])}`,
+                style: 'normalPrice',
+                alignment: 'left'
+              },
+              {
+                text: `${numberFormatter(tableBody[key].info[aliases.price1])}`,
+                style: 'discountPrice',
+                alignment: 'right'
+              }
+            ]
+          })
+        } else if (aliases.check1) {
           row.push({
             text: numberFormatter(tableBody[key].info[aliases.price1]),
             fillColor: background,
             background,
             color,
             style: 'sellPrice'
-          })
-        }
-        if (aliases.check2) {
-          row.push({
-            columns: [
-              {
-                text: `Rp ${(tableBody[key].info[aliases.price2] || 0).toLocaleString()}`,
-                style: 'others',
-                alignment: 'right'
-              }
-            ]
           })
         }
 

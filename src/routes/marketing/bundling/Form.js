@@ -768,12 +768,28 @@ class FormCounter extends Component {
                   initialValue: item.applyMultiple ? (item.applyMultiple == 0 ? 0 : 1) : item.applyMultiple
                 })(<Checkbox />)}
               </FormItem>
-              {getFieldValue('type') === '1' && <FormItem label="POS Highlight" hasFeedback {...formItemLayout}>
+              {getFieldValue('type') === '1' && <FormItem label="Print" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('isPosHighlight', {
                   valuePropName: 'checked',
                   initialValue: item.isPosHighlight ? (item.isPosHighlight === '0' ? 0 : 1) : item.isPosHighlight
                 })(<Checkbox />)}
               </FormItem>}
+              <FormItem label="Print Price" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('sellPrice', {
+                  initialValue: item.sellPrice,
+                  rules: [{
+                    required: true
+                  }]
+                })(<InputNumber autoFocus min={0} style={{ width: '100%' }} />)}
+              </FormItem>
+              <FormItem label="Discount Price" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('discountPrice', {
+                  initialValue: item.discountPrice,
+                  rules: [{
+                    required: true
+                  }]
+                })(<InputNumber autoFocus min={0} max={getFieldValue('sellPrice')} style={{ width: '100%' }} />)}
+              </FormItem>
             </Card>
           </Col>
           <Col {...column}>

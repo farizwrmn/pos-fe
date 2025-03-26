@@ -10,6 +10,7 @@ const APICOMPANYPORT = production ? 443 : 6402
 const APIVERSION = production ? '/api/v1' : '/api/v1'
 const APICOMPANYURL = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}${APIVERSION}`
 const APISOCKET = `${APICOMPANYPROTOCOL}://${APICOMPANYHOST}:${APICOMPANYPORT}`
+const APISOCKETALT = `${APICOMPANYPROTOCOL}://${APICOMPANYHOSTALT}:${APICOMPANYPORT}`
 
 const APICONSIGNMENTPROTOCOL = production ? 'https' : 'http'
 const APICONSIGNMENTHOST = production ? (process.env.API_CONSIGNMENT_ENDPOINT || 'consignment-api.k3mart.id') : 'localhost'
@@ -33,6 +34,7 @@ module.exports = {
   idCompany: 'SMI',
   companyName: 'K3MART',
   APISOCKET,
+  APISOCKETALT,
   IMAGEURL,
   S3URL,
   IMAGECONSIGNMENTURL,
