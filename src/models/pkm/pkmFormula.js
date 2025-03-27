@@ -65,6 +65,8 @@ export default modelExtend(pageModel, {
             }
           }
         })
+      } else {
+        throw response
       }
     },
 

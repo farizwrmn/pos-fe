@@ -1,0 +1,26 @@
+image: amazonlinux
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Build & Deploy to S3
+          caches:
+            - node
+            - aws-cli  # 👈 Cache AWS CLI
+          script:
+            - echo "Installing dependencies..."
+            - yum install -y unzip aws-cli
+
+            - echo "Checking AWS CLI version..."
+            - aws --version  # ✅ Verifies AWS CLI is installed
+
+            - echo "Deploying React app..."
+            - npm install
+            - npm run build
+
+            - echo "Uploading to S3..."
+            - aws s3 sync ./dist s3://$AWS_S3_BUCKET --delete
+
+            - echo "Invalidating CloudFront cache..."
+            - aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
