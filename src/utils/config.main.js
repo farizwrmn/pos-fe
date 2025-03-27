@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { listVersion } from './version'
 
-export const VERSION = '2022.02.001'
+export const VERSION = '2025.03.27'
 
 export const getVersionInfo = (version) => {
   if (listVersion && listVersion.length > 0) {
