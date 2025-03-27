@@ -1,5 +1,9 @@
 image: node:20
 
+definitions:
+  caches:
+    yarn: /usr/local/share/.cache/yarn/v6  # Correct Yarn cache location
+
 pipelines:
   branches:
     master:
