@@ -37,4 +37,3 @@ pipelines:
 definitions:
   caches:
     custom-aws-cli: /opt/aws-cli  # 👈 Custom cache for AWS CLI
-    yarn: ~/.cache/yarn
