@@ -4,7 +4,7 @@ pipelines:
   branches:
     main:
       - step:
-          name: Install dependencies with Yarn
+          name: Install and Build
           caches:
             - yarn
           script:
@@ -14,13 +14,25 @@ pipelines:
           artifacts:
             - dist/**
       - step:
-          name: Deploy to S3 and Invalidate CloudFront
+          name: Deploy to S3
           deployment: production
           script:
-            # Install AWS CLI (needed for more control than the pipe provides)
-            - apt-get update && apt-get install -y python3-pip
-            - pip3 install awscli
-            # Deploy to S3
-            - aws s3 sync dist/ s3://${AWS_S3_BUCKET} --delete --acl public-read
-            # Invalidate CloudFront cache
-            - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
+            - pipe: atlassian/aws-s3-deploy:1.3.0
+              variables:
+                AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+                AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+                AWS_DEFAULT_REGION: ${AWS_REGION}
+                S3_BUCKET: ${AWS_S3_BUCKET}
+                LOCAL_PATH: "dist"
+                DELETE_FLAG: "true"
+                ACL: "public-read"
+      - step:
+          name: Invalidate CloudFront
+          deployment: production
+          script:
+            - pipe: atlassian/aws-cloudfront-invalidate:0.3.0
+              variables:
+                AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+                AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+                DISTRIBUTION_ID: ${AWS_CLOUDFRONT_DISTRIBUTION_ID}
+                PATHS: "/*"
