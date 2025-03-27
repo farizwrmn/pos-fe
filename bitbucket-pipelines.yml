@@ -2,7 +2,7 @@ image: amazonlinux
 
 pipelines:
   branches:
-    main:
+    master:
       - step:
           name: Build & Deploy to S3
           caches:
@@ -12,6 +12,8 @@ pipelines:
             - echo "Installing dependencies..."
             - mkdir -p /opt/aws-cli
             - if [ ! -f /opt/aws-cli/bin/aws ]; then yum install -y unzip aws-cli && cp -r /usr/local/bin/aws* /opt/aws-cli/; fi
+            - curl -fsSL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+            - yum install -y yarn
             - export PATH="/opt/aws-cli/bin:$PATH"
 
             - echo "Configuring AWS credentials..."
@@ -23,8 +25,8 @@ pipelines:
             - aws --version  # ✅ Verifies AWS CLI is installed
 
             - echo "Deploying React app..."
-            - npm install
-            - npm run build
+            - yarn
+            - yarn build
 
             - echo "Uploading to S3..."
             - aws s3 sync ./dist s3://$AWS_S3_BUCKET --delete
@@ -35,3 +37,4 @@ pipelines:
 definitions:
   caches:
     custom-aws-cli: /opt/aws-cli  # 👈 Custom cache for AWS CLI
+    yarn: ~/.cache/yarn
