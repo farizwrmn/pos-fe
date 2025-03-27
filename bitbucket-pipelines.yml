@@ -7,7 +7,6 @@ pipelines:
           name: Build & Deploy to S3
           caches:
             - node
-            - aws-cli  # 👈 Cache AWS CLI
           script:
             - echo "Installing dependencies..."
             - yum install -y unzip aws-cli
