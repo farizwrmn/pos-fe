@@ -131,6 +131,12 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       }
     },
     {
+      title: 'MPKM Update',
+      dataIndex: 'mpkmUpdate',
+      width: 120,
+      key: 'mpkmUpdate'
+    },
+    {
       title: 'PKM',
       dataIndex: 'pkm',
       width: 80,
@@ -282,12 +288,6 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       dataIndex: 'effectiveStock',
       width: 120,
       key: 'effectiveStock'
-    },
-    {
-      title: 'MPKM Update',
-      dataIndex: 'mpkmUpdate',
-      width: 120,
-      key: 'mpkmUpdate'
     }
   ]
 
