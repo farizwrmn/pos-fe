@@ -170,11 +170,45 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       }
     },
     {
+      title: 'N+ Expired',
+      dataIndex: 'nPlusExpiredDate',
+      width: 100,
+      key: 'nPlusExpiredDate',
+      render: (text, record) => {
+        if (defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
+        }
+        return text
+      }
+    },
+    {
       title: 'Nx',
       dataIndex: 'nCross',
       width: 60,
       key: 'nCross',
       sorter: (a, b) => a.nCross - b.nCross,
+      render: (text, record) => {
+        if (defaultRole === 'OWN'
+          || defaultRole === 'ITS'
+          || defaultRole === 'HPC'
+          || defaultRole === 'SPC'
+          || defaultRole === 'PCS'
+        ) {
+          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
+        }
+        return text
+      }
+    },
+    {
+      title: 'Nx Expired',
+      dataIndex: 'nCrossExpiredDate',
+      width: 100,
+      key: 'nCrossExpiredDate',
       render: (text, record) => {
         if (defaultRole === 'OWN'
           || defaultRole === 'ITS'
