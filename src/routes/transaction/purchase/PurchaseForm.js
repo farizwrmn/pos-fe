@@ -284,8 +284,16 @@ const PurchaseForm = ({
                       }]
                     })(<Input disabled maxLength={30} />)}
                   </FormItem>
-                  <FormItem label="Reference" hasFeedback {...formItemLayout}>
+                  <FormItem label="Invoice Number" hasFeedback {...formItemLayout}>
                     {getFieldDecorator('reference', {
+                      rules: [{
+                        required: true,
+                        message: 'Required'
+                      }]
+                    })(<Input maxLength={30} />)}
+                  </FormItem>
+                  <FormItem label="PO Number" hasFeedback {...formItemLayout}>
+                    {getFieldDecorator('referencePO', {
                       rules: [{
                         required: true,
                         message: 'Required'
