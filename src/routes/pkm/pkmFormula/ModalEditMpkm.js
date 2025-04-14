@@ -1,7 +1,8 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, InputNumber, Modal } from 'antd'
+import { Button, DatePicker, Form, InputNumber, Modal } from 'antd'
+import moment from 'moment'
 
 const FormItem = Form.Item
 
@@ -38,6 +39,8 @@ class ModalEditPkm extends Component {
           minor: item.minor,
           pkm: item.pkm
         }
+        record.nPlusExpiredDate = record.nPlusExpiredDate ? record.nPlusExpiredDate.format('YYYY-MM-DD') : null
+        record.nCrossExpiredDate = record.nCrossExpiredDate ? record.nCrossExpiredDate.format('YYYY-MM-DD') : null
         onOk(record)
       })
     }
@@ -92,6 +95,15 @@ class ModalEditPkm extends Component {
               }
             />)}
           </FormItem>
+          <FormItem label="N+ Expire Date" {...formItemLayout}>
+            {getFieldDecorator('nPlusExpiredDate', {
+              initialValue: item.nPlusExpiredDate ? moment.utc(item.nPlusExpiredDate) : null,
+            })(
+            <DatePicker
+                placeholder="Expired Date"
+              />
+            )}
+          </FormItem>
           <FormItem label="Nx" {...formItemLayout}>
             {getFieldDecorator('nCross', {
               initialValue: item.nCross,
@@ -111,6 +123,15 @@ class ModalEditPkm extends Component {
                 }
               }
             />)}
+          </FormItem>
+          <FormItem label="Nx Expire Date" {...formItemLayout}>
+            {getFieldDecorator('nCrossExpiredDate', {
+              initialValue: item.nCrossExpiredDate ? moment.utc(item.nCrossExpiredDate) : null
+            })(
+            <DatePicker
+                placeholder="Expired Date"
+              />
+            )}
           </FormItem>
         </Form>
       </Modal>

@@ -136,7 +136,9 @@ export default modelExtend(pageModel, {
               if (id === item.id) {
                 item.minor = data.minor
                 item.nPlus = data.nPlus
+                item.nPlusExpiredDate = data.nPlusExpiredDate
                 item.nCross = data.nCross
+                item.nCrossExpiredDate = data.nCrossExpiredDate
                 item.mpkm = data.mpkm
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }
@@ -147,7 +149,9 @@ export default modelExtend(pageModel, {
               if (id === item.id) {
                 item.minor = data.minor
                 item.nPlus = data.nPlus
+                item.nPlusExpiredDate = data.nPlusExpiredDate
                 item.nCross = data.nCross
+                item.nCrossExpiredDate = data.nCrossExpiredDate
                 item.mpkm = data.mpkm
                 item.pkm = data.pkm < data.mpkm ? data.mpkm : data.pkm
               }

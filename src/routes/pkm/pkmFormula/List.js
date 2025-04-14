@@ -131,21 +131,29 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       }
     },
     {
+      title: 'MPKM Update',
+      dataIndex: 'mpkmUpdate',
+      width: 120,
+      key: 'mpkmUpdate'
+    },
+    {
       title: 'PKM',
       dataIndex: 'pkm',
       width: 80,
       key: 'pkm',
       sorter: (a, b) => a.pkm - b.pkm,
-      render: (text, record) => {
-        if (defaultRole === 'CAP'
-          || defaultRole === 'OWN'
-          || defaultRole === 'ITS'
-          || defaultRole === 'HPC'
-          || defaultRole === 'SPC'
-          || defaultRole === 'PCS'
-        ) {
-          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
-        }
+      render: (text,
+        // record
+      ) => {
+        // if (defaultRole === 'CAP'
+        //   || defaultRole === 'OWN'
+        //   || defaultRole === 'ITS'
+        //   || defaultRole === 'HPC'
+        //   || defaultRole === 'SPC'
+        //   || defaultRole === 'PCS'
+        // ) {
+        //   return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalPkm(record)}>{text}</div>
+        // }
         return text
       }
     },
@@ -168,6 +176,12 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       }
     },
     {
+      title: 'N+ Expired',
+      dataIndex: 'nPlusExpiredDate',
+      width: 100,
+      key: 'nPlusExpiredDate'
+    },
+    {
       title: 'Nx',
       dataIndex: 'nCross',
       width: 60,
@@ -184,6 +198,12 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
         }
         return text
       }
+    },
+    {
+      title: 'Nx Expired',
+      dataIndex: 'nCrossExpiredDate',
+      width: 100,
+      key: 'nCrossExpiredDate'
     },
     {
       title: 'PKM EXISTS',
