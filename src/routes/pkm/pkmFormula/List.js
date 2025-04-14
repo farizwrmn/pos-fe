@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 
 const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag, onOpenModalMinor, ...tableProps }) => {
   let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
@@ -266,6 +267,19 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       dataIndex: 'effectiveStock',
       width: 120,
       key: 'effectiveStock'
+    },
+    {
+      title: 'Updated By',
+      dataIndex: 'updatedBy',
+      width: 120,
+      key: 'updatedBy'
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      width: 130,
+      key: 'updatedAt',
+      render: (text) => moment(text).format('YYYY-MMM-DD HH:mm')
     }
   ]
 
