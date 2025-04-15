@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
 import { lstorage } from 'utils'
+import moment from 'moment'
 
 const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag, onOpenModalMinor, ...tableProps }) => {
   let defaultRole = (lstorage.getStorageKey('udi')[2] || '')
@@ -179,18 +180,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       title: 'N+ Expired',
       dataIndex: 'nPlusExpiredDate',
       width: 100,
-      key: 'nPlusExpiredDate',
-      render: (text, record) => {
-        if (defaultRole === 'OWN'
-          || defaultRole === 'ITS'
-          || defaultRole === 'HPC'
-          || defaultRole === 'SPC'
-          || defaultRole === 'PCS'
-        ) {
-          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
-        }
-        return text
-      }
+      key: 'nPlusExpiredDate'
     },
     {
       title: 'Nx',
@@ -214,18 +204,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       title: 'Nx Expired',
       dataIndex: 'nCrossExpiredDate',
       width: 100,
-      key: 'nCrossExpiredDate',
-      render: (text, record) => {
-        if (defaultRole === 'OWN'
-          || defaultRole === 'ITS'
-          || defaultRole === 'HPC'
-          || defaultRole === 'SPC'
-          || defaultRole === 'PCS'
-        ) {
-          return <div style={{ color: '#55a756', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => onOpenModalMPKM(record)}>{text}</div>
-        }
-        return text
-      }
+      key: 'nCrossExpiredDate'
     },
     {
       title: 'PKM EXISTS',
@@ -288,6 +267,19 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       dataIndex: 'effectiveStock',
       width: 120,
       key: 'effectiveStock'
+    },
+    {
+      title: 'Updated By',
+      dataIndex: 'updatedBy',
+      width: 120,
+      key: 'updatedBy'
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      width: 130,
+      key: 'updatedAt',
+      render: (text) => moment(text).format('YYYY-MMM-DD HH:mm')
     }
   ]
 

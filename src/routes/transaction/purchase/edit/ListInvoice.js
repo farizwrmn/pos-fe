@@ -90,9 +90,14 @@ const ListInvoice = ({ onInvoiceHeader, onChooseInvoice, purchase, dispatch, ...
       key: 'transNo'
     },
     {
-      title: 'Reference',
+      title: 'Invoice Number',
       dataIndex: 'reference',
       key: 'reference'
+    },
+    {
+      title: 'PO Number',
+      dataIndex: 'referencePO',
+      key: 'referencePO'
     },
     {
       title: 'Tax Invoice',
