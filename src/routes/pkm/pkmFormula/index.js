@@ -285,7 +285,7 @@ const Counter = ({
             nPlus: item.nPlus || 0,
             nPlusExpiredDate: item.nPlusExpiredDate || null,
             nCross: item.nCross || 0,
-            nCrossExpiredDate: item.nCrossExpiredDate || null,
+            nCrossExpiredDate: item.nCrossExpiredDate || null
           }
         }
       })

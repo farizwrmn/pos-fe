@@ -97,9 +97,9 @@ class ModalEditPkm extends Component {
           </FormItem>
           <FormItem label="N+ Expire Date" {...formItemLayout}>
             {getFieldDecorator('nPlusExpiredDate', {
-              initialValue: item.nPlusExpiredDate ? moment.utc(item.nPlusExpiredDate) : null,
+              initialValue: item.nPlusExpiredDate ? moment.utc(item.nPlusExpiredDate) : null
             })(
-            <DatePicker
+              <DatePicker
                 placeholder="Expired Date"
               />
             )}
@@ -128,7 +128,7 @@ class ModalEditPkm extends Component {
             {getFieldDecorator('nCrossExpiredDate', {
               initialValue: item.nCrossExpiredDate ? moment.utc(item.nCrossExpiredDate) : null
             })(
-            <DatePicker
+              <DatePicker
                 placeholder="Expired Date"
               />
             )}
