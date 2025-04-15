@@ -279,7 +279,7 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       dataIndex: 'updatedAt',
       width: 130,
       key: 'updatedAt',
-      render: (text) => moment(text).format('YYYY-MMM-DD HH:mm')
+      render: text => moment(text).format('YYYY-MMM-DD HH:mm')
     }
   ]
 
