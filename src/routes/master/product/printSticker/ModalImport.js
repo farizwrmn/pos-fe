@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Form, Modal, Button, message } from 'antd'
+import { Form, Modal, message } from 'antd'
+import * as Excel from 'exceljs/dist/exceljs.min.js'
 import SimpleExcelTemplate from './PrintXLS'
-import { convertExcelToJson } from './utils'
 
-const FormItem = Form.Item
 
 class ModalImport extends Component {
   constructor (props) {
@@ -21,61 +20,68 @@ class ModalImport extends Component {
     })
   };
 
-  handleFileChange = (e) => {
-    this.setState({
-      selectedFile: e.target.files[0],
-      fileReady: Boolean(e.target.files[0])
-    })
-  };
-
-
-  handleImport = async () => {
+  handleChangeFile = (event) => {
     const {
       dispatch,
       resetChild,
       resetChildShelf,
-      resetChildLong
+      resetChildLong,
+      onCancel
     } = this.props
-    const { selectedFile } = this.state
+    const file = event.target.files[0]
+    const reader = new FileReader()
+    const workbook = new Excel.Workbook()
+    const productCodes = []
 
-    if (!selectedFile) {
+    if (!file) {
       message.warning('Please select a file first')
       return
     }
 
-    this.setState({ isLoading: true })
+    reader.readAsArrayBuffer(file)
 
-    try {
-      const productCode = await convertExcelToJson(selectedFile)
-      console.log('dispatch', productCode)
+    reader.onload = () => {
+      const buffer = reader.result
 
-      dispatch({
-        type: 'productstock/printStickerImport',
-        payload: {
-          productCode,
-          resetChild,
-          resetChildShelf,
-          resetChildLong
-        }
-      })
-
-      message.success('File imported successfully')
-    } catch (error) {
-      message.error(`Import failed: ${error.message}`)
-      console.error('Import Error:', error)
-    } finally {
-      this.setState({ isLoading: false, selectedFile: null })
-      this.props.onCancel()
+      workbook.xlsx.load(buffer)
+        .then((workbook) => {
+          const sheet = workbook.getWorksheet('POS 1')
+          sheet.eachRow({ includeEmpty: false }, (row, rowIndex) => {
+            const code = row.values[3]
+            console.log(code, 'test')
+            if (rowIndex >= 6 && code && code.toString().trim() !== '') {
+              productCodes.push(code.toString().trim())
+            }
+          })
+        })
+        .then(() => {
+          if (productCodes.length > 0) {
+            dispatch({
+              type: 'productstock/printStickerImport',
+              payload: {
+                productCode: productCodes,
+                resetChild,
+                resetChildShelf,
+                resetChildLong
+              }
+            })
+            onCancel()
+          } else {
+            message.error('No valid product codes found')
+          }
+        })
+        .catch((err) => {
+          console.error('Excel load error:', err)
+          message.error('Failed to read file')
+        })
     }
   }
-
 
   render () {
     const {
       visible,
       onCancel,
-      loading,
-      form: { getFieldDecorator }
+      loading
     } = this.props
 
     const modalProps = {
@@ -83,33 +89,34 @@ class ModalImport extends Component {
       title: 'Import Data',
       width: 400,
       onCancel,
-      footer: [
-        <Button key="import"
-          type="primary"
-          onClick={this.handleImport}
-          loading={loading}
-        >
-          Import Data
-        </Button>
-      ]
+      footer: null
     }
 
     return (
       <Modal {...modalProps} onCancel={onCancel}>
         <div style={{ width: '100%', justifyContent: 'end' }}>Download template : <div style={{ justifyContent: 'end' }}><SimpleExcelTemplate /></div></div>
-        <Form layout="vertical">
-          <FormItem label="File">
-            {getFieldDecorator('file', {
-              rules: [{ required: true, message: 'Please select a file!' }]
-            })(
-              <input type="file"
-                id="excel-upload"
-                onChange={this.handleFileChange}
-                accept=".xlsx,.xls,.csv"
-              />
-            )}
-          </FormItem>
-        </Form>
+        <span>
+          <button className="ant-btn ant-btn-primary ant-btn-lg"
+            onClick={() => {
+              document.getElementById('importCsv').click()
+            }}
+          >
+            Import
+          </button>
+
+          <input
+            id="importCsv"
+            type="file"
+            accept=".xlsx"
+            className="ant-btn ant-btn-default ant-btn-lg"
+            style={{ visibility: 'hidden' }}
+            onClick={(event) => {
+              event.target.value = null
+            }}
+            onInput={event => this.handleChangeFile(event)}
+            disabled={loading}
+          />
+        </span>
       </Modal>
     )
   }
