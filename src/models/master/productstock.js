@@ -14,6 +14,7 @@ import { query as queryPickingLine } from 'services/pickingLine/pickingLine'
 import { query as queryStorePrice } from 'services/storePrice/stockExtraPriceStore'
 import { queryActive } from 'services/marketing/bundling'
 import { lstorage } from 'utils'
+import { importPriceTag } from 'services/product/priceTag'
 import { query, queryById, add, edit, queryPOSproduct, queryPOSproductStore, remove } from '../../services/master/productstock'
 import { pageModel } from './../common'
 
@@ -55,6 +56,7 @@ export default modelExtend(pageModel, {
     listSticker: [],
     update: false,
     selectedSticker: {},
+    productCode: [],
     modalStorePriceItem: {},
     modalStorePriceVisible: false,
     period: [],
@@ -262,6 +264,16 @@ export default modelExtend(pageModel, {
         payload: {
           modalStorePriceVisible: true,
           modalStorePriceItem: payload.modalStorePriceItem
+        }
+      })
+    },
+
+    * showImportModal (_, { put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          showModalImport: true,
+          importModalType: 'default' // Add if you need types
         }
       })
     },
@@ -720,6 +732,7 @@ export default modelExtend(pageModel, {
           name: item.productName,
           qty: 1
         }))
+        console.log(listSticker, 'test')
         yield put({
           type: 'updateState',
           payload: {
@@ -783,6 +796,100 @@ export default modelExtend(pageModel, {
     },
 
     * updateSticker ({ payload }, { select, put }) {
+      let listSticker = yield select(({ productstock }) => productstock.listSticker)
+      const { selectedRecord, changedRecord, resetChild, resetChildShelf, resetChildLong } = payload
+      let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
+      listSticker[selected] = changedRecord
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSticker
+        }
+      })
+      if (resetChild) {
+        resetChild(listSticker)
+      }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
+    },
+
+    * printStickerImport ({ payload = {} }, { call, put }) {
+      const { resetChild, resetChildShelf, resetChildLong, productCode = [] } = payload
+
+      const response = yield call(importPriceTag, { storeId: lstorage.getCurrentUserStore(), productCode })
+
+      console.log(resetChild, resetChildShelf, resetChildLong, productCode, 'test')
+
+      if (response.success && Array.isArray(response.data)) {
+        const listSticker = response.data.map(item => ({
+          info: {
+            ...item
+          },
+          name: item.productName,
+          qty: 1
+        }))
+
+        yield put({
+          type: 'updateState',
+          payload: { listSticker }
+        })
+
+        if (resetChild) resetChild(listSticker)
+        if (resetChildShelf) resetChildShelf(listSticker)
+        if (resetChildLong) resetChildLong(listSticker)
+      } else {
+        console.error('Invalid response:', response)
+        throw response
+      }
+    },
+    * addStickerImport ({ payload }, { select, put }) {
+      let listSticker = yield select(({ productstock }) => productstock.listSticker)
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
+      listSticker.push(sticker)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSticker
+        }
+      })
+      if (resetChild) {
+        resetChild(listSticker)
+      }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
+    },
+
+    * deleteStickerImport ({ payload }, { select, put }) {
+      let listSticker = yield select(({ productstock }) => productstock.listSticker)
+      const { sticker, resetChild, resetChildShelf, resetChildLong } = payload
+      listSticker = listSticker.filter(x => x.name !== sticker.name)
+      yield put({
+        type: 'updateState',
+        payload: {
+          listSticker
+        }
+      })
+      if (resetChild) {
+        resetChild(listSticker)
+      }
+      if (resetChildShelf) {
+        resetChildShelf(listSticker)
+      }
+      if (resetChildLong) {
+        resetChildLong(listSticker)
+      }
+    },
+
+    * updateStickerImport ({ payload }, { select, put }) {
       let listSticker = yield select(({ productstock }) => productstock.listSticker)
       const { selectedRecord, changedRecord, resetChild, resetChildShelf, resetChildLong } = payload
       let selected = listSticker.findIndex(x => x.info.id === selectedRecord.info.id)
