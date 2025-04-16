@@ -1613,6 +1613,15 @@ const Routers = function ({ history, app }) {
             }, 'master-product-country')
           }
         }, {
+        }, {
+          path: 'master/product/UOM',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/product/productUom'))
+              cb(null, require('./routes/product/productUom'))
+            }, 'master-product-UOM')
+          }
+        }, {
           path: 'inventory/transfer/invoice',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
