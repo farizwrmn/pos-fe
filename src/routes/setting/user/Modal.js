@@ -383,7 +383,28 @@ const ModalEntry = ({
           </Row>
 
         </TabPane>
-        <TabPane tab="Store" key="4">
+        <TabPane tab="Access" key="4">
+          <Tree
+            checkable
+            checkStrictly
+            autoExpandParent
+            defaultExpandAll
+            defaultCheckedKeys={listUserStores}
+            onRightClick={hdlSetDefaultStore}
+            onCheck={hdlOnCheckStore}
+          >
+            {renderTreeNodes(listAllStores)}
+          </Tree>
+          <span style={paddingTop10} />
+          <Input
+            value={storeItem.default}
+            addonBefore="Default (right-click tree-node to change): "
+            size="small"
+            placeholder="no default store"
+            disabled
+          />
+        </TabPane>
+        <TabPane tab="Target Store" key="5">
           <Tree
             checkable
             checkStrictly
