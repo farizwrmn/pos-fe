@@ -5,7 +5,7 @@ import ImportExcel from '../../procurement/purchaseOrder/main/ImportExcel'
 import Form from './Form'
 
 
-const SupplierPrice = ({ app, dispatch, loading }) => {
+const SupplierPrice = ({ app, dispatch, loading, resetFields }) => {
   const { user, storeInfo } = app
   const importExcelProps = {
     data: [{ id: 1 }],
@@ -18,7 +18,8 @@ const SupplierPrice = ({ app, dispatch, loading }) => {
     user,
     storeInfo,
     dispatch,
-    loading
+    loading,
+    resetFields
   }
 
   return (

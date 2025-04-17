@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Button, Row, Col, InputNumber, message } from 'antd'
+import { Form, Input, Button, Row, Col, InputNumber } from 'antd'
 
 const FormItem = Form.Item
 
@@ -13,26 +13,16 @@ const FormCounter = ({
   },
   dispatch
 }) => {
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     validateFields(async (err) => {
       if (!err) {
-        try {
-          const response = await dispatch({
-            type: 'supplierPrice/submitSupplierPrice',
-            payload: {
-              ...getFieldsValue()
-            }
-          })
+        const result = await dispatch({
+          type: 'supplierPrice/submitSupplierPrice',
+          payload: getFieldsValue()
+        })
 
-          if (response && response.success) {
-            message.success('Form submitted successfully!')
-            resetFields()
-          } else {
-            message.error((response && response.message) || 'Submission failed. Please try again.')
-          }
-        } catch (error) {
-          console.error('Submission error:', error)
-          message.error('An error occurred while submitting the form.')
+        if (result && result.success) {
+          resetFields()
         }
       }
     })

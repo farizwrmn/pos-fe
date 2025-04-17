@@ -70,9 +70,23 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * submitSupplierPrice ({ payload }, { call }) {
-      const response = yield call(saveSupplierInfo, payload)
-      return response
+    * submitActiveSupplier ({ payload }, { call, put }) {
+      try {
+        const response = yield call(saveSupplierInfo, payload)
+
+        if (response && response.success) {
+          message.success(response.message || 'Submission successful!')
+          yield put({ type: 'saveSubmitResult', payload: response })
+        } else {
+          message.error(response.message || 'Submission failed.')
+        }
+
+        return response
+      } catch (error) {
+        console.error('API error:', error)
+        message.error('An error occurred while submitting the form.')
+        return { success: false, message: 'Internal error' }
+      }
     },
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)

@@ -14,16 +14,16 @@ const FormCounter = ({
   }
 }) => {
   const handleSubmit = () => {
-    validateFields((err, values) => {
+    validateFields(async (err) => {
       if (!err) {
-        console.log('Form values:', values)
-        dispatch({
-          type: 'activeSupplier/submitSupplierPrice',
-          payload: {
-            ...getFieldsValue()
-          }
+        const result = await dispatch({
+          type: 'activeSupplier/submitActiveSupplier',
+          payload: getFieldsValue()
         })
-        resetFields()
+
+        if (result && result.success) {
+          resetFields()
+        }
       }
     })
   }
