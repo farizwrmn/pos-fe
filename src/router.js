@@ -216,7 +216,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/supplierPrice'))
-              cb(null, require('./routes/master/supplierPrice/'))
+              cb(null, require('./routes/master/supplierPrice.js'))
             }, 'master-supplier-price')
           }
         }, {

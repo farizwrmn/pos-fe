@@ -59,6 +59,7 @@ const ModalEntry = ({
   modalChangeDefaultRole,
   modalNodeCheckedStore,
   modalAllStoresLoad,
+  modalAllTargetStoresLoad,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
@@ -91,11 +92,12 @@ const ModalEntry = ({
     } else if (activeTab === '4') {
       modalAllStoresLoad(item.userId)
     } else if (activeTab === '5') {
-      // Get List Fingerprint
-    } else if (activeTab === '6') {
+      modalAllTargetStoresLoad(item.userId) // get all target stores
+    } else if (activeTab === '7') {
       modalTotpLoad(item.userId)
     }
   }
+
   const hdlTableRowClick = (record) => {
     onChooseItem(record)
   }

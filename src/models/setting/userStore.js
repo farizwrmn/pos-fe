@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { messageInfo } from 'utils'
 import pathToRegexp from 'path-to-regexp'
-import { getAllStores, getListStores, getUserStores, saveUserDefaultStore, saveUserStore }
+import { getAllStores, getListStores, getUserStores, getUserTargetStores, saveUserDefaultStore, saveUserStore, saveUserTargetStore, getAllTargetStores }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
 
@@ -12,7 +12,8 @@ export default modelExtend(pageModel, {
     storeItem: {},
     listAllStores: [],
     listUserStores: [],
-    listCheckedStores: []
+    listCheckedStores: [],
+    listUserTargetStores: []
   },
 
   subscriptions: {
@@ -92,6 +93,18 @@ export default modelExtend(pageModel, {
         console.log('error')
       }
     },
+    * getAllTargetStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getAllTargetStores, payload)
+      if (stores.success) {
+        yield put({ type: 'getUserTargetStores', payload })
+        yield put({
+          type: 'successAllTargetStore',
+          payload: { listAllStores: stores.data }
+        })
+      } else {
+        console.log('error')
+      }
+    },
     * getAllListStores ({ payload = {} }, { call, put }) {
       const stores = yield call(getListStores, payload)
       if (stores.success) {
@@ -118,6 +131,20 @@ export default modelExtend(pageModel, {
       //   console.log('error')
       // }
     },
+    * getUserTargetStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getUserTargetStores, payload)
+      // if (stores.success) {
+      yield put({
+        type: 'successUserTargetStore',
+        payload: {
+          listUserTargetStores: stores.success ? stores.userStore : '',
+          defaultStore: stores.success ? stores.defaultStore : ''
+        }
+      })
+      // } else {
+      //   console.log('error')
+      // }
+    },
     * saveDefaultStore ({ payload }, { call, put }) {
       // const customer = yield select(({ customer }) => customer.currentItem.memberCode)
       // const newUser = { ...payload, customer }
@@ -134,6 +161,18 @@ export default modelExtend(pageModel, {
     },
     * saveCheckedStore ({ payload }, { call, put }) {
       const data = yield call(saveUserStore, payload)
+      if (data.success) {
+        messageInfo(data.message, 'info', 3)
+        yield put({
+          type: 'updateState',
+          payload: payload.defaultStore
+        })
+      } else {
+        throw data
+      }
+    },
+    * saveCheckedTargetStore ({ payload }, { call, put }) {
+      const data = yield call(saveUserTargetStore, payload)
       if (data.success) {
         messageInfo(data.message, 'info', 3)
         yield put({
@@ -169,6 +208,13 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         listUserStores: action.payload.listUserStores.split(','),
+        storeItem: { default: action.payload.defaultStore }
+      }
+    },
+    successUserTargetStore (state, action) {
+      return {
+        ...state,
+        listUserTargetStores: action.payload.listUserStores.split(','),
         storeItem: { default: action.payload.defaultStore }
       }
     },
