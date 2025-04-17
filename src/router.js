@@ -202,6 +202,24 @@ const Routers = function ({ history, app }) {
             }, 'master-supplier')
           }
         }, {
+        }, {
+          path: 'master/active-supplier',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/activeSupplier'))
+              cb(null, require('./routes/master/activeSupplier/'))
+            }, 'master-active-supplier')
+          }
+        }, {
+        }, {
+          path: 'master/supplier-price',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/master/supplierPrice'))
+              cb(null, require('./routes/master/supplierPrice/'))
+            }, 'master-supplier-price')
+          }
+        }, {
           path: 'master/product/brand',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
