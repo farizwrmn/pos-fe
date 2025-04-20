@@ -446,7 +446,7 @@ export default {
                   if (response && response.data) {
                     if (response.data.posQty >= response.data.qty) {
                       Modal.warning({
-                        title: 'Promo ini sudah habis',
+                        title: 'Quota promo ini sudah habis',
                         content: 'Tawarkan promo lainnya'
                       })
                       return
@@ -1948,7 +1948,7 @@ export default {
                   if (response && response.data) {
                     if (response.data.posQty >= response.data.qty) {
                       Modal.warning({
-                        title: 'Promo ini sudah habis',
+                        title: 'Quota promo ini sudah habis',
                         content: 'Tawarkan promo lainnya'
                       })
                       return

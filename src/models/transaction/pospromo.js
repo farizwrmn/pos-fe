@@ -12,7 +12,7 @@ import {
 } from 'utils/variables'
 import reduce from 'lodash/reduce'
 import { query } from '../../services/marketing/bundling'
-import { queryAllocation, queryMember } from '../../services/marketing/bundlingAllocation'
+import { queryAllocation, queryMember, queryMemberExists } from '../../services/marketing/bundlingAllocation'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
 // import { getDiscountByBundleCode } from './utils'
@@ -198,11 +198,21 @@ export default modelExtend(pageModel, {
           }
         }
         if (item && item.hasStoreAllocation === 1) {
+          const response = yield call(queryMemberExists, { memberId: memberInformation.id, bundlingId: item.id })
+          if (response && response.success && !response.data) {
+            Modal.warning({
+              title: 'Member belum memiliki transaksi',
+              content: 'Tawarkan promo lainnya'
+            })
+            return
+          }
+        }
+        if (item && item.hasStoreAllocation === 1) {
           const response = yield call(queryAllocation, { bundlingId: item.id, storeId: getCurrentUserStore() })
           if (response && response.data) {
             if (response.data.posQty >= response.data.qty) {
               Modal.warning({
-                title: 'Promo ini sudah habis',
+                title: 'Quota promo ini sudah habis',
                 content: 'Tawarkan promo lainnya'
               })
               return
