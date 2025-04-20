@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table, Icon, Row, Col, Card, Form, Input, Button, Checkbox } from 'antd'
 import ModalSticker from './Modal'
+import ModalImport from './ModalImport'
 
 const FormItem = Form.Item
 
@@ -87,19 +88,27 @@ const distPriceStyleRight = {
 
 const Shelf = ({
   onShowModalProduct,
+  onShowModalImport,
   showModalProduct,
+  showModalImport,
   listSticker,
   addSticker,
   deleteSticker,
   updateSticker,
+  listStickerImport,
+  addStickerImport,
+  deleteStickerImport,
+  updateStickerImport,
   onSelectSticker,
   onGetPromoList,
+  onGetImportedList,
   aliases,
   dispatch,
   clickChild,
   clickChildShelf,
   clickLongChild,
   loading,
+  onCloseModalImport,
   form: {
     getFieldsValue,
     getFieldDecorator
@@ -109,6 +118,10 @@ const Shelf = ({
   let totalQty = 0
   if (listSticker.length > 0) {
     totalQty = listSticker.map(x => x.qty).reduce((total, qty) => total + qty)
+  }
+
+  if (listStickerImport.length > 0) {
+    totalQty = listStickerImport.map(x => x.qty).reduce((total, qty) => total + qty)
   }
 
   const deleteItem = (record) => {
@@ -168,10 +181,36 @@ const Shelf = ({
     changeItem,
     showModalProduct,
     listSticker,
+    listStickerImport,
     ...modalStickerProps
   }
 
   let stickers = []
+  if (listSticker.length > 0) {
+    stickers = listSticker.map((x) => {
+      let count = []
+      for (let i = 0; i < x.qty; i += 1) {
+        count.push(<Card.Grid style={gridStyle}>
+          <p style={labelStyle}>{x.info.productName.slice(0, 20)}</p>
+          <p style={labelStyle}>{x.info.productName.slice(20, 40).length > 0 ? x.name.slice(20, 40) : '\u00A0'}</p>
+          <Row>
+            <Col md={12}>
+              {aliases.check1 && (<p style={priceStyle}>Rp. {parseInt(x.info[aliases.price1], 0).toLocaleString()}</p>)}
+              {aliases.check2 && (<p style={distPriceStyleLeft}>Rp. {parseInt(x.info[aliases.price2], 0).toLocaleString()}</p>)}
+              <p style={distPriceStyleLeft}><br /></p>
+            </Col>
+            <Col md={12}>
+              {aliases.check1 && (<p style={sellPriceStyle}>{aliases.alias1}</p>)}
+              {aliases.check2 && (<p style={distPriceStyleRight}>{aliases.alias2}</p>)}
+            </Col>
+          </Row>
+          <p style={productCodeStyle}>{x.info.productCode}</p>
+        </Card.Grid>)
+      }
+      return count
+    })
+  }
+
   if (listSticker.length > 0) {
     stickers = listSticker.map((x) => {
       let count = []
@@ -251,7 +290,20 @@ const Shelf = ({
           </FormItem>
           <Row>
             <Button style={{ margin: '8px 0' }} onClick={() => handleSubmit()} type="primary">Change</Button>
+            <Button style={{ margin: '8px 0', marginLeft: '10px' }} onClick={() => onShowModalImport()} type="default" onCancel={onCloseModalImport}>Import Price Tag</Button>
           </Row>
+          {showModalImport && (
+            <ModalImport
+              loading={loading.effects['productstock/printStickerImport']}
+              visible={showModalImport}
+              onCancel={onCloseModalImport}
+              dispatch={dispatch}
+              onSuccess={onGetImportedList}
+              resetChild={clickChild}
+              resetChildShelf={clickChildShelf}
+              resetChildLong={clickLongChild}
+            />
+          )}
         </Form>
         <div style={divStyle}>
           <h2 style={{ padding: '10px 0 0 15px' }}>

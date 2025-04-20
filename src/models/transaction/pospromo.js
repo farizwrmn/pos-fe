@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { posTotal, numberFormat } from 'utils'
 import {
+  getCurrentUserStore,
   getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
   // getGrabmartOrder,
   setCashierTrans, setServiceTrans, setBundleTrans
@@ -11,6 +12,7 @@ import {
 } from 'utils/variables'
 import reduce from 'lodash/reduce'
 import { query } from '../../services/marketing/bundling'
+import { queryAllocation, queryMember } from '../../services/marketing/bundlingAllocation'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
 // import { getDiscountByBundleCode } from './utils'
@@ -176,6 +178,37 @@ export default modelExtend(pageModel, {
 
       if (dataHeaderBundle.success && dataDetailReward.success && dataDetailReward.data && dataDetailReward.data.length > 0) {
         const item = dataHeaderBundle.data[0]
+        if (item && item.memberOnly) {
+          if (memberInformation && memberInformation.memberCode === 'UMUM') {
+            Modal.warning({
+              title: 'Wajib input member',
+              content: 'Promo ini membutuhkan input member'
+            })
+            return
+          }
+        }
+        if (item && item.memberOnlyApplyMultiple === 0) {
+          const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.id })
+          if (response && response.success && response.data) {
+            Modal.warning({
+              title: 'Member ini sudah claim Promo ini',
+              content: 'Tawarkan promo lainnya'
+            })
+            return
+          }
+        }
+        if (item && item.hasStoreAllocation === 1) {
+          const response = yield call(queryAllocation, { bundlingId: item.id, storeId: getCurrentUserStore() })
+          if (response && response.data) {
+            if (response.data.posQty >= response.data.qty) {
+              Modal.warning({
+                title: 'Promo ini sudah habis',
+                content: 'Tawarkan promo lainnya'
+              })
+              return
+            }
+          }
+        }
         const total = (parseFloat(curNetto) + parseFloat(dineIn))
         if (item && item.minimumPayment > 0 && item.minimumPayment > total) {
           Modal.error({
@@ -299,6 +332,9 @@ export default modelExtend(pageModel, {
         name: item.name,
         inputTime: new Date().valueOf(),
         minimumPayment: item.minimumPayment,
+        memberOnly: item.memberOnly,
+        memberOnlyApplyMultiple: item.memberOnlyApplyMultiple,
+        hasStoreAllocation: item.hasStoreAllocation,
         paymentOption: item.paymentOption,
         paymentBankId: item.paymentBankId,
         alwaysOn: item.alwaysOn,

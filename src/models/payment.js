@@ -6,6 +6,7 @@ import {
   queryPosDirectPrinting,
   directPrinting
 } from 'services/master/paymentOption/paymentCostService'
+import { queryAllocation, queryMember } from 'services/marketing/bundlingAllocation'
 import {
   getDenominatorDppInclude,
   getDenominatorPPNInclude,
@@ -415,6 +416,42 @@ export default {
                 if (currentExpressOrder) {
                   expressOrderId = currentExpressOrder.id
                   orderShortNumber = currentExpressOrder.orderShortNumber
+                }
+              }
+            }
+            if (dataBundle) {
+              for (let key in dataBundle) {
+                const item = dataBundle[key]
+                if (item && item.memberOnly) {
+                  if (memberInformation && memberInformation.memberCode === 'UMUM') {
+                    Modal.warning({
+                      title: 'Wajib input member',
+                      content: 'Promo ini membutuhkan input member'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnlyApplyMultiple === 0) {
+                  const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.bundleId })
+                  if (response && response.success && response.data) {
+                    Modal.warning({
+                      title: 'Member ini sudah claim Promo ini',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryAllocation, { bundlingId: item.bundleId, storeId: lstorage.getCurrentUserStore() })
+                  if (response && response.data) {
+                    if (response.data.posQty >= response.data.qty) {
+                      Modal.warning({
+                        title: 'Promo ini sudah habis',
+                        content: 'Tawarkan promo lainnya'
+                      })
+                      return
+                    }
+                  }
                 }
               }
             }
@@ -1884,6 +1921,42 @@ export default {
               0,
               99
             )
+            if (dataBundle) {
+              for (let key in dataBundle) {
+                const item = dataBundle[key]
+                if (item && item.memberOnly) {
+                  if (memberInformation && memberInformation.memberCode === 'UMUM') {
+                    Modal.warning({
+                      title: 'Wajib input member',
+                      content: 'Promo ini membutuhkan input member'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnlyApplyMultiple === 0) {
+                  const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.bundleId })
+                  if (response && response.success && response.data) {
+                    Modal.warning({
+                      title: 'Member ini sudah claim Promo ini',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryAllocation, { bundlingId: item.bundleId, storeId: lstorage.getCurrentUserStore() })
+                  if (response && response.data) {
+                    if (response.data.posQty >= response.data.qty) {
+                      Modal.warning({
+                        title: 'Promo ini sudah habis',
+                        content: 'Tawarkan promo lainnya'
+                      })
+                      return
+                    }
+                  }
+                }
+              }
+            }
             const detailPOS = {
               reference,
               description: posDescription,

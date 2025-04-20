@@ -6,10 +6,8 @@ const errorCallback = (errorMessage) => {
 }
 
 const writeToSelectedPrinter = (dataToWrite) => {
-  console.log('dataToWrite', dataToWrite)
   let selected_device = null
   BrowserPrint.getDefaultDevice('printer', (device) => {
-    console.log('device', device)
     selected_device = device
     selected_device.send(dataToWrite, undefined, errorCallback)
   }, () => {

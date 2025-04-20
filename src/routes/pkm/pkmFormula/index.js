@@ -155,10 +155,8 @@ const Counter = ({
               const mpkm = row.values[6]
               const pkm = row.values[7]
               const nPlus = row.values[8]
-              const nPlusExpiredDate = row.values[9]
-              const nCross = row.values[10]
-              const nCrossExpiredDate = row.values[11]
-              const deleted = row.values[12]
+              const nCross = row.values[9]
+              const deleted = row.values[10]
               if (rowIndex >= 6
                 && typeof productId !== 'undefined'
                 && typeof minor !== 'undefined'
@@ -175,9 +173,7 @@ const Counter = ({
                   mpkm,
                   pkm,
                   nPlus,
-                  nPlusExpiredDate,
                   nCross,
-                  nCrossExpiredDate,
                   deleted
                 }
                 uploadData.push(data)
@@ -285,7 +281,7 @@ const Counter = ({
             nPlus: item.nPlus || 0,
             nPlusExpiredDate: item.nPlusExpiredDate || null,
             nCross: item.nCross || 0,
-            nCrossExpiredDate: item.nCrossExpiredDate || null,
+            nCrossExpiredDate: item.nCrossExpiredDate || null
           }
         }
       })
