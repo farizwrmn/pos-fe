@@ -198,7 +198,7 @@ export default modelExtend(pageModel, {
           }
         }
         if (item && item.hasStoreAllocation === 1) {
-          const response = yield call(queryMemberExists, { memberId: memberInformation.id, bundlingId: item.id })
+          const response = yield call(queryMemberExists, { memberId: memberInformation.id })
           if (response && response.success && !response.data) {
             Modal.warning({
               title: 'Member belum memiliki transaksi',

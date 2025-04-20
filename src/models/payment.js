@@ -6,7 +6,7 @@ import {
   queryPosDirectPrinting,
   directPrinting
 } from 'services/master/paymentOption/paymentCostService'
-import { queryAllocation, queryMember } from 'services/marketing/bundlingAllocation'
+import { queryAllocation, queryMember, queryMemberExists } from 'services/marketing/bundlingAllocation'
 import {
   getDenominatorDppInclude,
   getDenominatorPPNInclude,
@@ -436,6 +436,16 @@ export default {
                   if (response && response.success && response.data) {
                     Modal.warning({
                       title: 'Member ini sudah claim Promo ini',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryMemberExists, { memberId: memberInformation.id })
+                  if (response && response.success && !response.data) {
+                    Modal.warning({
+                      title: 'Member belum memiliki transaksi',
                       content: 'Tawarkan promo lainnya'
                     })
                     return
@@ -1938,6 +1948,16 @@ export default {
                   if (response && response.success && response.data) {
                     Modal.warning({
                       title: 'Member ini sudah claim Promo ini',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryMemberExists, { memberId: memberInformation.id })
+                  if (response && response.success && !response.data) {
+                    Modal.warning({
+                      title: 'Member belum memiliki transaksi',
                       content: 'Tawarkan promo lainnya'
                     })
                     return
