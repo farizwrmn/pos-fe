@@ -1209,7 +1209,7 @@ export default {
                   maximumFractionDigits: 0
                 })
                 : 0
-                }`
+              }`
             }
           ])
         }
@@ -1242,7 +1242,7 @@ export default {
               text: `${invoiceInfo.posData &&
                 invoiceInfo.posData.orderShortNumber &&
                 invoiceInfo.posData.orderShortNumber
-                }`,
+              }`,
               rightText: ''
             }
           ])
@@ -1267,7 +1267,7 @@ export default {
                 text: `${invoiceInfo.posData &&
                   invoiceInfo.posData.orderType &&
                   invoiceInfo.posData.orderType
-                  }`,
+                }`,
                 rightText: ''
               },
               {
@@ -1464,7 +1464,7 @@ export default {
                   maximumFractionDigits: 0
                 })
                 : 0
-                }`
+              }`
             }
           ])
           .concat(taxPrint)

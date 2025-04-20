@@ -279,7 +279,9 @@ const Counter = ({
             ...modalEditPkmItem,
             mpkm: item.mpkm || 0,
             nPlus: item.nPlus || 0,
-            nCross: item.nCross || 0
+            nPlusExpiredDate: item.nPlusExpiredDate || null,
+            nCross: item.nCross || 0,
+            nCrossExpiredDate: item.nCrossExpiredDate || null
           }
         }
       })

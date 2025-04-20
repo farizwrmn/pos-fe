@@ -18,9 +18,9 @@ class ProductStock extends Component {
   render () {
     const { productstock, dispatch, loading, location, app } = this.props
     const { listItem, update, activeKey,
-      showModalProduct, modalProductType, period, listSticker,
+      showModalProduct, showModalImport, modalProductType, period, listSticker, listStickerImport,
       aliases,
-      selectedSticker } = productstock
+      selectedSticker, productCode } = productstock
     const { user, storeInfo } = app
     const changeTab = (key) => {
       dispatch({
@@ -30,7 +30,8 @@ class ProductStock extends Component {
           modalType: 'add',
           currentItem: {},
           disable: '',
-          listSticker: []
+          listSticker: [],
+          listStickerImport: []
         }
       })
       const { pathname } = location
@@ -82,12 +83,15 @@ class ProductStock extends Component {
         dispatch,
         aliases,
         showModalProduct,
+        showModalImport,
         listItem,
         update,
         period,
         listSticker,
+        listStickerImport,
         modalProductType,
         selectedSticker,
+        productCode,
         onGetPromoList () {
           dispatch({
             type: 'productstock/printStickerActive',
@@ -105,6 +109,14 @@ class ProductStock extends Component {
               showModalProduct: true,
               modalProductType: key,
               selectedSticker: {}
+            }
+          })
+        },
+        onShowModalImport () {
+          dispatch({
+            type: 'productstock/updateState',
+            payload: {
+              showModalImport: true
             }
           })
         },
@@ -137,6 +149,14 @@ class ProductStock extends Component {
               modalProductType: '',
               listItem: [],
               period: []
+            }
+          })
+        },
+        onCloseModalImport () {
+          dispatch({
+            type: 'productstock/updateState',
+            payload: {
+              showModalImport: false
             }
           })
         },
@@ -191,6 +211,51 @@ class ProductStock extends Component {
             }
           })
         },
+        onGetImportedList () {
+          dispatch({
+            type: 'productstock/printStickerImport',
+            payload: {
+              resetChild: parentProps ? parentProps.clickChild : undefined,
+              resetChildShelf: parentProps ? parentProps.clickChildShelf : undefined,
+              resetChildLong: parentProps ? parentProps.clickLongChild : undefined,
+              productCode: parentProps ? parentProps.productCode : undefined
+            }
+          })
+        },
+        addStickerImport (sticker) {
+          dispatch({
+            type: 'productstock/addSticker',
+            payload: {
+              sticker,
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
+            }
+          })
+        },
+        deleteStickerImport (sticker) {
+          dispatch({
+            type: 'productstock/deleteSticker',
+            payload: {
+              sticker,
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
+            }
+          })
+        },
+        updateStickerImport (selectedRecord, changedRecord) {
+          dispatch({
+            type: 'productstock/updateSticker',
+            payload: {
+              selectedRecord,
+              changedRecord,
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
+            }
+          })
+        },
         onSearchUpdateSticker (value) {
           if (value.updatedAt.length !== 0) {
             dispatch({
@@ -211,6 +276,14 @@ class ProductStock extends Component {
             type: 'productstock/updateState',
             payload: {
               period: value.updatedAt
+            }
+          })
+          dispatch({
+            type: 'productstock/importPriceTag',
+            payload: {
+              resetChild: parentProps.clickChild,
+              resetChildShelf: parentProps.clickChildShelf,
+              resetChildLong: parentProps.clickLongChild
             }
           })
         }

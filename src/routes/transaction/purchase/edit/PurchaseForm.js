@@ -181,9 +181,18 @@ const PurchaseForm = ({ onChooseInvoice, user, onDiscPercent, listSupplier, show
                   }]
                 })(<Input disabled maxLength={30} />)}
               </FormItem>
-              <FormItem label="Reference" hasFeedback {...formItemLayout}>
+              <FormItem label="Invoice Number" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('reference', {
                   initialValue: transNo.reference,
+                  rules: [{
+                    required: true,
+                    message: 'Required'
+                  }]
+                })(<Input maxLength={30} />)}
+              </FormItem>
+              <FormItem label="PO Number" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('referencePO', {
+                  initialValue: transNo.referencePO,
                   rules: [{
                     required: true,
                     message: 'Required'
