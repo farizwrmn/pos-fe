@@ -15,7 +15,7 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
   const { listLovEmployee } = employee
   const { listLov } = misc
   const { roleItem, listUserRole, listUserRoleTarget, listUserRoleChange } = userRole
-  const { storeItem, listAllStores, listUserStores, listCheckedStores } = userStore
+  const { storeItem, listAllStores, listAllTargetStores, listUserStores, listUserTargetStores, listCheckedStores, listCheckedTargetStores } = userStore
   const { pageSize } = pagination
 
   const listRole = listLov &&
@@ -27,8 +27,11 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
     storeItem,
     roleItem,
     listAllStores,
+    listAllTargetStores,
     listUserStores,
     listCheckedStores,
+    listUserTargetStores,
+    listCheckedTargetStores,
     visible: modalVisible,
     visiblePopover,
     disabledItem,
@@ -184,6 +187,12 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
     modalNodeCheckedStore (userId, listCheckedStore) {
       dispatch({
         type: 'userStore/updateCheckedStores',
+        payload: { userId, data: { store: listCheckedStore } }
+      })
+    },
+    modalNodeCheckedTargetStore (userId, listCheckedStore) {
+      dispatch({
+        type: 'userStore/updateCheckedTargetStores',
         payload: { userId, data: { store: listCheckedStore } }
       })
     }

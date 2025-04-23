@@ -31,7 +31,9 @@ const ModalEntry = ({
   storeItem = {},
   roleItem = {},
   listAllStores = [],
+  listAllTargetStores = [],
   listUserStores = [],
+  listUserTargetStores = [],
   listLovEmployee = [],
   listRole = [],
   listUserRole = [],
@@ -39,6 +41,7 @@ const ModalEntry = ({
   currentUserRole = [],
   listUserRoleChange = {},
   listCheckedStores = [],
+  listCheckedTargetStores = [],
   modalType,
   dispatch,
   onOk,
@@ -58,6 +61,7 @@ const ModalEntry = ({
   modalChangeDefaultStore,
   modalChangeDefaultRole,
   modalNodeCheckedStore,
+  modalNodeCheckedTargetStore,
   modalAllStoresLoad,
   modalAllTargetStoresLoad,
   form: { getFieldDecorator, validateFields, getFieldsValue },
@@ -133,6 +137,10 @@ const ModalEntry = ({
       if (listCheckedStores && listCheckedStores.length > 0) {
         modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
       }
+      if (listCheckedTargetStores && listCheckedTargetStores.length > 0) {
+        modalButtonSaveClick(data.userId, listCheckedTargetStores, activeTab)
+      }
+      console.log('data', listCheckedTargetStores)
     })
   }
   const hdlCheckPassword = (rule, value, callback) => {
@@ -213,6 +221,10 @@ const ModalEntry = ({
 
   const hdlOnCheckStore = (checkedKeys) => {
     modalNodeCheckedStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
+  }
+
+  const hdlOnCheckTargetStore = (checkedKeys) => {
+    modalNodeCheckedTargetStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
   }
   // const hdlOnSelectStore = (selectedKeys, info) => {
   //   console.log('onSelect', info)
@@ -412,20 +424,19 @@ const ModalEntry = ({
             checkStrictly
             autoExpandParent
             defaultExpandAll
-            defaultCheckedKeys={listUserStores}
-            onRightClick={hdlSetDefaultStore}
-            onCheck={hdlOnCheckStore}
+            defaultCheckedKeys={listUserTargetStores}
+            onCheck={hdlOnCheckTargetStore}
           >
-            {renderTreeNodes(listAllStores)}
+            {renderTreeNodes(listAllTargetStores)}
           </Tree>
           <span style={paddingTop10} />
-          <Input
+          {/* <Input
             value={storeItem.default}
             addonBefore="Default (right-click tree-node to change): "
             size="small"
             placeholder="no default store"
             disabled
-          />
+          /> */}
         </TabPane>
         {/* <TabPane tab="Fingerprint" key="5">
           <Fingerprint {...fingerprintProps} />

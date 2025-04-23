@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { messageInfo } from 'utils'
 import pathToRegexp from 'path-to-regexp'
-import { getAllStores, getListStores, getUserStores, getUserTargetStores, saveUserDefaultStore, saveUserStore, saveUserTargetStore, getAllTargetStores }
+import { getAllStores, getListStores, getUserStores, getUserTargetStores, saveUserDefaultStore, saveUserStore, saveUserTargetStore, getAllTargetStores, getListTargetStores }
   from '../../services/setting/userStores'
 import { pageModel } from '../common'
 
@@ -11,9 +11,11 @@ export default modelExtend(pageModel, {
   state: {
     storeItem: {},
     listAllStores: [],
+    listAllTargetStores: [],
     listUserStores: [],
+    listUserTargetStores: [],
     listCheckedStores: [],
-    listUserTargetStores: []
+    listCheckedTargetStores: []
   },
 
   subscriptions: {
@@ -96,10 +98,10 @@ export default modelExtend(pageModel, {
     * getAllTargetStores ({ payload = {} }, { call, put }) {
       const stores = yield call(getAllTargetStores, payload)
       if (stores.success) {
-        yield put({ type: 'getUserTargetStores', payload })
+        // yield put({ type: 'getUserTargetStores', payload })
         yield put({
           type: 'successAllTargetStore',
-          payload: { listAllStores: stores.data }
+          payload: { listAllTargetStores: stores.data }
         })
       } else {
         console.log('error')
@@ -112,6 +114,18 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'successAllStore',
           payload: { listAllStores: stores.data }
+        })
+      } else {
+        console.log('error')
+      }
+    },
+    * getAllListTargetStores ({ payload = {} }, { call, put }) {
+      const stores = yield call(getListTargetStores, payload)
+      if (stores.success) {
+        // yield put({ type: 'getUserStores', payload })
+        yield put({
+          type: 'successAllTargetStore',
+          payload: { listAllTargetStores: stores.data }
         })
       } else {
         console.log('error')
@@ -137,8 +151,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'successUserTargetStore',
         payload: {
-          listUserTargetStores: stores.success ? stores.userStore : '',
-          defaultStore: stores.success ? stores.defaultStore : ''
+          listUserTargetStores: stores.success ? stores.userStore : ''
         }
       })
       // } else {
@@ -204,6 +217,12 @@ export default modelExtend(pageModel, {
         listAllStores: action.payload.listAllStores
       }
     },
+    successAllTargetStore (state, action) {
+      return {
+        ...state,
+        listAllTargetStores: action.payload.listAllTargetStores
+      }
+    },
     successUserStore (state, action) {
       return {
         ...state,
@@ -214,7 +233,7 @@ export default modelExtend(pageModel, {
     successUserTargetStore (state, action) {
       return {
         ...state,
-        listUserTargetStores: action.payload.listUserStores.split(','),
+        listUserTargetStores: action.payload.listUserTargetStores.split(','),
         storeItem: { default: action.payload.defaultStore }
       }
     },
@@ -230,6 +249,13 @@ export default modelExtend(pageModel, {
         ...state,
         ...action,
         listCheckedStores: action.payload.data.store
+      }
+    },
+    updateCheckedTargetStores (state, action) {
+      return {
+        ...state,
+        ...action,
+        listCheckedTargetStores: action.payload.data.store
       }
     }
   }
