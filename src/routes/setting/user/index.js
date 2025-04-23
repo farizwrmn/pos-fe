@@ -190,10 +190,10 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
         payload: { userId, data: { store: listCheckedStore } }
       })
     },
-    modalNodeCheckedTargetStore (userId, listCheckedStore) {
+    modalNodeCheckedTargetStore (userId, listCheckedTargetStore) {
       dispatch({
         type: 'userStore/updateCheckedTargetStores',
-        payload: { userId, data: { store: listCheckedStore } }
+        payload: { userId, data: { store: listCheckedTargetStore } }
       })
     }
   }

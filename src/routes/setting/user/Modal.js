@@ -137,6 +137,7 @@ const ModalEntry = ({
       if (listCheckedStores && listCheckedStores.length > 0) {
         modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
       }
+      console.log('dataa', listCheckedStores)
       if (listCheckedTargetStores && listCheckedTargetStores.length > 0) {
         modalButtonSaveClick(data.userId, listCheckedTargetStores, activeTab)
       }
