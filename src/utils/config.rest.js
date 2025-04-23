@@ -24,6 +24,7 @@ module.exports = {
     apiTargetStores: '/stores-target',
     apiTargetStoresList: '/users/:id/stores-target/list',
     apiListStores: '/list/stores',
+    apiListTargetStores: '/list/stores-target',
     apiTime: '/time',
     apiMemberBirthday: '/members/bday',
     apiMobile: '/mobile',

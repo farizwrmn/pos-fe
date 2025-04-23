@@ -1,6 +1,6 @@
 import { request, config, crypt } from 'utils'
 
-const { apiStores, apiListStores, apiUserStore, apiUserTargetStore, apiTargetStores, apiTargetStoresList } = config.rest
+const { apiStores, apiListStores, apiUserStore, apiUserTargetStore, apiTargetStores, apiListTargetStores } = config.rest
 
 export async function getAllStores () {
   const apiHeaderToken = crypt.apiheader()
@@ -34,13 +34,12 @@ export async function getListStores (params) {
 }
 
 export async function getListTargetStores (params) {
-  const url = apiTargetStoresList.replace('/:id', `/${params.userId}`)
   const apiHeaderToken = crypt.apiheader()
   params.type = 'all'
   params.field = 'id,storeCode,storeName,settingValue'
   params.storeParentId = null
   return request({
-    url,
+    url: apiListTargetStores,
     method: 'get',
     data: params,
     headers: apiHeaderToken

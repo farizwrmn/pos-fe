@@ -60,6 +60,10 @@ export default modelExtend(pageModel, {
             type: 'getAllListStores'
             // payload: location.query
           })
+          dispatch({
+            type: 'getAllListTargetStores'
+            // payload: location.query
+          })
         }
       })
     }
@@ -69,13 +73,23 @@ export default modelExtend(pageModel, {
 
     * query ({ payload = {} }, { call, put }) {
       const userStore = yield call(getAllStores, payload)
-      if (userStore.success) {
+      const userTargetStore = yield call(getAllTargetStores, payload)
+      if (userStore.success && userTargetStore.success) {
         yield put({
           type: 'successAllStore',
           payload: {
             listUserStore: userStore.data.map(a => a.key),
             pagination: {
               total: userStore.data.length
+            }
+          }
+        })
+        yield put({
+          type: 'successAllTargetStore',
+          payload: {
+            listUserTargetStore: userTargetStore.data.map(a => a.key),
+            pagination: {
+              total: userTargetStore.data.length
             }
           }
         })
@@ -231,10 +245,14 @@ export default modelExtend(pageModel, {
       }
     },
     successUserTargetStore (state, action) {
+      const list = action.payload.listUserTargetStores
+
       return {
         ...state,
-        listUserTargetStores: action.payload.listUserTargetStores.split(','),
-        storeItem: { default: action.payload.defaultStore }
+        listUserTargetStores:
+          list && typeof list === 'string' && list.length > 0
+            ? list.split(',')
+            : []
       }
     },
     updateState (state, action) {
