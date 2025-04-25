@@ -207,6 +207,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/master/activeSupplier'))
+              registerModel(app, require('./models/master/city'))
               cb(null, require('./routes/master/activeSupplier/'))
             }, 'master-active-supplier')
           }

@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { saveSupplierPriceInfo } from 'services/master/supplierPrice'
-import { query, add, edit, remove } from '../../services/master/supplier'
+import { query, add, edit, remove } from '../../services/master/supplierPrice'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -18,7 +18,7 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
-    listSupplier: [],
+    listSupplierPrice: [],
     activeKey: '0',
     disable: '',
     show: 1,
@@ -50,7 +50,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/master/supplier') {
+        if (pathname === '/master/supplier-price') {
           if (activeKey === '1') {
             dispatch({
               type: 'query',
@@ -97,7 +97,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            listSupplier: data.data,
+            listSupplierPrice: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -187,15 +187,22 @@ export default modelExtend(pageModel, {
     },
 
     querySuccess (state, action) {
-      const { listSupplier, pagination } = action.payload
+      const { listSupplierPrice, pagination } = action.payload
       return {
         ...state,
-        list: listSupplier,
-        listSupplier,
+        list: listSupplierPrice,
+        listSupplierPrice,
         pagination: {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+
+    updateState (state, { payload }) {
+      return {
+        ...state,
+        ...payload
       }
     },
 
@@ -212,7 +219,7 @@ export default modelExtend(pageModel, {
     },
 
     resetSupplierList (state) {
-      return { ...state, list: [], listSupplier: [], pagination: { total: 0 } }
+      return { ...state, list: [], listSupplierPrice: [], pagination: { total: 0 } }
     },
 
     refreshView (state) {
