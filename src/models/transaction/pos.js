@@ -446,6 +446,7 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
+            modalQrisPaymentType: '',
             listQrisLatestTransaction: []
           }
         })
