@@ -17,7 +17,7 @@ export async function query (params) {
 export async function saveSupplierInfo (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
-    url: '/mst-suppliers',
+    url: activeSuppliers,
     method: 'post',
     data: params,
     headers: apiHeaderToken

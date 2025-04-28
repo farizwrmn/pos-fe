@@ -6,7 +6,7 @@ import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
@@ -14,7 +14,7 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       confirm({
         title: `Are you sure delete ${record.supplierName} ?`,
         onOk () {
-          deleteItem(record.supplierCode)
+          deleteItem(record.id)
         }
       })
     }
@@ -22,88 +22,74 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
 
   const columns = [
     {
-      title: 'Code',
-      dataIndex: 'id',
-      key: 'id'
+      title: 'Supplier ID',
+      dataIndex: 'supplierId',
+      key: 'supplierId'
     },
     {
-      title: 'Name',
+      title: 'Supplier Name',
       dataIndex: 'supplierName',
       key: 'supplierName'
     },
     {
-      title: 'Payment Tempo',
-      dataIndex: 'paymentTempo',
-      key: 'paymentTempo',
-      render: text => (text ? `${text} ${parseFloat(text) > 1 ? 'days' : 'day'}` : '')
+      title: 'Store',
+      dataIndex: 'storeName',
+      key: 'storeName'
     },
     {
-      title: 'Address',
-      dataIndex: 'address1',
-      key: 'address1'
+      title: 'Product ID',
+      dataIndex: 'productId',
+      key: 'productId'
     },
     {
-      title: 'Province',
-      dataIndex: 'province',
-      key: 'province'
+      title: 'Product Code',
+      dataIndex: 'productCode',
+      key: 'productCode'
     },
     {
-      title: 'Post Code',
-      dataIndex: 'postCode',
-      key: 'postCode'
+      title: 'Product Name',
+      dataIndex: 'productName',
+      key: 'productName'
     },
     {
-      title: 'Mobile Number',
-      dataIndex: 'mobilePhone',
-      key: 'mobilePhone'
+      title: 'Created By',
+      dataIndex: 'createdBy',
+      key: 'createdBy'
     },
     {
-      title: 'Tax ID',
-      dataIndex: 'taxId',
-      key: 'taxId'
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
     },
     {
-      title: 'Created',
-      children: [
-        {
-          title: 'By',
-          dataIndex: 'createdBy',
-          key: 'createdBy'
-        },
-        {
-          title: 'Time',
-          dataIndex: 'createdAt',
-          key: 'createdAt',
-          render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
-        }
-      ]
+      title: 'Updated By',
+      dataIndex: 'updatedBy',
+      key: 'updatedBy'
     },
     {
-      title: 'Updated',
-      children: [
-        {
-          title: 'By',
-          dataIndex: 'updatedBy',
-          key: 'updatedBy'
-        },
-        {
-          title: 'Time',
-          dataIndex: 'updatedAt',
-          key: 'updatedAt',
-          render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
-        }
-      ]
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
     },
     {
       title: 'Operation',
       key: 'operation',
-      width: 100,
+      width: 120,
       fixed: 'right',
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Edit' }, { key: '2', name: 'Delete' }]} />
-      }
+      render: (text, record) => (
+        <DropOption
+          onMenuClick={e => handleMenuClick(record, e)}
+          menuOptions={[
+            { key: '1', name: 'Edit' },
+            { key: '2', name: 'Delete' }
+          ]}
+        />
+      )
     }
   ]
+
 
   return (
     <div>

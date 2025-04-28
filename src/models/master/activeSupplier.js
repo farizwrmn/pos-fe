@@ -117,7 +117,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(saveSupplierInfo, { id: payload.id, data: payload.data })
+      const data = yield call(saveSupplierInfo, payload.data)
       if (data.success) {
         // yield put({ type: 'query' })
         success()

@@ -12,8 +12,6 @@ import PrintXLS from './PrintXLS'
 const TabPane = Tabs.TabPane
 
 const Supplier = ({ supplier, city, loading, dispatch, location, app }) => {
-  console.log('data', city)
-
   const { listSupplier, pagination, display, isChecked, modalType, currentItem, activeKey, disable, show } = supplier
   const { listCity } = city
   const { user, storeInfo } = app

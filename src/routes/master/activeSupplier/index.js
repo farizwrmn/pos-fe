@@ -3,24 +3,64 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
-import ImportExcel from '../../../routes/procurement/purchaseOrder/main/ImportExcel'
 import Form from './Form'
 import List from './List'
+import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
 const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city }) => {
-
-  const { activeKey, listActiveSupplier, pagination, currentItem, modalType, disable } = activeSupplier
-  console.log(currentItem, 'currentItem')
+  const { activeKey, listActiveSupplier, pagination, currentItem, modalType, disable, display, isChecked, show } = activeSupplier
   const { listCity } = city
   const { user, storeInfo } = app
-
-  const importExcelProps = {
-    data: [{ id: 1 }],
-    user,
-    storeInfo
+  const filterProps = {
+    display,
+    isChecked,
+    show,
+    filter: {
+      ...location.query
+    },
+    onFilterChange (value) {
+      // dispatch({
+      //   type: 'customer/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
+        }
+      }))
+    },
+    switchIsChecked () {
+      dispatch({
+        type: 'supplier/switchIsChecked',
+        payload: `${isChecked ? 'none' : 'block'}`
+      })
+    },
+    onResetClick () {
+      const { query, pathname } = location
+      const { q, createdAt, page, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          ...other
+        }
+      }))
+    }
   }
+
+  // const importExcelProps = {
+  //   data: [{ id: 1 }],
+  //   user,
+  //   storeInfo
+  // }
 
   const formProps = {
     listCity,
@@ -124,15 +164,16 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
 
   return (
     <div className="content-inner">
-      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type='card'>
+      <Tabs activeKey={activeKey} onChange={key => changeTab(key)} type="card">
         <TabPane tab="Form" key="0">
           {activeKey === '0' && <Form {...formProps} />
           }
         </TabPane>
         <TabPane tab="Browse" key="1">
-          <div style={{ marginLeft: '-10px' }}>
+          {/* <div style={{ marginLeft: '-10px' }}>
             <ImportExcel {...importExcelProps} />
-          </div>
+          </div> */}
+          <Filter {...filterProps} />
           <List {...listProps} />
         </TabPane>
       </Tabs>
@@ -146,7 +187,7 @@ ActiveSupplier.propTypes = {
   app: PropTypes.object,
   activeSupplier: PropTypes.object,
   dispatch: PropTypes.func,
-  city: PropTypes.object,
+  city: PropTypes.object
 }
 
 export default connect(({ activeSupplier, city, loading, app }) => ({ activeSupplier, city, loading, app }))(ActiveSupplier)

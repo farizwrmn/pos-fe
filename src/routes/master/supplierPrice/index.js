@@ -3,29 +3,95 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { Tabs } from 'antd'
 import { connect } from 'dva'
-import ImportExcel from '../../procurement/purchaseOrder/main/ImportExcel'
 import Form from './Form'
 import List from './List'
+import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
 
-const SupplierPrice = ({ app, dispatch, loading, resetFields, supplierPrice, location }) => {
-  const { activeKey, listSupplierPrice, pagination } = supplierPrice
+const SupplierPrice = ({ app, dispatch, loading, supplierPrice, location, city }) => {
+  const { activeKey, listSupplierPrice, pagination, currentItem, modalType, disable, display, isChecked, show } = supplierPrice
+  const { listCity } = city
   const { user, storeInfo } = app
-  const importExcelProps = {
-    data: [{ id: 1 }],
-    user,
-    storeInfo
+  const filterProps = {
+    display,
+    isChecked,
+    show,
+    filter: {
+      ...location.query
+    },
+    onFilterChange (value) {
+      // dispatch({
+      //   type: 'customer/query',
+      //   payload: {
+      //     ...value
+      //   }
+      // })
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...value,
+          page: 1
+        }
+      }))
+    },
+    switchIsChecked () {
+      dispatch({
+        type: 'supplier/switchIsChecked',
+        payload: `${isChecked ? 'none' : 'block'}`
+      })
+    },
+    onResetClick () {
+      const { query, pathname } = location
+      const { q, createdAt, page, ...other } = query
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          page: 1,
+          ...other
+        }
+      }))
+    }
   }
+  // const importExcelProps = {
+  //   data: [{ id: 1 }],
+  //   user,
+  //   storeInfo
+  // }
 
   const formProps = {
-    data: [{ id: 1 }],
-    user,
-    storeInfo,
-    dispatch,
-    loading,
-    resetFields
+    listCity,
+    item: currentItem,
+    modalType,
+    disabled: `${modalType === 'edit' ? disable : ''}`,
+    button: `${modalType === 'add' ? 'Add' : 'Update'}`,
+    onSubmit (id, data) {
+      dispatch({
+        type: `supplierPrice/${modalType}`,
+        payload: {
+          id,
+          data
+        }
+      })
+    },
+    onCancel () {
+      const { pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          activeKey: '1'
+        }
+      }))
+      dispatch({
+        type: 'supplierPrice/updateState',
+        payload: {
+          currentItem: {}
+        }
+      })
+    }
   }
 
   const changeTab = (key) => {
@@ -104,7 +170,10 @@ const SupplierPrice = ({ app, dispatch, loading, resetFields, supplierPrice, loc
           }
         </TabPane>
         <TabPane tab="Browse" key="1">
-          <ImportExcel {...importExcelProps} />
+          {/* <div style={{ marginLeft: '-10px' }}>
+            <ImportExcel {...importExcelProps} />
+          </div> */}
+          <Filter {...filterProps} />
           <List {...listProps} />
         </TabPane>
       </Tabs>
@@ -117,7 +186,8 @@ SupplierPrice.propTypes = {
   location: PropTypes.object,
   app: PropTypes.object,
   supplierPrice: PropTypes.object,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  city: PropTypes.object
 }
 
 export default connect(({ supplierPrice, city, loading, app }) => ({ supplierPrice, city, loading, app }))(SupplierPrice)

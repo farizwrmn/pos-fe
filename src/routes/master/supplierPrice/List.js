@@ -6,15 +6,15 @@ import moment from 'moment'
 
 const confirm = Modal.confirm
 
-const List = ({ ...tableProps, editItem, deleteItem }) => {
+const List = ({ editItem, deleteItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       editItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: `Are you sure delete ${record.supplierName} ?`,
+        title: `Are you sure delete ${record.price} ?`,
         onOk () {
-          deleteItem(record.supplierCode)
+          deleteItem(record.id)
         }
       })
     }
@@ -25,6 +25,11 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Supplier ID',
       dataIndex: 'supplierId',
       key: 'supplierId'
+    },
+    {
+      title: 'Supplier Name',
+      dataIndex: 'supplierName',
+      key: 'supplierName'
     },
     {
       title: 'Product ID',
@@ -66,6 +71,12 @@ const List = ({ ...tableProps, editItem, deleteItem }) => {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
+    },
+    {
+      title: 'Created By',
+      dataIndex: 'createdBy',
+      key: 'createdBy',
       render: text => (text ? moment(text).format('DD-MM-YYYY HH:mm:ss') : '')
     },
     {
