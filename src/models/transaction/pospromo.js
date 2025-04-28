@@ -187,7 +187,7 @@ export default modelExtend(pageModel, {
             return
           }
         }
-        if (item && item.memberOnlyApplyMultiple === 0) {
+        if (item && item.memberOnly && item.memberOnlyApplyMultiple === 0) {
           const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.id })
           if (response && response.success && response.data) {
             Modal.warning({
@@ -197,9 +197,9 @@ export default modelExtend(pageModel, {
             return
           }
         }
-        if (item && item.hasStoreAllocation === 1) {
+        if (item && item.memberOnly && item.hasStoreAllocation === 1) {
           const response = yield call(queryMemberExists, { memberId: memberInformation.id })
-          if (response && response.success && !response.data) {
+          if (response && response.success && response.data) {
             Modal.warning({
               title: 'Member belum memiliki transaksi',
               content: 'Tawarkan promo lainnya'
@@ -207,7 +207,7 @@ export default modelExtend(pageModel, {
             return
           }
         }
-        if (item && item.hasStoreAllocation === 1) {
+        if (item && item.memberOnly && item.hasStoreAllocation === 1) {
           const response = yield call(queryAllocation, { bundlingId: item.id, storeId: getCurrentUserStore() })
           if (response && response.data) {
             if (response.data.posQty >= response.data.qty) {
