@@ -433,7 +433,7 @@ export default {
           payload: {
             listQrisLatestTransaction: response.data,
             paymentTransaction: response.data[0],
-            qrisPaymentCurrentTransNo: response.data[0].transNo
+            qrisPaymentCurrentTransNo: response.data[0].transNo ? response.data[0].transNo : lstorage.getDynamicQrisPosTransNo()
           }
         })
         yield put({
@@ -446,7 +446,6 @@ export default {
         yield put({
           type: 'updateState',
           payload: {
-            modalQrisPaymentType: '',
             listQrisLatestTransaction: []
           }
         })
@@ -4306,7 +4305,7 @@ export default {
               payload: {
                 modalQrisPaymentVisible: true,
                 modalQrisPaymentType: 'waiting',
-                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo,
+                qrisPaymentCurrentTransNo: paymentTransaction.posTransNo ? paymentTransaction.posTransNo : lstorage.getDynamicQrisPosTransNo(),
                 paymentTransaction
               }
             })
