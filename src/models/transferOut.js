@@ -15,6 +15,7 @@ import {
   query as querySequence
 } from '../services/sequence'
 import { pageModel } from './common'
+import { getUserTargetStores } from 'services/setting/userStores'
 
 const { stockMinusAlert } = alertModal
 const success = () => {
@@ -449,6 +450,11 @@ export default modelExtend(pageModel, {
     },
     * queryStore (payload, { call, put }) {
       const listStore = lstorage.getListUserStores()
+      
+      const udiGet = lstorage.getStorageKey('udi')[1]
+      const payloadUser = { userId: udiGet }
+      const dataTargetStore = yield call(getUserTargetStores, payloadUser)
+      
       if (listStore && listStore.length > 0) {
         const response = yield call(queryStore, {
           id: listStore[0].value
@@ -487,10 +493,19 @@ export default modelExtend(pageModel, {
           }
         }
       }
+
+      const storeCodes = dataTargetStore.userStore
+      .split(',')
+      .map(code => code.slice(-4));
+
+      const filteredListStore = listStore.filter(store =>
+      storeCodes.includes(store.code)
+      );
+
       yield put({
         type: 'updateState',
         payload: {
-          listStore
+          listStore: filteredListStore
         }
       })
     },
