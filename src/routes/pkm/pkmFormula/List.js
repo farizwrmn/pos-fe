@@ -269,6 +269,19 @@ const List = ({ tmpListProduct, onOpenModalPkm, onOpenModalMPKM, onOpenModalTag,
       key: 'effectiveStock'
     },
     {
+      title: 'Created By',
+      dataIndex: 'createdBy',
+      width: 120,
+      key: 'createdBy'
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      width: 130,
+      key: 'createdAt',
+      render: text => moment(text).format('YYYY-MMM-DD HH:mm')
+    },
+    {
       title: 'Updated By',
       dataIndex: 'updatedBy',
       width: 120,
