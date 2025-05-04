@@ -89,6 +89,7 @@ import {
   queryCheckStatus as queryCheckPaymentTransactionStatus,
   queryCheckPaymentTransactionInvoice
 } from '../../services/payment/paymentTransactionService'
+import { query as queryReward } from '../../services/marketing/bundlingReward'
 
 const { insertCashierTrans, insertConsignment, reArrangeMember } = variables
 
@@ -2426,7 +2427,42 @@ export default {
           for (let key in currentCategory) {
             const item = currentCategory[key]
             let listFormItem = []
-            if (item.type === 'P') {
+            if (`${currentBundle.type}` === '3') {
+              const dataDetailReward = yield call(queryReward, { bundleId: currentBundle.id, type: 'all' })
+              if (dataDetailReward.success && dataDetailReward.data && dataDetailReward.data.length > 0) {
+                listFormItem = dataDetailReward.data.map(bundleItem => ({
+                  id: bundleItem.productId,
+                  productCode: bundleItem.productCode,
+                  productName: bundleItem.productName,
+                  sellPrice: currentBundle.sellPrice,
+                  distPrice01: currentBundle.sellPrice,
+                  distPrice02: currentBundle.sellPrice,
+                  distPrice03: currentBundle.sellPrice,
+                  distPrice04: currentBundle.sellPrice,
+                  distPrice05: currentBundle.sellPrice,
+                  distPrice06: currentBundle.sellPrice,
+                  distPrice07: currentBundle.sellPrice,
+                  distPrice08: currentBundle.sellPrice,
+                  distPrice09: currentBundle.sellPrice,
+                  storePrice: [
+                    {
+                      storeId: lstorage.getCurrentUserStore(),
+                      productId: bundleItem.productId,
+                      sellPrice: currentBundle.sellPrice,
+                      distPrice01: currentBundle.sellPrice,
+                      distPrice02: currentBundle.sellPrice,
+                      distPrice03: currentBundle.sellPrice,
+                      distPrice04: currentBundle.sellPrice,
+                      distPrice05: currentBundle.sellPrice,
+                      distPrice06: currentBundle.sellPrice,
+                      distPrice07: currentBundle.sellPrice,
+                      distPrice08: currentBundle.sellPrice,
+                      distPrice09: currentBundle.sellPrice
+                    }
+                  ]
+                }))
+              }
+            } else if (item.type === 'P') {
               const params = {
                 categoryCode: item.categoryCode,
                 type: 'all'
@@ -2471,7 +2507,22 @@ export default {
               }
             }
             if (mode === 'add') {
-              if (item.type === 'P') {
+              console.log('listFormItem1', listFormItem)
+              if (currentBundle.type === '3') {
+                listReward.push({
+                  initialValue: {
+                    key: listFormItem[0].id,
+                    label: listFormItem[0].productName
+                  },
+                  label: {
+                    productName: currentBundle.name
+                  },
+                  key: indexCount,
+                  item,
+                  listItem: listFormItem
+                })
+                console.log('listReward1', listReward)
+              } else if (item.type === 'P') {
                 const filteredProduct = dataPos.filter(filtered => filtered.categoryCode === item.categoryCode && filtered.bundleId === item.bundleId)
                 for (let index in filteredProduct) {
                   const product = filteredProduct[index]
@@ -2488,7 +2539,7 @@ export default {
                       item,
                       listItem: listFormItem
                     })
-                    console.log('listReward', listReward)
+                    console.log('listReward2', listReward)
                     indexCount += 1
                   }
                 }
@@ -2513,19 +2564,21 @@ export default {
                   }
                 }
               }
-              for (let index = 0; index < item.qty; index += 1) {
-                listReward.push({
-                  label: {
-                    productName: item.productName
-                  },
-                  key: indexCount,
-                  item,
-                  listItem: listFormItem
-                })
-                indexCount += 1
+              if (currentBundle.type !== '3') {
+                for (let index = 0; index < item.qty; index += 1) {
+                  listReward.push({
+                    label: {
+                      productName: item.productName
+                    },
+                    key: indexCount,
+                    item,
+                    listItem: listFormItem
+                  })
+                  indexCount += 1
+                }
               }
-              console.log('listReward', listReward)
-            } else if (mode === 'edit') {
+              console.log('listReward3', listReward)
+            } else if (mode === 'edit' && currentBundle.type !== '3') {
               if (item.type === 'P') {
                 const filteredProduct = dataPos.filter(filtered => filtered.categoryCode === item.categoryCode && filtered.bundleId === item.bundleId)
                 for (let index in filteredProduct) {
@@ -2612,41 +2665,8 @@ export default {
       const storeInfo = localStorage.getItem(`${prefix}store`) ? JSON.parse(localStorage.getItem(`${prefix}store`)) : {}
       const listProductData = yield call(queryPOSProductSales, { from: storeInfo.startPeriod, to: moment().format('YYYY-MM-DD'), product: listProductId.toString() })
       if (listProductData && listProductData.success && listProductQty && listProductQty.length > 0) {
-        // let success = false
-        // let message = ''
         const dataPos = getCashierTrans()
-        // for (let key in listProductQty) {
-        //   const { item } = listProductQty[key]
-        //   const filteredStock = listProductData.data.filter(filtered => filtered.productId === item.id)
-        //   const existsQty = dataPos
-        //     .filter(filtered => filtered.productId === item.id && filtered.categoryCode !== item.categoryCode)
-        //     .reduce((prev, next) => prev + next.qty, 0)
-        //   if (filteredStock && filteredStock[0]) {
-        //     const totalQty = listProductQty[key].qty + existsQty
-        //     if (filteredStock[0].count >= totalQty) {
-        //       success = true
-        //     } else {
-        //       success = false
-        //       message = `Your input: ${existsQty + listProductQty[key].qty} Available: ${filteredStock[0].count}`
-        //       break
-        //     }
-        //   } else {
-        //     success = false
-        //     message = `Your input: ${existsQty + listProductQty[key].qty} Available: Not Found`
-        //     break
-        //   }
-        // }
-        // if (!success) {
-        // Modal.warning({
-        //   title: 'No available stock',
-        //   content: message
-        // })
-        // } else {
-        // const currentBundle = getBundleTrans()
-        // const currentReward = yield select(({ pospromo }) => pospromo.currentReward)
         const bundleData = yield select(({ pospromo }) => pospromo.bundleData)
-        // const resultCompareBundle = currentBundle.filter(filtered => filtered.bundleId === bundleData.item.id)
-        // const exists = resultCompareBundle ? resultCompareBundle[0] : undefined
         if (payload.reset) {
           payload.reset()
         }
@@ -2687,11 +2707,11 @@ export default {
           })
           .filter(filtered => filtered.no)
           .map((item, index) => ({ ...item, no: index + 1 }))
+
         for (let key in listProductQty) {
           const item = listProductQty[key]
           const currentReward = item.reward.item
-
-          if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
+          if (currentReward && currentReward.categoryCode && currentReward.productCode !== '#Bundle' && currentReward.type === 'P') {
             item.item.sellPrice = currentReward.sellPrice
             item.item.distPrice01 = currentReward.distPrice01
             item.item.distPrice02 = currentReward.distPrice02

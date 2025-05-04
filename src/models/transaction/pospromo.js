@@ -242,6 +242,65 @@ export default modelExtend(pageModel, {
         }
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
 
+        if (item && `${item.type}` === '3') {
+          const currentReward = [
+            {
+              bundleId: item.id,
+              bundleCode: item.code,
+              bundleName: item.name,
+              categoryCode: item.code,
+              disc1: 0,
+              disc2: 0,
+              disc3: 0,
+              discount: 0,
+              distPrice01: item.sellPrice,
+              distPrice02: item.sellPrice,
+              distPrice03: item.sellPrice,
+              distPrice04: item.sellPrice,
+              distPrice05: item.sellPrice,
+              distPrice06: item.sellPrice,
+              distPrice07: item.sellPrice,
+              distPrice08: item.sellPrice,
+              distPrice09: item.sellPrice,
+              hide: 1,
+              id: item.id,
+              productCode: '#Bundle',
+              productId: item.id,
+              productName: `P.Category: Bundle ${item.id}`,
+              qty: 1,
+              replaceable: 0,
+              sellPrice: item.sellPrice,
+              serviceId: null,
+              stock: 100,
+              type: 'P'
+            }
+          ]
+          currentBundle.rewardCategory = currentReward
+          item.rewardCategory = currentReward
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentReward: currentReward[0]
+            }
+          })
+          yield put({
+            type: 'addPosPromoItem',
+            payload: {
+              bundleData: {
+                qty,
+                currentBundle,
+                item
+              },
+              currentProduct: getCashierTrans(),
+              itemRewardProduct: [],
+              currentService: getServiceTrans(),
+              itemRewardService: [],
+              itemRewardCategory: currentReward
+            }
+          })
+          return
+        }
+
         if (!categoryExists) {
           yield insertBundleTrans({ qty, item })
           yield put({ type: 'pos/setCurrentBuildComponent' })
