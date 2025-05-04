@@ -15,8 +15,6 @@ import PrintPDFInvoice from './PrintPDFInvoice'
 const Detail = ({ app, purchaseReceive, dispatch }) => {
   const { user, storeInfo } = app
   const { listItem, data } = purchaseReceive
-  console.log('data', data)
-  console.log('listItem', listItem)
   const content = []
   for (let key in data) {
     if ({}.hasOwnProperty.call(data, key)) {
