@@ -21,3 +21,15 @@ export async function queryMember (params) {
     headers: apiHeaderToken
   })
 }
+
+export async function queryMemberExists (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/bundling-member-exists',
+    alt: true,
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+

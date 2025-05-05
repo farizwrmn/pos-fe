@@ -194,8 +194,8 @@ const Detail = ({
 
   return (<div className="content-inner">
     <div className={styles.content}>
-      {modalProductVisible && !loading.effects['productBookmark/query'] && <ModalProduct {...modalProductProps} />}
-      {modalBundleVisible && !loading.effects['promo/query'] && <ModalBundle {...modalBundleProps} />}
+      {modalProductVisible && <ModalProduct {...modalProductProps} />}
+      {modalBundleVisible && <ModalBundle {...modalBundleProps} />}
       {modalBookmarkVisible && modalBookmarkItem && modalBookmarkItem.id && <ModalBookmark {...modalBookmarkProps} />}
       <Row>
         <Col md={24} lg={12}>

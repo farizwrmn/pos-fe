@@ -62,6 +62,7 @@ import PromotionGuide from './PromotionGuide'
 import RewardGuide from './RewardGuide'
 import ModalCustomerName from './ModalCustomerName'
 import ModalUnlockTransaction from './ModalUnlockTransaction'
+import ModalBirthday from './ModalBirthday'
 
 const { reArrangeMember, reArrangeMemberId } = variables
 const { Promo } = DataQuery
@@ -214,6 +215,7 @@ const Pos = ({
     itemConsignment,
     itemPayment,
     memberInformation,
+    modalBirthdayVisible,
     memberUnitInfo,
     modalServiceListVisible,
     modalConsignmentListVisible,
@@ -3199,12 +3201,34 @@ const Pos = ({
     }
   }
 
+  const modalBirthdayProps = {
+    title: `Happy Birthday ${memberInformation.memberName}`,
+    visible: modalBirthdayVisible,
+    onOk () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalBirthdayVisible: false
+        }
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'pos/updateState',
+        payload: {
+          modalBirthdayVisible: false
+        }
+      })
+    }
+  }
+
   return (
     <div className="content-inner" >
       <GlobalHotKeys
         keyMap={keyMap}
         handlers={hotKeysHandler}
       />
+      {modalBirthdayVisible && <ModalBirthday {...modalBirthdayProps} />}
       {modalBookmarkVisible && <ModalBookmark {...modalBookmarkProps} />}
       {modalExpressVisible && <ModalExpressDineIn {...modalExpressProps} />}
       {modalPlanogramCashierVisible && <ModalPlanogramCashier {...modalPlanogramCashierProps} />}

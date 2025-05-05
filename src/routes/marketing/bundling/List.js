@@ -25,7 +25,15 @@ const List = ({ ...tableProps, editItem, voidItem }) => {
       dataIndex: 'type',
       key: 'type',
       render: (text) => {
-        return text === '0' ? 'Buy X Get Y' : 'Buy X Get Discount Y'
+        if (`${text}` === '1') {
+          return 'Bundling'
+        }
+        if (`${text}` === '2') {
+          return 'Discount Auto On Quantity'
+        }
+        if (`${text}` === '3') {
+          return 'Discount For Specific Items'
+        }
       }
     },
     {
