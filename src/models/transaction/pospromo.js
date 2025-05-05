@@ -187,7 +187,7 @@ export default modelExtend(pageModel, {
             return
           }
         }
-        if (memberInformation && !memberInformation.isBirthday) {
+        if (item && item.memberOnly && item.type === '3' && memberInformation && !memberInformation.isBirthday) {
           Modal.warning({
             title: 'Hanya untuk member yang berulang tahun',
             content: 'Promo ini membutuhkan input member'
