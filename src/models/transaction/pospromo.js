@@ -187,6 +187,13 @@ export default modelExtend(pageModel, {
             return
           }
         }
+        if (memberInformation && !memberInformation.isBirthday) {
+          Modal.warning({
+            title: 'Hanya untuk member yang berulang tahun',
+            content: 'Promo ini membutuhkan input member'
+          })
+          return
+        }
         if (item && item.memberOnly && item.memberOnlyApplyMultiple === 0) {
           const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.id })
           if (response && response.success && response.data) {

@@ -182,6 +182,7 @@ export default {
     currentItem: {},
     typePembelian: localStorage.getItem('typePembelian') ? Number(localStorage.getItem('typePembelian')) : 1,
     dineInTax: localStorage.getItem('dineInTax') ? Number(localStorage.getItem('dineInTax')) : 0,
+    modalBirthdayVisible: false,
     modalCashRegisterVisible: false,
     modalAssetVisible: false,
     modalMemberVisible: false,
@@ -2086,9 +2087,30 @@ export default {
 
     * chooseMember ({ payload = {} }, { select, put }) {
       const selectedPayment = yield select(({ pos }) => pos.selectedPaymentShortcut)
+      const listBundle = getBundleTrans()
+      if (listBundle && listBundle.length > 0) {
+        const filteredBundle = listBundle.filter(filtered => filtered.type === '3')
+        if (filteredBundle && filteredBundle[0]) {
+          Modal.warning({
+            title: 'Birthday Claim',
+            content: 'Selesaikan/Batalkan transaksi ini'
+          })
+          return
+        }
+      }
+
       const { item } = payload
       let newItem = reArrangeMember(item)
       const memberInformation = newItem
+
+      if (newItem.isBirthday) {
+        yield put({
+          type: 'pos/updateState',
+          payload: {
+            modalBirthdayVisible: true
+          }
+        })
+      }
 
       localStorage.setItem('member', JSON.stringify([newItem]))
       yield put({
@@ -2710,7 +2732,7 @@ export default {
         for (let key in listProductQty) {
           const item = listProductQty[key]
           const currentReward = item.reward.item
-          if (currentReward && currentReward.categoryCode && currentReward.productCode !== '#Bundle' && currentReward.type === 'P') {
+          if (currentReward && currentReward.categoryCode && currentReward.type === 'P') {
             item.item.sellPrice = currentReward.sellPrice
             item.item.distPrice01 = currentReward.distPrice01
             item.item.distPrice02 = currentReward.distPrice02
