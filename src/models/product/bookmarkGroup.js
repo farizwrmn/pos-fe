@@ -50,7 +50,15 @@ export default modelExtend(pageModel, {
   effects: {
 
     * query ({ payload = {} }, { call, put }) {
-      const { pathname, ...other } = payload
+      let { pathname, ...other } = payload
+      if (pathname === '/transaction/pos') {
+        other = {
+          ...other,
+          day: moment().isoWeekday(),
+          storeId: lstorage.getCurrentUserStore(),
+          relationship: 1
+        }
+      }
       const data = yield call(query, {
         ...other,
         type: 'all'

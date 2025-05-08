@@ -131,7 +131,7 @@ const formProductBrand = ({
           </FormItem>
           <FormItem label="Available Period" hasFeedback {...formItemLayout}>
             {getFieldDecorator('Date', {
-              initialValue: item.startDate ? [
+              initialValue: item.startDate && item.startDate !== '0000-00-00' ? [
                 moment(item.startDate),
                 moment(item.endDate)
               ] : null,
