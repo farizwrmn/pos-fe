@@ -71,7 +71,7 @@ const Filter = ({
   return (
     <Row gutter={24} style={{ display: show ? 'block' : 'none' }}>
       <Col xs={{ span: 24 }} sm={{ span: 9 }} md={{ span: 8 }} lg={6} style={{ marginBottom: 8 }}>
-        {getFieldDecorator('brandName', { initialValue: brandName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('q', { initialValue: brandName })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
       </Col>
       <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={9} style={{ marginBottom: 8 }}>
         <FilterItem label="Createtime" >
