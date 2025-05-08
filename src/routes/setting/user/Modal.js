@@ -31,7 +31,9 @@ const ModalEntry = ({
   storeItem = {},
   roleItem = {},
   listAllStores = [],
+  listAllTargetStores = [],
   listUserStores = [],
+  listUserTargetStores = [],
   listLovEmployee = [],
   listRole = [],
   listUserRole = [],
@@ -39,6 +41,7 @@ const ModalEntry = ({
   currentUserRole = [],
   listUserRoleChange = {},
   listCheckedStores = [],
+  listCheckedTargetStores = [],
   modalType,
   dispatch,
   onOk,
@@ -58,7 +61,9 @@ const ModalEntry = ({
   modalChangeDefaultStore,
   modalChangeDefaultRole,
   modalNodeCheckedStore,
+  modalNodeCheckedTargetStore,
   modalAllStoresLoad,
+  modalAllTargetStoresLoad,
   form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
@@ -91,11 +96,12 @@ const ModalEntry = ({
     } else if (activeTab === '4') {
       modalAllStoresLoad(item.userId)
     } else if (activeTab === '5') {
-      // Get List Fingerprint
-    } else if (activeTab === '6') {
+      modalAllTargetStoresLoad(item.userId) // get all target stores
+    } else if (activeTab === '7') {
       modalTotpLoad(item.userId)
     }
   }
+
   const hdlTableRowClick = (record) => {
     onChooseItem(record)
   }
@@ -130,6 +136,9 @@ const ModalEntry = ({
       }
       if (listCheckedStores && listCheckedStores.length > 0) {
         modalButtonSaveClick(data.userId, listCheckedStores, activeTab)
+      }
+      if (listCheckedTargetStores && listCheckedTargetStores.length > 0) {
+        modalButtonSaveClick(data.userId, listCheckedTargetStores, activeTab)
       }
     })
   }
@@ -211,6 +220,10 @@ const ModalEntry = ({
 
   const hdlOnCheckStore = (checkedKeys) => {
     modalNodeCheckedStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
+  }
+
+  const hdlOnCheckTargetStore = (checkedKeys) => {
+    modalNodeCheckedTargetStore(item.userId, checkedKeys.checked.filter((e) => { return e }))
   }
   // const hdlOnSelectStore = (selectedKeys, info) => {
   //   console.log('onSelect', info)
@@ -383,7 +396,7 @@ const ModalEntry = ({
           </Row>
 
         </TabPane>
-        <TabPane tab="Store" key="4">
+        <TabPane tab="Access" key="4">
           <Tree
             checkable
             checkStrictly
@@ -403,6 +416,26 @@ const ModalEntry = ({
             placeholder="no default store"
             disabled
           />
+        </TabPane>
+        <TabPane tab="Target Store" key="5">
+          <Tree
+            checkable
+            checkStrictly
+            autoExpandParent
+            defaultExpandAll
+            defaultCheckedKeys={listUserTargetStores}
+            onCheck={hdlOnCheckTargetStore}
+          >
+            {renderTreeNodes(listAllTargetStores)}
+          </Tree>
+          <span style={paddingTop10} />
+          {/* <Input
+            value={storeItem.default}
+            addonBefore="Default (right-click tree-node to change): "
+            size="small"
+            placeholder="no default store"
+            disabled
+          /> */}
         </TabPane>
         {/* <TabPane tab="Fingerprint" key="5">
           <Fingerprint {...fingerprintProps} />
