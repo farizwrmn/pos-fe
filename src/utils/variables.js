@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { posTotal } from './total'
 import { getCashierTrans, getConsignment, getItem, getDomainBE, getDomainBEAlt, getPortBE, getProtocolBE, removeItemKey, setCashierTrans, getBundleTrans, setBundleTrans, setConsignment } from './lstorage'
 
@@ -14,6 +15,7 @@ const reArrangeMember = (item) => {
     showAsDiscount: item.showAsDiscount,
     memberPendingPayment: item.memberPendingPayment,
     gender: item.gender,
+    isBirthday: item.birthDate ? moment(item.birthDate, 'YYYY-MM-DD').month() === moment().month() : false,
     phone: item.mobileNumber === '' ? item.phoneNumber : item.mobileNumber
   }
 }
@@ -122,6 +124,9 @@ const insertBundleTrans = async ({
       targetRetailPrice: item.targetRetailPrice,
       targetCostPrice: item.targetCostPrice,
       startDate: item.startDate,
+      memberOnly: item.memberOnly,
+      memberOnlyApplyMultiple: item.memberOnlyApplyMultiple,
+      hasStoreAllocation: item.hasStoreAllocation,
       endDate: item.endDate,
       startHour: item.startHour,
       endHour: item.endHour,

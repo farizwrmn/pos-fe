@@ -6,6 +6,7 @@ import {
   queryPosDirectPrinting,
   directPrinting
 } from 'services/master/paymentOption/paymentCostService'
+import { queryAllocation, queryMember, queryMemberExists } from 'services/marketing/bundlingAllocation'
 import {
   getDenominatorDppInclude,
   getDenominatorPPNInclude,
@@ -415,6 +416,52 @@ export default {
                 if (currentExpressOrder) {
                   expressOrderId = currentExpressOrder.id
                   orderShortNumber = currentExpressOrder.orderShortNumber
+                }
+              }
+            }
+            if (dataBundle) {
+              for (let key in dataBundle) {
+                const item = dataBundle[key]
+                if (item && item.memberOnly) {
+                  if (memberInformation && memberInformation.memberCode === 'UMUM') {
+                    Modal.warning({
+                      title: 'Wajib input member',
+                      content: 'Promo ini membutuhkan input member'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnly && item.memberOnlyApplyMultiple === 0) {
+                  const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.bundleId })
+                  if (response && response.success && response.data) {
+                    Modal.warning({
+                      title: 'Member ini sudah claim Promo ini',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnly && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryMemberExists, { memberId: memberInformation.id })
+                  if (response && response.success && !response.data) {
+                    Modal.warning({
+                      title: 'Member belum memiliki transaksi',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnly && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryAllocation, { bundlingId: item.bundleId, storeId: lstorage.getCurrentUserStore() })
+                  if (response && response.data) {
+                    if (response.data.posQty >= response.data.qty) {
+                      Modal.warning({
+                        title: 'Quota promo ini sudah habis',
+                        content: 'Tawarkan promo lainnya'
+                      })
+                      return
+                    }
+                  }
                 }
               }
             }
@@ -1209,7 +1256,7 @@ export default {
                   maximumFractionDigits: 0
                 })
                 : 0
-              }`
+                }`
             }
           ])
         }
@@ -1242,7 +1289,7 @@ export default {
               text: `${invoiceInfo.posData &&
                 invoiceInfo.posData.orderShortNumber &&
                 invoiceInfo.posData.orderShortNumber
-              }`,
+                }`,
               rightText: ''
             }
           ])
@@ -1267,7 +1314,7 @@ export default {
                 text: `${invoiceInfo.posData &&
                   invoiceInfo.posData.orderType &&
                   invoiceInfo.posData.orderType
-                }`,
+                  }`,
                 rightText: ''
               },
               {
@@ -1464,7 +1511,7 @@ export default {
                   maximumFractionDigits: 0
                 })
                 : 0
-              }`
+                }`
             }
           ])
           .concat(taxPrint)
@@ -1713,11 +1760,6 @@ export default {
             title: 'Something went wrong',
             content: `Cannot read transaction number, message: ${transNo.data}`
           })
-        } else if (payload.address === undefined) {
-          Modal.error({
-            title: 'Payment Fail',
-            content: 'Address is Undefined'
-          })
         } else if (payload.memberId === undefined) {
           Modal.error({
             title: 'Payment Fail',
@@ -1884,6 +1926,52 @@ export default {
               0,
               99
             )
+            if (dataBundle) {
+              for (let key in dataBundle) {
+                const item = dataBundle[key]
+                if (item && item.memberOnly) {
+                  if (memberInformation && memberInformation.memberCode === 'UMUM') {
+                    Modal.warning({
+                      title: 'Wajib input member',
+                      content: 'Promo ini membutuhkan input member'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnly && item.memberOnlyApplyMultiple === 0) {
+                  const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.bundleId })
+                  if (response && response.success && response.data) {
+                    Modal.warning({
+                      title: 'Member ini sudah claim Promo ini',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnly && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryMemberExists, { memberId: memberInformation.id })
+                  if (response && response.success && !response.data) {
+                    Modal.warning({
+                      title: 'Member belum memiliki transaksi',
+                      content: 'Tawarkan promo lainnya'
+                    })
+                    return
+                  }
+                }
+                if (item && item.memberOnly && item.hasStoreAllocation === 1) {
+                  const response = yield call(queryAllocation, { bundlingId: item.bundleId, storeId: lstorage.getCurrentUserStore() })
+                  if (response && response.data) {
+                    if (response.data.posQty >= response.data.qty) {
+                      Modal.warning({
+                        title: 'Quota promo ini sudah habis',
+                        content: 'Tawarkan promo lainnya'
+                      })
+                      return
+                    }
+                  }
+                }
+              }
+            }
             const detailPOS = {
               reference,
               description: posDescription,

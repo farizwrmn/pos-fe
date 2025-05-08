@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message, Modal } from 'antd'
 import { posTotal, numberFormat } from 'utils'
 import {
+  getCurrentUserStore,
   getCashierTrans, getServiceTrans, getConsignment, getBundleTrans,
   // getGrabmartOrder,
   setCashierTrans, setServiceTrans, setBundleTrans
@@ -11,6 +12,7 @@ import {
 } from 'utils/variables'
 import reduce from 'lodash/reduce'
 import { query } from '../../services/marketing/bundling'
+import { queryAllocation, queryMember, queryMemberExists } from '../../services/marketing/bundlingAllocation'
 import { query as queryReward } from '../../services/marketing/bundlingReward'
 import { pageModel } from './../common'
 // import { getDiscountByBundleCode } from './utils'
@@ -176,6 +178,54 @@ export default modelExtend(pageModel, {
 
       if (dataHeaderBundle.success && dataDetailReward.success && dataDetailReward.data && dataDetailReward.data.length > 0) {
         const item = dataHeaderBundle.data[0]
+        if (item && item.memberOnly) {
+          if (memberInformation && memberInformation.memberCode === 'UMUM') {
+            Modal.warning({
+              title: 'Wajib input member',
+              content: 'Promo ini membutuhkan input member'
+            })
+            return
+          }
+        }
+        if (memberInformation && !memberInformation.isBirthday) {
+          Modal.warning({
+            title: 'Hanya untuk member yang berulang tahun',
+            content: 'Promo ini membutuhkan input member'
+          })
+          return
+        }
+        if (item && item.memberOnly && item.memberOnlyApplyMultiple === 0) {
+          const response = yield call(queryMember, { memberId: memberInformation.id, bundlingId: item.id })
+          if (response && response.success && response.data) {
+            Modal.warning({
+              title: 'Member ini sudah claim Promo ini',
+              content: 'Tawarkan promo lainnya'
+            })
+            return
+          }
+        }
+        if (item && item.memberOnly && item.hasStoreAllocation === 1) {
+          const response = yield call(queryMemberExists, { memberId: memberInformation.id })
+          if (response && response.success && response.data) {
+            Modal.warning({
+              title: 'Member belum memiliki transaksi',
+              content: 'Tawarkan promo lainnya'
+            })
+            return
+          }
+        }
+        if (item && item.memberOnly && item.hasStoreAllocation === 1) {
+          const response = yield call(queryAllocation, { bundlingId: item.id, storeId: getCurrentUserStore() })
+          if (response && response.data) {
+            if (response.data.posQty >= response.data.qty) {
+              Modal.warning({
+                title: 'Quota promo ini sudah habis',
+                content: 'Tawarkan promo lainnya'
+              })
+              return
+            }
+          }
+        }
         const total = (parseFloat(curNetto) + parseFloat(dineIn))
         if (item && item.minimumPayment > 0 && item.minimumPayment > total) {
           Modal.error({
@@ -198,6 +248,65 @@ export default modelExtend(pageModel, {
           return
         }
         const categoryExists = itemRewardCategory ? itemRewardCategory[0] : undefined
+
+        if (item && `${item.type}` === '3') {
+          const currentReward = [
+            {
+              bundleId: item.id,
+              bundleCode: item.code,
+              bundleName: item.name,
+              categoryCode: item.code,
+              disc1: 0,
+              disc2: 0,
+              disc3: 0,
+              discount: 0,
+              distPrice01: item.sellPrice,
+              distPrice02: item.sellPrice,
+              distPrice03: item.sellPrice,
+              distPrice04: item.sellPrice,
+              distPrice05: item.sellPrice,
+              distPrice06: item.sellPrice,
+              distPrice07: item.sellPrice,
+              distPrice08: item.sellPrice,
+              distPrice09: item.sellPrice,
+              hide: 1,
+              id: item.id,
+              productCode: '#Bundle',
+              productId: item.id,
+              productName: `P.Category: Bundle ${item.id}`,
+              qty: 1,
+              replaceable: 0,
+              sellPrice: item.sellPrice,
+              serviceId: null,
+              stock: 100,
+              type: 'P'
+            }
+          ]
+          currentBundle.rewardCategory = currentReward
+          item.rewardCategory = currentReward
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentReward: currentReward[0]
+            }
+          })
+          yield put({
+            type: 'addPosPromoItem',
+            payload: {
+              bundleData: {
+                qty,
+                currentBundle,
+                item
+              },
+              currentProduct: getCashierTrans(),
+              itemRewardProduct: [],
+              currentService: getServiceTrans(),
+              itemRewardService: [],
+              itemRewardCategory: currentReward
+            }
+          })
+          return
+        }
 
         if (!categoryExists) {
           yield insertBundleTrans({ qty, item })
@@ -299,6 +408,9 @@ export default modelExtend(pageModel, {
         name: item.name,
         inputTime: new Date().valueOf(),
         minimumPayment: item.minimumPayment,
+        memberOnly: item.memberOnly,
+        memberOnlyApplyMultiple: item.memberOnlyApplyMultiple,
+        hasStoreAllocation: item.hasStoreAllocation,
         paymentOption: item.paymentOption,
         paymentBankId: item.paymentBankId,
         alwaysOn: item.alwaysOn,

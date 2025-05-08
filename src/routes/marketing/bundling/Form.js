@@ -518,7 +518,7 @@ class FormCounter extends Component {
     const listRewardProps = {
       dataSource: listReward,
       type: getFieldValue('type'),
-      columns: getFieldValue('type') === '2' ? columnsRewardGetDiscount : columnsReward,
+      columns: (getFieldValue('type') === '2' || getFieldValue('type') === '3') ? columnsRewardGetDiscount : columnsReward,
       onRowClick (item) {
         // if (modalType === 'add') {
         showModalEdit(item, 1)
@@ -590,7 +590,8 @@ class FormCounter extends Component {
                 })(<Select onChange={() => this.setState({ isDisableType: true })} disabled={this.state.isDisableType || modalType === 'edit'}>
                   <Option value="0">Choose Type</Option>
                   <Option value="1">Bundling</Option>
-                  <Option value="2">Buy X Get Discount</Option>
+                  <Option value="2">Discount Auto On Quantity</Option>
+                  <Option value="3">Discount For Specific Items</Option>
                 </Select>)}
               </FormItem>
             </Card>
@@ -788,7 +789,7 @@ class FormCounter extends Component {
                   rules: [{
                     required: true
                   }]
-                })(<InputNumber autoFocus min={0} max={getFieldValue('sellPrice')} style={{ width: '100%' }} />)}
+                })(<InputNumber min={0} max={getFieldValue('sellPrice')} style={{ width: '100%' }} />)}
               </FormItem>
             </Card>
           </Col>
@@ -853,7 +854,7 @@ class FormCounter extends Component {
               </Card>
             )}
 
-            {getFieldValue('type') === '2' && (
+            {(getFieldValue('type') === '2' || getFieldValue('type') === '3') && (
               <Card {...cardProps} title={<h3>Bundle Price</h3>}>
                 <FormItem {...formItemLayout} label="Qty Required" help="Usage in selling 3 item but get discount, the price will be set pro rate">
                   {getFieldDecorator('targetCostPrice', {

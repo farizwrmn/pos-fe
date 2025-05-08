@@ -96,7 +96,9 @@ export default modelExtend(pageModel, {
           payload: { userId: payload.id }
         })
         yield put({ type: 'userStore/getAllStores', payload: { userId: payload.id } })
+        yield put({ type: 'userStore/getAllTargetStores', payload: { userId: payload.id } })
         yield put({ type: 'userStore/getUserStores', payload: { userId: payload.id } })
+        yield put({ type: 'userStore/getUserTargetStores', payload: { userId: payload.id } })
       } else {
         throw data
       }
@@ -112,7 +114,9 @@ export default modelExtend(pageModel, {
         message.success('Data has been saved')
         // yield put({ type: 'app/query' })
         yield put({ type: 'userStore/getAllStores', payload: { userId: payload.id } })
+        yield put({ type: 'userStore/getAllTargetStores', payload: { userId: payload.id } })
         yield put({ type: 'userStore/getUserStores', payload: { userId: payload.id } })
+        yield put({ type: 'userStore/getUserTargetStores', payload: { userId: payload.id } })
         yield put({
           type: 'userRole/query',
           payload: { userId: payload.id }

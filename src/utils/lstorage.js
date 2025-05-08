@@ -444,6 +444,7 @@ const removeItemKeys = () => {
   localStorage.removeItem('customer_view_transaction_time_limit')
   localStorage.removeItem('pos_available_payment_type')
   localStorage.removeItem('current_payment_transaction_id')
+  localStorage.removeItem('tStoreUser')
 }
 
 const removeAllKey = () => {

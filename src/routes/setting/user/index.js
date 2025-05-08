@@ -15,7 +15,7 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
   const { listLovEmployee } = employee
   const { listLov } = misc
   const { roleItem, listUserRole, listUserRoleTarget, listUserRoleChange } = userRole
-  const { storeItem, listAllStores, listUserStores, listCheckedStores } = userStore
+  const { storeItem, listAllStores, listAllTargetStores, listUserStores, listUserTargetStores, listCheckedStores, listCheckedTargetStores } = userStore
   const { pageSize } = pagination
 
   const listRole = listLov &&
@@ -27,8 +27,11 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
     storeItem,
     roleItem,
     listAllStores,
+    listAllTargetStores,
     listUserStores,
     listCheckedStores,
+    listUserTargetStores,
+    listCheckedTargetStores,
     visible: modalVisible,
     visiblePopover,
     disabledItem,
@@ -102,6 +105,11 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
           type: 'userStore/saveCheckedStore',
           payload: { userId, data: { store: data } }
         })
+      } else if (activeTab === '5') { // tab target Store
+        dispatch({
+          type: 'userStore/saveCheckedTargetStore',
+          payload: { userId, data: { store: data } }
+        })
       } else {
         dispatch({
           type: `user/${modalType}`,
@@ -167,6 +175,9 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
     modalAllStoresLoad (userId) {
       dispatch({ type: 'userStore/getAllStores', payload: { userId } })
     },
+    modalAllTargetStoresLoad (userId) {
+      dispatch({ type: 'userStore/getAllTargetStores', payload: { userId } })
+    },
     modalChangeDefaultStore (userId, defaultStore) {
       dispatch({
         type: 'userStore/saveDefaultStore',
@@ -177,6 +188,12 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
       dispatch({
         type: 'userStore/updateCheckedStores',
         payload: { userId, data: { store: listCheckedStore } }
+      })
+    },
+    modalNodeCheckedTargetStore (userId, listCheckedTargetStore) {
+      dispatch({
+        type: 'userStore/updateCheckedTargetStores',
+        payload: { userId, data: { store: listCheckedTargetStore } }
       })
     }
   }
@@ -211,7 +228,9 @@ const User = ({ location, app, dispatch, user, loading, misc, employee, userRole
     },
     onEditItem (item) {
       dispatch({ type: 'userStore/getAllStores', payload: { userId: item.userId } })
+      dispatch({ type: 'userStore/getAllTargetStores', payload: { userId: item.userId } })
       dispatch({ type: 'userStore/getUserStores', payload: { userId: item.userId } })
+      dispatch({ type: 'userStore/getUserTargetStores', payload: { userId: item.userId } })
       dispatch({
         type: 'user/modalShow',
         payload: {

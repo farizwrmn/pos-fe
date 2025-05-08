@@ -22,7 +22,7 @@ const ModalBundleCategory = ({
   const handleCancel = () => {
     onCancel()
   }
-  const handleDelete = () => {
+  const handleSubmit = () => {
     validateFields((errors) => {
       if (errors) {
         return
@@ -55,7 +55,7 @@ const ModalBundleCategory = ({
         <Button disabled={loading} size="large" key="back" onClick={handleCancel}>
           Cancel
         </Button>,
-        <Button disabled={loading} size="large" key="submit" type="primary" onClick={handleDelete}>
+        <Button disabled={loading} size="large" key="submit" type="primary" onClick={handleSubmit}>
           Submit
         </Button>
       ]}
