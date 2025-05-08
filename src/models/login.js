@@ -6,6 +6,7 @@ import { prefix } from 'utils/config.main'
 import { queryTimeLimit as queryInvoiceTimeLimit } from 'services/master/invoice'
 import { queryCustomerViewTimeLimit as queryCustomerViewTransactionTimeLimit, queryTimeLimit as queryQrisPaymentTimeLimit } from 'services/payment/paymentTransactionService'
 import { login, getUserRole, getUserStore } from '../services/login'
+import { encrypt } from '../utils/crypt'
 
 const {
   setInvoiceTimeLimit,
@@ -161,6 +162,15 @@ export default {
       yield put({ type: 'hideLoginLoading' })
       if (data.success) {
         if (data.profile.role) {
+          // Encrypt and store storeTargetId if it exists
+          if (data.profile.storeTargetId && data.profile.storeTargetId.length > 0) {
+            const encryptedStoreTargetId = encrypt(JSON.stringify(data.profile.storeTargetId))
+            localStorage.setItem('tStoreUser', String(encryptedStoreTargetId))
+          } else {
+            // Clear it if not exists
+            localStorage.removeItem('tStoreUser')
+          }
+
           yield put({ type: 'loginSuccess', payload: { data } })
         } else {
           throw data
