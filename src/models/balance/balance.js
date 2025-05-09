@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router'
 import { lstorage } from 'utils'
 import { BALANCE_TYPE_AWAL, BALANCE_TYPE_TRANSACTION } from 'utils/variable'
 import moment from 'moment'
+import { APIELECTRON } from 'utils/config.company'
 import { query, queryById, add, edit, remove, approve } from '../../services/balance/balance'
 import { query as queryDetail } from '../../services/balance/balanceDetail'
 import {
@@ -201,10 +202,15 @@ export default modelExtend(pageModel, {
     * open ({ payload }, { call, put }) {
       const response = yield call(open, payload)
       if (response && response.success) {
-        yield put({
-          type: 'active'
-        })
-        yield put(routerRedux.push('/transaction/pos'))
+        yield put({ type: 'active' })
+
+        try {
+          yield call(() =>
+            fetch(`${APIELECTRON}/open-pos`, { method: 'POST' })
+          )
+        } catch (error) {
+          console.error('Electron app not reachable:', error)
+        }
       } else {
         throw response
       }
