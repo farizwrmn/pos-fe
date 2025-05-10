@@ -139,7 +139,7 @@ const Bread = ({
                 allowClear={false}
                 placeholder="Switch Store"
               >
-                {listUserStores.map(item => <Select.Option value={Number(item.value)} key={Number(item.value)}>{item.label}</Select.Option>)}
+                {listUserStores && listUserStores.map(item => <Select.Option value={Number(item.value)} key={Number(item.value)}>{item.label}</Select.Option>)}
               </Select>)}
             </Col>
           </div>

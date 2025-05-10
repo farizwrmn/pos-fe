@@ -2325,6 +2325,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/deliveryOrder/deliveryOrder'))
             }, 'inventory-delivery-order')
           }

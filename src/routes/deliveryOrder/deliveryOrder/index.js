@@ -4,8 +4,9 @@ import { lstorage } from 'utils'
 import List from './List'
 import Filter from './Filter'
 
-const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
+const DeliveryOrder = ({ dispatch, userStore, deliveryOrder, loading }) => {
   const { list } = deliveryOrder
+  const { listAllStores } = userStore
 
   const ListProps = {
     dataSource: list.map((item, index) => ({ no: index + 1, ...item })),
@@ -17,8 +18,7 @@ const DeliveryOrder = ({ dispatch, deliveryOrder, loading }) => {
 
   const filterProps = {
     // dataSource: list,
-    storeId: lstorage.getCurrentUserStore(),
-    listStore: lstorage.getListUserStores(),
+    listAllStores,
     loading: loading.effects['deliveryOrder/query'],
     onFilter ({ storeIdReceiver, transNo }) {
       dispatch({
