@@ -6,7 +6,7 @@ import Filter from './Filter'
 
 const DeliveryOrder = ({ dispatch, userStore, deliveryOrder, loading }) => {
   const { list } = deliveryOrder
-  const { listAllStores } = userStore
+  const { listAllTargetStores } = userStore
 
   const ListProps = {
     dataSource: list.map((item, index) => ({ no: index + 1, ...item })),
@@ -18,7 +18,7 @@ const DeliveryOrder = ({ dispatch, userStore, deliveryOrder, loading }) => {
 
   const filterProps = {
     // dataSource: list,
-    listAllStores,
+    listAllStores: listAllTargetStores.map(item => ({ value: item.id, label: item.storeName })),
     loading: loading.effects['deliveryOrder/query'],
     onFilter ({ storeIdReceiver, transNo }) {
       dispatch({
@@ -44,4 +44,4 @@ const DeliveryOrder = ({ dispatch, userStore, deliveryOrder, loading }) => {
   )
 }
 
-export default connect(({ deliveryOrder, loading, app }) => ({ deliveryOrder, loading, app }))(DeliveryOrder)
+export default connect(({ deliveryOrder, userStore, loading, app }) => ({ deliveryOrder, userStore, loading, app }))(DeliveryOrder)

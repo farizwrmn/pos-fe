@@ -54,6 +54,7 @@ export default modelExtend(pageModel, {
           || location.pathname === '/stock'
           || location.pathname === '/integration/grabmart-campaign'
           || location.pathname === '/delivery-order'
+          || location.pathname === 'inventory/transfer/auto-replenish'
           || location.pathname === '/stock-planogram'
           || location.pathname === '/master/store-price-upload'
           || matchBookmarkDetail) {
