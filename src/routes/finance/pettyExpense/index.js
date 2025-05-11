@@ -14,7 +14,7 @@ const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountRule, loadin
   const { list, modalCashRegisterVisible, modalEditNotesItem, modalEditNotesVisible, currentItemCancel, modalCancelVisible, activeKey, currentItemExpense, modalExpenseVisible } = pettyExpense
   const { listEmployee } = pettyCashDetail
   const { listAccountCode, listAccountCodeExpense } = accountRule
-  const { listAllStores } = userStore
+  const { listAllTargetStores } = userStore
   // const { user, storeInfo } = app
   // const filterProps = {
   //   onFilterChange (value) {
@@ -119,7 +119,7 @@ const Counter = ({ pettyExpense, pettyCashDetail, userStore, accountRule, loadin
   const modalCashRegisterProps = {
     modalCashRegisterVisible,
     listAccountCode,
-    listAllStores,
+    listAllStores: listAllTargetStores.map(item => ({ value: item.id, label: item.storeName })),
     listEmployee,
     loading: loading.effects['pettyCashDetail/insertExpense'],
     visible: modalCashRegisterVisible,

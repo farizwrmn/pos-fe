@@ -60,7 +60,7 @@ const ModalExpense = ({
   }
 
   const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
-  const listStore = listAllStores.filter(filtered => listStoreTarget.includes(filtered.id)).map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+  const listStore = listAllStores.filter(filtered => listStoreTarget.includes(filtered.value)).map(x => (<Option title={x.label} value={x.value} key={x.value}>{x.label}</Option>))
 
   return (
     <Modal

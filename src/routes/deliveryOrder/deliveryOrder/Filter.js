@@ -15,9 +15,8 @@ const Filter = ({
     getFieldsValue
   }
 }) => {
-  const listStore = listAllStores
   const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
-  const storeData = listStore.filter(filtered => listStoreTarget.includes(filtered.value)).map(x => (<Option value={x.value}>{x.label}</Option>))
+  const storeData = listAllStores.filter(filtered => listStoreTarget.includes(filtered.value)).map(x => (<Option value={x.value}>{x.label}</Option>))
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const hdlSearch = () => {
     let field = getFieldsValue()

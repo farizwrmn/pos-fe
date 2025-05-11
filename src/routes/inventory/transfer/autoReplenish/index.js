@@ -7,13 +7,13 @@ import Form from './Form'
 
 const Counter = ({ autoReplenish, userStore, productstock, loading, dispatch, location }) => {
   const { modalType, currentItem } = autoReplenish
-  const { listAllStores } = userStore
+  const { listAllTargetStores } = userStore
   const { listPickingLine } = productstock
 
   const formProps = {
     modalType,
     loading,
-    listStore: listAllStores.map(item => ({ id: item.value, label: item.storeName })),
+    listStore: listAllTargetStores.map(item => ({ value: item.id, label: item.storeName })),
     listPickingLine,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
