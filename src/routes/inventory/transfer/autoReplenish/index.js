@@ -69,4 +69,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ autoReplenish, productstock, transferOut, loading, app }) => ({ autoReplenish, productstock, transferOut, loading, app }))(Counter)
+export default connect(({ autoReplenish, userStore, productstock, transferOut, loading, app }) => ({ autoReplenish, userStore, productstock, transferOut, loading, app }))(Counter)
