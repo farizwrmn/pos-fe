@@ -40,7 +40,7 @@ const ModalExpense = ({
           if (data.storeId) {
             const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
             if (filteredStore && filteredStore.length > 0) {
-              data.storeName = filteredStore[0].storeName
+              data.storeName = filteredStore[0].label
             }
           }
           data.remain = getTotal(list)
