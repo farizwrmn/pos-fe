@@ -117,7 +117,6 @@ const FormCounter = ({
   }
   const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
   let childrenStoreReceived = []
-  console.log('listStore', listStore)
   if (listStore.length > 0) {
     let groupStore = []
     for (let id = 0; id < listStore.length; id += 1) {
