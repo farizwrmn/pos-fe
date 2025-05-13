@@ -38,7 +38,7 @@ const ModalExpense = ({
         onOk () {
           data.storeId = item.storeId
           if (data.storeId) {
-            const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
+            const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.value) === parseFloat(data.storeId))
             if (filteredStore && filteredStore.length > 0) {
               data.storeName = filteredStore[0].label
             }
