@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, queryById, queryAll, queryByBalanceId, getDataPaymentIdOnlyCash, queryPejabatToko, add, edit, remove } from 'services/setoran/physicalMoneyDeposit'
 import pathToRegexp from 'path-to-regexp'
+import { APIELECTRON } from 'utils/config.company'
 import { pageModel } from '../common'
 
 const success = () => {
@@ -171,10 +172,23 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'query'
         })
+
+        try {
+          yield call(() =>
+            fetch(`${APIELECTRON}/open-pos`, { method: 'POST' })
+          )
+        } catch (error) {
+          console.error('Electron app not reachable:', error)
+        }
+
         if (payload.reset) {
           payload.reset()
         }
-        window.open(`/balance/invoice/${payload.data.balanceId}`, '_blank')
+        window.open(
+          `/balance/invoice/${payload.data.balanceId}`,
+          '_blank',
+          'width=600,height=400,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes'
+        )
         yield put(routerRedux.push('/balance/current'))
       } else {
         yield put({
