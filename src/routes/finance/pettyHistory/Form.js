@@ -99,7 +99,7 @@ const FormCounter = ({
     onClosing(item.storeId)
   }
 
-  const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+  const listStore = listAllStores.map(x => (<Option title={x.label} value={x.value} key={x.value}>{x.label}</Option>))
 
   return (
     <Form layout="horizontal">

@@ -10,7 +10,7 @@ const TabPane = Tabs.TabPane
 const Counter = ({ pettyHistory, accountRule, userStore, loading, dispatch, location }) => {
   const { list, modalClosingVisible, currentItemClosing, modalType, currentItem, activeKey } = pettyHistory
   const { listAccountCode, listAccountCodeExpense } = accountRule
-  const { listAllStores } = userStore
+  const { listAllTargetStores } = userStore
 
   const changeTab = (key) => {
     dispatch({
@@ -33,7 +33,7 @@ const Counter = ({ pettyHistory, accountRule, userStore, loading, dispatch, loca
   }
 
   const modalClosingProps = {
-    listAllStores,
+    listAllStores: listAllTargetStores.map(item => ({ value: item.id, label: item.storeName })),
     list,
     visible: modalClosingVisible,
     item: currentItemClosing,
@@ -63,7 +63,7 @@ const Counter = ({ pettyHistory, accountRule, userStore, loading, dispatch, loca
   const formProps = {
     modalClosingProps,
     list,
-    listAllStores,
+    listAllStores: listAllTargetStores.map(item => ({ value: item.id, label: item.storeName })),
     listProps,
     modalType,
     loading,

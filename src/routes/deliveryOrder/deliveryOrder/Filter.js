@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form, Row, Col, Select, Input, Button } from 'antd'
+import { decrypt } from 'utils/crypt'
 
 // const Search = Input.Search
 const Option = Select.Option
@@ -8,14 +9,14 @@ const FormItem = Form.Item
 const Filter = ({
   onFilter,
   loading,
-  storeId,
-  listStore,
+  listAllStores,
   form: {
     getFieldDecorator,
     getFieldsValue
   }
 }) => {
-  const storeData = listStore.map(x => (<Option value={x.value}>{x.label}</Option>))
+  const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
+  const storeData = listAllStores.filter(filtered => listStoreTarget.includes(filtered.value)).map(x => (<Option value={x.value}>{x.label}</Option>))
   const filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toString().toLowerCase()) >= 0
   const hdlSearch = () => {
     let field = getFieldsValue()
@@ -28,7 +29,7 @@ const Filter = ({
       <Col span={12}>
         <FormItem label="To Store" hasFeedback>
           {getFieldDecorator('storeIdReceiver', {
-            initialValue: storeId,
+            initialValue: undefined,
             rules: [
               {
                 required: true

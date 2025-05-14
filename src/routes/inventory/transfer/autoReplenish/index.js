@@ -5,15 +5,15 @@ import { routerRedux } from 'dva/router'
 import Form from './Form'
 
 
-const Counter = ({ autoReplenish, productstock, transferOut, loading, dispatch, location }) => {
+const Counter = ({ autoReplenish, userStore, productstock, loading, dispatch, location }) => {
   const { modalType, currentItem } = autoReplenish
-  const { listStore } = transferOut
+  const { listAllTargetStores } = userStore
   const { listPickingLine } = productstock
 
   const formProps = {
     modalType,
     loading,
-    listStore,
+    listStore: listAllTargetStores.map(item => ({ value: item.id, label: item.storeName })),
     listPickingLine,
     item: currentItem,
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
@@ -69,4 +69,4 @@ Counter.propTypes = {
   dispatch: PropTypes.func
 }
 
-export default connect(({ autoReplenish, productstock, transferOut, loading, app }) => ({ autoReplenish, productstock, transferOut, loading, app }))(Counter)
+export default connect(({ autoReplenish, userStore, productstock, transferOut, loading, app }) => ({ autoReplenish, userStore, productstock, transferOut, loading, app }))(Counter)

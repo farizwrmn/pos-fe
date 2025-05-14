@@ -3,7 +3,8 @@ import moment from 'moment'
 import { Modal, message } from 'antd'
 import { prefix } from 'utils/config.main'
 import { lstorage, color, alertModal } from 'utils'
-import { query as queryStore } from 'services/store/store'
+import { getUserTargetStoresList } from 'services/setting/userStores'
+// import { query as queryStore } from 'services/store/store'
 import { queryActive } from 'services/transferRequest/transferDemand'
 import { query as queryParameter } from 'services/utils/parameter'
 import { queryPOSproduct } from 'services/master/productstock'
@@ -15,7 +16,6 @@ import {
   query as querySequence
 } from '../services/sequence'
 import { pageModel } from './common'
-import { getUserTargetStoresList } from 'services/setting/userStores'
 
 const { stockMinusAlert } = alertModal
 const success = () => {
@@ -451,52 +451,52 @@ export default modelExtend(pageModel, {
     * queryStore (payload, { call, put }) {
       const udiGet = lstorage.getStorageKey('udi')[1]
       const payloadUser = { userId: udiGet }
-      const transformedStores  = yield call(getUserTargetStoresList, payloadUser)
+      const transformedStores = yield call(getUserTargetStoresList, payloadUser)
       const listStore = transformedStores.data.map(store => ({
         ...store,
         value: store.userStoreId,
         label: store.storeName,
         code: store.storeCode
-      }));
+      }))
 
-      if (listStore && listStore.length > 0) {
-        const response = yield call(queryStore, {
-          id: listStore[0].value
-        })
-        if (response.success && response.data && response.data.length > 0 && response.data[0].storeParentId) {
-          const responseParent = yield call(queryStore, {
-            id: response.data[0].storeParentId
-          })
-          if (responseParent.success && responseParent.data && responseParent.data.length > 0) {
-            listStore.push({
-              value: responseParent.data[0].id,
-              label: responseParent.data[0].storeName
-            })
-          }
-          if (response.data[0].centralKitchenParent) {
-            const responseCentral = yield call(queryStore, {
-              id: response.data[0].centralKitchenParent
-            })
-            if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
-              listStore.push({
-                value: responseCentral.data[0].id,
-                label: responseCentral.data[0].storeName
-              })
-            }
-          }
-          if (response.data[0].badStockParent) {
-            const responseCentral = yield call(queryStore, {
-              id: response.data[0].badStockParent
-            })
-            if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
-              listStore.push({
-                value: responseCentral.data[0].id,
-                label: responseCentral.data[0].storeName
-              })
-            }
-          }
-        }
-      }
+      // if (listStore && listStore.length > 0) {
+      //   const response = yield call(queryStore, {
+      //     id: listStore[0].value
+      //   })
+      // if (response.success && response.data && response.data.length > 0 && response.data[0].storeParentId) {
+      // const responseParent = yield call(queryStore, {
+      //   id: response.data[0].storeParentId
+      // })
+      // if (responseParent.success && responseParent.data && responseParent.data.length > 0) {
+      //   listStore.push({
+      //     value: responseParent.data[0].id,
+      //     label: responseParent.data[0].storeName
+      //   })
+      // }
+      // if (response.data[0].centralKitchenParent) {
+      //   const responseCentral = yield call(queryStore, {
+      //     id: response.data[0].centralKitchenParent
+      //   })
+      //   if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
+      //     listStore.push({
+      //       value: responseCentral.data[0].id,
+      //       label: responseCentral.data[0].storeName
+      //     })
+      //   }
+      // }
+      // if (response.data[0].badStockParent) {
+      //   const responseCentral = yield call(queryStore, {
+      //     id: response.data[0].badStockParent
+      //   })
+      //   if (responseCentral.success && responseCentral.data && responseCentral.data.length > 0) {
+      //     listStore.push({
+      //       value: responseCentral.data[0].id,
+      //       label: responseCentral.data[0].storeName
+      //     })
+      //   }
+      // }
+      // }
+      // }
 
       yield put({
         type: 'updateState',
