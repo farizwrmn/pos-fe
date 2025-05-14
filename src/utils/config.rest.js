@@ -59,6 +59,8 @@ module.exports = {
     customergroup: '/members/groups',
     customertype: '/members/types',
     suppliers: '/suppliers',
+    activeSuppliers: '/active-suppliers',
+    supplierPrice: '/mst-suppliers-price',
     fingerprint: '/fingerprint',
     fingerprintVerification: '/fingerprint-verification',
     deliveryOrder: '/delivery-order',

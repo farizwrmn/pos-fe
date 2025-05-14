@@ -5,6 +5,7 @@ const APPNAME = production ? (process.env.APP_NAME || 'k3mart') : 'k3mart'
 const APICOMPANYPROTOCOL = production ? 'https' : 'http'
 const MAIN_WEBSITE = production ? (process.env.MAIN_WEBSITE || 'k3mart.id') : 'k3mart.id'
 const APICOMPANYHOST = production ? (process.env.API_ENDPOINT || 'pos.k3mart.id') : 'localhost'
+const APIELECTRON = production ? (process.env.API_ELECTRON_ENDPOINT || 'electron.k3mart.id') : 'http://localhost:3300'
 const APICOMPANYHOSTALT = production ? (process.env.API_ENDPOINT_ALT || 'api-pos.k3mart.id') : 'localhost'
 const APICOMPANYPORT = production ? 443 : 6402
 const APIVERSION = production ? '/api/v1' : '/api/v1'
@@ -35,6 +36,7 @@ module.exports = {
   companyName: 'K3MART',
   APISOCKET,
   APISOCKETALT,
+  APIELECTRON,
   IMAGEURL,
   S3URL,
   IMAGECONSIGNMENTURL,

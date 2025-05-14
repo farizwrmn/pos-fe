@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { saveSupplierPriceInfo } from 'services/master/supplierPrice'
-import { query, add, edit, remove } from '../../services/master/supplier'
+import { query, edit, remove } from '../../services/master/supplierPrice'
 import { pageModel } from './../common'
 
 const success = () => {
@@ -18,7 +18,7 @@ export default modelExtend(pageModel, {
     display: 'none',
     isChecked: false,
     selectedRowKeys: [],
-    listSupplier: [],
+    listSupplierPrice: [],
     activeKey: '0',
     disable: '',
     show: 1,
@@ -50,7 +50,7 @@ export default modelExtend(pageModel, {
             }
           })
         }
-        if (pathname === '/master/supplier') {
+        if (pathname === '/master/supplier-price') {
           if (activeKey === '1') {
             dispatch({
               type: 'query',
@@ -71,10 +71,25 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    * submitSupplierPrice ({ payload }, { call }) {
-      const response = yield call(saveSupplierPriceInfo, payload)
-      return response
+    * submitSupplierPrice ({ payload }, { call, put }) {
+      try {
+        const response = yield call(saveSupplierPriceInfo, payload)
+
+        if (response && response.success) {
+          message.success(response.message || 'Submission successful!')
+          yield put({ type: 'saveSubmitResult', payload: response })
+        } else {
+          message.error(response.message || 'Submission failed.')
+        }
+
+        return response
+      } catch (error) {
+        console.error('API error:', error)
+        message.error('An error occurred while submitting the form.')
+        return { success: false, message: 'Internal error' }
+      }
     },
+
 
     * query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
@@ -82,7 +97,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            listSupplier: data.data,
+            listSupplierPrice: data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
@@ -95,7 +110,7 @@ export default modelExtend(pageModel, {
 
     * delete ({ payload }, { call, put, select }) {
       const data = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(models => models.supplier)
+      const { selectedRowKeys } = yield select(models => models.supplierPrice)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
@@ -105,7 +120,7 @@ export default modelExtend(pageModel, {
     },
 
     * add ({ payload }, { call, put }) {
-      const data = yield call(add, { id: payload.id, data: payload.data })
+      const data = yield call(saveSupplierPriceInfo, payload.data)
       if (data.success) {
         // yield put({ type: 'query' })
         success()
@@ -128,9 +143,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * edit ({ payload }, { select, call, put }) {
-      const id = yield select(({ supplier }) => supplier.currentItem.supplierCode)
-      const newSupplier = { ...payload, id }
+    * edit ({ payload }, { call, put }) {
+      const newSupplier = { ...payload }
       const data = yield call(edit, newSupplier)
       if (data.success) {
         success()
@@ -172,15 +186,22 @@ export default modelExtend(pageModel, {
     },
 
     querySuccess (state, action) {
-      const { listSupplier, pagination } = action.payload
+      const { listSupplierPrice, pagination } = action.payload
       return {
         ...state,
-        list: listSupplier,
-        listSupplier,
+        list: listSupplierPrice,
+        listSupplierPrice,
         pagination: {
           ...state.pagination,
           ...pagination
         }
+      }
+    },
+
+    updateState (state, { payload }) {
+      return {
+        ...state,
+        ...payload
       }
     },
 
@@ -197,7 +218,7 @@ export default modelExtend(pageModel, {
     },
 
     resetSupplierList (state) {
-      return { ...state, list: [], listSupplier: [], pagination: { total: 0 } }
+      return { ...state, list: [], listSupplierPrice: [], pagination: { total: 0 } }
     },
 
     refreshView (state) {

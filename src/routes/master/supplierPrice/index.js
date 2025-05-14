@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
-import { Tabs } from 'antd'
 import { routerRedux } from 'dva/router'
+import { Tabs } from 'antd'
+import { connect } from 'dva'
 import Form from './Form'
 import List from './List'
 import Filter from './Filter'
 
 const TabPane = Tabs.TabPane
 
-const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city }) => {
-  const { activeKey, listActiveSupplier, pagination, currentItem, modalType, disable, display, isChecked, show } = activeSupplier
+
+const SupplierPrice = ({ app, dispatch, loading, supplierPrice, location, city }) => {
+  const { activeKey, listSupplierPrice, pagination, currentItem, modalType, disable, display, isChecked, show } = supplierPrice
   const { listCity } = city
   const { user, storeInfo } = app
   const filterProps = {
@@ -55,7 +56,6 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
       }))
     }
   }
-
   // const importExcelProps = {
   //   data: [{ id: 1 }],
   //   user,
@@ -70,7 +70,7 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
     button: `${modalType === 'add' ? 'Add' : 'Update'}`,
     onSubmit (id, data) {
       dispatch({
-        type: `activeSupplier/${modalType}`,
+        type: `supplierPrice/${modalType}`,
         payload: {
           id,
           data
@@ -86,7 +86,7 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
         }
       }))
       dispatch({
-        type: 'activeSupplier/updateState',
+        type: 'supplierPrice/updateState',
         payload: {
           currentItem: {}
         }
@@ -96,7 +96,7 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
 
   const changeTab = (key) => {
     dispatch({
-      type: 'activeSupplier/updateState',
+      type: 'supplierPrice/updateState',
       payload: {
         activeKey: key,
         modalType: 'add',
@@ -112,15 +112,15 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
         activeKey: key
       }
     }))
-    // dispatch({ type: 'activeSupplier/resetCityList' })
+    // dispatch({ type: 'supplierActive/resetCityList' })
   }
 
   const listProps = {
-    dataSource: listActiveSupplier,
+    dataSource: listSupplierPrice,
     user,
     storeInfo,
     pagination,
-    loading: loading.effects['activeSupplier/query'],
+    loading: loading.effects['supplierPrice/query'],
     location,
     onChange (page) {
       const { query, pathname } = location
@@ -135,7 +135,7 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
     },
     editItem (item) {
       dispatch({
-        type: 'activeSupplier/updateState',
+        type: 'supplierPrice/updateState',
         payload: {
           modalType: 'edit',
           activeKey: '0',
@@ -156,7 +156,7 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
     },
     deleteItem (id) {
       dispatch({
-        type: 'activeSupplier/delete',
+        type: 'supplierPrice/delete',
         payload: id
       })
     }
@@ -181,13 +181,13 @@ const ActiveSupplier = ({ app, dispatch, activeSupplier, location, loading, city
   )
 }
 
-ActiveSupplier.propTypes = {
+SupplierPrice.propTypes = {
   loading: PropTypes.object,
   location: PropTypes.object,
   app: PropTypes.object,
-  activeSupplier: PropTypes.object,
+  supplierPrice: PropTypes.object,
   dispatch: PropTypes.func,
   city: PropTypes.object
 }
 
-export default connect(({ activeSupplier, city, loading, app }) => ({ activeSupplier, city, loading, app }))(ActiveSupplier)
+export default connect(({ supplierPrice, city, loading, app }) => ({ supplierPrice, city, loading, app }))(SupplierPrice)
