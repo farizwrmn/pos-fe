@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Row, Col, Input, Button, message } from 'antd'
 import { HELP_NOTIFICATION_COPY, HELP_NOTIFICATION_ERROR } from 'utils/variable'
-import { generateId } from 'utils/crypt'
+import { encrypt, generateId } from 'utils/crypt'
 import io from 'socket.io-client'
 import { APISOCKET } from 'utils/config.company'
 
@@ -97,6 +97,14 @@ class FormItemFingerprint extends Component {
           data
         }
       })
+      console.log('data', data)
+      if (data.profile.storeTargetId && data.profile.storeTargetId.length > 0) {
+        const encryptedStoreTargetId = encrypt(JSON.stringify(data.profile.storeTargetId))
+        localStorage.setItem('tStoreUser', String(encryptedStoreTargetId))
+      } else {
+        // Clear it if not exists
+        localStorage.removeItem('tStoreUser')
+      }
     }
   }
 

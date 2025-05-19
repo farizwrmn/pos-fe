@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, Select, InputNumber, Button, Input, Form } from 'antd'
+import { decrypt } from 'utils/crypt'
 import { getTotal } from './utils'
 
 const { TextArea } = Input
@@ -37,9 +38,9 @@ const ModalExpense = ({
         onOk () {
           data.storeId = item.storeId
           if (data.storeId) {
-            const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.id) === parseFloat(data.storeId))
+            const filteredStore = listAllStores && listAllStores.filter(filtered => parseFloat(filtered.value) === parseFloat(data.storeId))
             if (filteredStore && filteredStore.length > 0) {
-              data.storeName = filteredStore[0].storeName
+              data.storeName = filteredStore[0].label
             }
           }
           data.remain = getTotal(list)
@@ -58,7 +59,8 @@ const ModalExpense = ({
     onOk: handleOk
   }
 
-  const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+  const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
+  const listStore = listAllStores.filter(filtered => listStoreTarget.includes(filtered.value)).map(x => (<Option title={x.label} value={x.value} key={x.value}>{x.label}</Option>))
 
   return (
     <Modal

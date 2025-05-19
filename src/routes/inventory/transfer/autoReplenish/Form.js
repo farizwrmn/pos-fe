@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Form, Button, Select, Row, Col, Input, Modal, DatePicker } from 'antd'
 import { Link } from 'dva/router'
 import { lstorage } from 'utils'
+import { decrypt } from 'utils/crypt'
 import moment from 'moment'
 
 const FormItem = Form.Item
@@ -114,16 +115,18 @@ const FormCounter = ({
       })
     })
   }
-
+  const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
   let childrenStoreReceived = []
   if (listStore.length > 0) {
     let groupStore = []
     for (let id = 0; id < listStore.length; id += 1) {
-      groupStore.push(
-        <Option disabled={Number(lstorage.getCurrentUserStore()) === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
-          {listStore[id].label}
-        </Option>
-      )
+      if (listStoreTarget.includes(listStore[id].value)) {
+        groupStore.push(
+          <Option disabled={Number(lstorage.getCurrentUserStore()) === listStore[id].value || getFieldValue('storeIdReceiver') === listStore[id].value} value={listStore[id].value}>
+            {listStore[id].label}
+          </Option>
+        )
+      }
     }
     childrenStoreReceived.push(groupStore)
   }
