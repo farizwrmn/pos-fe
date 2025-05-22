@@ -125,6 +125,16 @@ export async function queryListTransaction (params) {
   })
 }
 
+export async function queryListCanceledPOSTransaction (params) {
+  const apiHeaderToken = crypt.apiheader()
+  return request({
+    url: '/void-edc-deposit-canceled-pos',
+    method: 'get',
+    data: params,
+    headers: apiHeaderToken
+  })
+}
+
 export async function queryAll (params) {
   const apiHeaderToken = crypt.apiheader()
   return request({
