@@ -2327,6 +2327,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/deliveryOrder/deliveryOrder'))
+              registerModel(app, require('./models/setting/userStore'))
               cb(null, require('./routes/deliveryOrder/deliveryOrder'))
             }, 'inventory-delivery-order')
           }
@@ -2415,6 +2416,7 @@ const Routers = function ({ history, app }) {
             require.ensure([], (require) => {
               registerModel(app, require('./models/transfer/autoReplenish'))
               registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/setting/userStore'))
               registerModel(app, require('./models/transferOut'))
               cb(null, require('./routes/inventory/transfer/autoReplenish'))
             }, 'inventory-transfer-out-auto-replenish')

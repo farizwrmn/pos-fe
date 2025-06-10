@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, Select, InputNumber, Form, Input, Button } from 'antd'
 import { lstorage } from 'utils'
+import { decrypt } from 'utils/crypt'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -66,7 +67,8 @@ class ModalCashRegister extends Component {
 
     const listEmployeeOpt = listEmployee.map(x => (<Option title={x.employeeName} value={x.employeeId} key={x.employeeId}>{x.employeeName}</Option>))
     const listAccount = listAccountCode.map(x => (<Option title={`${x.accountName} (${x.accountCode})`} value={x.id} key={x.id}>{`${x.accountName} (${x.accountCode})`}</Option>))
-    const listStore = listAllStores.map(x => (<Option title={x.storeName} value={x.id} key={x.id}>{x.storeName}</Option>))
+    const listStoreTarget = localStorage.getItem('tStoreUser') ? JSON.parse(decrypt(localStorage.getItem('tStoreUser'))) : []
+    const listStore = listAllStores.filter(filtered => listStoreTarget.includes(filtered.value)).map(x => (<Option title={x.label} value={x.value} key={x.value}>{x.label}</Option>))
 
     return (
       <Modal
