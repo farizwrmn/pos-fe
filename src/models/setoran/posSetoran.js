@@ -37,6 +37,7 @@ export default modelExtend(pageModel, {
     listVoidInput: [],
     listGrabInput: [],
     listTransaction: [],
+    countTransaction: [],
     listVoidTransaction: [],
     pagination: {
       showSizeChanger: true,
@@ -95,6 +96,7 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listTransaction: data.data,
+            countTransaction: data.countData,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
@@ -102,6 +104,7 @@ export default modelExtend(pageModel, {
             }
           }
         })
+        console.log('🚀 ~ *queryListTransaction ~ data:', data.countData)
       }
     },
     * queryListVoidTransaction ({ payload = {} }, { call, put }) {

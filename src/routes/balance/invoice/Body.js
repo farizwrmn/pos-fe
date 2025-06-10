@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Row, Col } from 'antd'
-import { BALANCE_TYPE_TRANSACTION } from 'utils/variable'
+import { BALANCE_TYPE_TRANSACTION, BALANCE_TYPE_CLOSING } from 'utils/variable'
 import { currencyFormatter } from 'utils/string'
 import { calculateBalance } from './utils'
 import BodyItem from './BodyItem'
@@ -17,7 +17,8 @@ const Body = ({
   listVoidInput,
   listGrabInput,
   dataPos = [],
-  paymentOptionCashId = 1
+  paymentOptionCashId = 1,
+  countTransaction
 }) => {
   const totalAmountSetoran = calculateBalance(dataPos, paymentOptionCashId)
   const itemListEdcAmount = listEdc.reduce((acc, curr) => acc + curr.amount, 0)
@@ -49,24 +50,46 @@ const Body = ({
   let itemVourcher = (listTransaction || []).filter(item => item.typeCode === 'V')
   let itemK3express = (listTransaction || []).filter(item => item.typeCode === 'KX')
 
+  const calculateCashTotals = (dataPos, countTransaction) => {
+    const cashData = dataPos.filter(item => item.paymentOption.typeCode === 'C')
+
+    const posTransaction = cashData.find(item => item.balanceType === BALANCE_TYPE_TRANSACTION)
+    const closingTransaction = cashData.find(item => item.balanceType === BALANCE_TYPE_CLOSING)
+
+    return {
+      posAmount: posTransaction.balanceIn || 0,
+      posLembar: countTransaction.total || 0,
+      inputAmount: closingTransaction.balanceIn || 0,
+      inputLembar: closingTransaction.lembar || 0
+    }
+  }
+
   return (
     <div>
       <div className={styles.borderedSection}>
-        {dataPos && dataPos
-          .map((item, index) => {
-            const filteredBalance = dataPos.filter(filteredItem => filteredItem.balanceType === BALANCE_TYPE_TRANSACTION
-              && filteredItem.paymentOption.typeCode === item.paymentOption.typeCode)
-            let itemTransaction = {}
-            if (filteredBalance && filteredBalance[0]) {
-              itemTransaction = filteredBalance[0]
-            }
-            if (item.paymentOption.typeCode === 'C') {
-              return (
-                <BodyItem key={index} item={item} itemTransaction={itemTransaction} />
-              )
-            }
-            return null
-          })}
+        {dataPos && dataPos.map((item, index) => {
+          const filteredBalance = dataPos.filter(filteredItem =>
+            filteredItem.balanceType === BALANCE_TYPE_TRANSACTION &&
+            filteredItem.paymentOption.typeCode === item.paymentOption.typeCode
+          )
+
+          let itemTransaction = {}
+          if (filteredBalance && filteredBalance[0]) {
+            itemTransaction = filteredBalance[0]
+          }
+
+          if (item.paymentOption.typeCode === 'C') {
+            return (
+              <BodyItem
+                key={index}
+                item={item}
+                itemTransaction={itemTransaction}
+                countTransactions={calculateCashTotals(dataPos, countTransaction[0])}
+              />
+            )
+          }
+          return null
+        })}
         <div>
           <div className={styles.item} />
           <Row>
