@@ -247,6 +247,13 @@ const ProductFilter = ({
         selectedRowKeys
       }
     })
+
+    dispatch({
+      type: 'coupon/querySomeProducts',
+      payload: {
+        selectedRowKeys
+      }
+    })
   }
 
   return (
@@ -374,12 +381,12 @@ export default connect(
     variant,
     specification
   }) =>
-    ({
-      productstock,
-      bundling,
-      productcategory,
-      productbrand,
-      variant,
-      specification
-    })
+  ({
+    productstock,
+    bundling,
+    productcategory,
+    productbrand,
+    variant,
+    specification
+  })
 )(Form.create()(ProductFilter))

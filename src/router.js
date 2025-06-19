@@ -1545,6 +1545,21 @@ const Routers = function ({ history, app }) {
             }, 'marketing-advertising')
           }
         }, {
+        }, {
+          path: 'marketing/coupon',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/marketing/coupon'))
+              registerModel(app, require('./models/setting/userStore'))
+              registerModel(app, require('./models/master/productstock'))
+              registerModel(app, require('./models/master/productcategory'))
+              registerModel(app, require('./models/master/productbrand'))
+              registerModel(app, require('./models/master/variant'))
+              registerModel(app, require('./models/master/specification'))
+              cb(null, require('./routes/marketing/coupon'))
+            }, 'marketing-coupon')
+          }
+        }, {
           path: 'report/marketing/target',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

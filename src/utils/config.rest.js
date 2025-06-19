@@ -30,6 +30,7 @@ module.exports = {
     apiMobile: '/mobile',
     apiTools: '/tools',
     apiPromo: '/promo',
+    apiCouponProduct: '/coupon',
     apiLog: '/log',
     apiCashierUsers: '/cashiers/users',
     apiCashRegister: '/cashiers/cashregisters',
