@@ -16,6 +16,7 @@ const Body = ({
   listEdcInput,
   listVoidInput,
   listGrabInput,
+  listCanceledPos,
   dataPos = [],
   paymentOptionCashId = 1,
   countTransaction
@@ -25,6 +26,8 @@ const Body = ({
   const itemListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.total, 0)
   const itemListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.amount, 0)
   const itemListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.total, 0)
+  const itemListCanceledInputAmount = listCanceledPos.reduce((acc, curr) => acc + curr.qty, 0)
+  const itemListCanceledAmount = listCanceledPos.reduce((acc, curr) => acc + curr.total, 0)
 
   const itemListGrabAmount = listGrab.reduce((acc, curr) => acc + curr.amount, 0)
   const itemListGrabInputAmount = listGrabInput.reduce((acc, curr) => acc + curr.total, 0)
@@ -35,6 +38,8 @@ const Body = ({
   const lembarListEdcInputAmount = listEdcInput.reduce((acc, curr) => acc + curr.amount, 0)
   const lembarListVoidAmount = listVoid.reduce((acc, curr) => acc + curr.lembar, 0)
   const lembarListVoidInputAmount = listVoidInput.reduce((acc, curr) => acc + curr.amount, 0)
+
+
   const sisaAmountEdc = itemListEdcAmount - itemListEdcInputAmount
   const sisaAmountVoid = itemListVoidAmount - itemListVoidInputAmount
   const sisaLembarEdc = lembarListEdcAmount - lembarListEdcInputAmount
@@ -157,6 +162,25 @@ const Body = ({
         <div style={{ margin: '1em' }} />
         <div className={styles.item} />
         <Row>
+          <Col span={24} className={styles.left}><p>Canceled POS</p></Col>
+        </Row>
+        <Row>
+          <Col span={12} className={styles.left}>
+            <div>
+              <p>POS:</p>
+              <p>{'(0 Lembar)'}</p>
+              <p>{currencyFormatter(itemListCanceledAmount)}</p>
+            </div>
+          </Col>
+          <Col span={12} className={styles.right}>
+            <p>INPUT:</p>
+            <p>{`(${itemListCanceledInputAmount} QTY)`}</p>
+            <p>{`(${currencyFormatter(itemListCanceledAmount)})`}</p>
+          </Col>
+        </Row>
+        <div style={{ margin: '1em' }} />
+        <div className={styles.item} />
+        <Row>
           <Col style={{ textAlign: 'left' }}>
             <h3><b>Total Uang Tunai Yang Mau Disetor</b></h3>
           </Col>
@@ -197,7 +221,7 @@ const Body = ({
           </Col>
         </Row>
       </div>
-    </div>
+    </div >
   )
 }
 

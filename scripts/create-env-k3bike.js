@@ -6,4 +6,5 @@ API_ENDPOINT_ALT=${process.env.API_ENDPOINT || 'pos.k3bike.com'}
 API_CONSIGNMENT_ENDPOINT=${process.env.API_CONSIGNMENT_ENDPOINT || 'consignment-api.k3bike.com'}
 MAIN_WEBSITE=${process.env.MAIN_WEBSITE || 'k3bike.com'}
 APP_NAME=${process.env.APP_NAME || 'k3bike'}
+API_ELECTRON_ENDPOINT=${process.env.API_ELECTRON_ENDPOINT || 'http://localhost:3300'}
 `)
