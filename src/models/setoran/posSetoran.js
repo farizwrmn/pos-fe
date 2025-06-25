@@ -9,7 +9,8 @@ import {
   queryListGrabByBalanceId,
   insertVoidEdcDeposit,
   queryListTransaction,
-  queryListVoidTransaction
+  queryListVoidTransaction,
+  queryListCanceledPOSTransaction
 } from 'services/setoran/physicalMoney'
 import moment from 'moment'
 import { message } from 'antd'
@@ -39,6 +40,7 @@ export default modelExtend(pageModel, {
     listTransaction: [],
     countTransaction: [],
     listVoidTransaction: [],
+    listCanceledPos: [],
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -65,6 +67,7 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'queryListVoidInputByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListTransaction', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListVoidTransaction', payload: { ...other, balanceId } })
+          dispatch({ type: 'queryListCanceledPOSTransaction', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListGrabByBalanceId', payload: { ...other, balanceId } })
           dispatch({ type: 'queryListGrabInputByBalanceId', payload: { ...other, balanceId } })
         }
@@ -210,6 +213,22 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             listGrabInput: data.data,
+            pagination: {
+              current: Number(data.page) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.total
+            }
+          }
+        })
+      }
+    },
+    * queryListCanceledPOSTransaction ({ payload = {} }, { call, put }) {
+      const data = yield call(queryListCanceledPOSTransaction, payload)
+      if (data.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            listCanceledPos: data.data,
             pagination: {
               current: Number(data.page) || 1,
               pageSize: Number(data.pageSize) || 10,
