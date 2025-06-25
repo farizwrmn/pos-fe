@@ -18,7 +18,7 @@ import {
 } from 'services/master/employee'
 import { query as queryOpts } from 'services/payment/paymentOptions'
 import { queryPaymentInvoice } from 'services/payment/payment'
-import { rearrangeDirectPrintingQris, rearrangeDirectPrinting } from 'utils/posinvoice'
+import { rearrangeDirectPrintingQris, rearrangeDirectPrinting, rearrangeDirectPrintingCoupon } from 'utils/posinvoice'
 import { query as querySetting } from 'services/setting'
 import { pageModel } from '../common'
 
@@ -120,12 +120,21 @@ export default modelExtend(pageModel, {
               directPrinting: response.directPrinting
             }
           })
+          console.log('response : ', response)
           if (response.pos && response.directPrinting && response.directPrinting.length > 0) {
             for (let key in response.directPrinting) {
               const item = response.directPrinting[key]
+              let dataPrint
+              if (item.groupName === 'QRIS') {
+                dataPrint = rearrangeDirectPrintingQris(response.pos, item)
+              } else if (item.groupName === 'COUPON') {
+                dataPrint = rearrangeDirectPrintingCoupon(response.pos, item)
+              } else {
+                dataPrint = rearrangeDirectPrinting(response.pos, item)
+              }
               const responseDirect = yield call(directPrinting, {
                 url: item.printingUrl,
-                data: item.groupName === 'QRIS' ? rearrangeDirectPrintingQris(response.pos, item) : rearrangeDirectPrinting(response.pos, item)
+                data: dataPrint
               })
               console.log('responseDirect', responseDirect)
             }
