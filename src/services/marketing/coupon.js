@@ -6,7 +6,7 @@ export async function query (params) {
     url: '/coupon',
     method: 'get',
     alt: true,
-    params,
+    data: params,
     headers: apiHeaderToken
   })
 }
