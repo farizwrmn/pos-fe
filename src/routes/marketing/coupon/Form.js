@@ -319,7 +319,7 @@ class FormCounter extends Component {
 
               <FormItem label="Active" {...formItemLayout}>
                 {getFieldDecorator('active', {
-                  initialValue: item.active === '1',
+                  initialValue: true,
                   valuePropName: 'checked'
                 })(<Checkbox />)}
               </FormItem>
@@ -360,7 +360,7 @@ class FormCounter extends Component {
                   <Col span={12} />
                   <Col span={12}>
                     <Button
-                      disabled={modalType !== 'add'}
+                      // disabled={modalType !== 'add'}
                       className="button-add-items-right"
                       type="primary"
                       icon="plus"

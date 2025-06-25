@@ -196,13 +196,15 @@ export default modelExtend(pageModel, {
 
     * edit ({ payload }, { select, call, put }) {
       const id = yield select(({ coupon }) => coupon.currentItem.id)
+      const listReward = yield select(({ coupon }) => coupon.listReward || [])
 
-      const { data, listReward, reset } = payload
-      const productId = listReward.map(item => item.productId) || []
+      const { data, reset } = payload
+      const productId = listReward.map(item => item.productId)
 
       const newCounter = { ...data, id, productId }
 
       const response = yield call(edit, newCounter)
+
       if (response.success) {
         success()
         yield put({ type: 'updateState', payload: { modalType: 'add', currentItem: {}, activeKey: '1' } })
