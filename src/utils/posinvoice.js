@@ -268,7 +268,7 @@ export const rearrangeDirectPrintingCoupon = (pos, directPrinting) => {
   const footerPrint = [
     {
       alignment: 'center',
-      text: 'Cukup belanja 100K dan menangkan TRIP ke KOREA'
+      text: 'Cukup belanja 100K'
     },
     {
       alignment: 'center',
