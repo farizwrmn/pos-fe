@@ -215,13 +215,10 @@ export const rearrangeDirectPrintingCoupon = (pos, directPrinting) => {
   console.log('rearrangeDirectPrintingCoupon')
   const headerPrint = [
     {
-      alignment: 'two',
-      style: 'subtitle',
-      text: ' ',
-      rightText: ''
+      alignment: 'center',
+      text: '.'
     },
     {
-      style: 'title',
       alignment: 'center',
       text: 'HUT 12 K3MART'
     }
@@ -230,12 +227,11 @@ export const rearrangeDirectPrintingCoupon = (pos, directPrinting) => {
   for (let key in directPrinting.detail) {
     const item = directPrinting.detail[key]
     headerPrint.push({
-      style: 'title',
       alignment: 'center',
       text: `Nama Kupon :${item.couponName}`
     })
     headerPrint.push({
-      style: 'title',
+
       alignment: 'center',
       text: `Nama Toko : ${pos.storeName}`
     })
@@ -260,7 +256,6 @@ export const rearrangeDirectPrintingCoupon = (pos, directPrinting) => {
     })
     headerPrint.push({
       alignment: 'center',
-      style: 'title',
       text: `${item.productId}`,
       rightText: ''
     })
@@ -273,26 +268,21 @@ export const rearrangeDirectPrintingCoupon = (pos, directPrinting) => {
   const footerPrint = [
     {
       alignment: 'center',
-      style: 'title',
       text: 'Cukup belanja 100K dan menangkan TRIP ke KOREA'
     },
     {
       alignment: 'center',
-      style: 'title',
       text: 'dan'
     },
     {
       alignment: 'center',
-      style: 'title',
       text: 'menangkan TRIP ke KOREA'
     },
     {
-      style: 'title',
       alignment: 'center',
       text: 'Pastikan anda memasukkan kupon ini'
     },
     {
-      style: 'title',
       alignment: 'center',
       text: 'ke dalam box undian yang tersedia di toko'
     },
