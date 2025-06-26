@@ -277,9 +277,24 @@ export const rearrangeDirectPrintingCoupon = (pos, directPrinting) => {
       text: 'Cukup belanja 100K dan menangkan TRIP ke KOREA'
     },
     {
+      alignment: 'center',
+      style: 'title',
+      text: 'dan'
+    },
+    {
+      alignment: 'center',
+      style: 'title',
+      text: 'menangkan TRIP ke KOREA'
+    },
+    {
       style: 'title',
       alignment: 'center',
-      text: 'Pastikan anda memasukkan kupon ini ke dalam box undian yang tersedia di toko'
+      text: 'Pastikan anda memasukkan kupon ini'
+    },
+    {
+      style: 'title',
+      alignment: 'center',
+      text: 'ke dalam box undian yang tersedia di toko'
     },
     {
       alignment: 'center',
